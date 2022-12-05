@@ -1,0 +1,37 @@
+{
+    "torch.nn.AvgPool2d": {
+      "Matcher" : "GenericMatcher",
+      "paddle_api": "paddle.nn.AvgPool2D",
+      "args_list" : 
+      [
+            "kernel_size", 
+            "stride", 
+            "padding", 
+            "count_include_pad", 
+            "ceil_mode", 
+            "divisor_override"
+        ],
+      "kwargs_change":
+        {
+            "count_include_pad": "exclusive"
+        }
+      },
+
+  "torch.Tensor.add": {
+    "Mathcer": "TensorAddMatcher",
+    "args_list" : 
+      [
+        "other"
+      ]
+  },
+
+  "torch.transpose" : {
+    "Mathcer": "TransposeMatcher",
+    "args_list" : 
+    [
+       "dim0", 
+       "dim1"
+    ]
+  }
+
+}
