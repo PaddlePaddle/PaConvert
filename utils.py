@@ -44,7 +44,7 @@ class BaseTransformer(ast.NodeTransformer):
         elif isinstance(node, ast.Name):
             attr_list.insert(0, node.id)
         else:
-            attr_list.insert(0, 'torch.Tensor')
+            attr_list.insert(0, 'TensorMethod')
         
         return '.'.join(attr_list)
 
@@ -71,8 +71,9 @@ class BaseMatcher(object):
         return None
 
     def args_to_kwargs(self, args, kwargs):
-        assert 'args_list' in self.api_mapping
-        args_list = self.api_mapping['args_list']
+        args_list = self.api_mapping.get['args_list'] or []
+        assert len(args) <= len(args_list)
+
         new_kwargs = {}
         for i, node in enumerate(args):
             k = args_list[i]

@@ -1,4 +1,3 @@
-
 import ast
 import os
 import logging
@@ -8,7 +7,7 @@ from ..utils import BaseTransformer
 
 class ImportTransformer(BaseTransformer):
     '''
-    record import information
+    Record import information
     '''
 
     def __init__(self, root, file, imports_map):
@@ -84,5 +83,4 @@ class ImportTransformer(BaseTransformer):
             self.torch_api_count += 1
             return ast.parse(torch_api).body[0]
         return node 
-    
     

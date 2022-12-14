@@ -1,37 +1,163 @@
 {
-    "torch.nn.AvgPool2d": {
-      "Matcher" : "GenericMatcher",
-      "paddle_api": "paddle.nn.AvgPool2D",
-      "args_list" : 
-      [
-            "kernel_size", 
-            "stride", 
-            "padding", 
-            "count_include_pad", 
-            "ceil_mode", 
-            "divisor_override"
-        ],
-      "kwargs_change":
-        {
-            "count_include_pad": "exclusive"
-        }
-      },
+  "torch.nn.AvgPool2d": {
+    "Matcher" : "GenericMatcher",
+    "paddle_api": "paddle.nn.AvgPool2D",
+    "args_list" : [
+      "kernel_size", 
+      "stride", 
+      "padding", 
+      "count_include_pad", 
+      "ceil_mode", 
+      "divisor_override"
+    ],
+    "kwargs_change": {
+          "count_include_pad": "exclusive"
+    }
+  },
+
+  "torch.reshape": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.reshape",
+    "args_list" : ["input", "shape"],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+
+  "torch.abs": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.abs",
+    "args_list" : ["input"],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+
+  "torch.no_grad": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.no_grad"
+  },
+
+  "torch.nn.Module": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Layer"
+  },
+
+  "torch.Tensor": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor"
+  },
+
+  "torch.bool": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'bool'"
+  },
+
+  "torch.float16": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'float16'"
+  },
+
+  "torch.uint16": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'uint16'"
+  },
+
+  "torch.float32": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'float32'"
+  },
+
+  "torch.float": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'float32'"
+  },
+
+  "torch.flaot64": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'float64'"
+  },
+
+  "torch.double": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'float64'"
+  },
+
+  "torch.int8": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'int8'"
+  },
+
+  "torch.int16": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'int16'"
+  },
+
+  "torch.int32": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'int32'"
+  },
+
+  "torch.int64": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'int64'"
+  },
+
+  "torch.uint8": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'uint8'"
+  },
+
+  "torch.complex64": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'complex64'"
+  },
+
+  "torch.complex128": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'complex128'"
+  },
+
+
+
+
+
+
+
+
+  "torch.nn.Linear": {
+    "Matcher": "LayerMatcher",
+    "paddle_api": "paddle.nn.Linear",
+    "args_list" : ["other"]
+  },
 
   "torch.Tensor.add": {
     "Mathcer": "TensorAddMatcher",
-    "args_list" : 
-      [
-        "other"
-      ]
+    "args_list" : ["other"]
+  },
+
+  "torch.tensor": {
+    "Mathcer": "ToTensorMatcher",
+    "paddle_api": "paddle.to_tensor",
+    "args_list" : [
+      "data", 
+      "dtype", 
+      "device", 
+      "pin_memory", 
+      "requires_grad"]
   },
 
   "torch.transpose" : {
     "Mathcer": "TransposeMatcher",
-    "args_list" : 
-    [
+    "args_list" : [
        "dim0", 
        "dim1"
     ]
+  },
+
+  "torch.rand" : {
+    "Mathcer": "CreateMatcher",
+    "paddle_api": "paddle.rand"
   }
 
 }

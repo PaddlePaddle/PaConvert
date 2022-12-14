@@ -111,9 +111,10 @@ class BasicTransformer(BaseTransformer):
              # Tensor method func, such as : x.abs().add
             self.visit(node.func.value)
             full_attr = self.get_full_attr(node.func)
-            if full_attr.startswith('torch.Tensor'):
+            if full_attr.startswith('TensorMethod'):
                 self.torch_api_count += 1
-                node = self.trans_tensor_method(node, full_attr)
+                torch_api = full_attr.replace('TensorMethod', 'torch.Tensor')
+                node = self.trans_tensor_method(node, torch_api)
         else:
             super(BasicTransformer, self).generic_visit(node)
             full_attr = self.get_full_attr(node.func)

@@ -77,23 +77,3 @@ torch.reshape(x, [2, 3])
 
 return x.transpose(0, 2).reshape([2, 3])
 '''
-
-z = torch.transpose(x, 2, 0)
-
-torch.transpose(x, 2, 0)
-
-return torch.transpose(x, 2, 0)
-
-
-perm = range(len(x.shape))
-perm[0] = 2 
-perm[2] = 0
-paddle.transpose(x, perm)
-
-
-torch.scattter_add(x, index, update)
-
-
-y = paddle.put_along_axis(x, index, update)
-
-paddle.add(x, y)
