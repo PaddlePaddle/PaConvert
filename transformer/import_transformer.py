@@ -1,9 +1,11 @@
 import ast
-import os
 import logging
+from os import path
 
-from ..utils import BaseTransformer
+import sys
+sys.path.append(path.dirname(__file__)+"../")
 
+from utils import BaseTransformer
 
 class ImportTransformer(BaseTransformer):
     '''

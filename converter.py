@@ -13,21 +13,20 @@
 # limitations under the License.
 
 import logging
-import os
 import ast
 import astor
 import shutil
 import collections
+import os
 
-from .transformer.import_transformer import ImportTransformer
-from .transformer.basic_transformer import BasicTransformer
-
+from transformer.import_transformer import ImportTransformer
+from transformer.basic_transformer import BasicTransformer
 
 class Converter:
     def __init__(self, log_dir=None):
         self.torch_api_count = 0
         self.success_api_count = 0
-        if log_dir is not None:
+        if log_dir is None:
             self.log_dir = os.getcwd()+ 'convert.log'
         else:
             self.log_dir = log_dir
@@ -36,40 +35,27 @@ class Converter:
         self.log_info("PyTorch to Paddle Convert Start----->:")
         self.log_info("======================================")
         self.imports_map = collections.defaultdict(lambda: dict())
-    
+
+
     def run(self, in_dir, out_dir):
         in_dir = os.path.abspath(in_dir)
         out_dir = os.path.abspath(out_dir)
-        for name in os.listdir(in_dir):
-            old_path = os.path.join(in_dir, name)
-            new_path = os.path.join(out_dir, name)
-            if os.path.isfile(old_path) and old_path.endswith(".py"):
-                self.log_info("Finish convert {} ---> {}".format(old_path, new_path))
-                with open(old_path, 'r') as f:
-                    code = f.read()
-                    root = ast.parse(code)
-                self.transfer_from_node(root, old_path)
 
-                code = astor.to_source(root)
-                code = self.mark_unsport(code)
-                with open(new_path, 'w') as file:
-                    file.write(code)
-            elif os.path.isdir(old_path):
-                if not os.path.exists(new_path):
-                    os.makedirs(new_path)
+        if os.path.isfile(in_dir):
+            old_path = in_dir
+            if not os.path.isfile(out_dir):
+                new_path = os.path.join(out_dir, os.path.basename(old_path))
+            self.transfer_file(old_path, new_path)
+        elif os.path.isdir(in_dir):
+            for item in os.listdir(in_dir):
+                old_path = os.path.join(in_dir, item)
+                new_path = os.path.join(out_dir, item)
+                if os.path.isdir(old_path):
+                    if not os.path.exists(new_path):
+                        os.makedirs(new_path)
                 self.run(old_path, new_path)
-            elif os.path.isfile(old_path) and old_path.endswith("requirements.txt"):
-                self.log_info("Finish convert {} ---> {}".format(old_path, new_path))
-                old_file = open(old_path, 'r')
-                code = old_file.read()
-                code = code.replace('torch', 'paddlepaddle')
-                new_file = open(new_path, 'w')
-                new_file.write(code)
-                old_file.close()
-                new_file.close()
-            else:
-                self.log_info("No need to convert, just Copy {} ---> {}".format(old_path, new_path))
-                shutil.copyfile(old_path, new_path)    
+        else:
+            raise ValueError(" input 'in_dir' must be file or directory! ")
 
         self.log_info("======================================")
         self.log_info("Convert Summary:")
@@ -80,7 +66,7 @@ class Converter:
         "and modify it by yourself manually!".format(self.torch_api_count-self.success_api_count))
         self.log_info("======================================")
         
-        with open(self.log_dir, 'a') as file:
+        with open(self.log_dir, 'w') as file:
             file.write('\n\n\n\n*************************************************\n\n')
             file.write('\n'.join(self.log_msg))
 
@@ -113,10 +99,33 @@ class Converter:
         self.log_msg.append(msg)
 
 
-    def transfer_from_node(self, root, file):
+    def transfer_file(self, old_path, new_path):
+        if old_path.endswith(".py"):
+            self.log_info("Finish convert {} ---> {}".format(old_path, new_path))
+            with open(old_path, 'r') as f:
+                code = f.read()
+                root = ast.parse(code)
+            self.transfer_node(root, old_path)
+
+            code = astor.to_source(root)
+            code = self.mark_unsport(code)
+            with open(new_path, 'w') as file:
+                file.write(code)
+        elif old_path.endswith("requirements.txt"):
+            self.log_info("Finish convert {} ---> {}".format(old_path, new_path))
+            with open(old_path, 'r') as old_file:
+                code = old_file.read()
+            code = code.replace('torch', 'paddlepaddle')
+            with open(new_path, 'w') as new_file:
+                new_file.write(code)
+        else:
+            self.log_info("No need to convert, just Copy {} ---> {}".format(old_path, new_path))
+            shutil.copyfile(old_path, new_path)
+
+    def transfer_node(self, root, file):
         transformers = [
             ImportTransformer, # import ast transformer
-            BasicTransformer,    # basic api ast transformer
+            #BasicTransformer,    # basic api ast transformer
         ]
         for transformer in transformers:
             trans = transformer(root, file, self.imports_map)

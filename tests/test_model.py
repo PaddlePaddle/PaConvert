@@ -1,4 +1,4 @@
-'''
+
 import torch, six
 
 import torch.nn
@@ -76,4 +76,4 @@ torch.reshape(x, [2, 3])
 
 
 return x.transpose(0, 2).reshape([2, 3])
-'''
+

@@ -2,9 +2,13 @@
 import json
 import os
 import ast
+from os import path
 
-from ..api_matcher import *
-from ..utils import API_MAPPING, BaseTransformer
+import sys
+sys.path.append(path.dirname(__file__)+"../")
+
+from api_matcher import *
+from utils import API_MAPPING, BaseTransformer
 
 class BasicTransformer(BaseTransformer):
     def visit(self, node):

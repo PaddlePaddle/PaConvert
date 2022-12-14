@@ -2,18 +2,19 @@
 import ast
 import astor
 import json
-import os
 import logging
+from os import path
 
-json_file = os.getcwd() + "api_mapping.json"
-API_MAPPING = json.load(json_file)
+json_file = path.dirname(__file__) + "/api_mapping.json"
+with open(json_file, 'r') as file:
+    API_MAPPING = json.load(file)
 
 
 class BaseTransformer(ast.NodeTransformer):
     def __init__(self, root, file, imports_map):
         self.root = root
         self.file = file
-        self.file_name = os.path.basename(file)
+        self.file_name = path.basename(file)
         self.imports_map = imports_map
         self.torch_api_count = 0
         self.success_api_count = 0

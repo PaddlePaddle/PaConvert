@@ -1,8 +1,8 @@
 import os
 import argparse
 import logging
-from converter import Converter
 
+from converter import Converter
 
 def main():
     parser = argparse.ArgumentParser(prog="paddleconverter", description="Paddleconverter tool entry point")
@@ -12,8 +12,11 @@ def main():
 
     args = parser.parse_args()
 
-    assert args.out_dir == args.in_dir, "--out_dir must be different from --in_dir"
+    assert args.out_dir != args.in_dir, "--out_dir must be different from --in_dir"
 
-    coverter = Converter(args.in_dir, args.out_dir, args.log_dir)
-    coverter.run()
-    
+    coverter = Converter(args.log_dir)
+    coverter.run(args.in_dir, args.out_dir)
+
+
+if __name__ == "__main__":
+    main()
