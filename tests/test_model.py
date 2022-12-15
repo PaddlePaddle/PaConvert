@@ -74,6 +74,10 @@ torch.reshape(torch.transpose(x, 0, 2), [2, 3])
 
 torch.reshape(x, [2, 3])
 
-
 return x.transpose(0, 2).reshape([2, 3])
 
+torch.rand(1, 2, 3, dtype=torch.float32)
+
+torch.rand(1, 2, 3, dtype=torch.float32, requires_grad=True)
+
+torch.tensor(1., requires_grad=True)

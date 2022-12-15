@@ -3,11 +3,13 @@ import ast
 import astor
 import json
 import logging
+import collections
 from os import path
 
 json_file = path.dirname(__file__) + "/api_mapping.json"
 with open(json_file, 'r') as file:
     API_MAPPING = json.load(file)
+
 
 
 class BaseTransformer(ast.NodeTransformer):
@@ -22,10 +24,39 @@ class BaseTransformer(ast.NodeTransformer):
         self.log_msg = []
         self.node_stack = []
         self.scope_stack = []
+        self.scope_insert_lines = collections.defaultdict(lambda: dict())
     
     def transform(self):
         self.visit(self.root)
-        
+        self.insert_scope()
+
+    def visit(self, node):
+        self.node_stack.append(node)
+        node = super(BaseTransformer, self).visit(node)
+        self.node_stack.pop()
+        return node
+
+    def record_scope(self, scope_node, index, node):
+        if node is None:
+            return
+
+        if index in self.scope_insert_lines[scope_node]:
+            self.scope_insert_lines[scope_node][index].extend(node)
+        else:
+            self.scope_insert_lines[scope_node][index] = node
+            
+    def insert_scope(self):
+        # if multiple line, insert into scope node One time
+        for scope_node in self.scope_insert_lines:
+            offset = 0
+            insert_lines = self.scope_insert_lines[scope_node]
+            for index in insert_lines:
+                lines = insert_lines[index]
+                for line in lines[::-1]:
+                    scope_node.body.insert(offset+index, line)
+                offset = index
+
+
     def log_info(self, msg, file=None, line=None):
         if file:
             if line:

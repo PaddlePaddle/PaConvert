@@ -8,15 +8,9 @@ import sys
 sys.path.append(path.dirname(__file__)+"../")
 
 from api_matcher import *
-from utils import API_MAPPING, BaseTransformer
+from base import API_MAPPING, BaseTransformer
 
 class BasicTransformer(BaseTransformer):
-    def visit(self, node):
-        self.node_stack.append(node)
-        node = super(BasicTransformer, self).visit(node)
-        self.node_stack.pop()
-        return node
-
     @property
     def parent_node(self):
         return self.node_stack[-2]
@@ -149,12 +143,10 @@ class BasicTransformer(BaseTransformer):
                             self.success_api_count += 1
                             self.log_info("[Success]convert {} to Paddle API ".format(torch_api), self.file_name, node.lineno)
                             
-                            # if multiple line(node), insert into this api scope 
-                            body_index = self.scope_body_index()
-                            for i in range(len(node_list)-1):
-                                if i == 0:
-                                    self.log_info("insert extra {} lines for torch api {}".format(len(node_list)-1, torch_api), self.file_name, node.lineno)
-                                self.scope_node.body.insert(body_index, node_list[i])
+                            # if multiple line, record lines and will insert after all node visit
+                            if node_list[0:-1]:
+                                self.log_info("will insert extra {} lines for torch api {}".format(len(node_list[0:-1]), torch_api), self.file_name, node.lineno)
+                                self.record_scope(self.scope_node, self.scope_body_index(), node_list[0:-1])
 
                             return new_node
 
@@ -177,12 +169,10 @@ class BasicTransformer(BaseTransformer):
                     self.success_api_count += 1
                     self.log_info("[Success]convert Tensor Method API: {} to Paddle API ".format(torch_api), self.file_name, node.lineno)
 
-                    # if multiple line, insert extra into this api scope 
-                    body_index = self.scope_body_index()
-                    for i in range(len(node_list)-1):
-                        if i == 0:
-                            self.log_info("insert extra {} lines for torch api {}".format(len(node_list)-1, torch_api), self.file_name, node.lineno)
-                        self.scope_node.body.insert(body_index, node_list[i])
+                    # if multiple line, record lines and will insert after all node visit
+                    if node_list[0:-1]:
+                        self.log_info("will insert extra {} lines for torch api {}".format(len(node_list[0:-1]), torch_api), self.file_name, node.lineno)
+                        self.record_scope(self.scope_node, self.scope_body_index(), node_list[0:-1])
 
                     # for tensor method , only change .add(other=y)
                     node.func.attr = new_node.func.attr
@@ -231,11 +221,6 @@ class BasicTransformer(BaseTransformer):
         super(BasicTransformer, self).generic_visit(node)
         self.scope_stack.pop()
 
-    def visit_Module(self, node):
-        self.scope_stack.append(node)
-        super(BasicTransformer, self).generic_visit(node)
-        self.scope_stack.pop()
-
     def visit_For(self, node):
         self.scope_stack.append(node)
         super(BasicTransformer, self).generic_visit(node)
@@ -246,3 +231,7 @@ class BasicTransformer(BaseTransformer):
         super(BasicTransformer, self).generic_visit(node)
         self.scope_stack.pop()
 
+    def visit_Module(self, node):
+        self.scope_stack.append(node)
+        super(BasicTransformer, self).generic_visit(node)
+        self.scope_stack.pop()

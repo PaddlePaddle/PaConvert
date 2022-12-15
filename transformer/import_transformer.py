@@ -5,7 +5,7 @@ from os import path
 import sys
 sys.path.append(path.dirname(__file__)+"../")
 
-from utils import BaseTransformer
+from base import BaseTransformer
 
 class ImportTransformer(BaseTransformer):
     '''
@@ -23,26 +23,29 @@ class ImportTransformer(BaseTransformer):
         3. add import paddle
         '''
         new_node_names = []
-        for son_node in node.names:
-            if 'torch' in son_node.name:
-                if son_node.hasattr('asname'):
-                    self.log_info("remove import {} as {}".format(son_node.name, son_node.asname), self.file_name, son_node.lineno)
-                    self.imports_map[self.file][son_node.asname] = son_node.name
+        for alias_node in node.names:
+            if 'torch' in alias_node.name:
+                if alias_node.asname:
+                    self.log_info("remove import {} as {}".format(alias_node.name, alias_node.asname), self.file_name, node.lineno)
+                    self.imports_map[self.file][alias_node.asname] = alias_node.name
                 else:
-                    self.log_info("remove import {}".format(son_node.name), self.file_name, son_node.lineno)
+                    self.log_info("remove import {}".format(alias_node.name), self.file_name, node.lineno)
                     self.imports_map[self.file]['torch'] = 'torch'
             else:
-                if son_node.hasattr('asname'):
-                    self.imports_map[self.file]['others'].append(son_node.asname)
+                if alias_node.asname:
+                    self.imports_map[self.file]['others'].append(alias_node.asname)
                 else:
-                    self.imports_map[self.file]['others'].append(son_node.name)
-                new_node_names.append(son_node)
+                    self.imports_map[self.file]['others'].append(alias_node.name)
+                new_node_names.append(alias_node)
 
-        self.log_info("Add import paddle in first line", self.file_name)
-        self.root.body.insert(0, ast.parse('import paddle').body[0])
-        
-        node.names = new_node_names
-        return node
+        self.log_info("Will add import paddle in first line", self.file_name)
+        self.record_scope(self.root, 0, ast.parse('import paddle').body)
+
+        if len(new_node_names) > 0:
+            node.names = new_node_names
+            return node
+        else:
+            return None
             
     def visit_ImportFrom(self, node):
         '''
@@ -50,20 +53,20 @@ class ImportTransformer(BaseTransformer):
         2. remove from torch import nn.functional as F
         '''
         if 'torch' in node.module:
-            for son_node in node.names:
-                if son_node.hasattr('asname'):
-                    self.log_info("remove from {} import {} as ".format(node.module, son_node.name, son_node.asname), self.file_name, son_node.lineno)
-                    self.imports_map[self.file][son_node.asname] = '.'.join([node.module, son_node.name])
+            for alias_node in node.names:
+                if alias_node.asname:
+                    self.log_info("remove from {} import {} as ".format(node.module, alias_node.name, alias_node.asname), self.file_name, node.lineno)
+                    self.imports_map[self.file][alias_node.asname] = '.'.join([node.module, alias_node.name])
                 else:
-                    self.log_info("remove from {} import {}".format(node.module, son_node.name), self.file_name, son_node.lineno)
-                    self.imports_map[self.file][son_node.name] = '.'.join([node.module, son_node.name])
+                    self.log_info("remove from {} import {}".format(node.module, alias_node.name), self.file_name, node.lineno)
+                    self.imports_map[self.file][alias_node.name] = '.'.join([node.module, alias_node.name])
             return None
         else:
-            for son_node in node.names:
-                if son_node.hasattr('asname'):
-                    self.imports_map[self.file]['others'].append(son_node.asname)
+            for alias_node in node.names:
+                if alias_node.as_name:
+                    self.imports_map[self.file]['others'].append(alias_node.asname)
                 else:
-                    self.imports_map[self.file]['others'].append(son_node.name)
+                    self.imports_map[self.file]['others'].append(alias_node.name)
 
         return node
 
@@ -84,5 +87,5 @@ class ImportTransformer(BaseTransformer):
         if torch_api:
             self.torch_api_count += 1
             return ast.parse(torch_api).body[0]
-        return node 
+        return node
     
