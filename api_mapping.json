@@ -123,21 +123,30 @@
 
 
 
+  "torch.device" : {
+    "Matcher": "DeviceMatcher"
+  },
 
 
   "torch.nn.Linear": {
     "Matcher": "LayerMatcher",
     "paddle_api": "paddle.nn.Linear",
-    "args_list" : ["other"]
+    "args_list" : [
+      "in_features",
+      "out_features",
+      "bias",
+      "device",
+      "dtype"
+    ]
   },
 
   "torch.Tensor.add": {
-    "Mathcer": "TensorAddMatcher",
+    "Matcher": "TensorAddMatcher",
     "args_list" : ["other"]
   },
 
   "torch.tensor": {
-    "Mathcer": "ToTensorMatcher",
+    "Matcher": "ToTensorMatcher",
     "paddle_api": "paddle.to_tensor",
     "args_list" : [
       "data", 
@@ -148,15 +157,16 @@
   },
 
   "torch.transpose" : {
-    "Mathcer": "TransposeMatcher",
+    "Matcher": "TransposeMatcher",
     "args_list" : [
+        "input",
        "dim0", 
        "dim1"
     ]
   },
 
   "torch.rand" : {
-    "Mathcer": "CreateMatcher",
+    "Matcher": "CreateMatcher",
     "paddle_api": "paddle.rand"
   }
 

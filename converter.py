@@ -77,13 +77,12 @@ class Converter:
         for i, line in enumerate(lines):
             if 'torch' in line:
                 lines[i] = ">>> " + line
-            if 'Tensor Method' in line:
-                lines[i] = ">>> " + line
+            if 'Torch Tensor Method' in line:
                 mark_next_line = True
             else:
                 if mark_next_line:
                     lines[i] = ">>> " + line
-                    mark_next_line = True
+                    mark_next_line = False
 
         return '\n'.join(lines)
 
@@ -108,7 +107,6 @@ class Converter:
                 root = ast.parse(code)
             
             self.transfer_node(root, old_path)
-
             code = astor.to_source(root)
             code = self.mark_unsport(code)
 
@@ -135,8 +133,6 @@ class Converter:
         for transformer in transformers:
             trans = transformer(root, file, self.imports_map)
             trans.transform()
-            print("======after transform=========")
-            print(ast.dump(root, indent=4))
             self.torch_api_count += trans.torch_api_count
             self.success_api_count += trans.success_api_count
             self.log_msg.extend(trans.log_msg)

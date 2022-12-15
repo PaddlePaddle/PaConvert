@@ -39,22 +39,23 @@ class BaseTransformer(ast.NodeTransformer):
     def record_scope(self, scope_node, index, node):
         if node is None:
             return
-
+        if not isinstance(node, list):
+            node = [node]
         if index in self.scope_insert_lines[scope_node]:
             self.scope_insert_lines[scope_node][index].extend(node)
         else:
             self.scope_insert_lines[scope_node][index] = node
             
     def insert_scope(self):
-        # if multiple line, insert into scope node One time
+        # if multiple line, insert into scope node only One time
         for scope_node in self.scope_insert_lines:
-            offset = 0
             insert_lines = self.scope_insert_lines[scope_node]
-            for index in insert_lines:
-                lines = insert_lines[index]
+            insert_lines = sorted(insert_lines.items(), 
+                                  key = lambda x:x[0], 
+                                  reverse = True)
+            for index, lines in insert_lines:
                 for line in lines[::-1]:
-                    scope_node.body.insert(offset+index, line)
-                offset = index
+                    scope_node.body.insert(index, line)
 
 
     def log_info(self, msg, file=None, line=None):
@@ -99,7 +100,7 @@ class BaseMatcher(object):
         return None
 
     def args_to_kwargs(self, args, kwargs):
-        args_list = self.api_mapping.get['args_list'] or []
+        args_list = self.api_mapping.get('args_list') or []
         assert len(args) <= len(args_list)
 
         new_kwargs = {}
@@ -107,7 +108,7 @@ class BaseMatcher(object):
             k = args_list[i]
             v = astor.to_source(node).strip('\n')
             new_kwargs[k] = v
-            
+        
         for node in kwargs:
             k = node.arg
             v = astor.to_source(node.value).strip('\n')
@@ -115,6 +116,12 @@ class BaseMatcher(object):
 
         return new_kwargs
     
+    def kwargs_to_str(self, kwargs):
+        str_list = []
+        for k, v in kwargs.items():
+            str_list.append('{} = {}'.format(k, v))
+
+        return ', '.join(str_list)
 
     def get_paddle_nodes(self, args, kwargs):
         new_kwargs = self.args_to_kwargs(args, kwargs)
@@ -124,4 +131,4 @@ class BaseMatcher(object):
         return None
 
     def generate_code(self, kwargs):
-        raise ""
+        return None

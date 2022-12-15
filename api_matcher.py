@@ -29,14 +29,16 @@ class GenericMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if 'kwargs_change' in self.api_mapping:
             kwargs_change = self.api_mapping['kwargs_change']
-            for k, v in kwargs_change:
+            for k, v in kwargs_change.items():
                 if v == '':
                     del kwargs[k]
                 elif k in ['layout', 'device', 'memory_format', 'inplace', 'generator']:
                     del kwargs[k]
                 else:
                     kwargs[v] = kwargs.pop(k)
-        if kwargs.has('out'):
+        
+        code = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        if 'out' in kwargs:
             out_v = kwargs.pop('out')
             # will replace ast.Call with ast.Name
             API_TEMPLACE = textwrap.dedent(
@@ -45,14 +47,13 @@ class GenericMatcher(BaseMatcher):
                 {}
                 '''
             )
-            code = API_TEMPLACE.format(out_v, self.get_paddle_api, kwargs, out_v)
-            return None
-        if kwargs.has('pin_memory') and kwargs['pin_memory']:
-            code = '{}({}).pin_memory()'.format(self.get_paddle_api, kwargs)
-        if kwargs.has('dtype'):
+            code = API_TEMPLACE.format(out_v, self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v)
+        if 'pin_memory' in kwargs and kwargs['pin_memory']:
+            code = '{}({}).pin_memory()'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        if 'dtype' in kwargs:
             dtype_v = kwargs.pop('dtype')
-            code = '{}({}).astype({})'.format(self.get_paddle_api, kwargs, dtype_v)
-        if kwargs.has('requires_grad') and kwargs['requires_grad']:
+            code = '{}({}).astype({})'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs), dtype_v)
+        if 'requires_grad' in kwargs and kwargs['requires_grad']:
             # will replace ast.Call with ast.Name
             API_TEMPLACE = textwrap.dedent(
                 '''
@@ -61,49 +62,49 @@ class GenericMatcher(BaseMatcher):
                 z
                 '''
             )
-            code = API_TEMPLACE.format(self.get_paddle_api, kwargs)
+            code = API_TEMPLACE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
         return code
 
 
 class LayerMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if kwargs.has('device'):
+        if 'device' in kwargs:
             del kwargs['device']
-        if kwargs.has('dtype'):
+        if 'dtype' in kwargs:
             del kwargs['dtype']
-        if kwargs.has('bias'):
+        if 'bias' in kwargs:
             kwargs['bias_attr'] = kwargs.pop('bias')
-        code = '{}({})'.format(self.get_paddle_api, kwargs)
+        code = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
         return code
         
 
 class TensorAddMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if kwargs.has('alpha'):
-            API_TEMPLACE = textwrap.dedent(
-                '''
-                paddle.Tensor.add(y={})
-                '''
-            )
-            code = API_TEMPLACE.format(kwargs['other'])
-        else:
+        if 'alpha' in kwargs:
             API_TEMPLACE = textwrap.dedent(
                 '''
                 paddle.Tensor.add(y={}*{})
                 '''
             )
             code = API_TEMPLACE.format(kwargs['alpha'], kwargs['other'])
+        else:
+            API_TEMPLACE = textwrap.dedent(
+                '''
+                paddle.Tensor.add(y={})
+                '''
+            )
+            code = API_TEMPLACE.format(kwargs['other'])
         return code
 
 class ToTensorMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if kwargs.has('device'):
+        if 'device' in kwargs:
             kwargs['place'] = kwargs.pop('device')
 
-        if kwargs.has('requires_grad'):
+        if 'requires_grad' in kwargs:
             requires_grad_v = kwargs.pop('requires_grad')
-            code = 'paddle.to_tensor({}, stop_gradient={})'.format(kwargs, not requires_grad_v)
-        if kwargs.has('pin_memory') and kwargs['pin_memory']:
+            code = 'paddle.to_tensor({}, stop_gradient={})'.format(self.kwargs_to_str(kwargs), not requires_grad_v)
+        if 'pin_memory' in kwargs and kwargs['pin_memory']:
             code = code + '.pin_memory()'
 
         return code
@@ -118,29 +119,36 @@ class TransposeMatcher(BaseMatcher):
             paddle.transpose({}, perm)
             '''
         )
-        code = API_TEMPLACE.format(kwargs['input'], kwargs['dim0'], kwargs['dim1'], kwargs['dim1'], kwargs['dim0'])
+        code = API_TEMPLACE.format(kwargs['input'], kwargs['dim0'], kwargs['dim1'], kwargs['dim1'], kwargs['dim0'], kwargs['input'])
         return code
 
 
 class CreateMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
-        shape = []
+        new_kwargs = {}
+        for node in kwargs:
+            k = node.arg
+            v = astor.to_source(node.value).strip('\n')
+            new_kwargs[k] = v
+
+        shape_list = []
         for node in args:
-            shape.append(node.value)
-        kwargs['shape'] = shape
+            shape_list.append(node.value)
+        new_kwargs['shape'] = str(shape_list)
 
-        if kwargs.has('layout'):
-            del kwargs['layout']
-        if kwargs.has('device'):
-            del kwargs['device']
-        if kwargs.has('pin_memory'):
-            del kwargs['pin_memory']
-        if kwargs.has('dtype'):
-            del kwargs['dtype']
+        if 'layout' in kwargs:
+            del new_kwargs['layout']
+        if 'device' in kwargs:
+            del new_kwargs['device']
+        if 'pin_memory' in kwargs:
+            del new_kwargs['pin_memory']
+        if 'dtype' in kwargs:
+            del new_kwargs['dtype']
 
-        requires_grad = kwargs.has('requires_grad') and kwargs['requires_grad']
-        if requires_grad and kwargs.has('out'):
-            out_v = kwargs.pop('out')
+        requires_grad = ('requires_grad' in new_kwargs) and new_kwargs['requires_grad']
+        if requires_grad and 'out' in new_kwargs:
+            new_kwargs.pop('requires_grad')
+            out_v = new_kwargs.pop('out')
             API_TEMPLACE = textwrap.dedent(
                 '''
                 {} = {}({})
@@ -148,8 +156,9 @@ class CreateMatcher(BaseMatcher):
                 {}
                 '''
             )
-            code = API_TEMPLACE.format(out_v, self.get_paddle_api, kwargs, out_v, out_v)
-        elif requires_grad and not kwargs.has('out'):
+            code = API_TEMPLACE.format(out_v, self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out_v, out_v)
+        elif requires_grad and 'out' not in new_kwargs:
+            new_kwargs.pop('requires_grad')
             API_TEMPLACE = textwrap.dedent(
                 '''
                 z = {}({})
@@ -157,21 +166,34 @@ class CreateMatcher(BaseMatcher):
                 z
                 '''
             )
-            code = API_TEMPLACE.format(self.get_paddle_api, kwargs)
-        elif not requires_grad and kwargs.has('out'):
-            out_v = kwargs.pop('out')
+            code = API_TEMPLACE.format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
+        elif not requires_grad and 'out' in new_kwargs:
+            out_v = new_kwargs.pop('out')
             API_TEMPLACE = textwrap.dedent(
                 '''
                 {} = {}({})
                 {}
                 '''
             )
-            code = API_TEMPLACE.format(out_v, self.get_paddle_api, kwargs, out_v)
+            code = API_TEMPLACE.format(out_v, self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out_v)
+        else:
+            code = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
 
-        if kwargs.has('pin_memory') and kwargs['pin_memory']:
+        if 'pin_memory' in new_kwargs and new_kwargs['pin_memory']:
             code += ".pin_memory()"
 
-        if kwargs.has('dtype'):
-            code += ".astype({})".format(kwargs['dtype'])
+        if 'dtype' in new_kwargs:
+            code += ".astype({})".format(new_kwargs['dtype'])
 
         return ast.parse(code).body
+
+
+class DeviceMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        if len(args)>1:
+            return None
+        device_str = args[0].value
+
+        code = "'{}'".format(device_str)
+        return ast.parse(code).body
+    

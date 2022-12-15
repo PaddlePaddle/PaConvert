@@ -94,5 +94,9 @@ class ImportTransformer(BaseTransformer):
     
     def visit_Module(self, node):
         super(ImportTransformer, self).generic_visit(node)
+        self.log_info("Mark this file which is converted", self.file_name)
+        mark_node = ast.parse("' This file has been converted by Paddle converter, thanks to use, you can remove this mark~'").body[0]
+        self.record_scope(self.root, 0, mark_node)
+        
         self.log_info("Will add 'import paddle' in first line", self.file_name)
         self.record_scope(self.root, 0, ast.parse('import paddle').body)

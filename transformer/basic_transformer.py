@@ -100,25 +100,26 @@ class BasicTransformer(BaseTransformer):
         Therefore, 8 method: 2*2*2, each call has 2 kind call: 
          - torch api: [args]ast.Call
          - tensor api: [func]ast.Attribute([value]ast.Call)
-        '''   
+        '''
+        print(ast.dump(node, indent=4))
         if not isinstance(node.func, ast.Attribute):
             return
         
-        # Postorder traversal                
+        # Use Postorder traversal                
         if isinstance(node.func.value, ast.Call):
-             # Tensor method func, such as : x.abs().add
+            # Tensor method consecutive func, such as : x.abs().add(y).transpose
             self.visit(node.func.value)
             full_attr = self.get_full_attr(node.func)
             if full_attr.startswith('TensorMethod'):
                 self.torch_api_count += 1
                 torch_api = full_attr.replace('TensorMethod', 'torch.Tensor')
-                node = self.trans_tensor_method(node, torch_api)
+                #self.trans_tensor_method(node, torch_api)
         else:
             super(BasicTransformer, self).generic_visit(node)
             full_attr = self.get_full_attr(node.func)
             
-            # Tensor method func, such as : x.add
-            if full_attr.startswith('torch') and len(full_attr.split('.')) == 2:
+            # Tensor method single func, such as : x.add
+            if not full_attr.startswith('torch') and len(full_attr.split('.')) == 2:
                 attr_list = full_attr.split('.')
                 # Avoid ' np.add, scipy.add ... '
                 if attr_list[0] not in self.imports_map[self.file]['others']:
@@ -127,10 +128,11 @@ class BasicTransformer(BaseTransformer):
                     self.torch_api_count += 1
                     
             if full_attr.startswith('torch'):
-                if full_attr.startswith('torch.Tensor'):
-                    return self.trans_tensor_method(node, full_attr)
+                torch_api = full_attr
+                if torch_api.startswith('torch.Tensor'):
+                    return self.trans_tensor_method(node, torch_api)
 
-                matcher = self.get_api_mather(full_attr)
+                matcher = self.get_api_mather(torch_api)
                 if matcher:
                     node_list = matcher.get_paddle_nodes(node.args, node.keywords)
                     if node_list:
@@ -154,7 +156,7 @@ class BasicTransformer(BaseTransformer):
         return node
 
     def trans_tensor_method(self, node, torch_api):
-        body_index = self.scope_body_index()  
+        body_index = self.scope_body_index()
         matcher = self.get_api_mather(torch_api)
         if matcher:
             node_list = matcher.get_paddle_nodes(node.args, node.keywords)
@@ -180,9 +182,9 @@ class BasicTransformer(BaseTransformer):
                     node.keywords = new_node.keywords
                     return node
 
-        annotate_node = ast.parse("Tensor Method, can't convert, should check whether need to convert manually").body[0]
-        # only insert once avoid annotation too much
-        if self.parent_node == self.scope_node:
+        annotate_node = ast.parse("'Torch Tensor Method, can not convert, should check whether need to convert manually'").body[0]
+        # only insert once avoid annotation too much, so parent can't ast.Call
+        if not isinstance(self.parent_node, ast.Call):
             self.record_scope(self.scope_node, body_index, annotate_node)
 
         self.log_info("[Failed]convert Tensor Method API: {} to Paddle API ".format(torch_api), self.file_name, node.lineno)
@@ -192,9 +194,10 @@ class BasicTransformer(BaseTransformer):
     def get_api_mather(self, torch_api):
         if torch_api in API_MAPPING:
             api_mapping = API_MAPPING[torch_api]
-            matcher = api_mapping['Matcher']
-            return eval(matcher)(api_mapping)
-        return None       
+            if "Matcher" in api_mapping:
+                matcher = api_mapping['Matcher']
+                return eval(matcher)(api_mapping)
+        return None
 
     def visit_FunctionDef(self, node):
         self.scope_stack.append(node)

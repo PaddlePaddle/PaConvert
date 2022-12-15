@@ -58,7 +58,7 @@ def func4(x: Tensor=None) -> torch.Tensor:
 
 linear = MyNet()
 
-x = torch.rand([10, 10])
+x = torch.rand(10, 10)
 
 y = x.transpose(1, 0)
 
