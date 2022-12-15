@@ -69,16 +69,12 @@ class BaseTransformer(ast.NodeTransformer):
         self.log_msg.append(msg)
 
     def get_full_attr(self, node):
-        attr_list = []
         if isinstance(node, ast.Attribute):
-            attr_list.insert(0, node.attr)
-            self.get_full_attr(node.value)
+            return self.get_full_attr(node.value) + '.' + node.attr
         elif isinstance(node, ast.Name):
-            attr_list.insert(0, node.id)
+            return node.id
         else:
-            attr_list.insert(0, 'TensorMethod')
-        
-        return '.'.join(attr_list)
+            return 'TensorMethod'
 
     def get_full_api_from_node(self, node):
         full_attr = self.get_full_attr(node)

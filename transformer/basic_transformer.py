@@ -34,7 +34,7 @@ class BasicTransformer(BaseTransformer):
         torch api is not used by funcition call, such as class inherit
         '''
         if isinstance(self.parent_node, ast.Call):
-            return
+            return node
 
         full_attr = self.get_full_attr(node)
         if full_attr.startswith('torch'):
@@ -45,7 +45,7 @@ class BasicTransformer(BaseTransformer):
                 if paddle_api:
                     self.success_api_count += 1
                     self.log_info("[Success]convert {} ---> {}".format(torch_api, paddle_api), self.file_name, node.lineno)
-                    return ast.parse(paddle_api).body[0]
+                    return ast.parse(paddle_api).body[0].value
 
             self.log_info("[Failed]convert {} ---> {}".format(torch_api, paddle_api), self.file_name, node.lineno)
         return node 
@@ -172,7 +172,7 @@ class BasicTransformer(BaseTransformer):
                     # if multiple line, record lines and will insert after all node visit
                     if node_list[0:-1]:
                         self.log_info("will insert extra {} lines for torch api {}".format(len(node_list[0:-1]), torch_api), self.file_name, node.lineno)
-                        self.record_scope(self.scope_node, self.scope_body_index(), node_list[0:-1])
+                        self.record_scope(self.scope_node, body_index, node_list[0:-1])
 
                     # for tensor method , only change .add(other=y)
                     node.func.attr = new_node.func.attr
@@ -183,7 +183,7 @@ class BasicTransformer(BaseTransformer):
         annotate_node = ast.parse("Tensor Method, can't convert, should check whether need to convert manually").body[0]
         # only insert once avoid annotation too much
         if self.parent_node == self.scope_node:
-            self.scope_node.body.insert(body_index, annotate_node)
+            self.record_scope(self.scope_node, body_index, annotate_node)
 
         self.log_info("[Failed]convert Tensor Method API: {} to Paddle API ".format(torch_api), self.file_name, node.lineno)
         return node 
@@ -200,38 +200,46 @@ class BasicTransformer(BaseTransformer):
         self.scope_stack.append(node)
         super(BasicTransformer, self).generic_visit(node)
         self.scope_stack.pop()
+        return node
     
     def visit_While(self, node):
         self.scope_stack.append(node)
         super(BasicTransformer, self).generic_visit(node)
         self.scope_stack.pop()
+        return node
 
     def visit_If(self, node):
         self.scope_stack.append(node)
         super(BasicTransformer, self).generic_visit(node)
         self.scope_stack.pop()
+        return node
 
     def visit_Try(self, node):
         self.scope_stack.append(node)
         super(BasicTransformer, self).generic_visit(node)
         self.scope_stack.pop()
+        return node
 
     def visit_TryFinally(self, node):
         self.scope_stack.append(node)
-        super(BasicTransformer, self).generic_visit(node)
+        node = super(BasicTransformer, self).generic_visit(node)
         self.scope_stack.pop()
+        return node
 
     def visit_For(self, node):
         self.scope_stack.append(node)
         super(BasicTransformer, self).generic_visit(node)
         self.scope_stack.pop()
+        return node
 
     def visit_With(self, node):
         self.scope_stack.append(node)
         super(BasicTransformer, self).generic_visit(node)
         self.scope_stack.pop()
+        return node
 
     def visit_Module(self, node):
         self.scope_stack.append(node)
         super(BasicTransformer, self).generic_visit(node)
         self.scope_stack.pop()
+        return node

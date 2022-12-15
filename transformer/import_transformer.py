@@ -26,10 +26,10 @@ class ImportTransformer(BaseTransformer):
         for alias_node in node.names:
             if 'torch' in alias_node.name:
                 if alias_node.asname:
-                    self.log_info("remove import {} as {}".format(alias_node.name, alias_node.asname), self.file_name, node.lineno)
+                    self.log_info("remove 'import {} as {}' ".format(alias_node.name, alias_node.asname), self.file_name, node.lineno)
                     self.imports_map[self.file][alias_node.asname] = alias_node.name
                 else:
-                    self.log_info("remove import {}".format(alias_node.name), self.file_name, node.lineno)
+                    self.log_info("remove 'import {}' ".format(alias_node.name), self.file_name, node.lineno)
                     self.imports_map[self.file]['torch'] = 'torch'
             else:
                 if alias_node.asname:
@@ -37,9 +37,6 @@ class ImportTransformer(BaseTransformer):
                 else:
                     self.imports_map[self.file]['others'].append(alias_node.name)
                 new_node_names.append(alias_node)
-
-        self.log_info("Will add import paddle in first line", self.file_name)
-        self.record_scope(self.root, 0, ast.parse('import paddle').body)
 
         if len(new_node_names) > 0:
             node.names = new_node_names
@@ -55,10 +52,10 @@ class ImportTransformer(BaseTransformer):
         if 'torch' in node.module:
             for alias_node in node.names:
                 if alias_node.asname:
-                    self.log_info("remove from {} import {} as ".format(node.module, alias_node.name, alias_node.asname), self.file_name, node.lineno)
+                    self.log_info("remove 'from {} import {} as {}' ".format(node.module, alias_node.name, alias_node.asname), self.file_name, node.lineno)
                     self.imports_map[self.file][alias_node.asname] = '.'.join([node.module, alias_node.name])
                 else:
-                    self.log_info("remove from {} import {}".format(node.module, alias_node.name), self.file_name, node.lineno)
+                    self.log_info("remove 'from {} import {}' ".format(node.module, alias_node.name), self.file_name, node.lineno)
                     self.imports_map[self.file][alias_node.name] = '.'.join([node.module, alias_node.name])
             return None
         else:
@@ -73,19 +70,29 @@ class ImportTransformer(BaseTransformer):
 
     def visit_Attribute(self, node):
         '''
-        change torch api call to full api according to import info
+        change torch api to full api according to import info.
+        eg.
+            nn.Module -> torch.nn.Module
         '''
         torch_api = self.get_full_api_from_node(node)
         if torch_api:
             self.torch_api_count += 1
-            if 'torch.Tensor' not in torch_api:
-                return ast.parse(torch_api).body[0]
+            return ast.parse(torch_api).body[0].value
         return node
 
     def visit_Name(self, node):
+        '''
+        change torch api to full api according to import info.
+        eg.
+            Module -> torch.nn.Module
+        '''
         torch_api = self.get_full_api_from_node(node)
         if torch_api:
             self.torch_api_count += 1
-            return ast.parse(torch_api).body[0]
+            return ast.parse(torch_api).body[0].value
         return node
     
+    def visit_Module(self, node):
+        super(ImportTransformer, self).generic_visit(node)
+        self.log_info("Will add 'import paddle' in first line", self.file_name)
+        self.record_scope(self.root, 0, ast.parse('import paddle').body)

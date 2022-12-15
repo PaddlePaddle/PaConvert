@@ -77,7 +77,7 @@ class LayerMatcher(BaseMatcher):
         return code
         
 
-class TensorAddMather(BaseMatcher):
+class TensorAddMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if kwargs.has('alpha'):
             API_TEMPLACE = textwrap.dedent(
@@ -92,7 +92,7 @@ class TensorAddMather(BaseMatcher):
                 paddle.Tensor.add(y={}*{})
                 '''
             )
-            code = API_TEMPLACE.format(kwargs['other'], kwargs['alpha'])
+            code = API_TEMPLACE.format(kwargs['alpha'], kwargs['other'])
         return code
 
 class ToTensorMatcher(BaseMatcher):

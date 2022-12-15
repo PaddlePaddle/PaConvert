@@ -28,7 +28,6 @@ class Converter:
         self.success_api_count = 0
         if log_dir is None:
             self.log_dir = os.getcwd()+ '/convert.log'
-            print(self.log_dir)
         else:
             self.log_dir = log_dir
         self.log_msg = []
@@ -56,7 +55,7 @@ class Converter:
                         os.makedirs(new_path)
                 self.run(old_path, new_path)
         else:
-            raise ValueError(" input 'in_dir' must be file or directory! ")
+            raise ValueError(" the input 'in_dir' must be a file or directory! ")
 
         self.log_info("\n======================================")
         self.log_info("Convert Summary:")
@@ -108,13 +107,11 @@ class Converter:
                 code = f.read()
                 root = ast.parse(code)
             
-            print(ast.dump(root, indent=4))
             self.transfer_node(root, old_path)
-            print(ast.dump(root, indent=4))
 
             code = astor.to_source(root)
             code = self.mark_unsport(code)
-            print(code)
+
             with open(new_path, 'w') as file:
                 file.write(code)
             self.log_info("Finish convert {} ---> {}".format(old_path, new_path))
@@ -133,11 +130,13 @@ class Converter:
     def transfer_node(self, root, file):
         transformers = [
             ImportTransformer, # import ast transformer
-            #BasicTransformer,    # basic api ast transformer
+            BasicTransformer,    # basic api ast transformer
         ]
         for transformer in transformers:
             trans = transformer(root, file, self.imports_map)
             trans.transform()
+            print("======after transform=========")
+            print(ast.dump(root, indent=4))
             self.torch_api_count += trans.torch_api_count
             self.success_api_count += trans.success_api_count
             self.log_msg.extend(trans.log_msg)
