@@ -28,7 +28,10 @@ class MyNet(nn.Module):
         return F.relu(y)
 
 class MyNet1(Module):
-    pass
+    def forward(self, x):
+        x = torch.rand(10, 10)
+
+        return torch.transpose(x, 1, 0)
 
 class MyNet2(torch.nn.Module):
     pass
@@ -42,7 +45,7 @@ def func2(x) -> torch.Tensor:
 
 def func3(x: torch.Tensor) -> torch.Tensor:
     def func5():
-        return True
+        return torch.transpose(x, 1, 0)
 
     return torch.abs(x)
 
@@ -53,12 +56,14 @@ else:
 
 def func4(x: Tensor=None) -> torch.Tensor:
     if isinstance(x, torch.Tensor):
-        return torch.abs(x)
-
+        torch.add(torch.rand(1, 2, requires_grad=True), torch.rand(1, 2, requires_grad=True))
+        return torch.transpose(x, 1, 0)
 
 linear = MyNet()
 
 x = torch.rand(10, 10)
+
+y = torch.transpose(x, 1, 0)
 
 y = x.transpose(1, 0)
 

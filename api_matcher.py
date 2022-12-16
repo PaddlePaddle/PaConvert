@@ -19,6 +19,7 @@ import astor
 import textwrap
 
 from base import API_MAPPING, BaseMatcher
+from utils import unique_name
 
 class GenericMatcher(BaseMatcher):
 
@@ -53,19 +54,18 @@ class GenericMatcher(BaseMatcher):
             code = API_TEMPLACE.format(out_v, self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out_v)
         if 'pin_memory' in new_kwargs and new_kwargs['pin_memory']:
             code = '{}({}).pin_memory()'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-        if 'dtype' in new_kwargs:
-            dtype_v = kwargs.pop('dtype')
-            code = '{}({}).astype({})'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs), dtype_v)
+
         if 'requires_grad' in new_kwargs and new_kwargs['requires_grad']:
             # will replace ast.Call with ast.Name
             API_TEMPLACE = textwrap.dedent(
                 '''
-                z = {}({})
-                z.stop_gradient = False
-                z
+                {} = {}({})
+                {}.stop_gradient = False
+                {}
                 '''
             )
-            code = API_TEMPLACE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+            temp = unique_name('temp')
+            code = API_TEMPLACE.format(temp, self.get_paddle_api(), self.kwargs_to_str(kwargs), temp, temp)
         return code
 
 
@@ -137,13 +137,17 @@ class TransposeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLACE = textwrap.dedent(
             '''
-            perm = range(len({}.shape))
-            perm[{}] = {}
-            perm[{}] = {}
-            paddle.transpose({}, perm)
+            {} = range(len({}.shape))
+            {}[{}] = {}
+            {}[{}] = {}
+            paddle.transpose({}, {})
             '''
         )
-        code = API_TEMPLACE.format(kwargs['input'], kwargs['dim0'], kwargs['dim1'], kwargs['dim1'], kwargs['dim0'], kwargs['input'])
+        perm = unique_name('perm')
+        code = API_TEMPLACE.format(perm, kwargs['input'], 
+                perm, kwargs['dim0'], kwargs['dim1'], 
+                perm, kwargs['dim1'], kwargs['dim0'], 
+                kwargs['input'], perm)
         return code
 
 
@@ -184,12 +188,13 @@ class CreateMatcher(BaseMatcher):
             new_kwargs.pop('requires_grad')
             API_TEMPLACE = textwrap.dedent(
                 '''
-                z = {}({})
-                z.stop_gradient = False
-                z
+                {} = {}({})
+                {}.stop_gradient = False
+                {}
                 '''
             )
-            code = API_TEMPLACE.format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
+            temp = unique_name('temp')
+            code = API_TEMPLACE.format(temp, self.get_paddle_api(), self.kwargs_to_str(new_kwargs), temp, temp)
         elif not requires_grad and 'out' in new_kwargs:
             out_v = new_kwargs.pop('out')
             API_TEMPLACE = textwrap.dedent(
@@ -204,7 +209,7 @@ class CreateMatcher(BaseMatcher):
 
         if 'pin_memory' in new_kwargs and new_kwargs['pin_memory']:
             code += ".pin_memory()"
-
+        
         return ast.parse(code).body
 
 
