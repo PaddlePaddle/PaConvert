@@ -1,3 +1,16 @@
+# Copyright (c) 2022  PaddlePaddle Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import json
 import os
@@ -34,17 +47,18 @@ class BasicTransformer(BaseTransformer):
         torch api is not used by funcition call, such as class inherit base, func param type, 
         func return type, dtype
         '''
-        if isinstance(self.parent_node, ast.Call):
-            if isinstance(node.value, ast.Call):
-                super(BasicTransformer, self).generic_visit(node)
+        if isinstance(node.value, ast.Call):
+            super(BasicTransformer, self).generic_visit(node)
             
-            call_instance = getattr(self.parent_node.func, 'id', None) == 'instance'
+        if isinstance(self.parent_node, ast.Call):
+            call_instance = getattr(self.parent_node.func, 'id', None) == 'isinstance'
             if not call_instance:
                 return node
             
         full_attr = self.get_full_attr(node)
         if full_attr.startswith('torch'):
             torch_api = full_attr
+            self.torch_api_count += 1
             matcher = self.get_api_mather(torch_api)
             if matcher:
                 paddle_api = matcher.get_paddle_api()
@@ -116,7 +130,7 @@ class BasicTransformer(BaseTransformer):
 
         full_attr = self.get_full_attr(node.func)
         
-        # Tensor method single func, such as : x.add
+        # Tensor method func, such as : x.add / x.abs().add
         if not full_attr.startswith('torch') and len(full_attr.split('.')) == 2:
             attr_list = full_attr.split('.')
             # Avoid ' np.add, scipy.add ... '
@@ -125,10 +139,10 @@ class BasicTransformer(BaseTransformer):
             if attr_list[0] not in WHITE_LIST:
                 attr_list[0] = 'torch.Tensor'
                 full_attr = '.'.join(attr_list)
-                self.torch_api_count += 1
                 
         if full_attr.startswith('torch'):
             torch_api = full_attr
+            self.torch_api_count += 1
             if torch_api.startswith('torch.Tensor'):
                 return self.trans_tensor_method(node, torch_api)
 
@@ -143,16 +157,16 @@ class BasicTransformer(BaseTransformer):
                     
                     if isinstance(new_node, (ast.Call, ast.Name)):
                         self.success_api_count += 1
-                        self.log_info("[Success]convert {} to Paddle API ".format(torch_api), self.file_name, node.lineno)
+                        self.log_info("[Success]convert {} to Paddle ".format(torch_api), self.file_name, node.lineno)
                         
                         # if multiple line, record lines and will insert after all node visit
                         if node_list[0:-1]:
-                            self.log_info("will insert extra {} lines for torch api {}".format(len(node_list[0:-1]), torch_api), self.file_name, node.lineno)
+                            self.log_info("insert extra {} lines for torch api {}".format(len(node_list[0:-1]), torch_api), self.file_name, node.lineno)
                             self.record_scope(self.scope_node, self.scope_body_index(), node_list[0:-1])
 
                         return new_node
 
-            self.log_info("[Failed]convert {} to Paddle API ".format(torch_api), self.file_name, node.lineno)
+            self.log_info("[Failed]can not convert {} to Paddle ".format(torch_api), self.file_name, node.lineno)
         return node
 
     def trans_tensor_method(self, node, torch_api):
@@ -169,11 +183,11 @@ class BasicTransformer(BaseTransformer):
                 # for tensor method api, the last line must be 'ast.Call'
                 if isinstance(new_node, ast.Call):
                     self.success_api_count += 1
-                    self.log_info("[Success]convert Tensor Method API: {} to Paddle API ".format(torch_api), self.file_name, node.lineno)
+                    self.log_info("[Success]convert Tensor Method API: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
 
                     # if multiple line, record lines and will insert after all node visit
                     if node_list[0:-1]:
-                        self.log_info("will insert extra {} lines for torch api {}".format(len(node_list[0:-1]), torch_api), self.file_name, node.lineno)
+                        self.log_info("insert extra {} lines for torch api {}".format(len(node_list[0:-1]), torch_api), self.file_name, node.lineno)
                         self.record_scope(self.scope_node, body_index, node_list[0:-1])
 
                     # for tensor method , only change .add(other=y)
@@ -187,7 +201,7 @@ class BasicTransformer(BaseTransformer):
         if not isinstance(self.parent_node, ast.Call):
             self.record_scope(self.scope_node, body_index, annotate_node)
 
-        self.log_info("[Failed]convert Tensor Method API: {} to Paddle API ".format(torch_api), self.file_name, node.lineno)
+        self.log_info("[Failed]can not convert Tensor Method API: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
         return node 
 
 
@@ -245,4 +259,8 @@ class BasicTransformer(BaseTransformer):
         self.scope_stack.append(node)
         super(BasicTransformer, self).generic_visit(node)
         self.scope_stack.pop()
+
+        self.log_info("mark this file has been converted", self.file_name)
+        mark_node = ast.parse("' This file has been converted by Paddle converter, thanks to use, you can remove this mark'").body[0]
+        self.record_scope(self.root, 0, mark_node)
         return node

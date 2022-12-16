@@ -1,3 +1,17 @@
+# Copyright (c) 2022  PaddlePaddle Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import ast
 import logging
 from os import path
@@ -12,8 +26,8 @@ class ImportTransformer(BaseTransformer):
     Record import information
     '''
 
-    def __init__(self, root, file, imports_map):
-        super(ImportTransformer, self).__init__(root, file, imports_map)
+    def __init__(self, root, file, imports_map, logger):
+        super(ImportTransformer, self).__init__(root, file, imports_map, logger)
         self.imports_map[self.file]['others'] = []
 
     def visit_Import(self, node):
@@ -76,7 +90,6 @@ class ImportTransformer(BaseTransformer):
         '''
         torch_api = self.get_full_api_from_node(node)
         if torch_api:
-            self.torch_api_count += 1
             return ast.parse(torch_api).body[0].value
         return node
 
@@ -88,15 +101,11 @@ class ImportTransformer(BaseTransformer):
         '''
         torch_api = self.get_full_api_from_node(node)
         if torch_api:
-            self.torch_api_count += 1
             return ast.parse(torch_api).body[0].value
         return node
     
     def visit_Module(self, node):
         super(ImportTransformer, self).generic_visit(node)
-        self.log_info("Mark this file which is converted", self.file_name)
-        mark_node = ast.parse("' This file has been converted by Paddle converter, thanks to use, you can remove this mark'").body[0]
-        self.record_scope(self.root, 0, mark_node)
 
-        self.log_info("Will add 'import paddle' in first line", self.file_name)
+        self.log_info("add 'import paddle' in first line", self.file_name)
         self.record_scope(self.root, 0, ast.parse('import paddle').body)

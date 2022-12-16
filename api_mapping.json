@@ -129,11 +129,6 @@
     "paddle_api": "'complex128'"
   },
 
-
-
-
-
-
   "torch.device" : {
     "Matcher": "DeviceMatcher"
   },
@@ -162,6 +157,7 @@
 
   "torch.add": {
     "Matcher": "TorchAddMatcher",
+    "paddle_api": "paddle.add",
     "args_list" : ["input", "other"]
   },
 

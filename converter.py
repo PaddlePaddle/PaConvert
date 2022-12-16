@@ -24,17 +24,21 @@ from transformer.basic_transformer import BasicTransformer
 
 class Converter:
     def __init__(self, log_dir=None):
+        self.imports_map = collections.defaultdict(dict)
         self.torch_api_count = 0
         self.success_api_count = 0
         if log_dir is None:
             self.log_dir = os.getcwd()+ '/convert.log'
         else:
             self.log_dir = log_dir
-        self.log_msg = []
+        self.logger = logging.getLogger(name='Converter')
+        self.logger.addHandler(logging.StreamHandler())
+        self.logger.addHandler(logging.FileHandler(self.log_dir))
+        self.logger.setLevel(logging.INFO)
+
         self.log_info("======================================")
         self.log_info("PyTorch to Paddle Convert Start----->:")
         self.log_info("======================================")
-        self.imports_map = collections.defaultdict(lambda: dict())
 
 
     def run(self, in_dir, out_dir):
@@ -57,19 +61,19 @@ class Converter:
         else:
             raise ValueError(" the input 'in_dir' must be a file or directory! ")
 
-        self.log_info("\n======================================")
+        faild_api_count = self.torch_api_count - self.success_api_count
+        self.log_info("======================================")
         self.log_info("Convert Summary:")
         self.log_info("======================================")
-        self.log_info("There is {} Pytorch API in project".format(self.torch_api_count))
-        self.log_info("{}  Pytorch API have been converted to Paddle successfully".format(self.success_api_count))
-        self.log_info("{}  Pytorch API converted failed, Please refer to "
+        self.log_info("There are {} Pytorch APIs in this Project:".format(self.torch_api_count))
+        self.log_info("{}  Pytorch APIs have been converted to Paddle successfully".format(self.success_api_count))
+        self.log_info("{}  Pytorch APIs are converted failed".format(faild_api_count))
+        self.log_info("Convert Rate is: {:.2%}".format(self.success_api_count/self.torch_api_count))
+        if (faild_api_count > 0):
+            self.log_info("For {} failed converted torch API, Please refer to "
         "https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api "
-        "and modify it by yourself manually!".format(self.torch_api_count-self.success_api_count))
-        self.log_info("======================================")
-        
-        with open(self.log_dir, 'w') as file:
-            file.write('\n\n\n*************************************************\n\n')
-            file.write('\n'.join(self.log_msg))
+        "and modify it by yourself manually!".format(faild_api_count))
+        self.log_info("Thank you to use Paddle Convert tool. You can make any suggestions to us.")
 
     def mark_unsport(self, code):
         lines = code.split('\n')
@@ -95,8 +99,7 @@ class Converter:
                 msg = "[{}] {}".format(file, msg)
         else:
             msg = "{}".format(msg)
-        logging.info(msg)
-        self.log_msg.append(msg)
+        self.logger.info(msg)
 
 
     def transfer_file(self, old_path, new_path):
@@ -131,9 +134,8 @@ class Converter:
             BasicTransformer,    # basic api ast transformer
         ]
         for transformer in transformers:
-            trans = transformer(root, file, self.imports_map)
+            trans = transformer(root, file, self.imports_map, self.logger)
             trans.transform()
             self.torch_api_count += trans.torch_api_count
             self.success_api_count += trans.success_api_count
-            self.log_msg.extend(trans.log_msg)
                 

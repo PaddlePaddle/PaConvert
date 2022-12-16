@@ -1,3 +1,16 @@
+# Copyright (c) 2022  PaddlePaddle Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import ast
 import astor
@@ -6,6 +19,8 @@ import logging
 import collections
 from os import path
 
+from utils import UniqueNameGenerator
+
 json_file = path.dirname(__file__) + "/api_mapping.json"
 with open(json_file, 'r') as file:
     API_MAPPING = json.load(file)
@@ -13,7 +28,7 @@ with open(json_file, 'r') as file:
 
 
 class BaseTransformer(ast.NodeTransformer):
-    def __init__(self, root, file, imports_map):
+    def __init__(self, root, file, imports_map, logger):
         self.root = root
         self.file = file
         self.file_name = path.basename(file)
@@ -21,10 +36,10 @@ class BaseTransformer(ast.NodeTransformer):
         self.torch_api_count = 0
         self.success_api_count = 0
         self.root = root
-        self.log_msg = []
         self.node_stack = []
         self.scope_stack = []
-        self.scope_insert_lines = collections.defaultdict(lambda: dict())
+        self.scope_insert_lines = collections.defaultdict(dict)
+        self.logger = logger
     
     def transform(self):
         self.visit(self.root)
@@ -66,15 +81,14 @@ class BaseTransformer(ast.NodeTransformer):
                 msg = "[{}] {}".format(file, msg)
         else:
             msg = "{}".format(msg)
-        logging.info(msg)
-        self.log_msg.append(msg)
+        self.logger.info(msg)
 
     def get_full_attr(self, node):
         if isinstance(node, ast.Attribute):
             return self.get_full_attr(node.value) + '.' + node.attr
         elif isinstance(node, ast.Name):
             return node.id
-        else:
+        elif isinstance(node, ast.Call):
             return 'TensorMethod'
 
     def get_full_api_from_node(self, node):
