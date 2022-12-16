@@ -24,6 +24,12 @@
     }
   },
 
+  "torch.Tensor.reshape": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.reshape",
+    "args_list" : ["shape"]
+  },
+
   "torch.abs": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.abs",
@@ -31,6 +37,11 @@
     "kwargs_change": {
       "input": "x"
     }
+  },
+
+  "torch.Tensor.abs": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.abs"
   },
 
   "torch.no_grad": {
@@ -138,6 +149,20 @@
       "device",
       "dtype"
     ]
+  },
+
+  "torch.nn.functional.relu": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.relu",
+    "args_list" : ["input", "inplace"],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+
+  "torch.add": {
+    "Matcher": "TorchAddMatcher",
+    "args_list" : ["input", "other"]
   },
 
   "torch.Tensor.add": {

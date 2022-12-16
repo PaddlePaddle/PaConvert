@@ -31,11 +31,17 @@ class BasicTransformer(BaseTransformer):
 
     def visit_Attribute(self, node):
         '''
-        torch api is not used by funcition call, such as class inherit
+        torch api is not used by funcition call, such as class inherit base, func param type, 
+        func return type, dtype
         '''
         if isinstance(self.parent_node, ast.Call):
-            return node
-
+            if isinstance(node.value, ast.Call):
+                super(BasicTransformer, self).generic_visit(node)
+            
+            call_instance = getattr(self.parent_node.func, 'id', None) == 'instance'
+            if not call_instance:
+                return node
+            
         full_attr = self.get_full_attr(node)
         if full_attr.startswith('torch'):
             torch_api = full_attr
@@ -49,7 +55,6 @@ class BasicTransformer(BaseTransformer):
 
             self.log_info("[Failed]convert {} ---> {}".format(torch_api, paddle_api), self.file_name, node.lineno)
         return node 
-
 
     def visit_Call(self, node):
         '''
@@ -101,58 +106,53 @@ class BasicTransformer(BaseTransformer):
          - torch api: [args]ast.Call
          - tensor api: [func]ast.Attribute([value]ast.Call)
         '''
-        print(ast.dump(node, indent=4))
         if not isinstance(node.func, ast.Attribute):
-            return
+            if getattr(node.func, 'id', None) == 'isinstance':
+                super(BasicTransformer, self).generic_visit(node)
+            return node
         
-        # Use Postorder traversal                
-        if isinstance(node.func.value, ast.Call):
-            # Tensor method consecutive func, such as : x.abs().add(y).transpose
-            self.visit(node.func.value)
-            full_attr = self.get_full_attr(node.func)
-            if full_attr.startswith('TensorMethod'):
+        # Use Postorder traversal
+        super(BasicTransformer, self).generic_visit(node)
+
+        full_attr = self.get_full_attr(node.func)
+        
+        # Tensor method single func, such as : x.add
+        if not full_attr.startswith('torch') and len(full_attr.split('.')) == 2:
+            attr_list = full_attr.split('.')
+            # Avoid ' np.add, scipy.add ... '
+            WHITE_LIST = self.imports_map[self.file]['others']
+            WHITE_LIST += ['self']
+            if attr_list[0] not in WHITE_LIST:
+                attr_list[0] = 'torch.Tensor'
+                full_attr = '.'.join(attr_list)
                 self.torch_api_count += 1
-                torch_api = full_attr.replace('TensorMethod', 'torch.Tensor')
-                #self.trans_tensor_method(node, torch_api)
-        else:
-            super(BasicTransformer, self).generic_visit(node)
-            full_attr = self.get_full_attr(node.func)
-            
-            # Tensor method single func, such as : x.add
-            if not full_attr.startswith('torch') and len(full_attr.split('.')) == 2:
-                attr_list = full_attr.split('.')
-                # Avoid ' np.add, scipy.add ... '
-                if attr_list[0] not in self.imports_map[self.file]['others']:
-                    attr_list[0] = 'torch.Tensor'
-                    full_attr = '.'.join(attr_list)
-                    self.torch_api_count += 1
+                
+        if full_attr.startswith('torch'):
+            torch_api = full_attr
+            if torch_api.startswith('torch.Tensor'):
+                return self.trans_tensor_method(node, torch_api)
+
+            matcher = self.get_api_mather(torch_api)
+            if matcher:
+                node_list = matcher.get_paddle_nodes(node.args, node.keywords)
+                if node_list:
+                    new_node = node_list[-1]
+                    # ast.Expr, which contain ast.Call or ast.Name
+                    if isinstance(new_node, ast.Expr):
+                        new_node = new_node.value
                     
-            if full_attr.startswith('torch'):
-                torch_api = full_attr
-                if torch_api.startswith('torch.Tensor'):
-                    return self.trans_tensor_method(node, torch_api)
-
-                matcher = self.get_api_mather(torch_api)
-                if matcher:
-                    node_list = matcher.get_paddle_nodes(node.args, node.keywords)
-                    if node_list:
-                        new_node = node_list[-1]
-                        # ast.Expr, which contain ast.Call or ast.Name
-                        if isinstance(new_node, ast.Expr):
-                            new_node = new_node.value
+                    if isinstance(new_node, (ast.Call, ast.Name)):
+                        self.success_api_count += 1
+                        self.log_info("[Success]convert {} to Paddle API ".format(torch_api), self.file_name, node.lineno)
                         
-                        if isinstance(new_node, (ast.Call, ast.Name)):
-                            self.success_api_count += 1
-                            self.log_info("[Success]convert {} to Paddle API ".format(torch_api), self.file_name, node.lineno)
-                            
-                            # if multiple line, record lines and will insert after all node visit
-                            if node_list[0:-1]:
-                                self.log_info("will insert extra {} lines for torch api {}".format(len(node_list[0:-1]), torch_api), self.file_name, node.lineno)
-                                self.record_scope(self.scope_node, self.scope_body_index(), node_list[0:-1])
+                        # if multiple line, record lines and will insert after all node visit
+                        if node_list[0:-1]:
+                            self.log_info("will insert extra {} lines for torch api {}".format(len(node_list[0:-1]), torch_api), self.file_name, node.lineno)
+                            self.record_scope(self.scope_node, self.scope_body_index(), node_list[0:-1])
 
-                            return new_node
+                        return new_node
 
-                self.log_info("[Failed]convert {} to Paddle API ".format(torch_api), self.file_name, node.lineno)
+            self.log_info("[Failed]convert {} to Paddle API ".format(torch_api), self.file_name, node.lineno)
         return node
 
     def trans_tensor_method(self, node, torch_api):
@@ -182,7 +182,7 @@ class BasicTransformer(BaseTransformer):
                     node.keywords = new_node.keywords
                     return node
 
-        annotate_node = ast.parse("'Torch Tensor Method, can not convert, should check whether need to convert manually'").body[0]
+        annotate_node = ast.parse("'Torch Tensor Method, can not convert, please check whether to convert manually'").body[0]
         # only insert once avoid annotation too much, so parent can't ast.Call
         if not isinstance(self.parent_node, ast.Call):
             self.record_scope(self.scope_node, body_index, annotate_node)

@@ -27,19 +27,22 @@ class GenericMatcher(BaseMatcher):
         return self.api_mapping['paddle_api']
 
     def generate_code(self, kwargs):
+        kwargs_change = {}
         if 'kwargs_change' in self.api_mapping:
             kwargs_change = self.api_mapping['kwargs_change']
-            for k, v in kwargs_change.items():
-                if v == '':
-                    del kwargs[k]
-                elif k in ['layout', 'device', 'memory_format', 'inplace', 'generator']:
-                    del kwargs[k]
-                else:
-                    kwargs[v] = kwargs.pop(k)
+        new_kwargs = {}
+        for k, v in kwargs.items():
+            if k in ['layout', 'device', 'memory_format', 'inplace', 'generator']:
+                continue
+            if k in kwargs_change:
+                new_kwargs[kwargs_change[k]] = v
+            else:
+                new_kwargs[k] = v
+
         
-        code = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-        if 'out' in kwargs:
-            out_v = kwargs.pop('out')
+        code = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
+        if 'out' in new_kwargs:
+            out_v = new_kwargs.pop('out')
             # will replace ast.Call with ast.Name
             API_TEMPLACE = textwrap.dedent(
                 '''
@@ -47,13 +50,13 @@ class GenericMatcher(BaseMatcher):
                 {}
                 '''
             )
-            code = API_TEMPLACE.format(out_v, self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v)
-        if 'pin_memory' in kwargs and kwargs['pin_memory']:
+            code = API_TEMPLACE.format(out_v, self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out_v)
+        if 'pin_memory' in new_kwargs and new_kwargs['pin_memory']:
             code = '{}({}).pin_memory()'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-        if 'dtype' in kwargs:
+        if 'dtype' in new_kwargs:
             dtype_v = kwargs.pop('dtype')
             code = '{}({}).astype({})'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs), dtype_v)
-        if 'requires_grad' in kwargs and kwargs['requires_grad']:
+        if 'requires_grad' in new_kwargs and new_kwargs['requires_grad']:
             # will replace ast.Call with ast.Name
             API_TEMPLACE = textwrap.dedent(
                 '''
@@ -77,6 +80,27 @@ class LayerMatcher(BaseMatcher):
         code = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
         return code
         
+class TorchAddMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'out' in kwargs:
+            return None
+
+        if 'alpha' in kwargs:
+            API_TEMPLACE = textwrap.dedent(
+                '''
+                paddle.add(x={}, y={}*{})
+                '''
+            )
+            code = API_TEMPLACE.format(kwargs['alpha'], kwargs['input'], kwargs['other'])
+        else:
+            API_TEMPLACE = textwrap.dedent(
+                '''
+                paddle.add(x={}, y={})
+                '''
+            )
+            code = API_TEMPLACE.format(kwargs['input'], kwargs['other'])
+        return code
+
 
 class TensorAddMatcher(BaseMatcher):
     def generate_code(self, kwargs):
@@ -103,7 +127,7 @@ class ToTensorMatcher(BaseMatcher):
 
         if 'requires_grad' in kwargs:
             requires_grad_v = kwargs.pop('requires_grad')
-            code = 'paddle.to_tensor({}, stop_gradient={})'.format(self.kwargs_to_str(kwargs), not requires_grad_v)
+            code = 'paddle.to_tensor({}, stop_gradient = {})'.format(self.kwargs_to_str(kwargs), not requires_grad_v)
         if 'pin_memory' in kwargs and kwargs['pin_memory']:
             code = code + '.pin_memory()'
 
@@ -126,15 +150,14 @@ class TransposeMatcher(BaseMatcher):
 class CreateMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         new_kwargs = {}
-        for node in kwargs:
-            k = node.arg
-            v = astor.to_source(node.value).strip('\n')
-            new_kwargs[k] = v
-
         shape_list = []
         for node in args:
             shape_list.append(node.value)
         new_kwargs['shape'] = str(shape_list)
+        for node in kwargs:
+            k = node.arg
+            v = astor.to_source(node.value).strip('\n')
+            new_kwargs[k] = v
 
         if 'layout' in kwargs:
             del new_kwargs['layout']
@@ -181,9 +204,6 @@ class CreateMatcher(BaseMatcher):
 
         if 'pin_memory' in new_kwargs and new_kwargs['pin_memory']:
             code += ".pin_memory()"
-
-        if 'dtype' in new_kwargs:
-            code += ".astype({})".format(new_kwargs['dtype'])
 
         return ast.parse(code).body
 

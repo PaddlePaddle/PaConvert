@@ -119,7 +119,7 @@ class BaseMatcher(object):
     def kwargs_to_str(self, kwargs):
         str_list = []
         for k, v in kwargs.items():
-            str_list.append('{} = {}'.format(k, v))
+            str_list.append('{}={}'.format(k, v))
 
         return ', '.join(str_list)
 

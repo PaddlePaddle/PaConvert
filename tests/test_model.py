@@ -66,18 +66,32 @@ y_shape = x.transpose(1,0).shape
 
 z = linear(y)
 
-
-y = x.transpose(0, 2).reshape([2, 3])
-
-torch.reshape(torch.transpose(x, 0, 2), [2, 3])
-
-
-torch.reshape(x, [2, 3])
-
-return x.transpose(0, 2).reshape([2, 3])
-
-torch.rand(1, 2, 3, dtype=torch.float32)
+out = torch.rand(1, 2, 3, dtype=torch.float32)
 
 torch.rand(1, 2, 3, dtype=torch.float32, requires_grad=True)
 
 torch.tensor(1., requires_grad=True)
+
+# call api in different position
+torch.abs(x, out = y)
+
+return torch.abs(x, out = y)
+
+z = torch.abs(x, out = y)
+
+# multi level call api
+torch.reshape(torch.add(torch.abs(x), y), [3])
+
+torch.reshape(torch.add(x.abs(), y), [3])
+
+torch.reshape(torch.abs(x).add(y), [3])
+
+torch.add(torch.abs(x), y).reshape([3])
+
+torch.abs(x).add(y).reshape([3])
+
+torch.add(x.abs(), y).reshape([3])
+
+torch.reshape(x.abs().add(y), [3])
+
+x.abs().add(y).reshape([3])
