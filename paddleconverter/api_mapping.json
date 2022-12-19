@@ -180,7 +180,7 @@
   "torch.transpose" : {
     "Matcher": "TransposeMatcher",
     "args_list" : [
-        "input",
+       "input",
        "dim0", 
        "dim1"
     ]

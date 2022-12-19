@@ -20,8 +20,8 @@ from os import path
 import sys
 sys.path.append(path.dirname(__file__)+"../")
 
-from api_matcher import *
-from base import API_MAPPING, BaseTransformer
+from paddleconverter.api_matcher import *
+from paddleconverter.base import API_MAPPING, BaseTransformer
 
 class BasicTransformer(BaseTransformer):
     @property

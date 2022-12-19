@@ -15,11 +15,10 @@
 import ast
 import astor
 import json
-import logging
 import collections
 from os import path
 
-from utils import UniqueNameGenerator
+from paddleconverter.utils import UniqueNameGenerator
 
 json_file = path.dirname(__file__) + "/api_mapping.json"
 with open(json_file, 'r') as file:
