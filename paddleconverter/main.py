@@ -17,7 +17,6 @@ import logging
 import argparse
 import sys
 sys.path.append(os.path.dirname(__file__) + '/..')
-print(sys.path)
 
 from paddleconverter.converter import Converter
 

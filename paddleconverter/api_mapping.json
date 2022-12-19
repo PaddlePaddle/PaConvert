@@ -130,7 +130,7 @@
   },
 
   "torch.is_tensor" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.is_tensor",
     "args_list" : ["obj"],
     "kwargs_change": {
@@ -139,7 +139,7 @@
   },
 
   "torch.is_complex" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.is_complex",
     "args_list" : ["input"],
     "kwargs_change": {
@@ -148,7 +148,7 @@
   },
 
   "torch.is_floating_point" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.is_floating_point",
     "args_list" : ["input"],
     "kwargs_change": {
@@ -157,23 +157,23 @@
   },
 
   "torch.set_default_dtype" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.set_default_dtype",
     "args_list" : ["d"]
   },
 
   "torch.get_default_dtype" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.get_default_dtype"
   },
 
   "torch.dtype" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.dtype"
   },
 
   "torch.numel" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.numel",
     "args_list" : ["input"],
     "kwargs_change": {
@@ -182,7 +182,7 @@
   },
 
   "torch.sparse_coo_tensor" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.incubate.sparse.sparse_coo_tensor",
     "args_list" : [
       "indices", 
@@ -195,7 +195,7 @@
   },
 
   "torch.as_tensor" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.to_tensor",
     "args_list" : [
       "data",
@@ -203,7 +203,7 @@
   },
 
   "torch.from_numpy" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.to_tensor",
     "args_list" : ["ndarray"],
     "kwargs_change": {
@@ -212,7 +212,7 @@
   },
 
   "torch.zeros_like" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.zeros_like",
     "args_list" : [
       "input",
@@ -223,7 +223,7 @@
   },
 
   "torch.ones_like" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.ones_like",
     "args_list" : [
       "input",
@@ -234,7 +234,7 @@
   },
 
   "torch.arange" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.arange",
     "args_list" : [
       "start",
@@ -244,7 +244,7 @@
   },
 
   "torch.linspace" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.linspace",
     "args_list" : [
       "start",
@@ -258,7 +258,7 @@
   },
 
   "torch.logspace" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.logspace",
     "args_list" : [
       "start",
@@ -273,7 +273,7 @@
   },
 
   "torch.eye" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.eye",
     "args_list" : [
       "n",
@@ -286,7 +286,7 @@
   },
 
   "torch.empty_like" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.empty_like",
     "args_list" : [
       "input",
@@ -297,7 +297,7 @@
   },
 
   "torch.full_like" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.full_like",
     "args_list" : [
       "input",
@@ -309,7 +309,7 @@
   },
 
   "torch.complex" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.complex",
     "args_list" : [
       "real",
@@ -317,7 +317,7 @@
   },
 
   "torch.real" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.real",
     "args_list" : ["input"],
     "kwargs_change": {
@@ -326,7 +326,7 @@
   },
 
   "torch.imag" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.imag",
     "args_list" : ["input"],
     "kwargs_change": {
@@ -334,17 +334,9 @@
     }
   },
 
-  "torch.abs" : {
-    "Mathcer": "GenricMatcher",
-    "paddle_api": "paddle.abs",
-    "args_list" : ["input"],
-    "kwargs_change": {
-      "input": "x"
-    }
-  },
   
   "torch.angle" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.angle",
     "args_list" : ["input"],
     "kwargs_change": {
@@ -353,7 +345,7 @@
   },  
   
   "torch.heaviside" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.heaviside",
     "args_list" : [
       "input",
@@ -365,7 +357,7 @@
   },  
   
   "torch.cat" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.cat",
     "args_list" : [
       "tensors",
@@ -377,7 +369,7 @@
   },
 
   "torch.chunk" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.aaa",
     "args_list" : [
       "input",
@@ -390,7 +382,7 @@
   },
 
   "torch.dstack" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.stack",
     "args_list" : ["tensors"],
     "kwargs_change": {
@@ -399,7 +391,7 @@
   },
 
   "torch.index_select" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.index_select",
     "args_list" : [
       "input",
@@ -412,7 +404,7 @@
   },
 
   "torch.masked_select" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.masked_select",
     "args_list" : [
       "input",
@@ -423,7 +415,7 @@
   },
   
   "torch.movedim" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.movedim",
     "args_list" : [
       "input",
@@ -435,7 +427,7 @@
   },  
   
   "torch.moveaxis" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.moveaxis",
     "args_list" : [
       "input",
@@ -447,7 +439,7 @@
   },
     
   "torch.nonzero" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.nonzero",
     "args_list" : [
       "input",
@@ -457,19 +449,9 @@
     }
   },
     
-  "torch.reshape" : {
-    "Mathcer": "GenricMatcher",
-    "paddle_api": "paddle.reshape",
-    "args_list" : [
-      "input",
-      "shape"],
-    "kwargs_change": {
-      "input":"x"
-    }
-  },   
   
   "torch.split" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.split",
     "args_list" : [
       "tensor",
@@ -483,7 +465,7 @@
   }, 
   
   "torch.squeeze" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.squeeze",
     "args_list" : [
       "input",
@@ -496,7 +478,7 @@
  
   
   "torch.stack" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.stack",
     "args_list" : [
       "tensor",
@@ -509,14 +491,14 @@
  
   
   "torch.t" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.t",
     "args_list" : ["input"]
   },
  
   
   "torch.tile" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.tile",
     "args_list" : [
       "input",
@@ -529,7 +511,7 @@
  
   
   "torch.unbind" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.unbind",
     "args_list" : [
       "input",
@@ -541,7 +523,7 @@
  
   
   "torch.unsqueeze" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.unsqueeze",
     "args_list" : [
       "input",
@@ -553,7 +535,7 @@
  
   
   "torch.where" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.where",
     "args_list" : [
       "condition",
@@ -567,14 +549,14 @@
  
   
   "torch.manual_seed" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.seed",
     "args_list" : ["seed"]
   },
  
   
   "torch.bernoulli" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.bernoulli",
     "args_list" : ["input"],
     "kwargs_change": {
@@ -584,7 +566,7 @@
  
   
   "torch.multinomial" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.multinomial",
     "args_list" : [
       "input",
@@ -596,7 +578,7 @@
   },
   
   "torch.normal" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.normal",
     "args_list" : [
       "mean",
@@ -604,7 +586,7 @@
   },
   
   "torch.poisson" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.poisson",
     "args_list" : ["input"],
     "kwargs_change": {
@@ -613,7 +595,7 @@
   },
 
   "torch.randint" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.randint",
     "args_list" : [
       "low",
@@ -626,7 +608,7 @@
   },
   
   "torch.randint_like" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.randint_like",
     "args_list" : [
       "input",
@@ -639,26 +621,22 @@
   },
   
   "torch.randperm" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.randperm",
     "args_list" : [
       "n",
       "dtype"]
   },
   
-  "torch.no_grad" : {
-    "Mathcer": "GenricMatcher",
-    "paddle_api": "paddle.no_grad"
-  },
   
   "torch.set_grad_enabled" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.set_grad_enabled",
     "args_list" : ["mode"]
   },
   
   "torch.absolute" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.abs",
     "args_list" : ["input"],
     "kwargs_change": {
@@ -667,7 +645,7 @@
   },
   
   "torch.acos" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.acos",
     "args_list" : ["input"],
     "kwargs_change": {
@@ -676,7 +654,7 @@
   },
     
   "torch.arccos" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.acos",
     "args_list" : ["input"],
     "kwargs_change": {
@@ -685,7 +663,7 @@
   },
     
   "torch.acosh" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.acosh",
     "args_list" : ["input"],
     "kwargs_change": {
@@ -694,28 +672,17 @@
   },
     
   "torch.arccosh" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.acosh",
     "args_list" : ["input"],
     "kwargs_change": {
       "input":"x"
     }
   },
-    
-  "torch.add" : {
-    "Mathcer": "GenricMatcher",
-    "paddle_api": "paddle.add",
-    "args_list" : [
-      "input",
-      "other"],
-    "kwargs_change": {
-      "input":"x",
-      "other":"y"
-    }
-  },
+
     
   "torch.asin" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.asin",
     "args_list" : ["input"],
     "kwargs_change": {
@@ -724,7 +691,7 @@
   },
     
   "torch.arcsin" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.asin",
     "args_list" : ["input"],
     "kwargs_change": {
@@ -733,7 +700,7 @@
   },
     
   "torch.asinh" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.asinh",
     "args_list" : ["input"],
     "kwargs_change": {
@@ -742,7 +709,7 @@
   },
     
   "torch.arcsinh" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.asinh",
     "args_list" : ["input"],
     "kwargs_change": {
@@ -751,7 +718,7 @@
   },
     
   "torch.atan" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.atan",
     "args_list" : ["input"],
     "kwargs_change": {
@@ -761,7 +728,7 @@
  
     
   "torch.arctan" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.atan",
     "args_list" : ["input"],
     "kwargs_change": {
@@ -771,7 +738,7 @@
   
     
   "torch.atanh" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.atanh",
     "args_list" : ["input"],
     "kwargs_change": {
@@ -781,7 +748,7 @@
   
     
   "torch.arctanh" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.atanh",
     "args_list" : ["input"],
     "kwargs_change": {
@@ -791,7 +758,7 @@
   
     
   "torch.atan2" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.atan2",
     "args_list" : [
       "input",
@@ -804,7 +771,7 @@
   
     
   "torch.bitwise_not" : {
-    "Mathcer": "GenricMatcher",
+    "Matcher": "GenricMatcher",
     "paddle_api": "paddle.bitwise_not",
     "args_list" : ["input"],
     "kwargs_change": {
@@ -874,53 +841,30 @@
     "Matcher": "CreateMatcher",
     "paddle_api": "paddle.rand"
   },
+
   "torch.randn" : {
-    "Mathcer": "CreateMatcher",
-    "paddle_api": "paddle.randn",
-    "args_list" : [
-      "size",
-      "dtype"]
+    "Matcher": "CreateMatcher",
+    "paddle_api": "paddle.randn"
   },
-    
-  "torch.rand" : {
-    "Mathcer": "CreateMatcher",
-    "paddle_api": "paddle.rand",
-    "args_list" : [
-      "size",
-      "dtype"]
-  },
-  
+
   "torch.zeros" : {
-    "Mathcer": "CreateMatcher",
-    "paddle_api": "paddle.zeros",
-    "args_list" : [
-      "size",
-      "dtype"]
+    "Matcher": "CreateMatcher",
+    "paddle_api": "paddle.zeros"
   },
 
   "torch.empty" : {
-    "Mathcer": "CreateMatcher",
-    "paddle_api": "paddle.empty",
-    "args_list" : [
-      "size",
-      "dtype"]
+    "Matcher": "CreateMatcher",
+    "paddle_api": "paddle.empty"
   },
 
   "torch.ones" : {
-    "Mathcer": "CreateMatcher",
-    "paddle_api": "paddle.ones",
-    "args_list" : [
-      "size",
-      "dtype"]
+    "Matcher": "CreateMatcher",
+    "paddle_api": "paddle.ones"
   },
 
   "torch.full" : {
-    "Mathcer": "CreateMatcher",
-    "paddle_api": "paddle.full",
-    "args_list" : [
-      "size",
-      "fill_value",
-      "dtype"]
+    "Matcher": "CreateMatcher",
+    "paddle_api": "paddle.full"
   }
 
 }
