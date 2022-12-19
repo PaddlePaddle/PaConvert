@@ -129,6 +129,27 @@ class BaseMatcher(object):
 
         return new_kwargs
     
+    def get_full_attr(self, node):
+        if isinstance(node, ast.Attribute):
+            return self.get_full_attr(node.value) + '.' + node.attr
+        elif isinstance(node, ast.Name):
+            return node.id
+
+    def args_to_list(self, args, kwargs):
+        new_args = []
+        for node in args:
+            ele = astor.to_source(node).strip('\n')
+            new_args.append(ele)
+
+        return new_args
+
+    def args_to_str(self, args):
+        str_list = []
+        for ele in args:
+            str_list.append('{}'.format(ele))
+        
+        return ', '.join(str_list)
+        
     def kwargs_to_str(self, kwargs):
         str_list = []
         for k, v in kwargs.items():

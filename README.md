@@ -6,6 +6,7 @@ Paddleconverter是一款工具，其功能是将Pytorch项目训练代码从转�
 转换逻辑为静态代码扫描，保持原代码的风格与结构不变，只转换相应的Pytorch API，其他Python代码保持原样不变。
 
 转换采用非inplace的方式，不修改原文件，将原Pytorch项目文件一一转换到 `out_dir` 指定的文件夹中：
+
 - Python文件，逐个转换
 - requirements.txt 转换其中的 torch 安装依赖
 - 其他文件，原样拷贝
@@ -29,9 +30,9 @@ y = paddle.transpose(x, perm_0)
 这是由于两者对应API的用法有差异，因此无法通过一行完成，将增加若干行Paddle API实现相同功能。
 
 
-所有的API转换依据 [Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api)
+所有的API转换是依据 [Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api) 来进行的。
 
-转换完成后，将打印总数、成功、失败的转换结果，对于无法转换的Pytorch API，会通过 >>> 在行前进行标识，需要进行手动修改并删除标记才可运行。
+在转换完成后，Pytorch API总数、成功、失败数量统计将会打印到终端，对于无法转换的Pytorch API，我们会通过 >>> 在代码行前面进行标识，你需要手动修改并删除该标记。
 
 
 # 安装
@@ -129,14 +130,16 @@ Thank you to use Paddle Convert tool. You can make any suggestions to us.
 
 # 贡献代码
 
-根据API转换关系，我们将API分为两大类：
+欢迎你向我们贡献代码。
+
+根据API转换关系，我们将API分为三大类：
 - 一致的API：要求API功能一致，且API参数一致（如果Pytorch较Paddle多out/dtype/device/layout/requires_grad/memory_format/inplace/generator/pin_memory参数，则也视作一致），通过一对一即可实现
 
 - 不一致但可转换的API：包含Pytorch参数更多、参数不一致、API功能不一致、组合实现这几种情况，可以通过多行、多个API来实现，实现一对多的转换
 
 - 不一致且无法转换的API：无法转换
 
-欢迎你向我们贡献代码，对于 **一致的API** 目前通过json管理，你可以修改 paddleconverter/api_mapping.json，并补充以下信息：
+1. 对于 **一致的API** ，仅需修改 paddleconverter/api_mapping.json，并补充以下信息：
 
 ```python
 "torch.nn.AvgPool2d": {
@@ -162,7 +165,7 @@ Thank you to use Paddle Convert tool. You can make any suggestions to us.
 - `kwargs_change` :参数名的对应关系（注: 参数功能一致仅名字不一致时也视作一致）
 
 
-对于 **不一致的API**，需要在 paddleconverter/api_matcher.py 中逐个增加 **Matcher** ，并重写 `generate_code` 函数 ，以`torch.transpose`为例：
+2. 对于 **不一致的API**，需要在 paddleconverter/api_matcher.py 中逐个增加 **Matcher** ，并重写 `generate_code` 函数 ，以`torch.transpose`为例：
 
 ```
 

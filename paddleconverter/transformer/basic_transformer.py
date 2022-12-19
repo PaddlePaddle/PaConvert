@@ -120,16 +120,12 @@ class BasicTransformer(BaseTransformer):
          - torch api: [args]ast.Call
          - tensor api: [func]ast.Attribute([value]ast.Call)
         '''
-        if not isinstance(node.func, ast.Attribute):
-            if getattr(node.func, 'id', None) == 'isinstance':
-                super(BasicTransformer, self).generic_visit(node)
-            return node
         
         # Use Postorder traversal
+        print(ast.dump(node, indent=4))
         super(BasicTransformer, self).generic_visit(node)
-
-        full_attr = self.get_full_attr(node.func)
         
+        full_attr = self.get_full_attr(node.func)
         # Tensor method func, such as : x.add / x.abs().add
         if not full_attr.startswith('torch') and len(full_attr.split('.')) == 2:
             attr_list = full_attr.split('.')
@@ -164,9 +160,11 @@ class BasicTransformer(BaseTransformer):
                             self.log_info("insert extra {} lines for torch api {}".format(len(node_list[0:-1]), torch_api), self.file_name, node.lineno)
                             self.record_scope(self.scope_node, self.scope_body_index(), node_list[0:-1])
 
+                        print(ast.dump(new_node, indent=4))
                         return new_node
 
             self.log_info("[Failed]can not convert {} to Paddle ".format(torch_api), self.file_name, node.lineno)
+        
         return node
 
     def trans_tensor_method(self, node, torch_api):

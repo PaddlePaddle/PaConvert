@@ -11,7 +11,25 @@
       "divisor_override"
     ],
     "kwargs_change": {
-          "count_include_pad": "exclusive"
+      "count_include_pad": "exclusive"
+    }
+  },
+
+  "torch.nn.ModuleList" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.ModuleList",
+    "args_list" : ["modules"],
+    "kwargs_change": {
+      "modules": "sublayers" 
+    }
+  },
+
+  "torch.nn.ModuleDict" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.ModuleDict",
+    "args_list" : ["modules"],
+    "kwargs_change": {
+      "modules": "sublayers" 
     }
   },
 
@@ -1659,6 +1677,119 @@
     ]
   },
 
+  "torch.nn.Conv1d": {
+    "Matcher": "LayerMatcher",
+    "paddle_api": "paddle.nn.Conv1D",
+    "args_list" : [
+      "in_channels",
+      "out_channels",
+      "kernel_size",
+      "stride",
+      "padding",
+      "dilation",
+      "groups",
+      "bias",
+      "padding_mode",
+      "device",
+      "dtype"
+    ]
+  },
+
+  "torch.nn.Conv2d": {
+    "Matcher": "LayerMatcher",
+    "paddle_api": "paddle.nn.Conv2D",
+    "args_list" : [
+      "in_channels",
+      "out_channels",
+      "kernel_size",
+      "stride",
+      "padding",
+      "dilation",
+      "groups",
+      "bias",
+      "padding_mode",
+      "device",
+      "dtype"
+    ]
+  },
+
+  "torch.nn.Conv3d": {
+    "Matcher": "LayerMatcher",
+    "paddle_api": "paddle.nn.Conv3D",
+    "args_list" : [
+      "in_channels",
+      "out_channels",
+      "kernel_size",
+      "stride",
+      "padding",
+      "dilation",
+      "groups",
+      "bias",
+      "padding_mode",
+      "device",
+      "dtype"
+    ]
+  },
+
+  "torch.nn.ConvTranspose1d": {
+    "Matcher": "LayerMatcher",
+    "paddle_api": "paddle.nn.Conv1DTranspose",
+    "args_list" : [
+      "in_channels",
+      "out_channels",
+      "kernel_size",
+      "stride",
+      "padding",
+      "output_padding",
+      "groups",
+      "bias",
+      "dilation",
+      "padding_mode",
+      "device",
+      "dtype"
+    ]
+  },
+
+  "torch.nn.ConvTranspose2d": {
+    "Matcher": "LayerMatcher",
+    "paddle_api": "paddle.nn.Conv2DTranspose",
+    "args_list" : [
+      "in_channels",
+      "out_channels",
+      "kernel_size",
+      "stride",
+      "padding",
+      "output_padding",
+      "groups",
+      "bias",
+      "dilation",
+      "padding_mode",
+      "device",
+      "dtype"
+    ]
+  },
+
+  "torch.nn.ConvTranspose3d": {
+    "Matcher": "LayerMatcher",
+    "paddle_api": "paddle.nn.Conv3DTranspose",
+    "args_list" : [
+      "in_channels",
+      "out_channels",
+      "kernel_size",
+      "stride",
+      "padding",
+      "output_padding",
+      "groups",
+      "bias",
+      "dilation",
+      "padding_mode",
+      "device",
+      "dtype"
+    ]
+  },
+
+  
+
   "torch.nn.functional.relu": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.relu",
@@ -1666,6 +1797,27 @@
     "kwargs_change": {
       "input": "x"
     }
+  },
+
+  "torch.nn.ReLU": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.ReLU",
+    "args_list" : ["inplace"]
+  },
+
+  "torch.nn.functional.gelu": {
+    "Matcher": "GeluMatcher",
+    "paddle_api": "paddle.nn.functional.relu",
+    "args_list" : ["input", "approximate"],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+
+  "torch.nn.GELU": {
+    "Matcher": "GeluMatcher",
+    "paddle_api": "paddle.nn.ReLU",
+    "args_list" : ["approximate"]
   },
 
   "torch.add": {
@@ -1727,7 +1879,13 @@
   "torch.full" : {
     "Matcher": "CreateMatcher",
     "paddle_api": "paddle.full"
-  }
+  },
 
+
+
+
+  "torch.nn.Sequential" : {
+    "Matcher": "SquentialMatcher"
+  }
 }
   

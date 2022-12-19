@@ -222,3 +222,29 @@ class DeviceMatcher(BaseMatcher):
         code = "'{}'".format(device_str)
         return ast.parse(code).body
     
+
+class GeluMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'input' in kwargs:
+            kwargs['x'] = kwargs.pop('input')
+
+        if 'approximate' in kwargs:
+            approximate_v = kwargs.pop('approximate')
+            if approximate_v == 'none':
+                kwargs['approximate'] = 'False'
+            elif approximate_v == 'tanh':
+                kwargs['approximate'] = 'True'
+
+        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        return code
+
+class SquentialMatcher(BaseMatcher):
+
+    def get_paddle_nodes(self, args, kwargs):
+        if len(args) == 1 and isinstance(args[0], ast.Call):
+            if self.get_full_attr(args[0].func).endswith('OrderedDict'):
+                new_args = self.args_to_list(args[0].args[0].elts, kwargs)
+        else:
+            new_args = self.args_to_list(args, kwargs)
+        code = 'paddle.nn.Squential({})'.format(self.args_to_str(new_args))
+        return ast.parse(code).body
