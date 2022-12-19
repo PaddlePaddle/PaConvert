@@ -1625,11 +1625,22 @@
       "out"],
     "kwargs_change": {
       "input":"x",
-      "other"
+      "other":"y"
     }
   },
 
-  
+  "torch.equal" : {
+    "Matcher": "GenricMatcher",
+    "paddle_api": "paddle.equal_all",
+    "args_list" : [
+      "input",
+      "other"],
+    "kwargs_change": {
+      "input":"x",
+      "other":"y"
+    }
+  },
+
 
   "torch.device" : {
     "Matcher": "DeviceMatcher"
