@@ -211,17 +211,6 @@
     }
   },
 
-  "torch.zeros" : {
-    "Mathcer": "GenricMatcher",
-    "paddle_api": "paddle.zeros",
-    "args_list" : [
-      "size",
-      "dtype"],
-    "kwargs_change": {
-      "size": "shape"
-    }
-  },
-
   "torch.zeros_like" : {
     "Mathcer": "GenricMatcher",
     "paddle_api": "paddle.zeros_like",
@@ -230,17 +219,6 @@
       "dtype"],
     "kwargs_change": {
       "input": "x"
-    }
-  },
-
-  "torch.ones" : {
-    "Mathcer": "GenricMatcher",
-    "paddle_api": "paddle.ones",
-    "args_list" : [
-      "size",
-      "dtype"],
-    "kwargs_change": {
-      "size": "shape"
     }
   },
 
@@ -307,17 +285,6 @@
     }
   },
 
-  "torch.empty" : {
-    "Mathcer": "GenricMatcher",
-    "paddle_api": "paddle.empty",
-    "args_list" : [
-      "size",
-      "dtype"],
-    "kwargs_change": {
-      "size": "shape"
-    }
-  },
-
   "torch.empty_like" : {
     "Mathcer": "GenricMatcher",
     "paddle_api": "paddle.empty_like",
@@ -326,18 +293,6 @@
       "dtype"],
     "kwargs_change": {
       "input": "x"
-    }
-  },
-
-  "torch.full" : {
-    "Mathcer": "GenricMatcher",
-    "paddle_api": "paddle.full",
-    "args_list" : [
-      "size",
-      "fill_value",
-      "dtype"],
-    "kwargs_change": {
-      "size": "shape"
     }
   },
 
@@ -451,8 +406,8 @@
       "dim",
       "index" ],
     "kwargs_change": {
-      "input"="x",
-      "dim"="axis"
+      "input":"x",
+      "dim":"axis"
     }
   },
 
@@ -463,7 +418,7 @@
       "input",
       "mask"],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },
   
@@ -475,7 +430,7 @@
       "source",
       "destination" ],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },  
   
@@ -487,7 +442,7 @@
       "source",
       "destination" ],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },
     
@@ -498,7 +453,7 @@
       "input",
       "as_tuple"],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },
     
@@ -509,7 +464,7 @@
       "input",
       "shape"],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },   
   
@@ -521,9 +476,9 @@
       "split_size_or_sections",
       "dim"],
     "kwargs_change": {
-      "tensor"="x",
-      "split_size_or_sections"="num_or_sections",
-      "dim"="axis"
+      "tensor":"x",
+      "split_size_or_sections":"num_or_sections",
+      "dim":"axis"
     }
   }, 
   
@@ -534,8 +489,8 @@
       "input",
       "dim"],
     "kwargs_change": {
-      "input"="x",
-      "dim"="axis"
+      "input":"x",
+      "dim":"axis"
     }
   },
  
@@ -547,8 +502,8 @@
       "tensor",
       "dim"],
     "kwargs_change": {
-      "tensor"="x",
-      "dim"="axis"
+      "tensor":"x",
+      "dim":"axis"
     }
   },
  
@@ -564,11 +519,11 @@
     "Mathcer": "GenricMatcher",
     "paddle_api": "paddle.tile",
     "args_list" : [
-      "input"
+      "input",
       "dims"],
     "kwargs_change": {
-      "input"="x",
-      "dims"="repeat_times"
+      "input":"x",
+      "dims":"repeat_times"
     }
   },
  
@@ -580,7 +535,7 @@
       "input",
       "dim"],
     "kwargs_change": {
-      "dim"="axis"
+      "dim":"axis"
     }
   },
  
@@ -592,7 +547,7 @@
       "input",
       "dim"],
     "kwargs_change": {
-      "dim"="axis"
+      "dim":"axis"
     }
   },
  
@@ -605,8 +560,8 @@
       "x",
       "y"],
     "kwargs_change": {
-      "x"="input",
-      "y"="other"
+      "x":"input",
+      "y":"other"
     }
   },
  
@@ -623,7 +578,7 @@
     "paddle_api": "paddle.bernoulli",
     "args_list" : ["input"],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },
  
@@ -636,7 +591,7 @@
       "num_samples",
       "replacement"],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },
   
@@ -644,12 +599,8 @@
     "Mathcer": "GenricMatcher",
     "paddle_api": "paddle.normal",
     "args_list" : [
-      "size",
       "mean",
-      "std"],
-    "kwargs_change": {
-      "size"="shape"
-    }
+      "std"]
   },
   
   "torch.poisson" : {
@@ -657,21 +608,10 @@
     "paddle_api": "paddle.poisson",
     "args_list" : ["input"],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },
-  
-  "torch.rand" : {
-    "Mathcer": "GenricMatcher",
-    "paddle_api": "paddle.rand",
-    "args_list" : [
-      "size",
-      "dtype"],
-    "kwargs_change": {
-      "size"="shape"
-    }
-  },
-  
+
   "torch.randint" : {
     "Mathcer": "GenricMatcher",
     "paddle_api": "paddle.randint",
@@ -681,7 +621,7 @@
       "size",
       "dtype"],
     "kwargs_change": {
-      "size"="shape"
+      "size":"shape"
     }
   },
   
@@ -689,23 +629,12 @@
     "Mathcer": "GenricMatcher",
     "paddle_api": "paddle.randint_like",
     "args_list" : [
+      "input",
       "low",
       "high",
-      "size",
       "dtype"],
     "kwargs_change": {
-      "size"="shape"
-    }
-  },
-  
-  "torch.randn" : {
-    "Mathcer": "GenricMatcher",
-    "paddle_api": "paddle.randn",
-    "args_list" : [
-      "size",
-      "dtype"],
-    "kwargs_change": {
-      "size"="shape"
+      "input":"x"
     }
   },
   
@@ -733,7 +662,7 @@
     "paddle_api": "paddle.abs",
     "args_list" : ["input"],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },
   
@@ -742,7 +671,7 @@
     "paddle_api": "paddle.acos",
     "args_list" : ["input"],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },
     
@@ -751,7 +680,7 @@
     "paddle_api": "paddle.acos",
     "args_list" : ["input"],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },
     
@@ -760,7 +689,7 @@
     "paddle_api": "paddle.acosh",
     "args_list" : ["input"],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },
     
@@ -769,7 +698,7 @@
     "paddle_api": "paddle.acosh",
     "args_list" : ["input"],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },
     
@@ -780,8 +709,8 @@
       "input",
       "other"],
     "kwargs_change": {
-      "input"="x",
-      "other"="y"
+      "input":"x",
+      "other":"y"
     }
   },
     
@@ -790,7 +719,7 @@
     "paddle_api": "paddle.asin",
     "args_list" : ["input"],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },
     
@@ -799,7 +728,7 @@
     "paddle_api": "paddle.asin",
     "args_list" : ["input"],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },
     
@@ -808,7 +737,7 @@
     "paddle_api": "paddle.asinh",
     "args_list" : ["input"],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },
     
@@ -817,7 +746,7 @@
     "paddle_api": "paddle.asinh",
     "args_list" : ["input"],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },
     
@@ -826,7 +755,7 @@
     "paddle_api": "paddle.atan",
     "args_list" : ["input"],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },
  
@@ -836,7 +765,7 @@
     "paddle_api": "paddle.atan",
     "args_list" : ["input"],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },
   
@@ -846,7 +775,7 @@
     "paddle_api": "paddle.atanh",
     "args_list" : ["input"],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },
   
@@ -856,7 +785,7 @@
     "paddle_api": "paddle.atanh",
     "args_list" : ["input"],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },
   
@@ -868,8 +797,8 @@
       "input",
       "other"],
     "kwargs_change": {
-      "input"="x",
-      "other"="y"
+      "input":"x",
+      "other":"y"
     }
   },
   
@@ -879,13 +808,11 @@
     "paddle_api": "paddle.bitwise_not",
     "args_list" : ["input"],
     "kwargs_change": {
-      "input"="x"
+      "input":"x"
     }
   },
+
   
-
-
-
 
   "torch.device" : {
     "Matcher": "DeviceMatcher"
@@ -947,8 +874,55 @@
   "torch.rand" : {
     "Matcher": "CreateMatcher",
     "paddle_api": "paddle.rand"
+  },
+  "torch.randn" : {
+    "Mathcer": "CreateMatcher",
+    "paddle_api": "paddle.randn",
+    "args_list" : [
+      "size",
+      "dtype"]
+  },
+    
+  "torch.rand" : {
+    "Mathcer": "CreateMatcher",
+    "paddle_api": "paddle.rand",
+    "args_list" : [
+      "size",
+      "dtype"]
+  },
+  
+  "torch.zeros" : {
+    "Mathcer": "CreateMatcher",
+    "paddle_api": "paddle.zeros",
+    "args_list" : [
+      "size",
+      "dtype"]
+  },
+
+  "torch.empty" : {
+    "Mathcer": "CreateMatcher",
+    "paddle_api": "paddle.empty",
+    "args_list" : [
+      "size",
+      "dtype"]
+  },
+
+  "torch.ones" : {
+    "Mathcer": "CreateMatcher",
+    "paddle_api": "paddle.ones",
+    "args_list" : [
+      "size",
+      "dtype"]
+  },
+
+  "torch.full" : {
+    "Mathcer": "CreateMatcher",
+    "paddle_api": "paddle.full",
+    "args_list" : [
+      "size",
+      "fill_value",
+      "dtype"]
   }
 
 }
-
-
+  
