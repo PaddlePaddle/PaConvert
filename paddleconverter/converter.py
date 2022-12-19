@@ -12,15 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import logging
 import ast
 import astor
 import shutil
 import collections
-import os
 
-from transformer.import_transformer import ImportTransformer
-from transformer.basic_transformer import BasicTransformer
+
+from .transformer.import_transformer import ImportTransformer
+from .transformer.basic_transformer import BasicTransformer
 
 class Converter:
     def __init__(self, log_dir=None):
@@ -37,7 +38,7 @@ class Converter:
         self.logger.setLevel(logging.INFO)
 
         self.log_info("======================================")
-        self.log_info("PyTorch to Paddle Convert Start----->:")
+        self.log_info("PyTorch to Paddle Convert Start ======>:")
         self.log_info("======================================")
 
 
@@ -47,11 +48,20 @@ class Converter:
 
         if os.path.isfile(in_dir):
             old_path = in_dir
-            if not os.path.isfile(out_dir):
+            
+            # out is directory name
+            if '.' not in out_dir:
                 new_path = os.path.join(out_dir, os.path.basename(old_path))
+                print(new_path)
+            # out is file name
+            else:
+                new_path = out_dir
+            if not os.path.exists(os.path.dirname(new_path)):
+                os.makedirs(os.path.dirname(new_path))
             self.transfer_file(old_path, new_path)
         elif os.path.isdir(in_dir):
-            for item in os.listdir(in_dir):
+            in_dir_items = os.listdir(in_dir)
+            for item in in_dir_items:
                 old_path = os.path.join(in_dir, item)
                 new_path = os.path.join(out_dir, item)
                 if os.path.isdir(old_path):
@@ -62,18 +72,20 @@ class Converter:
             raise ValueError(" the input 'in_dir' must be a file or directory! ")
 
         faild_api_count = self.torch_api_count - self.success_api_count
-        self.log_info("======================================")
+
+        self.log_info("\n======================================")
         self.log_info("Convert Summary:")
         self.log_info("======================================")
         self.log_info("There are {} Pytorch APIs in this Project:".format(self.torch_api_count))
-        self.log_info("{}  Pytorch APIs have been converted to Paddle successfully".format(self.success_api_count))
-        self.log_info("{}  Pytorch APIs are converted failed".format(faild_api_count))
-        self.log_info("Convert Rate is: {:.2%}".format(self.success_api_count/self.torch_api_count))
+        self.log_info(" {}  Pytorch APIs have been converted to Paddle successfully!".format(self.success_api_count))
+        self.log_info(" {}  Pytorch APIs are converted failed!".format(faild_api_count))
+        self.log_info(" Convert Rate is: {:.2%}".format(self.success_api_count/self.torch_api_count))
         if (faild_api_count > 0):
-            self.log_info("For {} failed converted torch API, Please refer to "
+            self.log_info("\nFor these {} converted failed Pytorch APIs, Please refer to "
         "https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api "
         "and modify it by yourself manually!".format(faild_api_count))
-        self.log_info("Thank you to use Paddle Convert tool. You can make any suggestions to us.")
+        self.log_info("\nThank you to use Paddle Convert tool. You can make any suggestions to us.\n")
+        return self.success_api_count, faild_api_count
 
     def mark_unsport(self, code):
         lines = code.split('\n')
@@ -104,7 +116,7 @@ class Converter:
 
     def transfer_file(self, old_path, new_path):
         if old_path.endswith(".py"):
-            self.log_info("Start convert {} ---> {}".format(old_path, new_path))
+            self.log_info("Start convert {} --> {}".format(old_path, new_path))
             with open(old_path, 'r') as f:
                 code = f.read()
                 root = ast.parse(code)
@@ -115,17 +127,17 @@ class Converter:
 
             with open(new_path, 'w') as file:
                 file.write(code)
-            self.log_info("Finish convert {} ---> {}".format(old_path, new_path))
+            self.log_info("Finish convert {} --> {}".format(old_path, new_path))
         elif old_path.endswith("requirements.txt"):
-            self.log_info("Start convert {} ---> {}".format(old_path, new_path))
+            self.log_info("Start convert {} --> {}".format(old_path, new_path))
             with open(old_path, 'r') as old_file:
                 code = old_file.read()
             code = code.replace('torch', 'paddlepaddle')
             with open(new_path, 'w') as new_file:
                 new_file.write(code)
-            self.log_info("Finish convert {} ---> {}".format(old_path, new_path))
+            self.log_info("Finish convert {} --> {}".format(old_path, new_path))
         else:
-            self.log_info("No need to convert, just Copy {} ---> {}".format(old_path, new_path))
+            self.log_info("No need to convert, just Copy {} --> {}".format(old_path, new_path))
             shutil.copyfile(old_path, new_path)
 
     def transfer_node(self, root, file):

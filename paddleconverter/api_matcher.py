@@ -18,8 +18,8 @@ import ast
 import astor
 import textwrap
 
-from base import API_MAPPING, BaseMatcher
-from utils import unique_name
+from paddleconverter.base import API_MAPPING, BaseMatcher
+from paddleconverter.utils import unique_name
 
 class GenericMatcher(BaseMatcher):
 

@@ -13,13 +13,12 @@
 # limitations under the License.
 
 import ast
-import logging
 from os import path
 
 import sys
 sys.path.append(path.dirname(__file__)+"../")
 
-from base import BaseTransformer
+from paddleconverter.base import BaseTransformer
 
 class ImportTransformer(BaseTransformer):
     '''
