@@ -62,6 +62,9 @@
     "paddle_api": "paddle.Tensor.abs"
   },
 
+  "torch.Tensor.transpose": {
+  },
+
   "torch.no_grad": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.no_grad"

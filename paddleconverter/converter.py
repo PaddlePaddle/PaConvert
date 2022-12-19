@@ -91,14 +91,17 @@ class Converter:
         lines = code.split('\n')
         mark_next_line = False
         for i, line in enumerate(lines):
-            if 'torch' in line:
-                lines[i] = ">>> " + line
-            if 'Torch Tensor Method' in line:
+            if 'Tensor Method' in line:
                 mark_next_line = True
+                continue
             else:
                 if mark_next_line:
                     lines[i] = ">>> " + line
                     mark_next_line = False
+                    continue
+
+            if 'torch' in line:
+                lines[i] = ">>> " + line
 
         return '\n'.join(lines)
 
