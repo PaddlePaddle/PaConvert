@@ -55,7 +55,23 @@ class BasicTransformer(BaseTransformer):
                 return node
             
         full_attr = self.get_full_attr(node)
-        if full_attr.startswith('torch'):
+        # Tensor attribute, such as: x.device / x.dtype
+        if not full_attr.startswith('torch.'):
+            if len(full_attr.split('.')) == 2:
+                attr_list = full_attr.split('.')
+                WHITE_LIST = self.imports_map[self.file]['others']
+                WHITE_LIST += ['self']
+                # Avoid ' np.add, scipy.add ... '
+                if attr_list[0] not in WHITE_LIST:
+                    attr_list[0] = 'torch.Tensor'
+                    if '.'.join(attr_list) in API_MAPPING:
+                        torch_api = '.'.join(attr_list)
+                        self.torch_api_count += 1
+                        node = self.trans_tensor_attribute(node, torch_api)
+                        return node
+
+        # Non-Tensor attribute, such as: torch.device / torch.dtype
+        if full_attr.startswith('torch.'):
             torch_api = full_attr
             self.torch_api_count += 1
             matcher = self.get_api_mather(torch_api)
@@ -68,6 +84,23 @@ class BasicTransformer(BaseTransformer):
 
             self.log_info("[Failed]can not convert {} to Paddle".format(torch_api), self.file_name, node.lineno)
         return node 
+
+    def trans_tensor_attribute(self, node, torch_api):
+        body_index = self.scope_body_index()
+        matcher = self.get_api_mather(torch_api)
+        if matcher:
+            paddle_api = matcher.get_paddle_api()
+            if paddle_api:
+                self.success_api_count += 1
+                self.log_info("[Success]convert Tensor Attribute {} to Paddle".format(torch_api), self.file_name, node.lineno)
+                # for tensor attribute , only need to change .device
+                node.attr = ast.parse(paddle_api).body[0].value.attr
+                return node
+
+        annotate_node = ast.parse("'Tensor Attribute: {}, not convert, please check whether to convert manually'".format(torch_api)).body[0]
+        self.record_scope(self.scope_node, body_index, annotate_node)
+        self.log_info("[Failed]can not convert Tensor Attribute {} to Paddle ".format(torch_api), self.file_name, node.lineno)
+        return node
 
     def visit_Call(self, node):
         '''
@@ -124,8 +157,8 @@ class BasicTransformer(BaseTransformer):
         super(BasicTransformer, self).generic_visit(node)
         
         full_attr = self.get_full_attr(node.func)
-        # Tensor method func, such as : x.add / x.abs().add
-        if not full_attr.startswith('torch'):
+        # Tensor method func, such as : x.add(y) / x.abs().add
+        if not full_attr.startswith('torch.'):
             if len(full_attr.split('.')) == 2:
                 attr_list = full_attr.split('.')
                 WHITE_LIST = self.imports_map[self.file]['others']
@@ -138,8 +171,8 @@ class BasicTransformer(BaseTransformer):
                         self.torch_api_count += 1
                         return self.trans_tensor_method(node, torch_api)
         
-        # Non-Tensor method, such as : torch.add / torch.add(torch.abs(x), y)
-        if full_attr.startswith('torch'):
+        # Non-Tensor method, such as : torch.add(x,y) / torch.add(torch.abs(x), y)
+        if full_attr.startswith('torch.'):
             torch_api = full_attr
             self.torch_api_count += 1     
 
@@ -165,7 +198,8 @@ class BasicTransformer(BaseTransformer):
 
             self.log_info("[Failed]can not convert {} to Paddle ".format(torch_api), self.file_name, node.lineno)
         
-        return node
+        return node 
+
 
     def trans_tensor_method(self, node, torch_api):
         body_index = self.scope_body_index()
@@ -181,23 +215,22 @@ class BasicTransformer(BaseTransformer):
                 # for tensor method api, the last line must be 'ast.Call'
                 if isinstance(new_node, ast.Call):
                     self.success_api_count += 1
-                    self.log_info("[Success]convert Tensor Method: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
+                    self.log_info("[Success]convert Tensor Method {} to Paddle ".format(torch_api), self.file_name, node.lineno)
 
                     # if multiple line, record lines and will insert after all node visit
                     if node_list[0:-1]:
                         self.log_info("insert extra {} lines for torch api {}".format(len(node_list[0:-1]), torch_api), self.file_name, node.lineno)
                         self.record_scope(self.scope_node, body_index, node_list[0:-1])
 
-                    # for tensor method , only change .add(other=y)
+                    # for tensor method , only need to change .add(other=y)
                     node.func.attr = new_node.func.attr
                     node.args = new_node.args
                     node.keywords = new_node.keywords
                     return node
 
-        annotate_node = ast.parse("'Tensor Method: {}, can not convert, please check whether to convert manually'".format(torch_api)).body[0]
+        annotate_node = ast.parse("'Tensor Method {}, can not convert, please check whether to convert manually'".format(torch_api)).body[0]
         self.record_scope(self.scope_node, body_index, annotate_node)
-
-        self.log_info("[Failed]can not convert Tensor Method: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
+        self.log_info("[Failed]can not convert Tensor Method {} to Paddle ".format(torch_api), self.file_name, node.lineno)
         return node 
 
 
@@ -256,7 +289,7 @@ class BasicTransformer(BaseTransformer):
         super(BasicTransformer, self).generic_visit(node)
         self.scope_stack.pop()
 
-        self.log_info("mark this file has been converted", self.file_name)
+        self.log_info("Mark this file which has been converted already", self.file_name)
         mark_node = ast.parse("' This file has been converted by Paddle converter, thanks to use, you can remove this mark'").body[0]
         self.record_scope(self.root, 0, mark_node)
         return node

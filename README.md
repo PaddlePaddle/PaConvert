@@ -7,11 +7,11 @@ Paddleconverter是一款工具，其功能是将Pytorch项目训练代码从转�
 
 转换采用非inplace的方式，不修改原文件，将原Pytorch项目文件一一转换到 `out_dir` 指定的文件夹中：
 
-- Python文件，逐个转换
-- requirements.txt 转换其中的 torch 安装依赖
-- 其他文件，原样拷贝
+- Python文件：逐个torch API识别转换
+- requirements.txt： 转换其中的 torch 安装依赖
+- 其他文件：原样拷贝
 
-对于一个 Pytorch API，尽可能按一对一的形式转换，但在某些情形下，会借助多行Paddle代码来实现一个Pytorch API，这会导致转换前后的代码行数是不同的。例如：
+对一个 Pytorch API，尽可能按一对一的形式转换，但在某些情形下，会借助多行Paddle代码来实现一个Pytorch API，这会导致转换前后的代码行数是不同的。例如：
 
 ```
 import torch
@@ -21,7 +21,7 @@ y = torch.transpose(x, 1, 0)
 转换后：
 ```
 import paddle
-perm_0 = range(len(x.shape))
+perm_0 = list(range(len(x.shape)))
 perm_0[1] = 0
 perm_0[0] = 1
 y = paddle.transpose(x, perm_0)
@@ -29,10 +29,9 @@ y = paddle.transpose(x, perm_0)
 
 这是由于两者API的用法差异，无法通过一行完成，必须增加若干行来实现相同功能。
 
-
 所有的API转换是依据 [Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api) 来进行的。
 
-在转换完成后，Pytorch API总数、成功、失败数量统计将会打印到终端，对于无法转换的Pytorch API，我们会通过 >>> 在代码行前面进行标识，你需要手动修改并删除该标记。
+在转换完成后，Pytorch API总数、成功、失败数量统计将会打印到终端，对于无法转换的Pytorch API，我们会通过 `>>>` 在代码行前面进行标识，你需要手动修改并删除该标记。
 
 
 # 安装
@@ -45,7 +44,7 @@ paddleconverter --help # show paddleconverter help
 paddleconverter --run_check 1 # tool run check
 ```
 
-如果你的机器安装了多个Python，建议直接使用最新python解释器来进行转换，例如：
+如果你的机器安装了多个Python，建议使用最新的python解释器来进行转换，以使用最新的ast功能，例如：
 
 ```bash
 python3.9 -m pip install -U paddleconverter-1.0-py3-none-any.whl 
@@ -132,20 +131,44 @@ net = MyNet()
 打印信息如下：
 
 ```txt
+=======================================
+PyTorch to Paddle Convert Start ----->:
+=======================================
+Start convert /workspace/paddleconverter/paddleconverter/tests/temp_code.py --> /workspace/paddleconverter/tests/temp_out/temp_code.py
+[temp_code.py:1] remove 'import torch' 
+[temp_code.py:2] remove 'import torch.nn as nn' 
+[temp_code.py:3] remove 'import torch.optim as optim' 
+[temp_code.py:4] remove 'import torch.nn.Linear as Linear' 
+[temp_code.py:5] remove 'import torch.nn.functional as F' 
+[temp_code.py] add 'import paddle' in first line
+[temp_code.py:1] [Success]convert torch.nn.Module to Paddle
+[temp_code.py:11] [Success]convert torch.nn.Linear to Paddle 
+[temp_code.py:12] [Success]convert torch.nn.Linear to Paddle 
+[temp_code.py:13] [Success]convert torch.nn.Linear to Paddle 
+[temp_code.py:20] [Success]convert torch.add to Paddle 
+[temp_code.py:21] [Success]convert torch.nn.functional.relu to Paddle 
+[temp_code.py:15] [Success]convert torch.no_grad to Paddle 
+[temp_code.py:24] [Failed]can not convert torch.optim.SGD to Paddle 
+[temp_code.py] Mark this file which has been converted already
+Finish convert /workspace/paddleconverter/paddleconverter/tests/temp_code.py --> /workspace/paddleconverter/tests/temp_out/temp_code.py
+
 ======================================
 Convert Summary:
 ======================================
 There are 8 Pytorch APIs in this Project:
  7  Pytorch APIs have been converted to Paddle successfully!
  1  Pytorch APIs are converted failed!
- Convert Rate is: 85.70%
+ Convert Rate is: 87.50%
+
+For these 1 failed converted Pytorch APIs, Please refer to https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api and modify it by yourself manually!
 
 Thank you to use Paddle Convert tool. You can make any suggestions to us.
+
 ```
 
-一共有8个torch API，其中7个被成功转换，转换率为85.7%。
+一共有8个torch API，其中7个被成功转换，该文件的转换率为85.7%，如果项目中有多个文件，会统计所有.py文件累计的数据。
 
-对于成功转换的API，将 **补全API全名、参数关键字、移除注释、移除多余空行**。因为语法树转换为源码时，将采用标准写法来生成代码，这会使得与原来行数有一些差异。
+对于成功转换的API，将 **补全API全名、参数关键字、移除注释、移除多余空行**。因为语法树重新转换为源码时，会采用标准写法来生成代码，这会使得与原来行数有一些差异。
 
 对于未成功转换的API，将 **补全为torch API全名**，同时在行前通过 `>>>` 的形式加以标注，用户必须对该torch API进行手动转换，可参考[Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api)，然后删除标注。
 
@@ -161,25 +184,25 @@ Thank you to use Paddle Convert tool. You can make any suggestions to us.
 
 - 不一致且无法转换的API：无法转换
 
-### 1. 一致的API
+#### 1. 一致的API
 
-仅需修改 paddleconverter/api_mapping.json，并补充以下信息：
+仅需修改 paddleconverter/api_mapping.json，补充以下信息：
 
 ```python
 "torch.nn.AvgPool2d": {
-"Matcher" : "GenericMatcher",
-"paddle_api": "paddle.nn.AvgPool2D",
-"args_list" : [
-    "kernel_size", 
-    "stride", 
-    "padding", 
-    "count_include_pad", 
-    "ceil_mode", 
-    "divisor_override"
-],
-"kwargs_change": {
+    "Matcher" : "GenericMatcher",
+    "paddle_api": "paddle.nn.AvgPool2D",
+    "args_list" : [
+        "kernel_size", 
+        "stride", 
+        "padding", 
+        "count_include_pad", 
+        "ceil_mode", 
+        "divisor_override"
+    ],
+    "kwargs_change": {
         "count_include_pad": "exclusive"
-}
+    }
 }
 ```
 
@@ -189,7 +212,7 @@ Thank you to use Paddle Convert tool. You can make any suggestions to us.
 - `kwargs_change` :参数名的对应关系（注: 参数功能一致仅名字不一致时也视作一致）
 
 
-### 2. 不一致的API
+#### 2. 不一致但可转换的API
 
 首先需要在 paddleconverter/api_matcher.py 中逐个增加 **Matcher** ，并重写 `generate_code` 函数 ，以`torch.transpose`为例：
 
@@ -213,16 +236,16 @@ class TransposeMatcher(BaseMatcher):
         return code
 ```
 
-然后根据 paddleconverter/api_mapping.json 中增加 json配置：
+然后在 paddleconverter/api_mapping.json 中增加 json配置：
 
 ```
 "torch.transpose" : {
-"Matcher": "TransposeMatcher",
-"args_list" : [
-    "input",
-    "dim0", 
-    "dim1"
- ]
+    "Matcher": "TransposeMatcher",
+    "args_list" : [
+        "input",
+        "dim0", 
+        "dim1"
+    ]
 }
 ```
 

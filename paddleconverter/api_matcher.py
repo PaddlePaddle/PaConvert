@@ -138,7 +138,7 @@ class TransposeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLACE = textwrap.dedent(
             '''
-            {} = range(len({}.shape))
+            {} = list(range(len({}.shape)))
             {}[{}] = {}
             {}[{}] = {}
             paddle.transpose({}, {})

@@ -37,9 +37,9 @@ class Converter:
         self.logger.addHandler(logging.FileHandler(self.log_dir))
         self.logger.setLevel(logging.INFO)
 
-        self.log_info("======================================")
-        self.log_info("PyTorch to Paddle Convert Start ======>:")
-        self.log_info("======================================")
+        self.log_info("========================================")
+        self.log_info("PyTorch to Paddle Convert Start ------>:")
+        self.log_info("========================================")
 
 
     def run(self, in_dir, out_dir):
@@ -52,7 +52,6 @@ class Converter:
             # out is directory name
             if '.' not in out_dir:
                 new_path = os.path.join(out_dir, os.path.basename(old_path))
-                print(new_path)
             # out is file name
             else:
                 new_path = out_dir
@@ -81,7 +80,7 @@ class Converter:
         self.log_info(" {}  Pytorch APIs are converted failed!".format(faild_api_count))
         self.log_info(" Convert Rate is: {:.2%}".format(self.success_api_count/self.torch_api_count))
         if (faild_api_count > 0):
-            self.log_info("\nFor these {} converted failed Pytorch APIs, Please refer to "
+            self.log_info("\nFor these {} failed converted Pytorch APIs, Please refer to "
         "https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api "
         "and modify it by yourself manually!".format(faild_api_count))
         self.log_info("\nThank you to use Paddle Convert tool. You can make any suggestions to us.\n")

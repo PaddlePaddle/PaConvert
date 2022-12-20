@@ -88,7 +88,7 @@ class BaseTransformer(ast.NodeTransformer):
         elif isinstance(node, ast.Name):
             return node.id
         elif isinstance(node, ast.Call):
-            return 'TensorMethod'
+            return 'torchTensor'
 
     def get_full_api_from_node(self, node):
         full_attr = self.get_full_attr(node)
