@@ -1,5 +1,5 @@
 # 概述
-Paddleconverter是一款工具，其功能是将Pytorch项目训练代码从转换为PaddlePaddle训练代码。
+paddleconverter是一款工具，其功能是将Pytorch项目代码转换为PaddlePaddle项目代码。
 
 其原理是借助Python语法树分析，将原PyTorch脚本生成为抽象语法树，对其进行遍历、解析、编辑，然后替换为Paddle的抽象语法树，再转回为Paddle脚本。
 
