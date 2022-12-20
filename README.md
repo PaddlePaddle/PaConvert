@@ -64,7 +64,7 @@ python -m pip install -U paddleconverter/dist/*.whl
 # 用法
 
 ```bash
-paddleconverter --in_dir torch_project --out_dir paddle_project --log_dir log_dir
+paddleconverter --in_dir torch_project --out_dir paddle_project [--log_dir log_dir]
 
 参数：
 --in_dir 输入torch项目文件夹，可以为单个文件或文件夹
@@ -145,9 +145,9 @@ Thank you to use Paddle Convert tool. You can make any suggestions to us.
 
 一共有8个torch API，其中7个被成功转换，转换率为85.7%。
 
-成功转换的API，将 补全API全名、参数关键字、移除注释、移除多余空行。因为语法树转换为源码时，将采用标准写法来生成代码，这会使得与原来行数有一些差异。
+对于成功转换的API，将 **补全API全名、参数关键字、移除注释、移除多余空行**。因为语法树转换为源码时，将采用标准写法来生成代码，这会使得与原来行数有一些差异。
 
-对于未成功转换的API，将 补全torch API全名，同时在行前通过 `>>>` 的形式加以标注，用户必须对该torch API进行手动转换，并删除标注。
+对于未成功转换的API，将 **补全为torch API全名**，同时在行前通过 `>>>` 的形式加以标注，用户必须对该torch API进行手动转换，可参考[Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api)，然后删除标注。
 
 
 # 贡献代码
@@ -161,7 +161,7 @@ Thank you to use Paddle Convert tool. You can make any suggestions to us.
 
 - 不一致且无法转换的API：无法转换
 
-## 1. **一致的API** 
+### 1. 一致的API
 
 仅需修改 paddleconverter/api_mapping.json，并补充以下信息：
 
@@ -189,7 +189,7 @@ Thank you to use Paddle Convert tool. You can make any suggestions to us.
 - `kwargs_change` :参数名的对应关系（注: 参数功能一致仅名字不一致时也视作一致）
 
 
-## 2. **不一致的API**
+### 2. 不一致的API
 
 首先需要在 paddleconverter/api_matcher.py 中逐个增加 **Matcher** ，并重写 `generate_code` 函数 ，以`torch.transpose`为例：
 

@@ -36,7 +36,8 @@ class GenericMatcher(BaseMatcher):
             if k in ['layout', 'device', 'memory_format', 'inplace', 'generator']:
                 continue
             if k in kwargs_change:
-                new_kwargs[kwargs_change[k]] = v
+                if v:
+                    new_kwargs[kwargs_change[k]] = v
             else:
                 new_kwargs[k] = v
 
@@ -230,9 +231,9 @@ class GeluMatcher(BaseMatcher):
 
         if 'approximate' in kwargs:
             approximate_v = kwargs.pop('approximate')
-            if approximate_v == 'none':
+            if 'none' in approximate_v:
                 kwargs['approximate'] = 'False'
-            elif approximate_v == 'tanh':
+            elif 'tanh' in approximate_v:
                 kwargs['approximate'] = 'True'
 
         code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
@@ -243,8 +244,54 @@ class SquentialMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         if len(args) == 1 and isinstance(args[0], ast.Call):
             if self.get_full_attr(args[0].func).endswith('OrderedDict'):
-                new_args = self.args_to_list(args[0].args[0].elts, kwargs)
+                new_args = self.parse_args(args[0].args[0].elts)
         else:
-            new_args = self.args_to_list(args, kwargs)
+            new_args = self.parse_args(args)
         code = 'paddle.nn.Squential({})'.format(self.args_to_str(new_args))
+        return ast.parse(code).body
+
+class IdentityMatcher(BaseMatcher):
+
+    def get_paddle_nodes(self, args, kwargs):
+        new_args = self.parse_args(args)
+        new_kwargs = self.parse_kwargs(kwargs)
+        code = 'paddle.nn.Identity({}, {})'.format(self.args_to_str(new_args), self.kwargs_to_str(new_kwargs))
+        return ast.parse(code).body
+
+class PadMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'Reflection' in self.torch_api:
+            kwargs['mode'] = "'reflect'"
+        elif 'Replication' in self.torch_api:
+            kwargs['mode'] = "'replicate'"
+        elif 'Constant' in self.torch_api:
+            kwargs['mode'] = "'constant'"
+        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        return code
+
+
+class MaxMinMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        call_maximum = False
+        if len(args) > 1 and isinstance(args[1], ast.Name):
+            call_maximum = True
+        if 'other' in kwargs:
+            call_maximum = True
+        
+        if call_maximum:
+            return GenericMatcher(self.torch_api, self.api_mapping).get_paddle_nodes(args, kwargs)
+
+        # return (values, indices) and paddle not implement
+        if len(args) > 1 and isinstance(args[1], ast.Num):  
+            return None
+        if 'dim' in kwargs:
+            return None
+
+        # only return values
+        if 'input' in kwargs:
+            x_v = astor.to_source(kwargs['input']).strip('\n')
+        else:
+            x_v = astor.to_source(args[0]).strip('\n')
+
+        code = 'paddle.max({})'.format(x_v)
         return ast.parse(code).body

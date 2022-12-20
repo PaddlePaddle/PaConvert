@@ -44,8 +44,7 @@ class BasicTransformer(BaseTransformer):
 
     def visit_Attribute(self, node):
         '''
-        torch api is not used by funcition call, such as class inherit base, func param type, 
-        func return type, dtype
+        torch api is not used by funcition call, so only match api name and not need to handle params. 
         '''
         if isinstance(node.value, ast.Call):
             super(BasicTransformer, self).generic_visit(node)
@@ -64,10 +63,10 @@ class BasicTransformer(BaseTransformer):
                 paddle_api = matcher.get_paddle_api()
                 if paddle_api:
                     self.success_api_count += 1
-                    self.log_info("[Success]convert {} ---> {}".format(torch_api, paddle_api), self.file_name, node.lineno)
+                    self.log_info("[Success]convert {} to Paddle".format(torch_api), self.file_name, node.lineno)
                     return ast.parse(paddle_api).body[0].value
 
-            self.log_info("[Failed]convert {} ---> {}".format(torch_api, paddle_api), self.file_name, node.lineno)
+            self.log_info("[Failed]can not convert {} to Paddle".format(torch_api), self.file_name, node.lineno)
         return node 
 
     def visit_Call(self, node):
@@ -207,7 +206,7 @@ class BasicTransformer(BaseTransformer):
             api_mapping = API_MAPPING[torch_api]
             if "Matcher" in api_mapping:
                 matcher = api_mapping['Matcher']
-                return eval(matcher)(api_mapping)
+                return eval(matcher)(torch_api, api_mapping)
         return None
 
     def visit_FunctionDef(self, node):

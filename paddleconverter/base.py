@@ -104,7 +104,8 @@ class BaseTransformer(ast.NodeTransformer):
 
 
 class BaseMatcher(object):
-    def __init__(self, api_mapping):
+    def __init__(self, torch_api, api_mapping):
+        self.torch_api = torch_api
         self.api_mapping = api_mapping
 
     def get_paddle_api(self):
@@ -112,7 +113,12 @@ class BaseMatcher(object):
             return self.api_mapping['paddle_api']
         return None
 
-    def args_to_kwargs(self, args, kwargs):
+
+    def set_paddle_api(self, paddle_api):
+        if 'paddle_api' in self.api_mapping:
+            self.api_mapping['paddle_api'] = paddle_api
+
+    def parse_args_and_kwargs(self, args, kwargs):
         args_list = self.api_mapping.get('args_list') or []
         assert len(args) <= len(args_list)
 
@@ -128,20 +134,23 @@ class BaseMatcher(object):
             new_kwargs[k] = v
 
         return new_kwargs
-    
-    def get_full_attr(self, node):
-        if isinstance(node, ast.Attribute):
-            return self.get_full_attr(node.value) + '.' + node.attr
-        elif isinstance(node, ast.Name):
-            return node.id
 
-    def args_to_list(self, args, kwargs):
+    def parse_args(self, args):
         new_args = []
         for node in args:
             ele = astor.to_source(node).strip('\n')
             new_args.append(ele)
 
         return new_args
+
+    def parse_kwargs(self, kwargs):
+        new_kwargs = {}
+        for node in kwargs:
+            k = node.arg
+            v = astor.to_source(node.value).strip('\n')
+            new_kwargs[k] = v
+
+        return new_kwargs
 
     def args_to_str(self, args):
         str_list = []
@@ -157,8 +166,14 @@ class BaseMatcher(object):
 
         return ', '.join(str_list)
 
+    def get_full_attr(self, node):
+        if isinstance(node, ast.Attribute):
+            return self.get_full_attr(node.value) + '.' + node.attr
+        elif isinstance(node, ast.Name):
+            return node.id
+
     def get_paddle_nodes(self, args, kwargs):
-        new_kwargs = self.args_to_kwargs(args, kwargs)
+        new_kwargs = self.parse_args_and_kwargs(args, kwargs)
         new_code = self.generate_code(new_kwargs)
         if new_code:
             return ast.parse(new_code).body

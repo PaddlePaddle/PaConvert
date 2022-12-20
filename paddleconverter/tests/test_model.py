@@ -5,7 +5,7 @@ import torch.nn
 
 import torch.nn as nn, six as s
 
-from torch.nn import functional as F, init as i
+from torch.nn import functional as F, init as I
 
 from torch.nn import Module, Linear
 
