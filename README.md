@@ -5,7 +5,7 @@ paddleconverter是一款工具，其功能是将Pytorch项目代码转换为Padd
 
 转换逻辑为静态代码扫描，保持原代码的风格与结构不变，只转换相应的Pytorch API，其他Python代码保持原样不变。
 
-转换采用非inplace的方式，不修改原文件，将原Pytorch项目文件一一转换到 `out_dir` 指定的文件夹中：
+转换采用非inplace的方式，不修改原文件，将原Pytorch项目文件一一转换到 `--out_dir` 指定的文件夹中：
 
 - Python文件：逐个torch API识别转换
 - requirements.txt： 转换其中的 torch 安装依赖

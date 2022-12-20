@@ -35,7 +35,7 @@ def main():
         
         success_api, failed_api = coverter.run(cwd + '/tests/test_model.py', cwd +'/tests/temp_out')
         
-        if success_api==60 and failed_api == 2:
+        if success_api==90 and failed_api == 3:
             logging.info("Run check successfully! Use 'paddleconverter --in_dir IN_DIR --out_dir OUT_DIR' to convert your project ")
             sys.exit(0)
         else:
