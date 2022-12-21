@@ -27,5 +27,5 @@ class UniqueNameGenerator():
 
 Generator = UniqueNameGenerator()
 
-def unique_name(key):
+def get_unique_name(key):
     return Generator(key)

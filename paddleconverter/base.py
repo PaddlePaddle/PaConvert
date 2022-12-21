@@ -50,26 +50,33 @@ class BaseTransformer(ast.NodeTransformer):
         self.node_stack.pop()
         return node
 
-    def record_scope(self, scope_node, index, node):
+    def record_scope(self, scope_node, body_tuple, node):
         if node is None:
             return
         if not isinstance(node, list):
             node = [node]
-        if index in self.scope_insert_lines[scope_node]:
-            self.scope_insert_lines[scope_node][index].extend(node)
+        body = body_tuple[0]
+        index = body_tuple[1]
+
+        if body in self.scope_insert_lines[scope_node]:
+            if index in self.scope_insert_lines[scope_node][body]:
+                self.scope_insert_lines[scope_node][body][index].extend(node)
+            else:
+                self.scope_insert_lines[scope_node][body].update({index: node})
         else:
-            self.scope_insert_lines[scope_node][index] = node
+            self.scope_insert_lines[scope_node][body] = {index: node}
             
     def insert_scope(self):
         # if multiple line, insert into scope node only One time
         for scope_node in self.scope_insert_lines:
-            insert_lines = self.scope_insert_lines[scope_node]
-            insert_lines = sorted(insert_lines.items(), 
-                                  key = lambda x:x[0], 
-                                  reverse = True)
-            for index, lines in insert_lines:
-                for line in lines[::-1]:
-                    scope_node.body.insert(index, line)
+            for body in self.scope_insert_lines[scope_node]:
+                insert_lines = self.scope_insert_lines[scope_node][body]
+                insert_lines = sorted(insert_lines.items(), 
+                                    key = lambda x:x[0], 
+                                    reverse = True)
+                for index, lines in insert_lines:
+                    for line in lines[::-1]:
+                        getattr(scope_node, body).insert(index, line)
 
 
     def log_info(self, msg, file=None, line=None):
@@ -83,12 +90,22 @@ class BaseTransformer(ast.NodeTransformer):
         self.logger.info(msg)
 
     def get_full_attr(self, node):
+        # torch.nn.fucntional.relu
         if isinstance(node, ast.Attribute):
             return self.get_full_attr(node.value) + '.' + node.attr
+        # x.abs() -> 'x'
         elif isinstance(node, ast.Name):
             return node.id
-        elif isinstance(node, ast.Call):
+        # 1. torch.abs(x).transpose(1, 0) -> 'torchTensor'
+        # 2. (x == y).transpose(1, 0) -> 'torchTensor'
+        # 3. (x + y).transpose(1, 0) -> 'torchTensor'
+        # 4. x[0].transpose(1, 0) -> 'torchTensor'
+        # 5. (-x).transpose -> 'torchTensor'
+        elif isinstance(node, (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript)):
             return 'torchTensor'
+        # others, such as 'str'.split
+        else:
+            return 'None'
 
     def get_full_api_from_node(self, node):
         full_attr = self.get_full_attr(node)
@@ -106,17 +123,18 @@ class BaseTransformer(ast.NodeTransformer):
 class BaseMatcher(object):
     def __init__(self, torch_api, api_mapping):
         self.torch_api = torch_api
+        self.paddle_api = None
         self.api_mapping = api_mapping
 
     def get_paddle_api(self):
+        if self.paddle_api:
+            return self.paddle_api
         if 'paddle_api' in self.api_mapping:
             return self.api_mapping['paddle_api']
         return None
 
-
     def set_paddle_api(self, paddle_api):
-        if 'paddle_api' in self.api_mapping:
-            self.api_mapping['paddle_api'] = paddle_api
+        self.paddle_api = paddle_api
 
     def parse_args_and_kwargs(self, args, kwargs):
         args_list = self.api_mapping.get('args_list') or []
@@ -152,6 +170,14 @@ class BaseMatcher(object):
 
         return new_kwargs
 
+    def parse_func(self, func):
+        new_func = astor.to_source(func).strip('\n')
+        self.paddleTensor = new_func[0: new_func.rfind('.')]
+        if self.get_paddle_api():
+            new_paddle_api = self.get_paddle_api().replace('paddle.Tensor', self.paddleTensor)
+            self.set_paddle_api(new_paddle_api)
+        return new_func
+
     def args_to_str(self, args):
         str_list = []
         for ele in args:
@@ -166,11 +192,24 @@ class BaseMatcher(object):
 
         return ', '.join(str_list)
 
+    def args_and_kwargs_to_str(self, args, kwargs):
+        str_list = []
+        for ele in args:
+            str_list.append('{}'.format(ele))
+        
+        for k, v in kwargs.items():
+            str_list.append('{}={}'.format(k, v))
+
+        return ', '.join(str_list)
+
     def get_full_attr(self, node):
         if isinstance(node, ast.Attribute):
             return self.get_full_attr(node.value) + '.' + node.attr
         elif isinstance(node, ast.Name):
             return node.id
+
+    def generate_code(self, kwargs):
+        return None
 
     def get_paddle_nodes(self, args, kwargs):
         new_kwargs = self.parse_args_and_kwargs(args, kwargs)
@@ -179,5 +218,10 @@ class BaseMatcher(object):
             return ast.parse(new_code).body
         return None
 
-    def generate_code(self, kwargs):
+    def get_paddle_tensor_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        new_kwargs = self.parse_args_and_kwargs(args, kwargs)
+        new_code = self.generate_code(new_kwargs)
+        if new_code:
+            return ast.parse(new_code).body
         return None

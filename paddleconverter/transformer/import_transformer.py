@@ -73,7 +73,7 @@ class ImportTransformer(BaseTransformer):
             return None
         else:
             for alias_node in node.names:
-                if alias_node.as_name:
+                if alias_node.asname:
                     self.imports_map[self.file]['others'].append(alias_node.asname)
                 else:
                     self.imports_map[self.file]['others'].append(alias_node.name)
@@ -107,4 +107,4 @@ class ImportTransformer(BaseTransformer):
         super(ImportTransformer, self).generic_visit(node)
 
         self.log_info("add 'import paddle' in first line", self.file_name)
-        self.record_scope(self.root, 0, ast.parse('import paddle').body)
+        self.record_scope(self.root, ('body', 0), ast.parse('import paddle').body)

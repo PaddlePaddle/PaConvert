@@ -1,17 +1,19 @@
 # 概述
-paddleconverter是一款工具，其功能是将Pytorch项目代码转换为PaddlePaddle项目代码。
+paddleconverter是一款API代码转换工具，其功能是将Pytorch项目代码转换为PaddlePaddle项目代码。
 
-其原理是借助Python语法树分析，将原PyTorch脚本生成为抽象语法树，对其进行遍历、解析、编辑，然后替换为Paddle的抽象语法树，再转回为Paddle脚本。
+其原理是借助Python语法树分析，将原PyTorch项目源码的生成为抽象语法树，对其进行遍历、解析、匹配、编辑，然后得到Paddle的抽象语法树，再转回为Paddle的项目源码。
 
 转换逻辑为静态代码扫描，保持原代码的风格与结构不变，只转换相应的Pytorch API，其他Python代码保持原样不变。
 
-转换采用非inplace的方式，不修改原文件，将原Pytorch项目文件一一转换到 `--out_dir` 指定的文件夹中：
+转换采用非inplace的方式，将原Pytorch项目文件一一转换到 `out_dir` 指定的文件夹中，不修改原文件，方便前后对比：
 
-- Python文件：逐个torch API识别转换
+- Python文件：逐个识别torch API并转换
 - requirements.txt： 转换其中的 torch 安装依赖
 - 其他文件：原样拷贝
 
-对一个 Pytorch API，尽可能按一对一的形式转换，但在某些情形下，会借助多行Paddle代码来实现一个Pytorch API，这会导致转换前后的代码行数是不同的。例如：
+对一个 Pytorch API，尽可能按一对一的形式转换，但在某些情形下，会借助多行Paddle代码来实现一个Pytorch API，这会导致转换前后的代码行数改变。
+
+例如：
 
 ```
 import torch
@@ -31,7 +33,7 @@ y = paddle.transpose(x, perm_0)
 
 所有的API转换是依据 [Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api) 来进行的。
 
-在转换完成后，Pytorch API总数、成功、失败数量统计将会打印到终端，对于无法转换的Pytorch API，我们会通过 `>>>` 在代码行前面进行标识，你需要手动修改并删除该标记。
+在转换完成后，`Pytorch API总数、转换成功数、转换失败数` 的统计结果将会打印到终端，对于无法转换的Pytorch API，我们会通过 `>>>` 在代码行前面进行标识，你需要手动转换并删除该标记。
 
 
 # 安装
@@ -66,8 +68,8 @@ python -m pip install -U paddleconverter/dist/*.whl
 paddleconverter --in_dir torch_project --out_dir paddle_project [--log_dir log_dir]
 
 参数：
---in_dir 输入torch项目文件夹，可以为单个文件或文件夹
---out_dir 输出paddle项目文件夹，必须为文件夹
+--in_dir 输入torch项目文件，可以为单个文件或文件夹
+--out_dir 输出paddle项目文件，输入文件，则也应为文件，输入文件夹，则也应为文件夹
 --log-dir 可选，输出日志的路径，默认值不生成输出日志文件
 
 ```
@@ -168,9 +170,9 @@ Thank you to use Paddle Convert tool. You can make any suggestions to us.
 
 一共有8个torch API，其中7个被成功转换，该文件的转换率为85.7%，如果项目中有多个文件，会统计所有.py文件累计的数据。
 
-对于成功转换的API，将 **补全API全名、参数关键字、移除注释、移除多余空行**。因为语法树重新转换为源码时，会采用标准写法来生成代码，这会使得与原来行数有一些差异。
+对于转换成功的API，将 **补全API全名、参数关键字、移除注释、移除多余空行**。因为语法树重新转换为源码时，会采用标准写法来生成代码，而注释、空行等代码无法被语法树识别，将被移除。因此转换前后行数会有一些差异。
 
-对于未成功转换的API，将 **补全为torch API全名**，同时在行前通过 `>>>` 的形式加以标注，用户必须对该torch API进行手动转换，可参考[Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api)，然后删除标注。
+对于转换失败的API，将 **补全为torch API全名**，同时在行前通过 `>>>` 的形式加以标注，用户必须对该torch API进行手动转换，可参考[Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api)，然后删除标注。
 
 
 # 贡献代码
@@ -178,9 +180,9 @@ Thank you to use Paddle Convert tool. You can make any suggestions to us.
 欢迎你向我们贡献代码。
 
 根据API转换关系，我们将API分为三大类：
-- 一致的API：要求API功能一致，且API参数一致（如果Pytorch较Paddle多out/dtype/device/layout/requires_grad/memory_format/inplace/generator/pin_memory参数，则也视作一致），通过一对一即可实现
+- 一致的API：要求API功能一致，且API参数一致（如果Pytorch只比Paddle多out/dtype/device/layout/requires_grad/memory_format/inplace/generator/pin_memory参数，则也视作一致），通过一对一即可转换
 
-- 不一致但可转换的API：包含Pytorch参数更多、参数不一致、API功能不一致、组合实现这几种情况，可以通过多行、多个API来实现，实现一对多的转换
+- 不一致但可转换的API：包含Pytorch参数更多、参数不一致、API功能不一致、组合实现这几种情况，可能要通过多行、多个API来进行一对多的转换
 
 - 不一致且无法转换的API：无法转换
 
@@ -222,7 +224,7 @@ class TransposeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLACE = textwrap.dedent(
             '''
-            {} = range(len({}.shape))
+            {} = list(range(len({}.shape)))
             {}[{}] = {}
             {}[{}] = {}
             paddle.transpose({}, {})
@@ -249,10 +251,11 @@ class TransposeMatcher(BaseMatcher):
 }
 ```
 
-可通过上述一对多行的方式进行转换。
+则 `torch.transpose` 将通过上述一对多行的方式进行转换。
 
-在本地开发中，为快速调试，可直接通过以下方式运行代码：
+在本地开发中，为快速调试，可直接通过以下方式运行代码，无需反复安装：
 
 ```
 python paddleconverter/main.py  --in_dir paddleconverter/tests/test_model.py  --out_dir paddleconverter/tests/out
 ```
+
