@@ -356,6 +356,11 @@ class TensorReshapeMatcher(BaseMatcher):
 
 class TensorSizeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = '{}.shape'.format(self.paddleTensor)
+        print(kwargs)
+        if 'dim' in kwargs:
+            print(kwargs['dim'])
+            code = '{}.shape[{}]'.format(self.paddleTensor, kwargs['dim'])
+        else:
+            code = '{}.shape'.format(self.paddleTensor)
         return code
     

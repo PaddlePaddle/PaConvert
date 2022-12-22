@@ -206,3 +206,19 @@ torch.ones(2, 3, requires_grad=False)
 torch.empty(m, n, pin_memory=True)
 
 torch.full(2, 3, device=torch.device('cpu'), pin_memory=False)
+
+
+# torch.Tensor.size
+torch.abs(x).size()
+
+torch.abs(x).size(2)
+
+x.size()
+
+x.size(0)
+
+
+# torch.Tensor.item
+torch.abs(x).item()
+
+x.item()

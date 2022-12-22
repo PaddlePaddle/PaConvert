@@ -223,8 +223,13 @@ class BasicTransformer(BaseTransformer):
                 if isinstance(new_node, ast.Expr):
                     new_node = new_node.value
 
-                # for tensor method api, the last line must be 'ast.Call'
-                if isinstance(new_node, (ast.Call, ast.Name, ast.Constant, ast.Attribute)):
+                # return value can be:
+                #   x.abs()
+                #   x
+                #   'float32'
+                #   x.shape
+                #   x.shape[2]
+                if isinstance(new_node, (ast.Call, ast.Name, ast.Constant, ast.Attribute, ast.Subscript)):
                     self.success_api_count += 1
                     self.log_info("[Success]convert Tensor Method {} to Paddle ".format(torch_api), self.file_name, node.lineno)
 
