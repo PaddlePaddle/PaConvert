@@ -37,7 +37,7 @@ class ImportTransformer(BaseTransformer):
         '''
         new_node_names = []
         for alias_node in node.names:
-            if 'torch' in alias_node.name:
+            if 'torch.' in alias_node.name or 'torch' == alias_node.name:
                 if alias_node.asname:
                     self.log_info("remove 'import {} as {}' ".format(alias_node.name, alias_node.asname), self.file_name, node.lineno)
                     self.imports_map[self.file][alias_node.asname] = alias_node.name
@@ -62,21 +62,22 @@ class ImportTransformer(BaseTransformer):
         1. remove from torch import nn
         2. remove from torch import nn.functional as F
         '''
-        if 'torch' in node.module:
-            for alias_node in node.names:
-                if alias_node.asname:
-                    self.log_info("remove 'from {} import {} as {}' ".format(node.module, alias_node.name, alias_node.asname), self.file_name, node.lineno)
-                    self.imports_map[self.file][alias_node.asname] = '.'.join([node.module, alias_node.name])
-                else:
-                    self.log_info("remove 'from {} import {}' ".format(node.module, alias_node.name), self.file_name, node.lineno)
-                    self.imports_map[self.file][alias_node.name] = '.'.join([node.module, alias_node.name])
-            return None
-        else:
-            for alias_node in node.names:
-                if alias_node.asname:
-                    self.imports_map[self.file]['others'].append(alias_node.asname)
-                else:
-                    self.imports_map[self.file]['others'].append(alias_node.name)
+        if node.module:
+            if 'torch.' in node.module or 'torch' == node.module:
+                for alias_node in node.names:
+                    if alias_node.asname:
+                        self.log_info("remove 'from {} import {} as {}' ".format(node.module, alias_node.name, alias_node.asname), self.file_name, node.lineno)
+                        self.imports_map[self.file][alias_node.asname] = '.'.join([node.module, alias_node.name])
+                    else:
+                        self.log_info("remove 'from {} import {}' ".format(node.module, alias_node.name), self.file_name, node.lineno)
+                        self.imports_map[self.file][alias_node.name] = '.'.join([node.module, alias_node.name])
+                return None
+
+        for alias_node in node.names:
+            if alias_node.asname:
+                self.imports_map[self.file]['others'].append(alias_node.asname)
+            else:
+                self.imports_map[self.file]['others'].append(alias_node.name)
 
         return node
 
@@ -107,4 +108,4 @@ class ImportTransformer(BaseTransformer):
         super(ImportTransformer, self).generic_visit(node)
 
         self.log_info("add 'import paddle' in first line", self.file_name)
-        self.record_scope(self.root, ('body', 0), ast.parse('import paddle').body)
+        self.record_scope( (self.root, 'body', 0), ast.parse('import paddle').body)

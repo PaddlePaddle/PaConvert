@@ -11,7 +11,7 @@ paddleconverter是一款API代码转换工具，其功能是将Pytorch项目代�
 - requirements.txt： 转换其中的 torch 安装依赖
 - 其他文件：原样拷贝
 
-对一个 Pytorch API，尽可能按一对一的形式转换，但在某些情形下，会借助多行Paddle代码来实现一个Pytorch API，这会导致转换前后的代码行数改变。
+对一个 Pytorch API，尽可能按一对一的形式转换，但在某些情形下，必须借助多行Paddle代码才能实现一个Pytorch API，这会导致转换前后的代码行数改变。
 
 例如：
 

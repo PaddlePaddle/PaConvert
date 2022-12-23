@@ -13,6 +13,8 @@ from torch import add, Tensor
 
 from io import open
 
+from . import functional_pil as F_pil, functional_tensor as F_t
+
 class MyNet(nn.Module):
     test = "str"
 
@@ -119,6 +121,11 @@ model = nn.Sequential(OrderedDict([
           ('relu2', nn.ReLU())
         ]))
 
+blocks = []
+blocks.append(('block1', torch.nn.Linear(10, 10)))
+blocks.append(('block2', torch.nn.Linear(10, 10)))
+nn.Sequential(OrderedDict(blocks))
+
 # container
 linears = nn.ModuleList([nn.Linear(10, 10) for i in range(10)])
 
@@ -207,6 +214,20 @@ torch.empty(m, n, pin_memory=True)
 
 torch.full(2, 3, device=torch.device('cpu'), pin_memory=False)
 
+torch.rand(2, 3)
+
+torch.rand((2, 3))
+
+torch.rand([2, 3])
+
+torch.rand(size=(2, 3))
+
+torch.rand(size=[2, 3])
+
+torch.rand(())
+
+
+torch.rand([])
 
 # torch.Tensor.size
 torch.abs(x).size()
@@ -222,3 +243,30 @@ x.size(0)
 torch.abs(x).item()
 
 x.item()
+
+# requires_grad / requires_grad_
+assert not label.requires_grad
+
+label_requires_grad = label.requires_grad_(True)
+label = label.requires_grad_(False)
+
+requires_grad = [True, False]
+
+label.requires_grad_(requires_grad[1])
+
+assert label.requires_grad
+assert label_requires_grad.requires_grad
+
+# torch.einsum
+torch.einsum("...ijk, ...xijk -> ...xjk", mask, a4)
+
+# if scope insert
+if pic.mode == '1':
+    img = 255 * img
+
+if pic.mode == '1':
+    img = 255 * img
+
+
+return torch.from_numpy(nppic).to(dtype=default_float_dtype)
+

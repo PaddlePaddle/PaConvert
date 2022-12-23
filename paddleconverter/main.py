@@ -25,6 +25,7 @@ def main():
     parser.add_argument("--in_dir", default=None, type=str, help='the input PyTorch file or directory.')
     parser.add_argument("--out_dir", default=None, type=str, help='the output Paddle directory.')
     parser.add_argument("--log_dir", default=None, type=str, help='the input PyTorch file or directory.')
+    parser.add_argument("--log_level", default="INFO", type=str, choices=["DEBUG", "INFO", "WARNING", "ERROR"], help="set log level, default is INFO")
     parser.add_argument("--run_check", default=None, type=str, help='run check the paddle convert tool')
 
     args = parser.parse_args()
@@ -47,7 +48,7 @@ def main():
     assert args.out_dir is not None, "User must specify --out_dir "
     assert args.out_dir != args.in_dir, "--out_dir must be different from --in_dir"
     
-    coverter = Converter(args.log_dir)
+    coverter = Converter(args.log_dir, args.log_level)
     coverter.run(args.in_dir, args.out_dir)
 
 

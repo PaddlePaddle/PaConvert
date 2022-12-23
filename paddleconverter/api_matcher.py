@@ -71,8 +71,8 @@ class GenericMatcher(BaseMatcher):
                 {}
                 '''
             )
-            temp = get_unique_name('temp')
-            code = API_TEMPLACE.format(temp, self.get_paddle_api(), self.kwargs_to_str(new_kwargs), temp, temp)
+            out = get_unique_name('out')
+            code = API_TEMPLACE.format(temp, self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out, out)
         elif not requires_grad_v and 'out' in kwargs:
             out_v = new_kwargs.pop('out')
             API_TEMPLACE = textwrap.dedent(
@@ -169,6 +169,9 @@ class ToTensorMatcher(BaseMatcher):
 
 class TransposeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        if len(kwargs) != 3:
+            return None
+
         API_TEMPLACE = textwrap.dedent(
             '''
             {} = list(range(len({}.shape)))
@@ -187,9 +190,17 @@ class TransposeMatcher(BaseMatcher):
 
 class CreateMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
-        shape_list = self.parse_args(args)
+        if len(args) == 1 and isinstance(args[0], (ast.List, ast.Tuple)):
+            shape_list = self.parse_args(args)[0]
+        elif len(args) >= 1:
+            shape_list = self.parse_args(args)
+
         kwargs = self.parse_kwargs(kwargs)
-        kwargs = { 'shape' : str(shape_list).replace('\'', ''), **kwargs}
+        if 'size' in kwargs:
+            kwargs = { 'shape' : kwargs.pop('size'), **kwargs}
+        else:
+            kwargs = { 'shape' : str(shape_list).replace('\'', ''), **kwargs}
+
         if 'layout' in kwargs:
             del kwargs['layout']
         if 'device' in kwargs:
@@ -221,8 +232,8 @@ class CreateMatcher(BaseMatcher):
                 {}
                 '''
             )
-            temp = get_unique_name('temp')
-            code = API_TEMPLACE.format(temp, self.get_paddle_api(), self.kwargs_to_str(kwargs), temp, temp)
+            out = get_unique_name('out')
+            code = API_TEMPLACE.format(out, self.get_paddle_api(), self.kwargs_to_str(kwargs), out, out)
         elif not requires_grad_v and 'out' in kwargs:
             out_v = kwargs.pop('out')
             API_TEMPLACE = textwrap.dedent(
@@ -267,14 +278,14 @@ class GeluMatcher(BaseMatcher):
         return code
 
 class SquentialMatcher(BaseMatcher):
-
     def get_paddle_nodes(self, args, kwargs):
         if len(args) == 1 and isinstance(args[0], ast.Call):
             if self.get_full_attr(args[0].func).endswith('OrderedDict'):
-                new_args = self.parse_args(args[0].args[0].elts)
+                new_args = self.parse_args(args[0].args)
+                new_args = ['*{}'.format(new_args[0])]
         else:
             new_args = self.parse_args(args)
-        code = 'paddle.nn.Squential({})'.format(self.args_to_str(new_args))
+        code = 'paddle.nn.Sequential({})'.format(self.args_to_str(new_args))
         return ast.parse(code).body
 
 class PadMatcher(BaseMatcher):
@@ -324,6 +335,10 @@ class TensorMatcher(BaseMatcher):
 
 class TensorTransposeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        # may be ndarray.transpose([list]) / ndarray.transpose(list)
+        if len(kwargs) != 2:
+            return None
+
         API_TEMPLACE = textwrap.dedent(
             '''
             {} = list(range(len({}.shape)))
@@ -351,16 +366,55 @@ class TensorReshapeMatcher(BaseMatcher):
             shape_list = self.parse_args(args)
             kwargs = {'shape': str(shape_list).replace('\'', '')}
 
-        code = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        code = '{}.reshape({})'.format(self.paddleTensor, self.kwargs_to_str(kwargs))
         return ast.parse(code).body
 
 class TensorSizeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        print(kwargs)
         if 'dim' in kwargs:
-            print(kwargs['dim'])
             code = '{}.shape[{}]'.format(self.paddleTensor, kwargs['dim'])
         else:
             code = '{}.shape'.format(self.paddleTensor)
         return code
     
+class TensorRequiresGradMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'requires_grad' in kwargs:
+            API_TEMPLACE = textwrap.dedent(
+                '''
+                {} = {}
+                {}.stop_gradient = not {}
+                {}
+                '''
+            )
+            out = get_unique_name('out')
+            code = API_TEMPLACE.format(out, self.paddleTensor, out, kwargs.pop('requires_grad'), self.paddleTensor)
+        else:
+            API_TEMPLACE = textwrap.dedent(
+                '''
+                {} = {}
+                {}.stop_gradient = False
+                {}
+                '''
+            )
+            out = get_unique_name('out')
+            code = API_TEMPLACE.format(out, self.paddleTensor, out, out)
+
+        return code
+
+class TensorPermuteMatcher(BaseMatcher):
+    def get_paddle_tensor_nodes(self, funcs, args, kwargs):
+        self.parse_func(funcs)
+        if len(args) == 1 and isinstance(args[0], (ast.List, ast.Tuple)):
+            perm_list = self.parse_args(args)[0]
+        elif len(args) >= 1:
+            perm_list = self.parse_args(args)
+
+        kwargs = self.parse_kwargs(kwargs)
+        if 'dims' in kwargs:
+            kwargs = { 'perm' : kwargs.pop('dims'), **kwargs}
+        else:
+            kwargs = { 'perm' : str(perm_list).replace('\'', ''), **kwargs}
+
+        code = '{}.transpose({})'.format(self.paddleTensor, self.kwargs_to_str(kwargs))
+        return ast.parse(code).body

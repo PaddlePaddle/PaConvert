@@ -23,8 +23,13 @@ import collections
 from .transformer.import_transformer import ImportTransformer
 from .transformer.basic_transformer import BasicTransformer
 
+def listdir_nohidden(path):
+    for f in os.listdir(path):
+        if not f.startswith('.'):
+            yield f
+
 class Converter:
-    def __init__(self, log_dir=None):
+    def __init__(self, log_dir=None, log_level='INFO'):
         self.imports_map = collections.defaultdict(dict)
         self.torch_api_count = 0
         self.success_api_count = 0
@@ -34,8 +39,8 @@ class Converter:
             self.log_dir = log_dir
         self.logger = logging.getLogger(name='Converter')
         self.logger.addHandler(logging.StreamHandler())
-        self.logger.addHandler(logging.FileHandler(self.log_dir))
-        self.logger.setLevel(logging.INFO)
+        self.logger.addHandler(logging.FileHandler(self.log_dir, mode='w'))
+        self.logger.setLevel(log_level)
 
         self.log_info("===========================================")
         self.log_info("PyTorch to Paddle Convert Start ------>:")
@@ -52,7 +57,6 @@ class Converter:
                 new_path = os.path.join(out_dir, os.path.basename(old_path))
             else:
                 new_path = out_dir
-
             if not os.path.exists(os.path.dirname(new_path)):
                 os.makedirs(os.path.dirname(new_path))
             if not os.path.isdir(os.path.dirname(new_path)):
@@ -60,7 +64,7 @@ class Converter:
                 os.makedirs(os.path.dirname(new_path))
             self.transfer_file(old_path, new_path)
         elif os.path.isdir(in_dir):
-            in_dir_items = os.listdir(in_dir)
+            in_dir_items = listdir_nohidden(in_dir)
             for item in in_dir_items:
                 old_path = os.path.join(in_dir, item)
                 new_path = os.path.join(out_dir, item)
@@ -73,7 +77,7 @@ class Converter:
 
     def run(self, in_dir, out_dir):
         self.transfer_dir(in_dir, out_dir)
-
+        
         faild_api_count = self.torch_api_count - self.success_api_count
         self.log_info("\n========================================")
         self.log_info("Convert Summary:")
@@ -97,18 +101,18 @@ class Converter:
         lines = code.split('\n')
         mark_next_line = False
         for i, line in enumerate(lines):
-            if 'Tensor Method' in line:
+            if 'Tensor Method:' in line or 'Tensor Attribute:' in line:
                 mark_next_line = True
-                lines[i] = "    " + line
                 continue
             else:
-                if mark_next_line:
-                    lines[i] = ">>> " + line
+                # for func decorator_list: @
+                if mark_next_line and line != '@':
+                    lines[i] = ">>>" + line
                     mark_next_line = False
                     continue
-
-            if 'torch' in line:
-                lines[i] = ">>> " + line
+            
+            if 'torch.' in line:
+                lines[i] = ">>>" + line
 
         return '\n'.join(lines)
 
@@ -134,6 +138,8 @@ class Converter:
             self.transfer_node(root, old_path)
             code = astor.to_source(root)
             code = self.mark_unsport(code)
+
+            
 
             with open(new_path, 'w') as file:
                 file.write(code)

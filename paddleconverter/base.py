@@ -25,7 +25,6 @@ with open(json_file, 'r') as file:
     API_MAPPING = json.load(file)
 
 
-
 class BaseTransformer(ast.NodeTransformer):
     def __init__(self, root, file, imports_map, logger):
         self.root = root
@@ -39,6 +38,7 @@ class BaseTransformer(ast.NodeTransformer):
         self.scope_stack = []
         self.scope_insert_lines = collections.defaultdict(dict)
         self.logger = logger
+        self.black_list = []
     
     def transform(self):
         self.visit(self.root)
@@ -50,13 +50,14 @@ class BaseTransformer(ast.NodeTransformer):
         self.node_stack.pop()
         return node
 
-    def record_scope(self, scope_node, body_tuple, node):
+    def record_scope(self, scope_node_body_index, node):
         if node is None:
             return
         if not isinstance(node, list):
             node = [node]
-        body = body_tuple[0]
-        index = body_tuple[1]
+        scope_node = scope_node_body_index[0]
+        body = scope_node_body_index[1]
+        index = scope_node_body_index[2]
 
         if body in self.scope_insert_lines[scope_node]:
             if index in self.scope_insert_lines[scope_node][body]:
@@ -78,6 +79,15 @@ class BaseTransformer(ast.NodeTransformer):
                     for line in lines[::-1]:
                         getattr(scope_node, body).insert(index, line)
 
+    def log_debug(self, msg, file=None, line=None):
+        if file:
+            if line:
+                msg = "[{}:{}] {}".format(file, line, msg)
+            else:
+                msg = "[{}] {}".format(file, msg)
+        else:
+            msg = "{}".format(msg)
+        self.logger.debug(msg)
 
     def log_info(self, msg, file=None, line=None):
         if file:
@@ -95,6 +105,11 @@ class BaseTransformer(ast.NodeTransformer):
             return self.get_full_attr(node.value) + '.' + node.attr
         # x.abs() -> 'x'
         elif isinstance(node, ast.Name):
+            # Avoid ' np.array, scipy.add ... '
+            node_str = astor.to_source(node)
+            for item in self.black_list:
+                if item in node_str:
+                    return 'None'
             return node.id
         # 1. torch.abs(x).transpose(1, 0) -> 'torchTensor'
         # 2. (x == y).transpose(1, 0) -> 'torchTensor'
@@ -102,6 +117,12 @@ class BaseTransformer(ast.NodeTransformer):
         # 4. x[0].transpose(1, 0) -> 'torchTensor'
         # 5. (-x).transpose -> 'torchTensor'
         elif isinstance(node, (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript)):
+            # Avoid ' np.array, scipy.add ... '
+            node_str = astor.to_source(node)
+            for item in self.black_list:
+                if item in node_str:
+                    return 'None'
+            
             return 'torchTensor'
         # others, such as 'str'.split
         else:
@@ -142,12 +163,18 @@ class BaseMatcher(object):
 
         new_kwargs = {}
         for i, node in enumerate(args):
+            #TODO: try to support torch.rot90(tensor, *config)
+            if isinstance(node, ast.Starred):
+                return None
             k = args_list[i]
             v = astor.to_source(node).strip('\n')
             new_kwargs[k] = v
         
         for node in kwargs:
             k = node.arg
+            #TODO: try to support torch.rot90(tensor, **config)
+            if k is None:
+                return None
             v = astor.to_source(node.value).strip('\n')
             new_kwargs[k] = v
 
@@ -207,21 +234,25 @@ class BaseMatcher(object):
             return self.get_full_attr(node.value) + '.' + node.attr
         elif isinstance(node, ast.Name):
             return node.id
+        else:
+            return 'None'
 
     def generate_code(self, kwargs):
         return None
 
     def get_paddle_nodes(self, args, kwargs):
         new_kwargs = self.parse_args_and_kwargs(args, kwargs)
-        new_code = self.generate_code(new_kwargs)
-        if new_code:
-            return ast.parse(new_code).body
+        if new_kwargs is not None:
+            new_code = self.generate_code(new_kwargs)
+            if new_code:
+                return ast.parse(new_code).body
         return None
 
     def get_paddle_tensor_nodes(self, func, args, kwargs):
         self.parse_func(func)
         new_kwargs = self.parse_args_and_kwargs(args, kwargs)
-        new_code = self.generate_code(new_kwargs)
-        if new_code:
-            return ast.parse(new_code).body
+        if new_kwargs is not None:
+            new_code = self.generate_code(new_kwargs)
+            if new_code:
+                return ast.parse(new_code).body
         return None
