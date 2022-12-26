@@ -270,3 +270,38 @@ if pic.mode == '1':
 
 return torch.from_numpy(nppic).to(dtype=default_float_dtype)
 
+# torch.Tensor.permute
+x.permute(2, 3)
+
+x.permute([2, 3])
+
+x.permute(dims=[2, 3])
+
+
+# torch.Tensor.repeat
+x.repeat(2, axis = 1)
+
+x.repeat(2, 3)
+
+x.repeat([2, 3])
+
+x.repeat(repeats=[2, 3])
+
+# torch.Tensor.view
+import torch
+import numpy
+import numpy as np
+
+x = torch.rand([2, 3])
+
+x.view(np.int32)
+
+x.view(numpy.int32)
+
+x.view(3, 2)
+
+x.view([3, 2])
+
+x.view(torch.int32)
+
+# torch.Tensor.Repeat

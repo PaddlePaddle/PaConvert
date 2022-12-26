@@ -159,7 +159,10 @@ class BaseMatcher(object):
 
     def parse_args_and_kwargs(self, args, kwargs):
         args_list = self.api_mapping.get('args_list') or []
-        assert len(args) <= len(args_list)
+        # assert len(args) <= len(args_list)
+        # For: Tensor Method, this API usage is not match torch.Tensor, so it is not Tensor
+        if len(args) > len(args_list):
+            return 'NonTensor'
 
         new_kwargs = {}
         for i, node in enumerate(args):
@@ -251,8 +254,14 @@ class BaseMatcher(object):
     def get_paddle_tensor_nodes(self, func, args, kwargs):
         self.parse_func(func)
         new_kwargs = self.parse_args_and_kwargs(args, kwargs)
-        if new_kwargs is not None:
+        # NonTensor means This API usage not match torch.Tensor, so it is not a Tensor
+        if new_kwargs == "NonTensor":
+            return "NonTensor"
+        elif new_kwargs is not None:
             new_code = self.generate_code(new_kwargs)
-            if new_code:
+            if new_code == "NonTensor":
+                return "NonTensor"
+            elif new_code is not None:
                 return ast.parse(new_code).body
+        
         return None

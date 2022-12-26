@@ -228,7 +228,12 @@ class BasicTransformer(BaseTransformer):
         matcher = self.get_api_mather(torch_api)
         if matcher:
             node_list = matcher.get_paddle_tensor_nodes(node.func, node.args, node.keywords)
-            if node_list:
+            if node_list == 'NonTensor':
+                # This API usage  indicate that is is not a torch.Tensor
+                self.torch_api_count -= 1
+                self.log_debug(" Misidentify Tensor Method: {}, so remain the same".format(torch_api), self.file_name, node.lineno)
+                return node
+            elif node_list is not None:
                 new_node = node_list[-1]
                 # ast.Expr which contain ast.Call or ast.Name
                 if isinstance(new_node, ast.Expr):
@@ -250,11 +255,11 @@ class BasicTransformer(BaseTransformer):
                         self.record_scope(self.scope_node_body_index(), node_list[0:-1])
 
                     return new_node
-
+        
         annotate_node = ast.parse("'Tensor Method: {} not convert, please check whether it is torch.Tensor.* and convert manually'".format(torch_api)).body[0]
         self.record_scope(self.scope_node_body_index(), annotate_node)
         self.log_debug("[Failed]can not convert Tensor Method: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
-        return node 
+        return node
 
 
     def get_api_mather(self, torch_api):

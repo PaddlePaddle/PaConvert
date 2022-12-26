@@ -337,7 +337,7 @@ class TensorTransposeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         # may be ndarray.transpose([list]) / ndarray.transpose(list)
         if len(kwargs) != 2:
-            return None
+            return "NonTorchTensor"
 
         API_TEMPLACE = textwrap.dedent(
             '''
@@ -403,8 +403,9 @@ class TensorRequiresGradMatcher(BaseMatcher):
         return code
 
 class TensorPermuteMatcher(BaseMatcher):
-    def get_paddle_tensor_nodes(self, funcs, args, kwargs):
-        self.parse_func(funcs)
+    def get_paddle_tensor_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        
         if len(args) == 1 and isinstance(args[0], (ast.List, ast.Tuple)):
             perm_list = self.parse_args(args)[0]
         elif len(args) >= 1:
@@ -418,3 +419,57 @@ class TensorPermuteMatcher(BaseMatcher):
 
         code = '{}.transpose({})'.format(self.paddleTensor, self.kwargs_to_str(kwargs))
         return ast.parse(code).body
+
+
+class TensorViewMatcher(BaseMatcher):
+    def get_paddle_tensor_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+
+        kwargs = self.parse_kwargs(kwargs)
+        if 'dtype' in kwargs:
+            if 'np' in kwargs['dtype'] or 'numpy' in kwargs['dtype']:
+                return 'NonTensor'
+            else:
+                return None
+
+        if len(args) == 1:
+            if isinstance(args[0], ast.Attribute):
+                return 'NonTensor'
+            if isinstance(args[0], ast.Constant) and isinstance(args[0].value, str):
+                return None
+            
+        if len(args) == 1 and isinstance(args[0], (ast.List, ast.Tuple)):
+            shape_list = self.parse_args(args)[0]
+        elif len(args) >= 1:
+            shape_list = self.parse_args(args)
+
+        if 'size' in kwargs:
+            kwargs = { 'shape' : kwargs.pop('size'), **kwargs}
+        else:
+            kwargs = { 'shape' : str(shape_list).replace('\'', ''), **kwargs}
+
+        code = '{}.reshape({})'.format(self.paddleTensor, self.kwargs_to_str(kwargs))
+        return ast.parse(code).body
+
+
+class TensorRepeatMatcher(BaseMatcher):
+    def get_paddle_tensor_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_kwargs(kwargs)
+
+        if 'axis' in kwargs:
+            return 'NonTensor'
+
+        if len(args) == 1 and isinstance(args[0], (ast.List, ast.Tuple)):
+            repeat_list = self.parse_args(args)[0]
+        elif len(args) >= 1:
+            repeat_list = self.parse_args(args)
+
+        if 'repeats' in kwargs:
+            kwargs = { 'repeat_times' : kwargs.pop('repeats'), **kwargs}
+        else:
+            kwargs = { 'repeat_times' : str(repeat_list).replace('\'', ''), **kwargs}
+            
+        code = '{}.tile({})'.format(self.paddleTensor, self.kwargs_to_str(kwargs))
+        return ast.parse(code).body
+
