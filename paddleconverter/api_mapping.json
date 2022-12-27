@@ -6468,6 +6468,46 @@
     "paddle_api": "paddle.seed",
     "args_list" : [
       "device"]
+  },
+
+  "torch.cuda.comm.broadcast" : {
+    "Matcher": "CreateMatcher",
+    "paddle_api": "paddle.distributed.broadcast",
+    "args_list" : [
+      "tensor",
+      "devices",
+      "out"]
+  },
+
+  "torch.cuda.empty_cachet" : {
+    "Matcher": "CreateMatcher",
+    "paddle_api": "paddle.device.cuda.empty_cache"
+  },
+
+  "torch.cuda.memory_allocated" : {
+    "Matcher": "CreateMatcher",
+    "paddle_api": "paddle.device.cuda.memory_allocated",
+    "args_list" : [
+      "device"]
+  },
+
+  "torch.cuda.memory_reserved" : {
+    "Matcher": "CreateMatcher",
+    "paddle_api": "paddle.device.cuda.memory_reserved",
+    "args_list" : [
+      "device"]
+  },
+
+  "torch.cuda.max_memory_reserved" : {
+    "Matcher": "CreateMatcher",
+    "paddle_api": "paddle.device.cuda.max_memory_reserved",
+    "args_list" : [
+      "device"]
+  },
+
+  "torch.backends.cudnn.version" : {
+    "Matcher": "CreateMatcher",
+    "paddle_api": "paddle.version.cudnn"
   }
 
 }
