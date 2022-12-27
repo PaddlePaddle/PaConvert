@@ -6369,9 +6369,65 @@
     "paddle_api": "paddle.full"
   },
 
-
   "torch.nn.Sequential" : {
     "Matcher": "SquentialMatcher"
+  },
+
+  "torch.cuda.Event" : {
+    "Matcher": "CreateMatcher",
+    "paddle_api": "paddle.device.cuda.Event",
+    "args_list" : [
+      "enable_timing",
+      "blocking",
+      "interprocess"]
+  },
+
+  "torch.cuda.current_stream" : {
+    "Matcher": "CreateMatcher",
+    "paddle_api": "paddle.device.cuda.current_stream",
+    "args_list" : [
+      "device"]
+  },
+
+  "torch.cuda.device_count" : {
+    "Matcher": "CreateMatcher",
+    "paddle_api": "paddle.device.cuda.device_count"
+  },
+
+  "torch.cuda.get_device_capability" : {
+    "Matcher": "CreateMatcher",
+    "paddle_api": "paddle.device.cuda.get_device_capability",
+    "args_list" : [
+      "device"]
+  },
+
+  "torch.cuda.get_device_name" : {
+    "Matcher": "CreateMatcher",
+    "paddle_api": "paddle.device.cuda.get_device_properties",
+    "args_list" : [
+      "device"]
+  },
+
+  "torch.cuda.get_device_properties" : {
+    "Matcher": "CreateMatcher",
+    "paddle_api": "paddle.device.cuda.get_device_properties",
+    "args_list" : [
+      "device"]
+  },
+
+  "torch.cuda.set_device" : {
+    "Matcher": "CreateMatcher",
+    "paddle_api": "paddle.device.cuda.set_device",
+    "args_list" : [
+      "device"]
+  },
+
+  "torch.cuda.manual_seed" : {
+    "Matcher": "CreateMatcher",
+    "paddle_api": "paddle.seed",
+    "args_list" : [
+      "device"]
   }
+
 }
   
