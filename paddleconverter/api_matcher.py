@@ -35,7 +35,7 @@ class GenericMatcher(BaseMatcher):
             kwargs_change = self.api_mapping['kwargs_change']
         new_kwargs = {}
         for k in list(kwargs.keys()):
-            if k in ['layout', 'device', 'memory_format', 'inplace', 'generator']:
+            if k in ['layout', 'device', 'memory_format', 'inplace', 'generator', 'non_blocking']:
                 continue
             if k in kwargs_change:
                 if kwargs_change[k]:
@@ -328,6 +328,17 @@ class MaxMinMatcher(BaseMatcher):
         code = 'paddle.max({})'.format(x_v)
         return ast.parse(code).body
 
+
+class InterpolateMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'recompute_scale_factor' in kwargs:
+            return None
+
+        if 'antialias' in kwargs:
+            return None
+
+        return GenericMatcher(self.torch_api, self.api_mapping).generate_code(kwargs)
+
 class TensorMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         return None
@@ -435,7 +446,7 @@ class TensorViewMatcher(BaseMatcher):
         if len(args) == 1:
             if isinstance(args[0], ast.Attribute):
                 return 'NonTensor'
-            if isinstance(args[0], ast.Constant) and isinstance(args[0].value, str):
+            if isinstance(args[0], ast.Str):
                 return None
             
         if len(args) == 1 and isinstance(args[0], (ast.List, ast.Tuple)):
@@ -473,3 +484,46 @@ class TensorRepeatMatcher(BaseMatcher):
         code = '{}.tile({})'.format(self.paddleTensor, self.kwargs_to_str(kwargs))
         return ast.parse(code).body
 
+
+class TensorToMatcher(BaseMatcher):
+    def get_paddle_tensor_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        
+        if len(args)==1 and isinstance(args[0], ast.Str):
+            dtype = self.parse_args(args)[0]
+            code = '{}.astype(dtype={})'.format(self.paddleTensor, dtype)
+            return ast.parse(code).body
+        
+        kwargs = self.parse_kwargs(kwargs)
+        if len(kwargs)==1 and 'dtype' in kwargs:
+            code = '{}.astype({})'.format(self.paddleTensor, self.kwargs_to_str(kwargs))
+            return ast.parse(code).body
+
+        return None
+
+
+class TensorIntMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "{}.astype(dtype='int32')".format(self.paddleTensor)
+        return code
+
+class TensorLongMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "{}.astype(dtype='int64')".format(self.paddleTensor)
+        return code
+
+class TensorFloatMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "{}.astype(dtype='float32')".format(self.paddleTensor)
+        return code
+
+class TensorDoubleMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "{}.astype(dtype='float64')".format(self.paddleTensor)
+        return code
+
+
+class TensorTypeAsMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "{}.astype(dtype={}.dtype)".format(self.paddleTensor, kwargs['tensor'])
+        return code

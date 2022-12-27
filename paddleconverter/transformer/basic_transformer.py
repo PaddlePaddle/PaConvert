@@ -100,9 +100,9 @@ class BasicTransformer(BaseTransformer):
             if matcher:
                 paddle_api = matcher.get_paddle_api()
                 if paddle_api:
+                    new_node = ast.parse(paddle_api).body[0].value
                     self.success_api_count += 1
                     self.log_debug("[Success]convert {} to Paddle".format(torch_api), self.file_name, node.lineno)
-                    new_node = ast.parse(paddle_api).body[0].value
                     return new_node
 
             self.log_debug("[Failed]can not convert {} to Paddle".format(torch_api), self.file_name, node.lineno)
@@ -113,13 +113,13 @@ class BasicTransformer(BaseTransformer):
         if matcher:
             paddle_api = matcher.get_paddle_api()
             if paddle_api:
-                self.success_api_count += 1
-                self.log_debug("[Success]convert Tensor Attribute: {} to Paddle".format(torch_api), self.file_name, node.lineno)
                 # for tensor attribute , only need to change .attr
                 node.attr = ast.parse(paddle_api).body[0].value.attr
+                self.success_api_count += 1
+                self.log_debug("[Success]convert Tensor Attribute: {} to Paddle".format(torch_api), self.file_name, node.lineno)
                 return node
 
-        annotate_node = ast.parse("'Tensor Attribute: {} not convert, please check whether it is torch.Tensor.* and convert manually'".format(torch_api)).body[0]
+        annotate_node = ast.parse("'Tensor Attribute: {}, not convert, please check whether it is torch.Tensor.* and convert manually'".format(torch_api)).body[0]
         self.record_scope(self.scope_node_body_index(), annotate_node)
         self.log_debug("[Failed]can not convert Tensor Attribute: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
         return node
@@ -208,19 +208,17 @@ class BasicTransformer(BaseTransformer):
                     if isinstance(new_node, ast.Expr):
                         new_node = new_node.value
                     
-                    if isinstance(new_node, (ast.Call, ast.Name, ast.Constant, ast.Attribute)):
-                        self.success_api_count += 1
-                        self.log_debug("[Success]convert {} to Paddle ".format(torch_api), self.file_name, node.lineno)
-                        
+                    if isinstance(new_node, (ast.Call, ast.Name, ast.Constant, ast.Attribute)): 
                         # if multiple line, record lines and will insert after all node visit
                         if node_list[0:-1]:
                             self.log_debug("insert extra {} lines for torch api {}".format(len(node_list[0:-1]), torch_api), self.file_name, node.lineno)
                             self.record_scope(self.scope_node_body_index(), node_list[0:-1])
 
+                        self.success_api_count += 1
+                        self.log_debug("[Success]convert {} to Paddle ".format(torch_api), self.file_name, node.lineno)
                         return new_node
 
             self.log_debug("[Failed]can not convert {} to Paddle ".format(torch_api), self.file_name, node.lineno)
-        
         return node 
 
 
@@ -246,17 +244,16 @@ class BasicTransformer(BaseTransformer):
                 #   x.shape
                 #   x.shape[2]
                 if isinstance(new_node, (ast.Call, ast.Name, ast.Constant, ast.Attribute, ast.Subscript)):
-                    self.success_api_count += 1
-                    self.log_debug("[Success]convert Tensor Method: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
-
                     # if multiple line, record lines and will insert after all node visit
                     if node_list[0:-1]:
                         self.log_debug("insert extra {} lines for torch api {}".format(len(node_list[0:-1]), torch_api), self.file_name, node.lineno)
                         self.record_scope(self.scope_node_body_index(), node_list[0:-1])
 
+                    self.success_api_count += 1
+                    self.log_debug("[Success]convert Tensor Method: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
                     return new_node
         
-        annotate_node = ast.parse("'Tensor Method: {} not convert, please check whether it is torch.Tensor.* and convert manually'".format(torch_api)).body[0]
+        annotate_node = ast.parse("'Tensor Method: {}, not convert, please check whether it is torch.Tensor.* and convert manually'".format(torch_api)).body[0]
         self.record_scope(self.scope_node_body_index(), annotate_node)
         self.log_debug("[Failed]can not convert Tensor Method: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
         return node

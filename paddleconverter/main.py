@@ -34,7 +34,7 @@ def main():
         cwd = os.path.dirname(__file__)
         coverter = Converter()
         
-        success_api, failed_api = coverter.run(cwd + '/tests/test_model.py', cwd +'/tests/temp_out')
+        success_api, failed_api = coverter.run(cwd + '/tests/test_model.py', cwd +'/tests/temp_out/test_model.py')
         
         if success_api==90 and failed_api == 3:
             logging.info("Run check successfully! Use 'paddleconverter --in_dir IN_DIR --out_dir OUT_DIR' to convert your project ")

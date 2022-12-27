@@ -3,7 +3,7 @@ import torch, six
 
 import torch.nn
 
-import torch.nn as nn, six as s
+import torch.nn as nn, six as ss
 
 from torch.nn import functional as F, init as I
 
@@ -279,7 +279,8 @@ x.permute(dims=[2, 3])
 
 
 # torch.Tensor.repeat
-x.repeat(2, axis = 1)
+import numpy as np
+np.array([2., 3.]).repeat(2, axis = 0)
 
 x.repeat(2, 3)
 
@@ -304,4 +305,40 @@ x.view([3, 2])
 
 x.view(torch.int32)
 
-# torch.Tensor.Repeat
+# torch.Tensor.to
+x.to(torch.float64)
+
+cuda0 = torch.device('cuda:0')
+x.to(cuda0)
+
+other = torch.randn((), dtype=torch.float64, device=cuda0)
+x.to(other, non_blocking=True)
+
+# torch.Tensor.int/long/float/double
+x=torch.rand(2, 3)
+x.float()
+x.double()
+x.int()
+x.long()
+
+
+# torch.Tensor.type_as/type
+x=torch.rand(2, 3)
+y=torch.rand(2, 3)
+
+x.type(torch.float32)
+x.type(torch.float32, non_blocking=True)
+
+x.type_as(y)
+x.type_as(tensor=y)
+
+
+# torch.nn.functional.interpolate
+torch.nn.functional.interpolate(input_data, scale_factor=[2,1])
+
+torch.nn.functional.interpolate(input_data, scale_factor=[2,1], recompute_scale_factor=True)
+
+torch.nn.functional.interpolate(input_data, scale_factor=[2,1], recompute_scale_factor=False)
+
+torch.nn.functional.interpolate(input_data, scale_factor=[2,1], antialias=False)
+

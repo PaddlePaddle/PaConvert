@@ -105,10 +105,10 @@ class BaseTransformer(ast.NodeTransformer):
             return self.get_full_attr(node.value) + '.' + node.attr
         # x.abs() -> 'x'
         elif isinstance(node, ast.Name):
-            # Avoid ' np.array, scipy.add ... '
+            # np.add, array(1.) ... 
             node_str = astor.to_source(node)
             for item in self.black_list:
-                if item in node_str:
+                if item == node_str:
                     return 'None'
             return node.id
         # 1. torch.abs(x).transpose(1, 0) -> 'torchTensor'
@@ -117,9 +117,10 @@ class BaseTransformer(ast.NodeTransformer):
         # 4. x[0].transpose(1, 0) -> 'torchTensor'
         # 5. (-x).transpose -> 'torchTensor'
         elif isinstance(node, (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript)):
-            # Avoid ' np.array, scipy.add ... '
+            # np.add(x, y).transpose(1, 0), array(1.).transpose(1, 0) ...
             node_str = astor.to_source(node)
             for item in self.black_list:
+                # may not strict
                 if item in node_str:
                     return 'None'
             
