@@ -3582,42 +3582,6 @@
 
   "torch.nn.functional.relu" : {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.relu",
-    "args_list" : [
-      "input",
-      "inplace"],
-    "kwargs_change": {
-      "input":"x"
-    }
-  },
-
-  "torch.nn.functional.relu_" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.relu_",
-    "args_list" : [
-      "input"],
-    "kwargs_change": {
-      "input":"x"
-    }
-  },
-
-  "torch.nn.functional.hardtanh" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.hardtanh",
-    "args_list" : [
-      "input",
-      "min_val",
-      "max_val",
-      "inplace"],
-    "kwargs_change": {
-      "input":"x",
-      "min_val":"min",
-      "max_val":"max"
-    }
-  },
-
-  "torch.nn.functional.hardswish" : {
-    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.hardswish",
     "args_list" : [
       "input",
@@ -4194,7 +4158,9 @@
     }
   },
 
-  "torch.device" : {},
+  "torch.device" : {
+    "Matcher": "DeviceMatcher"
+  },
 
 
   "torch.nn.Linear": {
@@ -5338,7 +5304,7 @@
         "other":"y"
       }
   }, 
-  
+
   "torch.Tensor.logical_xor": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.logical_xor",
@@ -5674,7 +5640,7 @@
         "dim":"axis"
       }
   }, 
-  
+
   "torch.Tensor.rad2deg": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.rad2deg"
