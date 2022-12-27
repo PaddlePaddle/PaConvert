@@ -6415,7 +6415,7 @@
   },
 
   "torch.cuda.Event" : {
-    "Matcher": "CreateMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.Event",
     "args_list" : [
       "enable_timing",
@@ -6424,54 +6424,54 @@
   },
 
   "torch.cuda.current_stream" : {
-    "Matcher": "CreateMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.current_stream",
     "args_list" : [
       "device"]
   },
 
   "torch.cuda.device_count" : {
-    "Matcher": "CreateMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.device_count"
   },
 
   "torch.cuda.get_device_capability" : {
-    "Matcher": "CreateMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.get_device_capability",
     "args_list" : [
       "device"]
   },
 
   "torch.cuda.get_device_name" : {
-    "Matcher": "CreateMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.get_device_properties",
     "args_list" : [
       "device"]
   },
 
   "torch.cuda.get_device_properties" : {
-    "Matcher": "CreateMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.get_device_properties",
     "args_list" : [
       "device"]
   },
 
   "torch.cuda.set_device" : {
-    "Matcher": "CreateMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.set_device",
     "args_list" : [
       "device"]
   },
 
   "torch.cuda.manual_seed" : {
-    "Matcher": "CreateMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.seed",
     "args_list" : [
       "device"]
   },
 
   "torch.cuda.comm.broadcast" : {
-    "Matcher": "CreateMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.broadcast",
     "args_list" : [
       "tensor",
@@ -6480,33 +6480,33 @@
   },
 
   "torch.cuda.empty_cachet" : {
-    "Matcher": "CreateMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.empty_cache"
   },
 
   "torch.cuda.memory_allocated" : {
-    "Matcher": "CreateMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.memory_allocated",
     "args_list" : [
       "device"]
   },
 
   "torch.cuda.memory_reserved" : {
-    "Matcher": "CreateMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.memory_reserved",
     "args_list" : [
       "device"]
   },
 
   "torch.cuda.max_memory_reserved" : {
-    "Matcher": "CreateMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.max_memory_reserved",
     "args_list" : [
       "device"]
   },
 
   "torch.backends.cudnn.version" : {
-    "Matcher": "CreateMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.version.cudnn"
   }
 
