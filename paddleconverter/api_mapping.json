@@ -1663,22 +1663,6 @@
     }
   },
 
-  "torch.norm" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.linalg.norm",
-    "args_list" : [
-      "input",
-      "p",
-      "dim",
-      "keepdim",
-      "out",
-      "dtype"],
-    "kwargs_change": {
-      "input":"x",
-      "dim":"axis"
-    }
-  },
-
   "torch.nansum" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nansum",
@@ -6449,7 +6433,6 @@
     "paddle_api": "paddle.seed",
     "args_list" : ["seed"]
   },
-
 
   "torch.cuda.empty_cachet" : {
     "Matcher": "GenericMatcher",
