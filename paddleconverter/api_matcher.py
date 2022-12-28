@@ -45,8 +45,6 @@ class GenericMatcher(BaseMatcher):
                 # not mapping in kwargs in there is not in kwargs_mapping
                 new_kwargs[k] = kwargs[k]
 
-        print(kwargs)
-        print(new_kwargs)
         pin_memory_v = False
         if 'pin_memory' in kwargs:
             pin_memory_v = eval(new_kwargs.pop('pin_memory'))
@@ -155,7 +153,6 @@ class ToTensorMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if 'device' in kwargs:
             device_str = kwargs.pop('device')
-            print(repr(device_str))
             if '\"\"\"' in device_str:
                 valid = False
                 for ele in ['cpu', 'gpu', 'cuda', 'ipu', 'xpu']:
