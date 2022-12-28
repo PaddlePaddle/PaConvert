@@ -105,7 +105,7 @@ class BasicTransformer(BaseTransformer):
                     self.log_debug("[Success]convert {} to Paddle".format(torch_api), self.file_name, node.lineno)
                     return new_node
 
-            self.log_debug("[Failed]can not convert {} to Paddle".format(torch_api), self.file_name, node.lineno)
+            self.log_info("[Failed]can not convert {} to Paddle".format(torch_api), self.file_name, node.lineno)
         return node 
 
     def trans_tensor_attribute(self, node, torch_api):
@@ -121,7 +121,7 @@ class BasicTransformer(BaseTransformer):
 
         annotate_node = ast.parse("'Tensor Attribute: {}, not convert, please check whether it is torch.Tensor.* and convert manually'".format(torch_api)).body[0]
         self.record_scope(self.scope_node_body_index(), annotate_node)
-        self.log_debug("[Failed]can not convert Tensor Attribute: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
+        self.log_info("[Failed]can not convert Tensor Attribute: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
         return node
 
 
@@ -218,7 +218,7 @@ class BasicTransformer(BaseTransformer):
                         self.log_debug("[Success]convert {} to Paddle ".format(torch_api), self.file_name, node.lineno)
                         return new_node
 
-            self.log_debug("[Failed]can not convert {} to Paddle ".format(torch_api), self.file_name, node.lineno)
+            self.log_info("[Failed]can not convert {} to Paddle ".format(torch_api), self.file_name, node.lineno)
         return node 
 
 
@@ -255,7 +255,7 @@ class BasicTransformer(BaseTransformer):
         
         annotate_node = ast.parse("'Tensor Method: {}, not convert, please check whether it is torch.Tensor.* and convert manually'".format(torch_api)).body[0]
         self.record_scope(self.scope_node_body_index(), annotate_node)
-        self.log_debug("[Failed]can not convert Tensor Method: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
+        self.log_info("[Failed]can not convert Tensor Method: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
         return node
 
 

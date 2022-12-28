@@ -36,43 +36,35 @@ y = paddle.transpose(x, perm_0)
 在转换完成后，`Pytorch API总数、转换成功数、转换失败数` 的统计结果将会打印到终端，对于无法转换的Pytorch API，我们会通过 `>>>` 在代码行前面进行标识，你需要手动转换并删除该标记。
 
 
-# 安装
+# 安装与使用
+
+建议使用python3.8及以上的解释器，以使用最新的ast功能。
 
 1. 使用pip安装
 
 ```bash
-pip install -U paddleconverter-1.0-py3-none-any.whl 
-paddleconverter --help # show paddleconverter help
-paddleconverter --run_check 1 # tool run check
-```
-
-如果你的机器安装了多个Python，建议使用最新的python解释器来进行转换，以使用最新的ast功能，例如：
-
-```bash
-python3.9 -m pip install -U paddleconverter-1.0-py3-none-any.whl 
+python3.8 -m pip install -U paddleconverter-1.0-py3-none-any.whl
+paddleconverter --in_dir torch_project --out_dir paddle_project [--log_dir log_dir] [--log_level level] [--run_check 1]
 ```
 
 2. 使用源码安装
 
 ```bash
 git clone https://github.com/zhouwei25/paddleconverter.git
-cd paddleconverter
-python setup.py bdist_wheel
-cd ..
-python -m pip install -U paddleconverter/dist/*.whl
+python3.8 paddleconverter/main.py --in_dir torch_project --out_dir paddle_project [--log_dir log_dir] [--log_level level] [--run_check 1]
 ```
 
-# 用法
+**参数介绍**
 
-```bash
-paddleconverter --in_dir torch_project --out_dir paddle_project [--log_dir log_dir]
-
+```
 参数：
 --in_dir 输入torch项目文件，可以为单个文件或文件夹
---out_dir 输出paddle项目文件，输入文件，则也应为文件，输入文件夹，则也应为文件夹
---log-dir 可选，输出日志的路径，默认值不生成输出日志文件
-
+--out_dir 输出paddle项目文件，与输入的类型一致，同为文件或文件夹
+--log_dir 可选，输出日志的路径，默认会在当前目录下创建convert.log
+--log_level 可选"INFO" "DEBUG"，打印log等级，默认"INFO"
+--run_check 可选，工具自检
 ```
+
 
 # 简单示例
 
@@ -143,13 +135,6 @@ Start convert /workspace/paddleconverter/paddleconverter/tests/temp_code.py --> 
 [temp_code.py:4] remove 'import torch.nn.Linear as Linear' 
 [temp_code.py:5] remove 'import torch.nn.functional as F' 
 [temp_code.py] add 'import paddle' in first line
-[temp_code.py:1] [Success]convert torch.nn.Module to Paddle
-[temp_code.py:11] [Success]convert torch.nn.Linear to Paddle 
-[temp_code.py:12] [Success]convert torch.nn.Linear to Paddle 
-[temp_code.py:13] [Success]convert torch.nn.Linear to Paddle 
-[temp_code.py:20] [Success]convert torch.add to Paddle 
-[temp_code.py:21] [Success]convert torch.nn.functional.relu to Paddle 
-[temp_code.py:15] [Success]convert torch.no_grad to Paddle 
 [temp_code.py:24] [Failed]can not convert torch.optim.SGD to Paddle 
 [temp_code.py] Mark this file which has been converted already
 Finish convert /workspace/paddleconverter/paddleconverter/tests/temp_code.py --> /workspace/paddleconverter/tests/temp_out/temp_code.py
@@ -168,7 +153,9 @@ Thank you to use Paddle Convert tool. You can make any suggestions to us.
 
 ```
 
-一共有8个torch API，其中7个被成功转换，该文件的转换率为85.7%，如果项目中有多个文件，会统计所有.py文件累计的数据。
+转换过程中，会在终端打印出日志，日志中会记录未成功转换的API、文件及行数，同时会在 `--log_dir` 中保存日志文件。
+
+该文件中一共有8个torch API，其中7个被成功转换，因此转换率为85.7%，如果项目中有多个文件，则会统计所有.py文件累计的数据。
 
 对于转换成功的API，将 **补全API全名、参数关键字、移除注释、移除多余空行**。因为语法树重新转换为源码时，会采用标准写法来生成代码，而注释、空行等代码无法被语法树识别，将被移除。因此转换前后行数会有一些差异。
 
