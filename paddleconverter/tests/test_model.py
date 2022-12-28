@@ -342,3 +342,13 @@ torch.nn.functional.interpolate(input_data, scale_factor=[2,1], recompute_scale_
 
 torch.nn.functional.interpolate(input_data, scale_factor=[2,1], antialias=False)
 
+
+# torch.tensor
+device = torch.device('cuda')
+torch.tensor(1., device=device)
+
+torch.tensor(1., device=torch.device('cuda:1'))
+
+torch.tensor(1., device='cuda')
+
+torch.tensor(1., device='cuda:1')

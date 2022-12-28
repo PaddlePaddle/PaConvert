@@ -262,6 +262,9 @@ class BasicTransformer(BaseTransformer):
     def get_api_mather(self, torch_api):
         if torch_api in API_MAPPING:
             api_mapping = API_MAPPING[torch_api]
+            if "disable" in api_mapping and eval(api_mapping["disable"]):
+                return None
+
             if "Matcher" in api_mapping:
                 matcher = api_mapping['Matcher']
                 return eval(matcher)(torch_api, api_mapping)

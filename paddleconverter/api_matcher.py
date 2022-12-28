@@ -35,16 +35,18 @@ class GenericMatcher(BaseMatcher):
             kwargs_change = self.api_mapping['kwargs_change']
         new_kwargs = {}
         for k in list(kwargs.keys()):
-            if k in ['layout', 'device', 'memory_format', 'inplace', 'generator', 'non_blocking']:
-                continue
             if k in kwargs_change:
                 if kwargs_change[k]:
                     new_kwargs[kwargs_change[k]] = kwargs.pop(k)
             else:
+                if k in ['layout', 'device', 'memory_format', 'inplace', 'generator', 'non_blocking']:
+                    continue
                 #TODO: kwargs_change -> kwargs_mapping
                 # not mapping in kwargs in there is not in kwargs_mapping
                 new_kwargs[k] = kwargs[k]
 
+        print(kwargs)
+        print(new_kwargs)
         pin_memory_v = False
         if 'pin_memory' in kwargs:
             pin_memory_v = eval(new_kwargs.pop('pin_memory'))
@@ -152,7 +154,20 @@ class TensorAddMatcher(BaseMatcher):
 class ToTensorMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if 'device' in kwargs:
-            kwargs['place'] = kwargs.pop('device')
+            device_str = kwargs.pop('device')
+            print(repr(device_str))
+            if '\"\"\"' in device_str:
+                valid = False
+                for ele in ['cpu', 'gpu', 'cuda', 'ipu', 'xpu']:
+                    if ele in device_str:
+                        valid = True
+                if not valid:
+                    return None
+            
+                if 'cuda' in device_str:
+                    device_str = device_str.replace('cuda', 'gpu')
+            
+            kwargs['place'] = device_str
 
         if 'requires_grad' in kwargs:
             requires_grad_v = kwargs.pop('requires_grad')
@@ -254,12 +269,22 @@ class CreateMatcher(BaseMatcher):
 
 class DeviceMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
-        if len(args) > 1:
-            return None
-        device_str = args[0].value
+        if len(args) == 1 and isinstance(args[0], ast.Str):
+            device_str = args[0].value
+            valid = False
+            for ele in ['cpu', 'cuda', 'ipu', 'xpu']:
+                if ele in device_str:
+                    valid = True
+            if not valid:
+                return None
+            
+            if 'cuda' in device_str:
+                device_str = device_str.replace('cuda', 'gpu')
 
-        code = "'{}'".format(device_str)
-        return ast.parse(code).body
+            code = "'{}'".format(device_str)
+            return ast.parse(code).body
+        
+        return None
     
 
 class GeluMatcher(BaseMatcher):

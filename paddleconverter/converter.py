@@ -100,7 +100,14 @@ class Converter:
     def mark_unsport(self, code):
         lines = code.split('\n')
         mark_next_line = False
+        in_doc = False
         for i, line in enumerate(lines):
+            # for torch.* in __doc__ 
+            if line.count('\"\"\"') % 2 != 0:
+                in_doc = not in_doc
+            if in_doc:
+                continue
+
             if 'Tensor Method:' in line or 'Tensor Attribute:' in line:
                 mark_next_line = True
                 continue

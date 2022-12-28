@@ -31,7 +31,7 @@ y = paddle.transpose(x, perm_0)
 
 这是由于两者API的用法差异，无法通过一行完成，必须增加若干行来实现相同功能。
 
-所有的API转换是依据 [Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api) 来进行的。
+所有的API转换是依据 [Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api) 来进行的。注意：该映射表仅针对torch.* 的API，也就是只有此部分API在待转换范围里。对于其他的库，例如`torchvision`，由于并没有映射表关系，均不在待转换范围里。
 
 在转换完成后，`Pytorch API总数、转换成功数、转换失败数` 的统计结果将会打印到终端，对于无法转换的Pytorch API，我们会通过 `>>>` 在代码行前面进行标识，你需要手动转换并删除该标记。
 
