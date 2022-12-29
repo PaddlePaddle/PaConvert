@@ -851,7 +851,7 @@
   "torch.absolute" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.abs",
-    "args_list" : ["input"],
+    "args_list" : ["input","out"],
     "kwargs_change": {
       "input":"x"
     }
@@ -860,7 +860,7 @@
   "torch.acos" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.acos",
-    "args_list" : ["input"],
+    "args_list" : ["input","out"],
     "kwargs_change": {
       "input":"x"
     }
@@ -869,7 +869,7 @@
   "torch.arccos" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.acos",
-    "args_list" : ["input"],
+    "args_list" : ["input","out"],
     "kwargs_change": {
       "input":"x"
     }
@@ -878,7 +878,7 @@
   "torch.acosh" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.acosh",
-    "args_list" : ["input"],
+    "args_list" : ["input","out"],
     "kwargs_change": {
       "input":"x"
     }
@@ -887,7 +887,7 @@
   "torch.arccosh" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.acosh",
-    "args_list" : ["input"],
+    "args_list" : ["input","out"],
     "kwargs_change": {
       "input":"x"
     }
@@ -897,7 +897,7 @@
   "torch.asin" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.asin",
-    "args_list" : ["input"],
+    "args_list" : ["input","out"],
     "kwargs_change": {
       "input":"x"
     }
@@ -906,7 +906,7 @@
   "torch.arcsin" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.asin",
-    "args_list" : ["input"],
+    "args_list" : ["input","out"],
     "kwargs_change": {
       "input":"x"
     }
@@ -915,7 +915,7 @@
   "torch.asinh" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.asinh",
-    "args_list" : ["input"],
+    "args_list" : ["input","out"],
     "kwargs_change": {
       "input":"x"
     }
@@ -924,7 +924,7 @@
   "torch.arcsinh" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.asinh",
-    "args_list" : ["input"],
+    "args_list" : ["input","out"],
     "kwargs_change": {
       "input":"x"
     }
@@ -933,7 +933,7 @@
   "torch.atan" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.atan",
-    "args_list" : ["input"],
+    "args_list" : ["input","out"],
     "kwargs_change": {
       "input":"x"
     }
@@ -942,7 +942,7 @@
   "torch.arctan" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.atan",
-    "args_list" : ["input"],
+    "args_list" : ["input","out"],
     "kwargs_change": {
       "input":"x"
     }
@@ -951,7 +951,7 @@
   "torch.atanh" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.atanh",
-    "args_list" : ["input"],
+    "args_list" : ["input","out"],
     "kwargs_change": {
       "input":"x"
     }
@@ -960,7 +960,7 @@
   "torch.arctanh" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.atanh",
-    "args_list" : ["input"],
+    "args_list" : ["input","out"],
     "kwargs_change": {
       "input":"x"
     }
@@ -971,7 +971,8 @@
     "paddle_api": "paddle.atan2",
     "args_list" : [
       "input",
-      "other"],
+      "other",
+      "out"],
     "kwargs_change": {
       "input":"x",
       "other":"y"
