@@ -361,5 +361,8 @@ torch.tensor(1., device='cuda:1')
 
 # black list, not convert
 import numpy as np
+
+from np import array
+
 np.add(x, y)
-np.array(1.).abs()
+array(1.).abs().add(y)

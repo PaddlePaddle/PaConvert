@@ -107,7 +107,7 @@ class BaseTransformer(ast.NodeTransformer):
         # x.abs() -> 'x'
         elif isinstance(node, ast.Name):
             # array(1.) ... 
-            node_str = astor.to_source(node)
+            node_str = astor.to_source(node).strip('\n')
             for item in self.black_list:
                 if item == node_str:
                     return 'None'
@@ -120,7 +120,7 @@ class BaseTransformer(ast.NodeTransformer):
         elif isinstance(node, (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript)):
             # np.array(1.).transpose(1, 0) ...
             # array(1.).transpose(1, 0) ...
-            node_str = astor.to_source(node)
+            node_str = astor.to_source(node).strip('\n')
             for item in self.black_list:
                 if re.match('[^A-Za-z]*' + item, node_str):
                     return 'None'

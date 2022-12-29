@@ -36,7 +36,7 @@ y = paddle.transpose(x, perm_0)
 
 # 安装与使用
 
-建议使用python3.8及以上的解释器，以使用最新的ast功能。
+由于使用了一些较新的Python语法树功能，需要使用>=python3.8的解释器。
 
 1. 使用pip安装
 
