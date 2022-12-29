@@ -96,11 +96,11 @@ torch.reshape(torch.add(x.abs(), y), [3])
 
 torch.reshape(torch.abs(x).add(y), [3])
 
-torch.add(torch.abs(x), y).reshape([3])
+torch.add(torch.abs(x), y).reshape(3)
 
-torch.abs(x).add(y).reshape([3])
+torch.abs(x).add(y).reshape(3)
 
-torch.add(x.abs(), y).reshape([3])
+torch.add(x.abs(), y).reshape(3)
 
 torch.reshape(x.abs().add(y), [3])
 
@@ -366,3 +366,19 @@ from np import array
 
 np.add(x, y)
 array(1.).abs().add(y)
+
+
+# mark unspport
+torch.test(x)
+( array(1.) + torch.test(x).numpy()).abs()
+( array(1.)-torch.test(x).numpy()).abs()
+( array(1.)*torch.test(x).numpy()).abs()
+"_torch.npy"
+str1="_torch.npy"
+str2='_torch.npy'
+hellotorch.test
+
+## should mark
+torch.save('torch.parma')
+## not mark
+np.save('torch.parma')

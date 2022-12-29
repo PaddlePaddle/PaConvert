@@ -101,12 +101,15 @@ class Converter:
     def mark_unsport(self, code):
         lines = code.split('\n')
         mark_next_line = False
-        in_doc = False
+        in_str = False
         for i, line in enumerate(lines):
-            # torch.* in __doc__ , not need to mark
+            # torch.* in __doc__ 
+            # torch.* in str
             if line.count('\"\"\"') % 2 != 0:
-                in_doc = not in_doc
-            if in_doc:
+                in_str = not in_str
+            
+            tmp_line = re.sub(r'[\'\"]{1}[^\'\"]+[\'\"]{1}', "", line)
+            if in_str:
                 continue
 
             if 'Tensor Method:' in line or 'Tensor Attribute:' in line:
@@ -120,7 +123,7 @@ class Converter:
                     continue
             
             # model_torch.npy
-            if re.match(r'[^A-Za-z]*torch.', line):
+            if re.match(r'.*[^A-Za-z_]{1}torch.', tmp_line) or tmp_line.startswith('torch.'):
                 lines[i] = ">>>" + line
 
         return '\n'.join(lines)

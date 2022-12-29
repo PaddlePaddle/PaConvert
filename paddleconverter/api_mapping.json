@@ -6102,6 +6102,7 @@
     "Matcher": "TensorRequiresGradMatcher",
     "args_list": ["requires_grad"]
   }, 
+  "torch.Tensor.reshape": {}, 
   "torch.Tensor.reshape_as": {}, 
   "torch.Tensor.resize_": {}, 
   "torch.Tensor.resize_as_": {}, 
@@ -6182,7 +6183,6 @@
   }, 
   "torch.Tensor.unfold": {}, 
   "torch.Tensor.unique": {}, 
-  "torch.Tensor.values": {}, 
   "torch.Tensor.vdot": {}, 
   "torch.Tensor.view": {
     "Matcher": "TensorViewMatcher"
