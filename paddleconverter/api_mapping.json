@@ -1034,8 +1034,6 @@
     "paddle_api": "paddle.ceil",
     "args_list" : [
       "input",
-      "min",
-      "max",
       "out"],
     "kwargs_change": {
       "input":"x"
