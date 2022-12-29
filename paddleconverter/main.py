@@ -32,7 +32,7 @@ def main():
 
     if args.run_check is not None:
         cwd = os.path.dirname(__file__)
-        coverter = Converter()
+        coverter = Converter(args.log_dir, args.log_level)
         
         success_api, failed_api = coverter.run(cwd + '/tests/test_model.py', cwd +'/tests/temp_out/test_model.py')
         

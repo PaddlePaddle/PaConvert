@@ -55,19 +55,21 @@
 
   "torch.max" : {
     "Matcher": "MaxMinMatcher",
-    "paddle_api": "paddle.max",
-    "args_list" : ["input"],
+    "paddle_api": "paddle.maximum",
+    "args_list" : ["input", "other"],
     "kwargs_change": {
-      "input": "x"
+      "input": "x",
+      "other": "y"
     }
   },
 
   "torch.min" : {
     "Matcher": "MaxMinMatcher",
     "paddle_api": "paddle.minimum",
-    "args_list" : ["input"],
+    "args_list" : ["input", "other"],
     "kwargs_change": {
-      "input": "x"
+      "input": "x",
+      "other": "y"
     }
   },
 

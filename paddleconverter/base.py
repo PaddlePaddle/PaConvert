@@ -162,7 +162,7 @@ class BaseMatcher(object):
     def parse_args_and_kwargs(self, args, kwargs):
         args_list = self.api_mapping.get('args_list') or []
         # assert len(args) <= len(args_list)
-        # For: Tensor Method, this API usage is not match torch.Tensor, so it is not Tensor
+        # For: Tensor Method, this API usage is not match torch.Tensor, indicate it is not Tensor
         if len(args) > len(args_list):
             return 'NonTensor'
 
