@@ -16,6 +16,7 @@ import ast
 import astor
 import json
 import collections
+import re
 from os import path
 
 from paddleconverter.utils import UniqueNameGenerator
@@ -105,7 +106,7 @@ class BaseTransformer(ast.NodeTransformer):
             return self.get_full_attr(node.value) + '.' + node.attr
         # x.abs() -> 'x'
         elif isinstance(node, ast.Name):
-            # np.add, array(1.) ... 
+            # array(1.) ... 
             node_str = astor.to_source(node)
             for item in self.black_list:
                 if item == node_str:
@@ -117,11 +118,11 @@ class BaseTransformer(ast.NodeTransformer):
         # 4. x[0].transpose(1, 0) -> 'torchTensor'
         # 5. (-x).transpose -> 'torchTensor'
         elif isinstance(node, (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript)):
-            # np.add(x, y).transpose(1, 0), array(1.).transpose(1, 0) ...
+            # np.array(1.).transpose(1, 0) ...
+            # array(1.).transpose(1, 0) ...
             node_str = astor.to_source(node)
             for item in self.black_list:
-                # may not strict
-                if item in node_str:
+                if re.match('[^A-Za-z]*' + item, node_str):
                     return 'None'
             
             return 'torchTensor'

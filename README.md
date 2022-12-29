@@ -3,17 +3,15 @@ paddleconverter是一款API代码转换工具，其功能是将Pytorch项目代�
 
 其原理是借助Python语法树分析，将原PyTorch项目源码的生成为抽象语法树，对其进行遍历、解析、匹配、编辑，然后得到Paddle的抽象语法树，再转回为Paddle的项目源码。
 
-转换逻辑为静态代码扫描，保持原代码的风格与结构不变，只转换相应的Pytorch API，其他Python代码保持原样不变。
+转换逻辑为静态代码扫描，保持原代码的风格与结构不变，只转换Pytorch API，而其他的Python代码保持原样不变。
 
-转换采用非inplace的方式，将原Pytorch项目文件一一转换到 `out_dir` 指定的文件夹中，不修改原文件，方便前后对比：
+转换采用非inplace的方式，将原项目文件一一转换到 `out_dir` 指定的文件夹中，不改动原文件，方便前后对比调试：
 
-- Python文件：逐个识别torch API并转换
-- requirements.txt： 转换其中的 torch 安装依赖
+- Python文件：逐个识别Pytorch API并转换
+- requirements.txt： 将其中的 torch 安装依赖替换为 paddlepaddle-gpu
 - 其他文件：原样拷贝
 
-对一个 Pytorch API，尽可能按一对一的形式转换，但在某些情形下，必须借助多行Paddle代码才能实现一个Pytorch API，这会导致转换前后的代码行数改变。
-
-例如：
+对一个 Pytorch API，尽可能按一对一的形式转换，但在某些情形下，必须借助多行Paddle代码才能实现一个Pytorch API，这会导致转换前后的代码行数改变。例如：
 
 ```
 import torch
@@ -31,7 +29,7 @@ y = paddle.transpose(x, perm_0)
 
 这是由于两者API的用法差异，无法通过一行完成，必须增加若干行来实现相同功能。
 
-所有的API转换是依据 [Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api) 来进行的。注意：该映射表仅针对torch.* 的API，也就是只有此部分API在待转换范围里。对于其他的库，例如`torchvision`，由于并没有映射表关系，均不在待转换范围里。
+所有的API转换是依据 [Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api) 来进行的。注意：该映射表仅针对 `torch.*`，也就是只有Pytorch API在待转换范围里。对于其他的库，例如`torchvision、tensorflow`，由于并没有映射表关系，均不在转换范围里。
 
 在转换完成后，`Pytorch API总数、转换成功数、转换失败数` 的统计结果将会打印到终端，对于无法转换的Pytorch API，我们会通过 `>>>` 在代码行前面进行标识，你需要手动转换并删除该标记。
 

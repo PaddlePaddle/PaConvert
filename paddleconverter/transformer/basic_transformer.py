@@ -27,7 +27,7 @@ class BasicTransformer(BaseTransformer):
     def __init__(self, root, file, imports_map, logger):
         super(BasicTransformer, self).__init__(root, file, imports_map, logger)
         # use to identify tensor method/attribute
-        self.black_list = self.imports_map[self.file]['others'] + ['self', 'ndarray', 'data']
+        self.black_list = self.imports_map[self.file]['others'] + ['self', 'ndarray']
 
     @property
     def parent_node(self):
@@ -72,14 +72,14 @@ class BasicTransformer(BaseTransformer):
         if isinstance(self.parent_node, ast.Call):
             if node == self.parent_node.func:
                 return node
-        
-        # x.size[1]
-        if isinstance(self.parent_node, ast.Subscript):
-            if node == self.parent_node.value:
-                return node
 
         full_attr = self.get_full_attr(node)
-        
+
+        # corner case:
+        #   x.size[2]
+        if isinstance(self.parent_node, ast.Subscript) and 'size' in full_attr:
+            return node
+
         # Tensor attribute, such as: x.device / x.dtype
         if not full_attr.startswith('torch.'):
             if not full_attr.startswith('None') and len(full_attr.split('.')) == 2:

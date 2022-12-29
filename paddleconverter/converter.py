@@ -18,6 +18,7 @@ import ast
 import astor
 import shutil
 import collections
+import re
 
 
 from .transformer.import_transformer import ImportTransformer
@@ -102,7 +103,7 @@ class Converter:
         mark_next_line = False
         in_doc = False
         for i, line in enumerate(lines):
-            # for torch.* in __doc__ 
+            # torch.* in __doc__ , not need to mark
             if line.count('\"\"\"') % 2 != 0:
                 in_doc = not in_doc
             if in_doc:
@@ -112,13 +113,14 @@ class Converter:
                 mark_next_line = True
                 continue
             else:
-                # for func decorator_list: @
+                # func decorator_list: @
                 if mark_next_line and line != '@':
                     lines[i] = ">>>" + line
                     mark_next_line = False
                     continue
             
-            if 'torch.' in line:
+            # model_torch.npy
+            if re.match(r'[^A-Za-z]*torch.', line):
                 lines[i] = ">>>" + line
 
         return '\n'.join(lines)
@@ -145,8 +147,6 @@ class Converter:
             self.transfer_node(root, old_path)
             code = astor.to_source(root)
             code = self.mark_unsport(code)
-
-            
 
             with open(new_path, 'w') as file:
                 file.write(code)

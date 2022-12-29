@@ -28,6 +28,7 @@ class ImportTransformer(BaseTransformer):
     def __init__(self, root, file, imports_map, logger):
         super(ImportTransformer, self).__init__(root, file, imports_map, logger)
         self.imports_map[self.file]['others'] = []
+        self.import_paddle = False
 
     def visit_Import(self, node):
         '''
@@ -38,6 +39,8 @@ class ImportTransformer(BaseTransformer):
         new_node_names = []
         for alias_node in node.names:
             if 'torch.' in alias_node.name or 'torch' == alias_node.name:
+                # If there is any torch.* module, use paddle to replace it
+                self.import_paddle = True
                 if alias_node.asname:
                     self.log_info("remove 'import {} as {}' ".format(alias_node.name, alias_node.asname), self.file_name, node.lineno)
                     self.imports_map[self.file][alias_node.asname] = alias_node.name
@@ -62,8 +65,10 @@ class ImportTransformer(BaseTransformer):
         1. remove from torch import nn
         2. remove from torch import nn.functional as F
         '''
+        # from . import Net
         if node.module:
             if 'torch.' in node.module or 'torch' == node.module:
+                self.import_paddle = True
                 for alias_node in node.names:
                     if alias_node.asname:
                         self.log_info("remove 'from {} import {} as {}' ".format(node.module, alias_node.name, alias_node.asname), self.file_name, node.lineno)
@@ -77,7 +82,9 @@ class ImportTransformer(BaseTransformer):
             if alias_node.asname:
                 self.imports_map[self.file]['others'].append(alias_node.asname)
             else:
-                self.imports_map[self.file]['others'].append(alias_node.name)
+                # from data_loader.modules import *
+                if alias_node.name != '*':
+                    self.imports_map[self.file]['others'].append(alias_node.name)
 
         return node
 
@@ -107,5 +114,6 @@ class ImportTransformer(BaseTransformer):
     def visit_Module(self, node):
         super(ImportTransformer, self).generic_visit(node)
 
-        self.log_info("add 'import paddle' in first line", self.file_name)
-        self.record_scope( (self.root, 'body', 0), ast.parse('import paddle').body)
+        if self.import_paddle:
+            self.log_info("add 'import paddle' in first line", self.file_name)
+            self.record_scope( (self.root, 'body', 0), ast.parse('import paddle').body)

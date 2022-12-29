@@ -168,7 +168,7 @@ class ToTensorMatcher(BaseMatcher):
 
         if 'requires_grad' in kwargs:
             requires_grad_v = kwargs.pop('requires_grad')
-            code = 'paddle.to_tensor({}, stop_gradient = {})'.format(self.kwargs_to_str(kwargs), not requires_grad_v)
+            code = 'paddle.to_tensor({}, stop_gradient = not {})'.format(self.kwargs_to_str(kwargs), requires_grad_v)
         else:
             code = 'paddle.to_tensor({})'.format(self.kwargs_to_str(kwargs))
 
@@ -189,7 +189,7 @@ class TransposeMatcher(BaseMatcher):
             {} = list(range(len({}.shape)))
             {}[{}] = {}
             {}[{}] = {}
-            paddle.transpose({}, {})
+            paddle.transpose(x={}, perm={})
             '''
         )
         perm = get_unique_name('perm')
@@ -341,13 +341,13 @@ class MaxMinMatcher(BaseMatcher):
         if 'dim' in kwargs:
             return None
 
-        # only return values
+        # only return values, not return indices
         if 'input' in kwargs:
             x_v = astor.to_source(kwargs['input']).strip('\n')
         else:
             x_v = astor.to_source(args[0]).strip('\n')
 
-        code = 'paddle.max({})'.format(x_v)
+        code = 'paddle.max(x={})'.format(x_v)
         return ast.parse(code).body
 
 
@@ -377,7 +377,7 @@ class TensorTransposeMatcher(BaseMatcher):
             {} = list(range(len({}.shape)))
             {}[{}] = {}
             {}[{}] = {}
-            {}.transpose({})
+            {}.transpose(perm={})
             '''
         )
         perm = get_unique_name('perm')

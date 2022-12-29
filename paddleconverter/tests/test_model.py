@@ -152,6 +152,11 @@ size = torch.abs(x, out=y).size()
 
 x.abs().size()
 
+## NonTensor
+x.size[2]
+## Tensor
+x.shape[2]
+
 # torch.Tensor.Attribute
 shape = x.shape
 
@@ -352,3 +357,9 @@ torch.tensor(1., device=torch.device('cuda:1'))
 torch.tensor(1., device='cuda')
 
 torch.tensor(1., device='cuda:1')
+
+
+# black list, not convert
+import numpy as np
+np.add(x, y)
+np.array(1.).abs()
