@@ -2404,7 +2404,8 @@
     "args_list" : [
       "p",
       "dim",
-      "maxnorm"],
+      "maxnorm",
+      "out"],
     "kwargs_change": {
       "dim":"axis"
     }
@@ -2735,6 +2736,18 @@
       "input",
       "vec",
       "out"],
+    "kwargs_change": {
+      "input":"x"
+    }
+  },
+
+
+  "torch.pinverse" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.pinv",
+    "args_list" : [
+      "input",
+      "rcond"],
     "kwargs_change": {
       "input":"x"
     }
@@ -3122,6 +3135,16 @@
       "threshold"]
   },
 
+  "torch.nn.Softshrink" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Softshrink",
+    "args_list" : [
+      "lambd"],
+    "kwargs_change": {
+      "lambd":"threshold"
+    }
+  },
+
   "torch.nn.Softsign" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Softsign"
@@ -3280,7 +3303,7 @@
 
   "torch.nn.UpsamplingBilinear2d" : {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.UpsamplingBilinear2d",
+    "paddle_api": "paddle.nn.UpsamplingBilinear2D",
     "args_list" : [
       "size",
       "scale_factor"]
@@ -3451,8 +3474,7 @@
       "dilation",
       "groups"],
     "kwargs_change": {
-      "input":"x",
-      "out":"out"
+      "input":"x"
     }
   },
 
