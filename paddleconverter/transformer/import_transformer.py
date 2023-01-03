@@ -95,6 +95,7 @@ class ImportTransformer(BaseTransformer):
         eg.
             nn.Module -> torch.nn.Module
         '''
+        super(ImportTransformer, self).generic_visit(node)
         torch_api = self.get_full_api_from_node(node)
         if torch_api:
             return ast.parse(torch_api).body[0].value
@@ -106,6 +107,7 @@ class ImportTransformer(BaseTransformer):
         eg.
             Module -> torch.nn.Module
         '''
+        super(ImportTransformer, self).generic_visit(node)
         torch_api = self.get_full_api_from_node(node)
         if torch_api:
             return ast.parse(torch_api).body[0].value

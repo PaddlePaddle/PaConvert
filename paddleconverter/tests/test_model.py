@@ -106,6 +106,9 @@ torch.reshape(x.abs().add(y), [3])
 
 x.abs().add(y).reshape([3])
 
+# multi level call
+nn.CrossEntropyLoss().cuda(args.gpu)
+
 # Sequential
 model = nn.Sequential(
           nn.Conv2d(1,20,5),
@@ -125,6 +128,14 @@ blocks = []
 blocks.append(('block1', torch.nn.Linear(10, 10)))
 blocks.append(('block2', torch.nn.Linear(10, 10)))
 nn.Sequential(OrderedDict(blocks))
+
+blocks = []
+blocks.append(torch.nn.Linear(10, 10))
+blocks.append(torch.nn.Linear(10, 10))
+nn.Sequential(*blocks)
+
+
+nn.Sequential(nn.Conv2d(in_dim, in_dim, kernel_size=3, stride=2, padding=1, groups=in_dim),)
 
 # container
 linears = nn.ModuleList([nn.Linear(10, 10) for i in range(10)])
@@ -382,3 +393,6 @@ hellotorch.test
 torch.save('torch.parma')
 ## not mark
 np.save('torch.parma')
+
+# torch.tensor/paddle.to_tensor
+torch.tensor(features_A).T.cuda()

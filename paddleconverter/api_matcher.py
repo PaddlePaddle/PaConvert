@@ -301,10 +301,11 @@ class GeluMatcher(BaseMatcher):
 
 class SquentialMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
-        if len(args) == 1 and isinstance(args[0], ast.Call):
-            if self.get_full_attr(args[0].func).endswith('OrderedDict'):
-                new_args = self.parse_args(args[0].args)
-                new_args = ['*{}'.format(new_args[0])]
+        # nn.Sequential(OrderedDict([...]) / nn.Sequential(OrderedDict(blocks))
+        if len(args) == 1 and isinstance(args[0], ast.Call) and self.get_full_attr(args[0].func).endswith('OrderedDict'):
+            new_args = self.parse_args(args[0].args)
+            new_args = ['*{}'.format(new_args[0])]
+        # nn.Sequential(module1, module2, ...)
         else:
             new_args = self.parse_args(args)
         code = 'paddle.nn.Sequential({})'.format(self.args_to_str(new_args))

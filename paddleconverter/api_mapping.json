@@ -3652,7 +3652,7 @@
 
   "torch.nn.functional.relu" : {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.hardswish",
+    "paddle_api": "paddle.nn.functional.relu",
     "args_list" : [
       "input",
       "inplace"],

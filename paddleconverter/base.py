@@ -112,21 +112,21 @@ class BaseTransformer(ast.NodeTransformer):
                 if item == node_str:
                     return 'None'
             return node.id
-        # 1. torch.abs(x).transpose(1, 0) -> 'torchTensor'
-        # 2. (x == y).transpose(1, 0) -> 'torchTensor'
-        # 3. (x + y).transpose(1, 0) -> 'torchTensor'
-        # 4. x[0].transpose(1, 0) -> 'torchTensor'
-        # 5. (-x).transpose -> 'torchTensor'
+        # 1. torch.abs(x).transpose(1, 0) -> 'torchClass'
+        # 2. (x == y).transpose(1, 0) -> 'torchClass'
+        # 3. (x + y).transpose(1, 0) -> 'torchClass'
+        # 4. x[0].transpose(1, 0) -> 'torchClass'
+        # 5. (-x).transpose -> 'torchClass'
         elif isinstance(node, (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript)):
             # np.array(1.).abs() ...
             # array(1.).abs() ...
             # (array(1.) + array(2.)).abs() ...
             node_str = astor.to_source(node).strip('\n')
             for item in self.black_list:
-                if re.match('[^A-Za-z]*' + item, node_str):
+                if re.match('.*[^A-Za-z_]{1}%s[^A-Za-z_]{1}.*' % item, node_str) or re.match('%s[^A-Za-z_]{1}.*' % item, node_str):
                     return 'None'
             
-            return 'torchTensor'
+            return 'torchClass'
         # others, such as 'str'.split
         else:
             return 'None'

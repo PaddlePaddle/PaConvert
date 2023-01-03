@@ -123,7 +123,7 @@ class Converter:
                     continue
             
             # model_torch.npy
-            if re.match(r'.*[^A-Za-z_]{1}torch.', tmp_line) or tmp_line.startswith('torch.'):
+            if re.match(r'.*[^A-Za-z_]{1}torch\.', tmp_line) or tmp_line.startswith('torch.'):
                 lines[i] = ">>>" + line
 
         return '\n'.join(lines)

@@ -68,12 +68,18 @@ class BasicTransformer(BaseTransformer):
         if isinstance(node.value, (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript)):
             super(BasicTransformer, self).generic_visit(node)
         
+        # 6.torch.tensor(features_A).T.cuda()
+        if isinstance(node.value, ast.Attribute) and node.value.attr == 'T':
+            super(BasicTransformer, self).generic_visit(node)
+
         # paddle.abs(x)
         if isinstance(self.parent_node, ast.Call):
             if node == self.parent_node.func:
                 return node
 
         full_attr = self.get_full_attr(node)
+        if 'None' in full_attr:
+            return node
 
         # corner case:
         #   x.size[2]
@@ -82,14 +88,13 @@ class BasicTransformer(BaseTransformer):
 
         # Tensor attribute, such as: x.device / x.dtype
         if not full_attr.startswith('torch.'):
-            if not full_attr.startswith('None'):
-                if (len(full_attr.split('.')) == 2 and 'self' not in full_attr)  or (len(full_attr.split('.')) >2 and 'self' in full_attr):
-                    attr_list = full_attr.split('.')
-                    torch_api = '.'.join(['torch.Tensor', attr_list[-1]])
-                    if torch_api in API_MAPPING:
-                        self.torch_api_count += 1
-                        self.log_debug("Start convert Tensor Attribute: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
-                        return self.trans_tensor_attribute(node, torch_api)
+            if (len(full_attr.split('.')) == 2 and 'self' not in full_attr)  or (len(full_attr.split('.')) >2 and 'self' in full_attr):
+                attr_list = full_attr.split('.')
+                torch_api = '.'.join(['torch.Tensor', attr_list[-1]])
+                if torch_api in API_MAPPING:
+                    self.torch_api_count += 1
+                    self.log_debug("Start convert Tensor Attribute: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
+                    return self.trans_tensor_attribute(node, torch_api)
 
         # Non-Tensor attribute, such as: torch.device / torch.dtype
         if full_attr.startswith('torch.'):
@@ -184,15 +189,16 @@ class BasicTransformer(BaseTransformer):
           
         # Tensor method func, such as : x.add(y) / x.abs().add
         if not full_attr.startswith('torch.'):
-            if not full_attr.startswith('None'):
-                #  self.weight.reshape
-                if (len(full_attr.split('.')) == 2 and 'self' not in full_attr)  or (len(full_attr.split('.')) >2 and 'self' in full_attr):
-                    attr_list = full_attr.split('.')
-                    torch_api = '.'.join(['torch.Tensor', attr_list[-1]])
-                    if torch_api in API_MAPPING:
-                        self.torch_api_count += 1
-                        self.log_debug("Start convert Tensor Method: {} to Paddle --> ".format(torch_api), self.file_name, node.lineno)
-                        return self.trans_tensor_method(node, torch_api)
+            #  x.reshape
+            #  self.weight.reshape
+            #  x.T.reshape
+            if (len(full_attr.split('.')) == 2 and 'self' not in full_attr) or (len(full_attr.split('.')) >2 and 'self' in full_attr) or '.T.' in full_attr:
+                attr_list = full_attr.split('.')
+                torch_api = '.'.join(['torch.Tensor', attr_list[-1]])
+                if torch_api in API_MAPPING:
+                    self.torch_api_count += 1
+                    self.log_debug("Start convert Tensor Method: {} to Paddle --> ".format(torch_api), self.file_name, node.lineno)
+                    return self.trans_tensor_method(node, torch_api)
         
         # Non-Tensor method, such as : torch.add(x,y) / torch.add(torch.abs(x), y)
         if full_attr.startswith('torch.'):
