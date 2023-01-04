@@ -371,7 +371,7 @@ class TensorTransposeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         # may be ndarray.transpose([list]) / ndarray.transpose(list)
         if len(kwargs) != 2:
-            return "NonTorchTensor"
+            return "NonTensor"
 
         API_TEMPLACE = textwrap.dedent(
             '''
