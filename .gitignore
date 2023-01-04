@@ -1,0 +1,7 @@
+convert.log
+build/
+dist/
+paddleconverter.egg-info/
+paddleconverter/__pycache__/
+paddleconverter/tests/temp_out/
+paddleconverter/transformer/__pycache__/

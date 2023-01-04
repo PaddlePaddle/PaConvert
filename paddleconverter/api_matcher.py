@@ -72,7 +72,7 @@ class GenericMatcher(BaseMatcher):
                 '''
             )
             out = get_unique_name('out')
-            code = API_TEMPLACE.format(temp, self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out, out)
+            code = API_TEMPLACE.format(out, self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out, out)
         elif not requires_grad_v and 'out' in kwargs:
             out_v = new_kwargs.pop('out')
             API_TEMPLACE = textwrap.dedent(
@@ -217,6 +217,8 @@ class CreateMatcher(BaseMatcher):
             del kwargs['layout']
         if 'device' in kwargs:
             del kwargs['device']
+        if 'memory_format' in kwargs:
+            del kwargs['memory_format']
         
         pin_memory_v = False
         if 'pin_memory' in kwargs:

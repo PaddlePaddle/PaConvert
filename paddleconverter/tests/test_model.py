@@ -245,6 +245,13 @@ torch.rand(())
 
 torch.rand([])
 
+# torch.randint
+
+torch.randint(10, [2, 2])
+
+torch.randint(2, 10, [2, 2])
+
+
 # torch.Tensor.size
 torch.abs(x).size()
 
@@ -370,7 +377,7 @@ torch.tensor(1., device='cuda')
 torch.tensor(1., device='cuda:1')
 
 
-# black list, not convert
+# should not convert
 import numpy as np
 
 from np import array
@@ -378,9 +385,9 @@ from np import array
 np.add(x, y)
 array(1.).abs().add(y)
 
-
-# mark unspport
+# should mark unspport
 torch.test(x)
+# should not mark unspport
 ( array(1.) + torch.test(x).numpy()).abs()
 ( array(1.)-torch.test(x).numpy()).abs()
 ( array(1.)*torch.test(x).numpy()).abs()
@@ -396,3 +403,12 @@ np.save('torch.parma')
 
 # torch.tensor/paddle.to_tensor
 torch.tensor(features_A).T.cuda()
+
+
+# torch.Tensor.transpose
+
+## not torch Tensor
+all_dists = dists.transpose()
+
+## is torch Tensor
+all_dists = dists.transpose(0, 1)
