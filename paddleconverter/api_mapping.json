@@ -5783,17 +5783,7 @@
       }
   }, 
 
-  "torch.Tensor.split": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.split",
-    "args_list" : [
-      "split_size_or_sections",
-      "dim"],
-      "kwargs_change": {
-        "split_size_or_sections":"num_or_sections",
-        "dim":"axis"
-      }
-  }, 
+  "torch.Tensor.split": {}, 
   
   "torch.Tensor.sqrt": {
     "Matcher": "GenericMatcher",
