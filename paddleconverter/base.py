@@ -126,7 +126,7 @@ class BaseTransformer(ast.NodeTransformer):
                 if re.match('.*[^A-Za-z_]{1}%s[^A-Za-z_]{1}.*' % item, node_str) or re.match('%s[^A-Za-z_]{1}.*' % item, node_str):
                     return 'None'
             
-            return 'torchClass'
+            return 'TorchClass'
         # others, such as 'str'.split
         else:
             return 'None'
@@ -162,10 +162,11 @@ class BaseMatcher(object):
 
     def parse_args_and_kwargs(self, args, kwargs):
         args_list = self.api_mapping.get('args_list') or []
-        # assert len(args) <= len(args_list)
-        # For: Tensor Method, this API usage is not match torch.Tensor, indicate it is not Tensor
+        #assert len(args) <= len(args_list)
+        
+        # this API usage is not match torch.Tensor/torch.nn.Module/Optimizer class method, indicate it is not torch Class
         if len(args) > len(args_list):
-            return 'NonTensor'
+            return 'NonTorchClass'
 
         new_kwargs = {}
         for i, node in enumerate(args):
@@ -205,10 +206,12 @@ class BaseMatcher(object):
 
     def parse_func(self, func):
         new_func = astor.to_source(func).strip('\n')
-        self.paddleTensor = new_func[0: new_func.rfind('.')]
+        self.paddleClass = new_func[0: new_func.rfind('.')]
         if self.get_paddle_api():
-            new_paddle_api = self.get_paddle_api().replace('paddle.Tensor', self.paddleTensor)
+            new_paddle_api = re.sub("paddle.Tensor|paddle.nn.Layer|paddle.optimizer.Optimizer", 
+                self.paddleClass, self.get_paddle_api())
             self.set_paddle_api(new_paddle_api)
+  
         return new_func
 
     def args_to_str(self, args):
@@ -254,16 +257,16 @@ class BaseMatcher(object):
                 return ast.parse(new_code).body
         return None
 
-    def get_paddle_tensor_nodes(self, func, args, kwargs):
+    def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
         new_kwargs = self.parse_args_and_kwargs(args, kwargs)
-        # NonTensor means This API usage not match torch.Tensor, so it is not a Tensor
-        if new_kwargs == "NonTensor":
-            return "NonTensor"
+        # NonTorchClass means This API usage not match torch.Tensor/Module/Optimizer, so it is not a torch Class
+        if new_kwargs == "NonTorchClass":
+            return "NonTorchClass"
         elif new_kwargs is not None:
             new_code = self.generate_code(new_kwargs)
-            if new_code == "NonTensor":
-                return "NonTensor"
+            if new_code == "NonTorchClass":
+                return "NonTorchClass"
             elif new_code is not None:
                 return ast.parse(new_code).body
         

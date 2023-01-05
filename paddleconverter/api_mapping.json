@@ -6099,10 +6099,7 @@
     "Matcher": "TensorRepeatMatcher"
   }, 
   "torch.Tensor.repeat_interleave": {}, 
-  "torch.Tensor.requires_grad_": {
-    "Matcher": "TensorRequiresGradMatcher",
-    "args_list": ["requires_grad"]
-  }, 
+  "torch.Tensor.requires_grad_": {}, 
   "torch.Tensor.reshape": {}, 
   "torch.Tensor.reshape_as": {}, 
   "torch.Tensor.resize_": {}, 
@@ -6156,9 +6153,7 @@
   "torch.Tensor.symeig": {}, 
   "torch.Tensor.t_": {}, 
   "torch.Tensor.tensor_split": {}, 
-  "torch.Tensor.to": {
-    "Matcher": "TensorToMatcher"
-  }, 
+  "torch.Tensor.to": {}, 
   "torch.Tensor.to_mkldnn": {}, 
   "torch.Tensor.take": {}, 
   "torch.Tensor.tan_": {}, 
@@ -6173,11 +6168,7 @@
   "torch.Tensor.triu_": {}, 
   "torch.Tensor.true_divide_": {}, 
   "torch.Tensor.trunc_": {}, 
-  "torch.Tensor.type": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.astype",
-    "args_list": ["dtype", "non_blocking"]
-  }, 
+  "torch.Tensor.type": {}, 
   "torch.Tensor.type_as": {
     "Matcher": "TensorTypeAsMatcher",
     "args_list": ["tensor"]
@@ -6252,10 +6243,7 @@
   "torch.Tensor.div_": {},
   "torch.Tensor.divide": {},
   "torch.Tensor.divide_": {},
-  "torch.Tensor.double": {
-    "Matcher": "TensorDoubleMatcher",
-    "args_list": ["memory_format"]
-  },
+  "torch.Tensor.double": {},
   "torch.Tensor.eig": {},
   "torch.Tensor.eq_": {},
   "torch.Tensor.erf_": {},
@@ -6267,10 +6255,7 @@
   "torch.Tensor.fix_": {},
   "torch.Tensor.fliplr": {},
   "torch.Tensor.flipud": {},
-  "torch.Tensor.float": {
-    "Matcher": "TensorFloatMatcher",
-    "args_list": ["memory_format"]
-  },
+  "torch.Tensor.float": {},
   "torch.Tensor.float_power": {},
   "torch.Tensor.float_power_": {},
   "torch.Tensor.floor_divide_": {},
@@ -6534,6 +6519,237 @@
     "kwargs_change": {
       "device": "device"
     }
+  },
+
+  "torch.optim.Optimizer.state_dict" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.optimizer.Optimizer.state_dict"
+  },
+
+  "torch.optim.Optimizer.load_state_dict" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.optimizer.Optimizer.set_state_dict",
+    "args_list": ["state_dict"]
+  },
+
+  "torch.optim.Optimizer.zero_grad" : {
+  },
+
+  "torch.optim.Optimizer.step" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.optimizer.Optimizer.step"
+  },
+
+
+  "torch.nn.Module.register_buffer" : {
+
+  },
+
+  "torch.nn.Module.register_parameter" : {
+
+  },
+
+  "torch.nn.Module.add_module" : {
+
+  },
+
+  "torch.nn.Module.register_module" : {
+
+  },
+
+
+  "torch.nn.Module.get_submodule" : {
+
+  },
+
+  "torch.nn.Module.get_parameter" : {
+
+  },
+
+  "torch.nn.Module.get_buffer" : {
+
+  },
+
+  "torch.nn.Module.get_extra_state" : {
+
+  },
+
+  "torch.nn.Module.set_extra_state" : {
+
+  },
+
+  "torch.nn.Module.apply" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Layer.apply",
+    "args_list": ["fn"]
+  },
+
+  "torch.nn.Module.cuda" : {
+
+  },
+
+  "torch.nn.Module.ipu" : {
+
+  },
+
+  "torch.nn.Module.xpu" : {
+
+  },
+
+  "torch.nn.Module.cpu" : {
+
+  },
+
+  "torch.nn.Module.type" : {
+
+  },
+
+  "torch.nn.Module.float" : {
+
+  },
+
+  "torch.nn.Module.double" : {
+
+  },
+
+  "torch.nn.Module.half" : {
+
+  },
+
+  "torch.nn.Module.bfloat16" : {
+
+  },
+
+  "torch.nn.Module.to_empty" : {
+
+  },
+
+
+  "torch.nn.Module.to" : {
+
+  },
+
+  "torch.nn.Module.register_full_backward_pre_hook" : {
+
+  },
+
+
+  "torch.nn.Module.register_backward_hook" : {
+
+  },
+
+  "torch.nn.Module.register_full_backward_hook" : {
+
+  },
+
+  "torch.nn.Module.register_forward_pre_hook" : {
+
+  },
+
+  "torch.nn.Module.register_forward_hook" : {
+
+  },
+
+  "torch.nn.Module.state_dict" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Layer.state_dict"
+  },
+
+  "torch.nn.Module.load_state_dict" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Layer.set_state_dict",
+    "args_list": ["state_dict", "strict"],
+    "kwargs_mapping": {
+      "strict": ""
+    }
+  },
+
+  "torch.nn.Module.register_load_state_dict_post_hook" : {
+
+  },
+
+  "torch.nn.Module.parameters" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Layer.parameters",
+    "args_list": ["recurse"],
+    "kwargs_change": {
+      "recurse": "include_sublayers"
+    }
+  },
+
+  "torch.nn.Module.named_parameters" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Layer.named_parameters",
+    "args_list": ["prefix", "recurse", "remove_duplicate"],
+    "kwargs_change": {
+      "recurse": "include_sublayers",
+      "remove_duplicate": ""
+    }
+  },
+
+
+  "torch.nn.Module.buffers" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Layer.buffers",
+    "args_list": ["recurse"],
+    "kwargs_change": {
+      "recurse": "include_sublayers"
+    }
+  },
+
+  "torch.nn.Module.named_buffers" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Layer.named_buffers",
+    "args_list": ["prefix", "recurse", "remove_duplicate"],
+    "kwargs_change": {
+      "recurse": "include_sublayers",
+      "remove_duplicate": ""
+    }
+  },
+
+  "torch.nn.Module.children" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Layer.children"
+  },
+
+  "torch.nn.Module.named_children" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Layer.named_children"
+  },
+
+  "torch.nn.Module.modules" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Layer.sublayers"
+  },
+  
+  "torch.nn.Module.named_modules" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Layer.named_sublayers",
+    "args_list": ["memo", "prefix", "remove_duplicate"],
+    "kwargs_change": {
+      "memo": "",
+      "remove_duplicate": ""
+    }
+  },
+
+  "torch.nn.Module.train" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Layer.train"
+  },
+
+  "torch.nn.Module.eval" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Layer.eval"
+  },
+
+  "torch.nn.Module.requires_grad_" : {
+
+  },
+
+  "torch.nn.Module.zero_grad" : {},
+
+  "torch.nn.Module.share_memory" : {
+
   }
 }
   

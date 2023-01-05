@@ -86,7 +86,7 @@ class BasicTransformer(BaseTransformer):
         if isinstance(self.parent_node, ast.Subscript) and 'size' in full_attr:
             return node
 
-        # Tensor attribute, such as: x.device / x.dtype
+        # Torch Class attribute, such as: x.device / x.dtype
         if not full_attr.startswith('torch.'):
             if (len(full_attr.split('.')) == 2 and 'self' not in full_attr)  or (len(full_attr.split('.')) >2 and 'self' in full_attr):
                 attr_list = full_attr.split('.')
@@ -94,9 +94,9 @@ class BasicTransformer(BaseTransformer):
                 if torch_api in API_MAPPING:
                     self.torch_api_count += 1
                     self.log_debug("Start convert Tensor Attribute: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
-                    return self.trans_tensor_attribute(node, torch_api)
+                    return self.trans_class_attribute(node, torch_api)
 
-        # Non-Tensor attribute, such as: torch.device / torch.dtype
+        # Non-Torch Class attribute, such as: torch.device / torch.dtype
         if full_attr.startswith('torch.'):
             torch_api = full_attr
             self.torch_api_count += 1
@@ -113,7 +113,7 @@ class BasicTransformer(BaseTransformer):
             self.log_info("[Failed]can not convert {} to Paddle".format(torch_api), self.file_name, node.lineno)
         return node 
 
-    def trans_tensor_attribute(self, node, torch_api):
+    def trans_class_attribute(self, node, torch_api):
         matcher = self.get_api_mather(torch_api)
         if matcher:
             paddle_api = matcher.get_paddle_api()
@@ -187,20 +187,34 @@ class BasicTransformer(BaseTransformer):
         # Use Postorder traversal
         super(BasicTransformer, self).generic_visit(node)
           
-        # Tensor method func, such as : x.add(y) / x.abs().add
+        # Torch Class call, such as : x.add(y) / x.abs().add / sgd.step() / model.to(torch.device('cuda'))
         if not full_attr.startswith('torch.'):
             #  x.reshape
             #  self.weight.reshape
             #  x.T.reshape
             if (len(full_attr.split('.')) == 2 and 'self' not in full_attr) or (len(full_attr.split('.')) >2 and 'self' in full_attr) or '.T.' in full_attr:
                 attr_list = full_attr.split('.')
+
                 torch_api = '.'.join(['torch.Tensor', attr_list[-1]])
                 if torch_api in API_MAPPING:
                     self.torch_api_count += 1
-                    self.log_debug("Start convert Tensor Method: {} to Paddle --> ".format(torch_api), self.file_name, node.lineno)
-                    return self.trans_tensor_method(node, torch_api)
-        
-        # Non-Tensor method, such as : torch.add(x,y) / torch.add(torch.abs(x), y)
+                    self.log_debug("Start convert Tensor Class Method: {} to Paddle --> ".format(torch_api), self.file_name, node.lineno)
+                    return self.trans_class_method(node, torch_api)
+
+                torch_api = '.'.join(['torch.nn.Module', attr_list[-1]])
+                if torch_api in API_MAPPING:
+                    self.torch_api_count += 1
+                    self.log_debug("Start convert Layer Class Method: {} to Paddle --> ".format(torch_api), self.file_name, node.lineno)
+                    return self.trans_class_method(node, torch_api)
+
+                torch_api = '.'.join(['torch.optim.Optimizer', attr_list[-1]])
+                if torch_api in API_MAPPING:
+                    self.torch_api_count += 1
+                    self.log_debug("Start convert Optimizer Class Method: {} to Paddle --> ".format(torch_api), self.file_name, node.lineno)
+                    return self.trans_class_method(node, torch_api)
+
+
+        # Non-Torch Class call, such as : torch.add(x,y) / torch.add(torch.abs(x), y)
         if full_attr.startswith('torch.'):
             torch_api = full_attr
             self.torch_api_count += 1
@@ -229,14 +243,14 @@ class BasicTransformer(BaseTransformer):
         return node 
 
 
-    def trans_tensor_method(self, node, torch_api):
+    def trans_class_method(self, node, torch_api):
         matcher = self.get_api_mather(torch_api)
         if matcher:
-            node_list = matcher.get_paddle_tensor_nodes(node.func, node.args, node.keywords)
-            if node_list == 'NonTensor':
+            node_list = matcher.get_paddle_class_nodes(node.func, node.args, node.keywords)
+            if node_list == 'NonTorchClass':
                 # This API usage  indicate that is is not a torch.Tensor
                 self.torch_api_count -= 1
-                self.log_debug(" Misidentify Tensor Method: {}, so remain the same".format(torch_api), self.file_name, node.lineno)
+                self.log_debug(" Misidentify Class Method: {}, so just remain the same".format(torch_api), self.file_name, node.lineno)
                 return node
             elif node_list is not None:
                 new_node = node_list[-1]
@@ -253,16 +267,16 @@ class BasicTransformer(BaseTransformer):
                 if isinstance(new_node, (ast.Call, ast.Name, ast.Constant, ast.Attribute, ast.Subscript)):
                     # if multiple line, record lines and will insert after all node visit
                     if node_list[0:-1]:
-                        self.log_debug("insert extra {} lines for torch api {}".format(len(node_list[0:-1]), torch_api), self.file_name, node.lineno)
+                        self.log_debug("insert extra {} lines for Class Method: {}".format(len(node_list[0:-1]), torch_api), self.file_name, node.lineno)
                         self.record_scope(self.scope_node_body_index(), node_list[0:-1])
 
                     self.success_api_count += 1
-                    self.log_debug("[Success]convert Tensor Method: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
+                    self.log_debug("[Success]convert Class Method: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
                     return new_node
         
-        annotate_node = ast.parse("'Tensor Method: {}, not convert, please check whether it is torch.Tensor.* and convert manually'".format(torch_api)).body[0]
+        annotate_node = ast.parse("'Class Method: {}, not convert, please check whether it is torch.Tensor.*/Optimizer.*/Layer.* and convert manually'".format(torch_api)).body[0]
         self.record_scope(self.scope_node_body_index(), annotate_node)
-        self.log_info("[Failed]can not convert Tensor Method: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
+        self.log_info("[Failed]can not convert Class Method: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
         return node
 
 

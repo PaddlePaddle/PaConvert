@@ -112,7 +112,7 @@ class Converter:
             if in_str:
                 continue
 
-            if 'Tensor Method:' in line or 'Tensor Attribute:' in line:
+            if 'Class Method:' in line or 'Tensor Attribute:' in line:
                 mark_next_line = True
                 continue
             else:

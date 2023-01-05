@@ -163,9 +163,9 @@ size = torch.abs(x, out=y).size()
 
 x.abs().size()
 
-## NonTensor
+## NonTorchClass
 x.size[2]
-## Tensor
+## TorchClass: torch.Tensor
 x.shape[2]
 
 # torch.Tensor.Attribute
@@ -386,11 +386,11 @@ np.add(x, y)
 array(1.).abs().add(y)
 
 # should mark unspport
-torch.test(x)
+torch.abs(x)
 # should not mark unspport
-( array(1.) + torch.test(x).numpy()).abs()
-( array(1.)-torch.test(x).numpy()).abs()
-( array(1.)*torch.test(x).numpy()).abs()
+( array(1.) + array(2.)).abs()
+( array(1.) - array(2.)).abs()
+( array(1.) * array(2.).numpy()).abs()
 "_torch.npy"
 str1="_torch.npy"
 str2='_torch.npy'
@@ -412,3 +412,52 @@ all_dists = dists.transpose()
 
 ## is torch Tensor
 all_dists = dists.transpose(0, 1)
+
+
+# Module class method
+import torch.nn as nn
+
+nn.CrossEntropyLoss().to(torch.device('cuda'))
+
+
+linear = torch.nn.Linear(10, 10)
+
+state_dict = linear.state_dict()
+
+linear.load_state_dict(state_dict)
+
+linear.parameters()
+
+linear.named_parameters()
+
+linear.buffers()
+
+linear.named_buffers()
+
+linear.children()
+
+linear.named_children()
+
+linear.modules()
+
+linear.named_modules()
+
+linear.train()
+
+linear.eval()
+
+linear.requires_grad_()
+
+linear.zero_grad()
+
+# Optimizer class method
+
+sgd = torch.optim.SGD(model.parameters(), lr=0.1, momentum=0.9)
+
+state_dict = sgd.state_dict()
+
+sgd.load_state_dict(state_dict)
+
+sgd.zero_grad()
+
+sgd.step()
