@@ -88,8 +88,8 @@ class BasicTransformer(BaseTransformer):
 
         # Torch Class attribute, such as: x.device / x.dtype
         if not full_attr.startswith('torch.'):
-            if (len(full_attr.split('.')) == 2 and 'self' not in full_attr)  or (len(full_attr.split('.')) >2 and 'self' in full_attr):
-                attr_list = full_attr.split('.')
+            attr_list = full_attr.split('.')
+            if (len(attr_list) == 2 and 'self' not in full_attr)  or (len(attr_list) > 2 and 'self' in full_attr):
                 torch_api = '.'.join(['torch.Tensor', attr_list[-1]])
                 if torch_api in API_MAPPING:
                     self.torch_api_count += 1
@@ -192,9 +192,8 @@ class BasicTransformer(BaseTransformer):
             #  x.reshape
             #  self.weight.reshape
             #  x.T.reshape
-            if (len(full_attr.split('.')) == 2 and 'self' not in full_attr) or (len(full_attr.split('.')) >2 and 'self' in full_attr) or '.T.' in full_attr:
-                attr_list = full_attr.split('.')
-
+            attr_list = full_attr.split('.')
+            if (len(attr_list) == 2 and 'self' not in full_attr) or (len(attr_list) > 2 and 'self' in full_attr) or '.T.' in full_attr:
                 torch_api = '.'.join(['torch.Tensor', attr_list[-1]])
                 if torch_api in API_MAPPING:
                     self.torch_api_count += 1
@@ -212,7 +211,7 @@ class BasicTransformer(BaseTransformer):
                     self.torch_api_count += 1
                     self.log_debug("Start convert Optimizer Class Method: {} to Paddle --> ".format(torch_api), self.file_name, node.lineno)
                     return self.trans_class_method(node, torch_api)
-
+                    
 
         # Non-Torch Class call, such as : torch.add(x,y) / torch.add(torch.abs(x), y)
         if full_attr.startswith('torch.'):
@@ -274,7 +273,8 @@ class BasicTransformer(BaseTransformer):
                     self.log_debug("[Success]convert Class Method: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
                     return new_node
         
-        annotate_node = ast.parse("'Class Method: {}, not convert, please check whether it is torch.Tensor.*/Optimizer.*/Layer.* and convert manually'".format(torch_api)).body[0]
+        torch_api = '*' + torch_api[torch_api.rfind('.'): ]
+        annotate_node = ast.parse("'Class Method: {}, not convert, please check which one of torch.Tensor.*/Optimizer.*/nn.Module.* it is, and convert manually'".format(torch_api)).body[0]
         self.record_scope(self.scope_node_body_index(), annotate_node)
         self.log_info("[Failed]can not convert Class Method: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
         return node
