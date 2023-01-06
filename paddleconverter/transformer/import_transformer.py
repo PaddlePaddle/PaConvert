@@ -65,7 +65,7 @@ class ImportTransformer(BaseTransformer):
         1. remove from torch import nn
         2. remove from torch import nn.functional as F
         '''
-        # from . import Net
+        # from . import Net (node.module is None)
         if node.module:
             if 'torch.' in node.module or 'torch' == node.module:
                 self.import_paddle = True
