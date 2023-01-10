@@ -149,35 +149,6 @@ class TensorAddMatcher(BaseMatcher):
             code = API_TEMPLACE.format(kwargs['other'])
         return code
 
-class ToTensorMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if 'device' in kwargs:
-            device_str = kwargs.pop('device')
-            if '\"\"\"' in device_str:
-                valid = False
-                for ele in ['cpu', 'gpu', 'cuda', 'ipu', 'xpu']:
-                    if ele in device_str:
-                        valid = True
-                if not valid:
-                    return None
-            
-                if 'cuda' in device_str:
-                    device_str = device_str.replace('cuda', 'gpu')
-            
-            kwargs['place'] = device_str
-
-        if 'requires_grad' in kwargs:
-            requires_grad_v = kwargs.pop('requires_grad')
-            code = 'paddle.to_tensor({}, stop_gradient = not {})'.format(self.kwargs_to_str(kwargs), requires_grad_v)
-        else:
-            code = 'paddle.to_tensor({})'.format(self.kwargs_to_str(kwargs))
-
-        if 'pin_memory' in kwargs:
-            pin_memory_v = eval(kwargs['pin_memory'])
-            if pin_memory_v:
-                code = code + '.pin_memory()'
-
-        return code
 
 class TransposeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
@@ -391,20 +362,6 @@ class TensorTransposeMatcher(BaseMatcher):
         return code
 
 
-class TensorReshapeMatcher(BaseMatcher):
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        self.parse_func(func)
-        if 'shape' in self.parse_kwargs(kwargs):
-            kwargs = self.parse_kwargs(kwargs)    
-        elif len(args) == 1 and isinstance(args[0], ast.List):
-            kwargs = self.parse_args_and_kwargs(args, kwargs)
-        else:
-            shape_list = self.parse_args(args)
-            kwargs = {'shape': str(shape_list).replace('\'', '')}
-
-        code = '{}.reshape({})'.format(self.paddleClass, self.kwargs_to_str(kwargs))
-        return ast.parse(code).body
-
 class TensorSizeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if 'dim' in kwargs:
@@ -432,36 +389,6 @@ class TensorPermuteMatcher(BaseMatcher):
         code = '{}.transpose({})'.format(self.paddleClass, self.kwargs_to_str(kwargs))
         return ast.parse(code).body
 
-
-class TensorViewMatcher(BaseMatcher):
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        self.parse_func(func)
-
-        kwargs = self.parse_kwargs(kwargs)
-        if 'dtype' in kwargs:
-            if 'np' in kwargs['dtype'] or 'numpy' in kwargs['dtype']:
-                return 'NonTorchClass'
-            else:
-                return None
-
-        if len(args) == 1:
-            if isinstance(args[0], ast.Attribute):
-                return 'NonTorchClass'
-            if isinstance(args[0], ast.Str):
-                return None
-            
-        if len(args) == 1 and isinstance(args[0], (ast.List, ast.Tuple)):
-            shape_list = self.parse_args(args)[0]
-        elif len(args) >= 1:
-            shape_list = self.parse_args(args)
-
-        if 'size' in kwargs:
-            kwargs = { 'shape' : kwargs.pop('size'), **kwargs}
-        else:
-            kwargs = { 'shape' : str(shape_list).replace('\'', ''), **kwargs}
-
-        code = '{}.reshape({})'.format(self.paddleClass, self.kwargs_to_str(kwargs))
-        return ast.parse(code).body
 
 
 class TensorRepeatMatcher(BaseMatcher):

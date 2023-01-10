@@ -78,8 +78,6 @@ class BasicTransformer(BaseTransformer):
                 return node
 
         full_attr = self.get_full_attr(node)
-        if 'None' in full_attr:
-            return node
 
         # corner case:
         #   x.size[2]
@@ -88,6 +86,8 @@ class BasicTransformer(BaseTransformer):
 
         # Torch Class attribute, such as: x.device / x.dtype
         if not full_attr.startswith('torch.'):
+            if 'None' in full_attr:
+                return node
             attr_list = full_attr.split('.')
             if (len(attr_list) == 2 and 'self' not in full_attr)  or (len(attr_list) > 2 and 'self' in full_attr):
                 torch_api = '.'.join(['torch.Tensor', attr_list[-1]])
@@ -181,14 +181,14 @@ class BasicTransformer(BaseTransformer):
          - tensor api: [func]ast.Attribute([value]ast.Call)
         '''
         full_attr = self.get_full_attr(node.func)
-        if 'None' in full_attr:
-            return node
 
         # Use Postorder traversal
         super(BasicTransformer, self).generic_visit(node)
           
         # Torch Class call, such as : x.add(y) / x.abs().add / sgd.step() / model.to(torch.device('cuda'))
         if not full_attr.startswith('torch.'):
+            if 'None' in full_attr:
+                return node
             #  x.reshape
             #  self.weight.reshape
             #  x.T.reshape

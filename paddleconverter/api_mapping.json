@@ -6198,9 +6198,7 @@
   "torch.Tensor.unfold": {}, 
   "torch.Tensor.unique": {}, 
   "torch.Tensor.vdot": {}, 
-  "torch.Tensor.view": {
-    "Matcher": "TensorViewMatcher"
-  }, 
+  "torch.Tensor.view": {}, 
   "torch.Tensor.view_as": {}, 
   "torch.Tensor.xlogy": {}, 
   "torch.Tensor.xlogy_": {}, 
@@ -6309,10 +6307,7 @@
   "torch.Tensor.index_put_": {},
   "torch.Tensor.index_put": {},
   "torch.Tensor.indices": {},
-  "torch.Tensor.int": {
-    "Matcher": "TensorIntMatcher",
-    "args_list": ["memory_format"]
-  },
+  "torch.Tensor.int": {},
   "torch.Tensor.int_repr": {},
   "torch.Tensor.isposinf": {},
   "torch.Tensor.isneginf": {},
@@ -6376,17 +6371,6 @@
   "torch.Tensor.coalesce": {},
   "torch.Tensor.take_along_dim": {},
   "torch.Tensor.sparse_resize_and_clear_": {},
-
-  "torch.tensor": {
-    "Matcher": "ToTensorMatcher",
-    "paddle_api": "paddle.to_tensor",
-    "args_list" : [
-      "data", 
-      "dtype", 
-      "device", 
-      "pin_memory", 
-      "requires_grad"]
-  },
 
   "torch.transpose" : {
     "Matcher": "TransposeMatcher",

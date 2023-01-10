@@ -103,3 +103,33 @@ class TensorRequiresGradMatcher(BaseMatcher):
 
         return code
 
+class TensorViewMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+
+        kwargs = self.parse_kwargs(kwargs)
+        if 'dtype' in kwargs:
+            if 'np' in kwargs['dtype'] or 'numpy' in kwargs['dtype']:
+                return 'NonTorchClass'
+            else:
+                return None
+
+        if len(args) == 1:
+            if isinstance(args[0], ast.Attribute):
+                return 'NonTorchClass'
+            if isinstance(args[0], ast.Str):
+                return None
+            
+        if len(args) == 1 and isinstance(args[0], (ast.List, ast.Tuple)):
+            shape_list = self.parse_args(args)[0]
+        elif len(args) >= 1:
+            shape_list = self.parse_args(args)
+
+        if 'size' in kwargs:
+            kwargs = { 'shape' : kwargs.pop('size'), **kwargs}
+        else:
+            kwargs = { 'shape' : str(shape_list).replace('\'', ''), **kwargs}
+
+        code = '{}.reshape({})'.format(self.paddleClass, self.kwargs_to_str(kwargs))
+        return ast.parse(code).body
+

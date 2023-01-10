@@ -13,10 +13,10 @@
 # limitations under the License.
 
 import ast
-from os import path
+import os
 
 import sys
-sys.path.append(path.dirname(__file__)+"../")
+sys.path.append(os.path.dirname(__file__)+"../")
 
 from paddleconverter.base import BaseTransformer
 
@@ -78,6 +78,27 @@ class ImportTransformer(BaseTransformer):
                         self.imports_map[self.file][alias_node.name] = '.'.join([node.module, alias_node.name])
                 return None
 
+        # import from this directory
+        if node.level > 0:
+            import_path = os.path.dirname(self.file)
+            i = 1
+            while i < node.level:
+                import_path += "../"
+                i += 1
+            
+            if node.module:
+                import_path = import_path + "/" + node.module.replace(".", "/")
+            if os.path.exists(import_path) or os.path.exists(import_path+'.py'):
+                return node
+        else:
+            dir_name = os.path.dirname(self.file)
+            while len(dir_name) > 1:
+                import_path = dir_name + "/" + node.module.replace(".", "/")
+                if os.path.exists(import_path) or os.path.exists(import_path+'.py'):
+                    return node
+                dir_name = os.path.dirname(dir_name)
+
+        # import from site-packages , add to others
         for alias_node in node.names:
             if alias_node.asname:
                 self.imports_map[self.file]['others'].append(alias_node.asname)
