@@ -4826,13 +4826,7 @@
 
   "torch.Tensor.detach": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.cumsum",
-    "args_list" : [
-      "dim",
-      "dtype"],
-      "kwargs_change": {
-        "dim":"axis"
-      }
+    "paddle_api": "paddle.Tensor.detach"
   }, 
   
   "torch.Tensor.diag_embed": {
