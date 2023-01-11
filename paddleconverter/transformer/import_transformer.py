@@ -86,6 +86,7 @@ class ImportTransformer(BaseTransformer):
                 import_path += "../"
                 i += 1
             
+            # from . import Net (node.module is None)
             if node.module:
                 import_path = import_path + "/" + node.module.replace(".", "/")
             if os.path.exists(import_path) or os.path.exists(import_path+'.py'):
@@ -98,7 +99,7 @@ class ImportTransformer(BaseTransformer):
                     return node
                 dir_name = os.path.dirname(dir_name)
 
-        # import from site-packages , add to others
+        # import from site-packages, third_paty module, just add to others
         for alias_node in node.names:
             if alias_node.asname:
                 self.imports_map[self.file]['others'].append(alias_node.asname)

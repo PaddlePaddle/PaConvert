@@ -632,21 +632,6 @@
       "input":"x"
     }
   },
-    
-  
-  "torch.split" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.split",
-    "args_list" : [
-      "tensor",
-      "split_size_or_sections",
-      "dim"],
-    "kwargs_change": {
-      "tensor":"x",
-      "split_size_or_sections":"num_or_sections",
-      "dim":"axis"
-    }
-  }, 
   
   "torch.squeeze" : {
     "Matcher": "GenericMatcher",
