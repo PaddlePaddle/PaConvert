@@ -531,7 +531,7 @@
   
   "torch.cat" : {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.conat",
+    "paddle_api": "paddle.concat",
     "args_list" : ["tensors", "dim", "out"],
     "kwargs_change": {
       "tensors": "x",
