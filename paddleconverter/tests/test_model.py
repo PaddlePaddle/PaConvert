@@ -80,8 +80,6 @@ out = torch.rand(1, 2, 3, dtype=torch.float32)
 
 torch.rand(1, 2, 3, dtype=torch.float32, requires_grad=True)
 
-torch.tensor(1., requires_grad=True)
-
 # call api in different position
 torch.abs(x, out = y)
 
@@ -205,7 +203,7 @@ torch.max(image)
 
 torch.max(image, dim=1)
 
-torch.max(image, label)
+torch.max(input=image, other=label)
 
 torch.min(image)
 
@@ -213,6 +211,7 @@ torch.min(image, dim=1)
 
 torch.min(image, label)
 
+torch.max(max_exp_avg_sq, exp_avg_sq, out=max_exp_avg_sq)
 
 # torch.rand
 m = 2
@@ -376,6 +375,11 @@ torch.tensor(1., device='cuda')
 
 torch.tensor(1., device='cuda:1')
 
+torch.tensor(1., requires_grad=True)
+
+# torch.as_tensor
+##### TODO: device cuda:1 can not support
+torch.as_tensor(1., dtype=torch.float32, device=torch.device('cuda:0'))
 
 # should not convert
 import numpy as np
@@ -461,3 +465,5 @@ sgd.load_state_dict(state_dict)
 sgd.zero_grad()
 
 sgd.step()
+
+

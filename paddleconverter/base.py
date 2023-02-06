@@ -116,14 +116,18 @@ class BaseTransformer(ast.NodeTransformer):
         # 2. (x == y).transpose(1, 0) -> 'torchClass'
         # 3. (x + y).transpose(1, 0) -> 'torchClass'
         # 4. x[0].transpose(1, 0) -> 'torchClass'
-        # 5. (-x).transpose -> 'torchClass'
+        # 5. (-x).transpose(1, 0) -> 'torchClass'
         elif isinstance(node, (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript)):
-            # np.array(1.).abs() ...
-            # array(1.).abs() ...
-            # (array(1.) + array(2.)).abs() ...
             node_str = astor.to_source(node).strip('\n')
             for item in self.black_list:
-                if re.match('.*[^A-Za-z_]{1}%s[^A-Za-z_]{1}.*' % item, node_str) or re.match('%s[^A-Za-z_]{1}.*' % item, node_str):
+                # (array(1.) + array(2.)).abs() ...
+                if re.match('.*[^A-Za-z_]{1}%s\(' % item, node_str):
+                    return 'None'
+                # np.array(1.).abs() ...
+                if re.match('%s\.' % item, node_str):
+                    return 'None'
+                # array(1.).abs() ...
+                if re.match('%s\(' % item, node_str):
                     return 'None'
             
             return 'TorchClass'
@@ -178,6 +182,7 @@ class BaseMatcher(object):
             new_kwargs[k] = v
         
         for node in kwargs:
+            print(ast.dump(node))
             k = node.arg
             #TODO: try to support torch.rot90(tensor, **config)
             if k is None:

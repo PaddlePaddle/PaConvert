@@ -336,7 +336,10 @@
     "args_list" : [
       "data",
       "dtype",
-      "device"]
+      "device"],
+    "kwargs_change": {
+        "device": "place"
+      }
   },
 
   "torch.from_numpy" : {

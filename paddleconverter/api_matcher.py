@@ -302,8 +302,8 @@ class MaxMinMatcher(BaseMatcher):
         if len(args) > 1 and isinstance(args[1], ast.Name):
             call_maximinimum = True
         
-        kwargs = self.parse_kwargs(kwargs)
-        if 'other' in kwargs:
+        new_kwargs = self.parse_kwargs(kwargs)
+        if 'other' in new_kwargs:
             call_maximinimum = True
         
         if call_maximinimum:
@@ -312,12 +312,12 @@ class MaxMinMatcher(BaseMatcher):
         # return (values, indices) and paddle not implement
         if len(args) > 1 and isinstance(args[1], ast.Num):  
             return None
-        if 'dim' in kwargs:
+        if 'dim' in new_kwargs:
             return None
 
         # only return values, not return indices
-        if 'input' in kwargs:
-            x_v = astor.to_source(kwargs['input']).strip('\n')
+        if 'input' in new_kwargs:
+            x_v = new_kwargs['input']
         else:
             x_v = astor.to_source(args[0]).strip('\n')
 
