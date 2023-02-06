@@ -274,7 +274,7 @@ class BasicTransformer(BaseTransformer):
                     return new_node
         
         torch_api = '*' + torch_api[torch_api.rfind('.'): ]
-        annotate_node = ast.parse("'Class Method: {}, not convert, please check which one of torch.Tensor.*/Optimizer.*/nn.Module.* it is, and convert manually'".format(torch_api)).body[0]
+        annotate_node = ast.parse("'Class Method: {}, not convert, please check whether it is torch.Tensor.*/Optimizer.*/nn.Module.*, and convert manually'".format(torch_api)).body[0]
         self.record_scope(self.scope_node_body_index(), annotate_node)
         self.log_info("[Failed]can not convert Class Method: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
         return node

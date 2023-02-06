@@ -5,7 +5,7 @@ paddleconverter是一款API代码转换工具，其功能是将Pytorch项目代�
 
 转换逻辑为静态代码扫描，保持原代码的风格与结构不变，只转换Pytorch API，而其他的Python代码保持原样不变。
 
-注意仅Pytorch原生的API在转换范围里，对于基于Pytorch API封装的其他第三方库（例如torchvision、mmdet、mmcv）等，则不会转换，这部分API仍依赖人工转换。建议可以在第三方库中找到对应实现代码，复制出来然后再通过工具单独转换。
+注意仅转换Pytorch原生的API，对于基于Pytorch API封装的其他第三方库（例如mmdet、mmcv、torchvision等），则无法转换，这部分API依赖人工转换。建议可将此部分代码复制出来，然后通过工具来转换。
 
 转换采用非inplace的方式，将原项目文件一一转换到 `out_dir` 指定的文件夹中，不改动原文件，方便前后对比调试：
 
@@ -32,7 +32,8 @@ y = paddle.transpose(x, perm_0)
 这是由于两者API的用法差异，无法通过一行完成，必须增加若干行来实现相同功能。
 
 所有的API转换是依据 [Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api) 来进行的。
-注意：该映射表关系仅针对 `torch.*`，也就是Pytorch原生API。对于基于Pytorch封装的第三方库，例如`torchvision、mmdet、mmcv`等，由于目前并没有维护Pytorch第三方库API的映射关系，且第三方库的封装是灵活且任意的，理论上也难建立明确的映射关系，仍依赖人工转换。建议可以在第三方库中找到对应实现代码，复制出来再通过工具单独转换。
+
+映射表当前仅包含 `torch.*` 的Pytorch原生API。对于基于Pytorch API封装的其他第三方库（例如mmdet、mmcv、torchvision等），目前并没有维护映射关系，依赖人工转换。
 
 在转换完成后，`Pytorch API总数、转换成功数、转换失败数` 的统计结果将会打印到终端，对于无法转换的Pytorch API，我们会通过 `>>>` 在代码行前面进行标识，你需要手动转换并删除该标记。
 
