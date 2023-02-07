@@ -60,12 +60,12 @@ python3.8 paddleconverter/main.py --in_dir torch_project --out_dir paddle_projec
 
 ```
 参数：
---in_dir  输入torch项目文件，可以为单个文件或文件夹
---out_dir 输出paddle项目文件，可以为单个文件或文件夹
---exclude_dir 排除转换torch项目文件，可以为单个文件或文件夹
---log_dir 可选，输出日志的路径，默认会在当前目录下创建convert.log
---log_level 可选"INFO" "DEBUG"，打印log等级，默认"INFO"
---run_check 可选，工具自检
+--in_dir        输入torch项目文件，可以为单个文件或文件夹
+--out_dir       输出paddle项目文件，可以为单个文件或文件夹
+--exclude_dir   可选，排除转换torch项目文件，可以为单个文件或文件夹
+--log_dir       可选，输出日志的路径，默认会在当前目录下创建convert.log
+--log_level     可选"INFO" "DEBUG"，打印log等级，默认"INFO"
+--run_check     可选，工具自检
 ```
 
 
