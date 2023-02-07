@@ -47,12 +47,17 @@ class Converter:
         self.log_info("PyTorch to Paddle Convert Start ------>:")
         self.log_info("===========================================")
 
-    def transfer_dir(self, in_dir, out_dir):
+    def transfer_dir(self, in_dir, out_dir, exclude_dir):
         in_dir = os.path.abspath(in_dir)
         out_dir = os.path.abspath(out_dir)
+        if exclude_dir:
+            exclude_dir = os.path.abspath(exclude_dir)
 
         if os.path.isfile(in_dir):
             old_path = in_dir
+
+            if exclude_dir and in_dir.startswith(exclude_dir):
+                return
             
             if os.path.isdir(out_dir):
                 new_path = os.path.join(out_dir, os.path.basename(old_path))
@@ -67,17 +72,20 @@ class Converter:
         elif os.path.isdir(in_dir):
             in_dir_items = listdir_nohidden(in_dir)
             for item in in_dir_items:
+                if exclude_dir and item.startswith(exclude_dir):
+                    return
+
                 old_path = os.path.join(in_dir, item)
                 new_path = os.path.join(out_dir, item)
                 if os.path.isdir(old_path):
                     if not os.path.exists(new_path):
                         os.makedirs(new_path)
-                self.transfer_dir(old_path, new_path)
+                self.transfer_dir(old_path, new_path, exclude_dir)
         else:
             raise ValueError(" the input 'in_dir' must be a file or directory! ")
 
-    def run(self, in_dir, out_dir):
-        self.transfer_dir(in_dir, out_dir)
+    def run(self, in_dir, out_dir, exclude_dir=None):
+        self.transfer_dir(in_dir, out_dir, exclude_dir)
         
         faild_api_count = self.torch_api_count - self.success_api_count
         self.log_info("\n========================================")
