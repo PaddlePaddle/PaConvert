@@ -375,7 +375,10 @@ torch.tensor(1., device='cuda')
 
 torch.tensor(1., device='cuda:1')
 
+torch.tensor(1.)
+
 torch.tensor(1., requires_grad=True)
+
 
 # torch.as_tensor
 ##### TODO: device cuda:1 can not support

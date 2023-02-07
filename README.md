@@ -53,7 +53,7 @@ paddleconverter --in_dir torch_project --out_dir paddle_project [--log_dir log_d
 
 ```bash
 git clone https://github.com/zhouwei25/paddleconverter.git
-python3.8 paddleconverter/main.py --in_dir torch_project --out_dir paddle_project [--exclude_dir exclude_dir] [--log_dir log_dir] [--log_level level] [--run_check 1]
+python3.8 paddleconverter/main.py --in_dir torch_project --out_dir paddle_project [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level level] [--run_check 1]
 ```
 
 **参数介绍**
@@ -62,7 +62,7 @@ python3.8 paddleconverter/main.py --in_dir torch_project --out_dir paddle_projec
 参数：
 --in_dir        输入torch项目文件，可以为单个文件或文件夹
 --out_dir       输出paddle项目文件，可以为单个文件或文件夹
---exclude_dir   可选，排除转换torch项目文件，可以为单个文件或文件夹
+--exclude_dirs  可选，排除转换的文件或文件夹，多个项目请用逗号 `,` 分隔
 --log_dir       可选，输出日志的路径，默认会在当前目录下创建convert.log
 --log_level     可选"INFO" "DEBUG"，打印log等级，默认"INFO"
 --run_check     可选，工具自检

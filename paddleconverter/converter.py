@@ -47,45 +47,17 @@ class Converter:
         self.log_info("PyTorch to Paddle Convert Start ------>:")
         self.log_info("===========================================")
 
-    def transfer_dir(self, in_dir, out_dir, exclude_dir):
+    def run(self, in_dir, out_dir, exclude_dirs=None):
         in_dir = os.path.abspath(in_dir)
         out_dir = os.path.abspath(out_dir)
-        if exclude_dir:
-            exclude_dir = os.path.abspath(exclude_dir)
 
-        if os.path.isfile(in_dir):
-            old_path = in_dir
+        exclude_dir_list = []
+        if exclude_dirs:
+            exclude_dirs = exclude_dirs.split(',')
+            for item in exclude_dirs:
+                exclude_dir_list.append(os.path.abspath(item))
 
-            if exclude_dir and in_dir.startswith(exclude_dir):
-                return
-            
-            if os.path.isdir(out_dir):
-                new_path = os.path.join(out_dir, os.path.basename(old_path))
-            else:
-                new_path = out_dir
-            if not os.path.exists(os.path.dirname(new_path)):
-                os.makedirs(os.path.dirname(new_path))
-            if not os.path.isdir(os.path.dirname(new_path)):
-                os.remove(os.path.dirname(new_path))
-                os.makedirs(os.path.dirname(new_path))
-            self.transfer_file(old_path, new_path)
-        elif os.path.isdir(in_dir):
-            in_dir_items = listdir_nohidden(in_dir)
-            for item in in_dir_items:
-                if exclude_dir and item.startswith(exclude_dir):
-                    return
-
-                old_path = os.path.join(in_dir, item)
-                new_path = os.path.join(out_dir, item)
-                if os.path.isdir(old_path):
-                    if not os.path.exists(new_path):
-                        os.makedirs(new_path)
-                self.transfer_dir(old_path, new_path, exclude_dir)
-        else:
-            raise ValueError(" the input 'in_dir' must be a file or directory! ")
-
-    def run(self, in_dir, out_dir, exclude_dir=None):
-        self.transfer_dir(in_dir, out_dir, exclude_dir)
+        self.transfer_dir(in_dir, out_dir, exclude_dir_list)
         
         faild_api_count = self.torch_api_count - self.success_api_count
         self.log_info("\n========================================")
@@ -106,6 +78,84 @@ class Converter:
         self.log_info("\nThank you to use Paddle Convert tool. You can make any suggestions to us.\n")
         return self.success_api_count, faild_api_count
 
+    def transfer_dir(self, in_dir, out_dir, exclude_dir_list):
+        if os.path.isfile(in_dir):
+            old_path = in_dir
+            if exclude_dir_list:
+                for exclude_dir in exclude_dir_list:
+                    if old_path == exclude_dir or old_path.startswith(exclude_dir+'/'):
+                        return
+
+            if os.path.isdir(out_dir):
+                new_path = os.path.join(out_dir, os.path.basename(old_path))
+            else:
+                new_path = out_dir
+            if not os.path.exists(os.path.dirname(new_path)):
+                os.makedirs(os.path.dirname(new_path))
+            if not os.path.isdir(os.path.dirname(new_path)):
+                os.remove(os.path.dirname(new_path))
+                os.makedirs(os.path.dirname(new_path))
+            self.transfer_file(old_path, new_path)
+        elif os.path.isdir(in_dir):
+            in_dir_item = listdir_nohidden(in_dir)
+            for item in in_dir_item:
+                old_path = os.path.join(in_dir, item)
+                new_path = os.path.join(out_dir, item)
+                
+                is_exclude = False
+                if exclude_dir_list:
+                    for exclude_dir in exclude_dir_list:
+                        if old_path == exclude_dir or old_path.startswith(exclude_dir+'/'):
+                            is_exclude = True
+
+                if is_exclude:
+                    continue
+
+                if os.path.isdir(old_path):
+                    if not os.path.exists(new_path):
+                        os.makedirs(new_path)
+
+                self.transfer_dir(old_path, new_path, exclude_dir_list)
+        else:
+            raise ValueError(" the input 'in_dir' must be a file or directory! ")
+
+    def transfer_file(self, old_path, new_path):
+        if old_path.endswith(".py"):
+            self.log_info("Start convert {} --> {}".format(old_path, new_path))
+            with open(old_path, 'r') as f:
+                code = f.read()
+                root = ast.parse(code)
+            
+            self.transfer_node(root, old_path)
+            code = astor.to_source(root)
+            code = self.mark_unsport(code)
+
+            with open(new_path, 'w') as file:
+                file.write(code)
+            self.log_info("Finish convert {} --> {}\n".format(old_path, new_path))
+        elif old_path.endswith("requirements.txt"):
+            self.log_info("Start convert {} --> {}".format(old_path, new_path))
+            with open(old_path, 'r') as old_file:
+                code = old_file.read()
+            code = code.replace('torch', 'paddlepaddle')
+            with open(new_path, 'w') as new_file:
+                new_file.write(code)
+            self.log_info("Finish convert {} --> {}\n".format(old_path, new_path))
+        else:
+            self.log_info("No need to convert, just Copy {} --> {}\n".format(old_path, new_path))
+            shutil.copyfile(old_path, new_path)
+
+    def transfer_node(self, root, file):
+        transformers = [
+            ImportTransformer, # import ast transformer
+            BasicTransformer,    # basic api ast transformer
+        ]
+        for transformer in transformers:
+            trans = transformer(root, file, self.imports_map, self.logger)
+            trans.transform()
+            self.torch_api_count += trans.torch_api_count
+            self.success_api_count += trans.success_api_count
+                
     def mark_unsport(self, code):
         lines = code.split('\n')
         mark_next_line = False
@@ -146,42 +196,3 @@ class Converter:
         else:
             msg = "{}".format(msg)
         self.logger.info(msg)
-
-
-    def transfer_file(self, old_path, new_path):
-        if old_path.endswith(".py"):
-            self.log_info("Start convert {} --> {}".format(old_path, new_path))
-            with open(old_path, 'r') as f:
-                code = f.read()
-                root = ast.parse(code)
-            
-            self.transfer_node(root, old_path)
-            code = astor.to_source(root)
-            code = self.mark_unsport(code)
-
-            with open(new_path, 'w') as file:
-                file.write(code)
-            self.log_info("Finish convert {} --> {}\n".format(old_path, new_path))
-        elif old_path.endswith("requirements.txt"):
-            self.log_info("Start convert {} --> {}".format(old_path, new_path))
-            with open(old_path, 'r') as old_file:
-                code = old_file.read()
-            code = code.replace('torch', 'paddlepaddle')
-            with open(new_path, 'w') as new_file:
-                new_file.write(code)
-            self.log_info("Finish convert {} --> {}\n".format(old_path, new_path))
-        else:
-            self.log_info("No need to convert, just Copy {} --> {}\n".format(old_path, new_path))
-            shutil.copyfile(old_path, new_path)
-
-    def transfer_node(self, root, file):
-        transformers = [
-            ImportTransformer, # import ast transformer
-            BasicTransformer,    # basic api ast transformer
-        ]
-        for transformer in transformers:
-            trans = transformer(root, file, self.imports_map, self.logger)
-            trans.transform()
-            self.torch_api_count += trans.torch_api_count
-            self.success_api_count += trans.success_api_count
-                

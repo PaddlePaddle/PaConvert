@@ -182,7 +182,6 @@ class BaseMatcher(object):
             new_kwargs[k] = v
         
         for node in kwargs:
-            print(ast.dump(node))
             k = node.arg
             #TODO: try to support torch.rot90(tensor, **config)
             if k is None:
