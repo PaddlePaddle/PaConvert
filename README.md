@@ -101,7 +101,6 @@ sgd = optim.SGD(net.parameters(), lr=0.1, momentum=0.9)
 
 转换完成后：
 ```
-""" This file has been converted by Paddle converter, thanks to use, you can remove this mark"""
 import paddle
 
 
@@ -121,17 +120,18 @@ class MyNet(paddle.nn.Layer):
         y = paddle.add(x=x, y=x)
         return paddle.nn.functional.relu(x=y)
 
+
 net = MyNet()
->>> sgd = torch.optim.SGD(net.parameters(), lr=0.1, momentum=0.9)
+>>>sgd = torch.optim.SGD(net.parameters(), lr=0.1, momentum=0.9)
 ```
 
 打印信息如下：
 
 ```txt
-=======================================
-PyTorch to Paddle Convert Start ----->:
-=======================================
-Start convert /workspace/paddleconverter/paddleconverter/tests/temp_code.py --> /workspace/paddleconverter/tests/temp_out/temp_code.py
+===========================================
+PyTorch to Paddle Convert Start ------>:
+===========================================
+Start convert /workspace/paddleconverter/temp_code.py --> /workspace/tests/temp_code.py
 [temp_code.py:1] remove 'import torch' 
 [temp_code.py:2] remove 'import torch.nn as nn' 
 [temp_code.py:3] remove 'import torch.optim as optim' 
@@ -139,18 +139,18 @@ Start convert /workspace/paddleconverter/paddleconverter/tests/temp_code.py --> 
 [temp_code.py:5] remove 'import torch.nn.functional as F' 
 [temp_code.py] add 'import paddle' in first line
 [temp_code.py:24] [Failed]can not convert torch.optim.SGD to Paddle 
-[temp_code.py] Mark this file which has been converted already
-Finish convert /workspace/paddleconverter/paddleconverter/tests/temp_code.py --> /workspace/paddleconverter/tests/temp_out/temp_code.py
+Finish convert /workspace/paddleconverter/temp_code.py --> /workspace/tests/temp_code.py
 
-======================================
+
+========================================
 Convert Summary:
-======================================
-There are 8 Pytorch APIs in this Project:
- 7  Pytorch APIs have been converted to Paddle successfully!
+========================================
+There are 9 Pytorch APIs in this Project:
+ 8  Pytorch APIs have been converted to Paddle successfully!
  1  Pytorch APIs are converted failed!
- Convert Rate is: 87.50%
+ Convert Rate is: 88.89%
 
-For these 1 failed converted Pytorch APIs, Please refer to https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api and modify it by yourself manually!
+For these 1 failed converted Pytorch APIs, which have been marked by >>> before the line. Please refer to https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api and modify it by yourself manually!
 
 Thank you to use Paddle Convert tool. You can make any suggestions to us.
 
