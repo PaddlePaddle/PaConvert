@@ -137,7 +137,7 @@ class Converter:
             self.log_info("Start convert {} --> {}".format(old_path, new_path))
             with open(old_path, 'r') as old_file:
                 code = old_file.read()
-            code = code.replace('torch', 'paddlepaddle')
+            code = code.replace('torch', 'paddlepaddle-gpu')
             with open(new_path, 'w') as new_file:
                 new_file.write(code)
             self.log_info("Finish convert {} --> {}\n".format(old_path, new_path))

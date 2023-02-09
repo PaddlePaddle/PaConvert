@@ -1135,19 +1135,6 @@
     }
   },
 
-  "torch.fmod" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.floor_mod",
-    "args_list" : [
-      "input",
-      "other",
-      "out"],
-    "kwargs_change": {
-      "input":"x",
-      "other":"y"
-    }
-  },
-
   "torch.frac" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.frac",
@@ -1812,18 +1799,6 @@
     }
   },
 
-  "torch.equal" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.equal_all",
-    "args_list" : [
-      "input",
-      "other"],
-    "kwargs_change": {
-      "input":"x",
-      "other":"y"
-    }
-  },
-
   "torch.ge" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.greater_equal",
@@ -2113,15 +2088,6 @@
     }
   },
 
-  "torch.broadcast_tensors" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.broadcast_tensors",
-    "args_list" : [
-      "tensors"],
-    "kwargs_change": {
-      "tensors":"input"
-    }
-  },
 
   "torch.broadcast_to" : {
     "Matcher": "GenericMatcher",
@@ -2765,22 +2731,6 @@
       "values"],
     "kwargs_change": {
       "values":"parameters"
-    }
-  },
-
-  "torch.nn.Unfold" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.Unfold",
-    "args_list" : [
-      "kernel_size",
-      "stride",
-      "padding",
-      "dilation"],
-    "kwargs_change": {
-      "kernel_size":"kernel_sizes",
-      "stride":"strides",
-      "padding":"paddings",
-      "dilation":"dilations"
     }
   },
 
@@ -3456,23 +3406,6 @@
     }
   },
 
-  "torch.nn.functional.unfold" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.unfold",
-    "args_list" : [
-      "input",
-      "kernel_size",
-      "stride",
-      "padding",
-      "dilation"],
-    "kwargs_change": {
-      "input":"x",
-      "kernel_size":"kernel_sizes",
-      "stride":"strides",
-      "padding":"paddings",
-      "dilation":"dilations"
-    }
-  },
 
   "torch.nn.functional.fold" : {
     "Matcher": "GenericMatcher",
@@ -6429,15 +6362,6 @@
   "torch.cuda.get_device_capability" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.get_device_capability",
-    "args_list" : ["device"],
-    "kwargs_change": {
-      "device": "device"
-    }
-  },
-
-  "torch.cuda.get_device_name" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.device.cuda.get_device_properties",
     "args_list" : ["device"],
     "kwargs_change": {
       "device": "device"
