@@ -161,9 +161,10 @@ size = torch.abs(x, out=y).size()
 
 x.abs().size()
 
-## NonTorchClass
-x.size[2]
-## TorchClass: torch.Tensor
+image.size
+
+image.size[2]
+
 x.shape[2]
 
 # torch.Tensor.Attribute
@@ -426,6 +427,7 @@ import torch.nn as nn
 
 nn.CrossEntropyLoss().to(torch.device('cuda'))
 
+missing_keys, unexpected_keys = model_without_ddp.load_state_dict(checkpoint['model'], strict=False)
 
 linear = torch.nn.Linear(10, 10)
 
@@ -469,4 +471,10 @@ sgd.zero_grad()
 
 sgd.step()
 
+
+# torch.Tensor.device
+
+x.device
+
+args.device
 

@@ -27,7 +27,7 @@ class BasicTransformer(BaseTransformer):
     def __init__(self, root, file, imports_map, logger):
         super(BasicTransformer, self).__init__(root, file, imports_map, logger)
         # use to identify tensor method/attribute
-        self.black_list = self.imports_map[self.file]['others'] + ['ndarray']
+        self.black_list = self.imports_map[self.file]['others'] + ['ndarray', 'args', 'arg']
 
     @property
     def parent_node(self):
@@ -72,7 +72,7 @@ class BasicTransformer(BaseTransformer):
         if isinstance(node.value, ast.Attribute) and node.value.attr == 'T':
             super(BasicTransformer, self).generic_visit(node)
 
-        # paddle.abs(x)
+        # visit_Call
         if isinstance(self.parent_node, ast.Call):
             if node == self.parent_node.func:
                 return node
@@ -81,7 +81,8 @@ class BasicTransformer(BaseTransformer):
 
         # corner case:
         #   x.size[2]
-        if isinstance(self.parent_node, ast.Subscript) and 'size' in full_attr:
+        #   x.size
+        if 'size' in full_attr:
             return node
 
         # Torch Class attribute, such as: x.device / x.dtype
@@ -246,7 +247,7 @@ class BasicTransformer(BaseTransformer):
         matcher = self.get_api_mather(torch_api)
         if matcher:
             node_list = matcher.get_paddle_class_nodes(node.func, node.args, node.keywords)
-            if node_list == 'NonTorchClass':
+            if node_list == "NonTorchClass":
                 # This API usage  indicate that is is not a torch.Tensor
                 self.torch_api_count -= 1
                 self.log_debug(" Misidentify Class Method: {}, so just remain the same".format(torch_api), self.file_name, node.lineno)
