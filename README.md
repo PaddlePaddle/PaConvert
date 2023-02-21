@@ -1,7 +1,7 @@
 # 概述
 paddleconverter是一款API代码转换工具，其功能是将Pytorch项目代码转换为PaddlePaddle项目代码。
 
-其原理是借助Python语法树分析，将原PyTorch项目源码的生成为抽象语法树，对其进行遍历、解析、匹配、编辑，然后得到Paddle的抽象语法树，再转回为Paddle的项目源码。
+其原理是通过Python AST语法树分析，将PyTorch源码生成为抽象语法树，对其进行解析、遍历、匹配、编辑、替换、插入等各种操作，然后得到Paddle的抽象语法树，最后再生成Paddle的源码。
 
 转换方式为静态代码扫描，保持原代码的风格与结构不变，只转换Pytorch API，而其他的Python代码保持原样不变。
 

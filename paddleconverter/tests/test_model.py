@@ -382,7 +382,7 @@ torch.tensor(1., requires_grad=True)
 
 
 # torch.as_tensor
-##### TODO: device cuda:1 can not support
+
 torch.as_tensor(1., dtype=torch.float32, device=torch.device('cuda:0'))
 
 # should not convert
@@ -473,8 +473,27 @@ sgd.step()
 
 
 # torch.Tensor.device
-
 x.device
 
 args.device
 
+# some badcase
+x = x + self.pos_embed.expand(B, -1, -1).detach()
+
+(attn @ v).transpose(-2, -1)
+
+x = self.proj(x).flatten(2).transpose(1, 2)
+
+lt = torch.max(boxes1[:, None, :2])
+
+lt = torch.max(boxes1[:, None, :2], boxes2[:, :2])
+
+lt = torch.min(boxes1[:, None, :2])
+
+lt = torch.min(boxes1[:, None, :2], boxes2[:, :2])
+
+torch.sum(input, dim=1)
+
+torch.sum(input, 1, dtype=torch.float32)
+
+torch.mean(input, 1, dtype=torch.float32)

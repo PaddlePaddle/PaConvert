@@ -1591,10 +1591,12 @@
     "paddle_api": "paddle.mean",
     "args_list" : [
       "input",
+      "dim",
+      "keepdim",
       "dtype"],
     "kwargs_change": {
       "input":"x",
-      "dtype": ""
+      "dim":"axis"
     }
   },
 
@@ -1736,9 +1738,13 @@
     "paddle_api": "paddle.sum",
     "args_list" : [
       "input",
+      "dim",
+      "keepdim",
       "dtype"],
     "kwargs_change": {
-      "input":"x"
+      "input":"x",
+      "dim":"axis",
+      "dtype":"dtype"
     }
   },
 
@@ -4838,7 +4844,7 @@
   
   "torch.Tensor.dim": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.rank"
+    "paddle_api": "paddle.Tensor.dim"
   }, 
 
   "torch.Tensor.dist": {
@@ -5731,6 +5737,8 @@
   }, 
 
   "torch.Tensor.split": {}, 
+
+  "torch.Tensor.softmax": {}, 
   
   "torch.Tensor.sqrt": {
     "Matcher": "GenericMatcher",

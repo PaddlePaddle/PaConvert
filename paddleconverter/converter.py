@@ -117,7 +117,7 @@ class Converter:
 
                 self.transfer_dir(old_path, new_path, exclude_dir_list)
         else:
-            raise ValueError(" the input 'in_dir' must be a file or directory! ")
+            raise ValueError(" the input 'in_dir' must be a exist file or directory! ")
 
     def transfer_file(self, old_path, new_path):
         if old_path.endswith(".py"):

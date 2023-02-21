@@ -39,8 +39,11 @@ class GenericMatcher(BaseMatcher):
                 if kwargs_change[k]:
                     new_kwargs[kwargs_change[k]] = kwargs.pop(k)
             else:
+                # remove directly and not handle
                 if k in ['layout', 'device', 'memory_format', 'inplace', 'generator', 'non_blocking']:
+                    kwargs.pop(k)
                     continue
+                
                 #TODO: kwargs_change -> kwargs_mapping
                 # not mapping in kwargs in there is not in kwargs_mapping
                 new_kwargs[k] = kwargs[k]
@@ -48,6 +51,10 @@ class GenericMatcher(BaseMatcher):
         pin_memory_v = False
         if 'pin_memory' in kwargs:
             pin_memory_v = eval(new_kwargs.pop('pin_memory'))
+
+        dtype_v = None
+        if 'dtype' in kwargs:
+            dtype_v = new_kwargs.pop('dtype')
 
         requires_grad_v = False
         if 'requires_grad' in kwargs:
@@ -88,6 +95,9 @@ class GenericMatcher(BaseMatcher):
         if pin_memory_v:
             code = code.rstrip('\n') + ".pin_memory()"
 
+        if dtype_v:
+            code = code.rstrip('\n') + ".astype({})".format(dtype_v)
+            
         return code
 
 class IdentityMatcher(BaseMatcher):
@@ -298,6 +308,7 @@ class PadMatcher(BaseMatcher):
 
 class MaxMinMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
+        # call maximum usage, convert
         call_maximinimum = False
         if len(args) > 1 and isinstance(args[1], ast.Name):
             call_maximinimum = True
@@ -309,21 +320,23 @@ class MaxMinMatcher(BaseMatcher):
         if call_maximinimum:
             return GenericMatcher(self.torch_api, self.api_mapping).get_paddle_nodes(args, kwargs)
 
-        # return (values, indices) and paddle not implement
+        # return (values, indices) and paddle not implement, not convert
         if len(args) > 1 and isinstance(args[1], ast.Num):  
             return None
         if 'dim' in new_kwargs:
             return None
 
-        # only return values, not return indices
+        # only return values, not return indices, convert
+        paddle_api = self.torch_api.replace('torch', 'paddle')
+        if len(args) == 1:
+            x_v = astor.to_source(args[0]).strip('\n')
+            return ast.parse('{}(x={})'.format(paddle_api, x_v)).body
+
         if 'input' in new_kwargs:
             x_v = new_kwargs['input']
-        else:
-            x_v = astor.to_source(args[0]).strip('\n')
+            return ast.parse('{}(x={})'.format(paddle_api, x_v)).body
 
-        code = 'paddle.max(x={})'.format(x_v)
-        return ast.parse(code).body
-
+        return None
 
 class InterpolateMatcher(BaseMatcher):
     def generate_code(self, kwargs):
@@ -348,17 +361,17 @@ class TensorTransposeMatcher(BaseMatcher):
 
         API_TEMPLACE = textwrap.dedent(
             '''
-            {} = list(range(len({}.shape)))
+            x = {}
+            {} = list(range(x.ndim))
             {}[{}] = {}
             {}[{}] = {}
-            {}.transpose(perm={})
+            x.transpose(perm={})
             '''
         )
         perm = get_unique_name('perm')
-        code = API_TEMPLACE.format(perm, self.paddleClass, 
+        code = API_TEMPLACE.format(self.paddleClass, perm, 
                 perm, kwargs['dim0'], kwargs['dim1'], 
-                perm, kwargs['dim1'], kwargs['dim0'], 
-                self.paddleClass, perm)
+                perm, kwargs['dim1'], kwargs['dim0'], perm)
         return code
 
 
