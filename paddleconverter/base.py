@@ -25,6 +25,10 @@ json_file = path.dirname(__file__) + "/api_mapping.json"
 with open(json_file, 'r') as file:
     API_MAPPING = json.load(file)
 
+json_file = path.dirname(__file__) + "/attribute_mapping.json"
+with open(json_file, 'r') as file:
+    ATTRIBUTE_MAPPING = json.load(file)
+
 
 class BaseTransformer(ast.NodeTransformer):
     def __init__(self, root, file, imports_map, logger):

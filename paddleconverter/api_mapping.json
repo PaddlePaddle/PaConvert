@@ -4356,40 +4356,6 @@
     "args_list" : ["other"]
   },
 
-  "torch.Tensor.device": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.place"
-  }, 
-  "torch.Tensor.dtype": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.dtype"
-  }, 
-  "torch.Tensor.grad": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.grad"
-  }, 
-  "torch.Tensor.ndim": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.ndim"
-  }, 
-  "torch.Tensor.T": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.T"
-  }, 
-  "torch.Tensor.real" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.real"
-  },
-
-  "torch.Tensor.imag" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.imag"
-  },
-  "torch.Tensor.is_leaf" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.is_leaf"
-  },
-  "torch.Tensor.is_sparse": {}, 
   "torch.Tensor.requires_grad": {}, 
   "torch.Tensor.new_tensor": {}, 
   "torch.Tensor.new_full": {}, 
@@ -5994,10 +5960,6 @@
   "torch.Tensor.mvlgamma_": {}, 
   "torch.Tensor.narrow": {}, 
   "torch.Tensor.narrow_copy": {}, 
-  "torch.Tensor.ndimension": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.ndimension"
-  }, 
   "torch.Tensor.nan_to_num": {}, 
   "torch.Tensor.nan_to_num_": {}, 
   "torch.Tensor.ne_": {}, 
@@ -6074,10 +6036,6 @@
     "Matcher": "TensorSizeMatcher",
     "args_list" : ["dim"]
   }, 
-  "torch.Tensor.shape": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.shape"
-  }, 
   "torch.Tensor.slogdet": {}, 
   "torch.Tensor.sparse_mask": {}, 
   "torch.Tensor.sparse_dim": {}, 
@@ -6125,9 +6083,6 @@
   "torch.Tensor.view_as": {}, 
   "torch.Tensor.xlogy": {}, 
   "torch.Tensor.xlogy_": {}, 
-  "torch.Tensor.is_cuda": {},
-  "torch.Tensor.is_quantized": {},
-  "torch.Tensor.is_meta": {},
   "torch.Tensor.add_": {},
   "torch.Tensor.addbmm": {},
   "torch.Tensor.addbmm_": {},
@@ -6258,12 +6213,8 @@
   "torch.Tensor.scatter_reduce": {},
   "torch.Tensor.select_scatter": {},
   "torch.Tensor.slice_scatter": {},
-  "torch.Tensor.H": {},
-  "torch.Tensor.mT": {},
-  "torch.Tensor.mH": {},
   "torch.Tensor.align_as": {},
   "torch.Tensor.align_to": {},
-  "torch.Tensor.names": {},
   "torch.Tensor.refine_names": {},
   "torch.Tensor.rename": {},
   "torch.Tensor.rename_": {},

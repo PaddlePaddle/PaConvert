@@ -21,7 +21,7 @@ import sys
 sys.path.append(path.dirname(__file__)+"../")
 
 from paddleconverter.api_matcher import *
-from paddleconverter.base import API_MAPPING, BaseTransformer
+from paddleconverter.base import API_MAPPING, ATTRIBUTE_MAPPING, BaseTransformer
 
 class BasicTransformer(BaseTransformer):
     def __init__(self, root, file, imports_map, logger):
@@ -63,7 +63,7 @@ class BasicTransformer(BaseTransformer):
         # 1. torch.abs(x).transpose(1, 0)
         # 2. (x == y).transpose(1, 0)
         # 3. (x + y).transpose(1, 0)
-        # 4. (-x).transpose
+        # 4. (-x).transpose(1, 0)
         # 5. x[0].transpose(1, 0)
         if isinstance(node.value, (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript)):
             super(BasicTransformer, self).generic_visit(node)
@@ -76,7 +76,10 @@ class BasicTransformer(BaseTransformer):
         if isinstance(self.parent_node, ast.Call):
             if node == self.parent_node.func:
                 return node
-
+        
+        # only need to convert:
+        #   1. x.device...
+        #   2. torch.Tensor/torch.nn.Module...
         full_attr = self.get_full_attr(node)
 
         # corner case:
@@ -85,14 +88,15 @@ class BasicTransformer(BaseTransformer):
         if 'size' in full_attr:
             return node
 
-        # Torch Class attribute, such as: x.device / x.dtype
+        # Torch Class attribute, such as: x.device
         if not full_attr.startswith('torch.'):
             if 'None' in full_attr:
                 return node
             attr_list = full_attr.split('.')
+            torch_api = '.'.join(['torch.Tensor', attr_list[-1]])
             if (len(attr_list) == 2 and 'self' not in full_attr)  or (len(attr_list) > 2 and 'self' in full_attr):
                 torch_api = '.'.join(['torch.Tensor', attr_list[-1]])
-                if torch_api in API_MAPPING:
+                if torch_api in ATTRIBUTE_MAPPING:
                     self.torch_api_count += 1
                     self.log_debug("Start convert Tensor Attribute: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
                     return self.trans_class_attribute(node, torch_api)
@@ -115,15 +119,17 @@ class BasicTransformer(BaseTransformer):
         return node 
 
     def trans_class_attribute(self, node, torch_api):
-        matcher = self.get_api_mather(torch_api)
-        if matcher:
-            paddle_api = matcher.get_paddle_api()
-            if paddle_api:
-                # for tensor attribute , only need to change .attr
-                node.attr = ast.parse(paddle_api).body[0].value.attr
-                self.success_api_count += 1
-                self.log_debug("[Success]convert Tensor Attribute: {} to Paddle".format(torch_api), self.file_name, node.lineno)
-                return node
+        if torch_api in ATTRIBUTE_MAPPING:
+            api_mapping = ATTRIBUTE_MAPPING[torch_api]
+            matcher = eval(api_mapping['Matcher'])(torch_api, api_mapping)
+            if matcher:
+                paddle_api = matcher.get_paddle_api()
+                if paddle_api:
+                    # for tensor attribute , only need to change .attr
+                    node.attr = ast.parse(paddle_api).body[0].value.attr
+                    self.success_api_count += 1
+                    self.log_debug("[Success]convert Tensor Attribute: {} to Paddle".format(torch_api), self.file_name, node.lineno)
+                    return node
 
         annotate_node = ast.parse("'Tensor Attribute: {}, not convert, please check whether it is torch.Tensor.* and convert manually'".format(torch_api)).body[0]
         self.record_scope(self.scope_node_body_index(), annotate_node)
