@@ -172,13 +172,13 @@ class BaseMatcher(object):
         args_list = self.api_mapping.get('args_list') or []
         #assert len(args) <= len(args_list)
         
-        # this API usage is not match torch.Tensor/torch.nn.Module/Optimizer class method, indicate it is not torch Class
+        # more args, not match torch class method, indicate it is not torch Class
         if len(args) > len(args_list):
             return 'NonTorchClass'
 
         new_kwargs = {}
         for i, node in enumerate(args):
-            #TODO: try to support torch.rot90(tensor, *config)
+            # torch.rot90(tensor, *config)
             if isinstance(node, ast.Starred):
                 return None
             k = args_list[i]
@@ -187,9 +187,13 @@ class BaseMatcher(object):
         
         for node in kwargs:
             k = node.arg
-            #TODO: try to support torch.rot90(tensor, **config)
+            # torch.rot90(tensor, **config)
             if k is None:
                 return None
+            # other kwargs, not match torch class method, indicate it is not torch Class
+            # TODO: will open after all args have been add in args_list
+            #if k not in args_list:
+            #    return 'NonTorchClass'
             v = astor.to_source(node.value).strip('\n')
             new_kwargs[k] = v
 

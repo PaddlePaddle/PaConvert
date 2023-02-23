@@ -146,15 +146,15 @@ class Converter:
             shutil.copyfile(old_path, new_path)
 
     def transfer_node(self, root, file):
-        transformers = [
-            ImportTransformer, # import ast transformer
-            BasicTransformer,    # basic api ast transformer
-        ]
-        for transformer in transformers:
-            trans = transformer(root, file, self.imports_map, self.logger)
-            trans.transform()
-            self.torch_api_count += trans.torch_api_count
-            self.success_api_count += trans.success_api_count
+        # import ast transformer
+        import_trans = ImportTransformer(root, file, self.imports_map, self.logger)
+        import_trans.transform()
+        # basic api ast transformer
+        if import_trans.import_paddle:
+            api_trans = BasicTransformer(root, file, self.imports_map, self.logger)
+            api_trans.transform()
+            self.torch_api_count += api_trans.torch_api_count
+            self.success_api_count += api_trans.success_api_count
                 
     def mark_unsport(self, code):
         lines = code.split('\n')

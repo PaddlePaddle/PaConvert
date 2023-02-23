@@ -34,7 +34,7 @@ class ImportTransformer(BaseTransformer):
         '''
         1. remove import torch.nn
         2. remove import torch.nn as nn
-        3. add import paddle
+        3. mark whether import paddle
         '''
         new_node_names = []
         for alias_node in node.names:
@@ -137,6 +137,9 @@ class ImportTransformer(BaseTransformer):
         return node
     
     def visit_Module(self, node):
+        '''
+        add import paddle
+        '''
         super(ImportTransformer, self).generic_visit(node)
 
         if self.import_paddle:

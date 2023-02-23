@@ -56,7 +56,7 @@
   "torch.max" : {
     "Matcher": "MaxMinMatcher",
     "paddle_api": "paddle.maximum",
-    "args_list" : ["input", "other"],
+    "args_list" : ["input", "other", "out"],
     "kwargs_change": {
       "input": "x",
       "other": "y"
@@ -66,7 +66,7 @@
   "torch.min" : {
     "Matcher": "MaxMinMatcher",
     "paddle_api": "paddle.minimum",
-    "args_list" : ["input", "other"],
+    "args_list" : ["input", "other", "out"],
     "kwargs_change": {
       "input": "x",
       "other": "y"
@@ -4353,7 +4353,7 @@
 
   "torch.Tensor.add": {
     "Matcher": "TensorAddMatcher",
-    "args_list" : ["other"]
+    "args_list" : ["other", "alpha"]
   },
 
   "torch.Tensor.requires_grad": {}, 
