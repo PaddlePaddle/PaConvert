@@ -497,3 +497,6 @@ torch.sum(input, dim=1)
 torch.sum(input, 1, dtype=torch.float32)
 
 torch.mean(input, 1, dtype=torch.float32)
+
+# torch.Tensor.gather
+src_logits.gather(2, activated_class_ids)

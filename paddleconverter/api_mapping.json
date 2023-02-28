@@ -73,11 +73,10 @@
     }
   },
 
-
   "torch.gather" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.take_along_axis",
-    "args_list" : ["input", "dim", "index"],
+    "args_list" : ["input", "dim", "index", "sparse_grad", "out"],
     "kwargs_change": {
       "input": "arr",
       "dim": "axis",
@@ -2783,49 +2782,6 @@
       "padding"]
   },
 
-  "torch.nn.AvgPool1d" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.AvgPool1D",
-    "args_list" : [
-      "kernel_size",
-      "stride",
-      "padding",
-      "ceil_mode",
-      "count_include_pad"],
-    "kwargs_change": {
-      "count_include_pad":"exclusive"
-    }
-  },
-
-  "torch.nn.AvgPool2d" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.AvgPool2D",
-    "args_list" : [
-      "kernel_size",
-      "stride",
-      "padding",
-      "ceil_mode",
-      "count_include_pad",
-      "divisor_override"],
-    "kwargs_change": {
-      "count_include_pad":"exclusive"
-    }
-  },
-
-  "torch.nn.AvgPool3d" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.AvgPool3D",
-    "args_list" : [
-      "kernel_size",
-      "stride",
-      "padding",
-      "ceil_mode",
-      "count_include_pad",
-      "divisor_override"],
-    "kwargs_change": {
-      "count_include_pad":"exclusive"
-    }
-  },
 
   "torch.nn.AdaptiveMaxPool1d" : {
     "Matcher": "GenericMatcher",
@@ -3430,56 +3386,6 @@
       "stride":"strides",
       "padding":"paddings",
       "dilation":"dilations"
-    }
-  },
-
-  "torch.nn.functional.avg_pool1d" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.avg_pool1d",
-    "args_list" : [
-      "input",
-      "kernel_size",
-      "stride",
-      "padding",
-      "count_include_pad",
-      "ceil_mode"],
-    "kwargs_change": {
-      "input":"x",
-      "count_include_pad":"exclusive"
-    }
-  },
-
-  "torch.nn.functional.avg_pool2d" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.avg_pool2d",
-    "args_list" : [
-      "input",
-      "kernel_size",
-      "stride",
-      "padding",
-      "count_include_pad",
-      "ceil_mode",
-      "divisor_override"],
-    "kwargs_change": {
-      "input":"x",
-      "count_include_pad":"exclusive"
-    }
-  },
-
-  "torch.nn.functional.avg_pool3d" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.avg_pool3d",
-    "args_list" : [
-      "input",
-      "kernel_size",
-      "stride",
-      "padding",
-      "count_include_pad",
-      "ceil_mode",
-      "divisor_override"],
-    "kwargs_change": {
-      "input":"x",
-      "count_include_pad":"exclusive"
     }
   },
 
@@ -4977,11 +4883,10 @@
   "torch.Tensor.gather": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.take_along_axis",
-    "args_list" : [
-      "dim",
-      "index"],
+    "args_list" : ["dim", "index"],
       "kwargs_change": {
-        "dim":"axis"
+        "dim": "axis",
+        "index": "indices"
       }
   }, 
 
@@ -6654,42 +6559,24 @@
   },
 
 
-  "torch.nn.Module.register_buffer" : {
+  "torch.nn.Module.register_buffer" : {},
 
-  },
+  "torch.nn.Module.register_parameter" : {},
 
-  "torch.nn.Module.register_parameter" : {
+  "torch.nn.Module.add_module" : {},
 
-  },
-
-  "torch.nn.Module.add_module" : {
-
-  },
-
-  "torch.nn.Module.register_module" : {
-
-  },
+  "torch.nn.Module.register_module" : {},
 
 
-  "torch.nn.Module.get_submodule" : {
+  "torch.nn.Module.get_submodule" : {},
 
-  },
+  "torch.nn.Module.get_parameter" : {},
 
-  "torch.nn.Module.get_parameter" : {
+  "torch.nn.Module.get_buffer" : {},
 
-  },
+  "torch.nn.Module.get_extra_state" : {},
 
-  "torch.nn.Module.get_buffer" : {
-
-  },
-
-  "torch.nn.Module.get_extra_state" : {
-
-  },
-
-  "torch.nn.Module.set_extra_state" : {
-
-  },
+  "torch.nn.Module.set_extra_state" : {},
 
   "torch.nn.Module.apply" : {
     "Matcher": "GenericMatcher",
@@ -6697,71 +6584,39 @@
     "args_list": ["fn"]
   },
 
-  "torch.nn.Module.cuda" : {
+  "torch.nn.Module.cuda" : {},
 
-  },
+  "torch.nn.Module.ipu" : {},
 
-  "torch.nn.Module.ipu" : {
+  "torch.nn.Module.xpu" : {},
 
-  },
+  "torch.nn.Module.cpu" : {},
 
-  "torch.nn.Module.xpu" : {
+  "torch.nn.Module.type" : {},
 
-  },
+  "torch.nn.Module.float" : {},
 
-  "torch.nn.Module.cpu" : {
+  "torch.nn.Module.double" : {},
 
-  },
+  "torch.nn.Module.half" : {},
 
-  "torch.nn.Module.type" : {
+  "torch.nn.Module.bfloat16" : {},
 
-  },
-
-  "torch.nn.Module.float" : {
-
-  },
-
-  "torch.nn.Module.double" : {
-
-  },
-
-  "torch.nn.Module.half" : {
-
-  },
-
-  "torch.nn.Module.bfloat16" : {
-
-  },
-
-  "torch.nn.Module.to_empty" : {
-
-  },
+  "torch.nn.Module.to_empty" : {},
 
 
-  "torch.nn.Module.to" : {
+  "torch.nn.Module.to" : {},
 
-  },
-
-  "torch.nn.Module.register_full_backward_pre_hook" : {
-
-  },
+  "torch.nn.Module.register_full_backward_pre_hook" : {},
 
 
-  "torch.nn.Module.register_backward_hook" : {
+  "torch.nn.Module.register_backward_hook" : {},
 
-  },
+  "torch.nn.Module.register_full_backward_hook" : {},
 
-  "torch.nn.Module.register_full_backward_hook" : {
+  "torch.nn.Module.register_forward_pre_hook" : {},
 
-  },
-
-  "torch.nn.Module.register_forward_pre_hook" : {
-
-  },
-
-  "torch.nn.Module.register_forward_hook" : {
-
-  },
+  "torch.nn.Module.register_forward_hook" : {},
 
   "torch.nn.Module.state_dict" : {
     "Matcher": "GenericMatcher",
@@ -6777,9 +6632,7 @@
     }
   },
 
-  "torch.nn.Module.register_load_state_dict_post_hook" : {
-
-  },
+  "torch.nn.Module.register_load_state_dict_post_hook" : {},
 
   "torch.nn.Module.parameters" : {
     "Matcher": "GenericMatcher",
@@ -6855,14 +6708,10 @@
     "paddle_api": "paddle.nn.Layer.eval"
   },
 
-  "torch.nn.Module.requires_grad_" : {
-
-  },
+  "torch.nn.Module.requires_grad_" : {},
 
   "torch.nn.Module.zero_grad" : {},
 
-  "torch.nn.Module.share_memory" : {
-
-  }
+  "torch.nn.Module.share_memory" : {}
 }
   
