@@ -5,7 +5,7 @@ paddleconverter是一款API代码转换工具，其功能是将Pytorch项目代�
 
 转换方式为静态代码扫描，保持原代码的风格与结构不变，只转换Pytorch API，而其他的Python代码保持原样不变。
 
-注意仅转换Pytorch原生的API，对于基于Pytorch API封装的其他第三方库（例如`mmdet`、`mmcv`、`torchvision`、`torchaudio`等），则无法转换，这部分API依赖人工转换。建议可将此部分代码复制出来，然后通过工具来转换。
+注意当前仅转换Pytorch原生的API，对于基于Pytorch API封装的其他第三方库（例如`mmdet`、`mmcv`、`torchvision`、`torchaudio`等），则无法转换，这部分API依赖人工转换。建议可将此部分代码复制出来，然后通过工具来转换。
 
 转换采用非inplace的方式，将原项目文件一一转换到 `out_dir` 指定的文件夹中，不改动原文件，方便前后对比调试。不同的文件格式分别处理如下：
 
