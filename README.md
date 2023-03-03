@@ -1,5 +1,5 @@
 # 概述
-paddleconverter是一个代码转换工具，能自动将使用其它深度学习框架训练或推理的代码转换为使用PaddlePaddle的代码，方便代码迁移，更好地使用PaddlePaddle的特性。
+PaConvert是一个代码转换工具，能自动将使用其它深度学习框架训练或推理的代码转换为使用PaddlePaddle的代码，方便代码迁移，更好地使用PaddlePaddle的特性。
 
 目前支持转换Pytorch代码，其它深度学习框架逐步增加中，原理是通过Python AST语法树分析，将输入代码生成为抽象语法树，对其进行解析、遍历、匹配、编辑、替换、插入等各种操作，然后得到基于PaddlePaddle的抽象语法树，最后生成Paddle的代码。
 
