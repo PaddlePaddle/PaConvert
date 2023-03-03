@@ -18,8 +18,8 @@ import ast
 import astor
 import textwrap
 
-from paddleconverter.base import API_MAPPING, BaseMatcher
-from paddleconverter.utils import get_unique_name
+from paconvert.base import API_MAPPING, BaseMatcher
+from paconvert.utils import get_unique_name
 
 class GenericMatcher(BaseMatcher):
 
@@ -167,17 +167,18 @@ class TransposeMatcher(BaseMatcher):
 
         API_TEMPLACE = textwrap.dedent(
             '''
-            {} = list(range(len({}.shape)))
+            x = {}
+            {} = list(range(x.ndim))
             {}[{}] = {}
             {}[{}] = {}
-            paddle.transpose(x={}, perm={})
+            paddle.transpose(x=x, perm={})
             '''
         )
         perm = get_unique_name('perm')
-        code = API_TEMPLACE.format(perm, kwargs['input'], 
+        code = API_TEMPLACE.format(kwargs['input'], perm, 
                 perm, kwargs['dim0'], kwargs['dim1'], 
                 perm, kwargs['dim1'], kwargs['dim0'], 
-                kwargs['input'], perm)
+                perm)
         return code
 
 

@@ -1,5 +1,5 @@
 # overview
-PaddleConverter is an API code conversion tool whose function is to convert Python project code into PaddlePaddle project code.
+PaConvert is an API code conversion tool whose function is to convert Python project code into PaddlePaddle project code.
 
 The principle is to use Python syntax tree analysis to generate the source code of the original PyTorch project as an abstract syntax tree, traverse, parse, match and edit it, and then get the abstract syntax tree of Paddle, and then convert it to the source code of Paddle project.
 
@@ -45,15 +45,15 @@ Due to the use of some newer Python syntax tree features, an interpreter with >=
 1. Installation with pip
 
 ```bash
-python3.8 -m pip install -U paddleconverter-1.0-py3-none-any.whl
-paddleconverter --in_dir torch_project --out_dir paddle_project [--log_dir log_dir] [--log_level level] [--run_check 1]
+python3.8 -m pip install -U paconvert
+paconvert --in_dir torch_project --out_dir paddle_project [--log_dir log_dir] [--log_level level] [--run_check 1]
 ```
 
 2. Installation with source code
 
 ```bash
-git clone https://github.com/zhouwei25/paddleconverter.git
-python3.8 paddleconverter/main.py --in_dir torch_project --out_dir paddle_project [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level level] [--run_check 1]
+git clone https://github.com/PaddlePaddle/PaConvert.git
+python3.8 paconvert/main.py --in_dir torch_project --out_dir paddle_project [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level level] [--run_check 1]
 ```
 
 **Parameters**
@@ -69,7 +69,7 @@ Parameters:
 ```
 
 
-# Simple example
+# Example
 
 Take the following API as an example：
 ```
@@ -96,7 +96,10 @@ class MyNet(nn.Module):
         return F.relu(y)
 
 net = MyNet()
+
 sgd = optim.SGD(net.parameters(), lr=0.1, momentum=0.9)
+lr = optim.lr_scheduler.MultiStepLR(sgd, milestones=[2, 4, 6], gamma=0.8)
+
 ```
 
 After the conversion is completed：
@@ -123,6 +126,8 @@ class MyNet(paddle.nn.Layer):
 
 net = MyNet()
 >>>sgd = torch.optim.SGD(net.parameters(), lr=0.1, momentum=0.9)
+>>>lr = torch.optim.lr_scheduler.MultiStepLR(sgd, milestones=[2, 4, 6], gamma=0.8)
+
 ```
 
 Print the information as follows：
@@ -131,26 +136,27 @@ Print the information as follows：
 ===========================================
 PyTorch to Paddle Convert Start ------>:
 ===========================================
-Start convert /workspace/paddleconverter/temp_code.py --> /workspace/tests/temp_code.py
-[temp_code.py:1] remove 'import torch' 
-[temp_code.py:2] remove 'import torch.nn as nn' 
-[temp_code.py:3] remove 'import torch.optim as optim' 
-[temp_code.py:4] remove 'import torch.nn.Linear as Linear' 
-[temp_code.py:5] remove 'import torch.nn.functional as F' 
-[temp_code.py] add 'import paddle' in first line
-[temp_code.py:24] [Failed]can not convert torch.optim.SGD to Paddle 
-Finish convert /workspace/paddleconverter/temp_code.py --> /workspace/tests/temp_code.py
+Start convert /workspace/example_code.py --> /workspace/PaConvert/paddle_code/example_code.py
+[example_code.py:1] remove 'import torch' 
+[example_code.py:2] remove 'import torch.nn as nn' 
+[example_code.py:3] remove 'import torch.optim as optim' 
+[example_code.py:4] remove 'import torch.nn.Linear as Linear' 
+[example_code.py:5] remove 'import torch.nn.functional as F' 
+[example_code.py] add 'import paddle' in first line
+[example_code.py:25] [Not Support] can not convert torch.optim.SGD to Paddle 
+[example_code.py:26] [Not Support] can not convert torch.optim.lr_scheduler.MultiStepLR to Paddle 
+Finish convert /workspace/example_code.py --> /workspace/PaConvert/paddle_code/example_code.py
 
 
 ========================================
 Convert Summary:
 ========================================
-There are 9 Pytorch APIs in this Project:
+There are 10 Pytorch APIs in this Project:
  8  Pytorch APIs have been converted to Paddle successfully!
- 1  Pytorch APIs are converted failed!
- Convert Rate is: 88.89%
+ 2  Pytorch APIs are not supported to convert currently!
+ Convert Rate is: 80.00%
 
-For these 1 failed converted Pytorch APIs, which have been marked by >>> before the line. Please refer to https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api and modify it by yourself manually!
+For these 2 Pytorch APIs that do not support Convert, which have been marked by >>> before the line. Please refer to https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html and convert it by yourself manually.
 
 Thank you to use Paddle Convert tool. You can make any suggestions to us.
 
@@ -178,7 +184,7 @@ According to the API conversion relationship, we divide the API into three major
 
 #### 1. Consistent APIs
 
-Only need to modify paddleconverter/api_mapping.json, add the following information：
+Only need to modify paconvert/api_mapping.json, add the following information：
 
 ```python
 "torch.nn.AvgPool2d": {
@@ -206,7 +212,7 @@ Only need to modify paddleconverter/api_mapping.json, add the following informat
 
 #### 2. Inconsistent but convertible APIs
 
-First you need to add **Matcher** in paddleconverter/api_matcher.py one by one, and override the `generate_code` function, using `torch.transpose` as an example:
+First you need to add **Matcher** in paconvert/api_matcher.py one by one, and override the `generate_code` function, using `torch.transpose` as an example:
 
 ```
 
@@ -228,7 +234,7 @@ class TransposeMatcher(BaseMatcher):
         return code
 ```
 
-Then add the json configuration to paddleconverter/api_mapping.json：
+Then add the json configuration to paconvert/api_mapping.json：
 
 ```
 "torch.transpose" : {
@@ -246,6 +252,6 @@ Then `torch.transpose` will be transformed by the above one-to-many line method.
 In local development, for quick debugging, you can run the code directly through the following way without repeated installation：
 
 ```
-python paddleconverter/main.py  --in_dir paddleconverter/tests/test_model.py  --out_dir paddleconverter/tests/out
+python3.8 paconvert/main.py  --in_dir tests/test_model.py  --out_dir tests/out
 ```
 

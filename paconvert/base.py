@@ -19,7 +19,7 @@ import collections
 import re
 from os import path
 
-from paddleconverter.utils import UniqueNameGenerator
+from paconvert.utils import UniqueNameGenerator
 
 json_file = path.dirname(__file__) + "/api_mapping.json"
 with open(json_file, 'r') as file:
