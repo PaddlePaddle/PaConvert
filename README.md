@@ -1,42 +1,15 @@
 # 概述
-paddleconverter是一款API代码转换工具，其功能是将Pytorch项目代码转换为PaddlePaddle项目代码。
+paddleconverter是一个代码转换工具，能自动将使用其它深度学习框架训练或推理的代码转换为使用PaddlePaddle的代码，方便代码迁移，更好地使用PaddlePaddle的特性。
 
-其原理是通过Python AST语法树分析，将PyTorch源码生成为抽象语法树，对其进行解析、遍历、匹配、编辑、替换、插入等各种操作，然后得到Paddle的抽象语法树，最后再生成Paddle的源码。
+目前支持转换Pytorch代码，其它深度学习框架逐步增加中，原理是通过Python AST语法树分析，将输入代码生成为抽象语法树，对其进行解析、遍历、匹配、编辑、替换、插入等各种操作，然后得到基于PaddlePaddle的抽象语法树，最后生成Paddle的代码。
 
-转换方式为静态代码扫描，保持原代码的风格与结构不变，只转换Pytorch API，而其他的Python代码保持原样不变。
+转换会尽量保持原代码的风格与结构，将代码中调用其它深度学习框架的接口转换为调用PaddlePaddle的接口。
 
-注意当前仅转换Pytorch原生的API，对于基于Pytorch API封装的其他第三方库（例如`mmdet`、`mmcv`、`torchvision`、`torchaudio`等），则无法转换，这部分API依赖人工转换。建议可将此部分代码复制出来，然后通过工具来转换。
+转换过程中不改动原文件，会将原项目文件一一转换到 `out_dir` 指定的文件夹中，方便前后对比调试。同时对不同类型的文件会分别处理：
 
-转换采用非inplace的方式，将原项目文件一一转换到 `out_dir` 指定的文件夹中，不改动原文件，方便前后对比调试。不同的文件格式分别处理如下：
-
-- Python文件：逐个识别Pytorch API并转换
-- requirements.txt： 将其中的 `torch` 安装依赖替换为 `paddlepaddle-gpu`
+- Python代码文件：识别代码中调用其它深度学习框架的接口并转换
+- requirements.txt： 替换其中的安装依赖为 `paddlepaddle-gpu`
 - 其他文件：原样拷贝
-
-对一个 Pytorch API，尽可能按一对一的形式转换，但在某些情形下，必须借助多行Paddle代码才能实现一个Pytorch API，这会导致转换前后的代码行数改变。例如：
-
-```
-import torch
-y = torch.transpose(x, 1, 0)
-```
-
-转换后：
-```
-import paddle
-perm_0 = list(range(len(x.shape)))
-perm_0[1] = 0
-perm_0[0] = 1
-y = paddle.transpose(x, perm_0)
-```
-
-这是由于两者API的用法差异，无法通过一行代码来完成，必须增加若干辅助行来实现相同功能。
-
-所有的API转换是依据 [Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api) 来进行的。
-
-映射表当前仅包含 `torch.*` 的Pytorch原生API。对于基于Pytorch API封装的其他第三方库（例如`mmdet`、`mmcv`、`torchvision`、`torchaudio`等），目前并没有维护映射关系，仍依赖人工转换。
-
-在转换完成后，`Pytorch API总数`、`转换成功数`、`转换失败数` 的统计结果将会打印到终端，对于无法转换的Pytorch API，我们会通过 `>>>` 在代码行前面进行标识，你需要手动转换并删除该标记。
-
 
 # 安装与使用
 
@@ -71,7 +44,7 @@ python3.8 paddleconverter/main.py --in_dir torch_project --out_dir paddle_projec
 
 # 示例
 
-以下代码为例：
+下面以输入pytorch代码进行转换为例：
 ```
 import torch
 import torch.nn as nn
@@ -156,13 +129,35 @@ Thank you to use Paddle Convert tool. You can make any suggestions to us.
 
 ```
 
-转换时，会打印 **每个转换失败的API、文件及行数** ，转换完成后，会打印 **转换总结** ，包含 **API总数、转换成功数、失败数、转换率** 。如未指定 `log_dir` ，则会在当前目录下创建 `convert.log` 并保存与终端相同内容的日志。
+转换完成后，会打印 **转换总结** ，包含 **API总数、转换成功数、未转换数、转换率** 。如未指定 `log_dir` ，则会在当前目录下创建 `convert.log` 并保存与终端相同内容的日志。
 
 例如，上述代码里一共有9个Pytorch API，其中8个被成功转换，因此转换率为 `88.89%` ，如果项目中有多个python文件，则会统计所有文件的累计数据。
 
 对于转换成功的API，代码风格上会略有变化，会 **补全API全名、补全参数关键字、移除注释、移除多余空行** 。因为在 `源码->语法树->源码` 的过程中，会采用标准写法来生成代码，而注释、空行等代码无法被语法树识别，将被移除。
 
-对于转换失败的API，将 **补全为Pytorch API全名**，同时在行前通过 `>>>` 的形式加以标记，用户必须对该API进行手动转换，可参考[Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api)，然后删除标记，否则代码无法运行。
+对于未转换的API，将 **补全为Pytorch API全名**，同时在行前通过 `>>>` 的形式加以标记，用户必须对该API进行手动转换，可参考[Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html#pytorch-1-13-paddle-2-4-api)，然后删除标记，否则代码无法运行。
+
+# 额外说明
+
+注意在转换pytorch代码时，当前仅转换Pytorch原生的API，对于基于Pytorch API封装的其他第三方库（例如`mmdet`、`mmcv`、`torchvision`、`torchaudio`等），则无法转换，这部分API依赖人工转换。我们后续会考虑逐步支持
+
+转换时工具会尽可能保证代码行数不变，但在某些情形下可能原来的1行代码会转成多行。例如：
+
+```
+import torch
+y = torch.transpose(x, 1, 0)
+```
+
+转换后：
+```
+import paddle
+perm_0 = list(range(len(x.shape)))
+perm_0[1] = 0
+perm_0[0] = 1
+y = paddle.transpose(x, perm_0)
+```
+
+这是由于两者API的用法差异，无法通过一行代码来完成，需要增加若干辅助行来实现相同功能。
 
 
 # 贡献代码
