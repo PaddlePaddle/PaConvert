@@ -20,8 +20,8 @@ from os import path
 import sys
 sys.path.append(path.dirname(__file__)+"../")
 
-from paddleconverter.api_matcher import *
-from paddleconverter.base import API_MAPPING, ATTRIBUTE_MAPPING, BaseTransformer
+from paconvert.api_matcher import *
+from paconvert.base import API_MAPPING, ATTRIBUTE_MAPPING, BaseTransformer
 
 class BasicTransformer(BaseTransformer):
     def __init__(self, root, file, imports_map, logger):
@@ -104,10 +104,10 @@ class BasicTransformer(BaseTransformer):
                 if paddle_api:
                     new_node = ast.parse(paddle_api).body[0].value
                     self.success_api_count += 1
-                    self.log_debug("[Success]convert {} to Paddle".format(torch_api), self.file_name, node.lineno)
+                    self.log_debug("[Success] convert {} to Paddle".format(torch_api), self.file_name, node.lineno)
                     return new_node
 
-            self.log_info("[Not Support]can not convert {} to Paddle".format(torch_api), self.file_name, node.lineno)
+            self.log_info("[Not Support] can not convert {} to Paddle".format(torch_api), self.file_name, node.lineno)
         return node 
 
     def trans_class_attribute(self, node, torch_api):
@@ -126,7 +126,7 @@ class BasicTransformer(BaseTransformer):
 
         annotate_node = ast.parse("'Tensor Attribute: {}, not convert, please check whether it is torch.Tensor.* and convert manually'".format(torch_api)).body[0]
         self.record_scope(self.scope_node_body_index(), annotate_node)
-        self.log_info("[Not Support]can not convert Tensor Attribute: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
+        self.log_info("[Not Support] can not convert Tensor Attribute: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
         return node
 
 
@@ -240,7 +240,7 @@ class BasicTransformer(BaseTransformer):
                         self.log_debug("[Success]convert {} to Paddle ".format(torch_api), self.file_name, node.lineno)
                         return new_node
 
-            self.log_info("[Not Support]can not convert {} to Paddle ".format(torch_api), self.file_name, node.lineno)
+            self.log_info("[Not Support] can not convert {} to Paddle ".format(torch_api), self.file_name, node.lineno)
         return node 
 
 
@@ -278,7 +278,7 @@ class BasicTransformer(BaseTransformer):
         torch_api = '*' + torch_api[torch_api.rfind('.'): ]
         annotate_node = ast.parse("'Class Method: {}, not convert, please check whether it is torch.Tensor.*/Optimizer.*/nn.Module.*, and convert manually'".format(torch_api)).body[0]
         self.record_scope(self.scope_node_body_index(), annotate_node)
-        self.log_info("[Not Support]can not convert Class Method: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
+        self.log_info("[Not Support] can not convert Class Method: {} to Paddle ".format(torch_api), self.file_name, node.lineno)
         return node
 
 
