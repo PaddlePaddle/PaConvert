@@ -500,3 +500,19 @@ torch.mean(input, 1, dtype=torch.float32)
 
 # torch.Tensor.gather
 src_logits.gather(2, activated_class_ids)
+
+# third_party package
+from torchvision import models
+models.resnet50
+
+import mmcv, numpy
+mmcv.load
+mmcv.dump
+
+import mmdet as det
+det.models.build_backbone
+
+from mmdet3d import core
+import mmdet3d.core
+core.bbox.structures.lidar_box3d.LiDARInstance3DBoxes
+mmdet3d.core.draw_heatmap_gaussian

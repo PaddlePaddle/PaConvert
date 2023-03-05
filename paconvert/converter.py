@@ -23,6 +23,7 @@ import re
 
 from .transformer.import_transformer import ImportTransformer
 from .transformer.basic_transformer import BasicTransformer
+from .base import TORCH_PACKAGE_LIST
 
 def listdir_nohidden(path):
     for f in os.listdir(path):
@@ -30,7 +31,7 @@ def listdir_nohidden(path):
             yield f
 
 class Converter:
-    def __init__(self, log_dir=None, log_level='INFO'):
+    def __init__(self, log_dir=None, log_level='INFO', show_unsupport=False):
         self.imports_map = collections.defaultdict(dict)
         self.torch_api_count = 0
         self.success_api_count = 0
@@ -42,6 +43,7 @@ class Converter:
         self.logger.addHandler(logging.StreamHandler())
         self.logger.addHandler(logging.FileHandler(self.log_dir, mode='w'))
         self.logger.setLevel(log_level)
+        self.show_unsupport = show_unsupport
 
         self.log_info("===========================================")
         self.log_info("PyTorch to Paddle Convert Start ------>:")
@@ -66,6 +68,14 @@ class Converter:
 
         self.transfer_dir(in_dir, out_dir, exclude_dir_list)
         
+        if self.show_unsupport:
+            self.log_info("\n========================================")
+            self.log_info("Not Support API List:")
+            self.log_info("========================================")
+            self.log_info("These Pytorch APIs are not supported to convert now, and will be supppored in future!\n")
+            for k, v in self.unspport_map:
+                self.log_info("{}: {}".format(k, v))
+
         faild_api_count = self.torch_api_count - self.success_api_count
         self.log_info("\n========================================")
         self.log_info("Convert Summary:")
@@ -162,6 +172,9 @@ class Converter:
             api_trans.transform()
             self.torch_api_count += api_trans.torch_api_count
             self.success_api_count += api_trans.success_api_count
+            self.unspport_map = sorted(api_trans.unspport_map.items(), 
+                                    key = lambda x:x[1], 
+                                    reverse = True)
                 
     def mark_unsport(self, code):
         lines = code.split('\n')
@@ -188,9 +201,14 @@ class Converter:
                     continue
             
             # model_torch.npy
-            if re.match(r'.*[^A-Za-z_]{1}torch\.', tmp_line) or tmp_line.startswith('torch.'):
-                lines[i] = ">>>" + line
+            for torch_package in TORCH_PACKAGE_LIST:
+                if tmp_line.startswith("%s." % torch_package):
+                    lines[i] = ">>>" + line
+                    break
 
+                if re.match(r".*[^A-Za-z_]{1}%s\." % torch_package, tmp_line):
+                    lines[i] = ">>>" + line
+                    
         return '\n'.join(lines)
 
     def log_debug(self, msg, file=None, line=None):

@@ -29,6 +29,9 @@ json_file = path.dirname(__file__) + "/attribute_mapping.json"
 with open(json_file, 'r') as file:
     ATTRIBUTE_MAPPING = json.load(file)
 
+# will configure torch package in jsom
+TORCH_PACKAGE_LIST = ['torch', 'mmseg', 'mmcv', 'detectron', 'timm', 'mmdet', 'mmdet3d', 'torchvision', 'kornia', 'fasttext']
+
 
 class BaseTransformer(ast.NodeTransformer):
     def __init__(self, root, file, imports_map, logger):
