@@ -32,7 +32,7 @@ def main():
     parser.add_argument("--log_dir", default=None, type=str, help='the input PyTorch file or directory.')
     parser.add_argument("--log_level", default="INFO", type=str, choices=["DEBUG", "INFO"], help="set log level, default is INFO")
     parser.add_argument("--run_check", default=False, type=bool, help='run check the paddle convert tool')
-    parser.add_argument("--show_unsupport", default=False, type=bool, help='run check the paddle convert tool')
+    parser.add_argument("--show_unsupport", default=False, type=bool, help='show these APIs which are not supported to convert now')
 
     args = parser.parse_args()
 
