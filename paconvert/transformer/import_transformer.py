@@ -18,7 +18,7 @@ import os
 import sys
 sys.path.append(os.path.dirname(__file__)+"../")
 
-from paconvert.base import BaseTransformer
+from paconvert.base import BaseTransformer, TORCH_PACKAGE_LIST
 
 class ImportTransformer(BaseTransformer):
     '''
@@ -34,20 +34,23 @@ class ImportTransformer(BaseTransformer):
         '''
         1. remove import torch.nn
         2. remove import torch.nn as nn
-        3. mark whether import paddle
+        3. record which paddle
         '''
         new_node_names = []
         for alias_node in node.names:
-            if 'torch.' in alias_node.name or 'torch' == alias_node.name:
-                # If there is any torch.* module, use paddle to replace it
-                self.import_paddle = True
-                if alias_node.asname:
-                    self.log_info("remove 'import {} as {}' ".format(alias_node.name, alias_node.asname), self.file_name, node.lineno)
-                    self.imports_map[self.file][alias_node.asname] = alias_node.name
-                else:
-                    self.log_info("remove 'import {}' ".format(alias_node.name), self.file_name, node.lineno)
-                    self.imports_map[self.file]['torch'] = 'torch'
-            else:
+            belong_torch = False
+            for torch_package in TORCH_PACKAGE_LIST:
+                if "%s." % torch_package in alias_node.name or torch_package == alias_node.name:
+                    belong_torch = True
+                    self.import_paddle = True
+                    if alias_node.asname:
+                        self.log_info("remove 'import {} as {}' ".format(alias_node.name, alias_node.asname), self.file_name, node.lineno)
+                        self.imports_map[self.file][alias_node.asname] = alias_node.name
+                    else:
+                        self.log_info("remove 'import {}' ".format(alias_node.name), self.file_name, node.lineno)
+                        self.imports_map[self.file][torch_package] = torch_package
+
+            if not belong_torch:
                 if alias_node.asname:
                     self.imports_map[self.file]['others'].append(alias_node.asname)
                 else:
@@ -67,16 +70,17 @@ class ImportTransformer(BaseTransformer):
         '''
         # from . import Net (node.module is None)
         if node.module:
-            if 'torch.' in node.module or 'torch' == node.module:
-                self.import_paddle = True
-                for alias_node in node.names:
-                    if alias_node.asname:
-                        self.log_info("remove 'from {} import {} as {}' ".format(node.module, alias_node.name, alias_node.asname), self.file_name, node.lineno)
-                        self.imports_map[self.file][alias_node.asname] = '.'.join([node.module, alias_node.name])
-                    else:
-                        self.log_info("remove 'from {} import {}' ".format(node.module, alias_node.name), self.file_name, node.lineno)
-                        self.imports_map[self.file][alias_node.name] = '.'.join([node.module, alias_node.name])
-                return None
+            for torch_package in TORCH_PACKAGE_LIST:
+                if "%s." % torch_package in node.module or torch_package == node.module:
+                    self.import_paddle = True
+                    for alias_node in node.names:
+                        if alias_node.asname:
+                            self.log_info("remove 'from {} import {} as {}' ".format(node.module, alias_node.name, alias_node.asname), self.file_name, node.lineno)
+                            self.imports_map[self.file][alias_node.asname] = '.'.join([node.module, alias_node.name])
+                        else:
+                            self.log_info("remove 'from {} import {}' ".format(node.module, alias_node.name), self.file_name, node.lineno)
+                            self.imports_map[self.file][alias_node.name] = '.'.join([node.module, alias_node.name])
+                    return None
 
         # import from this directory
         if node.level > 0:
