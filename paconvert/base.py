@@ -117,7 +117,7 @@ class BaseTransformer(ast.NodeTransformer):
             node_str = astor.to_source(node).strip('\n')
             for item in self.black_list:
                 if item == node_str:
-                    return 'None'
+                    return 'NonTorchClass'
             return node.id
         # 1. torch.abs(x).transpose(1, 0) -> 'torchClass'
         # 2. (x == y).transpose(1, 0) -> 'torchClass'
@@ -129,18 +129,18 @@ class BaseTransformer(ast.NodeTransformer):
             for item in self.black_list:
                 # (array(1.) + array(2.)).abs() ...
                 if re.match('.*[^A-Za-z_]{1}%s\(' % item, node_str):
-                    return 'None'
+                    return 'NonTorchClass'
                 # np.array(1.).abs() ...
                 if re.match('%s\.' % item, node_str):
-                    return 'None'
+                    return 'NonTorchClass'
                 # array(1.).abs() ...
                 if re.match('%s\(' % item, node_str):
-                    return 'None'
+                    return 'NonTorchClass'
             
             return 'TorchClass'
-        # others, such as 'str'.split
+        # others not torch, such as 'str'.split
         else:
-            return 'None'
+            return 'NonTorchClass'
 
     def get_full_api_from_node(self, node):
         full_attr = self.get_full_attr(node)

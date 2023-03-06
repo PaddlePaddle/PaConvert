@@ -100,6 +100,14 @@ class GenericMatcher(BaseMatcher):
             
         return code
 
+class DeleteMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        return 'delete'
+
+    def get_paddle_api(self):
+        return 'delete'
+
+
 class IdentityMatcher(BaseMatcher):
 
     def get_paddle_nodes(self, args, kwargs):
@@ -339,15 +347,6 @@ class MaxMinMatcher(BaseMatcher):
 
         return None
 
-class InterpolateMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if 'recompute_scale_factor' in kwargs:
-            return None
-
-        if 'antialias' in kwargs:
-            return None
-
-        return GenericMatcher(self.torch_api, self.api_mapping).generate_code(kwargs)
 
 class TensorMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):

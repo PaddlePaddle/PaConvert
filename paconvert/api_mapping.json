@@ -10,15 +10,10 @@
     }
   },
 
-  "torch.nn.functional.interpolate" : {
-    "Matcher": "InterpolateMatcher",
-    "paddle_api": "paddle.nn.functional.interpolate",
-    "args_list" : ["input", "size", "scale_factor", "mode", "align_corners", "recompute_scale_factor", "antialias"],
-    "kwargs_change": {
-      "input": "x"
-    }
+  "torch.backends.cudnn.deterministic" : {
+    "Matcher": "DeleteMatcher"
   },
-
+  
   "torch.permute" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.transpose",

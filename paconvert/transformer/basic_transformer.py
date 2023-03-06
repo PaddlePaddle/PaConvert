@@ -24,6 +24,17 @@ sys.path.append(path.dirname(__file__)+"../")
 from paconvert.api_matcher import *
 from paconvert.base import API_MAPPING, ATTRIBUTE_MAPPING, TORCH_PACKAGE_LIST, BaseTransformer
 
+def iter_fields(node):
+    """
+    Yield a tuple of ``(fieldname, value)`` for each field in ``node._fields``
+    that is present on *node*.
+    """
+    for field in node._fields:
+        try:
+            yield field, getattr(node, field)
+        except AttributeError:
+            pass
+
 class BasicTransformer(BaseTransformer):
     def __init__(self, root, file, imports_map, logger):
         super(BasicTransformer, self).__init__(root, file, imports_map, logger)
@@ -94,7 +105,12 @@ class BasicTransformer(BaseTransformer):
                 matcher = self.get_api_mather(torch_api)
                 if matcher:
                     paddle_api = matcher.get_paddle_api()
-                    if paddle_api:
+                    if paddle_api == 'delete':
+                        if isinstance(self.parent_node, ast.Expr):
+                            self.success_api_count += 1
+                            self.log_debug("[Success]remove {} ".format(torch_api), self.file_name, node.lineno)
+                            return None
+                    elif paddle_api:
                         new_node = ast.parse(paddle_api).body[0].value
                         self.success_api_count += 1
                         self.log_debug("[Success] convert {} to Paddle".format(torch_api), self.file_name, node.lineno)
@@ -105,7 +121,7 @@ class BasicTransformer(BaseTransformer):
 
         # Torch Class attribute, such as: x.device
         #   such as x.device...
-        if 'None' not in full_attr:
+        if 'NonTorchClass' not in full_attr:
             attr_list = full_attr.split('.')
             torch_api = '.'.join(['torch.Tensor', attr_list[-1]])
             if torch_api in ATTRIBUTE_MAPPING:
@@ -192,7 +208,7 @@ class BasicTransformer(BaseTransformer):
         super(BasicTransformer, self).generic_visit(node)
         
         # Torch Package Call, include torch third_party
-        #   such as : torch.add(x,y) / torch.add(torch.abs(x), y)
+        #   such as : torch.add(x, y) / torch.add(torch.abs(x), y)
         for torch_package in TORCH_PACKAGE_LIST:
             if full_attr.startswith("%s." % torch_package):
                 torch_api = full_attr
@@ -202,7 +218,12 @@ class BasicTransformer(BaseTransformer):
                 matcher = self.get_api_mather(torch_api)
                 if matcher:
                     node_list = matcher.get_paddle_nodes(node.args, node.keywords)
-                    if node_list:
+                    if node_list == 'delete':
+                        if isinstance(self.parent_node, ast.Expr):
+                            self.success_api_count += 1
+                            self.log_debug("[Success]remove {} ".format(torch_api), self.file_name, node.lineno)
+                            return None
+                    elif node_list:
                         new_node = node_list[-1]
                         # ast.Expr, which contain ast.Call or ast.Name
                         if isinstance(new_node, ast.Expr):
@@ -224,7 +245,7 @@ class BasicTransformer(BaseTransformer):
 
         # Torch Class call
         #   such as : x.add(y) / x.abs().add / sgd.step() / model.to(torch.device('cuda'))
-        if 'None' not in full_attr:
+        if 'NonTorchClass' not in full_attr:
             attr_list = full_attr.split('.')
             #  x.reshape
             #  self.weight.reshape
@@ -301,6 +322,15 @@ class BasicTransformer(BaseTransformer):
                 matcher = api_mapping['Matcher']
                 return eval(matcher)(torch_api, api_mapping)
         return None
+
+    def visit_Expr(self, node):
+        for field, old_value in iter_fields(node):
+            new_node = self.visit(old_value)
+            if new_node is None:
+                return None
+            else:
+                setattr(node, field, new_node)
+        return node
 
     def visit_FunctionDef(self, node):
         self.scope_stack.append(node)
