@@ -516,3 +516,8 @@ from mmdet3d import core
 import mmdet3d.core
 core.bbox.structures.lidar_box3d.LiDARInstance3DBoxes
 mmdet3d.core.draw_heatmap_gaussian
+
+# delete api
+x.cuda()
+a == x.is_contiguous()
+torch.backends.cudnn.deterministic()
