@@ -35,15 +35,14 @@ class Converter:
         self.imports_map = collections.defaultdict(dict)
         self.torch_api_count = 0
         self.success_api_count = 0
-        if log_dir is None:
-            self.log_dir = os.getcwd()+ '/convert.log'
-        else:
-            self.log_dir = log_dir
         self.logger = logging.getLogger(name='Converter')
-        self.logger.addHandler(logging.StreamHandler())
-        self.logger.addHandler(logging.FileHandler(self.log_dir, mode='w'))
+        if log_dir is None:
+            self.logger.addHandler(logging.StreamHandler())
+        else:
+            self.logger.addHandler(logging.FileHandler(log_dir, mode='w'))
         self.logger.setLevel(log_level)
         self.show_unsupport = show_unsupport
+        self.unsupport_map = collections.defaultdict(int)
 
         self.log_info("===========================================")
         self.log_info("PyTorch to Paddle Convert Start ------>:")
@@ -69,11 +68,14 @@ class Converter:
         self.transfer_dir(in_dir, out_dir, exclude_dir_list)
         
         if self.show_unsupport:
+            unsupport_map = sorted(self.unsupport_map.items(), 
+                                    key = lambda x:x[1], 
+                                    reverse = True)
             self.log_info("\n========================================")
             self.log_info("Not Support API List:")
             self.log_info("========================================")
             self.log_info("These Pytorch APIs are not supported to convert now, and will be supppored in future!\n")
-            for k, v in self.unspport_map:
+            for k, v in unsupport_map:
                 self.log_info("{}: {}".format(k, v))
 
         faild_api_count = self.torch_api_count - self.success_api_count
@@ -133,6 +135,9 @@ class Converter:
                         os.makedirs(new_path)
 
                 self.transfer_dir(old_path, new_path, exclude_dir_list)
+        elif os.path.islink(in_dir):
+            pass
+            # may need to create link
         else:
             raise ValueError(" the input 'in_dir' must be a exist file or directory! ")
 
@@ -168,13 +173,10 @@ class Converter:
         import_trans.transform()
         # basic api ast transformer
         if import_trans.import_paddle:
-            api_trans = BasicTransformer(root, file, self.imports_map, self.logger)
+            api_trans = BasicTransformer(root, file, self.imports_map, self.logger, self.unsupport_map)
             api_trans.transform()
             self.torch_api_count += api_trans.torch_api_count
             self.success_api_count += api_trans.success_api_count
-            self.unspport_map = sorted(api_trans.unspport_map.items(), 
-                                    key = lambda x:x[1], 
-                                    reverse = True)
                 
     def mark_unsport(self, code):
         lines = code.split('\n')
