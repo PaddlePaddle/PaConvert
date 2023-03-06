@@ -25,11 +25,16 @@ package_data = {
 
 def get_tag():
     try:
-        cmd = ['git', 'describe', '--tags', '--abbrev=0', '--always']
+        cmd = ['git', 'tag']
         git_tag = subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0].strip()
         git_tag = git_tag.decode()
     except:
         git_tag = '0.0.0'
+
+    if not git_tag:
+        git_tag = '0.0.0'
+
+    return git_tag
 
 setup(
     name='paconvert',
