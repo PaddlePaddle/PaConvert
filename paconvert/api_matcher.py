@@ -451,3 +451,21 @@ class TensorTypeAsMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         code = "{}.astype(dtype={}.dtype)".format(self.paddleClass, kwargs['tensor'])
         return code
+
+
+class CrossEntropyLossMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.nn.CrossEntropyLoss(weight={},
+                ignore_index={},
+                reduction={},
+                soft_label=False,
+                axis=1,
+                use_softmax=True,
+                name=None
+            )
+            '''
+        )
+        code = API_TEMPLACE.format(kwargs['weight'], kwargs['ignore_index'], kwargs['reduction'])
+        return code
