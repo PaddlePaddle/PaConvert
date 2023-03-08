@@ -494,6 +494,8 @@ class CrossEntropyLossMatcher(BaseMatcher):
                 reduction = 'none'
         else:
             reduction = kwargs.pop('reduction')
+        else:
+            reduction = 'mean'
 
         API_TEMPLACE = textwrap.dedent(
             '''
