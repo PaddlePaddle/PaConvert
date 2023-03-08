@@ -492,7 +492,7 @@ class CrossEntropyLossMatcher(BaseMatcher):
                 reduction = 'sum'
             else:
                 reduction = 'none'
-        else:
+        elif 'reduction' in kwargs:
             reduction = kwargs.pop('reduction')
         else:
             reduction = 'mean'
