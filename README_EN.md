@@ -206,7 +206,7 @@ Only need to modify paconvert/api_mapping.json, add the following information：
 
 - `Matcher` :For consistent APIs, fill in all `GenericMatcher`
 - `paddle_api` :Corresponding Paddle API
-- `args_list` :Parameter name, fill in the order of parameter name
+- `args_list` :All torch api parameter names in order
 - `kwargs_change` :Correspondence of parameter names (Note: When the function of the parameter is the same but the name is not the same, it is also regarded as the same)
 
 

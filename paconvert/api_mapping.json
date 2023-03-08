@@ -4249,7 +4249,7 @@
   "torch.add": {
     "Matcher": "TorchAddMatcher",
     "paddle_api": "paddle.add",
-    "args_list" : ["input", "other"]
+    "args_list" : ["input", "other", "alpha", "out"]
   },
 
   "torch.Tensor.add": {
