@@ -448,3 +448,63 @@ class TensorTypeAsMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         code = "{}.astype(dtype={}.dtype)".format(self.paddleClass, kwargs['tensor'])
         return code
+
+
+class CrossEntropyLossMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'label_smoothing' in kwargs:
+            return None
+
+        if 'size_average' in kwargs:
+            size_average = kwargs.pop('size_average')
+            if 'True' in size_average:
+                size_average = True
+            elif 'False' in size_average:
+                size_average = False
+            else:
+                size_average = None
+        else:
+            size_average = None
+        
+        if 'reduce' in kwargs:
+            reduce = kwargs.pop('reduce')
+            if 'True' in reduce:
+                reduce = True
+            elif 'False' in reduce:
+                reduce = False
+            else:
+                reduce = None
+        else:
+            reduce = None
+        
+        if size_average is not None or reduce is not None:
+            if size_average is None:
+                size_average = True
+            if reduce is None:
+                reduce = True
+
+            if size_average and reduce:
+                reduction = '"""mean"""'
+            elif reduce:
+                reduction = '"""sum"""'
+            else:
+                reduction = '"""none"""'
+        elif 'reduction' in kwargs:
+            reduction = kwargs.pop('reduction')
+        else:
+            reduction = '"""mean"""'
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.nn.CrossEntropyLoss(weight={},
+                ignore_index={},
+                reduction={},
+                soft_label=False,
+                axis=1,
+                use_softmax=True,
+                name=None
+            )
+            '''
+        )
+        code = API_TEMPLACE.format(kwargs['weight'], kwargs['ignore_index'], reduction)
+        return code
