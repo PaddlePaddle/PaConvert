@@ -455,6 +455,9 @@ class TensorTypeAsMatcher(BaseMatcher):
 
 class CrossEntropyLossMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        if 'label_smoothing' in kwargs:
+            return None
+
         API_TEMPLACE = textwrap.dedent(
             '''
             paddle.nn.CrossEntropyLoss(weight={},
