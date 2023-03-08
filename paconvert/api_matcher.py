@@ -487,21 +487,21 @@ class CrossEntropyLossMatcher(BaseMatcher):
                 reduce = True
 
             if size_average and reduce:
-                reduction = 'mean'
+                reduction = '"""mean"""'
             elif reduce:
-                reduction = 'sum'
+                reduction = '"""sum"""'
             else:
-                reduction = 'none'
+                reduction = '"""none"""'
         elif 'reduction' in kwargs:
             reduction = kwargs.pop('reduction')
         else:
-            reduction = 'mean'
+            reduction = '"""mean"""'
 
         API_TEMPLACE = textwrap.dedent(
             '''
             paddle.nn.CrossEntropyLoss(weight={},
                 ignore_index={},
-                reduction='{}',
+                reduction={},
                 soft_label=False,
                 axis=1,
                 use_softmax=True,
