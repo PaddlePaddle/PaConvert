@@ -62,16 +62,16 @@ class GenericMatcher(BaseMatcher):
 
         if requires_grad_v and 'out' in kwargs:
             out_v = new_kwargs.pop('out')
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 '''
                 {} = {}({})
                 {}.stop_gradient = False
                 {}
                 '''
             )
-            code = API_TEMPLACE.format(out_v, self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out_v, out_v)
+            code = API_TEMPLATE.format(out_v, self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out_v, out_v)
         elif requires_grad_v and 'out' not in kwargs:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 '''
                 {} = {}({})
                 {}.stop_gradient = False
@@ -79,16 +79,16 @@ class GenericMatcher(BaseMatcher):
                 '''
             )
             out = get_unique_name('out')
-            code = API_TEMPLACE.format(out, self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out, out)
+            code = API_TEMPLATE.format(out, self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out, out)
         elif not requires_grad_v and 'out' in kwargs:
             out_v = new_kwargs.pop('out')
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 '''
                 {} = {}({})
                 {}
                 '''
             )
-            code = API_TEMPLACE.format(out_v, self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out_v)
+            code = API_TEMPLATE.format(out_v, self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out_v)
         else:
             code = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
 
@@ -129,42 +129,39 @@ class LayerMatcher(BaseMatcher):
         
 class TorchAddMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if 'out' in kwargs:
-            return None
-
         if 'alpha' in kwargs:
-            API_TEMPLACE = textwrap.dedent(
-                '''
-                paddle.add(x={}, y={}*{})
-                '''
-            )
-            code = API_TEMPLACE.format(kwargs['alpha'], kwargs['input'], kwargs['other'])
+            code = "paddle.add(x={}, y={}*{})".format(kwargs['input'], kwargs['alpha'], kwargs['other'])
         else:
-            API_TEMPLACE = textwrap.dedent(
+            code = "paddle.add(x={}, y={})".format(kwargs['input'], kwargs['other'])
+        
+        if 'out' in kwargs:
+            API_TEMPLATE = textwrap.dedent(
                 '''
-                paddle.add(x={}, y={})
+                {} = {}
+                {}
                 '''
             )
-            code = API_TEMPLACE.format(kwargs['input'], kwargs['other'])
+            code = API_TEMPLATE.format(kwargs['out'], code, kwargs['out'])
+        
         return code
 
 
 class TensorAddMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if 'alpha' in kwargs:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 '''
                 paddle.Tensor.add(y={}*{})
                 '''
             )
-            code = API_TEMPLACE.format(kwargs['alpha'], kwargs['other'])
+            code = API_TEMPLATE.format(kwargs['alpha'], kwargs['other'])
         else:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 '''
                 paddle.Tensor.add(y={})
                 '''
             )
-            code = API_TEMPLACE.format(kwargs['other'])
+            code = API_TEMPLATE.format(kwargs['other'])
         return code
 
 
@@ -173,7 +170,7 @@ class TransposeMatcher(BaseMatcher):
         if len(kwargs) != 3:
             return None
 
-        API_TEMPLACE = textwrap.dedent(
+        API_TEMPLATE = textwrap.dedent(
             '''
             x = {}
             {} = list(range(x.ndim))
@@ -183,7 +180,7 @@ class TransposeMatcher(BaseMatcher):
             '''
         )
         perm = get_unique_name('perm')
-        code = API_TEMPLACE.format(kwargs['input'], perm, 
+        code = API_TEMPLATE.format(kwargs['input'], perm, 
                 perm, kwargs['dim0'], kwargs['dim1'], 
                 perm, kwargs['dim1'], kwargs['dim0'], 
                 perm)
@@ -220,16 +217,16 @@ class CreateMatcher(BaseMatcher):
         
         if requires_grad_v and 'out' in kwargs:
             out_v = kwargs.pop('out')
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 '''
                 {} = {}({})
                 {}.stop_gradient = False
                 {}
                 '''
             )
-            code = API_TEMPLACE.format(out_v, self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v, out_v)
+            code = API_TEMPLATE.format(out_v, self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v, out_v)
         elif requires_grad_v and 'out' not in kwargs:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 '''
                 {} = {}({})
                 {}.stop_gradient = False
@@ -237,16 +234,16 @@ class CreateMatcher(BaseMatcher):
                 '''
             )
             out = get_unique_name('out')
-            code = API_TEMPLACE.format(out, self.get_paddle_api(), self.kwargs_to_str(kwargs), out, out)
+            code = API_TEMPLATE.format(out, self.get_paddle_api(), self.kwargs_to_str(kwargs), out, out)
         elif not requires_grad_v and 'out' in kwargs:
             out_v = kwargs.pop('out')
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 '''
                 {} = {}({})
                 {}
                 '''
             )
-            code = API_TEMPLACE.format(out_v, self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v)
+            code = API_TEMPLATE.format(out_v, self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v)
         else:
             code = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
@@ -359,7 +356,7 @@ class TensorTransposeMatcher(BaseMatcher):
         if len(kwargs) != 2:
             return "NonTorchClass"
 
-        API_TEMPLACE = textwrap.dedent(
+        API_TEMPLATE = textwrap.dedent(
             '''
             x = {}
             {} = list(range(x.ndim))
@@ -369,7 +366,7 @@ class TensorTransposeMatcher(BaseMatcher):
             '''
         )
         perm = get_unique_name('perm')
-        code = API_TEMPLACE.format(self.paddleClass, perm, 
+        code = API_TEMPLATE.format(self.paddleClass, perm, 
                 perm, kwargs['dim0'], kwargs['dim1'], 
                 perm, kwargs['dim1'], kwargs['dim0'], perm)
         return code

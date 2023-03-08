@@ -1,7 +1,7 @@
 # 概述
-PaConvert是一个代码转换工具，能自动将使用其它深度学习框架训练或推理的代码转换为使用PaddlePaddle的代码，方便代码迁移，更好地使用PaddlePaddle的特性。
+PaConvert是一个代码转换工具，能自动将其它深度学习框架训练或推理的**代码**，转换为PaddlePaddle的**代码**，方便**代码迁移**。
 
-目前支持转换Pytorch代码，其它深度学习框架逐步增加中，原理是通过Python AST语法树分析，将输入代码生成为抽象语法树，对其进行解析、遍历、匹配、编辑、替换、插入等各种操作，然后得到基于PaddlePaddle的抽象语法树，最后生成Paddle的代码。
+目前支持自动转换Pytorch代码，其它深度学习框架的支持后续新增中，其原理是通过Python AST语法树分析，将输入代码生成为抽象语法树，对其进行解析、遍历、匹配、编辑、替换、插入等各种操作，然后得到基于PaddlePaddle的抽象语法树，最后生成Paddle的代码。
 
 转换会尽量保持原代码的风格与结构，将代码中调用其它深度学习框架的接口转换为调用PaddlePaddle的接口。
 
@@ -205,11 +205,12 @@ y = paddle.transpose(x=x, perm=perm_0)
 }
 ```
 
-- `Matcher`    :全部填写 `GenericMatcher`
-- `paddle_api` :对应的Paddle API
-- `args_list`  :按参数名称顺序填写
-- `kwargs_change` :名称不同的参数对应关系，名称相同无需填写
+- `Matcher`    :必须，对于此类全部填写 `GenericMatcher`，否则需要自定义开发 Matcher
+- `paddle_api` :仅 `GenericMatcher` 时需要，对应的Paddle API
+- `args_list`  :必须，需要根据顺序填写PyTorch api的全部参数名
+- `kwargs_change` :可选，参数名称有差异时，参数名的映射关系
 
+此类API需要填写以上四项内容。（如果没有参数名不同的情况，则无 `kwargs_change` ）。
 
 ### 2. 不一致但可转换的API
 
@@ -249,6 +250,8 @@ class TransposeMatcher(BaseMatcher):
     ]
 }
 ```
+
+此类API需要填写json配置中的两项内容： `Matcher` 、 `args_list` 。
 
 在本地开发中，为快速调试，可直接通过以下方式运行代码，无需反复安装：
 
