@@ -6733,6 +6733,18 @@
     "Matcher": "CrossEntropyLossMatcher",
     "paddle_api": "paddle.nn.CrossEntropyLoss",
     "args_list": ["weight", "size_average", "ignore_index", "reduce", "reduction", "label_smoothing"]
+  },
+
+  "torch.nn.LayerNorm" : {
+    "Matcher": "LayerNormMatcher",
+    "paddle_api": "paddle.nn.LayerNorm",
+    "args_list": ["normalized_shape", "eps", "elementwise_affine", "device", "dtype"]
+  },
+
+  "torch.nn.GroupNorm" : {
+    "Matcher": "GroupNormMatcher",
+    "paddle_api": "paddle.nn.GroupNorm",
+    "args_list": ["num_groups", "num_channels", "eps", "affine", "device", "dtype"]
   }
 
 }

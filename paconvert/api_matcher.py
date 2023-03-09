@@ -508,3 +508,43 @@ class CrossEntropyLossMatcher(BaseMatcher):
         )
         code = API_TEMPLACE.format(kwargs['weight'], kwargs['ignore_index'], reduction)
         return code
+
+
+class LayerNormMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'elementwise_affine' in kwargs:
+            if 'False' in kwargs['elementwise_affine']:
+                return None
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.nn.LayerNorm(normalized_shape={}, 
+                                epsilon={}, 
+                                weight_attr=None, 
+                                bias_attr=None, 
+                                name=None)
+            '''
+        )
+        code = API_TEMPLACE.format(kwargs['normalized_shape'], kwargs['eps'])
+        return code
+
+
+class GroupNormMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'affine' in kwargs:
+            if 'False' in kwargs['affine']:
+                return None
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.nn.GroupNorm(num_groups={}, 
+                                num_channels={}, 
+                                epsilon={}, 
+                                weight_attr=None, 
+                                bias_attr=None, 
+                                data_format='NCHW', 
+                                name=None)
+            '''
+        )
+        code = API_TEMPLACE.format(kwargs['num_groups'], kwargs['num_channels'], kwargs['eps'])
+        return code
