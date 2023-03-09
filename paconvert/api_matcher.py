@@ -548,3 +548,69 @@ class GroupNormMatcher(BaseMatcher):
         )
         code = API_TEMPLACE.format(kwargs['num_groups'], kwargs['num_channels'], kwargs['eps'])
         return code
+
+
+class BatchNorm1DMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'affine' in kwargs:
+            if 'False' in kwargs['affine']:
+                return None
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.nn.BatchNorm1D(num_features={}, 
+                                  momentum=1-{}, 
+                                  epsilon={}, 
+                                  weight_attr=None, 
+                                  bias_attr=None, 
+                                  data_format='NCL', 
+                                  use_global_stats={},
+                                  name=None)
+            '''
+        )
+        code = API_TEMPLACE.format(kwargs['num_features'], kwargs['momentum'], kwargs['eps'], kwargs['track_running_stats'])
+        return code
+
+
+class BatchNorm2DMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'affine' in kwargs:
+            if 'False' in kwargs['affine']:
+                return None
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.nn.BatchNorm2D(num_features={}, 
+                                  momentum=1-{}, 
+                                  epsilon={}, 
+                                  weight_attr=None, 
+                                  bias_attr=None, 
+                                  data_format='NCHW', 
+                                  use_global_stats={},
+                                  name=None)
+            '''
+        )
+        code = API_TEMPLACE.format(kwargs['num_features'], kwargs['momentum'], kwargs['eps'], kwargs['track_running_stats'])
+        return code
+
+
+class BatchNorm3DMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'affine' in kwargs:
+            if 'False' in kwargs['affine']:
+                return None
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.nn.BatchNorm3D(num_features={}, 
+                                  momentum=1-{}, 
+                                  epsilon={}, 
+                                  weight_attr=None, 
+                                  bias_attr=None, 
+                                  data_format='NCDHW', 
+                                  use_global_stats={},
+                                  name=None)
+            '''
+        )
+        code = API_TEMPLACE.format(kwargs['num_features'], kwargs['momentum'], kwargs['eps'], kwargs['track_running_stats'])
+        return code
