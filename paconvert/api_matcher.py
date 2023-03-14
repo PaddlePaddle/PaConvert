@@ -512,33 +512,40 @@ class CrossEntropyLossMatcher(BaseMatcher):
 
 class LayerNormMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        if 'eps' not in kwargs:
+            epsilon = 1e-5
+        else:
+            epsilon = kwargs['eps']
+
         if 'elementwise_affine' in kwargs and 'False' in kwargs['elementwise_affine']:
             API_TEMPLACE = textwrap.dedent(
                 '''
                 paddle.nn.LayerNorm(normalized_shape={}, 
                                     epsilon={}, 
                                     weight_attr=paddle.ParamAttr(learning_rate=0.0), 
-                                    bias_attr=paddle.ParamAttr(learning_rate=0.0), 
-                                    name=None)
+                                    bias_attr=paddle.ParamAttr(learning_rate=0.0))
                 '''
             )
-            code = API_TEMPLACE.format(kwargs['normalized_shape'], kwargs['eps'])
         else:
             API_TEMPLACE = textwrap.dedent(
                 '''
                 paddle.nn.LayerNorm(normalized_shape={}, 
                                     epsilon={}, 
                                     weight_attr=None, 
-                                    bias_attr=None, 
-                                    name=None)
+                                    bias_attr=None)
                 '''
             )
-            code = API_TEMPLACE.format(kwargs['normalized_shape'], kwargs['eps'])
+        code = API_TEMPLACE.format(kwargs['normalized_shape'], epsilon)
         return code
 
 
 class GroupNormMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        if 'eps' not in kwargs:
+            epsilon = 1e-5
+        else:
+            epsilon = kwargs['eps']
+
         if 'affine' in kwargs and 'False' in kwargs['affine']:
             API_TEMPLACE = textwrap.dedent(
                 '''
@@ -546,12 +553,9 @@ class GroupNormMatcher(BaseMatcher):
                                     num_channels={}, 
                                     epsilon={}, 
                                     weight_attr=paddle.ParamAttr(learning_rate=0.0), 
-                                    bias_attr=paddle.ParamAttr(learning_rate=0.0), 
-                                    data_format='NCHW', 
-                                    name=None)
+                                    bias_attr=paddle.ParamAttr(learning_rate=0.0))
                 '''
             )
-            code = API_TEMPLACE.format(kwargs['num_groups'], kwargs['num_channels'], kwargs['eps'])
         else:
             API_TEMPLACE = textwrap.dedent(
                 '''
@@ -559,17 +563,30 @@ class GroupNormMatcher(BaseMatcher):
                                     num_channels={}, 
                                     epsilon={}, 
                                     weight_attr=None, 
-                                    bias_attr=None, 
-                                    data_format='NCHW', 
-                                    name=None)
+                                    bias_attr=None)
                 '''
             )
-            code = API_TEMPLACE.format(kwargs['num_groups'], kwargs['num_channels'], kwargs['eps'])
+        code = API_TEMPLACE.format(kwargs['num_groups'], kwargs['num_channels'], epsilon)
         return code
 
 
 class BatchNorm1DMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        if 'eps' not in kwargs:
+            epsilon = 1e-5
+        else:
+            epsilon = kwargs['eps']
+
+        if 'track_running_stats' in kwargs:
+            track_running_stats = kwargs['track_running_stats']
+        else:
+            track_running_stats = True
+
+        if 'momentum' in kwargs:
+            momentum = kwargs['momentum']
+        else:
+            momentum = 0.1
+
         if 'affine' in kwargs and 'False' in kwargs['affine']:
             API_TEMPLACE = textwrap.dedent(
                 '''
@@ -577,13 +594,10 @@ class BatchNorm1DMatcher(BaseMatcher):
                                     momentum=1-{}, 
                                     epsilon={}, 
                                     weight_attr=paddle.ParamAttr(learning_rate=0.0), 
-                                    bias_attr=paddle.ParamAttr(learning_rate=0.0), 
-                                    data_format='NCL', 
-                                    use_global_stats={},
-                                    name=None)
+                                    bias_attr=paddle.ParamAttr(learning_rate=0.0),
+                                    use_global_stats={})
                 '''
             )
-            code = API_TEMPLACE.format(kwargs['num_features'], kwargs['momentum'], kwargs['eps'], kwargs['track_running_stats'])
         else:
             API_TEMPLACE = textwrap.dedent(
                 '''
@@ -591,18 +605,31 @@ class BatchNorm1DMatcher(BaseMatcher):
                                     momentum=1-{}, 
                                     epsilon={}, 
                                     weight_attr=None, 
-                                    bias_attr=None, 
-                                    data_format='NCL', 
-                                    use_global_stats={},
-                                    name=None)
+                                    bias_attr=None,
+                                    use_global_stats={})
                 '''
             )
-            code = API_TEMPLACE.format(kwargs['num_features'], kwargs['momentum'], kwargs['eps'], kwargs['track_running_stats'])
+        code = API_TEMPLACE.format(kwargs['num_features'], momentum, epsilon, track_running_stats)
         return code
 
 
 class BatchNorm2DMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        if 'eps' not in kwargs:
+            epsilon = 1e-5
+        else:
+            epsilon = kwargs['eps']
+
+        if 'track_running_stats' in kwargs:
+            track_running_stats = kwargs['track_running_stats']
+        else:
+            track_running_stats = True
+
+        if 'momentum' in kwargs:
+            momentum = kwargs['momentum']
+        else:
+            momentum = 0.1
+
         if 'affine' in kwargs and 'False' in kwargs['affine']:
             API_TEMPLACE = textwrap.dedent(
                 '''
@@ -611,12 +638,9 @@ class BatchNorm2DMatcher(BaseMatcher):
                                     epsilon={}, 
                                     weight_attr=paddle.ParamAttr(learning_rate=0.0), 
                                     bias_attr=paddle.ParamAttr(learning_rate=0.0), 
-                                    data_format='NCHW', 
-                                    use_global_stats={},
-                                    name=None)
+                                    use_global_stats={})
                 '''
             )
-            code = API_TEMPLACE.format(kwargs['num_features'], kwargs['momentum'], kwargs['eps'], kwargs['track_running_stats'])
         else:
             API_TEMPLACE = textwrap.dedent(
                 '''
@@ -625,17 +649,30 @@ class BatchNorm2DMatcher(BaseMatcher):
                                     epsilon={}, 
                                     weight_attr=None, 
                                     bias_attr=None, 
-                                    data_format='NCHW', 
-                                    use_global_stats={},
-                                    name=None)
+                                    use_global_stats={})
                 '''
             )
-            code = API_TEMPLACE.format(kwargs['num_features'], kwargs['momentum'], kwargs['eps'], kwargs['track_running_stats'])
+        code = API_TEMPLACE.format(kwargs['num_features'], momentum, epsilon, track_running_stats)
         return code
 
 
 class BatchNorm3DMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        if 'eps' not in kwargs:
+            epsilon = 1e-5
+        else:
+            epsilon = kwargs['eps']
+
+        if 'track_running_stats' in kwargs:
+            track_running_stats = kwargs['track_running_stats']
+        else:
+            track_running_stats = True
+
+        if 'momentum' in kwargs:
+            momentum = kwargs['momentum']
+        else:
+            momentum = 0.1
+
         if 'affine' in kwargs and 'False' in kwargs['affine']:
             API_TEMPLACE = textwrap.dedent(
                 '''
@@ -644,12 +681,9 @@ class BatchNorm3DMatcher(BaseMatcher):
                                     epsilon={}, 
                                     weight_attr=paddle.ParamAttr(learning_rate=0.0), 
                                     bias_attr=paddle.ParamAttr(learning_rate=0.0), 
-                                    data_format='NCDHW', 
-                                    use_global_stats={},
-                                    name=None)
+                                    use_global_stats={})
                 '''
             )
-            code = API_TEMPLACE.format(kwargs['num_features'], kwargs['momentum'], kwargs['eps'], kwargs['track_running_stats'])
         else:
             API_TEMPLACE = textwrap.dedent(
                 '''
@@ -658,10 +692,8 @@ class BatchNorm3DMatcher(BaseMatcher):
                                     epsilon={}, 
                                     weight_attr=None, 
                                     bias_attr=None, 
-                                    data_format='NCDHW', 
-                                    use_global_stats={},
-                                    name=None)
+                                    use_global_stats={})
                 '''
             )
-            code = API_TEMPLACE.format(kwargs['num_features'], kwargs['momentum'], kwargs['eps'], kwargs['track_running_stats'])
+        code = API_TEMPLACE.format(kwargs['num_features'], momentum, epsilon, track_running_stats)
         return code
