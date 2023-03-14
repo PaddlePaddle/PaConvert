@@ -5278,7 +5278,7 @@
 
   "torch.Tensor.min": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.logsumexp",
+    "paddle_api": "paddle.Tensor.min",
     "args_list" : [
       "dim",
       "keepdim"],
@@ -6732,37 +6732,75 @@
   "torch.nn.CrossEntropyLoss" : {
     "Matcher": "CrossEntropyLossMatcher",
     "paddle_api": "paddle.nn.CrossEntropyLoss",
-    "args_list": ["weight", "size_average", "ignore_index", "reduce", "reduction", "label_smoothing"]
+    "args_list": [
+      "weight", 
+      "size_average", 
+      "ignore_index", 
+      "reduce", 
+      "reduction", 
+      "label_smoothing"]
   },
 
   "torch.nn.LayerNorm" : {
     "Matcher": "LayerNormMatcher",
     "paddle_api": "paddle.nn.LayerNorm",
-    "args_list": ["normalized_shape", "eps", "elementwise_affine", "device", "dtype"]
+    "args_list": [
+      "normalized_shape", 
+      "eps", 
+      "elementwise_affine", 
+      "device", 
+      "dtype"]
   },
 
   "torch.nn.GroupNorm" : {
     "Matcher": "GroupNormMatcher",
     "paddle_api": "paddle.nn.GroupNorm",
-    "args_list": ["num_groups", "num_channels", "eps", "affine", "device", "dtype"]
+    "args_list": [
+      "num_groups", 
+      "num_channels", 
+      "eps", 
+      "affine", 
+      "device", 
+      "dtype"]
   }, 
 
   "torch.nn.BatchNorm1d" : {
     "Matcher": "BatchNorm1DMatcher",
     "paddle_api": "paddle.nn.BatchNorm1D",
-    "args_list": ["num_features", "eps", "momentum", "affine", "track_running_stats", "device", "dtype"]
+    "args_list": [
+      "num_features", 
+      "eps", 
+      "momentum", 
+      "affine", 
+      "track_running_stats", 
+      "device", 
+      "dtype"]
   }, 
 
   "torch.nn.BatchNorm2d" : {
     "Matcher": "BatchNorm2DMatcher",
     "paddle_api": "paddle.nn.BatchNorm2D",
-    "args_list": ["num_features", "eps", "momentum", "affine", "track_running_stats", "device", "dtype"]
+    "args_list": [
+      "num_features", 
+      "eps", 
+      "momentum", 
+      "affine", 
+      "track_running_stats", 
+      "device", 
+      "dtype"]
   },
 
   "torch.nn.BatchNorm3d" : {
     "Matcher": "BatchNorm3DMatcher",
     "paddle_api": "paddle.nn.BatchNorm3D",
-    "args_list": ["num_features", "eps", "momentum", "affine", "track_running_stats", "device", "dtype"]
+    "args_list": [
+      "num_features", 
+      "eps", 
+      "momentum", 
+      "affine", 
+      "track_running_stats", 
+      "device", 
+      "dtype"]
   }
 
 }
