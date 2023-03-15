@@ -123,7 +123,9 @@ class LayerMatcher(BaseMatcher):
         if 'dtype' in kwargs:
             del kwargs['dtype']
         if 'bias' in kwargs:
-            kwargs['bias_attr'] = kwargs.pop('bias')
+            bias_v = eval(kwargs.pop('bias'))
+            if not bias_v:
+                kwargs['bias_attr'] = 'False'
         code = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
         return code
         
@@ -422,6 +424,40 @@ class TensorRepeatMatcher(BaseMatcher):
         code = '{}.tile({})'.format(self.paddleClass, self.kwargs_to_str(kwargs))
         return ast.parse(code).body
 
+class TensorBF16Matcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "{}.astype(dtype='bfloat16')".format(self.paddleClass)
+        return code
+
+class TensorBoolMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "{}.astype(dtype='bool')".format(self.paddleClass)
+        return code
+
+class TensorByteMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "{}.astype(dtype='uint8')".format(self.paddleClass)
+        return code
+
+class TensorCharMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "{}.astype(dtype='int8')".format(self.paddleClass)
+        return code
+
+class TensorDoubleMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "{}.astype(dtype='float64')".format(self.paddleClass)
+        return code
+
+class TensorFloatMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "{}.astype(dtype='float32')".format(self.paddleClass)
+        return code
+
+class TensorFP16Matcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "{}.astype(dtype='float16')".format(self.paddleClass)
+        return code
 
 class TensorIntMatcher(BaseMatcher):
     def generate_code(self, kwargs):
@@ -433,16 +469,20 @@ class TensorLongMatcher(BaseMatcher):
         code = "{}.astype(dtype='int64')".format(self.paddleClass)
         return code
 
-class TensorFloatMatcher(BaseMatcher):
+class TensorShortMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "{}.astype(dtype='float32')".format(self.paddleClass)
+        code = "{}.astype(dtype='int16')".format(self.paddleClass)
         return code
 
-class TensorDoubleMatcher(BaseMatcher):
+class TensorCfloatMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "{}.astype(dtype='float64')".format(self.paddleClass)
+        code = "{}.astype(dtype='complex64')".format(self.paddleClass)
         return code
 
+class TensorCdoubleMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "{}.astype(dtype='complex128')".format(self.paddleClass)
+        return code
 
 class TensorTypeAsMatcher(BaseMatcher):
     def generate_code(self, kwargs):

@@ -156,7 +156,9 @@ There are 10 Pytorch APIs in this Project:
  2  Pytorch APIs are not supported to convert currently!
  Convert Rate is: 80.00%
 
-For these 2 Pytorch APIs that do not support Convert, which have been marked by >>> before the line. Please refer to https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html and convert it by yourself manually.
+For these 2 Pytorch APIs that do not support Convert, which have been marked by >>> before the line. 
+Please refer to https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html 
+and convert it by yourself manually.
 
 Thank you to use Paddle Convert tool. You can make any suggestions to us.
 

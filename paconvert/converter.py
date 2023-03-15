@@ -89,12 +89,12 @@ class Converter:
             convert_rate = self.success_api_count/self.torch_api_count
         else:
             convert_rate = 0.
-        self.log_info(" Convert Rate is: {:.2%}".format(convert_rate))
+        self.log_info(" Convert Rate is: {:.3%}".format(convert_rate))
         if (faild_api_count > 0):
-            self.log_info("\nFor these {} Pytorch APIs that do not support Convert, which have been marked by >>> before the line. Please refer to "
-        "https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html"
-        " and convert it by yourself manually.".format(faild_api_count))
-        self.log_info("\nThank you to use Paddle Convert tool. You can make any suggestions to us.\n")
+            self.log_info("\nFor these {} Pytorch APIs that do not support Convert, which have been marked by >>> before the line. \nPlease refer to "
+        "[https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html]"
+        " \nand convert it by yourself manually.".format(faild_api_count))
+        self.log_info("\nThank you to use Paddle Code Convert Tool. You can make any suggestions to us.\n")
         return self.success_api_count, faild_api_count
 
     def transfer_dir(self, in_dir, out_dir, exclude_dir_list):
