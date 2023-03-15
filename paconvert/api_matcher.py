@@ -697,3 +697,213 @@ class BatchNorm3DMatcher(BaseMatcher):
             )
         code = API_TEMPLACE.format(kwargs['num_features'], momentum, epsilon, track_running_stats)
         return code
+
+
+class MaxPool2DMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'stride' not in kwargs:
+            stride = None
+        else:
+            stride = kwargs['stride']
+
+        if 'padding' in kwargs:
+            padding = kwargs['padding']
+        else:
+            padding = 0
+
+        if 'return_indices' in kwargs:
+            return_mask = kwargs['return_indices']
+        else:
+            return_mask = False
+
+        if 'ceil_mode' in kwargs:
+            ceil_mode = kwargs['ceil_mode']
+        else:
+            ceil_mode = False
+
+        if 'dilation' in kwargs and kwargs['dilation'] != '(1)':
+            return None
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.nn.MaxPool2D(kernel_size={}, 
+                                stride={}, 
+                                padding={}, 
+                                ceil_mode={}, 
+                                return_mask={})
+            '''
+        )
+        code = API_TEMPLACE.format(kwargs['kernel_size'], stride, padding, ceil_mode, return_mask)
+        return code
+
+
+class DivMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'out' in kwargs and kwargs['out'] != 'None':
+            out = kwargs['out']
+        else:
+            out = None
+        
+        if 'rounding_mode' in kwargs and kwargs['rounding_mode'] != 'None':
+            rounding_mode = kwargs['rounding_mode']
+        else:
+            rounding_mode = None
+
+        if out is not None:
+            if rounding_mode is not None and 'trunc' in rounding_mode:
+                API_TEMPLACE = textwrap.dedent(
+                    '''
+                    {} = paddle.trunc(paddle.divide(x={}, y={}))
+                    {}
+                    '''
+                )
+            elif rounding_mode is not None and 'floor' in rounding_mode:
+                API_TEMPLACE = textwrap.dedent(
+                    '''
+                    {} = paddle.floor(paddle.divide(x={}, y={}))
+                    {}
+                    '''
+                )
+            else:
+                API_TEMPLACE = textwrap.dedent(
+                    '''
+                    {} = paddle.divide(x={}, y={})
+                    {}
+                    '''
+                )
+            code = API_TEMPLACE.format(out, kwargs['input'], kwargs['other'], out)
+        else:
+            if rounding_mode is not None and 'trunc' in rounding_mode:
+                API_TEMPLACE = textwrap.dedent(
+                    '''
+                    paddle.trunc(paddle.divide(x={}, y={}))
+                    '''
+                )
+            elif rounding_mode is not None and 'floor' in rounding_mode:
+                API_TEMPLACE = textwrap.dedent(
+                    '''
+                    paddle.floor(paddle.divide(x={}, y={}))
+                    '''
+                )
+            else:
+                API_TEMPLACE = textwrap.dedent(
+                    '''
+                    paddle.divide(x={}, y={})
+                    '''
+                )
+            code = API_TEMPLACE.format(kwargs['input'], kwargs['other'])
+        return code
+
+
+class SplitMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'dim' in kwargs:
+            axis = kwargs['dim']
+        else:
+            axis = 0
+
+        if '[' in kwargs['split_size_or_sections']:
+            API_TEMPLACE = textwrap.dedent(
+                '''
+                paddle.split(x={}, num_or_sections={}, axis={})
+                '''
+            )
+            code = API_TEMPLACE.format(kwargs['tensor'], kwargs['split_size_or_sections'], axis)
+        else: 
+            API_TEMPLACE = textwrap.dedent(
+                '''
+                paddle.split(x={}, num_or_sections={}.shape[{}]//{}, axis={})
+                '''
+            )
+            code = API_TEMPLACE.format(kwargs['tensor'], kwargs['tensor'], axis, kwargs['split_size_or_sections'], axis)
+        return code
+
+
+class RangeMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'dtype' in kwargs:
+            dtype = kwargs['dtype']
+        else:
+            dtype = '"""float32"""'
+
+        if 'out' in kwargs:
+            out = kwargs['out']
+        else:
+            out = None
+
+        if 'requires_grad' in kwargs and kwargs['requires_grad'] == 'True':
+            stop_gradient = False
+        else:
+            stop_gradient = True
+        
+        if 'start' in kwargs:
+            start = kwargs['start']
+        else:
+            start = 0
+
+        if 'step' in kwargs:
+            step = kwargs['step']
+        else:
+            step = 1
+
+        if out is None:
+            if stop_gradient is None:
+                API_TEMPLACE = textwrap.dedent(
+                    '''
+                    paddle.arange(start={}, end={}+1 if ({} - {}) % {} == 0 else {}, step={}, dtype={})
+                    '''
+                )
+                code = API_TEMPLACE.format(start, kwargs['end'], kwargs['end'], start, step, kwargs['end'], step, dtype)
+            else:
+                API_TEMPLACE = textwrap.dedent(
+                    '''
+                    {} = paddle.arange(start={}, end={}+1 if ({} - {}) % {} == 0 else {}, step={}, dtype={})
+                    {}.stop_gradient = {}
+                    {}
+                    '''
+                )
+                out = get_unique_name('out')
+                code = API_TEMPLACE.format(out, start, kwargs['end'], kwargs['end'], start, step, kwargs['end'], step, dtype, out, stop_gradient, out)
+        else:
+            if stop_gradient is None:
+                API_TEMPLACE = textwrap.dedent(
+                    '''
+                    paddle.arange(start={}, end={}+1 if ({} - {}) % {} == 0 else {}, step={}, dtype={})
+                    '''
+                )
+                code = API_TEMPLACE.format(out, start, kwargs['end'], kwargs['end'], start, step, kwargs['end'], step, dtype, out)
+            else:
+                API_TEMPLACE = textwrap.dedent(
+                    '''
+                    {} = paddle.arange(start={}, end={}+1 if ({} - {}) % {} == 0 else {}, step={}, dtype={})
+                    {}.stop_gradient = {}
+                    {}
+                    '''
+                )
+                out = get_unique_name('out')
+                code = API_TEMPLACE.format(out, start, kwargs['end'], kwargs['end'], start, step, kwargs['end'], step, dtype, out, stop_gradient, out)
+        return code
+
+
+class MeshgridMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        new_args = self.parse_args(args)
+        new_kwargs = self.parse_kwargs(kwargs)
+        if 'indexing' in new_kwargs:
+            if 'ij' not in new_kwargs['indexing']:
+                return None
+        code = '{}({})'.format(self.get_paddle_api(), self.args_and_kwargs_to_str(new_args, {}))
+        return ast.parse(code).body
+
+
+class IsContiguousMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        code = 'True'
+        return ast.parse(code).body
+    
+
+class ContiguousMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        code = '{}'.format(self.paddleClass)
+        return ast.parse(code).body

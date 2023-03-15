@@ -6801,6 +6801,103 @@
       "track_running_stats", 
       "device", 
       "dtype"]
+  },
+
+  "torch.nn.MaxPool2d" : {
+    "Matcher": "MaxPool2DMatcher",
+    "paddle_api": "paddle.nn.MaxPool2D",
+    "args_list": [
+      "kernel_size", 
+      "stride", 
+      "padding", 
+      "dilation", 
+      "return_indices", 
+      "ceil_mode"]
+  },
+
+  "torch.load" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.load",
+    "args_list": [
+      "f", 
+      "map_location", 
+      "pickle_module", 
+      "weights_only", 
+      "pickle_load_args"],
+    "kwargs_change": {
+      "f": "path",
+      "map_location": "",
+      "pickle_module": "",
+      "weights_only": "",
+      "pickle_load_args": ""
+    }
+  },  
+
+  "torch.save" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.save",
+    "args_list": [
+      "obj", 
+      "f", 
+      "pickle_module", 
+      "pickle_protocol", 
+      "_use_new_zipfile_serialization"],
+    "kwargs_change": {
+      "obj": "obj",
+      "f": "path",
+      "pickle_module": "",
+      "pickle_protocol": "protocol",
+      "_use_new_zipfile_serialization": ""
+    }
+  },
+
+  "torch.div" : {
+    "Matcher": "DivMatcher",
+    "paddle_api": "paddle.divide",
+    "args_list": [
+      "input", 
+      "other", 
+      "rounding_mode", 
+      "out"]
+  },
+
+  "torch.split" : {
+    "Matcher": "SplitMatcher",
+    "paddle_api": "paddle.split",
+    "args_list": [
+      "tensor", 
+      "split_size_or_sections", 
+      "dim"]
+  },
+
+  "torch.range" : {
+    "Matcher": "RangeMatcher",
+    "paddle_api": "paddle.arange",
+    "args_list": [
+      "start", 
+      "end", 
+      "step",
+      "out",
+      "dtype",
+      "layout",
+      "device",
+      "requires_grad"]
+  },
+
+  "torch.meshgrid" : {
+    "Matcher": "MeshgridMatcher",
+    "paddle_api": "paddle.meshgrid",
+    "args_list": [
+      "tensors", 
+      "indexing"]
+  },
+
+  "torch.Tensor.is_contiguous" : {
+    "Matcher": "IsContiguousMatcher"
+  },
+
+  "torch.Tensor.contiguous" : {
+    "Matcher": "ContiguousMatcher"
   }
 
 }
