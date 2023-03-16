@@ -6893,12 +6893,148 @@
   },
 
   "torch.Tensor.is_contiguous" : {
-    "Matcher": "IsContiguousMatcher"
+    "Matcher": "TensorIsContiguousMatcher"
   },
 
   "torch.Tensor.contiguous" : {
-    "Matcher": "ContiguousMatcher"
+    "Matcher": "TensorSkipMatcher"
+  },
+
+  "torch.Tensor.copy_" : {
+    "Matcher": "TensorCopyMatcher",
+    "args_list": [
+      "src", 
+      "non_blocking"]
+  },
+
+  "torch.Tensor.masked_fill" : {
+    "Matcher": "TensorMaskedFillMatcher",
+    "args_list": [
+      "mask", 
+      "value"]
+  },
+
+  "torch.Tensor.unique" : {
+    "Matcher": "TensorUniqueMatcher",
+    "args_list": [
+      "sorted", 
+      "return_inverse",
+      "return_counts",
+      "dim"]
+  },
+
+  "torch.Tensor.fill_" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.fill_"
+  },
+
+  "torch.Tensor.expand": {
+    "Matcher": "TensorExpandMatcher",
+    "paddle_api": "paddle.Tensor.expand"
+  },
+
+  "torch.Tensor.requires_grad_" : {
+    "Matcher": "TensorRequiresGradMatcher",
+    "args_list": [
+      "requires_grad"]
+  },
+
+  "torch.Tensor.cuda" : {
+    "Matcher": "TensorSkipMatcher",
+    "args_list": [
+      "device",
+      "non_blocking",
+      "memory_format"]
+  },
+
+  "torch.utils.data.Dataset": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.io.Dataset"
+  },
+
+  "torch.nn.functional.l1_loss": {
+    "Matcher": "FunctionalL1LossMatcher",
+    "paddle_api": "paddle.nn.functional.l1_loss",
+    "args_list": [
+      "input",
+      "target",
+      "size_average",
+      "reduce",
+      "reduction"]
+  },
+
+  "torch.nn.functional.binary_cross_entropy_with_logits": {
+    "Matcher": "FunctionalBinaryCrossEntropyWithLogitsMatcher",
+    "paddle_api": "paddle.nn.functional.binary_cross_entropy_with_logits",
+    "args_list": [
+      "input",
+      "target",
+      "weight",
+      "size_average",
+      "reduce",
+      "reduction",
+      "pos_weight"]
+  },
+
+  "torch.nn.functional.max_pool2d": {
+    "Matcher": "FunctionalMaxPool2DMatcher",
+    "paddle_api": "paddle.nn.functional.max_pool2d",
+    "args_list": [
+      "input",
+      "kernel_size",
+      "stride",
+      "padding",
+      "dilation",
+      "ceil_mode",
+      "return_indices"]
+  },
+
+  "torch.distributed.init_process_group": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.init_parallel_env",
+    "args_list": [
+      "backend",
+      "init_method",
+      "timeout",
+      "world_size",
+      "rank",
+      "store",
+      "group_name",
+      "pg_options"],
+    "kwargs_change": {
+      "backend": "",
+      "init_method": "",
+      "timeout": "",
+      "world_size": "",
+      "rank": "",
+      "store": "",
+      "group_name": "",
+      "pg_options": ""
+    }
+  },
+
+  "torch.distributed.barrier": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.barrier",
+    "args_list": [
+      "group",
+      "async_op",
+      "device_ids"],
+    "kwargs_change": {
+      "group": "",
+      "async_op": "",
+      "device_ids": ""
+    }
+  },
+
+  "torch.cuda.max_memory_allocated": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.device.cuda.max_memory_allocated",
+    "args_list": [
+      "device"],
+    "kwargs_change": {
+      "device": "device"
+    }
   }
 
 }
-  

@@ -896,14 +896,274 @@ class MeshgridMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
-class IsContiguousMatcher(BaseMatcher):
+class TensorIsContiguousMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         code = 'True'
         return ast.parse(code).body
     
 
-class ContiguousMatcher(BaseMatcher):
+class TensorSkipMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
         code = '{}'.format(self.paddleClass)
         return ast.parse(code).body
+
+
+class TensorCopyMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_kwargs(kwargs)
+        args = self.parse_args(args)
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.assign({}, output={})
+            '''
+        )
+        code = API_TEMPLACE.format(args[0], self.paddleClass)
+        return ast.parse(code).body
+
+
+# class MaskedFillMatcher(BaseMatcher):
+#     def generate_code(self, kwargs):
+        # API_TEMPLACE = textwrap.dedent(
+        #     '''
+        #     {} = paddle.assign({})
+        #     {}
+        #     '''
+        # )
+        # out = get_unique_name('out')
+        # code = API_TEMPLACE.format(out, kwargs['src'], out)
+        # return code
+
+
+class TensorUniqueMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_kwargs(kwargs)
+        args = self.parse_args(args)
+
+        if 'sorted' in kwargs and 'False' in kwargs['sorted']:
+            return None
+        
+        if len(args) > 0 and 'False' in args[0]:
+            return None
+        
+        if 'return_inverse' in kwargs:
+            return_inverse = kwargs['return_inverse']
+        elif len(args) > 1:
+            return_inverse = args[1]
+        else:
+            return_inverse = False
+
+        if 'return_counts' in kwargs:
+            return_counts = kwargs['return_counts']
+        elif len(args) > 2:
+            return_counts = args[2]
+        else:
+            return_counts = False
+
+        if 'dim' in kwargs:
+            axis = kwargs['dim']
+        elif len(args) > 3:
+            axis = args[3]
+        else:
+            axis = 'None'
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            {}.unique(return_inverse={}, return_counts={}, axis={})
+            '''
+        )
+        code = API_TEMPLACE.format(self.paddleClass, return_inverse, return_counts, axis)
+        return ast.parse(code).body
+
+
+class TensorExpandMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        
+        if len(args) == 1 and isinstance(args[0], (ast.List, ast.Tuple)):
+            shape_list = self.parse_args(args)[0]
+        elif len(args) >= 1:
+            shape_list = self.parse_args(args)
+
+        kwargs = self.parse_kwargs(kwargs)
+        if 'dims' in kwargs:
+            kwargs = { 'shape' : kwargs.pop('dims'), **kwargs}
+        else:
+            kwargs = { 'shape' : str(shape_list).replace('\'', ''), **kwargs}
+
+        code = '{}.expand({})'.format(self.paddleClass, self.kwargs_to_str(kwargs))
+        return ast.parse(code).body
+
+
+class TensorRequiresGradMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        args = self.parse_args(args)
+        kwargs = self.parse_kwargs(kwargs)
+
+        if 'require_grad' in kwargs and 'False' in kwargs['require_grad']:
+            stop_gradient = 'True'
+        elif len(args) > 0 and 'False' in args[0]:
+            stop_gradient = 'True'
+        else:
+            stop_gradient = 'False'
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            {}.stop_gradient = {}
+            {}
+            '''
+        )
+        code = API_TEMPLACE.format(self.paddleClass, stop_gradient, self.paddleClass)
+        return ast.parse(code).body
+
+
+class FunctionalL1LossMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'size_average' in kwargs:
+            size_average = kwargs.pop('size_average')
+            if 'True' in size_average:
+                size_average = True
+            elif 'False' in size_average:
+                size_average = False
+            else:
+                size_average = None
+        else:
+            size_average = None
+        
+        if 'reduce' in kwargs:
+            reduce = kwargs.pop('reduce')
+            if 'True' in reduce:
+                reduce = True
+            elif 'False' in reduce:
+                reduce = False
+            else:
+                reduce = None
+        else:
+            reduce = None
+        
+        if size_average is not None or reduce is not None:
+            if size_average is None:
+                size_average = True
+            if reduce is None:
+                reduce = True
+
+            if size_average and reduce:
+                reduction = '"""mean"""'
+            elif reduce:
+                reduction = '"""sum"""'
+            else:
+                reduction = '"""none"""'
+        elif 'reduction' in kwargs:
+            reduction = kwargs.pop('reduction')
+        else:
+            reduction = '"""mean"""'
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.nn.functional.l1_loss(input={}, label={}, reduction={})
+            '''
+        )
+        code = API_TEMPLACE.format(kwargs['input'], kwargs['target'], reduction)
+        return code
+
+
+class FunctionalBinaryCrossEntropyWithLogitsMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'size_average' in kwargs:
+            size_average = kwargs.pop('size_average')
+            if 'True' in size_average:
+                size_average = True
+            elif 'False' in size_average:
+                size_average = False
+            else:
+                size_average = None
+        else:
+            size_average = None
+        
+        if 'reduce' in kwargs:
+            reduce = kwargs.pop('reduce')
+            if 'True' in reduce:
+                reduce = True
+            elif 'False' in reduce:
+                reduce = False
+            else:
+                reduce = None
+        else:
+            reduce = None
+        
+        if size_average is not None or reduce is not None:
+            if size_average is None:
+                size_average = True
+            if reduce is None:
+                reduce = True
+
+            if size_average and reduce:
+                reduction = '"""mean"""'
+            elif reduce:
+                reduction = '"""sum"""'
+            else:
+                reduction = '"""none"""'
+        elif 'reduction' in kwargs:
+            reduction = kwargs.pop('reduction')
+        else:
+            reduction = '"""mean"""'
+
+        if 'weight' in kwargs:
+            weight = kwargs.pop('weight')
+        else:
+            weight = 'None'
+
+        if 'pos_weight' in kwargs:
+            pos_weight = kwargs.pop('pos_weight')
+        else:
+            pos_weight = 'None'
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.nn.functional.binary_cross_entropy_with_logits(logit={}, label={}, weight={}, reduction={}, pos_weight={})
+            '''
+        )
+        code = API_TEMPLACE.format(kwargs['input'], kwargs['target'], weight, reduction, pos_weight)
+        return code
+
+
+class FunctionalMaxPool2DMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'dilation' in kwargs and kwargs['dilation'] != '(1)':
+            return None
+        
+        if 'stride' in kwargs:
+            stride = kwargs.pop('stride')
+        else:
+            stride = 'None'
+        
+        if 'padding' in kwargs:
+            padding = kwargs.pop('padding')
+        else:
+            padding = 0
+        
+        if 'ceil_mode' in kwargs:
+            ceil_mode = kwargs.pop('ceil_mode')
+        else:
+            ceil_mode = 'False'
+
+        if 'return_indices' in kwargs:
+            return_mask = kwargs.pop('return_indices')
+        else:
+            return_mask = 'False'
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.nn.functional.max_pool2d(x={}, 
+                                            kernel_size={}, 
+                                            stride={}, 
+                                            padding={}, 
+                                            ceil_mode={}, 
+                                            return_mask={})
+            '''
+        )
+        code = API_TEMPLACE.format(kwargs['input'], kwargs['kernel_size'], stride, padding, ceil_mode, return_mask)
+        return code
