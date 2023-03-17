@@ -5815,10 +5815,6 @@
   "torch.Tensor.logical_or_": {}, 
   "torch.Tensor.logical_xor_": {}, 
   "torch.Tensor.logit_": {}, 
-  "torch.Tensor.long": {
-    "Matcher": "TensorLongMatcher",
-    "args_list": ["memory_format"]
-  }, 
   "torch.Tensor.lstsq": {}, 
   "torch.Tensor.lt_": {}, 
   "torch.Tensor.less_": {}, 
@@ -5898,7 +5894,6 @@
   "torch.Tensor.select": {}, 
   "torch.Tensor.set_": {}, 
   "torch.Tensor.share_memory_": {}, 
-  "torch.Tensor.short": {}, 
   "torch.Tensor.sigmoid": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.sigmoid"
@@ -5993,15 +5988,39 @@
   "torch.Tensor.baddbmm_": {},
   "torch.Tensor.bernoulli": {},
   "torch.Tensor.bernoulli_": {},
-  "torch.Tensor.bfloat16": {},
+  "torch.Tensor.bfloat16": {
+    "Matcher": "TensorBF16Matcher",
+    "args_list": ["memory_format"]
+  },
+  "torch.Tensor.bool": {
+    "Matcher": "TensorBoolMatcher",
+    "args_list": ["memory_format"]
+  },
+  "torch.Tensor.byte": {},
+  "torch.Tensor.char": {},
+  "torch.Tensor.double": {},
+  "torch.Tensor.float": {
+    "Matcher": "TensorFloatMatcher",
+    "args_list": ["memory_format"]
+  },
+  "torch.Tensor.half": {},
+  "torch.Tensor.int": {
+    "Matcher": "TensorIntMatcher",
+    "args_list": ["memory_format"]
+  },
+  "torch.Tensor.long": {
+    "Matcher": "TensorLongMatcher",
+    "args_list": ["memory_format"]
+  }, 
+  "torch.Tensor.short": {},
+  "torch.Tensor.chalf": {},
+  "torch.Tensor.cfloat": {},
+  "torch.Tensor.cdouble": {},
   "torch.Tensor.bitwise_not_": {},
   "torch.Tensor.bitwise_and_": {},
   "torch.Tensor.bitwise_or_": {},
   "torch.Tensor.bitwise_xor_": {},
-  "torch.Tensor.bool": {},
-  "torch.Tensor.byte": {},
   "torch.Tensor.cauchy_": {},
-  "torch.Tensor.char": {},
   "torch.Tensor.cholesky_inverse": {},
   "torch.Tensor.cholesky_solve": {},
   "torch.Tensor.contiguous": {},
@@ -6044,7 +6063,7 @@
   "torch.Tensor.div_": {},
   "torch.Tensor.divide": {},
   "torch.Tensor.divide_": {},
-  "torch.Tensor.double": {},
+
   "torch.Tensor.eig": {},
   "torch.Tensor.eq_": {},
   "torch.Tensor.erf_": {},
@@ -6056,7 +6075,7 @@
   "torch.Tensor.fix_": {},
   "torch.Tensor.fliplr": {},
   "torch.Tensor.flipud": {},
-  "torch.Tensor.float": {},
+
   "torch.Tensor.float_power": {},
   "torch.Tensor.float_power_": {},
   "torch.Tensor.floor_divide_": {},
@@ -6069,7 +6088,6 @@
   "torch.Tensor.geqrf": {},
   "torch.Tensor.gt_": {},
   "torch.Tensor.greater_": {},
-  "torch.Tensor.half": {},
   "torch.Tensor.hardshrink": {},
   "torch.Tensor.hypot": {},
   "torch.Tensor.hypot_": {},
@@ -6097,7 +6115,6 @@
     "paddle_api": "paddle.Tensor.values"
   },
 
-  "torch.Tensor.int": {},
   "torch.Tensor.int_repr": {},
   "torch.Tensor.isposinf": {},
   "torch.Tensor.isneginf": {},
@@ -6111,9 +6128,6 @@
   "torch.Tensor.less_equal_": {},
   "torch.Tensor.scatter_add_": {},
   "torch.Tensor.scatter_": {},
-  "torch.Tensor.chalf": {},
-  "torch.Tensor.cfloat": {},
-  "torch.Tensor.cdouble": {},
   "torch.Tensor.index_reduce_": {},
   "torch.Tensor.index_reduce": {},
   "torch.Tensor.scatter_reduce_": {},
