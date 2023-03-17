@@ -1234,7 +1234,7 @@ class SaveMatcher(BaseMatcher):
         if 'pickle_module' in kwargs or '_use_new_zipfile_serialization' in kwargs:
             return None
         
-        if 'pickle_protocol' not in kwargs:
+        if 'pickle_protocol' in kwargs:
             protocol = kwargs['pickle_protocol']
         else:
             protocol = 4
