@@ -866,12 +866,7 @@ class RangeMatcher(BaseMatcher):
         else:
             dtype = '"""float32"""'
 
-        if 'out' in kwargs:
-            out = kwargs['out']
-        else:
-            out = None
-
-        if 'requires_grad' in kwargs and kwargs['requires_grad'] == 'True':
+        if 'requires_grad' in kwargs and 'True' in kwargs['requires_grad']:
             stop_gradient = False
         else:
             stop_gradient = True
@@ -886,42 +881,15 @@ class RangeMatcher(BaseMatcher):
         else:
             step = 1
 
-        if out is None:
-            if stop_gradient is None:
-                API_TEMPLACE = textwrap.dedent(
-                    '''
-                    paddle.arange(start={}, end={}+1 if ({} - {}) % {} == 0 else {}, step={}, dtype={})
-                    '''
-                )
-                code = API_TEMPLACE.format(start, kwargs['end'], kwargs['end'], start, step, kwargs['end'], step, dtype)
-            else:
-                API_TEMPLACE = textwrap.dedent(
-                    '''
-                    {} = paddle.arange(start={}, end={}+1 if ({} - {}) % {} == 0 else {}, step={}, dtype={})
-                    {}.stop_gradient = {}
-                    {}
-                    '''
-                )
-                out = get_unique_name('out')
-                code = API_TEMPLACE.format(out, start, kwargs['end'], kwargs['end'], start, step, kwargs['end'], step, dtype, out, stop_gradient, out)
-        else:
-            if stop_gradient is None:
-                API_TEMPLACE = textwrap.dedent(
-                    '''
-                    paddle.arange(start={}, end={}+1 if ({} - {}) % {} == 0 else {}, step={}, dtype={})
-                    '''
-                )
-                code = API_TEMPLACE.format(out, start, kwargs['end'], kwargs['end'], start, step, kwargs['end'], step, dtype, out)
-            else:
-                API_TEMPLACE = textwrap.dedent(
-                    '''
-                    {} = paddle.arange(start={}, end={}+1 if ({} - {}) % {} == 0 else {}, step={}, dtype={})
-                    {}.stop_gradient = {}
-                    {}
-                    '''
-                )
-                out = get_unique_name('out')
-                code = API_TEMPLACE.format(out, start, kwargs['end'], kwargs['end'], start, step, kwargs['end'], step, dtype, out, stop_gradient, out)
+        out = get_unique_name('out')
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            {} = paddle.arange(start={}, end={}+1 if ({} - {}) % {} == 0 else {}, step={}, dtype={})
+            {}.stop_gradient = {}
+            {}
+            '''
+        )
+        code = API_TEMPLACE.format(out, start, kwargs['end'], kwargs['end'], start, step, kwargs['end'], step, dtype, out, stop_gradient, out)
         return code
 
 
@@ -932,7 +900,7 @@ class MeshgridMatcher(BaseMatcher):
         if 'indexing' in new_kwargs:
             if 'ij' not in new_kwargs['indexing']:
                 return None
-        code = '{}({})'.format(self.get_paddle_api(), self.args_and_kwargs_to_str(new_args, {}))
+        code = '{}({})'.format(self.get_paddle_api(), self.args_to_str(new_args))
         return ast.parse(code).body
 
 
@@ -985,46 +953,37 @@ class TensorMaskedFillMatcher(BaseMatcher):
         
         API_TEMPLACE = textwrap.dedent(
             '''
-            {} = paddle.full({}.shape, {}, {}.dtype)
-            {} = paddle.where({}, {}, {})
+            detach_x = {}.detach()
+            detach_x = paddle.full(detach_x.shape, {}, detach_x.dtype)
+            {} = paddle.where({}, detach_x, {})
             {}
             '''
         )
         out = get_unique_name('out')
-        code = API_TEMPLACE.format(out, self.paddleClass, value, self.paddleClass, self.paddleClass, mask, out, self.paddleClass, self.paddleClass)
+        code = API_TEMPLACE.format(self.paddleClass, value, self.paddleClass, mask, self.paddleClass, self.paddleClass)
         return ast.parse(code).body
 
 
 class TensorUniqueMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
-        kwargs = self.parse_kwargs(kwargs)
-        args = self.parse_args(args)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
 
         if 'sorted' in kwargs and 'False' in kwargs['sorted']:
             return None
         
-        if len(args) > 0 and 'False' in args[0]:
-            return None
-        
         if 'return_inverse' in kwargs:
             return_inverse = kwargs['return_inverse']
-        elif len(args) > 1:
-            return_inverse = args[1]
         else:
             return_inverse = False
 
         if 'return_counts' in kwargs:
             return_counts = kwargs['return_counts']
-        elif len(args) > 2:
-            return_counts = args[2]
         else:
             return_counts = False
 
         if 'dim' in kwargs:
             axis = kwargs['dim']
-        elif len(args) > 3:
-            axis = args[3]
         else:
             axis = 'None'
 
@@ -1040,15 +999,17 @@ class TensorUniqueMatcher(BaseMatcher):
 class TensorExpandMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
-        
-        if len(args) == 1 and isinstance(args[0], (ast.List, ast.Tuple)):
+
+        if len(args) == 1 and not isinstance(args[0], ast.Constant):
             shape_list = self.parse_args(args)[0]
-        elif len(args) >= 1:
+        elif len(args) == 1 and isinstance(args[0], ast.Constant):
+            shape_list = self.parse_args(args)
+        elif len(args) > 1:
             shape_list = self.parse_args(args)
 
         kwargs = self.parse_kwargs(kwargs)
-        if 'dims' in kwargs:
-            kwargs = { 'shape' : kwargs.pop('dims'), **kwargs}
+        if 'sizes' in kwargs:
+            kwargs = { 'shape' : kwargs.pop('sizes'), **kwargs}
         else:
             kwargs = { 'shape' : str(shape_list).replace('\'', ''), **kwargs}
 
@@ -1071,25 +1032,25 @@ class TensorSoftmaxMatcher(BaseMatcher):
 
         API_TEMPLACE = textwrap.dedent(
             '''
-            {} = paddle.nn.functional.softmax({}, axis={})
-            {}
+            paddle.nn.functional.softmax({}, axis={})
             '''
         )
-        out = get_unique_name('out')
-        code = API_TEMPLACE.format(out, self.paddleClass, axis, out)
+        code = API_TEMPLACE.format(self.paddleClass, axis)
         return ast.parse(code).body
 
 
 class TensorRequiresGradMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
-        args = self.parse_args(args)
-        kwargs = self.parse_kwargs(kwargs)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
 
-        if 'require_grad' in kwargs and 'False' in kwargs['require_grad']:
-            stop_gradient = 'True'
-        elif len(args) > 0 and 'False' in args[0]:
-            stop_gradient = 'True'
+        if 'requires_grad' in kwargs:
+            if 'True' in kwargs['requires_grad']:
+                stop_gradient = 'False'
+            elif 'False' in kwargs['requires_grad']:
+                stop_gradient = 'True'
+            else:
+                stop_gradient = kwargs['requires_grad']
         else:
             stop_gradient = 'False'
 
