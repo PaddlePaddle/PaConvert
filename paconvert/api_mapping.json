@@ -5824,7 +5824,12 @@
   "torch.Tensor.masked_scatter_": {}, 
   "torch.Tensor.masked_scatter": {}, 
   "torch.Tensor.masked_fill_": {}, 
-  "torch.Tensor.masked_fill": {}, 
+  "torch.Tensor.masked_fill": {
+    "Matcher": "TensorMaskedFillMatcher",
+    "args_list": [
+      "mask", 
+      "value"]
+  }, 
   "torch.Tensor.matrix_exp": {}, 
   "torch.Tensor.smm": {}, 
   "torch.Tensor.msort": {}, 
@@ -5878,7 +5883,11 @@
     "Matcher": "TensorRepeatMatcher"
   }, 
   "torch.Tensor.repeat_interleave": {}, 
-  "torch.Tensor.requires_grad_": {}, 
+  "torch.Tensor.requires_grad_": {
+    "Matcher": "TensorRequiresGradMatcher",
+    "args_list": [
+      "requires_grad"]
+  }, 
   "torch.Tensor.reshape": {}, 
   "torch.Tensor.reshape_as": {}, 
   "torch.Tensor.resize_": {}, 
@@ -5963,7 +5972,14 @@
     "args_list": ["tensor"]
   }, 
   "torch.Tensor.unfold": {}, 
-  "torch.Tensor.unique": {}, 
+  "torch.Tensor.unique": {
+    "Matcher": "TensorUniqueMatcher",
+    "args_list": [
+      "sorted", 
+      "return_inverse",
+      "return_counts",
+      "dim"]
+  }, 
   "torch.Tensor.vdot": {}, 
   "torch.Tensor.view": {}, 
   "torch.Tensor.view_as": {}, 
@@ -6023,8 +6039,15 @@
   "torch.Tensor.cauchy_": {},
   "torch.Tensor.cholesky_inverse": {},
   "torch.Tensor.cholesky_solve": {},
-  "torch.Tensor.contiguous": {},
-  "torch.Tensor.copy_": {},
+  "torch.Tensor.contiguous": {
+    "Matcher": "TensorSkipMatcher"
+  },
+  "torch.Tensor.copy_": {
+    "Matcher": "TensorCopyMatcher",
+    "args_list": [
+      "src", 
+      "non_blocking"]
+  },
   "torch.Tensor.copysign": {},
   "torch.Tensor.copysign_": {},
   "torch.Tensor.cos_": {},
@@ -6071,7 +6094,10 @@
   "torch.Tensor.erfc_": {},
   "torch.Tensor.expm1": {},
   "torch.Tensor.expm1_": {},
-  "torch.Tensor.expand": {},
+  "torch.Tensor.expand": {
+    "Matcher": "TensorExpandMatcher",
+    "paddle_api": "paddle.Tensor.expand"
+  },
   "torch.Tensor.fix_": {},
   "torch.Tensor.fliplr": {},
   "torch.Tensor.flipud": {},
@@ -6118,7 +6144,9 @@
   "torch.Tensor.int_repr": {},
   "torch.Tensor.isposinf": {},
   "torch.Tensor.isneginf": {},
-  "torch.Tensor.is_contiguous": {},
+  "torch.Tensor.is_contiguous": {
+    "Matcher": "TensorIsContiguousMatcher"
+  },
   "torch.Tensor.is_pinned": {},
   "torch.Tensor.is_set_to": {},
   "torch.Tensor.is_shared": {},
@@ -6906,51 +6934,8 @@
       "indexing"]
   },
 
-  "torch.Tensor.is_contiguous" : {
-    "Matcher": "TensorIsContiguousMatcher"
-  },
-
-  "torch.Tensor.contiguous" : {
-    "Matcher": "TensorSkipMatcher"
-  },
-
-  "torch.Tensor.copy_" : {
-    "Matcher": "TensorCopyMatcher",
-    "args_list": [
-      "src", 
-      "non_blocking"]
-  },
-
-  "torch.Tensor.masked_fill" : {
-    "Matcher": "TensorMaskedFillMatcher",
-    "args_list": [
-      "mask", 
-      "value"]
-  },
-
-  "torch.Tensor.unique" : {
-    "Matcher": "TensorUniqueMatcher",
-    "args_list": [
-      "sorted", 
-      "return_inverse",
-      "return_counts",
-      "dim"]
-  },
-
-  "torch.Tensor.fill_" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.fill_"
-  },
-
-  "torch.Tensor.expand": {
-    "Matcher": "TensorExpandMatcher",
-    "paddle_api": "paddle.Tensor.expand"
-  },
-
   "torch.Tensor.requires_grad_" : {
-    "Matcher": "TensorRequiresGradMatcher",
-    "args_list": [
-      "requires_grad"]
+    
   },
 
   "torch.Tensor.cuda" : {
