@@ -123,9 +123,10 @@ class LayerMatcher(BaseMatcher):
         if 'dtype' in kwargs:
             del kwargs['dtype']
         if 'bias' in kwargs:
-            bias_v = eval(kwargs.pop('bias'))
-            if not bias_v:
-                kwargs['bias_attr'] = 'False'
+            kwargs['bias_attr'] = kwargs.pop('bias')
+        if 'padding_mode' in kwargs:
+            # TODO: just not support now
+            return None
         code = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
         return code
         
