@@ -923,17 +923,36 @@ class TensorCopyMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
-# class MaskedFillMatcher(BaseMatcher):
-#     def generate_code(self, kwargs):
-        # API_TEMPLACE = textwrap.dedent(
-        #     '''
-        #     {} = paddle.assign({})
-        #     {}
-        #     '''
-        # )
-        # out = get_unique_name('out')
-        # code = API_TEMPLACE.format(out, kwargs['src'], out)
-        # return code
+class TensorMaskedFillMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        args = self.parse_args(args)
+        kwargs = self.parse_kwargs(kwargs)
+
+        if 'mask' in kwargs:
+            mask = kwargs['mask']
+        elif len(args) >= 1:
+            mask = args[0]
+        else:
+            return None
+
+        if 'value' in kwargs:
+            value = kwargs['value']
+        elif len(args) > 1:
+            value = args[1]
+        else:
+            return None
+        
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            {} = paddle.full({}.shape, {}, {}.dtype)
+            {} = paddle.where({}, {}, {})
+            {}
+            '''
+        )
+        out = get_unique_name('out')
+        code = API_TEMPLACE.format(out, self.paddleClass, value, self.paddleClass, self.paddleClass, mask, out, self.paddleClass, self.paddleClass)
+        return ast.parse(code).body
 
 
 class TensorUniqueMatcher(BaseMatcher):
