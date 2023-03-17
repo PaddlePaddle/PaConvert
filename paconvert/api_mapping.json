@@ -6059,7 +6059,13 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.cpu"
   },
-  "torch.Tensor.cuda": {},
+  "torch.Tensor.cuda": {
+    "Matcher": "TensorSkipMatcher",
+    "args_list": [
+      "device",
+      "non_blocking",
+      "memory_format"]
+  },
   "torch.Tensor.cummax": {},
   "torch.Tensor.cummin": {},
   "torch.Tensor.cumprod": {
@@ -6932,18 +6938,6 @@
     "args_list": [
       "tensors", 
       "indexing"]
-  },
-
-  "torch.Tensor.requires_grad_" : {
-    
-  },
-
-  "torch.Tensor.cuda" : {
-    "Matcher": "TensorSkipMatcher",
-    "args_list": [
-      "device",
-      "non_blocking",
-      "memory_format"]
   },
 
   "torch.utils.data.Dataset": {
