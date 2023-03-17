@@ -1056,6 +1056,30 @@ class TensorExpandMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
+class TensorSoftmaxMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        args = self.parse_args(args)
+        kwargs = self.parse_kwargs(kwargs)
+
+        if 'dim' in kwargs:
+            axis = kwargs['dim']
+        elif len(args) > 0:
+            axis = args[0]
+        else:
+            return None
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            {} = paddle.nn.functional.softmax({}, axis={})
+            {}
+            '''
+        )
+        out = get_unique_name('out')
+        code = API_TEMPLACE.format(out, self.paddleClass, axis, out)
+        return ast.parse(code).body
+
+
 class TensorRequiresGradMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
