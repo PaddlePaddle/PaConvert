@@ -1219,7 +1219,7 @@ class LoadMatcher(BaseMatcher):
         for param in unsupported_params:
             if param in kwargs:
                 return None
-                
+
         API_TEMPLACE = textwrap.dedent(
             '''
             paddle.load(path={})
@@ -1233,11 +1233,16 @@ class SaveMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if 'pickle_module' in kwargs or '_use_new_zipfile_serialization' in kwargs:
             return None
+        
+        if 'pickle_protocol' not in kwargs:
+            protocol = kwargs['pickle_protocol']
+        else:
+            protocol = 4
 
         API_TEMPLACE = textwrap.dedent(
             '''
             paddle.save(obj={}, path={}, protocol={})
             '''
         )
-        code = API_TEMPLACE.format(kwargs['obj'], kwargs['f'], kwargs['pickle_protocol'])
+        code = API_TEMPLACE.format(kwargs['obj'], kwargs['f'], protocol)
         return code
