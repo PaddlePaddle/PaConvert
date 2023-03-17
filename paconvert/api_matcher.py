@@ -1211,3 +1211,33 @@ class FunctionalMaxPool2DMatcher(BaseMatcher):
         )
         code = API_TEMPLACE.format(kwargs['input'], kwargs['kernel_size'], stride, padding, ceil_mode, return_mask)
         return code
+
+
+class LoadMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        unsupported_params = ["map_location", "pickle_module", "weights_only", "pickle_load_args"]
+        for param in unsupported_params:
+            if param in kwargs:
+                return None
+                
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.load(path={})
+            '''
+        )
+        code = API_TEMPLACE.format(kwargs['f'])
+        return code
+
+
+class SaveMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'pickle_module' in kwargs or '_use_new_zipfile_serialization' in kwargs:
+            return None
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.save(obj={}, path={}, protocol={})
+            '''
+        )
+        code = API_TEMPLACE.format(kwargs['obj'], kwargs['f'], kwargs['pickle_protocol'])
+        return code

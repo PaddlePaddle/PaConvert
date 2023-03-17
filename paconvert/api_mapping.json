@@ -6868,7 +6868,7 @@
   },
 
   "torch.load" : {
-    "Matcher": "GenericMatcher",
+    "Matcher": "LoadMatcher",
     "paddle_api": "paddle.load",
     "args_list": [
       "f", 
@@ -6886,21 +6886,14 @@
   },  
 
   "torch.save" : {
-    "Matcher": "GenericMatcher",
+    "Matcher": "SaveMatcher",
     "paddle_api": "paddle.save",
     "args_list": [
       "obj", 
       "f", 
       "pickle_module", 
       "pickle_protocol", 
-      "_use_new_zipfile_serialization"],
-    "kwargs_change": {
-      "obj": "obj",
-      "f": "path",
-      "pickle_module": "",
-      "pickle_protocol": "protocol",
-      "_use_new_zipfile_serialization": ""
-    }
+      "_use_new_zipfile_serialization"]
   },
 
   "torch.div" : {
@@ -6984,44 +6977,6 @@
       "dilation",
       "ceil_mode",
       "return_indices"]
-  },
-
-  "torch.distributed.init_process_group": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.distributed.init_parallel_env",
-    "args_list": [
-      "backend",
-      "init_method",
-      "timeout",
-      "world_size",
-      "rank",
-      "store",
-      "group_name",
-      "pg_options"],
-    "kwargs_change": {
-      "backend": "",
-      "init_method": "",
-      "timeout": "",
-      "world_size": "",
-      "rank": "",
-      "store": "",
-      "group_name": "",
-      "pg_options": ""
-    }
-  },
-
-  "torch.distributed.barrier": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.distributed.barrier",
-    "args_list": [
-      "group",
-      "async_op",
-      "device_ids"],
-    "kwargs_change": {
-      "group": "",
-      "async_op": "",
-      "device_ids": ""
-    }
   },
 
   "torch.cuda.max_memory_allocated": {
