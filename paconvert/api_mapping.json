@@ -5996,14 +5996,26 @@
     "Matcher": "TensorBoolMatcher",
     "args_list": ["memory_format"]
   },
-  "torch.Tensor.byte": {},
-  "torch.Tensor.char": {},
-  "torch.Tensor.double": {},
+  "torch.Tensor.byte": {
+    "Matcher": "TensorByteMatcher",
+    "args_list": ["memory_format"]
+  },
+  "torch.Tensor.char": {
+    "Matcher": "TensorCharMatcher",
+    "args_list": ["memory_format"]
+  },
+  "torch.Tensor.double": {
+    "Matcher": "TensorDoubleMatcher",
+    "args_list": ["memory_format"]
+  },
   "torch.Tensor.float": {
     "Matcher": "TensorFloatMatcher",
     "args_list": ["memory_format"]
   },
-  "torch.Tensor.half": {},
+  "torch.Tensor.half": {
+    "Matcher": "TensorFP16Matcher",
+    "args_list": ["memory_format"]
+  },
   "torch.Tensor.int": {
     "Matcher": "TensorIntMatcher",
     "args_list": ["memory_format"]
@@ -6012,10 +6024,19 @@
     "Matcher": "TensorLongMatcher",
     "args_list": ["memory_format"]
   }, 
-  "torch.Tensor.short": {},
+  "torch.Tensor.short": {
+    "Matcher": "TensorShortMatcher",
+    "args_list": ["memory_format"]
+  },
   "torch.Tensor.chalf": {},
-  "torch.Tensor.cfloat": {},
-  "torch.Tensor.cdouble": {},
+  "torch.Tensor.cfloat": {
+    "Matcher": "TensorCfloatMatcher",
+    "args_list": ["memory_format"]
+  },
+  "torch.Tensor.cdouble": {
+    "Matcher": "TensorCdoubleMatcher",
+    "args_list": ["memory_format"]
+  },
   "torch.Tensor.bitwise_not_": {},
   "torch.Tensor.bitwise_and_": {},
   "torch.Tensor.bitwise_or_": {},
