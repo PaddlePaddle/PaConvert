@@ -521,3 +521,19 @@ mmdet3d.core.draw_heatmap_gaussian
 x.cuda()
 a == x.is_contiguous()
 torch.backends.cudnn.deterministic()
+
+# torch.Tensor.bfloat16/bool/byte/char/double/float
+# torch.Tensor.half/int/long/short/chalf/cfloat/cdouble
+x.bfloat16()
+x.bool()
+x.byte()
+x.char()
+x.double()
+x.float()
+x.half()
+x.int()
+x.long()
+x.short()
+x.chalf()
+x.cfloat()
+x.cdouble()
