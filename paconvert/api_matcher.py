@@ -733,7 +733,6 @@ class CrossEntropyLossMatcher(BaseMatcher):
         return code
 
 
-<<<<<<< HEAD
 class CudaIsAvailableMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         code = "{}() > 1".format(self.get_paddle_api())
@@ -762,7 +761,8 @@ class FunctionInterpolateMatcher(BaseMatcher):
 
         code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
         return code.strip('\n')
-=======
+
+
 class LayerNormMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if 'eps' not in kwargs:
@@ -950,4 +950,3 @@ class BatchNorm3DMatcher(BaseMatcher):
             )
         code = API_TEMPLACE.format(kwargs['num_features'], momentum, epsilon, track_running_stats)
         return code
->>>>>>> 8ed71d6e40d163e49a9c4a6ad531ccb54acfbe72
