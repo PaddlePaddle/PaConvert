@@ -136,16 +136,16 @@ Print the information as follows：
 ===========================================
 PyTorch to Paddle Convert Start ------>:
 ===========================================
-Start convert /workspace/example_code.py --> /workspace/PaConvert/paddle_code/example_code.py
-[example_code.py:1] remove 'import torch' 
-[example_code.py:2] remove 'import torch.nn as nn' 
-[example_code.py:3] remove 'import torch.optim as optim' 
-[example_code.py:4] remove 'import torch.nn.Linear as Linear' 
-[example_code.py:5] remove 'import torch.nn.functional as F' 
-[example_code.py] add 'import paddle' in first line
-[example_code.py:25] [Not Support] can not convert torch.optim.SGD to Paddle 
-[example_code.py:26] [Not Support] can not convert torch.optim.lr_scheduler.MultiStepLR to Paddle 
-Finish convert /workspace/example_code.py --> /workspace/PaConvert/paddle_code/example_code.py
+Start convert /workspace/test_code.py --> /workspace/PaConvert/paddle_project/test_code.py
+[test_code.py:1] remove 'import torch' 
+[test_code.py:2] remove 'import torch.nn as nn' 
+[test_code.py:3] remove 'import torch.optim as optim' 
+[test_code.py:4] remove 'import torch.nn.Linear as Linear' 
+[test_code.py:5] remove 'import torch.nn.functional as F' 
+[test_code.py] add 'import paddle' in first line
+[test_code.py:25] [Not Support] convert torch.optim.SGD to Paddle is not supported currently
+[test_code.py:26] [Not Support] convert torch.optim.lr_scheduler.MultiStepLR to Paddle is not supported currently
+Finish convert /workspace/test_code.py --> /workspace/PaConvert/paddle_project/test_code.py
 
 
 ========================================
@@ -153,12 +153,14 @@ Convert Summary:
 ========================================
 There are 10 Pytorch APIs in this Project:
  8  Pytorch APIs have been converted to Paddle successfully!
- 2  Pytorch APIs are not supported to convert currently!
- Convert Rate is: 80.00%
+ 2  Pytorch APIs are not supported to convert to Paddle currently!
+ Convert Rate is: 80.000%
 
-For these 2 Pytorch APIs that do not support Convert, which have been marked by >>> before the line. Please refer to https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html and convert it by yourself manually.
+For these 2 Pytorch APIs that do not support to Convert now, which have been marked by >>> before the line, 
+please refer to [https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html] 
+and convert it by yourself manually. In addition, these APIs will be supported in future.
 
-Thank you to use Paddle Convert tool. You can make any suggestions to us.
+Thank you to use Paddle Code Convert Tool. You can make any suggestions to us.
 
 ```
 

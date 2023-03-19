@@ -215,6 +215,9 @@ class BaseMatcher(object):
         for node in kwargs:
             k = node.arg
             v = astor.to_source(node.value).strip('\n')
+            if v.startswith('('):
+                v = v.replace('(', '[')
+                v = v.replace(')', ']')
             new_kwargs[k] = v
 
         return new_kwargs

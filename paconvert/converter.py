@@ -74,7 +74,7 @@ class Converter:
             self.log_info("\n========================================")
             self.log_info("Not Support API List:")
             self.log_info("========================================")
-            self.log_info("These Pytorch APIs are not supported to convert now, and will be supppored in future!\n")
+            self.log_info("These Pytorch APIs are not supported to convert to Paddle now, which will be supppored in future!\n")
             for k, v in unsupport_map:
                 self.log_info("{}: {}".format(k, v))
 
@@ -84,17 +84,17 @@ class Converter:
         self.log_info("========================================")
         self.log_info("There are {} Pytorch APIs in this Project:".format(self.torch_api_count))
         self.log_info(" {}  Pytorch APIs have been converted to Paddle successfully!".format(self.success_api_count))
-        self.log_info(" {}  Pytorch APIs are not supported to convert currently!".format(faild_api_count))
+        self.log_info(" {}  Pytorch APIs are not supported to convert to Paddle currently!".format(faild_api_count))
         if self.torch_api_count > 0:
             convert_rate = self.success_api_count/self.torch_api_count
         else:
             convert_rate = 0.
-        self.log_info(" Convert Rate is: {:.2%}".format(convert_rate))
+        self.log_info(" Convert Rate is: {:.3%}".format(convert_rate))
         if (faild_api_count > 0):
-            self.log_info("\nFor these {} Pytorch APIs that do not support Convert, which have been marked by >>> before the line. Please refer to "
-        "https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html"
-        " and convert it by yourself manually.".format(faild_api_count))
-        self.log_info("\nThank you to use Paddle Convert tool. You can make any suggestions to us.\n")
+            self.log_info("\nFor these {} Pytorch APIs that do not support to Convert now, which have been marked by >>> before the line, \nplease refer to "
+        "[https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html]"
+        " \nand convert it by yourself manually. In addition, these APIs will be supported in future.".format(faild_api_count))
+        self.log_info("\nThank you to use Paddle Code Convert Tool. You can make any suggestions to us.\n")
         return self.success_api_count, faild_api_count
 
     def transfer_dir(self, in_dir, out_dir, exclude_dir_list):
