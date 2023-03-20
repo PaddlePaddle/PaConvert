@@ -741,39 +741,24 @@ class BatchNorm3DMatcher(BaseMatcher):
 
 class MaxPool2DMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if 'stride' not in kwargs:
-            stride = None
-        else:
-            stride = kwargs['stride']
-
-        if 'padding' in kwargs:
-            padding = kwargs['padding']
-        else:
-            padding = 0
-
-        if 'return_indices' in kwargs:
-            return_mask = kwargs['return_indices']
-        else:
-            return_mask = False
-
-        if 'ceil_mode' in kwargs:
-            ceil_mode = kwargs['ceil_mode']
-        else:
-            ceil_mode = False
-
         if 'dilation' in kwargs and kwargs['dilation'] != '(1)':
             return None
+        
+        kwargs_change = {}
+        if 'kwargs_change' in self.api_mapping:
+            kwargs_change = self.api_mapping['kwargs_change']
+        new_kwargs = {}
+        for k in list(kwargs.keys()):
+            if k in kwargs_change:
+                if kwargs_change[k]:
+                    new_kwargs[kwargs_change[k]] = kwargs.pop(k)
 
         API_TEMPLACE = textwrap.dedent(
             '''
-            paddle.nn.MaxPool2D(kernel_size={}, 
-                                stride={}, 
-                                padding={}, 
-                                ceil_mode={}, 
-                                return_mask={})
+            paddle.nn.MaxPool2D({})
             '''
         )
-        code = API_TEMPLACE.format(kwargs['kernel_size'], stride, padding, ceil_mode, return_mask)
+        code = API_TEMPLACE.format(self.kwargs_to_str(new_kwargs))
         return code
 
 
@@ -1029,18 +1014,13 @@ class TensorRequiresGradMatcher(BaseMatcher):
         kwargs = self.parse_args_and_kwargs(args, kwargs)
 
         if 'requires_grad' in kwargs:
-            if 'True' in kwargs['requires_grad']:
-                stop_gradient = 'False'
-            elif 'False' in kwargs['requires_grad']:
-                stop_gradient = 'True'
-            else:
-                stop_gradient = kwargs['requires_grad']
+            stop_gradient = kwargs['requires_grad']
         else:
-            stop_gradient = 'False'
+            stop_gradient = 'True'
 
         API_TEMPLACE = textwrap.dedent(
             '''
-            {}.stop_gradient = {}
+            {}.stop_gradient = not {}
             {}
             '''
         )
@@ -1163,37 +1143,21 @@ class FunctionalMaxPool2DMatcher(BaseMatcher):
         if 'dilation' in kwargs and kwargs['dilation'] != '(1)':
             return None
         
-        if 'stride' in kwargs:
-            stride = kwargs.pop('stride')
-        else:
-            stride = 'None'
-        
-        if 'padding' in kwargs:
-            padding = kwargs.pop('padding')
-        else:
-            padding = 0
-        
-        if 'ceil_mode' in kwargs:
-            ceil_mode = kwargs.pop('ceil_mode')
-        else:
-            ceil_mode = 'False'
-
-        if 'return_indices' in kwargs:
-            return_mask = kwargs.pop('return_indices')
-        else:
-            return_mask = 'False'
+        kwargs_change = {}
+        if 'kwargs_change' in self.api_mapping:
+            kwargs_change = self.api_mapping['kwargs_change']
+        new_kwargs = {}
+        for k in list(kwargs.keys()):
+            if k in kwargs_change:
+                if kwargs_change[k]:
+                    new_kwargs[kwargs_change[k]] = kwargs.pop(k)
 
         API_TEMPLACE = textwrap.dedent(
             '''
-            paddle.nn.functional.max_pool2d(x={}, 
-                                            kernel_size={}, 
-                                            stride={}, 
-                                            padding={}, 
-                                            ceil_mode={}, 
-                                            return_mask={})
+            paddle.nn.functional.max_pool2d({})
             '''
         )
-        code = API_TEMPLACE.format(kwargs['input'], kwargs['kernel_size'], stride, padding, ceil_mode, return_mask)
+        code = API_TEMPLACE.format(self.kwargs_to_str(new_kwargs))
         return code
 
 
