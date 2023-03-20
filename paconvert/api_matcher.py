@@ -851,10 +851,10 @@ class RangeMatcher(BaseMatcher):
         else:
             dtype = '"""float32"""'
 
-        if 'requires_grad' in kwargs and 'True' in kwargs['requires_grad']:
-            stop_gradient = False
+        if 'requires_grad' in kwargs:
+            stop_gradient = kwargs['requires_grad']
         else:
-            stop_gradient = True
+            stop_gradient = False
         
         if 'start' in kwargs:
             start = kwargs['start']
@@ -870,7 +870,7 @@ class RangeMatcher(BaseMatcher):
         API_TEMPLACE = textwrap.dedent(
             '''
             {} = paddle.arange(start={}, end={}+1 if ({} - {}) % {} == 0 else {}, step={}, dtype={})
-            {}.stop_gradient = {}
+            {}.stop_gradient = not {}
             {}
             '''
         )
