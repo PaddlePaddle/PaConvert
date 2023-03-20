@@ -934,20 +934,15 @@ class TensorCopyMatcher(BaseMatcher):
 class TensorMaskedFillMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
-        args = self.parse_args(args)
-        kwargs = self.parse_kwargs(kwargs)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
 
         if 'mask' in kwargs:
             mask = kwargs['mask']
-        elif len(args) >= 1:
-            mask = args[0]
         else:
             return None
 
         if 'value' in kwargs:
             value = kwargs['value']
-        elif len(args) > 1:
-            value = args[1]
         else:
             return None
         
@@ -1002,9 +997,7 @@ class TensorExpandMatcher(BaseMatcher):
 
         if len(args) == 1 and not isinstance(args[0], ast.Constant):
             shape_list = self.parse_args(args)[0]
-        elif len(args) == 1 and isinstance(args[0], ast.Constant):
-            shape_list = self.parse_args(args)
-        elif len(args) > 1:
+        else:
             shape_list = self.parse_args(args)
 
         kwargs = self.parse_kwargs(kwargs)
@@ -1020,13 +1013,10 @@ class TensorExpandMatcher(BaseMatcher):
 class TensorSoftmaxMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
-        args = self.parse_args(args)
-        kwargs = self.parse_kwargs(kwargs)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
 
         if 'dim' in kwargs:
             axis = kwargs['dim']
-        elif len(args) > 0:
-            axis = args[0]
         else:
             return None
 
