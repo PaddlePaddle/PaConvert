@@ -966,28 +966,37 @@ class TensorUniqueMatcher(BaseMatcher):
 
         if 'sorted' in kwargs and 'False' in kwargs['sorted']:
             return None
+
+        kwargs_change = {}
+        if 'kwargs_change' in self.api_mapping:
+            kwargs_change = self.api_mapping['kwargs_change']
+        new_kwargs = {}
+        for k in list(kwargs.keys()):
+            if k in kwargs_change:
+                if kwargs_change[k]:
+                    new_kwargs[kwargs_change[k]] = kwargs.pop(k)
         
-        if 'return_inverse' in kwargs:
-            return_inverse = kwargs['return_inverse']
-        else:
-            return_inverse = False
+        # if 'return_inverse' in kwargs:
+        #     return_inverse = kwargs['return_inverse']
+        # else:
+        #     return_inverse = False
 
-        if 'return_counts' in kwargs:
-            return_counts = kwargs['return_counts']
-        else:
-            return_counts = False
+        # if 'return_counts' in kwargs:
+        #     return_counts = kwargs['return_counts']
+        # else:
+        #     return_counts = False
 
-        if 'dim' in kwargs:
-            axis = kwargs['dim']
-        else:
-            axis = 'None'
+        # if 'dim' in kwargs:
+        #     axis = kwargs['dim']
+        # else:
+        #     axis = 'None'
 
         API_TEMPLACE = textwrap.dedent(
             '''
-            {}.unique(return_inverse={}, return_counts={}, axis={})
+            {}.unique({})
             '''
         )
-        code = API_TEMPLACE.format(self.paddleClass, return_inverse, return_counts, axis)
+        code = API_TEMPLACE.format(self.paddleClass, self.kwargs_to_str(new_kwargs))
         return ast.parse(code).body
 
 

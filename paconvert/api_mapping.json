@@ -5982,7 +5982,12 @@
       "sorted", 
       "return_inverse",
       "return_counts",
-      "dim"]
+      "dim"],
+    "kwargs_change": {
+      "return_inverse": "return_inverse",
+      "return_counts":"return_counts",
+      "dim": "axis"
+    }
   }, 
   "torch.Tensor.vdot": {}, 
   "torch.Tensor.view": {}, 
