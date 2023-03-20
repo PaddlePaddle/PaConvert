@@ -975,21 +975,6 @@ class TensorUniqueMatcher(BaseMatcher):
             if k in kwargs_change:
                 if kwargs_change[k]:
                     new_kwargs[kwargs_change[k]] = kwargs.pop(k)
-        
-        # if 'return_inverse' in kwargs:
-        #     return_inverse = kwargs['return_inverse']
-        # else:
-        #     return_inverse = False
-
-        # if 'return_counts' in kwargs:
-        #     return_counts = kwargs['return_counts']
-        # else:
-        #     return_counts = False
-
-        # if 'dim' in kwargs:
-        #     axis = kwargs['dim']
-        # else:
-        #     axis = 'None'
 
         API_TEMPLACE = textwrap.dedent(
             '''
