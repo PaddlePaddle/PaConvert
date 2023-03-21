@@ -744,21 +744,16 @@ class MaxPool2DMatcher(BaseMatcher):
         if 'dilation' in kwargs and kwargs['dilation'] != '(1)':
             return None
         
-        kwargs_change = {}
-        if 'kwargs_change' in self.api_mapping:
-            kwargs_change = self.api_mapping['kwargs_change']
-        new_kwargs = {}
-        for k in list(kwargs.keys()):
-            if k in kwargs_change:
-                if kwargs_change[k]:
-                    new_kwargs[kwargs_change[k]] = kwargs.pop(k)
+        if 'return_indices' in kwargs:
+            kwargs['return_mask'] = kwargs['return_indices']
+            kwargs.pop['return_indices']
 
         API_TEMPLACE = textwrap.dedent(
             '''
             paddle.nn.MaxPool2D({})
             '''
         )
-        code = API_TEMPLACE.format(self.kwargs_to_str(new_kwargs))
+        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
         return code
 
 
@@ -905,7 +900,6 @@ class TensorSkipMatcher(BaseMatcher):
 class TensorCopyMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
-        kwargs = self.parse_kwargs(kwargs)
         args = self.parse_args(args)
         API_TEMPLACE = textwrap.dedent(
             '''
@@ -952,21 +946,16 @@ class TensorUniqueMatcher(BaseMatcher):
         if 'sorted' in kwargs and 'False' in kwargs['sorted']:
             return None
 
-        kwargs_change = {}
-        if 'kwargs_change' in self.api_mapping:
-            kwargs_change = self.api_mapping['kwargs_change']
-        new_kwargs = {}
-        for k in list(kwargs.keys()):
-            if k in kwargs_change:
-                if kwargs_change[k]:
-                    new_kwargs[kwargs_change[k]] = kwargs.pop(k)
+        if 'dim' in kwargs:
+            kwargs['axis'] = kwargs['dim']
+            kwargs.pop('dim')
 
         API_TEMPLACE = textwrap.dedent(
             '''
             {}.unique({})
             '''
         )
-        code = API_TEMPLACE.format(self.paddleClass, self.kwargs_to_str(new_kwargs))
+        code = API_TEMPLACE.format(self.paddleClass, self.kwargs_to_str(kwargs))
         return ast.parse(code).body
 
 
@@ -1143,14 +1132,13 @@ class FunctionalMaxPool2DMatcher(BaseMatcher):
         if 'dilation' in kwargs and kwargs['dilation'] != '(1)':
             return None
         
-        kwargs_change = {}
-        if 'kwargs_change' in self.api_mapping:
-            kwargs_change = self.api_mapping['kwargs_change']
-        new_kwargs = {}
-        for k in list(kwargs.keys()):
-            if k in kwargs_change:
-                if kwargs_change[k]:
-                    new_kwargs[kwargs_change[k]] = kwargs.pop(k)
+        if 'input' in kwargs:
+            kwargs['x'] = kwargs['input']
+            kwargs.pop('input')
+
+        if 'return_indices' in kwargs:
+            kwargs['return_mask'] = kwargs['return_indices']
+            kwargs.pop('return_indices')
 
         API_TEMPLACE = textwrap.dedent(
             '''

@@ -6869,14 +6869,7 @@
       "padding", 
       "dilation", 
       "return_indices", 
-      "ceil_mode"],
-    "kwargs_change": {
-      "kernel_size": "kernel_size",
-      "stride": "stride",
-      "padding": "padding",
-      "ceil_mode": "ceil_mode",
-      "return_indices": "return_mask"
-    }
+      "ceil_mode"]
   },
 
   "torch.load" : {
@@ -6991,10 +6984,6 @@
       "return_indices"],
     "kwargs_change": {
       "input": "x",
-      "kernel_size": "kernel_size",
-      "stride": "stride",
-      "padding": "padding",
-      "ceil_mode": "ceil_mode",
       "return_indices": "return_mask"
     }
   },
