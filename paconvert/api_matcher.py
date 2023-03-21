@@ -741,13 +741,19 @@ class BatchNorm3DMatcher(BaseMatcher):
 
 class MaxPool2DMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if 'dilation' in kwargs and kwargs['dilation'] != '(1)':
-            return None
+        if 'dilation' in kwargs:
+            if kwargs['dilation'] != '(1)':
+                return None
+            else:
+                kwargs.pop('dilation')
         
-        if 'return_indices' in kwargs:
-            kwargs['return_mask'] = kwargs['return_indices']
-            kwargs.pop['return_indices']
-
+        if 'kwargs_change' in self.api_mapping:
+            kwargs_change = self.api_mapping['kwargs_change']
+            for key in list(kwargs_change.keys()):
+                if key in kwargs:
+                    kwargs[kwargs_change[key]] = kwargs[key]
+                    kwargs.pop(key)
+                    
         API_TEMPLACE = textwrap.dedent(
             '''
             paddle.nn.MaxPool2D({})
@@ -943,12 +949,18 @@ class TensorUniqueMatcher(BaseMatcher):
         self.parse_func(func)
         kwargs = self.parse_args_and_kwargs(args, kwargs)
 
-        if 'sorted' in kwargs and 'False' in kwargs['sorted']:
-            return None
-
-        if 'dim' in kwargs:
-            kwargs['axis'] = kwargs['dim']
-            kwargs.pop('dim')
+        if 'sorted' in kwargs:
+            if 'False' in kwargs['sorted']:
+                return None
+            else:
+                kwargs.pop('sorted')
+        
+        if 'kwargs_change' in self.api_mapping:
+            kwargs_change = self.api_mapping['kwargs_change']
+            for key in list(kwargs_change.keys()):
+                if key in kwargs:
+                    kwargs[kwargs_change[key]] = kwargs[key]
+                    kwargs.pop(key)
 
         API_TEMPLACE = textwrap.dedent(
             '''
@@ -1129,23 +1141,25 @@ class FunctionalBinaryCrossEntropyWithLogitsMatcher(BaseMatcher):
 
 class FunctionalMaxPool2DMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if 'dilation' in kwargs and kwargs['dilation'] != '(1)':
-            return None
+        if 'dilation' in kwargs:
+            if kwargs['dilation'] != '(1)':
+                return None
+            else:
+                kwargs.pop('dilation')
         
-        if 'input' in kwargs:
-            kwargs['x'] = kwargs['input']
-            kwargs.pop('input')
-
-        if 'return_indices' in kwargs:
-            kwargs['return_mask'] = kwargs['return_indices']
-            kwargs.pop('return_indices')
-
+        if 'kwargs_change' in self.api_mapping:
+            kwargs_change = self.api_mapping['kwargs_change']
+            for key in list(kwargs_change.keys()):
+                if key in kwargs:
+                    kwargs[kwargs_change[key]] = kwargs[key]
+                    kwargs.pop(key)
+        
         API_TEMPLACE = textwrap.dedent(
             '''
             paddle.nn.functional.max_pool2d({})
             '''
         )
-        code = API_TEMPLACE.format(self.kwargs_to_str(new_kwargs))
+        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
         return code
 
 

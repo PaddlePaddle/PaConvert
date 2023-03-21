@@ -5984,8 +5984,6 @@
       "return_counts",
       "dim"],
     "kwargs_change": {
-      "return_inverse": "return_inverse",
-      "return_counts":"return_counts",
       "dim": "axis"
     }
   }, 
@@ -6869,7 +6867,10 @@
       "padding", 
       "dilation", 
       "return_indices", 
-      "ceil_mode"]
+      "ceil_mode"],
+    "kwargs_change": {
+      "return_indices": "return_mask"
+    }
   },
 
   "torch.load" : {
