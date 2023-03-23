@@ -919,3 +919,462 @@ class BatchNorm3DMatcher(BaseMatcher):
             )
         code = API_TEMPLACE.format(kwargs['num_features'], momentum, epsilon, track_running_stats)
         return code
+
+
+class MaxPool2DMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'dilation' in kwargs:
+            if kwargs['dilation'] != '(1)':
+                return None
+            else:
+                kwargs.pop('dilation')
+        
+        if 'kwargs_change' in self.api_mapping:
+            kwargs_change = self.api_mapping['kwargs_change']
+            for key in list(kwargs_change.keys()):
+                if key in kwargs:
+                    kwargs[kwargs_change[key]] = kwargs[key]
+                    kwargs.pop(key)
+                    
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.nn.MaxPool2D({})
+            '''
+        )
+        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
+        return code
+
+
+class DivMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'out' in kwargs and kwargs['out'] != 'None':
+            out = kwargs['out']
+        else:
+            out = None
+        
+        if 'rounding_mode' in kwargs and kwargs['rounding_mode'] != 'None':
+            rounding_mode = kwargs['rounding_mode']
+        else:
+            rounding_mode = None
+
+        if out is not None:
+            if rounding_mode is not None and 'trunc' in rounding_mode:
+                API_TEMPLACE = textwrap.dedent(
+                    '''
+                    {} = paddle.trunc(paddle.divide(x={}, y={}))
+                    {}
+                    '''
+                )
+            elif rounding_mode is not None and 'floor' in rounding_mode:
+                API_TEMPLACE = textwrap.dedent(
+                    '''
+                    {} = paddle.floor(paddle.divide(x={}, y={}))
+                    {}
+                    '''
+                )
+            else:
+                API_TEMPLACE = textwrap.dedent(
+                    '''
+                    {} = paddle.divide(x={}, y={})
+                    {}
+                    '''
+                )
+            code = API_TEMPLACE.format(out, kwargs['input'], kwargs['other'], out)
+        else:
+            if rounding_mode is not None and 'trunc' in rounding_mode:
+                API_TEMPLACE = textwrap.dedent(
+                    '''
+                    paddle.trunc(paddle.divide(x={}, y={}))
+                    '''
+                )
+            elif rounding_mode is not None and 'floor' in rounding_mode:
+                API_TEMPLACE = textwrap.dedent(
+                    '''
+                    paddle.floor(paddle.divide(x={}, y={}))
+                    '''
+                )
+            else:
+                API_TEMPLACE = textwrap.dedent(
+                    '''
+                    paddle.divide(x={}, y={})
+                    '''
+                )
+            code = API_TEMPLACE.format(kwargs['input'], kwargs['other'])
+        return code
+
+
+class SplitMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'dim' in kwargs:
+            axis = kwargs['dim']
+        else:
+            axis = 0
+
+        if '[' in kwargs['split_size_or_sections']:
+            API_TEMPLACE = textwrap.dedent(
+                '''
+                paddle.split(x={}, num_or_sections={}, axis={})
+                '''
+            )
+            code = API_TEMPLACE.format(kwargs['tensor'], kwargs['split_size_or_sections'], axis)
+        else: 
+            API_TEMPLACE = textwrap.dedent(
+                '''
+                paddle.split(x={}, num_or_sections={}.shape[{}]//{}, axis={})
+                '''
+            )
+            code = API_TEMPLACE.format(kwargs['tensor'], kwargs['tensor'], axis, kwargs['split_size_or_sections'], axis)
+        return code
+
+
+class RangeMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'dtype' in kwargs:
+            dtype = kwargs['dtype']
+        else:
+            dtype = '"""float32"""'
+
+        if 'requires_grad' in kwargs:
+            stop_gradient = kwargs['requires_grad']
+        else:
+            stop_gradient = False
+        
+        if 'start' in kwargs:
+            start = kwargs['start']
+        else:
+            start = 0
+
+        if 'step' in kwargs:
+            step = kwargs['step']
+        else:
+            step = 1
+
+        out = get_unique_name('out')
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            {} = paddle.arange(start={}, end={}+1 if ({} - {}) % {} == 0 else {}, step={}, dtype={})
+            {}.stop_gradient = not {}
+            {}
+            '''
+        )
+        code = API_TEMPLACE.format(out, start, kwargs['end'], kwargs['end'], start, step, kwargs['end'], step, dtype, out, stop_gradient, out)
+        return code
+
+
+class MeshgridMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        new_args = self.parse_args(args)
+        new_kwargs = self.parse_kwargs(kwargs)
+        if 'indexing' in new_kwargs:
+            if 'ij' not in new_kwargs['indexing']:
+                return None
+        code = '{}({})'.format(self.get_paddle_api(), self.args_to_str(new_args))
+        return ast.parse(code).body
+
+
+class TensorIsContiguousMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        code = 'True'
+        return ast.parse(code).body
+    
+
+class TensorSkipMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        code = '{}'.format(self.paddleClass)
+        return ast.parse(code).body
+
+
+class TensorCopyMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        args = self.parse_args(args)
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.assign({}, output={})
+            '''
+        )
+        code = API_TEMPLACE.format(args[0], self.paddleClass)
+        return ast.parse(code).body
+
+
+class TensorMaskedFillMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+
+        if 'mask' in kwargs:
+            mask = kwargs['mask']
+        else:
+            return None
+
+        if 'value' in kwargs:
+            value = kwargs['value']
+        else:
+            return None
+        
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            detach_x = {}.detach()
+            detach_x = paddle.full(detach_x.shape, {}, detach_x.dtype)
+            {} = paddle.where({}, detach_x, {})
+            {}
+            '''
+        )
+        out = get_unique_name('out')
+        code = API_TEMPLACE.format(self.paddleClass, value, self.paddleClass, mask, self.paddleClass, self.paddleClass)
+        return ast.parse(code).body
+
+
+class TensorUniqueMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+
+        if 'sorted' in kwargs:
+            if 'False' in kwargs['sorted']:
+                return None
+            else:
+                kwargs.pop('sorted')
+        
+        if 'kwargs_change' in self.api_mapping:
+            kwargs_change = self.api_mapping['kwargs_change']
+            for key in list(kwargs_change.keys()):
+                if key in kwargs:
+                    kwargs[kwargs_change[key]] = kwargs[key]
+                    kwargs.pop(key)
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            {}.unique({})
+            '''
+        )
+        code = API_TEMPLACE.format(self.paddleClass, self.kwargs_to_str(kwargs))
+        return ast.parse(code).body
+
+
+class TensorExpandMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+
+        if len(args) == 1 and not isinstance(args[0], ast.Constant):
+            shape_list = self.parse_args(args)[0]
+        else:
+            shape_list = self.parse_args(args)
+
+        kwargs = self.parse_kwargs(kwargs)
+        if 'sizes' in kwargs:
+            kwargs = { 'shape' : kwargs.pop('sizes'), **kwargs}
+        else:
+            kwargs = { 'shape' : str(shape_list).replace('\'', ''), **kwargs}
+
+        code = '{}.expand({})'.format(self.paddleClass, self.kwargs_to_str(kwargs))
+        return ast.parse(code).body
+
+
+class TensorSoftmaxMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+
+        if 'dim' in kwargs:
+            axis = kwargs['dim']
+        else:
+            return None
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.nn.functional.softmax({}, axis={})
+            '''
+        )
+        code = API_TEMPLACE.format(self.paddleClass, axis)
+        return ast.parse(code).body
+
+
+class TensorRequiresGradMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+
+        if 'requires_grad' in kwargs:
+            stop_gradient = kwargs['requires_grad']
+        else:
+            stop_gradient = 'True'
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            {}.stop_gradient = not {}
+            {}
+            '''
+        )
+        code = API_TEMPLACE.format(self.paddleClass, stop_gradient, self.paddleClass)
+        return ast.parse(code).body
+
+
+class FunctionalL1LossMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'size_average' in kwargs:
+            size_average = kwargs.pop('size_average')
+            if 'True' in size_average:
+                size_average = True
+            elif 'False' in size_average:
+                size_average = False
+            else:
+                size_average = None
+        else:
+            size_average = None
+        
+        if 'reduce' in kwargs:
+            reduce = kwargs.pop('reduce')
+            if 'True' in reduce:
+                reduce = True
+            elif 'False' in reduce:
+                reduce = False
+            else:
+                reduce = None
+        else:
+            reduce = None
+        
+        if size_average is not None or reduce is not None:
+            if size_average is None:
+                size_average = True
+            if reduce is None:
+                reduce = True
+
+            if size_average and reduce:
+                reduction = '"""mean"""'
+            elif reduce:
+                reduction = '"""sum"""'
+            else:
+                reduction = '"""none"""'
+        elif 'reduction' in kwargs:
+            reduction = kwargs.pop('reduction')
+        else:
+            reduction = '"""mean"""'
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.nn.functional.l1_loss(input={}, label={}, reduction={})
+            '''
+        )
+        code = API_TEMPLACE.format(kwargs['input'], kwargs['target'], reduction)
+        return code
+
+
+class FunctionalBinaryCrossEntropyWithLogitsMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'size_average' in kwargs:
+            size_average = kwargs.pop('size_average')
+            if 'True' in size_average:
+                size_average = True
+            elif 'False' in size_average:
+                size_average = False
+            else:
+                size_average = None
+        else:
+            size_average = None
+        
+        if 'reduce' in kwargs:
+            reduce = kwargs.pop('reduce')
+            if 'True' in reduce:
+                reduce = True
+            elif 'False' in reduce:
+                reduce = False
+            else:
+                reduce = None
+        else:
+            reduce = None
+        
+        if size_average is not None or reduce is not None:
+            if size_average is None:
+                size_average = True
+            if reduce is None:
+                reduce = True
+
+            if size_average and reduce:
+                reduction = '"""mean"""'
+            elif reduce:
+                reduction = '"""sum"""'
+            else:
+                reduction = '"""none"""'
+        elif 'reduction' in kwargs:
+            reduction = kwargs.pop('reduction')
+        else:
+            reduction = '"""mean"""'
+
+        if 'weight' in kwargs:
+            weight = kwargs.pop('weight')
+        else:
+            weight = 'None'
+
+        if 'pos_weight' in kwargs:
+            pos_weight = kwargs.pop('pos_weight')
+        else:
+            pos_weight = 'None'
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.nn.functional.binary_cross_entropy_with_logits(logit={}, label={}, weight={}, reduction={}, pos_weight={})
+            '''
+        )
+        code = API_TEMPLACE.format(kwargs['input'], kwargs['target'], weight, reduction, pos_weight)
+        return code
+
+
+class FunctionalMaxPool2DMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'dilation' in kwargs:
+            if kwargs['dilation'] != '(1)':
+                return None
+            else:
+                kwargs.pop('dilation')
+        
+        if 'kwargs_change' in self.api_mapping:
+            kwargs_change = self.api_mapping['kwargs_change']
+            for key in list(kwargs_change.keys()):
+                if key in kwargs:
+                    kwargs[kwargs_change[key]] = kwargs[key]
+                    kwargs.pop(key)
+        
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.nn.functional.max_pool2d({})
+            '''
+        )
+        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
+        return code
+
+
+class LoadMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        unsupported_params = ["map_location", "pickle_module", "weights_only", "pickle_load_args"]
+        for param in unsupported_params:
+            if param in kwargs:
+                return None
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.load(path={})
+            '''
+        )
+        code = API_TEMPLACE.format(kwargs['f'])
+        return code
+
+
+class SaveMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'pickle_module' in kwargs or '_use_new_zipfile_serialization' in kwargs:
+            return None
+        
+        if 'pickle_protocol' in kwargs:
+            protocol = kwargs['pickle_protocol']
+        else:
+            protocol = 4
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.save(obj={}, path={}, protocol={})
+            '''
+        )
+        code = API_TEMPLACE.format(kwargs['obj'], kwargs['f'], protocol)
+        return code
