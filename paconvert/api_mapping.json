@@ -2780,7 +2780,7 @@
   },
 
   "torch.__version__" : {
-    "Matcher": "RandintMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.__version__"
   },
 
