@@ -1,59 +1,91 @@
-# from numpy import dtype
 import torch
-# import torch.nn as nn
-# import torch.optim as optim
-# import torch.nn.Linear as Linear
-# import torch.nn.functional as F
+
+a = torch.tensor(torch.tensor([2, 3, 4]), dtype=torch.float32, device=torch.device('cuda'), requires_grad=True, pin_memory=False)
+print('[tensor]: ', a.shape, a.dtype)
 
 
-# a = torch.tensor([1, 2, 3])
-# a.mean(0).max()
+print('cuda.is_available: ', torch.cuda.is_available())
 
 
-# torch.tensor([2, 3, 4], dtype=torch.float32, device=torch.device('cpu'), requires_grad=True, pin_memory=False)
+def a(x: torch.Tensor):
+    pass
 
-# print(torch.cuda.is_available())
+a = torch.Tensor(2, 3)
+print('[Tensor]: ', a.shape, a.dtype)
 
-# a = torch.Tensor(2, 3, device=torch.device("cuda:0"))
-# b = torch.LongTensor(2, 3, device=torch.device("cpu"))
-# c = torch.IntTensor(2, 3, device=torch.device("cuda:0"))
-# a = torch.FloatTensor(2, 3, device=torch.device("cuda:0"))
 
-# a = torch.nn.functional.interpolate(x, [24, 24], scale_factor=0.6)
+def a(x: torch.LongTensor):
+    pass
 
-# torch.equal(x, y)
+a = torch.LongTensor(2, 3)
+print('[LongTensor]: ', a.shape, a.dtype)
 
-# torch.randint(2, 5, [3, 4], device=torch.device('cuda:1'))
 
-# nonsupport
-# print(torch.__version__)
+def a(x: torch.IntTensor):
+    pass
 
-# a = torch.tensor([1, 2, 3])
+a = torch.IntTensor(2, 3, 6)
+print('[IntTensor]: ', a.shape, a.dtype)
 
-# a.new_zeros([3, 4]).half()
 
-# b = a.new_tensor([1, 2, 3], dtype=torch.float32)
+def a(x: torch.FloatTensor):
+    pass
 
-# b = torch.tensor(a.new_zeros([3, 4], dtype=torch.float64))
+a = torch.FloatTensor(2, 3, 6)
+print('[FloatTensor]: ', a.shape, a.dtype)
 
-# c = torch.tensor(a.normal_(0.2, 0.3))
 
-# c = torch.tensor([a.uniform_(2, 6)])
+a = torch.nn.functional.interpolate(torch.randn(1, 2, 20, 20), [24, 24])
+print('[nn.functional.interpolate]: ', a.shape)
 
-# c = a.expand(3, 4)
+a = torch.nn.functional.interpolate(torch.rand(1, 2, 20, 20), scale_factor=0.6)
+print('[nn.functional.interpolate]: ', a.shape)
 
-# torch.random.manual_seed(23)
+
+r = torch.equal(torch.tensor([1, 2]), torch.tensor([1, 2]))
+print('[equal]: ', r)
+
+
+a = torch.randint(2, 5, [3, 4], device=torch.device('cuda'))
+print('[randint]: ', a.shape, a.min(), a.max())
+
+torch.randint(10, [2, 2])
+print('[randint]: ', a.shape, a.min(), a.max())
+
+
+print(torch.__version__)
+
+a = torch.tensor([1, 2, 3])
+b = a.new_tensor([4, 5, 6], dtype=torch.float64)
+print('[Tensor.new_tensor]: ', b)
+
+
+b = torch.tensor(a.new_zeros([3, 4], dtype=torch.float64, requires_grad=True))
+print('[Tensor.new_zeros]: ', b)
+
+b = a.new_zeros([3, 4], dtype=torch.float64)
+print('[Tensor.new_zeros]: ', b)
+
+
+a = torch.tensor([1, 3, 4, 9, 0.5, 1.5])
+c = torch.tensor(a.normal_(0.2, 0.3))
+print('[Tensor.normal_]: ', c)
+
+
+c = torch.tensor(a.uniform_(2, 6))
+print('[Tensor.uniform_]: ', c)
+
+
+x = torch.tensor([[1], [2], [3]])
+y = x.expand(3, 4)
+print('[Tensor.expand]: ', y.shape)
+
+
+torch.random.manual_seed(23)
+
 
 # # nonsupport
 # torch.backends.cudnn.deterministic = True
 
 # # nonsupport
 # torch.backends.cudnn.benchmark = False
-
-# torch.tensor([1, 2, 3], dtype=torch.float64).new_zeros([1, 3])
-
-# # # print('--------------')
-
-torch.tensor([1, 2, 3], dtype=torch.float64, device=torch.device('cuda:0')).normal_(0.1, 0.3)
-
-# torch.float16

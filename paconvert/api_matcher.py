@@ -37,10 +37,11 @@ class GenericMatcher(BaseMatcher):
         for k in list(kwargs.keys()):
             if k in kwargs_change:
                 if kwargs_change[k]:
+                    # rename kwargs
                     new_kwargs[kwargs_change[k]] = kwargs.pop(k)
             else:
                 # remove directly and not handle
-                if k in ['layout', 'memory_format', 'inplace', 'generator', 'non_blocking']:
+                if k in ['layout', 'device', 'memory_format', 'inplace', 'generator', 'non_blocking']:
                     kwargs.pop(k)
                     continue
                 
@@ -60,7 +61,7 @@ class GenericMatcher(BaseMatcher):
         if 'requires_grad' in kwargs:
             requires_grad_v = eval(new_kwargs.pop('requires_grad'))
 
-        device_v = new_kwargs.pop("device") if "device" in kwargs else None
+        # device_v = new_kwargs.pop("device") if "device" in kwargs else None
 
         if requires_grad_v and 'out' in kwargs:
             out_v = new_kwargs.pop('out')
@@ -99,13 +100,6 @@ class GenericMatcher(BaseMatcher):
 
         if dtype_v:
             code = code.rstrip('\n') + ".astype({})".format(dtype_v)
-
-        if device_v != None and device_v.startswith('paddle.CUDAPlace'):
-            place = device_v
-            place = int(place[place.rfind('(') + 1 : -1]) if len(place) > 5 else 0
-            code = code.rstrip('\n') + '.cuda({})'.format(place)
-        elif device_v != None and device_v.startswith('paddle.CPUPlace'):
-            code = code.rstrip('\n') + '.cpu()'
             
         return code
 
@@ -277,13 +271,23 @@ class DeviceMatcher(BaseMatcher):
                 return None
             
             if 'cuda' in device_str:
-                code = 'paddle.CUDAPlace({})'.format(int(device_str[5:]) if len(device_str) > 5 else 0)
+                API_TEMPLATE = textwrap.dedent(
+                    '''
+                    paddle.CUDAPlace({})
+                    '''
+                )
+                code = API_TEMPLATE.format(int(device_str[5:]) if len(device_str) > 5 else 0)
                 # device_str = device_str.replace('cuda', 'gpu')
             if 'cpu' in device_str:
-                code = 'paddle.CPUPlace()'
+                API_TEMPLATE = textwrap.dedent(
+                    '''
+                    paddle.CPUPlace()
+                    '''
+                )
+                code = API_TEMPLATE
 
             # code = "'{}'".format(device_str)
-            return ast.parse(code).body
+            return ast.parse(code.strip('\n')).body
         
         return None
     
@@ -360,13 +364,34 @@ class MaxMinMatcher(BaseMatcher):
         return None
 
 
+class EqualMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs_change = {}
+        if 'kwargs_change' in self.api_mapping:
+            kwargs_change = self.api_mapping['kwargs_change']
+        new_kwargs = {}
+
+        for k in list(kwargs.keys()):
+            if k in kwargs_change:
+                if kwargs_change[k]:
+                    new_kwargs[kwargs_change[k]] = kwargs.pop(k)
+        
+        API_TEMPLATE = textwrap.dedent(
+            '''
+            {}({}).item()
+            '''
+        )
+
+        code = API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
+        return code.strip('\n')
+
+
 class TensorMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
-        # shape
+
         shape = []
         for node in args:
-            v = astor.to_source(node).strip('\n')
-            shape.append(int(v))
+            shape.append(node.value)
 
         new_kwargs = {}
         for node in kwargs:
@@ -384,30 +409,29 @@ class TensorMatcher(BaseMatcher):
         elif "torch.Tensor" == self.torch_api:
             data_type = 'float32'
 
-        if "device" in new_kwargs and str(new_kwargs["device"]).startswith('paddle.CUDAPlace'):
-            API_TEMPLATE = textwrap.dedent(
-                '''
-                {} = {}(shape={}, dtype='{}')
-                {}.cuda({})
-                {}
-                '''
-            )
-            out = get_unique_name("out")
-            place = str(new_kwargs["device"])
-            place = int(place[place.rfind('(') + 1 : -1])
-            code = API_TEMPLATE.format(out, self.get_paddle_api(), shape, data_type,
-                                       out, place,
-                                       out)
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                '''
-                {}(shape={}, dtype='{}')
-                '''
-            )
-            code = API_TEMPLATE.format(self.get_paddle_api(), shape, data_type)
+        API_TEMPLATE = textwrap.dedent(
+            '''
+            {}(shape={}, dtype='{}')
+            '''
+        )
 
+        code = API_TEMPLATE.format("paddle.empty", shape, data_type)
         node = ast.parse(code.strip('\n')).body
         return node
+
+
+class RandintMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        new_kwargs = self.process_kwargs(kwargs)
+
+        if ("high" in new_kwargs and new_kwargs["high"].startswith('[')):
+            new_kwargs["shape"] = new_kwargs["high"]
+            new_kwargs["high"] = new_kwargs["low"]
+            new_kwargs["low"] = '0'
+        
+        code = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
+        
+        return code
 
 
 class TensorTransposeMatcher(BaseMatcher):
@@ -548,27 +572,20 @@ class TensorTypeAsMatcher(BaseMatcher):
         return code
 
 
-class TensorHalfMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        code = "{}.astype(dtype='float16')".format(self.paddleClass)
-        return code
-
-
 class TensorNewZerosMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         
         new_kwargs = {"shape": kwargs["size"]}
 
-        # rename device to place  
-        # if "device" in kwargs:
-        #     kwargs["place"] = kwargs.pop("device")
+        if 'requires_grad' in kwargs:
+            kwargs["stop_gradient"] = not eval(kwargs.pop("requires_grad"))
+
         API_TEMPLATE = textwrap.dedent(
             '''
             {} = {}
             {} = {}({})
-            {}.stop_gradient = not {}
+            {}.stop_gradient = {}
             {}.astype({})
-            {}.pin_memory({})
             '''
         )
         var = get_unique_name('var')
@@ -576,43 +593,9 @@ class TensorNewZerosMatcher(BaseMatcher):
         # handle requires_grad, dtype, device, pin_memory
         code = API_TEMPLATE.format(var, self.paddleClass,
                                 out, self.get_paddle_api(), self.kwargs_to_str(new_kwargs),
-                                out, kwargs['requires_grad'] if 'requires_grad' in kwargs else var + '.requires_grad', 
-                                out, kwargs['dtype'] if 'dtype' in kwargs else var + '.dtype',
-                                out, kwargs['pin_memory'] if 'pin_memory' in kwargs else var + '.pin_memory()')
+                                out, kwargs['stop_gradient'] if 'stop_gradient' in kwargs else var + '.stop_gradient', 
+                                out, kwargs['dtype'] if 'dtype' in kwargs else var + '.dtype')
         
-        if "device" in kwargs:
-            if str(kwargs["device"]).startswith('paddle.CUDAPlace'):
-                DEVICE_TEMPLATE = textwrap.dedent(
-                    '''
-                    {}.cuda({})
-                    {}
-                    '''
-                )
-                place = str(kwargs["device"])
-                place = int(place[place.rfind('(') + 1 : -1]) if place[-2] != '(' else 0
-                device_code = DEVICE_TEMPLATE.format(out, place, out)
-            else:
-                DEVICE_TEMPLATE = textwrap.dedent(
-                    '''
-                    {}.cpu()
-                    {}
-                    '''
-                )
-                device_code = DEVICE_TEMPLATE.format(out, out)
-        else:
-            DEVICE_TEMPLATE = textwrap.dedent(
-                '''
-                if str({}.device).startswith('cuda'):
-                    place = str({}.device)
-                    {}.cuda(int(place[5:]) if len(place) > 5 else 0)
-                else:
-                    {}.cpu()
-                {}
-                '''
-            )
-            device_code = DEVICE_TEMPLATE.format(var, var, out, out, out)
-
-        code = code + device_code
         return code.strip('\n')
 
         
@@ -628,8 +611,8 @@ class TensorNormal_Matcher(BaseMatcher):
             {} = {}
             {} = {}.shape
             {} = {}({}, shape={})
-            {}.stop_gradient = not {}
-            {}.astype(str({})[6:]).pin_memory({})
+            {}.stop_gradient = {}
+            {}.astype(str({})[7:])
             '''
         )
 
@@ -641,22 +624,9 @@ class TensorNormal_Matcher(BaseMatcher):
         code = API_TEMPLATE.format(var, self.paddleClass,
                                    shape, var,
                                    out, self.get_paddle_api(), self.kwargs_to_str(new_kwargs), shape,
-                                   out, var + '.requires_grad', 
-                                   out, var + '.dtype', var + '.pin_memory()')
+                                   out, var + '.stop_gradient', 
+                                   out, var + '.dtype')
         
-        DEVICE_TEMPLATE = textwrap.dedent(
-            '''
-            if str({}.device).startswith('cuda'):
-                place = str({}.device)
-                {}.cuda(int(place[5:]) if len(place) > 5 else 0)
-            else:
-                {}.cpu()
-            {}
-            '''
-        )
-        device_code = DEVICE_TEMPLATE.format(var, var, out, out, out)
-
-        code += device_code
         return code.strip('\n')
 
 
@@ -666,8 +636,7 @@ class TensorExpandMatcher(BaseMatcher):
         # shape
         shape = []
         for node in args:
-            v = astor.to_source(node).strip('\n')
-            shape.append(int(v))
+            shape.append(node.value)
 
         code = '{}.expand(shape={})'.format(self.paddleClass, shape)
         return ast.parse(code.strip('\n')).body
@@ -735,7 +704,7 @@ class CrossEntropyLossMatcher(BaseMatcher):
 
 class CudaIsAvailableMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "{}() > 1".format(self.get_paddle_api())
+        code = "{}() >= 1".format(self.get_paddle_api())
         return code
 
 

@@ -153,22 +153,22 @@
 
   "torch.Tensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.empty"
+    "paddle_api": "paddle.Tensor"
   },
 
   "torch.LongTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.empty"
+    "paddle_api": "paddle.Tensor"
   },
 
   "torch.IntTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.empty"
+    "paddle_api": "paddle.Tensor"
   },
 
   "torch.FloatTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.empty"
+    "paddle_api": "paddle.Tensor"
   },
 
   "torch.bool": {
@@ -2744,8 +2744,8 @@
   },
 
   "torch.equal" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.equal",
+    "Matcher": "EqualMatcher",
+    "paddle_api": "paddle.equal_all",
     "args_list" : [
       "input",
       "other"],
@@ -2767,7 +2767,7 @@
   },
 
   "torch.randint" : {
-    "Matcher": "GenericMatcher",
+    "Matcher": "RandintMatcher",
     "paddle_api": "paddle.randint",
     "args_list" : [
       "low",
@@ -2777,6 +2777,11 @@
     "kwargs_change": {
       "size": "shape"
     }
+  },
+
+  "torch.__version__" : {
+    "Matcher": "RandintMatcher",
+    "paddle_api": "paddle.__version__"
   },
 
   "torch.nn.ParameterList" : {
@@ -4347,7 +4352,7 @@
 
   "torch.Tensor.new_zeros": {
     "Matcher": "TensorNewZerosMatcher",
-    "paddle_api": "paddle.empty",
+    "paddle_api": "paddle.zeros",
     "args_list": ["size"]
   }, 
 
