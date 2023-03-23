@@ -6792,9 +6792,7 @@
 
   "torch.nn.Module.double" : {},
 
-  "torch.nn.Module.half" : {
-    "Matcher": "TensorHalfMatcher"
-  },
+  "torch.nn.Module.half" : {},
 
   "torch.nn.Module.bfloat16" : {},
 
