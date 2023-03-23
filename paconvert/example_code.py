@@ -537,3 +537,56 @@ x.short()
 x.chalf()
 x.cfloat()
 x.cdouble()
+
+a = torch.tensor(torch.tensor([2, 3, 4]), dtype=torch.float32, device=torch.device('cuda'), requires_grad=True, pin_memory=False)
+
+print('cuda.is_available: ', torch.cuda.is_available())
+
+def a(x: torch.Tensor):
+    pass
+
+a = torch.Tensor(2, 3)
+
+def a(x: torch.LongTensor):
+    pass
+
+a = torch.LongTensor(2, 3)
+
+def a(x: torch.IntTensor):
+    pass
+
+a = torch.IntTensor(2, 3, 6)
+
+def a(x: torch.FloatTensor):
+    pass
+
+a = torch.FloatTensor(2, 3, 6)
+
+a = torch.nn.functional.interpolate(torch.randn(1, 2, 20, 20), [24, 24])
+
+a = torch.nn.functional.interpolate(torch.rand(1, 2, 20, 20), scale_factor=0.6)
+
+r = torch.equal(torch.tensor([1, 2]), torch.tensor([1, 2]))
+
+a = torch.randint(2, 5, [3, 4], device=torch.device('cuda'))
+
+torch.randint(10, [2, 2])
+
+print(torch.__version__)
+
+a = torch.tensor([1, 2, 3])
+b = a.new_tensor([4, 5, 6], dtype=torch.float64)
+
+b = torch.tensor(a.new_zeros([3, 4], dtype=torch.float64, requires_grad=True))
+
+b = a.new_zeros([3, 4], dtype=torch.float64)
+
+a = torch.tensor([1, 3, 4, 9, 0.5, 1.5])
+c = torch.tensor(a.normal_(0.2, 0.3))
+
+c = torch.tensor(a.uniform_(2, 6))
+
+x = torch.tensor([[1], [2], [3]])
+y = x.expand(3, 4)
+
+torch.random.manual_seed(23)
