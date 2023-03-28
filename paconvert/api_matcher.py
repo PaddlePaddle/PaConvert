@@ -332,8 +332,21 @@ class MaxMinMatcher(BaseMatcher):
         # return (values, indices) and paddle not implement, not convert
         if len(args) > 1 and isinstance(args[1], ast.Num):  
             return None
+
         if 'dim' in new_kwargs:
-            return None
+            for k, v in enumerate(kwargs):
+                if v.arg == 'dim':
+                    kwargs[k] = ast.keyword(arg='axis', value=v.value)
+                elif v.arg == 'input':
+                    kwargs[k] = ast.keyword(arg='x', value=v.value)
+
+            new_args = self.parse_args(args)
+            new_kwargs = self.parse_kwargs(kwargs)
+            if self.torch_api == 'torch.max':
+                code = 'paddle.max({})'.format(self.args_and_kwargs_to_str(new_args, new_kwargs))
+            if self.torch_api == 'torch.min':
+                code = 'paddle.min({})'.format(self.args_and_kwargs_to_str(new_args, new_kwargs))
+            return ast.parse(code).body
 
         # only return values, not return indices, convert
         paddle_api = self.torch_api.replace('torch', 'paddle')
