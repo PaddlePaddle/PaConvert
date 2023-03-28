@@ -552,7 +552,7 @@ class TensorTypeAsMatcher(BaseMatcher):
         return code
 
 
-class TensorNewZerosMatcher(BaseMatcher):
+class TensorNew_Matcher(BaseMatcher):
     def generate_code(self, kwargs):
 
         new_kwargs = {"shape": kwargs["size"]}
@@ -567,14 +567,24 @@ class TensorNewZerosMatcher(BaseMatcher):
         if 'pin_memory' in kwargs:
             pin_memory_v = eval(kwargs.pop('pin_memory'))
 
-        API_TEMPLATE = textwrap.dedent(
-            '''
-            {} = {}
-            {} = {}({})
-            {}.stop_gradient = {}
-            {}.astype({})
-            '''
-        )
+        if 'dtype' in kwargs:
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                {} = {}
+                {} = {}({})
+                {}.stop_gradient = {}
+                {}.astype({})
+                '''
+            )
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                {} = {}
+                {} = {}({})
+                {}.stop_gradient = {}
+                {}.astype(str({})[7:])
+                '''
+            )
         var = get_unique_name('var')
         out = get_unique_name('out')
         # handle requires_grad, dtype, device, pin_memory
@@ -589,7 +599,7 @@ class TensorNewZerosMatcher(BaseMatcher):
         return code.strip('\n')
 
 
-class NewTensorMatcher(BaseMatcher):
+class TensorNewTensorMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         if "layout" in kwargs:
@@ -601,21 +611,46 @@ class NewTensorMatcher(BaseMatcher):
         if "requires_grad" in kwargs:
             kwargs["stop_gradient"] = not eval(kwargs.pop("requires_grad"))
 
-        pin_memory_v = False
         if 'pin_memory' in kwargs:
-            pin_memory_v = eval(kwargs.pop('pin_memory'))
+            if eval(kwargs['pin_memory']):
+                kwargs['place'] = 'paddle.CUDAPinnedPlace()'
+            kwargs.pop('pin_memory')
 
-        API_TEMPLATE = textwrap.dedent(
-            '''
-            {} = {}({})
-            {}
-            '''
-        )
-        out = get_unique_name('out')
-        code = API_TEMPLATE.format(out, self.get_paddle_api(), self.kwargs_to_str(kwargs), out)
+        if 'dtype' in kwargs:
+            code = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                {} = {}
+                {} = {}({})
+                {}.astype(str({})[7:])
+                '''
+            )
+            var = get_unique_name('var')
+            out = get_unique_name('out')
+            code = API_TEMPLATE.format(var, self.paddleClass,
+                                out, self.get_paddle_api(), self.kwargs_to_str(kwargs),
+                                out, var + '.dtype')
 
-        if pin_memory_v:
-            code = code.rstrip('\n') + ".pin_memory()"
+        return code.strip('\n')
+
+
+class TorchTensorMatcher(BaseMatcher):
+
+    def generate_code(self, kwargs):
+
+        if "device" in kwargs:
+            kwargs['place'] = kwargs.pop("device")
+
+        if "requires_grad" in kwargs:
+            kwargs["stop_gradient"] = not eval(kwargs.pop("requires_grad"))
+
+        if 'pin_memory' in kwargs:
+            if eval(kwargs['pin_memory']):
+                kwargs['place'] = 'paddle.CUDAPinnedPlace()'
+            kwargs.pop('pin_memory')
+            
+        code = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
         return code.strip('\n')
 

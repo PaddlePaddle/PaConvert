@@ -205,7 +205,7 @@ y = paddle.transpose(x=x, perm=perm_0)
 - `kwargs_change` :可选，参数名称有差异时，参数名的映射关系。
 - `paddle_default_kwargs` :可选，当 paddle 参数更多时，可以设置 paddle 默认的参数。
 
-编写过程中需要按需填写以上五项内容。（其中`Matcher`、`paddle_api`、`args_list`是必须的。如果没有参数名不同的情况，则无 `kwargs_change` ）。
+编写过程中需要按需填写以上五项内容。（其中`Matcher`、`args_list`是必须的。如果没有参数名不同的情况，则无 `kwargs_change` ）。
 
 步骤2： 在 `paconvert/api_matcher.py` 中增加该 API 对应的 **Matcher**（可选，如果需要自定义 Matcher时，才需要此步骤）。
 
@@ -227,7 +227,7 @@ y = paddle.transpose(x=x, perm=perm_0)
 
 1. 一致的API：要求API功能一致，且API参数一致（如果Pytorch只比Paddle多out/dtype/device/layout/requires_grad/memory_format/inplace/generator/pin_memory参数，则也视作一致），这种只需增加json配置即可，最为容易。
 
-2. 不一致但可转换的API：包含 **Pytorch参数更多、参数不一致、API功能不一致、组合实现** 这几种情况，这种需要编写自定义 `Matcher`，开发AST转换策略，难度较大。编写自定义Matcher时可以参考[PyTorch 1.13 与 Paddle 2.4 API 映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html)
+2. 不一致但可转换的API：包含 **Pytorch参数更多、参数不一致、组合实现** 这几种情况，这种需要编写自定义 `Matcher`，开发AST转换策略，难度较大。编写自定义Matcher时可以参考[PyTorch 1.13 与 Paddle 2.4 API 映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html)
 
 3. 不一致且无法转换的API：这种无法转换，可提供API映射关系，方便手动转换，见[Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api) 
 
