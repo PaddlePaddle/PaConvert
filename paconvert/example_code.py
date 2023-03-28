@@ -405,7 +405,7 @@ str2='_torch.npy'
 hellotorch.test
 
 ## should mark
-torch.save('torch.parma')
+torch.save(obj, 'torch.parma')
 ## not mark
 np.save('torch.parma')
 
@@ -537,3 +537,24 @@ x.short()
 x.chalf()
 x.cfloat()
 x.cdouble()
+
+# torch.Tensor.expand
+x.expand(2)
+x.expand(2, 3)
+x.expand([2])
+x.expand((2, 3))
+x.expand([2, 3])
+x.expand(size=[2, 3])
+x.expand(size=(2, 3))
+
+list1 = [2, 3]
+x.expand(list1)
+
+list1 = (2, 3)
+x.expand(*list1)
+
+# torch.Tensor.masked_fill
+mask = mask.float().masked_fill(mask == 1, float('-inf'))
+
+# torch.nn.CrossEntropyLoss
+torch.nn.CrossEntropyLoss(reduction="none")

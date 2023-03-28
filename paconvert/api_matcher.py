@@ -530,24 +530,15 @@ class CrossEntropyLossMatcher(BaseMatcher):
                 reduction = '"""sum"""'
             else:
                 reduction = '"""none"""'
-        elif 'reduction' in kwargs:
-            reduction = kwargs.pop('reduction')
-        else:
-            reduction = '"""mean"""'
+
+            kwargs['reduction'] = reduction
 
         API_TEMPLACE = textwrap.dedent(
             '''
-            paddle.nn.CrossEntropyLoss(weight={},
-                ignore_index={},
-                reduction={},
-                soft_label=False,
-                axis=1,
-                use_softmax=True,
-                name=None
-            )
+            paddle.nn.CrossEntropyLoss({})
             '''
         )
-        code = API_TEMPLACE.format(kwargs['weight'], kwargs['ignore_index'], reduction)
+        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
         return code
 
 
@@ -921,27 +912,12 @@ class TensorMaskedFillMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
         kwargs = self.parse_args_and_kwargs(args, kwargs)
-
-        if 'mask' in kwargs:
-            mask = kwargs['mask']
-        else:
-            return None
-
-        if 'value' in kwargs:
-            value = kwargs['value']
-        else:
-            return None
-        
         API_TEMPLACE = textwrap.dedent(
             '''
-            detach_x = {}.detach()
-            detach_x = paddle.full(detach_x.shape, {}, detach_x.dtype)
-            {} = paddle.where({}, detach_x, {})
-            {}
+            paddle.where({}, {}, {})
             '''
         )
-        out = get_unique_name('out')
-        code = API_TEMPLACE.format(self.paddleClass, value, self.paddleClass, mask, self.paddleClass, self.paddleClass)
+        code = API_TEMPLACE.format(kwargs['mask'], self.paddleClass, kwargs['value'])
         return ast.parse(code).body
 
 
@@ -975,17 +951,17 @@ class TensorUniqueMatcher(BaseMatcher):
 class TensorExpandMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
-
-        if len(args) == 1 and not isinstance(args[0], ast.Constant):
-            shape_list = self.parse_args(args)[0]
-        else:
-            shape_list = self.parse_args(args)
-
         kwargs = self.parse_kwargs(kwargs)
-        if 'sizes' in kwargs:
-            kwargs = { 'shape' : kwargs.pop('sizes'), **kwargs}
+        if 'size' in kwargs:
+            kwargs = { 'shape' : kwargs.pop('size'), **kwargs}
         else:
-            kwargs = { 'shape' : str(shape_list).replace('\'', ''), **kwargs}
+            if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
+                shape = self.parse_args(args)
+            elif isinstance(args[0], ast.Starred):
+                shape = args[0].value.id
+            else:
+                shape = self.parse_args(args)[0]
+            kwargs = { 'shape' : str(shape).replace('\'', ''), **kwargs}
 
         code = '{}.expand({})'.format(self.paddleClass, self.kwargs_to_str(kwargs))
         return ast.parse(code).body
@@ -1066,17 +1042,18 @@ class FunctionalL1LossMatcher(BaseMatcher):
                 reduction = '"""sum"""'
             else:
                 reduction = '"""none"""'
-        elif 'reduction' in kwargs:
-            reduction = kwargs.pop('reduction')
-        else:
-            reduction = '"""mean"""'
+
+            kwargs['reduction'] = reduction
+
+        if 'target' in kwargs:
+            kwargs['label'] = kwargs.pop('target')
 
         API_TEMPLACE = textwrap.dedent(
             '''
-            paddle.nn.functional.l1_loss(input={}, label={}, reduction={})
+            paddle.nn.functional.l1_loss({})
             '''
         )
-        code = API_TEMPLACE.format(kwargs['input'], kwargs['target'], reduction)
+        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
         return code
 
 
@@ -1116,27 +1093,21 @@ class FunctionalBinaryCrossEntropyWithLogitsMatcher(BaseMatcher):
                 reduction = '"""sum"""'
             else:
                 reduction = '"""none"""'
-        elif 'reduction' in kwargs:
-            reduction = kwargs.pop('reduction')
-        else:
-            reduction = '"""mean"""'
+            
+            kwargs['reduction'] = reduction
 
-        if 'weight' in kwargs:
-            weight = kwargs.pop('weight')
-        else:
-            weight = 'None'
+        if 'input' in kwargs:
+            kwargs['logit'] = kwargs.pop('input')
 
-        if 'pos_weight' in kwargs:
-            pos_weight = kwargs.pop('pos_weight')
-        else:
-            pos_weight = 'None'
+        if 'target' in kwargs:
+            kwargs['label'] = kwargs.pop('target')
 
         API_TEMPLACE = textwrap.dedent(
             '''
-            paddle.nn.functional.binary_cross_entropy_with_logits(logit={}, label={}, weight={}, reduction={}, pos_weight={})
+            paddle.nn.functional.binary_cross_entropy_with_logits({})
             '''
         )
-        code = API_TEMPLACE.format(kwargs['input'], kwargs['target'], weight, reduction, pos_weight)
+        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
         return code
 
 
