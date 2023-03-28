@@ -274,40 +274,19 @@ class BaseMatcher(object):
         else:
             return 'None'
 
-    def process_kwargs(self, kwargs):
+    def set_paddle_default_kwargs(self, kwargs):
         """
-        Rename the parameters according to the kwargs_change list of api_mapping, 
-        delete the parameters that can be ignored directly,
         process the redundant parameters of Paddle and set the default values
         and return the new parameter list in the form of a dictionary.
         """
-        kwargs_change = {}
-        if 'kwargs_change' in self.api_mapping:
-            kwargs_change = self.api_mapping['kwargs_change']
-        
-        new_kwargs = {}
-        for k in list(kwargs.keys()):
-            if k in kwargs_change:
-                if kwargs_change[k]:
-                    # rename kwargs
-                    new_kwargs[kwargs_change[k]] = kwargs.pop(k)
-            else:
-                # remove directly and not handle
-                if k in ['layout', 'device', 'memory_format', 'inplace', 'generator', 'non_blocking']:
+        if "paddle_default_kwargs" in self.api_mapping:
+            paddle_default_kwargs = self.api_mapping["paddle_default_kwargs"]
+            for k in paddle_default_kwargs:
+                if k in kwargs:
                     kwargs.pop(k)
-                    continue
-                
-                #TODO: kwargs_change -> kwargs_mapping
-                # not mapping in kwargs in there is not in kwargs_mapping
-                new_kwargs[k] = kwargs[k]
-        
-        # Process the redundant parameters of Paddle and set the default values
-        if "paddle_kwargs" in self.api_mapping:
-            paddle_kwargs = self.api_mapping["paddle_kwargs"]
-            for k in paddle_kwargs:
-                new_kwargs[k] = paddle_kwargs[k]
+                kwargs[k] = paddle_default_kwargs[k]
 
-        return new_kwargs
+        return kwargs
 
     def generate_code(self, kwargs):
         return None

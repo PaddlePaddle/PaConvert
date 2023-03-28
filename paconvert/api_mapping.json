@@ -349,10 +349,7 @@
     "args_list" : [
       "data",
       "dtype",
-      "device"],
-    "kwargs_change": {
-        "device": "place"
-      }
+      "device"]
   },
 
   "torch.from_numpy" : {
@@ -2760,10 +2757,7 @@
     "paddle_api": "paddle.to_tensor",
     "args_list" : [
       "data"
-    ],
-    "kwargs_change": {
-      "device": "place"
-    }
+    ]
   },
 
   "torch.randint" : {
@@ -4337,18 +4331,28 @@
   "torch.Tensor.requires_grad": {}, 
 
   "torch.Tensor.new_tensor": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "NewTensorMatcher",
     "paddle_api": "paddle.to_tensor",
-    "args_list" : [
-      "data"],
-    "kwargs_change": {
-      "device": "place"
-    }
+    "args_list" : ["data", "dtype", "device", "requires_grad", "layout", "pin_memory"]
   }, 
 
-  "torch.Tensor.new_full": {}, 
-  "torch.Tensor.new_empty": {}, 
-  "torch.Tensor.new_ones": {},
+  "torch.Tensor.new_full": {
+    "Matcher": "TensorNewZerosMatcher",
+    "paddle_api": "paddle.full",
+    "args_list": ["size", "fill_value"]
+  }, 
+
+  "torch.Tensor.new_empty": {
+    "Matcher": "TensorNewZerosMatcher",
+    "paddle_api": "paddle.empty",
+    "args_list": ["size"]
+  },
+
+  "torch.Tensor.new_ones": {
+    "Matcher": "TensorNewZerosMatcher",
+    "paddle_api": "paddle.ones",
+    "args_list": ["size"]
+  },
 
   "torch.Tensor.new_zeros": {
     "Matcher": "TensorNewZerosMatcher",

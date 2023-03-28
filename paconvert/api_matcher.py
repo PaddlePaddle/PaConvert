@@ -49,6 +49,8 @@ class GenericMatcher(BaseMatcher):
                 # not mapping in kwargs in there is not in kwargs_mapping
                 new_kwargs[k] = kwargs[k]
 
+        new_kwargs = self.set_paddle_default_kwargs(new_kwargs)
+
         pin_memory_v = False
         if 'pin_memory' in kwargs:
             pin_memory_v = eval(new_kwargs.pop('pin_memory'))
@@ -61,7 +63,6 @@ class GenericMatcher(BaseMatcher):
         if 'requires_grad' in kwargs:
             requires_grad_v = eval(new_kwargs.pop('requires_grad'))
 
-        # device_v = new_kwargs.pop("device") if "device" in kwargs else None
 
         if requires_grad_v and 'out' in kwargs:
             out_v = new_kwargs.pop('out')
@@ -271,23 +272,10 @@ class DeviceMatcher(BaseMatcher):
                 return None
             
             if 'cuda' in device_str:
-                API_TEMPLATE = textwrap.dedent(
-                    '''
-                    paddle.CUDAPlace({})
-                    '''
-                )
-                code = API_TEMPLATE.format(int(device_str[5:]) if len(device_str) > 5 else 0)
-                # device_str = device_str.replace('cuda', 'gpu')
-            if 'cpu' in device_str:
-                API_TEMPLATE = textwrap.dedent(
-                    '''
-                    paddle.CPUPlace()
-                    '''
-                )
-                code = API_TEMPLATE
+                device_str = device_str.replace('cuda', 'gpu')
 
-            # code = "'{}'".format(device_str)
-            return ast.parse(code.strip('\n')).body
+            code = "'{}'".format(device_str)
+            return ast.parse(code).body
         
         return None
     
@@ -391,13 +379,7 @@ class TensorMatcher(BaseMatcher):
 
         shape = []
         for node in args:
-            shape.append(node.value)
-
-        new_kwargs = {}
-        for node in kwargs:
-            k = node.arg
-            v = astor.to_source(node.value).strip('\n')
-            new_kwargs[k] = v    
+            shape.append(node.value)   
 
         data_type = ''
         if "torch.IntTensor" == self.torch_api:
@@ -422,14 +404,12 @@ class TensorMatcher(BaseMatcher):
 
 class RandintMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        new_kwargs = self.process_kwargs(kwargs)
+        if ("high" in kwargs and kwargs["high"].startswith('[')):
+            kwargs["shape"] = kwargs["high"]
+            kwargs["high"] = kwargs["low"]
+            kwargs["low"] = '0'
 
-        if ("high" in new_kwargs and new_kwargs["high"].startswith('[')):
-            new_kwargs["shape"] = new_kwargs["high"]
-            new_kwargs["high"] = new_kwargs["low"]
-            new_kwargs["low"] = '0'
-        
-        code = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
+        code = GenericMatcher.generate_code(self, kwargs)
         
         return code
 
@@ -574,11 +554,18 @@ class TensorTypeAsMatcher(BaseMatcher):
 
 class TensorNewZerosMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        
+
         new_kwargs = {"shape": kwargs["size"]}
+
+        if "fill_value" in kwargs:
+            new_kwargs["fill_value"] = kwargs["fill_value"]
 
         if 'requires_grad' in kwargs:
             kwargs["stop_gradient"] = not eval(kwargs.pop("requires_grad"))
+
+        pin_memory_v = False
+        if 'pin_memory' in kwargs:
+            pin_memory_v = eval(kwargs.pop('pin_memory'))
 
         API_TEMPLATE = textwrap.dedent(
             '''
@@ -593,9 +580,43 @@ class TensorNewZerosMatcher(BaseMatcher):
         # handle requires_grad, dtype, device, pin_memory
         code = API_TEMPLATE.format(var, self.paddleClass,
                                 out, self.get_paddle_api(), self.kwargs_to_str(new_kwargs),
-                                out, kwargs['stop_gradient'] if 'stop_gradient' in kwargs else var + '.stop_gradient', 
+                                out, kwargs['stop_gradient'] if 'stop_gradient' in kwargs else True, 
                                 out, kwargs['dtype'] if 'dtype' in kwargs else var + '.dtype')
         
+        if pin_memory_v:
+            code = code.rstrip('\n') + ".pin_memory()"
+        
+        return code.strip('\n')
+
+
+class NewTensorMatcher(BaseMatcher):
+
+    def generate_code(self, kwargs):
+        if "layout" in kwargs:
+            kwargs.pop("layout")
+
+        if "device" in kwargs:
+            kwargs.pop("device")
+
+        if "requires_grad" in kwargs:
+            kwargs["stop_gradient"] = not eval(kwargs.pop("requires_grad"))
+
+        pin_memory_v = False
+        if 'pin_memory' in kwargs:
+            pin_memory_v = eval(kwargs.pop('pin_memory'))
+
+        API_TEMPLATE = textwrap.dedent(
+            '''
+            {} = {}({})
+            {}
+            '''
+        )
+        out = get_unique_name('out')
+        code = API_TEMPLATE.format(out, self.get_paddle_api(), self.kwargs_to_str(kwargs), out)
+
+        if pin_memory_v:
+            code = code.rstrip('\n') + ".pin_memory()"
+
         return code.strip('\n')
 
         
