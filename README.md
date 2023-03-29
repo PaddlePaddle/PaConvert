@@ -298,8 +298,13 @@ class TransposeMatcher(BaseMatcher):
 
 此类API需要填写json配置中的两项内容： `Matcher` 、 `args_list` 。
 
+## 自定义 `Matcher` 时需要考虑的情况(供参考，补充中)
+* 传入参数是可变参数，例如 `TensorMatcher`。
+* 传入参数既可以是可变参数，也可以是列表或元组，例如 `TensorExpandMatcher`。
+* 传入参数是变量，例如指定`requires_grad=a`，其中`a=True`。
 
 在本地开发中，为快速调试，可直接通过以下方式运行代码，无需反复安装：
+> 加上 `--show_unsupport True` 选项可以显示不支持转写的 API
 
 ```
 python paconvert/main.py  --in_dir paconvert/tests/test_model.py  --out_dir paconvert/tests/out
