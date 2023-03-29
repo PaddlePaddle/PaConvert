@@ -186,6 +186,10 @@ class BaseMatcher(object):
                 return None
             k = args_list[i]
             v = astor.to_source(node).strip('\n')
+            # have comma indicates a tuple
+            if ',' in v and v.startswith('('):
+                v = v.replace('(', '[')
+                v = v.replace(')', ']')
             new_kwargs[k] = v
         
         for node in kwargs:
@@ -198,6 +202,9 @@ class BaseMatcher(object):
             #if k not in args_list:
             #    return 'NonTorchClass'
             v = astor.to_source(node.value).strip('\n')
+            if ',' in v and v.startswith('('):
+                v = v.replace('(', '[')
+                v = v.replace(')', ']')
             new_kwargs[k] = v
 
         return new_kwargs
@@ -206,6 +213,9 @@ class BaseMatcher(object):
         new_args = []
         for node in args:
             ele = astor.to_source(node).strip('\n')
+            if ',' in ele and ele.startswith('('):
+                ele = ele.replace('(', '[')
+                ele = ele.replace(')', ']')
             new_args.append(ele)
 
         return new_args
@@ -215,6 +225,9 @@ class BaseMatcher(object):
         for node in kwargs:
             k = node.arg
             v = astor.to_source(node.value).strip('\n')
+            if ',' in v and v.startswith('('):
+                v = v.replace('(', '[')
+                v = v.replace(')', ']')
             new_kwargs[k] = v
 
         return new_kwargs
@@ -260,6 +273,18 @@ class BaseMatcher(object):
             return node.id
         else:
             return 'None'
+
+    def set_paddle_default_kwargs(self, kwargs):
+        """
+        process the redundant parameters of Paddle and set the default values
+        and return the new parameter list in the form of a dictionary.
+        """
+        if "paddle_default_kwargs" in self.api_mapping:
+            paddle_default_kwargs = self.api_mapping["paddle_default_kwargs"]
+            for k in paddle_default_kwargs:
+                kwargs[k] = paddle_default_kwargs[k]
+
+        return kwargs
 
     def generate_code(self, kwargs):
         return None
