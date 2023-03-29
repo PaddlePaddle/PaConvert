@@ -558,3 +558,7 @@ mask = mask.float().masked_fill(mask == 1, float('-inf'))
 
 # torch.nn.CrossEntropyLoss
 torch.nn.CrossEntropyLoss(reduction="none")
+
+# torhc.Tensor.index_copy_
+x.index_copy_(0, index, t)
+x = x.index_copy_(1, index, source)

@@ -1168,3 +1168,44 @@ class SaveMatcher(BaseMatcher):
         )
         code = API_TEMPLACE.format(kwargs['obj'], kwargs['f'], protocol)
         return code
+
+
+class TensorIndexCopyMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        '''
+        consider paddle.reshape as other solution
+
+        if dim equal 0, just same as the paddle.scatter_, else we use for loop and paddle.scatter_.
+        '''
+        if len(kwargs) != 3:
+            return None
+        
+        count = int(kwargs['dim'][1:-1])
+        
+        #todo 完全一致的情况
+        if count == 0:
+            code = 'paddle.scatter_({}, {}, {})'.format(self.paddleClass, kwargs['index'], 
+                kwargs['tensor'])
+            return code
+        index_list = ['i'+str(i) for i in range(count)]
+        tab = '    '
+        prefix = 'for '+ 'i0'+ ' in '+ 'range(dim[0]):'
+        for_list = [tab*i + 'for '+ 'i'+str(i) + ' in '+ 'range(dim['+str(i)+']):' if i!=0 else prefix for i in range(count)]
+        for_prefix = '\n'.join(for_list)
+        exp1 = ','.join(index_list)
+        exp2 = ''.join(['['+i+']' for i in index_list])
+        exp = tab * count + '{}['+ exp1 + ',:] = paddle.scatter_({}'+exp2+', {}, {}'+exp2+')'
+        final_expr = for_prefix+'\n'+exp
+
+
+        API_TEMPLATE = textwrap.dedent(
+            '''
+            dim = list({}.shape)
+            '''
+        )
+        API_TEMPLATE +=final_expr
+
+        code = API_TEMPLATE.format(self.paddleClass, self.paddleClass,
+                self.paddleClass, kwargs['index'], 
+                kwargs['tensor'])
+        return code

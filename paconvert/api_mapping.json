@@ -6159,7 +6159,15 @@
   "torch.Tensor.igammac_": {},
   "torch.Tensor.index_add_": {},
   "torch.Tensor.index_add": {},
-  "torch.Tensor.index_copy_": {},
+  "torch.Tensor.index_copy_": {
+    "Matcher": "TensorIndexCopyMatcher",
+    "paddle_api": "paddle.Tensor.scatter_",
+    "args_list": [
+      "dim",
+      "index",
+      "tensor"
+    ]
+  },
   "torch.Tensor.index_copy": {},
   "torch.Tensor.index_fill_": {},
   "torch.Tensor.index_fill": {},
