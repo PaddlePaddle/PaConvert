@@ -721,16 +721,11 @@
  
   
   "torch.where" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.where",
+    "Matcher": "WhereMatcher",
     "args_list" : [
       "condition",
       "x",
-      "y"],
-    "kwargs_change": {
-      "x":"input",
-      "y":"other"
-    }
+      "y"]
   },
  
   
@@ -1565,10 +1560,10 @@
   "torch.any" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.any",
-    "args_list" : [
-      "input"],
+    "args_list" : ["input", "dim", "keepdim", "out"],
     "kwargs_change": {
-      "input":"x"
+      "input":"x",
+      "dim":"axis"
     }
   },
 
@@ -5953,7 +5948,6 @@
 
   "torch.Tensor.normal_": {
     "Matcher": "TensorNormal_Matcher",
-    "paddle_api": "paddle.normal",
     "args_list": ["mean", "std"]
   },
 

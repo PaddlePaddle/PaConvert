@@ -214,7 +214,7 @@ torch.min(image, label)
 
 torch.max(max_exp_avg_sq, exp_avg_sq, out=max_exp_avg_sq)
 
-# torch.rand
+# torch.rand 
 m = 2
 n = 3
 
@@ -242,15 +242,33 @@ torch.rand(size=[2, 3])
 
 torch.rand(())
 
-
 torch.rand([])
+
+torch.rand(2)
+
+torch.rand(2, 3)
+
+torch.rand([2, 3])
+
+torch.rand((2, 3))
+
+shape = 2
+torch.rand(shape)
+
+shape = (2, 3)
+torch.rand(shape)
+
+shape = [2, 3]
+torch.rand(shape)
+
+shape = (2, 3)
+torch.rand(*shape)
 
 # torch.randint
 
 torch.randint(10, [2, 2])
 
 torch.randint(2, 10, [2, 2])
-
 
 # torch.Tensor.size
 torch.abs(x).size()
@@ -725,3 +743,40 @@ y = x.expand((3, 4))
 print('[Tensor.expand case-2]: ', y.shape)
 
 torch.random.manual_seed(23)
+
+# torch.Tensor.new_zeros/new_ones/new_empty
+x.new_zeros(2)
+
+x.new_zeros(2, 3)
+
+x.new_zeros([2, 3])
+
+x.new_zeros((2, 3))
+
+## corner case
+shape = 2
+x.new_zeros(shape)
+
+shape = (2, 3)
+x.new_zeros(shape, requires_grad=True)
+
+shape = (2, 3)
+x.new_zeros(*shape, requires_grad=True, dtype=torch.float32)
+
+x.new_zeros(*shape, requires_grad=True, dtype=torch.float32, pin_memory=True)
+
+x.new_zeros(*shape, requires_grad=True, dtype=torch.float32, pin_memory=False)
+
+x.new_zeros(*x.size())
+
+x.new_zeros(x.size())
+
+# torch.Tensor.new_full
+
+x.new_full([2, 3], 2.)
+
+x.new_full([2, 3], 2., requires_grad=True)
+
+x.new_full([2, 3], 2., requires_grad=True, pin_memory=False)
+
+x.new_full([2, 3], 2., dtype=torch.float32, requires_grad=True, pin_memory=True)

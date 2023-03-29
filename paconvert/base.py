@@ -30,7 +30,8 @@ with open(json_file, 'r') as file:
     ATTRIBUTE_MAPPING = json.load(file)
 
 # will configure torch package in jsom
-TORCH_PACKAGE_LIST = ['torch', 'mmseg', 'mmcv', 'detectron', 'timm', 'mmdet', 'mmdet3d', 'torchvision', 'kornia', 'fasttext']
+TORCH_PACKAGE_LIST = ['torch', 'mmseg', 'mmcv', 'detectron', 'timm', 'mmdet', 'mmdet3d', 'torchvision', 
+'kornia', 'fasttext', 'pytorch_lightning', 'jieba', 'sentencepiece', 'NLTK', 'scikit-learn']
 
 
 class BaseTransformer(ast.NodeTransformer):
@@ -173,38 +174,29 @@ class BaseMatcher(object):
 
     def parse_args_and_kwargs(self, args, kwargs):
         args_list = self.api_mapping.get('args_list') or []
-        #assert len(args) <= len(args_list)
-        
         # more args, not match torch class method, indicate it is not torch Class
         if len(args) > len(args_list):
             return 'NonTorchClass'
 
         new_kwargs = {}
         for i, node in enumerate(args):
-            # torch.rot90(tensor, *config)
+            # not support 'torch.rot90(tensor, *config)'
             if isinstance(node, ast.Starred):
                 return None
             k = args_list[i]
             v = astor.to_source(node).strip('\n')
             # have comma indicates a tuple
-            if ',' in v and v.startswith('('):
-                v = v.replace('(', '[')
-                v = v.replace(')', ']')
             new_kwargs[k] = v
         
         for node in kwargs:
             k = node.arg
-            # torch.rot90(tensor, **config)
+            # not support 'torch.rot90(tensor, **config)'
             if k is None:
                 return None
-            # other kwargs, not match torch class method, indicate it is not torch Class
             # TODO: will open after all args have been add in args_list
             #if k not in args_list:
             #    return 'NonTorchClass'
             v = astor.to_source(node.value).strip('\n')
-            if ',' in v and v.startswith('('):
-                v = v.replace('(', '[')
-                v = v.replace(')', ']')
             new_kwargs[k] = v
 
         return new_kwargs
@@ -213,9 +205,6 @@ class BaseMatcher(object):
         new_args = []
         for node in args:
             ele = astor.to_source(node).strip('\n')
-            if ',' in ele and ele.startswith('('):
-                ele = ele.replace('(', '[')
-                ele = ele.replace(')', ']')
             new_args.append(ele)
 
         return new_args
@@ -225,9 +214,6 @@ class BaseMatcher(object):
         for node in kwargs:
             k = node.arg
             v = astor.to_source(node.value).strip('\n')
-            if ',' in v and v.startswith('('):
-                v = v.replace('(', '[')
-                v = v.replace(')', ']')
             new_kwargs[k] = v
 
         return new_kwargs
@@ -286,6 +272,7 @@ class BaseMatcher(object):
 
         return kwargs
 
+    @staticmethod
     def generate_code(self, kwargs):
         return None
 
