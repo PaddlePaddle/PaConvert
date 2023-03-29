@@ -4341,7 +4341,7 @@
   }, 
 
   "torch.Tensor.new_full": {
-    "Matcher": "TensorNew_Matcher",
+    "Matcher": "TensorNewFullMatcher",
     "paddle_api": "paddle.full",
     "args_list": ["size", "fill_value"]
   }, 

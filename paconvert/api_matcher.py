@@ -59,32 +59,32 @@ class GenericMatcher(BaseMatcher):
         if 'dtype' in kwargs:
             dtype_v = new_kwargs.pop('dtype')
 
-        requires_grad_v = False
+        stop_gradient_v = None
         if 'requires_grad' in kwargs:
-            requires_grad_v = eval(new_kwargs.pop('requires_grad'))
+            stop_gradient_v = 'not ' + kwargs.pop("requires_grad").strip('()')
 
 
-        if requires_grad_v and 'out' in kwargs:
+        if stop_gradient_v and 'out' in kwargs:
             out_v = new_kwargs.pop('out')
             API_TEMPLATE = textwrap.dedent(
                 '''
                 {} = {}({})
-                {}.stop_gradient = False
+                {}.stop_gradient = {}
                 {}
                 '''
             )
-            code = API_TEMPLATE.format(out_v, self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out_v, out_v)
-        elif requires_grad_v and 'out' not in kwargs:
+            code = API_TEMPLATE.format(out_v, self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out_v, stop_gradient_v, out_v)
+        elif stop_gradient_v and 'out' not in kwargs:
             API_TEMPLATE = textwrap.dedent(
                 '''
                 {} = {}({})
-                {}.stop_gradient = False
+                {}.stop_gradient = {}
                 {}
                 '''
             )
             out = get_unique_name('out')
-            code = API_TEMPLATE.format(out, self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out, out)
-        elif not requires_grad_v and 'out' in kwargs:
+            code = API_TEMPLATE.format(out, self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out, stop_gradient_v, out)
+        elif not stop_gradient_v and 'out' in kwargs:
             out_v = new_kwargs.pop('out')
             API_TEMPLATE = textwrap.dedent(
                 '''
@@ -218,31 +218,31 @@ class CreateMatcher(BaseMatcher):
         if 'pin_memory' in kwargs:
             pin_memory_v = eval(kwargs.pop('pin_memory'))
         
-        requires_grad_v = False
+        stop_gradient_v = None
         if 'requires_grad' in kwargs:
-            requires_grad_v = eval(kwargs.pop('requires_grad'))
+            stop_gradient_v = 'not ' + kwargs.pop("requires_grad").strip('()')
         
-        if requires_grad_v and 'out' in kwargs:
+        if stop_gradient_v and 'out' in kwargs:
             out_v = kwargs.pop('out')
             API_TEMPLATE = textwrap.dedent(
                 '''
                 {} = {}({})
-                {}.stop_gradient = False
+                {}.stop_gradient = {}
                 {}
                 '''
             )
-            code = API_TEMPLATE.format(out_v, self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v, out_v)
-        elif requires_grad_v and 'out' not in kwargs:
+            code = API_TEMPLATE.format(out_v, self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v, stop_gradient_v, out_v)
+        elif stop_gradient_v and 'out' not in kwargs:
             API_TEMPLATE = textwrap.dedent(
                 '''
                 {} = {}({})
-                {}.stop_gradient = False
+                {}.stop_gradient = {}
                 {}
                 '''
             )
             out = get_unique_name('out')
-            code = API_TEMPLATE.format(out, self.get_paddle_api(), self.kwargs_to_str(kwargs), out, out)
-        elif not requires_grad_v and 'out' in kwargs:
+            code = API_TEMPLATE.format(out, self.get_paddle_api(), self.kwargs_to_str(kwargs), out, stop_gradient_v, out)
+        elif not stop_gradient_v and 'out' in kwargs:
             out_v = kwargs.pop('out')
             API_TEMPLATE = textwrap.dedent(
                 '''
@@ -553,6 +553,63 @@ class TensorTypeAsMatcher(BaseMatcher):
 
 
 class TensorNew_Matcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+
+        if len(args) == 1 and not isinstance(args[0], ast.Constant):
+            shape_list = self.parse_args(args)[0]
+        else:
+            shape_list = self.parse_args(args)
+
+        kwargs = self.parse_kwargs(kwargs)
+
+        if 'sizes' in kwargs:
+            kwargs = { 'shape' : kwargs.pop('sizes'), **kwargs}
+        else:
+            kwargs = { 'shape' : str(shape_list).replace('\'', ''), **kwargs}
+        
+        new_kwargs = {'shape' : kwargs['shape']}
+
+        if 'requires_grad' in kwargs:
+            kwargs["stop_gradient"] = 'not ' + kwargs.pop("requires_grad").strip('()')
+
+        pin_memory_v = False
+        if 'pin_memory' in kwargs:
+            pin_memory_v = eval(kwargs.pop('pin_memory'))
+
+        if 'dtype' in kwargs:
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                {} = {}
+                {} = {}({})
+                {}.stop_gradient = {}
+                {}.astype({})
+                '''
+            )
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                {} = {}
+                {} = {}({})
+                {}.stop_gradient = {}
+                {}.astype(str({})[7:])
+                '''
+            )
+        var = get_unique_name('var')
+        out = get_unique_name('out')
+        # handle requires_grad, dtype, device, pin_memory
+        code = API_TEMPLATE.format(var, self.paddleClass,
+                                out, self.get_paddle_api(), self.kwargs_to_str(new_kwargs),
+                                out, kwargs['stop_gradient'] if 'stop_gradient' in kwargs else True, 
+                                out, kwargs['dtype'] if 'dtype' in kwargs else var + '.dtype')
+        
+        if pin_memory_v:
+            code = code.rstrip('\n') + ".pin_memory()"
+
+        return ast.parse(code.strip('\n')).body
+
+
+class TensorNewFullMatcher(BaseMatcher):
     def generate_code(self, kwargs):
 
         new_kwargs = {"shape": kwargs["size"]}
@@ -561,7 +618,7 @@ class TensorNew_Matcher(BaseMatcher):
             new_kwargs["fill_value"] = kwargs["fill_value"]
 
         if 'requires_grad' in kwargs:
-            kwargs["stop_gradient"] = not eval(kwargs.pop("requires_grad"))
+            kwargs["stop_gradient"] = 'not ' + kwargs.pop("requires_grad").strip('()')
 
         pin_memory_v = False
         if 'pin_memory' in kwargs:
@@ -609,7 +666,7 @@ class TensorNewTensorMatcher(BaseMatcher):
             kwargs.pop("device")
 
         if "requires_grad" in kwargs:
-            kwargs["stop_gradient"] = not eval(kwargs.pop("requires_grad"))
+            kwargs["stop_gradient"] = 'not ' + kwargs.pop("requires_grad").strip('()')
 
         if 'pin_memory' in kwargs:
             if eval(kwargs['pin_memory']):
@@ -622,15 +679,12 @@ class TensorNewTensorMatcher(BaseMatcher):
             API_TEMPLATE = textwrap.dedent(
                 '''
                 {} = {}
-                {} = {}({})
-                {}.astype(str({})[7:])
+                {}({}).astype(str({})[7:])
                 '''
             )
             var = get_unique_name('var')
-            out = get_unique_name('out')
             code = API_TEMPLATE.format(var, self.paddleClass,
-                                out, self.get_paddle_api(), self.kwargs_to_str(kwargs),
-                                out, var + '.dtype')
+                                self.get_paddle_api(), self.kwargs_to_str(kwargs), var + '.dtype')
 
         return code.strip('\n')
 
@@ -643,7 +697,7 @@ class TorchTensorMatcher(BaseMatcher):
             kwargs['place'] = kwargs.pop("device")
 
         if "requires_grad" in kwargs:
-            kwargs["stop_gradient"] = not eval(kwargs.pop("requires_grad"))
+            kwargs["stop_gradient"] = 'not ' + kwargs.pop("requires_grad").strip('()')
 
         if 'pin_memory' in kwargs:
             if eval(kwargs['pin_memory']):
@@ -684,18 +738,6 @@ class TensorNormal_Matcher(BaseMatcher):
                                    out, var + '.dtype')
         
         return code.strip('\n')
-
-
-class TensorExpandMatcher(BaseMatcher):
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        self.parse_func(func)
-        # shape
-        shape = []
-        for node in args:
-            shape.append(node.value)
-
-        code = '{}.expand(shape={})'.format(self.paddleClass, shape)
-        return ast.parse(code.strip('\n')).body
 
 
 class CrossEntropyLossMatcher(BaseMatcher):
@@ -760,7 +802,7 @@ class CrossEntropyLossMatcher(BaseMatcher):
 
 class CudaIsAvailableMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "{}() >= 1".format(self.get_paddle_api())
+        code = "{}() >= 1".format(self.get_paddle_api().strip('\n'))
         return code
 
 
