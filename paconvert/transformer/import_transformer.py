@@ -62,7 +62,7 @@ class ImportTransformer(BaseTransformer):
             return node
         else:
             return None
-            
+
     def visit_ImportFrom(self, node):
         '''
         1. remove from torch import nn
@@ -89,7 +89,7 @@ class ImportTransformer(BaseTransformer):
             while i < node.level:
                 import_path += "../"
                 i += 1
-            
+
             # from . import Net (node.module is None)
             if node.module:
                 import_path = import_path + "/" + node.module.replace(".", "/")
@@ -139,7 +139,7 @@ class ImportTransformer(BaseTransformer):
         if torch_api:
             return ast.parse(torch_api).body[0].value
         return node
-    
+
     def visit_Module(self, node):
         '''
         add import paddle
