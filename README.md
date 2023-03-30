@@ -36,7 +36,7 @@ python3.8 paconvert/main.py --in_dir torch_project [--out_dir paddle_project] [-
 --in_dir        输入torch项目文件，可以为单个文件或文件夹
 --out_dir       可选，输出paddle项目文件，可以为单个文件或文件夹，默认在当前目录下创建./paddle_project/
 --exclude_dirs  可选，排除转换的文件或文件夹，多个项目请用逗号分隔，默认无
---log_dir       可选，输出日志的路径，默认会在当前目录下创建convert.log
+--log_dir       可选，输出日志的路径，如不指定，则默认会在终端上打印日志
 --log_level     可选"INFO" "DEBUG"，打印log等级，默认"INFO"
 --run_check     可选，工具自检
 ```
@@ -131,7 +131,7 @@ There are 10 Pytorch APIs in this Project:
  Convert Rate is: 80.000%
 
 For these 2 Pytorch APIs that do not support to Convert now, which have been marked by >>> before the line, 
-please refer to [https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html] 
+please refer to https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html 
 and convert it by yourself manually. In addition, these APIs will be supported in future.
 
 Thank you to use Paddle Code Convert Tool. You can make any suggestions to us.
@@ -175,10 +175,33 @@ y = paddle.transpose(x=x, perm=perm_0)
 
 欢迎你向我们贡献代码。
 
-## 添加 API 转换功能的基本步骤
-对于 PyTorch 中每一个 API 我们都可以使用如下步骤来添加该 API 的转换功能：
+首先你需要熟悉我们的(《Pytorch-Paddle API映射关系》)[https://raw.githubusercontent.com/PaddlePaddle/docs/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/pytorch_api_mapping_format_cn.md] 逻辑，映射关系是开发自动转换功能的前提条件。根据映射关系的复杂程度，我们将API分为7大类：
 
-步骤1： 在 `paconvert/api_mapping.json` 中增加该 API 的配置，通过配置指明该 API 应该如何转换，每个配置字段的含义如下：
+* 第1类为 `API可直接映射` ，此类情形最为容易。其又分为五种子情况：`无参数`、`参数完全一致`、`仅参数名不一致`、`仅 paddle 参数更多`、`仅参数默认值不一致`。
+
+* 第2类为 `torch 参数更多`。如果 torch 和 paddle 都支持更多参数，统一写成`torch 参数更多`。
+
+* 第3类为 `参数用法不一致`。比如 所支持的参数类型不一致(是否可以是元组)、参数含义不一致、返回参数类型不同。
+
+* 第4类为 `组合替代实现` ，表示该 API 可以通过多个 API 组合实现。
+
+* 第5类为 `用法不同：涉及上下文修改` ，表示涉及到上下文分析，需要修改其他位置的代码。
+
+* 第6类为 `对应 API 不在主框架` 。例如 `torch.hamming_window` 对应 API 在 `paddlenlp` 中。
+
+* 第7类为 `功能缺失` ，表示当前无该API功能，则不支持自动转换。
+
+其中第1~6类API可按后续步骤开发，第7类需要先开发框架对应功能，目前不能开发自动转换功能。
+
+我们需要定义一个概念：`Matcher` ：转换器，表示该API的转换规则。每一个API均对应一个转换规则。框架中已封装 `BaseMatcher` 作为转换器的基类。
+
+上述的第1~6类的开发难度逐渐递增。目前框架里封装了 `GenericMatcher`：通用转换器， 可支持第1类API、大多数第2类API（仅多`layout` `memory_format`、`inplace`、`generator`、`non_blocking`、`pin_memory`、`dtype`、`requires_grad`、`device` 参数时）的转换。其他类API均需要自行编写 `Matcher`。
+
+具体的开发步骤如下：
+
+### 步骤1：配置JSON
+
+在 `paconvert/api_mapping.json` 中增加该 API 的各项配置，每个配置字段的定义如下：
 
 ```python
 "torch.nn.AvgPool2d": {
@@ -199,70 +222,55 @@ y = paddle.transpose(x=x, perm=perm_0)
 }
 ```
 
-- `Matcher`    :必须，执行转换逻辑需要的 `Matcher` 类。
-- `paddle_api` :可选，仅 `GenericMatcher` 时需要，对应的 Paddle API。
-- `args_list`  :必须，需要根据顺序填写 PyTorch api 的全部参数名。
-- `kwargs_change` :可选，参数名称有差异时，参数名的映射关系。
-- `paddle_default_kwargs` :可选，当 paddle 参数更多时，可以设置 paddle 默认的参数。
+- `Matcher`    :必须，转换器，执行转换时的核心转换规则。
+- `paddle_api` :可选，对应的 Paddle API，仅 `GenericMatcher` 时需要。
+- `args_list`  :必须，根据顺序填写 torch api 的 **全部参数名**。
+- `kwargs_change` :可选，参数名称的差异，仅 `GenericMatcher` 时需要，无参数差异时不用填。
+- `paddle_default_kwargs` :可选，当 paddle 参数更多 或者 参数默认值不一致 时，可以通过该配置，设置参数默认值。
 
-编写过程中需要按需填写以上五项内容。（其中`Matcher`、`args_list`是必须的。如果没有参数名不同的情况，则无 `kwargs_change` ）。
 
-步骤2： 在 `paconvert/api_matcher.py` 中增加该 API 对应的 **Matcher**（可选，如果需要自定义 Matcher时，才需要此步骤）。
+参考 [API映射关系表](https://github.com/PaddlePaddle/docs/tree/develop/docs/guides/model_convert/convert_from_pytorch/api_difference) 看其属于哪种情况。对于以下情况，都可以通过封装好的统一转换器：`GenericMatcher` 来处理。首先填写 `paddle_api` 、 `args_list` ，其他需要填写的内容有：
 
-自定义的`Matcher`会根据第 1 步中的`配置项`来进行实际转换逻辑，自定义 `Matcher` 需要继承 `BaseMatcher`，基类 `BaseMatcher` 有几个重要的方法:
+- 第1类 `API可直接映射` ：
+    - 无参数：无需其他配置
+    - 参数完全一致：无需其他配置
+    - 仅参数名不一致：增加 `kwargs_change` 
+    - 仅paddle参数更多：增加 `paddle_default_kwargs`
+    - 仅参数默认值不一致：增加 `paddle_default_kwargs`
+- 第2类 `torch参数更多` ：仅多 `layout` `memory_format`、`inplace`、`generator`、`non_blocking`、`pin_memory`、`dtype`、`requires_grad`、`device` 参数时，与第1类按相同方式处理。
 
-* `get_paddle_nodes()`：传入调用方法的位置参数和关键字参数，即args和kwargs，调用generate_code方法生成新的node结点。
-* `generate_code()`: 传入字典形式的关键字参数，生成字符串形式的代码。如果没有可变参数，那么子类只重写该方法即可。
-* `get_paddle_class_nodes()`：主要用来处理Tensor类方法的转写，与get_paddle_nodes不同的地方在于传入了func，根据这个func可以找到完整的调用链。
-
-> 这里需要明确普通方法调用和类方法调用的区别，普通方法调用是以torch开头的方法调用，比如`torch.tensor()`。类方法调用是Tensor类自带的方法，比如`torch.Tensor.transpose()`。
->
-> 如何选择重写的方法：
->
-> * 调用的方法中如果没有`可变参数`，那么子类只重写`generate_code()`方法即可，如果有可变参数，需要区分是普通方法调用还是类方法调用。
-> * 如果是普通方法调用，子类需要重写`get_paddle_nodes`方法;
-> * 如果是类方法调用，子类需要重写`get_paddle_class_nodes`方法，该方法内部需要通过调用`parse_fun()`获取完整的调用链，存储在`self.paddleClass`中。比如 `x.abs().add(y)`中，对于`add(y)`调用来说，它的完整调用链`paddleClass`为`x.abs()`。
-
-根据API转换关系，我们将API分为三大类：
-
-1. 一致的API：要求API功能一致，且API参数一致（如果Pytorch只比Paddle多out/dtype/device/layout/requires_grad/memory_format/inplace/generator/pin_memory参数，则也视作一致），这种只需增加json配置即可，最为容易。
-
-2. 不一致但可转换的API：包含 **Pytorch参数更多、参数不一致、组合实现** 这几种情况，这种需要编写自定义 `Matcher`，开发AST转换策略，难度较大。编写自定义Matcher时可以参考[PyTorch 1.13 与 Paddle 2.4 API 映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html)
-
-3. 不一致且无法转换的API：这种无法转换，可提供API映射关系，方便手动转换，见[Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api) 
-
-### 1. 一致的API
-
-当属于一致的 API 时，可以使用`GenericMatcher` 进行转换，无需自定义 `Matcher`, 具体情况包括：
-* `无参数`，`参数完全一致`、`仅参数名不一致`(通过配置`kwargs_change`实现)、`仅paddle参数更多`(通过配置`paddle_default_kwargs` 实现)、`仅参数默认值不一致`(通过配置`paddle_default_kwargs` 实现)
-* `torch参数更多`的情况，但仅限于多`'layout', 'memory_format', 'inplace', 'generator', 'non_blocking' 'pin_memory' 'dtype' 'requires_grad' 'device'`参数。
-* `参数支持类型不一致`的情况, 但仅限于 PyTorch 支持 tuple 和 list，Paddle 仅支持 list 的情况，其他情况需要自定义 `Matcher` 解决。 
-
-对于符合这种情况的API，直接增加 `paconvert/api_mapping.json` 中的API配置，将`Matcher`设为 `GenericMatcher` 即可。例如：
+以 `torch.permute` 为例，首先参照 [torch.permute差异分析](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/ops/torch.permute.md)，其属于 仅参数名不一致 的情况，符合上述情况。
 
 ```python
-"torch.nn.AvgPool2d": {
-    "Matcher" : "GenericMatcher",
-    "paddle_api": "paddle.nn.AvgPool2D",
-    "args_list" : [
-        "kernel_size", 
-        "stride", 
-        "padding", 
-        "count_include_pad", 
-        "ceil_mode", 
-        "divisor_override"
-    ],
+"torch.permute" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.transpose",
+    "args_list" : ["input", "dims"],
     "kwargs_change": {
-        "count_include_pad": "exclusive"
+        "input": "x",
+        "dims": "perm"
     }
 }
 ```
 
-### 2. 不一致但可转换的API
+如果不属于上述情况，则需要开发 **自定义的Matcher**，命名标准为：`API名+Matcher`， 例如 `torch.add` 可命名为`TorchAddMatcher`，在json中填写 `"Matcher"` 和 `"args_list"` ，无需填写其他内容，并进入到下面步骤2。
 
-包含 **Pytorch参数更多、参数不一致、API功能不一致、组合实现** 这几种情况，需要开发基于AST的转换策略，有一定开发难度。
 
-对于这种情况需要在 `paconvert/api_matcher.py` 自定义该 `API` 的转换 `Matcher`，并根据实际情况选择重写 BaseMatcher 的 `get_paddle_nodes()`、`generate_code()`、`get_paddle_class_nodes()`方法。下面是 `torch.transpose` 对应的转换 `Matcher`：
+### 步骤2：编写Matcher（转换器）
+
+该步骤有一定难度，需要对AST相关知识有一定了解。
+
+需在 `paconvert/api_matcher.py` 中增加自定义的Matcher，继承自 `BaseMatcher` 基类，并重写相关函数。
+
+对于大多数API，不含可变参数，则需要重写：
+* `generate_code()`: 传入的是字符串字典形式的关键字参数，即kwargs，根据该字典，组装字符串形式的代码并返回。
+
+对于某些API，含有可变参数，例如 `torch.empty(*size)`，根据是否类方法调用，分别重写：
+* `get_paddle_nodes()`：普通方法调用。传入的是AST形式的位置参数和关键字参数，即args和kwargs，需针对AST语法进行处理，生成新的AST节点并返回。
+* `get_paddle_class_nodes()`：类方法调用。主要用来处理类成员函数，与get_paddle_nodes不同的地方在于传入了func，根据这个func可以找到完整的调用链，首先需使用 `self.parse_func(func)` ，解析外部的调用链，然后 `self.paddleClass` 会存储调用类方法的对象。如 `x.abs().add(y)`中，对于`add(y)` 调用来说，它调用类方法的对象为 `x.abs()` ，即 `self.paddleClass='x.abs()'` ，通过 `self.paddleClass` 生成新的AST节点并返回。
+
+以 `torch.transpose` 为例，首先参照 [torch.transpose差异分析](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/ops/torch.transpose.md)，其属于 参数用法不一致 的情况，则需要根据转写示例，将其转写规则写入到自定义的 `TransposeMatcher` 中。
+
 
 ```
 class TransposeMatcher(BaseMatcher):
@@ -283,7 +291,7 @@ class TransposeMatcher(BaseMatcher):
         return code
 ```
 
-然后在 paconvert/api_mapping.json 中增加 json配置：
+其对应的json配置为：
 
 ```
 "torch.transpose" : {
@@ -296,17 +304,61 @@ class TransposeMatcher(BaseMatcher):
 }
 ```
 
-此类API需要填写json配置中的两项内容： `Matcher` 、 `args_list` 。
-
-## 自定义 `Matcher` 时需要考虑的情况(供参考，补充中)
-* 传入参数是可变参数，例如 `TensorMatcher`。
+编写自定义 `Matcher` 时，可以参考一些较为规范的Matcher（补充中）：
 * 传入参数既可以是可变参数，也可以是列表或元组，例如 `TensorExpandMatcher`。
-* 传入参数是变量，例如指定`requires_grad=a`，其中`a=True`。
 
-在本地开发中，为快速调试，可直接通过以下方式运行代码，无需反复安装：
-> 加上 `--show_unsupport True` 选项可以显示不支持转写的 API
+可以通过以下命令在本地调试：
 
 ```
-python paconvert/main.py  --in_dir paconvert/tests/test_model.py  --out_dir paconvert/tests/out
+python paconvert/main.py  --in_dir paconvert/test_code.py --log_level "DEBUG" --show_unsupport True`
 ```
+
+### 开发规范
+
+1. 编写的API转换器，必须考虑所有情形下的用户用法，涉及到多个参数的，应包含各种组合情况，不允许只考虑最简单的用户case。对任意case只允许有两种情况：a)正常转换且结果一致；b)不支持转换，此时返回None即可。不允许出现其他的错误情况，包括不限于 报错推出、错误转换 等问题。
+
+以 `torch.Tensor.new_zeros` 为例，其至少包含以下12种可能用法：
+
+```
+case 1: x.new_zeros(2)
+case 2: x.new_zeros(2, 3)
+case 3: x.new_zeros([2, 3])
+case 4: x.new_zeros((2, 3))
+
+case 5:
+shape = (2, 3)
+x.new_zeros(shape, requires_grad=True)
+
+case 6:
+shape = (2, 3)
+x.new_zeros(*shape, requires_grad=True, dtype=torch.float32, pin_memory=False)
+
+case 7:
+requires_grad_v = True
+x.new_zeros(*shape, requires_grad=requires_grad_v, dtype=torch.float32, pin_memory=True)
+
+case 8:
+x.new_zeros(*shape, requires_grad=not True, dtype=torch.float32, pin_memory=False)
+
+case 9:
+pin_memory_v = True
+x.new_zeros(*shape, requires_grad=False, pin_memory=pin_memory_v)
+
+case 10:
+x.new_zeros(2, 3, requires_grad=True, pin_memory=False)
+
+case 11:
+x.new_zeros(*x.size())
+
+case 12:
+x.new_zeros(x.size())
+```
+
+2. 在穷举所有可能的用法case后，将其全部加入到单测中，并对比结果一致，要求至少编写5种case（越多约好）。单测写法为：（待补充）
+
+3. 需要使用验证集通过，流水线xxx通过即可。
+
+4. 由于考虑的场景仍可能不全面，可能引入非常隐蔽的case bug，开发者需要对自身开发的API转换规则负责后续维护，并解决考虑不全面的问题。
+
+总的来说，Matcher转换规则的开发具有一定的挑战性，是一项非常细心以及考验思考广度的工作。
 
