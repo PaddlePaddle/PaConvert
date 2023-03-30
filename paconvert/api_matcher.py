@@ -1216,9 +1216,88 @@ class ToMatcher(BaseMatcher):
         self.parse_func(func)
         kwargs = self.parse_args_and_kwargs(args, kwargs)
 
-        if 'device' in kwargs:
-            return None
-
-
         code = '{}.cast(dtype = {})'.format(self.paddleClass, kwargs['dtype'])
         return ast.parse(code).body
+
+
+class InstanceNorm3DMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'eps' not in kwargs:
+            epsilon = 1e-5
+        else:
+            epsilon = kwargs['eps']
+
+        if 'momentum' in kwargs:
+            momentum = kwargs['momentum']
+        else:
+            momentum = 0.1
+
+        if 'affine' in kwargs and 'False' in kwargs['affine']:
+            API_TEMPLACE = textwrap.dedent(
+                '''
+                paddle.nn.InstanceNorm3D(num_features={},
+                                    momentum=1-{},
+                                    epsilon={},
+                                    weight_attr=paddle.ParamAttr(learning_rate=0.0),
+                                    bias_attr=paddle.ParamAttr(learning_rate=0.0))
+                '''
+            )
+        else:
+            API_TEMPLACE = textwrap.dedent(
+                '''
+                paddle.nn.InstanceNorm3D(num_features={},
+                                    momentum=1-{},
+                                    epsilon={},
+                                    weight_attr=None,
+                                    bias_attr=None)
+                '''
+            )
+        code = API_TEMPLACE.format(kwargs['num_features'], momentum, epsilon)
+        return code
+
+class BCEWithLogitsLossMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'size_average' in kwargs:
+            size_average = kwargs.pop('size_average')
+            if 'True' in size_average:
+                size_average = True
+            elif 'False' in size_average:
+                size_average = False
+            else:
+                size_average = None
+        else:
+            size_average = None
+
+        if 'reduce' in kwargs:
+            reduce = kwargs.pop('reduce')
+            if 'True' in reduce:
+                reduce = True
+            elif 'False' in reduce:
+                reduce = False
+            else:
+                reduce = None
+        else:
+            reduce = None
+
+        if size_average is not None or reduce is not None:
+            if size_average is None:
+                size_average = True
+            if reduce is None:
+                reduce = True
+
+            if size_average and reduce:
+                reduction = '"""mean"""'
+            elif reduce:
+                reduction = '"""sum"""'
+            else:
+                reduction = '"""none"""'
+
+            kwargs['reduction'] = reduction
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.nn.BCEWithLogitsLoss({})
+            '''
+        )
+        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
+        return code

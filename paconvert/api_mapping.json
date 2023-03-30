@@ -7033,6 +7033,47 @@
     "kwargs_change": {
       "device": "device"
     }
-  }
+  },
+  
+  "torch.nn.InstanceNorm3d": {
+    "Matcher": "InstanceNorm3DMatcher",
+    "paddle_api": "paddle.nn.InstanceNorm3D",
+    "args_list": [
+      "num_features",
+      "eps",
+      "momentum",
+      "affine",
+      "track_running_stats",
+      "device",
+      "dtype"]
+  },
 
+  "torch.nn.BCEWithLogitsLoss": {
+    "Matcher": "BCEWithLogitsLossMatcher",
+    "paddle_api": "paddle.nn.BCEWithLogitsLoss",
+    "args_list": [
+      "weight",
+      "size_average",
+      "reduce",
+      "reduction",
+      "pos_weight"]
+  },
+
+  "torch.utils.data.BatchSampler": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.io.BatchSampler",
+    "args_list": [
+      "sampler",
+      "batch_size",
+      "drop_last"]
+  },
+
+  "torch.Generator": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.io.BatchSampler",
+    "args_list": [
+      "sampler",
+      "batch_size",
+      "drop_last"]
+  }
 }
