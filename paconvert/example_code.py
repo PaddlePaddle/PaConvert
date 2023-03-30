@@ -780,3 +780,11 @@ x.new_full([2, 3], 2., requires_grad=True)
 x.new_full([2, 3], 2., requires_grad=True, pin_memory=False)
 
 x.new_full([2, 3], 2., dtype=torch.float32, requires_grad=True, pin_memory=True)
+
+
+# torhc.Tensor.index_copy_
+x.index_copy_(0, index, t)
+x = x.index_copy_(1, index, source)
+
+# torch.nn.BCEWithLogitsLoss
+torch.nn.BCEWithLogitsLoss(None, size_average=None, reduce=None, reduction='mean', pos_weight=None)

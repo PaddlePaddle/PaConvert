@@ -308,7 +308,7 @@ class BasicTransformer(BaseTransformer):
                 #   'float32'
                 #   x.shape
                 #   x.shape[2]
-                if isinstance(new_node, (ast.Call, ast.Name, ast.Constant, ast.Attribute, ast.Subscript)):
+                if isinstance(new_node, (ast.Call, ast.Name, ast.Constant, ast.Attribute, ast.Subscript, ast.For, ast.Assign)):
                     # if multiple line, record lines and will insert after all node visit
                     if node_list[0: -1]:
                         self.log_debug("insert extra {} lines for Class Method: {}".format(len(node_list[0: -1]), torch_api), self.file_name, node.lineno)
