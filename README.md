@@ -264,18 +264,18 @@ y = paddle.transpose(x=x, perm=perm_0)
 
 该步骤有一定难度，需要对AST相关知识有一定了解。
 
-需在 `paconvert/api_matcher.py` 中增加自定义的Matcher，继承自 `BaseMatcher` 基类，并根据 是否含可变参数、是否为类方法调用 重写不同的函数。如果API参数有 `*size、*args` 等用法，例如 `torch.empty(*size)`，则含可变参数，否则不含可变参数。
+需在 `paconvert/api_matcher.py` 中增加自定义的Matcher，继承自 `BaseMatcher` 基类，并根据 **是否含可变参数、是否为类方法调用** 分别重写不同的函数。可变参数是指Python语法中的`*args` 用法，例如 `torch.empty(*size)`，则含可变参数。通常来讲，大多数API不含可变参数。
 
-1) 不含可变参数的API，符合大多数API情形，需重写：
+a) **不含可变参数的API**，需重写：
 * `generate_code()`: 传入的是字符串字典形式的关键字参数，即kwargs，根据该字典，组装字符串形式的代码并返回。
 
-2) 含可变参数的API，如果不是类方法调用，需重写：
-* `get_paddle_nodes()`：普通方法调用。传入的是AST形式的位置参数和关键字参数，即args和kwargs，需针对AST语法进行处理，生成新的AST节点并返回。
+b) **含可变参数的API，且为类方法调用**，需重写：
+* `get_paddle_nodes()`：普通方法调用。传入的是AST形式的位置参数和关键字参数，即args和kwargs，需针对AST语法进行处理，组装代码并生成新的AST节点返回。
 
-3) 含可变参数的API，如果是类方法调用，需重写：
-* `get_paddle_class_nodes()`：类方法调用。主要用来处理类成员函数，与get_paddle_nodes不同的地方在于传入了func，根据这个func可以找到完整的调用链，首先需使用 `self.parse_func(func)` ，解析外部的调用链，然后 `self.paddleClass` 会存储调用类方法的对象。如 `x.abs().add(y)`中，对于`add(y)` 调用来说，它调用类方法的对象为 `x.abs()` ，即 `self.paddleClass='x.abs()'` ，通过 `self.paddleClass` 生成新的AST节点并返回。
+c) **含可变参数的API，且不为类方法调用**，需重写：
+* `get_paddle_class_nodes()`：类方法调用。主要用来处理类成员函数，与`get_paddle_nodes`不同的地方在于传入了func，根据这个func可以找到完整的调用链，首先需使用 `self.parse_func(func)` ，解析外部的调用链，然后 `self.paddleClass` 会存储调用类方法的对象。如 `x.abs().add(y)`中，对于`add(y)` 调用来说，它调用类方法的对象为 `x.abs()` ，即 `self.paddleClass='x.abs()'` ，通过 `self.paddleClass` 可灵活的组装代码，并生成新的AST节点返回。
 
-对于类方法调用的API，由于其识别有一定难度，我们根据以下原则进行开发：（待补充）
+对于类方法调用的API，由于其难以准确识别，我们后续调整为以下原则进行开发。（待补充，暂无需关注）
 
 以 `torch.transpose` 为例，首先参照 [torch.transpose差异分析](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/ops/torch.transpose.md)，其属于 **参数用法不一致** 的情况，不符合 `GenericMatcher` 的适用范围。
 ，则需要根据转写示例，将其转写规则写入到自定义的 `TransposeMatcher` 中。
@@ -323,7 +323,7 @@ python paconvert/main.py  --in_dir paconvert/test_code.py --log_level "DEBUG" --
 
 ### 开发规范
 
-1. 编写的API转换器，必须考虑所有情形下的用户用法，涉及到多个参数的，应包含各种组合情况，不允许只考虑最简单的用户case。对任意case只允许有两种情况：a)正常转换且结果一致；b)不支持转换，此时返回None即可。不允许出现其他的错误情况，包括不限于 报错推出、错误转换 等问题。
+a) 编写的API转换器，必须考虑所有情形下的用户用法，涉及到多个参数的，应包含各种组合情况，不允许只考虑最简单的用户case。对任意case只允许有两种情况：a)正常转换且结果一致；b)不支持转换，此时返回None即可。不允许出现其他的错误情况，包括不限于 报错推出、错误转换 等问题。
 
 以 `torch.Tensor.new_zeros` 为例，其至少包含以下12种可能用法：
 
@@ -362,11 +362,11 @@ case 12:
 x.new_zeros(x.size())
 ```
 
-2. 在穷举所有可能的用法case后，将其全部加入到单测中，并对比结果一致，要求至少编写5种case（越多约好）。单测写法为：（待补充）
+b) 在穷举所有可能的用法case后，将其全部加入到单测中，并对比结果一致，要求至少编写5种case（越多约好）。单测写法为：（待补充）
 
-3. 需要使用验证集通过，流水线xxx通过即可。
+c) 需要使用验证集通过，流水线xxx通过即可。
 
-4. 由于考虑的场景仍可能不全面，可能引入非常隐蔽的case bug，开发者需要对自身开发的API转换规则负责后续维护，并解决考虑不全面的问题。
+d) 由于考虑的场景仍可能不全面，可能引入非常隐蔽的case bug，开发者需要对自身开发的API转换规则负责后续维护，并解决考虑不全面的问题。
 
 总的来说，Matcher转换规则的开发具有一定的挑战性，是一项非常细心以及考验思考广度的工作。
 
