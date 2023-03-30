@@ -111,11 +111,11 @@ net = MyNet()
 PyTorch to Paddle Convert Start ------>:
 ===========================================
 Start convert /workspace/test_code.py --> /workspace/PaConvert/paddle_project/test_code.py
-[test_code.py:1] remove 'import torch' 
-[test_code.py:2] remove 'import torch.nn as nn' 
-[test_code.py:3] remove 'import torch.optim as optim' 
-[test_code.py:4] remove 'import torch.nn.Linear as Linear' 
-[test_code.py:5] remove 'import torch.nn.functional as F' 
+[test_code.py:1] remove 'import torch'
+[test_code.py:2] remove 'import torch.nn as nn'
+[test_code.py:3] remove 'import torch.optim as optim'
+[test_code.py:4] remove 'import torch.nn.Linear as Linear'
+[test_code.py:5] remove 'import torch.nn.functional as F'
 [test_code.py] add 'import paddle' in first line
 [test_code.py:25] [Not Support] convert torch.optim.SGD to Paddle is not supported currently
 [test_code.py:26] [Not Support] convert torch.optim.lr_scheduler.MultiStepLR to Paddle is not supported currently
@@ -130,8 +130,8 @@ There are 10 Pytorch APIs in this Project:
  2  Pytorch APIs are not supported to convert to Paddle currently!
  Convert Rate is: 80.000%
 
-For these 2 Pytorch APIs that do not support to Convert now, which have been marked by >>> before the line, 
-please refer to [https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html] 
+For these 2 Pytorch APIs that do not support to Convert now, which have been marked by >>> before the line,
+please refer to [https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html]
 and convert it by yourself manually. In addition, these APIs will be supported in future.
 
 Thank you to use Paddle Code Convert Tool. You can make any suggestions to us.
@@ -181,7 +181,7 @@ y = paddle.transpose(x=x, perm=perm_0)
 
 2. 不一致但可转换的API：包含 **Pytorch参数更多、参数不一致、API功能不一致、组合实现** 这几种情况，这种需要开发AST转换策略，难度较大
 
-3. 不一致且无法转换的API：这种无法转换，可提供API映射关系，方便手动转换，见[Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api) 
+3. 不一致且无法转换的API：这种无法转换，可提供API映射关系，方便手动转换，见[Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/model_convert/pytorch_api_mapping_cn.html#pytorch-1-8-paddle-2-0-api)
 
 ### 1. 一致的API
 
@@ -194,11 +194,11 @@ y = paddle.transpose(x=x, perm=perm_0)
     "Matcher" : "GenericMatcher",
     "paddle_api": "paddle.nn.AvgPool2D",
     "args_list" : [
-        "kernel_size", 
-        "stride", 
-        "padding", 
-        "count_include_pad", 
-        "ceil_mode", 
+        "kernel_size",
+        "stride",
+        "padding",
+        "count_include_pad",
+        "ceil_mode",
         "divisor_override"
     ],
     "kwargs_change": {
@@ -233,9 +233,9 @@ class TransposeMatcher(BaseMatcher):
             '''
         )
         perm = unique_name('perm')
-        code = API_TEMPLACE.format(perm, kwargs['input'], 
-                perm, kwargs['dim0'], kwargs['dim1'], 
-                perm, kwargs['dim1'], kwargs['dim0'], 
+        code = API_TEMPLACE.format(perm, kwargs['input'],
+                perm, kwargs['dim0'], kwargs['dim1'],
+                perm, kwargs['dim1'], kwargs['dim0'],
                 kwargs['input'], perm)
         return code
 ```
@@ -247,7 +247,7 @@ class TransposeMatcher(BaseMatcher):
     "Matcher": "TransposeMatcher",
     "args_list" : [
         "input",
-        "dim0", 
+        "dim0",
         "dim1"
     ]
 }
@@ -260,4 +260,3 @@ class TransposeMatcher(BaseMatcher):
 ```
 python paconvert/main.py  --in_dir paconvert/tests/test_model.py  --out_dir paconvert/tests/out
 ```
-

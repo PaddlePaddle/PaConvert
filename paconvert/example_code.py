@@ -180,7 +180,7 @@ shape = torch.abs(x).shape
 
 torch.abs(x).shape
 
-# different kinds of torch.Tensor method 
+# different kinds of torch.Tensor method
 z = (torch.triu(torch.ones(sz, sz)) == 1).abs()
 
 (x + y).abs()

@@ -66,10 +66,10 @@ class Converter:
                 exclude_dir_list.append(os.path.abspath(item))
 
         self.transfer_dir(in_dir, out_dir, exclude_dir_list)
-        
+
         if self.show_unsupport:
-            unsupport_map = sorted(self.unsupport_map.items(), 
-                                    key = lambda x:x[1], 
+            unsupport_map = sorted(self.unsupport_map.items(),
+                                    key = lambda x:x[1],
                                     reverse = True)
             self.log_info("\n========================================")
             self.log_info("Not Support API List:")
@@ -120,7 +120,7 @@ class Converter:
             for item in in_dir_item:
                 old_path = os.path.join(in_dir, item)
                 new_path = os.path.join(out_dir, item)
-                
+
                 is_exclude = False
                 if exclude_dir_list:
                     for exclude_dir in exclude_dir_list:
@@ -147,7 +147,7 @@ class Converter:
             with open(old_path, 'r') as f:
                 code = f.read()
                 root = ast.parse(code)
-            
+
             self.transfer_node(root, old_path)
             code = astor.to_source(root)
             code = self.mark_unsport(code)
@@ -177,17 +177,17 @@ class Converter:
             api_trans.transform()
             self.torch_api_count += api_trans.torch_api_count
             self.success_api_count += api_trans.success_api_count
-                
+
     def mark_unsport(self, code):
         lines = code.split('\n')
         mark_next_line = False
         in_str = False
         for i, line in enumerate(lines):
-            # torch.* in __doc__ 
+            # torch.* in __doc__
             # torch.* in str
             if line.count('\"\"\"') % 2 != 0:
                 in_str = not in_str
-            
+
             tmp_line = re.sub(r'[\'\"]{1}[^\'\"]+[\'\"]{1}', "", line)
             if in_str:
                 continue
@@ -201,7 +201,7 @@ class Converter:
                     lines[i] = ">>>" + line
                     mark_next_line = False
                     continue
-            
+
             # model_torch.npy
             for torch_package in TORCH_PACKAGE_LIST:
                 if tmp_line.startswith("%s." % torch_package):
@@ -210,7 +210,7 @@ class Converter:
 
                 if re.match(r".*[^A-Za-z_]{1}%s\." % torch_package, tmp_line):
                     lines[i] = ">>>" + line
-                    
+
         return '\n'.join(lines)
 
     def log_debug(self, msg, file=None, line=None):

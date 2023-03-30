@@ -1,6 +1,6 @@
 # These Matcher have been discarded, may be used future
 class RandintMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs): 
+    def get_paddle_nodes(self, args, kwargs):
         args = self.parse_args(args)
         new_kwargs = {}
         if len(args) == 2:
@@ -21,12 +21,12 @@ class RandintMatcher(BaseMatcher):
             del kwargs['device']
         if 'generator' in new_kwargs:
             del kwargs['generator']
-        
+
 
         requires_grad_v = False
         if 'requires_grad' in new_kwargs:
             requires_grad_v = eval(new_kwargs.pop('requires_grad'))
-        
+
         if requires_grad_v and 'out' in new_kwargs:
             out_v = kwargs.pop('out')
             API_TEMPLACE = textwrap.dedent(
@@ -65,12 +65,12 @@ class RandintMatcher(BaseMatcher):
 class TensorToMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
-        
+
         if len(args)==1 and isinstance(args[0], ast.Str):
             dtype = self.parse_args(args)[0]
             code = '{}.astype(dtype={})'.format(self.paddleTensor, dtype)
             return ast.parse(code).body
-        
+
         kwargs = self.parse_kwargs(kwargs)
         if len(kwargs)==1 and 'dtype' in kwargs:
             code = '{}.astype({})'.format(self.paddleTensor, self.kwargs_to_str(kwargs))
@@ -119,7 +119,7 @@ class TensorViewMatcher(BaseMatcher):
                 return 'NonTorchClass'
             if isinstance(args[0], ast.Str):
                 return None
-            
+
         if len(args) == 1 and isinstance(args[0], (ast.List, ast.Tuple)):
             shape_list = self.parse_args(args)[0]
         elif len(args) >= 1:
@@ -132,4 +132,3 @@ class TensorViewMatcher(BaseMatcher):
 
         code = '{}.reshape({})'.format(self.paddleClass, self.kwargs_to_str(kwargs))
         return ast.parse(code).body
-

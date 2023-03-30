@@ -15,7 +15,7 @@
 import collections
 
 class UniqueNameGenerator():
-    
+
     def __init__(self):
         self.ids = collections.defaultdict(int)
 

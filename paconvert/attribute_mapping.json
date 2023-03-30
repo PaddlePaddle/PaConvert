@@ -3,33 +3,33 @@
         "Matcher": "GenericMatcher",
         "paddle_api": "paddle.Tensor.place",
         "is_attribute": "True"
-      }, 
+      },
 
       "torch.Tensor.dtype": {
         "Matcher": "GenericMatcher",
         "paddle_api": "paddle.Tensor.dtype"
-      }, 
+      },
 
       "torch.Tensor.grad": {
         "Matcher": "GenericMatcher",
         "paddle_api": "paddle.Tensor.grad"
-      }, 
+      },
 
       "torch.Tensor.ndim": {
         "Matcher": "GenericMatcher",
         "paddle_api": "paddle.Tensor.ndim"
-      }, 
+      },
 
       "torch.Tensor.T": {
         "Matcher": "GenericMatcher",
         "paddle_api": "paddle.Tensor.T"
-      }, 
-      
+      },
+
       "torch.Tensor.real" : {
         "Matcher": "GenericMatcher",
         "paddle_api": "paddle.Tensor.real"
       },
-    
+
       "torch.Tensor.imag" : {
         "Matcher": "GenericMatcher",
         "paddle_api": "paddle.Tensor.imag"
@@ -39,12 +39,16 @@
         "Matcher": "GenericMatcher",
         "paddle_api": "paddle.Tensor.is_leaf"
       },
-      
+
       "torch.Tensor.shape" : {
         "Matcher": "GenericMatcher",
         "paddle_api": "paddle.Tensor.shape"
       },
-      
+
+      "torch.Tensor.requires_grad": {
+        "Matcher": "GenericMatcher",
+        "paddle_api": "paddle.Tensor.stop_gradient"
+      },
       "torch.Tensor.is_sparse": {},
       "torch.Tensor.is_cuda": {},
       "torch.Tensor.is_quantized": {},
