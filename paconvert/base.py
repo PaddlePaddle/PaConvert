@@ -268,7 +268,8 @@ class BaseMatcher(object):
         if "paddle_default_kwargs" in self.api_mapping:
             paddle_default_kwargs = self.api_mapping["paddle_default_kwargs"]
             for k in paddle_default_kwargs:
-                kwargs[k] = paddle_default_kwargs[k]
+                if k not in kwargs:
+                    kwargs[k] = paddle_default_kwargs[k]
 
         return kwargs
 
