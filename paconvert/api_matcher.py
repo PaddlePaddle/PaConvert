@@ -54,8 +54,6 @@ class GenericMatcher(BaseMatcher):
                 if k == 'dtype':
                     dtype_v = new_kwargs.pop('dtype')
 
-        new_kwargs = self.set_paddle_default_kwargs(new_kwargs)
-
         pin_memory_v = False
         if 'pin_memory' in new_kwargs:
             pin_memory_v = eval(new_kwargs.pop('pin_memory'))
@@ -64,6 +62,8 @@ class GenericMatcher(BaseMatcher):
         if 'requires_grad' in new_kwargs:
             stop_gradient_v = 'not ' + new_kwargs.pop("requires_grad").strip('()')
 
+        new_kwargs = self.set_paddle_default_kwargs(new_kwargs)
+        
         if stop_gradient_v and 'out' in new_kwargs:
             out_v = new_kwargs.pop('out')
             API_TEMPLATE = textwrap.dedent(
