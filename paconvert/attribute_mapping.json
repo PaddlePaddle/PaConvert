@@ -45,6 +45,11 @@
         "paddle_api": "paddle.Tensor.shape"
       },
       
+      "torch.Tensor.requires_grad": {
+        "Matcher": "GenericMatcher",
+        "paddle_api": "paddle.Tensor.stop_gradient"
+      },
+      
       "torch.Tensor.is_sparse": {},
       "torch.Tensor.is_cuda": {},
       "torch.Tensor.is_quantized": {},

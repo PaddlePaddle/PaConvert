@@ -6049,7 +6049,14 @@
   "torch.Tensor.symeig": {}, 
   "torch.Tensor.t_": {}, 
   "torch.Tensor.tensor_split": {}, 
-  "torch.Tensor.to": {}, 
+  "torch.Tensor.to": {
+    "Matcher": "TensorToMatcher",
+    "paddle_api": "paddle.Tensor.cast",
+    "args_list": [
+      "dtype",
+      "non_blocking",
+      "memory_format"]
+  }, 
   "torch.Tensor.to_mkldnn": {}, 
   "torch.Tensor.take": {}, 
   "torch.Tensor.tan_": {}, 
@@ -6259,7 +6266,14 @@
   "torch.Tensor.igammac_": {},
   "torch.Tensor.index_add_": {},
   "torch.Tensor.index_add": {},
-  "torch.Tensor.index_copy_": {},
+  "torch.Tensor.index_copy_": {
+    "Matcher": "TensorIndexCopyMatcher",
+    "paddle_api": "paddle.Tensor.scatter_",
+    "args_list": [
+      "dim",
+      "index",
+      "tensor"]
+  },
   "torch.Tensor.index_copy": {},
   "torch.Tensor.index_fill_": {},
   "torch.Tensor.index_fill": {},
@@ -7129,6 +7143,45 @@
     "kwargs_change": {
       "device": "device"
     }
-  }
+  },
 
+  "torch.nn.InstanceNorm3d": {
+    "Matcher": "InstanceNorm3DMatcher",
+    "paddle_api": "paddle.nn.InstanceNorm3D",
+    "args_list": [
+      "num_features",
+      "eps",
+      "momentum",
+      "affine",
+      "track_running_stats",
+      "device",
+      "dtype"]
+  },
+
+  "torch.nn.BCEWithLogitsLoss": {
+    "Matcher": "BCEWithLogitsLossMatcher",
+    "paddle_api": "paddle.nn.BCEWithLogitsLoss",
+    "args_list": [
+      "weight",
+      "size_average",
+      "reduce",
+      "reduction",
+      "pos_weight"]
+  },
+
+  "torch.utils.data.BatchSampler": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.io.BatchSampler",
+    "args_list": [
+      "sampler",
+      "batch_size",
+      "drop_last"]
+  },
+
+  "torch.Generator": {
+    "Matcher": "GeneratorMatcher",
+    "paddle_api": "paddle.fluid.core.default_cpu_generator",
+    "args_list": [
+      "device"]
+  }
 }
