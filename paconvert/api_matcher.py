@@ -1411,3 +1411,192 @@ class WhereMatcher(BaseMatcher):
             return code
         else:
             return GenericMatcher.generate_code(self, kwargs)
+
+class TensorIndexCopyMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        '''
+        consider paddle.reshape as other solution
+        if dim equal 0, just same as the paddle.scatter_, else we use for loop and paddle.scatter_.
+        '''
+        if len(kwargs) != 3:
+            return None
+
+        count = int(kwargs['dim'][1:-1])
+
+        if count == 0:
+            code = 'paddle.scatter_({}, {}, {})'.format(self.paddleClass, kwargs['index'], 
+                kwargs['tensor'])
+            return code
+        index_list = ['i'+str(i) for i in range(count)]
+        tab = '    '
+        prefix = 'for '+ 'i0'+ ' in '+ 'range(dim[0]):'
+        for_list = [tab*i + 'for '+ 'i'+str(i) + ' in '+ 'range(dim['+str(i)+']):' if i!=0 else prefix for i in range(count)]
+        for_prefix = '\n'.join(for_list)
+        exp1 = ','.join(index_list)
+        exp2 = ''.join(['['+i+']' for i in index_list])
+        exp = tab * count + '{}['+ exp1 + ',:] = paddle.scatter_({}'+exp2+', {}, {}'+exp2+')'
+        final_expr = for_prefix+'\n'+exp
+
+
+        API_TEMPLATE = textwrap.dedent(
+            '''
+            dim = list({}.shape)
+            '''
+        )
+        API_TEMPLATE +=final_expr
+
+        code = API_TEMPLATE.format(self.paddleClass, self.paddleClass,
+                self.paddleClass, kwargs['index'], 
+                kwargs['tensor'])
+        
+        code += '\nx.clone()'
+        return code
+
+
+class InstanceNorm3DMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'eps' not in kwargs:
+            epsilon = 1e-5
+        else:
+            epsilon = kwargs['eps']
+
+        if 'momentum' in kwargs:
+            momentum = kwargs['momentum']
+        else:
+            momentum = 0.1
+
+        if 'affine' in kwargs and 'False' in kwargs['affine']:
+            API_TEMPLACE = textwrap.dedent(
+                '''
+                paddle.nn.InstanceNorm3D(num_features={},
+                                    momentum=1-{},
+                                    epsilon={},
+                                    weight_attr=paddle.ParamAttr(learning_rate=0.0),
+                                    bias_attr=paddle.ParamAttr(learning_rate=0.0))
+                '''
+            )
+        else:
+            API_TEMPLACE = textwrap.dedent(
+                '''
+                paddle.nn.InstanceNorm3D(num_features={},
+                                    momentum=1-{},
+                                    epsilon={},
+                                    weight_attr=None,
+                                    bias_attr=None)
+                '''
+            )
+        code = API_TEMPLACE.format(kwargs['num_features'], momentum, epsilon)
+        return code
+
+
+class BCEWithLogitsLossMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'size_average' in kwargs:
+            size_average = kwargs.pop('size_average')
+            if 'True' in size_average:
+                size_average = True
+            elif 'False' in size_average:
+                size_average = False
+            else:
+                size_average = None
+        else:
+            size_average = None
+
+        if 'reduce' in kwargs:
+            reduce = kwargs.pop('reduce')
+            if 'True' in reduce:
+                reduce = True
+            elif 'False' in reduce:
+                reduce = False
+            else:
+                reduce = None
+        else:
+            reduce = None
+
+        if size_average is not None or reduce is not None:
+            if size_average is None:
+                size_average = True
+            if reduce is None:
+                reduce = True
+
+            if size_average and reduce:
+                reduction = '"""mean"""'
+            elif reduce:
+                reduction = '"""sum"""'
+            else:
+                reduction = '"""none"""'
+
+            kwargs['reduction'] = reduction
+
+        API_TEMPLACE = textwrap.dedent(
+            '''
+            paddle.nn.BCEWithLogitsLoss({})
+            '''
+        )
+        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
+        return code
+
+class TensorToMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+        
+        code = '{}.cast(dtype = {})'.format(self.paddleClass, kwargs['dtype'])
+        return ast.parse(code).body
+
+class GeneratorMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        kwargs = self.parse_kwargs(kwargs)
+
+        if (kwargs and kwargs['device']=='"""cuda"""') or (len(args)>0 and args[0].value =='cuda'):
+            code = 'paddle.fluid.core.default_cuda_generator(0)'
+        else:
+            code = 'paddle.fluid.core.default_cpu_generator()'
+
+        node = ast.parse(code.strip('\n')).body
+        return node
+
+class CdistMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        # maybe broadcast but low performance
+        new_args = self.parse_args(args)
+        new_kwargs = self.parse_kwargs(kwargs)
+
+
+        API_TEMPLATE = textwrap.dedent(
+            '''
+            sa, sb = {}.shape, {}.shape
+            if len(sa)==2 and len(sb)==2:
+                x = paddle.empty(shape=(sa[0], sa[1]), dtype='float32')
+                for i in range(sa[0]):
+                    for j in range(sb[0]):
+                        x[i,j] = paddle.dist({}[i],{}[j], p={})
+            elif len(sa)==2 and len(sb)==3:
+                x = paddle.empty(shape=(sb[0], sa[0], sb[1]), dtype='float32')
+                for i in range(sb[0]):
+                    for j in range(sa[0]):
+                        for k in range(sb[1]):
+                            x[i,j,k] = paddle.dist({}[j],{}[i][k], p={})
+            elif len(sa)==3 and len(sb)==2:
+                x = paddle.empty(shape=(sa[0], sa[1], sb[0]), dtype='float32')
+                for i in range(sa[0]):
+                    for j in range(sa[1]):
+                        for k in range(sb[0]):
+                            x[i,j,k] = paddle.dist({}[i][j],{}[k], p={})
+            else:
+                x = paddle.empty(shape=(sa[0], sa[1], sb[1]), dtype='float32')
+                for i in range(sa[0]):
+                    for j in range(sa[1]):
+                        for k in range(sb[1]):
+                            x[i,j,k] = paddle.dist({}[i,j],{}[i,k], p={})
+            x.clone()
+             '''
+        )
+        
+        code = API_TEMPLATE.format(new_args[0], new_args[1], new_args[0], new_args[1]
+                , new_kwargs['p'][1:-1], new_args[0], new_args[1]
+                , new_kwargs['p'][1:-1], new_args[0], new_args[1]
+                , new_kwargs['p'][1:-1], new_args[0], new_args[0]
+                , new_kwargs['p'][1:-1])
+        node = ast.parse(code.strip('\n')).body
+        return node
