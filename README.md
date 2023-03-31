@@ -189,7 +189,7 @@ Thank you to use Paddle Code Convert Tool. You can make any suggestions to us.
 
 其中第1~6类API可按后续步骤开发，第7类需要先开发框架对应功能，目前不能开发自动转换功能。
 
-对于一个待支持的Pytorch API，首先查阅映射表，如果已经有了映射关系，则可以直接参考。如果没有映射关系，需要先自行分析该API的映射关系，根据模板来编写文档，提交到 https://github.com/PaddlePaddle/docs Repo中。详见：[API映射关系模板](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/pytorch_api_mapping_format_cn.md)。
+对于一个待支持的Pytorch API，首先查阅映射表，如果已经有了映射关系，则可以直接参考。如果没有映射关系，需要自行分析该API映射关系，并根据模板来编写映射关系文档，提交PR到 https://github.com/PaddlePaddle/docs/tree/develop/docs/guides/model_convert/convert_from_pytorch/api_difference 目录下。具体写法详见：[API映射关系模板](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/pytorch_api_mapping_format_cn.md)。
 
 > 注意：当前已有一部分存量映射关系，但可能存在错误或考虑不全面之处，在后续开发自动转换规则时，如发现问题，需要对这些文档进行校正修改。
 
