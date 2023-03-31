@@ -7179,11 +7179,9 @@
   },
 
   "torch.Generator": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.io.BatchSampler",
+    "Matcher": "GeneratorMatcher",
+    "paddle_api": "paddle.fluid.core.default_cpu_generator",
     "args_list": [
-      "sampler",
-      "batch_size",
-      "drop_last"]
+      "device"]
   }
 }

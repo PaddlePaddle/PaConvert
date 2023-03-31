@@ -1543,3 +1543,15 @@ class TensorToMatcher(BaseMatcher):
 
         code = '{}.cast(dtype = {})'.format(self.paddleClass, kwargs['dtype'])
         return ast.parse(code).body
+
+class GeneratorMatcher(BaseMatcher):
+     def get_paddle_nodes(self, args, kwargs):
+        kwargs = self.parse_kwargs(kwargs)
+        
+        if (kwargs and kwargs['device']=='"""cuda"""') or (len(args)>0 and args[0].value =='cuda'):
+            code = 'paddle.fluid.core.default_cuda_generator(0)'
+        else:
+            code = 'paddle.fluid.core.default_cpu_generator()'
+
+        node = ast.parse(code.strip('\n')).body
+        return node
