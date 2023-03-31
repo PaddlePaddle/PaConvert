@@ -30,7 +30,8 @@ with open(json_file, 'r') as file:
     ATTRIBUTE_MAPPING = json.load(file)
 
 # will configure torch package in jsom
-TORCH_PACKAGE_LIST = ['torch', 'mmseg', 'mmcv', 'detectron', 'timm', 'mmdet', 'mmdet3d', 'torchvision', 'kornia', 'fasttext']
+TORCH_PACKAGE_LIST = ['torch', 'mmseg', 'mmcv', 'detectron', 'timm', 'mmdet', 'mmdet3d', 'torchvision', 
+'kornia', 'fasttext', 'pytorch_lightning', 'jieba', 'sentencepiece', 'NLTK', 'scikit-learn']
 
 
 class BaseTransformer(ast.NodeTransformer):
@@ -173,27 +174,25 @@ class BaseMatcher(object):
 
     def parse_args_and_kwargs(self, args, kwargs):
         args_list = self.api_mapping.get('args_list') or []
-        #assert len(args) <= len(args_list)
-        
         # more args, not match torch class method, indicate it is not torch Class
         if len(args) > len(args_list):
             return 'NonTorchClass'
 
         new_kwargs = {}
         for i, node in enumerate(args):
-            # torch.rot90(tensor, *config)
+            # not support 'torch.rot90(tensor, *config)'
             if isinstance(node, ast.Starred):
                 return None
             k = args_list[i]
             v = astor.to_source(node).strip('\n')
+            # have comma indicates a tuple
             new_kwargs[k] = v
         
         for node in kwargs:
             k = node.arg
-            # torch.rot90(tensor, **config)
+            # not support 'torch.rot90(tensor, **config)'
             if k is None:
                 return None
-            # other kwargs, not match torch class method, indicate it is not torch Class
             # TODO: will open after all args have been add in args_list
             #if k not in args_list:
             #    return 'NonTorchClass'
@@ -261,6 +260,20 @@ class BaseMatcher(object):
         else:
             return 'None'
 
+    def set_paddle_default_kwargs(self, kwargs):
+        """
+        process the redundant parameters of Paddle and set the default values
+        and return the new parameter list in the form of a dictionary.
+        """
+        if "paddle_default_kwargs" in self.api_mapping:
+            paddle_default_kwargs = self.api_mapping["paddle_default_kwargs"]
+            for k in paddle_default_kwargs:
+                if k not in kwargs:
+                    kwargs[k] = paddle_default_kwargs[k]
+
+        return kwargs
+
+    @staticmethod
     def generate_code(self, kwargs):
         return None
 

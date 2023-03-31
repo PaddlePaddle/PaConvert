@@ -214,7 +214,7 @@ torch.min(image, label)
 
 torch.max(max_exp_avg_sq, exp_avg_sq, out=max_exp_avg_sq)
 
-# torch.rand
+# torch.rand 
 m = 2
 n = 3
 
@@ -242,15 +242,33 @@ torch.rand(size=[2, 3])
 
 torch.rand(())
 
-
 torch.rand([])
+
+torch.rand(2)
+
+torch.rand(2, 3)
+
+torch.rand([2, 3])
+
+torch.rand((2, 3))
+
+shape = 2
+torch.rand(shape)
+
+shape = (2, 3)
+torch.rand(shape)
+
+shape = [2, 3]
+torch.rand(shape)
+
+shape = (2, 3)
+torch.rand(*shape)
 
 # torch.randint
 
 torch.randint(10, [2, 2])
 
 torch.randint(2, 10, [2, 2])
-
 
 # torch.Tensor.size
 torch.abs(x).size()
@@ -405,7 +423,7 @@ str2='_torch.npy'
 hellotorch.test
 
 ## should mark
-torch.save('torch.parma')
+torch.save(obj, 'torch.parma')
 ## not mark
 np.save('torch.parma')
 
@@ -537,3 +555,228 @@ x.short()
 x.chalf()
 x.cfloat()
 x.cdouble()
+
+# torch.Tensor.expand
+x.expand(2)
+x.expand(2, 3)
+x.expand([2])
+x.expand((2, 3))
+x.expand([2, 3])
+x.expand(size=[2, 3])
+x.expand(size=(2, 3))
+
+list1 = [2, 3]
+x.expand(list1)
+
+list1 = (2, 3)
+x.expand(*list1)
+
+# torch.Tensor.masked_fill
+mask = mask.float().masked_fill(mask == 1, float('-inf'))
+
+# torch.nn.CrossEntropyLoss
+torch.nn.CrossEntropyLoss(reduction="none")
+
+# torch.tensor
+## case 1: 指定 dtype、device、requires_grad、pin_memory
+a = torch.tensor(torch.tensor([2, 3, 4]), dtype=torch.float32, device=torch.device('cuda'), requires_grad=True)
+print('[torch.tensor case-1]: ', a.shape, a.dtype)
+
+## Case2: 
+flag = True
+a = torch.tensor(torch.tensor([2, 3, 4]), dtype=torch.float32, device=torch.device('cuda'), requires_grad=flag)
+print('[torch.tensor case-2]: ', a.shape, a.dtype)
+
+# torch.cuda.is_available
+## Case1:
+print('[torch.cuda.is_available case-1]: ', torch.cuda.is_available())
+
+# torch.Tensor
+## Case1: 
+def a(x: torch.Tensor):
+    pass
+
+## Case2: 
+a = torch.Tensor(2, 3)
+print('[torch.Tensor case-2]: ', a.shape, a.dtype)
+
+# torch.LongTensor
+## Case1: 
+def a(x: torch.LongTensor):
+    pass
+
+## Case2: 
+a = torch.LongTensor(2, 3)
+print('[LongTensor case-2]: ', a.shape, a.dtype)
+
+# torch.IntTensor
+## Case1: 
+def a(x: torch.IntTensor):
+    pass
+
+## Case2: 
+a = torch.IntTensor(2, 3, 6)
+print('[IntTensor case-2]: ', a.shape, a.dtype)
+
+
+# torch.FloatTensor
+## Case1: 
+def a(x: torch.FloatTensor):
+    pass
+
+## Case2: 
+a = torch.FloatTensor(2, 3, 6)
+print('[FloatTensor case-2]: ', a.shape, a.dtype)
+
+# torch.nn.functional.interpolate
+## Case1:
+a = torch.nn.functional.interpolate(torch.randn(1, 2, 20, 20), [24, 24])
+print('[nn.functional.interpolate case-1]: ', a.shape)
+
+## Case2:
+a = torch.nn.functional.interpolate(torch.rand(1, 2, 20, 20), scale_factor=0.6)
+print('[nn.functional.interpolate case-2]: ', a.shape)
+
+# torch.equal
+## Case1:
+r = torch.equal(torch.tensor([1, 2]), torch.tensor([1, 2]))
+print('[equal]: ', r)
+
+# torch.randint
+## Case1:
+a = torch.randint(2, 5, [3, 4], device=torch.device('cuda'))
+print('[randint]: ', a.shape, a.min(), a.max())
+
+## Case2:
+torch.randint(10, [2, 2])
+print('[randint]: ', a.shape, a.min(), a.max())
+
+## Case3:
+a, b = 2, 25
+a = torch.randint(a, b, [3, 4], device=torch.device('cuda'))
+print('[randint]: ', a.shape, a.min(), a.max())
+
+# torch.__version__
+## Case1:
+print(torch.__version__)
+
+# torch.Tensor.new_tensor
+## Case1:
+a = torch.tensor([1, 2, 3])
+b = a.new_tensor([4, 5, 6], dtype=torch.float64, requires_grad=True)
+print('[Tensor.new_tensor case-1]: ', b)
+
+## Case2:
+a = torch.tensor([1, 2, 3], dtype=torch.int64)
+b = a.new_tensor([4, 5, 6])
+print('[Tensor.new_tensor case-2]: ', b)
+
+# torch.Tensor.new_zeros
+## Case1:
+a = torch.tensor([1, 2, 3], dtype=torch.int64)
+b = a.new_zeros([3, 4], dtype=torch.float64, requires_grad=True)
+print('[Tensor.new_zeros case-1]: ', b)
+
+## Case2:
+a = torch.tensor([1, 2, 3], dtype=torch.int64)
+b = a.new_zeros(3, 4)
+print('[Tensor.new_zeros case-2]: ', b)
+
+## Case3:
+b = a.new_zeros([3, 4])
+print('[Tensor.new_zeros case-3]: ', b)
+
+# torch.Tensor.new_ones
+## Case1:
+a = torch.tensor([1, 2, 3], dtype=torch.int64)
+b = a.new_ones([3, 4], dtype=torch.float64, requires_grad=True, pin_memory=True)
+print('[Tensor.new_ones case-1]: ', b)
+
+## Case2:
+a = torch.tensor([1, 2, 3], dtype=torch.float64)
+b = a.new_ones(3, 4, requires_grad=True)
+print('[Tensor.new_ones case-2]: ', b)
+
+## Case3:
+b = a.new_ones([3, 4])
+print('[Tensor.new_ones case-3]: ', b)
+
+# torch.Tensor.new_full
+## Case1:
+a = torch.tensor([1, 2, 3], dtype=torch.int64)
+b = a.new_full([3, 4], 2.43, dtype=torch.float64, requires_grad=True, pin_memory=True)
+print('[Tensor.new_full case-1]: ', b)
+
+## Case2:
+flag = False
+a = torch.tensor([1, 2, 3], dtype=torch.int64)
+b = a.new_full((2, 3), 4, requires_grad=flag)
+print('[Tensor.new_full case-2]: ', b)
+
+# torch.new_empty
+## Case1:
+a = torch.tensor([1, 2, 3], dtype=torch.int64)
+b = a.new_empty((3, 4), dtype=torch.float64, requires_grad=True, pin_memory=True)
+print('[Tensor.new_empty case-1]: ', b)
+
+# torch.Tensor.normal_
+## Case1:
+a = torch.tensor([1, 3, 4, 9, 0.5, 1.5])
+a = a.normal_(0.2, 0.3)
+print('[Tensor.normal_ case-1]: ', a)
+
+
+# torch.Tensor.uniform_
+## Case1:
+c = torch.tensor(a.uniform_(2, 6))
+print('[Tensor.uniform_ case-1]: ', c)
+
+# torch.Tensor.expand
+## Case1:
+x = torch.tensor([[1], [2], [3]])
+y = x.expand(3, 4)
+print('[Tensor.expand case-1]: ', y.shape)
+
+## Case2:
+x = torch.tensor([[1], [2], [3]])
+y = x.expand((3, 4))
+print('[Tensor.expand case-2]: ', y.shape)
+
+torch.random.manual_seed(23)
+
+# torch.Tensor.new_zeros/new_ones/new_empty
+x.new_zeros(2)
+
+x.new_zeros(2, 3)
+
+x.new_zeros([2, 3])
+
+x.new_zeros((2, 3))
+
+## corner case
+shape = 2
+x.new_zeros(shape)
+
+shape = (2, 3)
+x.new_zeros(shape, requires_grad=True)
+
+shape = (2, 3)
+x.new_zeros(*shape, requires_grad=True, dtype=torch.float32)
+
+x.new_zeros(*shape, requires_grad=True, dtype=torch.float32, pin_memory=True)
+
+x.new_zeros(*shape, requires_grad=True, dtype=torch.float32, pin_memory=False)
+
+x.new_zeros(*x.size())
+
+x.new_zeros(x.size())
+
+# torch.Tensor.new_full
+
+x.new_full([2, 3], 2.)
+
+x.new_full([2, 3], 2., requires_grad=True)
+
+x.new_full([2, 3], 2., requires_grad=True, pin_memory=False)
+
+x.new_full([2, 3], 2., dtype=torch.float32, requires_grad=True, pin_memory=True)
