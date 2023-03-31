@@ -205,7 +205,7 @@ API映射关系相当于提供了人工转换的思路，是自动转换的前�
 
 我们的API映射关系都在 [Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html#pytorch-1-13-paddle-2-4-api) 中，首先查阅该映射表，如果待写API已经有了映射关系，则可直接参考。如果没有映射关系，则需要自行分析该API的映射关系，根据统一模板提交到https://github.com/PaddlePaddle/docs Repo中。详见：[API映射关系模板](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/pytorch_api_mapping_format_cn.md)。
 
-注：在后续编写Matcher验证的过程中，如发现历史映射关系中存在错误之处，则需要进行校正。
+注：由于存量的映射关系，可能存在错误或考虑不全面之处，在后续开发自动转换规则时，如果发现需要不足之处，则需要进行修改。
 
 
 ### 步骤2：配置JSON
