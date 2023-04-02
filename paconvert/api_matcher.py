@@ -1549,7 +1549,12 @@ class GeneratorMatcher(BaseMatcher):
         kwargs = self.parse_kwargs(kwargs)
 
         if (kwargs and kwargs['device']=='"""cuda"""') or (len(args)>0 and args[0].value =='cuda'):
-            code = 'paddle.fluid.core.default_cuda_generator(0)'
+            code = textwrap.dedent(
+                '''
+                device = paddle.device.get_device()
+                paddle.fluid.core.default_cuda_generator(device[-1])
+                '''
+            )
         else:
             code = 'paddle.fluid.core.default_cpu_generator()'
 
@@ -1600,3 +1605,19 @@ class CdistMatcher(BaseMatcher):
                 , new_kwargs['p'][1:-1])
         node = ast.parse(code.strip('\n')).body
         return node
+
+
+class TorchUtilDataBatchSampler(BaseMatcher):
+    def generate_code(self, kwargs):
+    
+        API_TEMPLATE = textwrap.dedent(
+            '''
+            sampler = {}
+            sampler = sampler if issubclass(sampler.__class__, paddle.fluid.dataloader.sampler.Sampler().__class__) else paddle.io.Sampler(sampler)
+            paddle.io.BatchSampler(sampler = sampler, batch_size = {}, drop_last = {})
+             '''
+        )
+        
+        code = API_TEMPLATE.format(kwargs['sampler'], kwargs["batch_size"], kwargs["drop_last"])
+
+        return code 

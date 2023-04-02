@@ -7170,7 +7170,7 @@
   },
 
   "torch.utils.data.BatchSampler": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "TorchUtilDataBatchSampler",
     "paddle_api": "paddle.io.BatchSampler",
     "args_list": [
       "sampler",
