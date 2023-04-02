@@ -68,8 +68,8 @@ class Converter:
         self.transfer_dir(in_dir, out_dir, exclude_dir_list)
         
         if self.show_unsupport:
-            unsupport_map = sorted(self.unsupport_map.items(), 
-                                    key = lambda x:x[1], 
+            unsupport_map = sorted(self.unsupport_map.items(),
+                                    key = lambda x:x[1],
                                     reverse = True)
             self.log_info("\n========================================")
             self.log_info("Not Support API List:")
@@ -183,7 +183,7 @@ class Converter:
         mark_next_line = False
         in_str = False
         for i, line in enumerate(lines):
-            # torch.* in __doc__ 
+            # torch.* in __doc__
             # torch.* in str
             if line.count('\"\"\"') % 2 != 0:
                 in_str = not in_str

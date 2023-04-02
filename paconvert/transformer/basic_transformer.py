@@ -131,7 +131,7 @@ class BasicTransformer(BaseTransformer):
                 return self.trans_class_attribute(node, torch_api)
 
         # NonTorchClass
-        return node 
+        return node
 
     def trans_class_attribute(self, node, torch_api):
         if torch_api in ATTRIBUTE_MAPPING:
@@ -241,7 +241,7 @@ class BasicTransformer(BaseTransformer):
                         if isinstance(new_node, ast.Expr):
                             new_node = new_node.value
                         
-                        if isinstance(new_node, (ast.Call, ast.Name, ast.Constant, ast.Attribute, ast.Compare)): 
+                        if isinstance(new_node, (ast.Call, ast.Name, ast.Constant, ast.Attribute, ast.Compare)):
                             # if multiple line, record lines and will insert after all node visit
                             if node_list[0:-1]:
                                 self.log_debug("insert extra {} lines for torch api {}".format(len(node_list[0:-1]), torch_api), self.file_name, node.lineno)
@@ -283,8 +283,8 @@ class BasicTransformer(BaseTransformer):
                     self.log_debug("Start convert Optimizer Class Method: {} to Paddle --> ".format(torch_api), self.file_name, node.lineno)
                     return self.trans_class_method(node, torch_api)
 
-        # NonTorchClass 
-        return node 
+        # NonTorchClass
+        return node
 
 
     def trans_class_method(self, node, torch_api):
