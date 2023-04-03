@@ -189,7 +189,7 @@ Thank you to use Paddle Code Convert Tool. You can make any suggestions to us.
 
 其中第1~6类API可按后续步骤开发，第7类需要先开发框架对应功能，目前不能开发自动转换功能。
 
-对于一个待支持的Pytorch API，首先查阅映射表，如果已经有了映射关系，则可以直接参考。如果没有映射关系，需要先自行分析该API的映射关系，根据模板来编写文档，提交到 https://github.com/PaddlePaddle/docs Repo中。详见：[API映射关系模板](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/pytorch_api_mapping_format_cn.md)。
+对于一个待支持的Pytorch API，首先查阅映射表，如果已经有了映射关系，则可以直接参考。如果没有映射关系，需要自行分析该API映射关系，并根据模板来编写映射关系文档，提交PR到 https://github.com/PaddlePaddle/docs/tree/develop/docs/guides/model_convert/convert_from_pytorch/api_difference 目录下。具体写法详见：[API映射关系模板](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/pytorch_api_mapping_format_cn.md)。
 
 > 注意：当前已有一部分存量映射关系，但可能存在错误或考虑不全面之处，在后续开发自动转换规则时，如发现问题，需要对这些文档进行校正修改。
 
@@ -314,17 +314,17 @@ class TransposeMatcher(BaseMatcher):
 
 ## 开发测试规范
 
-**a) 调试**。编写完成后通过以下命令在本地调试，打印报表中的 `Not Support API List` 不应包含待提交的API：
+**a) 调试，确认验证集中该API已全部被转换**。通过以下命令在本地调试，打印报表中的 `Not Support API List` 不应包含待提交的API：
 
 ```
 python3.9 paconvert/main.py --in_dir paconvert/test_code.py --log_level "DEBUG" --show_unsupport True`
 ```
 
-**b) 编写的API转换规则，须考虑所有情形下的用户用法**。涉及到多个参数的，应包含各种组合情况，不能只考虑最简单的用户case。
+**b) 需考虑所有的torch用法case**。涉及到多个参数的，应包含各种组合的用法情况，不能只考虑最简单最常见的case。
 
-对任意case只允许有两种结果：a)正常转换且结果对比一致；b)不支持转换，此时返回None即可。不允许出现其他的错误情况，包括但不限于 **报错退出、错误转换** 等各种问题。
+对任意torch用法case只允许有两种结果：a)正常转换且对比结果一致；b)不支持转换，此时返回None。不允许出现其他的错误情况，包括但不限于 **报错退出、错误转换** 等各种问题。
 
-以 `torch.Tensor.new_zeros` 为例，其至少包含以下12种可能用法：
+以 `torch.Tensor.new_zeros` 为例，其至少包含12种以上的torch用法case，如下：
 
 ```
 case 1: x.new_zeros(2)
@@ -361,13 +361,11 @@ case 12:
 x.new_zeros(x.size())
 ```
 
-**c) 写出所有可能的case后，将其全部加入到单测中，并对比结果一致**。要求至少编写5种case（越多约好）。单测写法为：（待补充）
+**c) 写出所有可能的torch用法case后，全部加入到单测中，并对比结果一致**。当前要求至少编写5种不同的case（越多约好）。单测写法为：（待补充）
 
 **d) 代码精简与美观性**。要求尽可能只通过一行代码、一个API来实现（越少越好）。如果确实无法实现，才考虑通过多行代码、多个API来辅助实现该功能。
 
-**e) 通过验证集测试**。等待流水线xxx通过即可。
-
-**f) 维护与负责**。由于考仍可能考虑的不够全面，可能会引入非常隐蔽的用法bug，开发者需要对自身开发的API转换规则，负责并后续维护。解决新发现的case问题。
+**e) 维护与负责**。由于单测可能覆盖不全面，可能会引入非常隐蔽的用法bug，开发者需要对自身开发的API转换规则负责并后续维护。解决新发现的case问题。
 
 总的来说，Matcher转换规则的开发具有一定的挑战性，是一项非常细心以及考验思维广度的工作。
 
