@@ -7189,6 +7189,8 @@
     "Matcher": "CdistMatcher",
     "paddle_api": "paddle.dist",
     "args_list": [
+      "x1",
+      "x2",
       "p",
       "compute_mode"]
   }

@@ -1538,10 +1538,16 @@ class BCEWithLogitsLossMatcher(BaseMatcher):
 
 class TensorToMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
+        if (len(args) > 0 and isinstance(args[0], ast.Starred)) or (len(kwargs) > 0 and isinstance(kwargs[0], ast.keyword)):
+            return None
         self.parse_func(func)
         kwargs = self.parse_args_and_kwargs(args, kwargs)
-        
-        code = '{}.cast(dtype = {})'.format(self.paddleClass, kwargs['dtype'])
+        if 'device' in kwargs:
+            del kwargs['device']
+        if 'dtype' in kwargs:
+            code = '{}.cast(dtype = {})'.format(self.paddleClass, kwargs['dtype'])
+        else:
+            code = '{}.cast(dtype = {}.dtype)'.format(self.paddleClass, self.paddleClass)
         return ast.parse(code).body
 
 class GeneratorMatcher(BaseMatcher):
@@ -1567,45 +1573,45 @@ class GeneratorMatcher(BaseMatcher):
 class CdistMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         # maybe broadcast but low performance
-        new_args = self.parse_args(args)
-        new_kwargs = self.parse_kwargs(kwargs)
-
+        # new_args = self.parse_args(args)
+        # new_kwargs = self.parse_kwargs(kwargs)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
 
         API_TEMPLATE = textwrap.dedent(
             '''
-            sa, sb = {}.shape, {}.shape
+            a,b = {}.clone(), {}.clone()
+            sa, sb = a.shape, b.shape
             if len(sa)==2 and len(sb)==2:
                 x = paddle.empty(shape=(sa[0], sa[1]), dtype='float32')
                 for i in range(sa[0]):
                     for j in range(sb[0]):
-                        x[i,j] = paddle.dist({}[i],{}[j], p={})
+                        x[i,j] = paddle.dist(a[i],b[j], p={})
             elif len(sa)==2 and len(sb)==3:
                 x = paddle.empty(shape=(sb[0], sa[0], sb[1]), dtype='float32')
                 for i in range(sb[0]):
                     for j in range(sa[0]):
                         for k in range(sb[1]):
-                            x[i,j,k] = paddle.dist({}[j],{}[i][k], p={})
+                            x[i,j,k] = paddle.dist(a[j],b[i][k], p={})
             elif len(sa)==3 and len(sb)==2:
                 x = paddle.empty(shape=(sa[0], sa[1], sb[0]), dtype='float32')
                 for i in range(sa[0]):
                     for j in range(sa[1]):
                         for k in range(sb[0]):
-                            x[i,j,k] = paddle.dist({}[i][j],{}[k], p={})
+                            x[i,j,k] = paddle.dist(a[i][j],b[k], p={})
             else:
                 x = paddle.empty(shape=(sa[0], sa[1], sb[1]), dtype='float32')
                 for i in range(sa[0]):
                     for j in range(sa[1]):
                         for k in range(sb[1]):
-                            x[i,j,k] = paddle.dist({}[i,j],{}[i,k], p={})
+                            x[i,j,k] = paddle.dist(a[i,j],b[i,k], p={})
             x.clone()
              '''
         )
-        
-        code = API_TEMPLATE.format(new_args[0], new_args[1], new_args[0], new_args[1]
-                , new_kwargs['p'][1:-1], new_args[0], new_args[1]
-                , new_kwargs['p'][1:-1], new_args[0], new_args[1]
-                , new_kwargs['p'][1:-1], new_args[0], new_args[0]
-                , new_kwargs['p'][1:-1])
+        if 'p' in kwargs:
+            p = kwargs['p']
+        else:
+            p = '2'
+        code = API_TEMPLATE.format(kwargs['x1'], kwargs['x2'], p, p ,p ,p)
         node = ast.parse(code.strip('\n')).body
         return node
 
