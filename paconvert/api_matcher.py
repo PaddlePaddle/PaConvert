@@ -1548,13 +1548,16 @@ class GeneratorMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         kwargs = self.parse_kwargs(kwargs)
 
-        if (kwargs and kwargs['device']=='"""cuda"""') or (len(args)>0 and args[0].value =='cuda'):
+        if (kwargs and kwargs['device']=='"""cuda"""') or (len(args)>0 and args[0].value == 'cuda'):
             code = textwrap.dedent(
                 '''
                 device = paddle.device.get_device()
-                paddle.fluid.core.default_cuda_generator(device[-1])
+                paddle.fluid.core.default_cuda_generator(int(device[-1]))
                 '''
             )
+        elif (kwargs and kwargs['device']=='"""mps"""') or (len(args)>0 and args[0].value == 'mps' ):
+            # paddle not suppor mps, but support xpu
+            return None
         else:
             code = 'paddle.fluid.core.default_cpu_generator()'
 
