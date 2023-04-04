@@ -92,7 +92,7 @@ class Converter:
         self.log_info(" Convert Rate is: {:.3%}".format(convert_rate))
         if (faild_api_count > 0):
             self.log_info("\nFor these {} Pytorch APIs that do not support to Convert now, which have been marked by >>> before the line, \nplease refer to "
-        "[https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html]"
+        "https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html"
         " \nand convert it by yourself manually. In addition, these APIs will be supported in future.".format(faild_api_count))
         self.log_info("\nThank you to use Paddle Code Convert Tool. You can make any suggestions to us.\n")
         return self.success_api_count, faild_api_count
