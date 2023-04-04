@@ -1418,38 +1418,38 @@ class TensorIndexCopyMatcher(BaseMatcher):
         consider paddle.reshape as other solution
         if dim equal 0, just same as the paddle.scatter_, else we use for loop and paddle.scatter_.
         '''
-        if len(kwargs) != 3 or kwargs['dim'][0] != '(':
+        # if not constant
+        if kwargs['dim'][0] != '(':
             return None
 
         count = int(kwargs['dim'][1:-1])
 
         if count == 0:
-            code = '{}.scatter_({}, {})'.format(self.paddleClass, kwargs['index'], 
-                kwargs['tensor'])
+            code = '{}.scatter_({}, {})'.format(self.paddleClass, kwargs['index'], kwargs['tensor'])
             return code
+
         index_list = ['i'+str(i) for i in range(count)]
         tab = '    '
-        prefix = 'for i0 in range(dim[0]):'
-        for_list = [tab*i + 'for '+ 'i'+str(i) + ' in '+ 'range(dim['+str(i)+']):' if i!=0 else prefix for i in range(count)]
-        for_prefix = '\n'.join(for_list)
-        exp1 = ','.join(index_list)
-        exp2 = ''.join(['['+i+']' for i in index_list])
-        exp = tab * count + '{}['+ exp1 + ',:] = {}'+exp2+'.scatter_('+'{}, {}'+exp2+')'
-        final_expr = for_prefix+'\n'+exp
+        for_list = ['{}for i{} in range(dim[{}]):'.format(tab*i, str(i), str(i)) for i in range(count)]
+        for_body = '\n'.join(for_list)
+        exp1 = ','.join(index_list)+ ',:'
+        exp2 = ','.join([i for i in index_list])
 
 
         API_TEMPLATE = textwrap.dedent(
             '''
             dim = list({}.shape)
+            {}
+            {}{}[{}] = {}[{}].scatter_({}, {}[{}])
+            x.clone()
             '''
         )
-        API_TEMPLATE +=final_expr
 
-        code = API_TEMPLATE.format(self.paddleClass, self.paddleClass,
-                self.paddleClass, kwargs['index'], 
-                kwargs['tensor'])
+        code = API_TEMPLATE.format(self.paddleClass, 
+                                for_body, tab*count,
+                                self.paddleClass, exp1, self.paddleClass, exp2, kwargs['index'], 
+                                kwargs['tensor'], exp2)
         
-        code += '\nx.clone()'
         return code
 
 
@@ -1572,34 +1572,31 @@ class GeneratorMatcher(BaseMatcher):
 
 class CdistMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
-        # maybe broadcast but low performance
-        # new_args = self.parse_args(args)
-        # new_kwargs = self.parse_kwargs(kwargs)
         kwargs = self.parse_args_and_kwargs(args, kwargs)
-
+        
         API_TEMPLATE = textwrap.dedent(
             '''
             a,b = {}.clone(), {}.clone()
             sa, sb = a.shape, b.shape
             if len(sa)==2 and len(sb)==2:
-                x = paddle.empty(shape=(sa[0], sa[1]), dtype='float32')
+                x = paddle.empty(shape=(sa[0], sa[1]))
                 for i in range(sa[0]):
                     for j in range(sb[0]):
-                        x[i,j] = paddle.dist(a[i],b[j], p={})
+                        x[i,j] = paddle.dist(a[i], b[j], p={})
             elif len(sa)==2 and len(sb)==3:
-                x = paddle.empty(shape=(sb[0], sa[0], sb[1]), dtype='float32')
+                x = paddle.empty(shape=(sb[0], sa[0], sb[1]))
                 for i in range(sb[0]):
                     for j in range(sa[0]):
                         for k in range(sb[1]):
-                            x[i,j,k] = paddle.dist(a[j],b[i][k], p={})
+                            x[i,j,k] = paddle.dist(a[j], b[i, k], p={})
             elif len(sa)==3 and len(sb)==2:
-                x = paddle.empty(shape=(sa[0], sa[1], sb[0]), dtype='float32')
+                x = paddle.empty(shape=(sa[0], sa[1], sb[0]))
                 for i in range(sa[0]):
                     for j in range(sa[1]):
                         for k in range(sb[0]):
-                            x[i,j,k] = paddle.dist(a[i][j],b[k], p={})
+                            x[i,j,k] = paddle.dist(a[i, j],b[k], p={})
             else:
-                x = paddle.empty(shape=(sa[0], sa[1], sb[1]), dtype='float32')
+                x = paddle.empty(shape=(sa[0], sa[1], sb[1]))
                 for i in range(sa[0]):
                     for j in range(sa[1]):
                         for k in range(sb[1]):
@@ -1607,11 +1604,13 @@ class CdistMatcher(BaseMatcher):
             x.clone()
              '''
         )
-        if 'p' in kwargs:
-            p = kwargs['p']
-        else:
-            p = '2'
-        code = API_TEMPLATE.format(kwargs['x1'], kwargs['x2'], p, p ,p ,p)
+
+        p = kwargs['p'][1:-1] if 'p' in kwargs else '2'
+        x1 = astor.to_source(args[0]).strip('\n')
+        x2 = astor.to_source(args[1]).strip('\n')
+
+
+        code = API_TEMPLATE.format(x1, x2, p, p ,p ,p)
         node = ast.parse(code.strip('\n')).body
         return node
 
@@ -1622,11 +1621,11 @@ class TorchUtilDataBatchSampler(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             '''
             sampler = {}
-            sampler = sampler if issubclass(sampler.__class__, paddle.fluid.dataloader.sampler.Sampler().__class__) else paddle.io.Sampler(sampler)
+            sampler = sampler if isinstance(sampler, paddle.fluid.dataloader.sampler.Sampler) else paddle.io.Sampler(sampler)            
             paddle.io.BatchSampler(sampler = sampler, batch_size = {}, drop_last = {})
              '''
         )
-        
+
         code = API_TEMPLATE.format(kwargs['sampler'], kwargs["batch_size"], kwargs["drop_last"])
 
         return code 
@@ -1635,6 +1634,7 @@ class TorchUtilDataBatchSampler(BaseMatcher):
 class SizeMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         v = astor.to_source(args[0]).strip('\n')
-        code = 'paddle.shape(paddle.empty({}))'.format(v)
+        
+        code = 'paddle.empty({}).shape'.format(v)
         node = ast.parse(code.strip('\n')).body
         return node
