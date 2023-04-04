@@ -384,8 +384,7 @@ class TensorMatcher(BaseMatcher):
             elif isinstance(args[0], ast.Starred):
                 shape = astor.to_source(args[0].value).strip('\n')
             else:
-                # TODO(hjf):may should use paddle.to_tensor
-                return None
+                shape = self.parse_args(args)[0]
             shape = str(shape).replace('\'', '')
 
         if "torch.IntTensor" == self.torch_api:
@@ -660,13 +659,11 @@ class TensorNewTensorMatcher(BaseMatcher):
         else:
             API_TEMPLATE = textwrap.dedent(
                 '''
-                {} = {}
-                {}({}).astype(str({})[7:])
+                x = {}
+                {}({}).astype(x.dtype)
                 '''
             )
-            var = get_unique_name('var')
-            code = API_TEMPLATE.format(var, self.paddleClass,
-                                self.get_paddle_api(), self.kwargs_to_str(kwargs), var + '.dtype')
+            code = API_TEMPLATE.format(self.paddleClass, self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
         return code.strip('\n')
 
@@ -1233,13 +1230,15 @@ class TensorRequiresGradMatcher(BaseMatcher):
 
         API_TEMPLACE = textwrap.dedent(
             '''
+            {} = {}
             {}.stop_gradient = not {}
             {}
             '''
         )
-        code = API_TEMPLACE.format(self.paddleClass, stop_gradient, self.paddleClass)
-        return ast.parse(code).body
-
+        out = get_unique_name('out')
+        code = API_TEMPLACE.format(out, self.paddleClass, out, stop_gradient, out)
+        return ast.parse(code.strip('\n')).body
+        
 
 class FunctionalL1LossMatcher(BaseMatcher):
     def generate_code(self, kwargs):

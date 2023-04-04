@@ -144,7 +144,7 @@ class Converter:
     def transfer_file(self, old_path, new_path):
         if old_path.endswith(".py"):
             self.log_info("Start convert {} --> {}".format(old_path, new_path))
-            with open(old_path, 'r') as f:
+            with open(old_path, 'r', encoding='UTF-8') as f:
                 code = f.read()
                 root = ast.parse(code)
             
@@ -152,15 +152,15 @@ class Converter:
             code = astor.to_source(root)
             code = self.mark_unsport(code)
 
-            with open(new_path, 'w') as file:
+            with open(new_path, 'w', encoding='UTF-8') as file:
                 file.write(code)
             self.log_info("Finish convert {} --> {}\n".format(old_path, new_path))
         elif old_path.endswith("requirements.txt"):
             self.log_info("Start convert {} --> {}".format(old_path, new_path))
-            with open(old_path, 'r') as old_file:
+            with open(old_path, 'r', encoding='UTF-8') as old_file:
                 code = old_file.read()
             code = code.replace('torch', 'paddlepaddle-gpu')
-            with open(new_path, 'w') as new_file:
+            with open(new_path, 'w', encoding='UTF-8') as new_file:
                 new_file.write(code)
             self.log_info("Finish convert {} --> {}\n".format(old_path, new_path))
         else:

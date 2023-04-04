@@ -102,6 +102,8 @@ class ImportTransformer(BaseTransformer):
                 if os.path.exists(import_path) or os.path.exists(import_path+'.py'):
                     return node
                 dir_name = os.path.dirname(dir_name)
+                if dir_name[-2] == ':':
+                    break
 
         # import from site-packages, third_paty module, just add to others
         for alias_node in node.names:
