@@ -1418,23 +1418,23 @@ class TensorIndexCopyMatcher(BaseMatcher):
         consider paddle.reshape as other solution
         if dim equal 0, just same as the paddle.scatter_, else we use for loop and paddle.scatter_.
         '''
-        if len(kwargs) != 3:
+        if len(kwargs) != 3 or kwargs['dim'][0] != '(':
             return None
 
         count = int(kwargs['dim'][1:-1])
 
         if count == 0:
-            code = 'paddle.scatter_({}, {}, {})'.format(self.paddleClass, kwargs['index'], 
+            code = '{}.scatter_({}, {})'.format(self.paddleClass, kwargs['index'], 
                 kwargs['tensor'])
             return code
         index_list = ['i'+str(i) for i in range(count)]
         tab = '    '
-        prefix = 'for '+ 'i0'+ ' in '+ 'range(dim[0]):'
+        prefix = 'for i0 in range(dim[0]):'
         for_list = [tab*i + 'for '+ 'i'+str(i) + ' in '+ 'range(dim['+str(i)+']):' if i!=0 else prefix for i in range(count)]
         for_prefix = '\n'.join(for_list)
         exp1 = ','.join(index_list)
         exp2 = ''.join(['['+i+']' for i in index_list])
-        exp = tab * count + '{}['+ exp1 + ',:] = paddle.scatter_({}'+exp2+', {}, {}'+exp2+')'
+        exp = tab * count + '{}['+ exp1 + ',:] = {}'+exp2+'.scatter_('+'{}, {}'+exp2+')'
         final_expr = for_prefix+'\n'+exp
 
 
