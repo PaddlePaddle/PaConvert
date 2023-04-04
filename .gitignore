@@ -7,4 +7,5 @@ paconvert/__pycache__/
 paconvert/transformer/__pycache__/
 paconvert/temp_out/
 tests/__pycache__/
+tests/.pytest_cache
 tests/test.py
