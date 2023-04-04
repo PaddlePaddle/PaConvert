@@ -314,10 +314,10 @@ class TransposeMatcher(BaseMatcher):
 
 ## 开发测试规范
 
-**a) 调试，确认验证集中该API已全部被转换**。通过以下命令在本地调试，打印报表中的 `Not Support API List` 不应包含待提交的API：
+**a) 调试，确认验证集中该API已全部被转换**。通过以下命令在本地调试，打印报表中的 `Not Support API List` 不应还有待提交的API：
 
 ```
-python3.9 paconvert/main.py --in_dir paconvert/test_code.py --log_level "DEBUG" --show_unsupport True`
+python3.9 paconvert/main.py --in_dir paconvert/test_code.py --log_level "DEBUG" --show_unsupport True
 ```
 
 **b) 需考虑所有的torch用法case**。涉及到多个参数的，应包含各种组合的用法情况，不能只考虑最简单最常见的case。
