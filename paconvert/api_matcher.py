@@ -1630,3 +1630,11 @@ class TorchUtilDataBatchSampler(BaseMatcher):
         code = API_TEMPLATE.format(kwargs['sampler'], kwargs["batch_size"], kwargs["drop_last"])
 
         return code 
+
+
+class SizeMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        v = astor.to_source(args[0]).strip('\n')
+        code = 'paddle.shape(paddle.empty({}))'.format(v)
+        node = ast.parse(code.strip('\n')).body
+        return node

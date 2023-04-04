@@ -7193,6 +7193,11 @@
       "x2",
       "p",
       "compute_mode"]
+  },
+
+  "torch.Size": {
+    "Matcher": "SizeMatcher",
+    "paddle_api": "paddle.shape"
   }
 
 }
