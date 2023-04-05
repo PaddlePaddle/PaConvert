@@ -6053,9 +6053,12 @@
     "Matcher": "TensorToMatcher",
     "paddle_api": "paddle.Tensor.cast",
     "args_list": [
-      "dtype",
+      "x",
+      "y",
       "non_blocking",
-      "memory_format"]
+      "copy",
+      "memory_format"
+      ]
   }, 
   "torch.Tensor.to_mkldnn": {}, 
   "torch.Tensor.take": {}, 

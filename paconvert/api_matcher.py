@@ -1538,16 +1538,50 @@ class BCEWithLogitsLossMatcher(BaseMatcher):
 
 class TensorToMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
-        if (len(args) > 0 and isinstance(args[0], ast.Starred)) or (len(kwargs) > 0 and isinstance(kwargs[0], ast.keyword)):
-            return None
+
         self.parse_func(func)
         kwargs = self.parse_args_and_kwargs(args, kwargs)
-        if 'device' in kwargs:
-            del kwargs['device']
-        if 'dtype' in kwargs:
+        if not kwargs:
+            code =  '{}.cast(dtype = {}.dtype)'.format(self.paddleClass, self.paddleClass)
+        elif 'tensor' in kwargs:
+            code = '{}.cast(dtype = {}.dtype)'.format(self.paddleClass, kwargs['tensor'])
+        elif 'dtype' in kwargs:
             code = '{}.cast(dtype = {})'.format(self.paddleClass, kwargs['dtype'])
+        elif 'device' in kwargs and 'dtype' not in kwargs:
+                code = '{}.clone()'.format(self.paddleClass)
         else:
-            code = '{}.cast(dtype = {}.dtype)'.format(self.paddleClass, self.paddleClass)
+            if 'y' not in kwargs:
+                API_TEMPLACE = textwrap.dedent(
+                '''
+                if type({}) == paddle.dtype:
+                    dtype = {}
+                elif type({}) == str:
+                    dtype = {}.dtype
+                else: 
+                    dtype = {}.dtype
+                {}.cast(dtype)
+                '''
+                )
+                code = API_TEMPLACE.format(kwargs['x'], kwargs['x'], 
+                    kwargs['x'], self.paddleClass, kwargs['x'], self.paddleClass)
+            else:
+                API_TEMPLACE = textwrap.dedent(
+                '''
+                if type({}) == paddle.dtype:
+                    dtype = {}
+                elif type({}) == str:
+                    if type({}) != paddle.dtype:
+                        dtype = {}.dtype
+                    else: 
+                        dtype = {}
+                else: 
+                    dtype = {}.dtype
+                {}.cast(dtype)'
+                '''
+                )
+                code = API_TEMPLACE.format(kwargs['x'], kwargs['x'], 
+                    kwargs['y'], self.paddleClass, kwargs['y'], kwargs['x'], self.paddleClass)
+        
         return ast.parse(code).body
 
 class GeneratorMatcher(BaseMatcher):
