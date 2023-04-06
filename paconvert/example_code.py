@@ -180,7 +180,7 @@ shape = torch.abs(x).shape
 
 torch.abs(x).shape
 
-# different kinds of torch.Tensor method 
+# different kinds of torch.Tensor method
 z = (torch.triu(torch.ones(sz, sz)) == 1).abs()
 
 (x + y).abs()
@@ -214,7 +214,7 @@ torch.min(image, label)
 
 torch.max(max_exp_avg_sq, exp_avg_sq, out=max_exp_avg_sq)
 
-# torch.rand 
+# torch.rand
 m = 2
 n = 3
 
@@ -582,7 +582,7 @@ torch.nn.CrossEntropyLoss(reduction="none")
 a = torch.tensor(torch.tensor([2, 3, 4]), dtype=torch.float32, device=torch.device('cuda'), requires_grad=True)
 print('[torch.tensor case-1]: ', a.shape, a.dtype)
 
-## Case2: 
+## Case2:
 flag = True
 a = torch.tensor(torch.tensor([2, 3, 4]), dtype=torch.float32, device=torch.device('cuda'), requires_grad=flag)
 print('[torch.tensor case-2]: ', a.shape, a.dtype)
@@ -592,39 +592,39 @@ print('[torch.tensor case-2]: ', a.shape, a.dtype)
 print('[torch.cuda.is_available case-1]: ', torch.cuda.is_available())
 
 # torch.Tensor
-## Case1: 
+## Case1:
 def a(x: torch.Tensor):
     pass
 
-## Case2: 
+## Case2:
 a = torch.Tensor(2, 3)
 print('[torch.Tensor case-2]: ', a.shape, a.dtype)
 
 # torch.LongTensor
-## Case1: 
+## Case1:
 def a(x: torch.LongTensor):
     pass
 
-## Case2: 
+## Case2:
 a = torch.LongTensor(2, 3)
 print('[LongTensor case-2]: ', a.shape, a.dtype)
 
 # torch.IntTensor
-## Case1: 
+## Case1:
 def a(x: torch.IntTensor):
     pass
 
-## Case2: 
+## Case2:
 a = torch.IntTensor(2, 3, 6)
 print('[IntTensor case-2]: ', a.shape, a.dtype)
 
 
 # torch.FloatTensor
-## Case1: 
+## Case1:
 def a(x: torch.FloatTensor):
     pass
 
-## Case2: 
+## Case2:
 a = torch.FloatTensor(2, 3, 6)
 print('[FloatTensor case-2]: ', a.shape, a.dtype)
 
