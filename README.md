@@ -328,7 +328,7 @@ temp = True
 paddle.to_tensor(1., place=paddle.CUDAPinnedPlace() if temp else None)
 ```
 
-3）谨慎通过多行代码来实现，多余代码行数将插入到该作用域中，最后一行将替换原本的API，注意不能破坏原代码的语法结构。例如：
+3）谨慎通过多行代码来实现，多余代码行数将插入到该作用域中，最后一行将替换原本的API，注意不能破坏原代码的语法树结构。例如：
 
 ```python
 if x:
@@ -343,7 +343,7 @@ perm_0[0] = 1
 prem_0[1] = 0
 paddle.transpose(x=x, perm=perm_0)
 ```
-其中前4行将插入到该作用域中，第5行将替换原本的ast.Call: `torch.transpose(x, 1, 0)`，仅转换该ast.Call的中间结果为：
+其中前4行将直接插入到该作用域中，第5行将替换原本的ast.Call: `torch.transpose(x, 1, 0)`，转换完该API的中间结果为：
 
 ```python
 if x:
@@ -354,7 +354,7 @@ if x:
     out = torch.add(paddle.transpose(x=x, perm=perm_0).add(y), z)
 ```
 
-为避免破坏语法结构，最后一行仅可为`ast.Call/ast.Name/ast.Constant/ast.Attribute/ast.Compare...`等子节点形式，如果为`ast.Assign/ast.For...`等根节点，则容易破坏原来的语法结构，当前会被自动过滤掉。
+为避免破坏语法树结构，最后一行仅可为`ast.Call/ast.Name/ast.Constant/ast.Attribute/ast.Compare...`等较小的子节点形式，如果为`ast.Assign/ast.For...`等根节点形式，则容易破坏原来的语法树结构，当前会被自动过滤掉。
 
 
 ## 开发测试规范
