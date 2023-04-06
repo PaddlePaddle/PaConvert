@@ -6166,22 +6166,8 @@
   "torch.Tensor.subtract_": {}, 
   "torch.Tensor.sum_to_size": {}, 
   "torch.Tensor.svd": {}, 
-  "torch.Tensor.swapaxes": {
-    "Matcher": "SwapAxesMatcher",
-    "args_list" : [
-       "input",
-       "axis0", 
-       "axis1"
-    ]
-  }, 
-  "torch.Tensor.swapdims": {
-    "Matcher": "TransposeMatcher",
-    "args_list" : [
-       "input",
-       "dim0", 
-       "dim1"
-    ]
-  }, 
+  "torch.Tensor.swapaxes": {}, 
+  "torch.Tensor.swapdims": {}, 
   "torch.Tensor.symeig": {}, 
   "torch.Tensor.t_": {}, 
   "torch.Tensor.tensor_split": {}, 
