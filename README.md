@@ -309,13 +309,13 @@ class TransposeMatcher(BaseMatcher):
 }
 ```
 
-**开发技巧**：
+**开发经验技巧**：
 
-1.可以参考一些写的较为规范的Matcher：
+1）可以参考一些写的较为规范的Matcher：
 - 传入参数既可以是可变参数，也可以是列表或元组时，例如 `TensorExpandMatcher`
 - (待补充)...
     
-2.由于AST语法分析是静态代码分析，也就是Matcher被执行时的并未到代码的运行期，无法知道某个变量的运行值，要避免对变量运行值的判断，否则可能引入错误。
+2）由于AST语法分析是静态代码分析，也就是Matcher被执行时的并未到代码的运行期，无法知道某个变量的运行值，要避免对变量运行值的判断，否则可能引入错误。
 
 例如：如果在Matcher里的以下判断形式 `if 'True' == kwargs['pin_memory']` ，对以下Python代码将失效，因为 `kwargs['pin_memory']` 只有到代码运行期其值才为'True'，在AST语法分析期，只能获取 `kwargs['pin_memory']='temp'` ，无法获取具体运行值，所以上述判断将失效。
 ```python
@@ -327,6 +327,35 @@ torch.tensor(1., pin_memory=temp)
 temp = True
 paddle.to_tensor(1., place=paddle.CUDAPinnedPlace() if temp else None)
 ```
+
+3）谨慎通过多行代码来实现，多余代码行数将插入到该作用域中，最后一行将替换原本的API，注意不能破坏原代码的语法结构。例如：
+
+```python
+if x:
+    out = torch.add(torch.transpose(x, 1, 0).add(y), z)
+```
+
+其中 `torch.transpose(x, 1, 0)` 会通过5行代码实现:
+```python
+x = x
+perm_0 = list(range(x.ndim))
+perm_0[0] = 1
+prem_0[1] = 0
+paddle.transpose(x=x, perm=perm_0)
+```
+其中前4行将插入到该作用域中，第5行将替换原本的ast.Call: `torch.transpose(x, 1, 0)`，仅转换该ast.Call的中间结果为：
+
+```python
+if x:
+    x = x
+    perm_0 = list(range(x.ndim))
+    perm_0[0] = 1
+    prem_0[1] = 0
+    out = torch.add(paddle.transpose(x=x, perm=perm_0).add(y), z)
+```
+
+为避免破坏语法结构，最后一行仅可为`ast.Call/ast.Name/ast.Constant/ast.Attribute/ast.Compare...`等子节点形式，如果为`ast.Assign/ast.For...`等根节点，则容易破坏原来的语法结构，当前会被自动过滤掉。
+
 
 ## 开发测试规范
 
@@ -381,7 +410,7 @@ x.new_zeros(x.size())
 
 **d) 代码精简与美观性**。要求尽可能只通过一行代码、一个API来实现（越少越好）。如果确实无法实现，才考虑通过多行代码、多个API来辅助实现该功能。
 
-**e) 维护与负责**。由于单测可能覆盖不全面，可能会引入非常隐蔽的用法bug，开发者需要对自身开发的API转换规则负责并后续维护。解决新发现的case问题。
+**e) 维护与负责**。由于单测仍可能覆盖不全面，导致引入了非常隐蔽的用法bug，开发者需要对自身开发的API转换规则负责并后续维护。解决新发现的case问题。
 
 总的来说，Matcher转换规则的开发具有一定的挑战性，是一项非常细心以及考验思维广度的工作。
 
