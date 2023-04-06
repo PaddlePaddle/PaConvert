@@ -308,9 +308,12 @@ class TransposeMatcher(BaseMatcher):
 }
 ```
 
-编写自定义 `Matcher` 时，可以参考一些较为规范的Matcher（补充中）：
-* 传入参数既可以是可变参数，也可以是列表或元组，例如 `TensorExpandMatcher`。
-
+**开发技巧**：
+- 可以参考一些写的较为规范的Matcher：
+    1. 传入参数既可以是可变参数，也可以是列表或元组时，例如 `TensorExpandMatcher`
+    2. (待补充)...
+    
+- 由于AST是静态代码分析，在Matcher中无法知道代码的具体运行值，需尽可能减少此类判断。例如Matcher里 `if 'True' in kwargs['pin_memory']` ，如果pin_memory为一个bool变量则会判断失误。
 
 ## 开发测试规范
 
