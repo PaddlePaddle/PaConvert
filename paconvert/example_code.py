@@ -780,8 +780,3 @@ x.new_full([2, 3], 2., requires_grad=True)
 x.new_full([2, 3], 2., requires_grad=True, pin_memory=False)
 
 x.new_full([2, 3], 2., dtype=torch.float32, requires_grad=True, pin_memory=True)
-
-
-
-
-

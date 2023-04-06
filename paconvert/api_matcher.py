@@ -1608,50 +1608,6 @@ class GeneratorMatcher(BaseMatcher):
         node = ast.parse(code.strip('\n')).body
         return node
 
-class CdistMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        kwargs = self.parse_args_and_kwargs(args, kwargs)
-        
-        API_TEMPLATE = textwrap.dedent(
-            '''
-            a,b = {}.clone(), {}.clone()
-            sa, sb = a.shape, b.shape
-            if len(sa)==2 and len(sb)==2:
-                x = paddle.empty(shape=(sa[0], sa[1]))
-                for i in range(sa[0]):
-                    for j in range(sb[0]):
-                        x[i,j] = paddle.dist(a[i], b[j], p={})
-            elif len(sa)==2 and len(sb)==3:
-                x = paddle.empty(shape=(sb[0], sa[0], sb[1]))
-                for i in range(sb[0]):
-                    for j in range(sa[0]):
-                        for k in range(sb[1]):
-                            x[i,j,k] = paddle.dist(a[j], b[i, k], p={})
-            elif len(sa)==3 and len(sb)==2:
-                x = paddle.empty(shape=(sa[0], sa[1], sb[0]))
-                for i in range(sa[0]):
-                    for j in range(sa[1]):
-                        for k in range(sb[0]):
-                            x[i,j,k] = paddle.dist(a[i, j],b[k], p={})
-            else:
-                x = paddle.empty(shape=(sa[0], sa[1], sb[1]))
-                for i in range(sa[0]):
-                    for j in range(sa[1]):
-                        for k in range(sb[1]):
-                            x[i,j,k] = paddle.dist(a[i,j],b[i,k], p={})
-            x.clone()
-             '''
-        )
-
-        p = kwargs['p'][1:-1] if 'p' in kwargs else '2'
-        x1 = astor.to_source(args[0]).strip('\n')
-        x2 = astor.to_source(args[1]).strip('\n')
-
-
-        code = API_TEMPLATE.format(x1, x2, p, p ,p ,p)
-        node = ast.parse(code.strip('\n')).body
-        return node
-
 
 class TorchUtilDataBatchSampler(BaseMatcher):
     def generate_code(self, kwargs):

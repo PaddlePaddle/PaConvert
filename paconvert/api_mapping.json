@@ -7182,12 +7182,6 @@
       "device"]
   },
 
-  "torch.cdist": {
-    "Matcher": "CdistMatcher",
-    "args_list": [
-      "p",
-      "compute_mode"]
-  },
 
   "torch.Size": {
     "Matcher": "SizeMatcher",
