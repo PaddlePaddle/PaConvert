@@ -708,25 +708,17 @@
   },
 
   "torch.vstack" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.concat",
+    "Matcher": "VStackMatcher",
     "args_list" : [
       "tensors",
-      "out"],
-    "kwargs_change": {
-      "tensors":"x"
-    }
+      "out"]
   },
  
   "torch.row_stack" : {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.concat",
+    "Matcher": "VStackMatcher",
     "args_list" : [
       "tensors",
-      "out"],
-    "kwargs_change": {
-      "tensors":"x"
-    }
+      "out"]
   },
   
   "torch.t" : {
