@@ -310,11 +310,23 @@ class TransposeMatcher(BaseMatcher):
 ```
 
 **开发技巧**：
-- 可以参考一些写的较为规范的Matcher：
-    1. 传入参数既可以是可变参数，也可以是列表或元组时，例如 `TensorExpandMatcher`
-    2. (待补充)...
+
+1.可以参考一些写的较为规范的Matcher：
+- 传入参数既可以是可变参数，也可以是列表或元组时，例如 `TensorExpandMatcher`
+- (待补充)...
     
-- 由于AST是静态代码分析，在Matcher中无法知道代码的具体运行值，需尽可能减少此类判断。例如Matcher里 `if 'True' in kwargs['pin_memory']` ，如果pin_memory为一个bool变量则会判断失误。
+2.由于AST语法分析是静态代码分析，也就是Matcher被执行时的并未到代码的运行期，无法知道某个变量的运行值，要避免对变量运行值的判断，否则可能引入错误。
+
+例如：如果在Matcher里的以下判断形式 `if 'True' == kwargs['pin_memory']` ，对以下Python代码将失效，因为 `kwargs['pin_memory']` 只有到代码运行期其值才为'True'，在AST语法分析期，只能获取 `kwargs['pin_memory']='temp'` ，无法获取具体运行值，所以上述判断将失效。
+```python
+temp = True
+torch.tensor(1., pin_memory=temp)
+```
+因此在Matcher编写时，需格外注意此时为静态语法分析期，避免判断运行期的值；如必须判断，则不要在Matcher中判断，将其挪到转换后的代码也就是在运行期来判断。例如转成以下形式：
+```python
+temp = True
+paddle.to_tensor(1., place=paddle.CUDAPinnedPlace() if temp else None)
+```
 
 ## 开发测试规范
 
