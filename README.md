@@ -336,7 +336,7 @@ paddle.to_tensor(1., place=paddle.CUDAPinnedPlace() if temp else None)
 python3.9 paconvert/main.py --in_dir paconvert/test_code.py --log_level "DEBUG" --show_unsupport True
 ```
 
-**b) 需考虑所有的torch用法case**。涉及到多个参数的，应包含各种组合的用法情况，不能只考虑最简单最常见的case。
+**b) 需考虑所有可能的torch用法case**。涉及到多个参数的，应包含各种组合的用法情况，不能只考虑最简单最常见的case。
 
 对任意torch用法case只允许有两种结果：a)正常转换且对比结果一致；b)不支持转换，此时返回None。不允许出现其他的错误情况，包括但不限于 **报错退出、错误转换** 等各种问题。
 
