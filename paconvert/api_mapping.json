@@ -5634,15 +5634,14 @@
 
   "torch.Tensor.norm": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.nansum",
+    "paddle_api": "paddle.Tensor.norm",
     "args_list" : [
       "p",
       "dim",
       "keepdim",
       "dtype"],
       "kwargs_change": {
-        "dim":"axis",
-        "dtype": ""
+        "dim":"axis"
       }
   }, 
 
