@@ -6051,7 +6051,6 @@
   "torch.Tensor.tensor_split": {}, 
   "torch.Tensor.to": {
     "Matcher": "TensorToMatcher",
-    "paddle_api": "paddle.Tensor.cast",
     "args_list": [
       "x",
       "y",
@@ -6271,7 +6270,6 @@
   "torch.Tensor.index_add": {},
   "torch.Tensor.index_copy_": {
     "Matcher": "TensorIndexCopyMatcher",
-    "paddle_api": "paddle.Tensor.scatter_",
     "args_list": [
       "dim",
       "index",
@@ -7150,7 +7148,6 @@
 
   "torch.nn.InstanceNorm3d": {
     "Matcher": "InstanceNorm3DMatcher",
-    "paddle_api": "paddle.nn.InstanceNorm3D",
     "args_list": [
       "num_features",
       "eps",
@@ -7163,7 +7160,6 @@
 
   "torch.nn.BCEWithLogitsLoss": {
     "Matcher": "BCEWithLogitsLossMatcher",
-    "paddle_api": "paddle.nn.BCEWithLogitsLoss",
     "args_list": [
       "weight",
       "size_average",
@@ -7174,7 +7170,6 @@
 
   "torch.utils.data.BatchSampler": {
     "Matcher": "TorchUtilDataBatchSampler",
-    "paddle_api": "paddle.io.BatchSampler",
     "args_list": [
       "sampler",
       "batch_size",
@@ -7183,14 +7178,12 @@
 
   "torch.Generator": {
     "Matcher": "GeneratorMatcher",
-    "paddle_api": "paddle.fluid.core.default_cpu_generator",
     "args_list": [
       "device"]
   },
 
   "torch.cdist": {
     "Matcher": "CdistMatcher",
-    "paddle_api": "paddle.dist",
     "args_list": [
       "p",
       "compute_mode"]
@@ -7198,7 +7191,7 @@
 
   "torch.Size": {
     "Matcher": "SizeMatcher",
-    "paddle_api": "paddle.shape"
+    "args_lsit": []
   }
 
 }
