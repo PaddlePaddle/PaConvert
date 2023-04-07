@@ -1416,35 +1416,24 @@ class WhereMatcher(BaseMatcher):
 class TensorIndexCopyMatcher(BaseMatcher):
     def generate_code(self, kwargs):
 
-        if kwargs['dim'][0] != '(':
-            return None
 
-        count = int(kwargs['dim'][1:-1])
-
-        if count == 0:
+        if kwargs['dim'][1:-1].isdigit() and int(kwargs['dim'][1:-1])==0:
             code = '{}.scatter_({}, {})'.format(self.paddleClass, kwargs['index'], kwargs['tensor'])
             return code
 
-        index_list = ['i' + str(i) for i in range(count)]
-        tab = '    '
-        for_list = ['{}for i{} in range(dim[{}]):'.format(tab * i, str(i), str(i)) for i in range(count)]
-        for_body = '\n'.join(for_list)
-        exp1 = ','.join(index_list) + ',:'
-        exp2 = ','.join([i for i in index_list])
 
         API_TEMPLATE = textwrap.dedent(
             '''
-            dim = list({}.shape)
-            {}
-            {}{}[{}] = {}[{}].scatter_({}, {}[{}])
-            x.clone()
+            times, temp_shape, temp_index = paddle.prod(paddle.to_tensor({}.shape[:{}])), {}.shape, {}
+            {}, new_t = {}.reshape([-1] + temp_shape[{}+1:]), {}.reshape([-1] + temp_shape[{}+1:])
+            for i in range(1, times):
+                temp_index= paddle.concat([temp_index, index+len(index)*i])
+            {}.scatter_(temp_index, new_t).reshape(temp_shape)
             '''
         )
-
-        code = API_TEMPLATE.format(self.paddleClass,
-                                   for_body, tab * count,
-                                   self.paddleClass, exp1, self.paddleClass, exp2, kwargs['index'],
-                                   kwargs['tensor'], exp2)
+                # kwargs['dim'], kwargs['index'], 
+        code = API_TEMPLATE.format(self.paddleClass, kwargs['dim'], self.paddleClass, kwargs['index'], 
+            self.paddleClass, self.paddleClass, kwargs['dim'], kwargs['tensor'], kwargs['dim'], self.paddleClass)
 
         return code
 
@@ -1608,10 +1597,8 @@ class GeneratorMatcher(BaseMatcher):
 class TorchUtilDataBatchSampler(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
-            '''
-            sampler = {}
-            sampler = sampler if isinstance(sampler, paddle.fluid.dataloader.sampler.Sampler) else paddle.io.Sampler(sampler)            
-            paddle.io.BatchSampler(sampler = sampler, batch_size = {}, drop_last = {})
+            '''        
+            paddle.io.BatchSampler(sampler = {} if isinstance(sampler, paddle.io.BatchSampler) else paddle.io.Sampler({}), batch_size = {}, drop_last = {})
              '''
         )
 
@@ -1622,16 +1609,8 @@ class TorchUtilDataBatchSampler(BaseMatcher):
 
 class SizeMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
-        v = astor.to_source(args[0]).strip('\n')
 
-
-        API_TEMPLATE = textwrap.dedent(
-            '''
-            list({}.tolist() if isinstance({}, paddle.Tensor) else {})
-            '''
-        )
-
-        code = API_TEMPLATE.format(v, v ,v )
+        code = 'list({})'.format(astor.to_source(args[0]).strip('\n'))
 
         node = ast.parse(code.strip('\n')).body
         return node
