@@ -189,7 +189,8 @@ Thank you to use Paddle Code Convert Tool. You can make any suggestions to us.
 
 其中第1~6类API可按后续步骤开发，第7类需要先开发框架对应功能，目前不能开发自动转换功能。
 
-对于一个待支持的Pytorch API，首先查阅映射表，如果已经有了映射关系，则可以直接参考。如果没有映射关系，需要自行分析该API映射关系，并根据模板来编写映射关系文档，提交PR到 https://github.com/PaddlePaddle/docs/tree/develop/docs/guides/model_convert/convert_from_pytorch/api_difference 目录下。具体写法详见：[API映射关系模板](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/pytorch_api_mapping_format_cn.md)。
+对于一个待支持转换的Pytorch API，首先查阅 [Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html)，如果已经有了该API的映射关系，则可以直接参考编写转换规则。
+如果没有该API映射关系，需要自行分析，并根据统一模板来编写映射关系文档，提交PR到 https://github.com/PaddlePaddle/docs/tree/develop/docs/guides/model_convert/convert_from_pytorch/api_difference 目录下。具体写法详见：[API映射关系模板](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/pytorch_api_mapping_format_cn.md)。
 
 > 注意：当前已有一部分存量映射关系，但可能存在错误或考虑不全面之处，在后续开发自动转换规则时，如发现问题，需要对这些文档进行校正修改。
 
@@ -308,19 +309,63 @@ class TransposeMatcher(BaseMatcher):
 }
 ```
 
-编写自定义 `Matcher` 时，可以参考一些较为规范的Matcher（补充中）：
-* 传入参数既可以是可变参数，也可以是列表或元组，例如 `TensorExpandMatcher`。
+**开发经验技巧**：
+
+1）可以参考一些写的较为规范的Matcher：
+- 传入参数既可以是可变参数，也可以是列表或元组时，例如 `TensorExpandMatcher`
+- (待补充)...
+    
+2）由于AST语法分析是静态代码分析，也就是Matcher被执行时的并未到代码的运行期，无法知道某个变量的运行值，要避免对变量运行值的判断，否则可能引入错误。
+
+例如：如果在Matcher里的以下判断形式 `if 'True' == kwargs['pin_memory']` ，对以下Python代码将失效，因为 `kwargs['pin_memory']` 只有到代码运行期其值才为'True'，在AST语法分析期，只能获取 `kwargs['pin_memory']='temp'` ，无法获取具体运行值，所以上述判断将失效。
+```python
+temp = True
+torch.tensor(1., pin_memory=temp)
+```
+因此在Matcher编写时，需格外注意此时为静态语法分析期，避免判断运行期的值；如必须判断，则不要在Matcher中判断，将其挪到转换后的代码也就是在运行期来判断。例如转成以下形式：
+```python
+temp = True
+paddle.to_tensor(1., place=paddle.CUDAPinnedPlace() if temp else None)
+```
+
+3）谨慎通过多行代码来实现，多余代码行数将插入到该作用域中，最后一行将替换原本的API，注意不能破坏原代码的语法树结构。例如：
+
+```python
+if x:
+    out = torch.add(torch.transpose(x, 1, 0).add(y), z)
+```
+
+其中 `torch.transpose(x, 1, 0)` 会通过5行代码实现:
+```python
+x = x
+perm_0 = list(range(x.ndim))
+perm_0[0] = 1
+prem_0[1] = 0
+paddle.transpose(x=x, perm=perm_0)
+```
+其中前4行将直接插入到该作用域中，第5行将替换原本的ast.Call: `torch.transpose(x, 1, 0)`，转换完该API的中间结果为：
+
+```python
+if x:
+    x = x
+    perm_0 = list(range(x.ndim))
+    perm_0[0] = 1
+    prem_0[1] = 0
+    out = torch.add(paddle.transpose(x=x, perm=perm_0).add(y), z)
+```
+
+为避免破坏语法树结构，最后一行仅可为`ast.Call/ast.Name/ast.Constant/ast.Attribute/ast.Compare...`等较小的子节点形式，如果为`ast.Assign/ast.For...`等根节点形式，则容易破坏原来的语法树结构，当前会被自动过滤掉。
 
 
 ## 开发测试规范
 
-**a) 调试，确认验证集中该API已全部被转换**。通过以下命令在本地调试，打印报表中的 `Not Support API List` 不应包含待提交的API：
+**a) 调试，确认验证集中该API已全部被转换**。通过以下命令在本地调试，打印报表中的 `Not Support API List` 不应还有待提交的API：
 
 ```
-python3.9 paconvert/main.py --in_dir paconvert/test_code.py --log_level "DEBUG" --show_unsupport True`
+python3.9 paconvert/main.py --in_dir paconvert/test_code.py --log_level "DEBUG" --show_unsupport True
 ```
 
-**b) 需考虑所有的torch用法case**。涉及到多个参数的，应包含各种组合的用法情况，不能只考虑最简单最常见的case。
+**b) 需考虑所有可能的torch用法case**。涉及到多个参数的，应包含各种组合的用法情况，不能只考虑最简单最常见的case。
 
 对任意torch用法case只允许有两种结果：a)正常转换且对比结果一致；b)不支持转换，此时返回None。不允许出现其他的错误情况，包括但不限于 **报错退出、错误转换** 等各种问题。
 
@@ -365,7 +410,7 @@ x.new_zeros(x.size())
 
 **d) 代码精简与美观性**。要求尽可能只通过一行代码、一个API来实现（越少越好）。如果确实无法实现，才考虑通过多行代码、多个API来辅助实现该功能。
 
-**e) 维护与负责**。由于单测可能覆盖不全面，可能会引入非常隐蔽的用法bug，开发者需要对自身开发的API转换规则负责并后续维护。解决新发现的case问题。
+**e) 维护与负责**。由于单测仍可能覆盖不全面，导致引入了非常隐蔽的用法bug，开发者需要对自身开发的API转换规则负责并后续维护。解决新发现的case问题。
 
 总的来说，Matcher转换规则的开发具有一定的挑战性，是一项非常细心以及考验思维广度的工作。
 

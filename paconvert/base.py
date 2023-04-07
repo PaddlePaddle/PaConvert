@@ -30,7 +30,7 @@ with open(json_file, 'r') as file:
     ATTRIBUTE_MAPPING = json.load(file)
 
 # will configure torch package in jsom
-TORCH_PACKAGE_LIST = ['torch', 'mmseg', 'mmcv', 'detectron', 'timm', 'mmdet', 'mmdet3d', 'torchvision', 
+TORCH_PACKAGE_LIST = ['torch', 'mmseg', 'mmcv', 'detectron', 'timm', 'mmdet', 'mmdet3d', 'torchvision',
 'kornia', 'fasttext', 'pytorch_lightning', 'jieba', 'sentencepiece', 'NLTK', 'scikit-learn']
 
 
@@ -81,8 +81,8 @@ class BaseTransformer(ast.NodeTransformer):
         for scope_node in self.scope_insert_lines:
             for body in self.scope_insert_lines[scope_node]:
                 insert_lines = self.scope_insert_lines[scope_node][body]
-                insert_lines = sorted(insert_lines.items(), 
-                                    key = lambda x:x[0], 
+                insert_lines = sorted(insert_lines.items(),
+                                    key = lambda x:x[0],
                                     reverse = True)
                 for index, lines in insert_lines:
                     for line in lines[::-1]:
@@ -114,7 +114,7 @@ class BaseTransformer(ast.NodeTransformer):
             return self.get_full_attr(node.value) + '.' + node.attr
         # x.abs() -> 'x'
         elif isinstance(node, ast.Name):
-            # array(1.) ... 
+            # array(1.) ...
             node_str = astor.to_source(node).strip('\n')
             for item in self.black_list:
                 if item == node_str:
@@ -222,7 +222,7 @@ class BaseMatcher(object):
         new_func = astor.to_source(func).strip('\n')
         self.paddleClass = new_func[0: new_func.rfind('.')]
         if self.get_paddle_api():
-            new_paddle_api = re.sub("paddle.Tensor|paddle.nn.Layer|paddle.optimizer.Optimizer", 
+            new_paddle_api = re.sub("paddle.Tensor|paddle.nn.Layer|paddle.optimizer.Optimizer",
                 self.paddleClass, self.get_paddle_api())
             self.set_paddle_api(new_paddle_api)
   

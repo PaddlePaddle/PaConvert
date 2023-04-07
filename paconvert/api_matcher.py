@@ -185,9 +185,9 @@ class TransposeMatcher(BaseMatcher):
             '''
         )
         perm = get_unique_name('perm')
-        code = API_TEMPLATE.format(kwargs['input'], perm, 
-                perm, kwargs['dim0'], kwargs['dim1'], 
-                perm, kwargs['dim1'], kwargs['dim0'], 
+        code = API_TEMPLATE.format(kwargs['input'], perm,
+                perm, kwargs['dim0'], kwargs['dim1'],
+                perm, kwargs['dim1'], kwargs['dim0'],
                 perm)
         return code
 
@@ -330,7 +330,7 @@ class MaxMinMatcher(BaseMatcher):
             return GenericMatcher(self.torch_api, self.api_mapping).get_paddle_nodes(args, kwargs)
 
         # return (values, indices) and paddle not implement, not convert
-        if len(args) > 1 and isinstance(args[1], ast.Num):  
+        if len(args) > 1 and isinstance(args[1], ast.Num):
             return None
         if 'dim' in new_kwargs:
             return None
@@ -429,8 +429,8 @@ class TensorTransposeMatcher(BaseMatcher):
             '''
         )
         perm = get_unique_name('perm')
-        code = API_TEMPLATE.format(self.paddleClass, perm, 
-                perm, kwargs['dim0'], kwargs['dim1'], 
+        code = API_TEMPLATE.format(self.paddleClass, perm,
+                perm, kwargs['dim0'], kwargs['dim1'],
                 perm, kwargs['dim1'], kwargs['dim0'], perm)
         return code
 
@@ -1062,7 +1062,7 @@ class SplitMatcher(BaseMatcher):
                 '''
             )
             code = API_TEMPLACE.format(kwargs['tensor'], kwargs['split_size_or_sections'], axis)
-        else: 
+        else:
             API_TEMPLACE = textwrap.dedent(
                 '''
                 paddle.split(x={}, num_or_sections={}.shape[{}]//{}, axis={})
@@ -1412,13 +1412,10 @@ class WhereMatcher(BaseMatcher):
         else:
             return GenericMatcher.generate_code(self, kwargs)
 
+
 class TensorIndexCopyMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        '''
-        consider paddle.reshape as other solution
-        if dim equal 0, just same as the paddle.scatter_, else we use for loop and paddle.scatter_.
-        '''
-        # if not constant
+
         if kwargs['dim'][0] != '(':
             return None
 
@@ -1428,13 +1425,12 @@ class TensorIndexCopyMatcher(BaseMatcher):
             code = '{}.scatter_({}, {})'.format(self.paddleClass, kwargs['index'], kwargs['tensor'])
             return code
 
-        index_list = ['i'+str(i) for i in range(count)]
+        index_list = ['i' + str(i) for i in range(count)]
         tab = '    '
-        for_list = ['{}for i{} in range(dim[{}]):'.format(tab*i, str(i), str(i)) for i in range(count)]
+        for_list = ['{}for i{} in range(dim[{}]):'.format(tab * i, str(i), str(i)) for i in range(count)]
         for_body = '\n'.join(for_list)
-        exp1 = ','.join(index_list)+ ',:'
+        exp1 = ','.join(index_list) + ',:'
         exp2 = ','.join([i for i in index_list])
-
 
         API_TEMPLATE = textwrap.dedent(
             '''
@@ -1445,11 +1441,11 @@ class TensorIndexCopyMatcher(BaseMatcher):
             '''
         )
 
-        code = API_TEMPLATE.format(self.paddleClass, 
-                                for_body, tab*count,
-                                self.paddleClass, exp1, self.paddleClass, exp2, kwargs['index'], 
-                                kwargs['tensor'], exp2)
-        
+        code = API_TEMPLATE.format(self.paddleClass,
+                                   for_body, tab * count,
+                                   self.paddleClass, exp1, self.paddleClass, exp2, kwargs['index'],
+                                   kwargs['tensor'], exp2)
+
         return code
 
 
@@ -1536,82 +1532,81 @@ class BCEWithLogitsLossMatcher(BaseMatcher):
         code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
         return code
 
+
 class TensorToMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
 
         self.parse_func(func)
         kwargs = self.parse_args_and_kwargs(args, kwargs)
         if not kwargs:
-            code =  '{}.cast(dtype = {}.dtype)'.format(self.paddleClass, self.paddleClass)
+            code = '{}.cast(dtype = {}.dtype)'.format(self.paddleClass, self.paddleClass)
         elif 'tensor' in kwargs:
             code = '{}.cast(dtype = {}.dtype)'.format(self.paddleClass, kwargs['tensor'])
         elif 'dtype' in kwargs:
             code = '{}.cast(dtype = {})'.format(self.paddleClass, kwargs['dtype'])
         elif 'device' in kwargs and 'dtype' not in kwargs:
-                code = '{}.clone()'.format(self.paddleClass)
+            code = '{}.clone()'.format(self.paddleClass)
         else:
             if 'y' not in kwargs:
                 API_TEMPLACE = textwrap.dedent(
-                '''
-                if type({}) == paddle.dtype:
-                    dtype = {}
-                elif type({}) == str:
-                    dtype = {}.dtype
-                else: 
-                    dtype = {}.dtype
-                {}.cast(dtype)
-                '''
-                )
-                code = API_TEMPLACE.format(kwargs['x'], kwargs['x'], 
-                    kwargs['x'], self.paddleClass, kwargs['x'], self.paddleClass)
-            else:
-                API_TEMPLACE = textwrap.dedent(
-                '''
-                if type({}) == paddle.dtype:
-                    dtype = {}
-                elif type({}) == str:
-                    if type({}) != paddle.dtype:
+                    '''
+                    if type({}) == paddle.dtype:
+                        dtype = {}
+                    elif type({}) == str:
                         dtype = {}.dtype
                     else: 
-                        dtype = {}
-                else: 
-                    dtype = {}.dtype
-                {}.cast(dtype)'
-                '''
+                        dtype = {}.dtype
+                    {}.cast(dtype)
+                    '''
                 )
-                code = API_TEMPLACE.format(kwargs['x'], kwargs['x'], 
-                    kwargs['y'], self.paddleClass, kwargs['y'], kwargs['x'], self.paddleClass)
-        
+                code = API_TEMPLACE.format(kwargs['x'], kwargs['x'],
+                                           kwargs['x'], self.paddleClass, kwargs['x'], self.paddleClass)
+            else:
+                API_TEMPLACE = textwrap.dedent(
+                    '''
+                    if type({}) == paddle.dtype:
+                        dtype = {}
+                    elif type({}) == str:
+                        if type({}) != paddle.dtype:
+                            dtype = {}.dtype
+                        else: 
+                            dtype = {}
+                    else: 
+                        dtype = {}.dtype
+                    {}.cast(dtype)'
+                    '''
+                )
+                code = API_TEMPLACE.format(kwargs['x'], kwargs['x'],
+                                           kwargs['y'], self.paddleClass, kwargs['y'], kwargs['x'], self.paddleClass)
+
         return ast.parse(code).body
 
-class GeneratorMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        new_kwargs = self.parse_args_and_kwargs(args, kwargs)
 
-        if not new_kwargs:
+class GeneratorMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if not kwargs:
             code = 'paddle.fluid.core.default_cpu_generator()'
-        elif 'device' in new_kwargs:
-            if new_kwargs['device']=='"""cuda"""':
+        elif 'device' in kwargs:
+            if kwargs['device'] == '"""cuda"""':
                 code = textwrap.dedent(
                     '''
                     device = paddle.device.get_device()
                     paddle.fluid.core.default_cuda_generator(int(device[-1]))
                     '''
                 )
-            elif new_kwargs['device']=='"""mps"""':
+            elif kwargs['device'] == '"""mps"""':
                 # paddle not suppor mps, but support xpu
                 return None
 
             else:
                 code = 'paddle.fluid.core.default_cpu_generator()'
 
-        node = ast.parse(code.strip('\n')).body
-        return node
+        return code
 
 
 class TorchUtilDataBatchSampler(BaseMatcher):
     def generate_code(self, kwargs):
-    
         API_TEMPLATE = textwrap.dedent(
             '''
             sampler = {}
@@ -1622,13 +1617,13 @@ class TorchUtilDataBatchSampler(BaseMatcher):
 
         code = API_TEMPLATE.format(kwargs['sampler'], kwargs["batch_size"], kwargs["drop_last"])
 
-        return code 
+        return code
 
 
 class SizeMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         v = astor.to_source(args[0]).strip('\n')
-        
+
         code = 'paddle.empty({}).shape'.format(v)
         node = ast.parse(code.strip('\n')).body
         return node

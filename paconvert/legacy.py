@@ -1,6 +1,6 @@
 # These Matcher have been discarded, may be used future
 class RandintMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs): 
+    def get_paddle_nodes(self, args, kwargs):
         args = self.parse_args(args)
         new_kwargs = {}
         if len(args) == 2:
