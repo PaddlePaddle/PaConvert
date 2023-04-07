@@ -1627,7 +1627,7 @@ class SizeMatcher(BaseMatcher):
 
         API_TEMPLATE = textwrap.dedent(
             '''
-            list({}.shape if isinstance({}, paddle.Tensor) else {})
+            list({}.tolist() if isinstance({}, paddle.Tensor) else {})
             '''
         )
 
