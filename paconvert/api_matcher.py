@@ -185,9 +185,9 @@ class TransposeMatcher(BaseMatcher):
             '''
         )
         perm = get_unique_name('perm')
-        code = API_TEMPLATE.format(kwargs['input'], perm, 
-                perm, kwargs['dim0'], kwargs['dim1'], 
-                perm, kwargs['dim1'], kwargs['dim0'], 
+        code = API_TEMPLATE.format(kwargs['input'], perm,
+                perm, kwargs['dim0'], kwargs['dim1'],
+                perm, kwargs['dim1'], kwargs['dim0'],
                 perm)
         return code
 
@@ -330,7 +330,7 @@ class MaxMinMatcher(BaseMatcher):
             return GenericMatcher(self.torch_api, self.api_mapping).get_paddle_nodes(args, kwargs)
 
         # return (values, indices) and paddle not implement, not convert
-        if len(args) > 1 and isinstance(args[1], ast.Num):  
+        if len(args) > 1 and isinstance(args[1], ast.Num):
             return None
         if 'dim' in new_kwargs:
             return None
@@ -439,7 +439,11 @@ class TensorTransposeMatcher(BaseMatcher):
         )
         perm = get_unique_name('perm')
         code = API_TEMPLATE.format(self.paddleClass, perm,
+<<<<<<< HEAD
                 perm, kwargs['dim0'], kwargs['dim1'], 
+=======
+                perm, kwargs['dim0'], kwargs['dim1'],
+>>>>>>> 9b264b6585d4d192aedf2d7a930dd04216e187fb
                 perm, kwargs['dim1'], kwargs['dim0'], perm)
         return code
 
@@ -1062,7 +1066,7 @@ class SplitMatcher(BaseMatcher):
                 '''
             )
             code = API_TEMPLACE.format(kwargs['tensor'], kwargs['split_size_or_sections'], axis)
-        else: 
+        else:
             API_TEMPLACE = textwrap.dedent(
                 '''
                 paddle.split(x={}, num_or_sections={}.shape[{}]//{}, axis={})
