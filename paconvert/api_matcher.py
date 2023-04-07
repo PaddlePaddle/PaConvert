@@ -1598,11 +1598,11 @@ class TorchUtilDataBatchSampler(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             '''        
-            paddle.io.BatchSampler(sampler = {} if isinstance(sampler, paddle.io.BatchSampler) else paddle.io.Sampler({}), batch_size = {}, drop_last = {})
+            paddle.io.BatchSampler(sampler = {} if isinstance({}, paddle.io.Sampler) else paddle.io.SequenceSampler({}), batch_size = {}, drop_last = {})
              '''
         )
 
-        code = API_TEMPLATE.format(kwargs['sampler'], kwargs["batch_size"], kwargs["drop_last"])
+        code = API_TEMPLATE.format(kwargs['sampler'], kwargs['sampler'], kwargs['sampler'], kwargs["batch_size"], kwargs["drop_last"])
 
         return code
 
