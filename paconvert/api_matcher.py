@@ -384,7 +384,17 @@ class TensorMatcher(BaseMatcher):
             elif isinstance(args[0], ast.Starred):
                 shape = astor.to_source(args[0].value).strip('\n')
             else:
-                shape = self.parse_args(args)[0]
+                data = self.parse_args(args)[0]
+                if "torch.IntTensor" == self.torch_api:
+                    code = "paddle.to_tensor(data={}, dtype='int32')".format(data)
+                elif "torch.LongTensor" == self.torch_api:
+                    code = "paddle.to_tensor(data={}, dtype='int64')".format(data)
+                elif "torch.FloatTensor" == self.torch_api:
+                    code = "paddle.to_tensor(data={}, dtype='float32')".format(data)
+                else:
+                    code = "paddle.to_tensor(data={})".format(data)
+                node = ast.parse(code.strip('\n')).body
+                return node
             shape = str(shape).replace('\'', '')
 
         if "torch.IntTensor" == self.torch_api:
@@ -428,7 +438,7 @@ class TensorTransposeMatcher(BaseMatcher):
             '''
         )
         perm = get_unique_name('perm')
-        code = API_TEMPLATE.format(self.paddleClass, perm, 
+        code = API_TEMPLATE.format(self.paddleClass, perm,
                 perm, kwargs['dim0'], kwargs['dim1'], 
                 perm, kwargs['dim1'], kwargs['dim0'], perm)
         return code
@@ -654,17 +664,10 @@ class TensorNewTensorMatcher(BaseMatcher):
                 kwargs['place'] = 'paddle.CUDAPinnedPlace()'
             kwargs.pop('pin_memory')
 
-        if 'dtype' in kwargs:
-            code = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                '''
-                x = {}
-                {}({}).astype(x.dtype)
-                '''
-            )
-            code = API_TEMPLATE.format(self.paddleClass, self.get_paddle_api(), self.kwargs_to_str(kwargs))
-
+        if 'dtype' not in kwargs:
+            kwargs['dtype'] = '{}.dtype'.format(self.paddleClass)
+            
+        code = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
         return code.strip('\n')
 
 

@@ -97,13 +97,12 @@ class ImportTransformer(BaseTransformer):
                 return node
         else:
             dir_name = os.path.dirname(self.file)
-            while len(dir_name) > 1:
+            # the case of dir_name = 'E:/' will happen with windows
+            while len(dir_name) > 1 and dir_name[-2] != ':':
                 import_path = dir_name + "/" + node.module.replace(".", "/")
                 if os.path.exists(import_path) or os.path.exists(import_path+'.py'):
                     return node
                 dir_name = os.path.dirname(dir_name)
-                if dir_name[-2] == ':':
-                    break
 
         # import from site-packages, third_paty module, just add to others
         for alias_node in node.names:
