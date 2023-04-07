@@ -1550,9 +1550,9 @@ class TensorToMatcher(BaseMatcher):
             if 'y' not in kwargs:
                 API_TEMPLACE = textwrap.dedent(
                     '''
-                    if type({}) == paddle.dtype:
+                    if isinstance({}, paddle.dtype):
                         dtype = {}
-                    elif type({}) == str:
+                    elif isinstance({}, str):
                         dtype = {}.dtype
                     else: 
                         dtype = {}.dtype
@@ -1564,10 +1564,10 @@ class TensorToMatcher(BaseMatcher):
             else:
                 API_TEMPLACE = textwrap.dedent(
                     '''
-                    if type({}) == paddle.dtype:
+                    if isinstance({}, paddle.dtype):
                         dtype = {}
-                    elif type({}) == str:
-                        if type({}) != paddle.dtype:
+                    elif isinstance({}, str):
+                        if not isinstance({}, paddle.dtype):
                             dtype = {}.dtype
                         else: 
                             dtype = {}
@@ -1624,6 +1624,14 @@ class SizeMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         v = astor.to_source(args[0]).strip('\n')
 
-        code = 'paddle.empty({}).shape'.format(v)
+
+        API_TEMPLATE = textwrap.dedent(
+            '''
+            list({}.shape if isinstance({}, paddle.Tensor) else {})
+            '''
+        )
+
+        code = API_TEMPLATE.format(v, v ,v )
+
         node = ast.parse(code.strip('\n')).body
         return node
