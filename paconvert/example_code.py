@@ -780,3 +780,208 @@ x.new_full([2, 3], 2., requires_grad=True)
 x.new_full([2, 3], 2., requires_grad=True, pin_memory=False)
 
 x.new_full([2, 3], 2., dtype=torch.float32, requires_grad=True, pin_memory=True)
+
+
+import torch
+# torch.Generator()
+## Case1: default cpu
+g_cpu = torch.Generator()
+print('[torch.Generator() case-1]: ', g_cpu)
+
+## Case2: cpu
+g_cpu = torch.Generator(device='cpu')
+print('[torch.Generator() case-2]: ', g_cpu)
+
+## Case3: cpu
+g_cpu = torch.Generator('cpu')
+print('[torch.Generator() case-3]: ', g_cpu)
+
+# case 1:
+print(torch.Size([2, 8, 64, 64]))
+
+# # case 2:
+assert torch.randn(6, 5, 7).size() == torch.Size([6, 5, 7])
+
+# # case 3:
+out = torch.Size([6, 5, 7])
+shape_nchw = torch.Size([6, 5, 7])
+assert out == torch.Size(shape_nchw)
+
+# case 4:
+print(torch.Size([1]))
+
+# case 5
+shape = torch.Size([1])
+
+# torch.Tensor.index_copy_
+## case 1: index axis = 0
+import torch
+x = torch.zeros(5, 3)
+t = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=torch.float)
+index = torch.tensor([0, 4, 2])
+x.index_copy_(0, index, t)
+print('[torch.Tensor.index_copy_ case-1]: ', x)
+
+## Case2:  index axis !=0  high dimension data that x and tensor must have same shape
+x = torch.zeros(2, 1, 3, 3)
+t = torch.tensor([
+    [[[1, 2, 3], [4, 5, 6], [7, 8, 9]]],
+    [[[1, 2, 3], [4, 5, 6], [7, 8, 9]]]], dtype=torch.float)
+index = torch.tensor([0, 1, 2])
+x.index_copy_(2, index, t)
+print('[torch.Tensor.index_copy_ case-2]: ', x)
+
+## case 3: assign case 1
+x = torch.zeros(5, 3)
+t = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=torch.float)
+index = torch.tensor([0, 4, 2])
+y = x.index_copy_(0, index, t)
+print('[torch.Tensor.index_copy_ case-3]: ', y)
+
+## Case4: assign case 2
+x = torch.zeros(2, 1, 3, 3)
+t = torch.tensor([
+    [[[1, 2, 3], [4, 5, 6], [7, 8, 9]]],
+    [[[1, 2, 3], [4, 5, 6], [7, 8, 9]]]], dtype=torch.float)
+index = torch.tensor([0, 1, 2])
+y = x.index_copy_(2, index, t)
+print('[torch.Tensor.index_copy_ case-4]: ', y)
+
+
+## Case5: scalar and assign
+x = torch.zeros(20)
+t = torch.tensor([1,3,4,5], dtype=torch.float)
+index = torch.tensor([0, 12, 2, 1])
+y = x.index_copy_(0, index, t)
+print('[torch.Tensor.index_copy_ case-5]: ', y)
+
+import torch
+data = torch.tensor([23.,32., 43.])
+# case 1:
+if not data.requires_grad:
+	print(1)
+
+# case 2:
+print(data.requires_grad)
+
+# case 3:
+data.requires_grad = False
+
+# case 4:
+requires_grad= data.requires_grad
+
+# # case 5
+data = torch.tensor([23.,32., 43.], requires_grad=data.requires_grad)
+
+# case 6
+print(data.requires_grad == False)
+
+# case 7:
+print(not data.requires_grad)
+
+# case 8:
+print('{} , {}'.format("1", str(data.requires_grad)))
+
+# case 9:
+def test():
+    return True
+data.requires_grad = test()
+
+# case 10:
+z = (True, False, True)
+a, data.requires_grad, c = z
+print(data.requires_grad)
+
+import torch.nn as nn
+import torch
+# case 1
+m = nn.InstanceNorm3d(100)
+input = torch.randn(20, 100, 35, 45, 10)
+output = m(input)
+print('[torch.nn.InstanceNorm3d case-1]: ', output)
+
+# case 2
+m = nn.InstanceNorm3d(100, affine=True)
+input = torch.randn(20, 100, 35, 45, 10)
+output = m(input)
+print('[torch.nn.InstanceNorm3d case-2]: ', output)
+
+# case 3
+m = nn.InstanceNorm3d(100, affine=False)
+input = torch.randn(20, 100, 35, 45, 10)
+output = m(input)
+print('[torch.nn.InstanceNorm3d case-3]: ', output)
+
+# case 4
+m = nn.InstanceNorm3d(100, affine=True, momentum=0.1)
+input = torch.randn(20, 100, 35, 45, 10)
+output = m(input)
+print('[torch.nn.InstanceNorm3d case-4]: ', output)
+
+# case 5
+m = nn.InstanceNorm3d(100, affine=False, momentum=0.1)
+input = torch.randn(20, 100, 35, 45, 10)
+output = m(input)
+print('[torch.nn.InstanceNorm3d case-5]: ', output)
+
+import torch
+import torch.nn as nn
+# case 1
+loss = torch.nn.BCEWithLogitsLoss(reduction='none')
+input = torch.tensor([1.,0.7,0.2], requires_grad=True)
+target = torch.tensor([1.,0., 0.])
+output = loss(input, target)
+print('[torch.nn.BCEWithLogitsLoss case-1]: ', output)
+
+# case 2
+loss = nn.BCEWithLogitsLoss(weight=torch.tensor([1.0,0.2, 0.2]), reduction='none')
+input = torch.tensor([1.,0.7,0.2], requires_grad=True)
+target = torch.tensor([1.,0., 0.])
+output = loss(input, target)
+print('[torch.nn.BCEWithLogitsLoss case-2]: ', output)
+
+# case 3
+loss= nn.BCEWithLogitsLoss(pos_weight = torch.ones([3]))
+input = torch.tensor([1.,0.7,0.2], requires_grad=True)
+target = torch.tensor([1.,0., 0.])
+output = loss(input, target)
+print('[torch.nn.BCEWithLogitsLoss case-3]: ', output)
+
+# case 4
+loss = nn.BCEWithLogitsLoss(size_average=True)
+input = torch.tensor([1.,0.7,0.2], requires_grad=True)
+target = torch.tensor([1.,0., 0.])
+output = loss(input, target)
+print('[torch.nn.BCEWithLogitsLoss case-4]: ', output)
+
+# case 5
+loss = nn.BCEWithLogitsLoss()
+input = torch.tensor([1.,0.7,0.2], requires_grad=True)
+target = torch.tensor([1.,0., 0.])
+output = loss(input, target)
+print('[torch.nn.BCEWithLogitsLoss case-5]: ', output)
+
+import torch
+import torch.nn as nn
+from torch.utils.data import BatchSampler
+# case 1
+o = list(BatchSampler(range(10), batch_size=3, drop_last=True))
+print('[torch.utils.data.BatchSampler case-1]: ', o)
+
+# case 2
+o = list(BatchSampler(range(10), batch_size=3, drop_last=False))
+print('[torch.utils.data.BatchSampler case-2]: ', o)
+
+# case 3
+batch_sampler_train = torch.utils.data.BatchSampler(range(10), 2, drop_last=True)
+print('[torch.utils.data.BatchSampler case-3]: ', list(batch_sampler_train))
+
+# case 4
+batch_size = 4
+batch_sampler_train = torch.utils.data.BatchSampler(range(10), batch_size, drop_last=False)
+print('[torch.utils.data.BatchSampler case-4]: ', list(batch_sampler_train))
+
+# case 5
+batch_size = 4
+batch_sampler_train = torch.utils.data.BatchSampler(sampler=range(10), batch_size=batch_size, drop_last=False)
+print('[torch.utils.data.BatchSampler case-5]: ', list(batch_sampler_train))
