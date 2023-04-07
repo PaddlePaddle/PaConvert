@@ -1536,7 +1536,7 @@ class PolarMatcher(BaseMatcher):
             )
             code = API_TEMPLATE.format(kwargs['abs'], kwargs['angle'], kwargs['abs'], kwargs['angle'])
             
-        return  code
+        return code
 
 class NarrowMatcher(BaseMatcher):
     def generate_code(self, kwargs):           
@@ -1545,7 +1545,8 @@ class NarrowMatcher(BaseMatcher):
             paddle.slice({}, [{}], [{}], [{} + {}])
             '''
         )
-        return  API_TEMPLATE.format(kwargs['input'], kwargs['dim'], kwargs['start'], kwargs['start'], kwargs['length'])
+        code = API_TEMPLATE.format(kwargs['input'], kwargs['dim'], kwargs['start'], kwargs['start'], kwargs['length'])
+        return code
 
 class AddCMulMatcher(BaseMatcher):
     def generate_code(self, kwargs):  
@@ -1569,7 +1570,7 @@ class AddCMulMatcher(BaseMatcher):
             out = get_unique_name('out')
             code = API_TEMPLATE.format(out, kwargs['input'], kwargs['value'], kwargs['tensor1'], kwargs['tensor2'], out)
 
-        return  code
+        return code
 
 class AddCDivMatcher(BaseMatcher):
     def generate_code(self, kwargs):  
@@ -1593,18 +1594,18 @@ class AddCDivMatcher(BaseMatcher):
             out = get_unique_name('out')
             code = API_TEMPLATE.format(out, kwargs['input'], kwargs['value'], kwargs['tensor1'], kwargs['tensor2'], out)
 
-        return  code
+        return code
 
 class IsNonzeroMatcher(BaseMatcher):
     def generate_code(self, kwargs):           
         API_TEMPLATE = textwrap.dedent(
             '''  
-            if paddle.numel({}) != 1:
-                raise RuntimeError('number of tensor elements must equal to 1')
-            paddle.to_tensor({}, dtype='bool').item() 
+            {}.astype('bool').item() 
             '''
         )
-        return  API_TEMPLATE.format(kwargs['input'], kwargs['input'])
+        code = API_TEMPLATE.format(kwargs['input'])
+
+        return code
 
 class VStackMatcher(BaseMatcher):
     def generate_code(self, kwargs): 
@@ -1633,4 +1634,4 @@ class VStackMatcher(BaseMatcher):
             out = get_unique_name('out')
             code = API_TEMPLATE.format(kwargs['tensors'], out, kwargs['tensors'], out, kwargs['tensors'], out)
 
-        return  code
+        return code
