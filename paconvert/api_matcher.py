@@ -439,11 +439,7 @@ class TensorTransposeMatcher(BaseMatcher):
         )
         perm = get_unique_name('perm')
         code = API_TEMPLATE.format(self.paddleClass, perm,
-<<<<<<< HEAD
-                perm, kwargs['dim0'], kwargs['dim1'], 
-=======
                 perm, kwargs['dim0'], kwargs['dim1'],
->>>>>>> 9b264b6585d4d192aedf2d7a930dd04216e187fb
                 perm, kwargs['dim1'], kwargs['dim0'], perm)
         return code
 

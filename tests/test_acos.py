@@ -16,7 +16,7 @@ def test_case_1():
         result = torch.acos(torch.tensor([0.34, -0.56, 0.73]))
         '''
     )
-    obj.run(pytorch_code, compared_tensor_names=['result'])
+    obj.run(pytorch_code,['result'])
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
@@ -26,7 +26,7 @@ def test_case_2():
         result = torch.acos(a)
         '''
     )
-    obj.run(pytorch_code, compared_tensor_names=['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
@@ -37,4 +37,4 @@ def test_case_3():
         result = torch.acos(torch.tensor(a), out=out)
         '''
     )
-    obj.run(pytorch_code, compared_tensor_names=['out'])
+    obj.run(pytorch_code, ['out'])

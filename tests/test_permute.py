@@ -1,7 +1,6 @@
 
 import sys
 import os
-from unittest import result
 sys.path.append(os.path.dirname(__file__) + '/../')
 
 import textwrap
@@ -18,7 +17,7 @@ def test_case_1():
         result = torch.permute(x, (1, 0))
         '''
     )
-    obj.run(pytorch_code, compared_tensor_names=['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
@@ -28,7 +27,7 @@ def test_case_2():
         result = torch.permute(x, [1, 0])
         '''
     )
-    obj.run(pytorch_code, compared_tensor_names=['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
@@ -39,7 +38,7 @@ def test_case_3():
         result = torch.permute(x, shape)
         '''
     )
-    obj.run(pytorch_code, compared_tensor_names=['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
@@ -50,7 +49,7 @@ def test_case_4():
         result = torch.permute(x, [a, b])
         '''
     )
-    obj.run(pytorch_code, compared_tensor_names=['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
@@ -60,4 +59,4 @@ def test_case_5():
         result = torch.permute(input=x, dims=[1, 2, 0])
         '''
     )
-    obj.run(pytorch_code, compared_tensor_names=['result'])
+    obj.run(pytorch_code, ['result'])

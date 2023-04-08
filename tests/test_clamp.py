@@ -1,7 +1,6 @@
 
 import sys
 import os
-from unittest import result
 sys.path.append(os.path.dirname(__file__) + '/../')
 
 import textwrap
@@ -18,7 +17,7 @@ def test_case_1():
         result = torch.clamp(a, -0.5, 0.5)
         '''
     )
-    obj.run(pytorch_code, compared_tensor_names=['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
@@ -28,7 +27,7 @@ def test_case_2():
         result = torch.clamp(a, min=-0.2, max=0.5)
         '''
     )
-    obj.run(pytorch_code, compared_tensor_names=['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
@@ -38,7 +37,7 @@ def test_case_3():
         result = torch.clamp(a, min=-0.5, max=0.5)
         '''
     )
-    obj.run(pytorch_code, compared_tensor_names=['result'])
+    obj.run(pytorch_code, ['result'])
 
 def _test_case_4():
     pytorch_code = textwrap.dedent(
@@ -49,7 +48,7 @@ def _test_case_4():
         result = torch.clamp(a, min=min)
         '''
     )
-    obj.run(pytorch_code, compared_tensor_names=['result'])
+    obj.run(pytorch_code, ['result'])
 
 def _test_case_5():
     pytorch_code = textwrap.dedent(
@@ -60,4 +59,4 @@ def _test_case_5():
         result = torch.clamp(a, max=max)
         '''
     )
-    obj.run(pytorch_code, compared_tensor_names=['result'])
+    obj.run(pytorch_code, ['result'])

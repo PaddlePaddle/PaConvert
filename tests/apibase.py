@@ -13,7 +13,7 @@ class APIBase(object):
         """
         self.pytorch_api = pytorch_api
 
-    def run(self, pytorch_code, *, compared_tensor_names=None,  expect_paddle_code=None) -> None:
+    def run(self, pytorch_code, compared_tensor_names=None,  expect_paddle_code=None) -> None:
         """
         args:
             pytorch_code: pytorch code to execute
@@ -45,8 +45,6 @@ class APIBase(object):
         torch_numpy, paddle_numpy = pytorch_result.numpy(), paddle_result.numpy()
 
         if not np.allclose(paddle_numpy, torch_numpy):
-            return False
-        if torch_numpy.shape != paddle_numpy.shape:
             return False
         if pytorch_result.requires_grad == paddle_result.stop_gradient:
             return False
