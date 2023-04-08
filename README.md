@@ -356,6 +356,7 @@ if x:
 
 为避免破坏语法树结构，最后一行仅可为`ast.Call/ast.Name/ast.Constant/ast.Attribute/ast.Compare...`等较小的子节点形式，如果为`ast.Assign/ast.For...`等根节点形式，则容易破坏原来的语法树结构，当前会被自动过滤掉。
 
+4）在开发时可能需要查询各种 `ast.Node` 的组成属性，可以参考 https://greentreesnakes.readthedocs.io/en/latest/nodes.html#function-and-class-definitions ，同时也建议熟悉各种常用AST节点，有利于开发效率的提升。
 
 ## 开发测试规范
 
