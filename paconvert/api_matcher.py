@@ -1565,3 +1565,54 @@ class SizeMatcher(BaseMatcher):
 
         node = ast.parse(code.strip('\n')).body
         return node
+
+
+class TensorToMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+        if not kwargs:
+            code = '{}.cast({}.dtype)'.format(self.paddleClass, self.paddleClass)
+        elif 'tensor' in kwargs:
+            code = '{}.cast({}.dtype)'.format(self.paddleClass, kwargs['tensor'])
+        elif 'dtype' in kwargs:
+            code = '{}.cast({})'.format(self.paddleClass, kwargs['dtype'])
+        elif 'device' in kwargs and 'dtype' not in kwargs:
+            code = '{}.cast({}.dtype)'.format(self.paddleClass, self.paddleClass)
+        else:
+            if 'y' not in kwargs and 'x' in kwargs:
+                API_TEMPLACE = textwrap.dedent(
+                    '''
+                    if isinstance({}, paddle.dtype):
+                        dtype = {}
+                    elif isinstance({}, str) and {} not in ['cpu', 'cuda', 'ipu', 'xpu']:
+                        dtype = {}
+                    else: 
+                        dtype = {}.dtype
+                    {}.cast(dtype)
+                    '''
+                )
+                code = API_TEMPLACE.format(kwargs['x'], kwargs['x'],
+                                           kwargs['x'], kwargs['x'], kwargs['x'], self.paddleClass, self.paddleClass)
+            elif 'y' in kwargs and 'x' in kwargs:
+                API_TEMPLACE = textwrap.dedent(
+                    '''
+                    if isinstance({}, paddle.dtype):
+                        dtype = {}
+                    elif isinstance({}, str):
+                        if {} not in ['cpu', 'cuda', 'ipu', 'xpu']:
+                            dtype = {}
+                        else: 
+                            dtype = {} if isinstance({}, str) else {}.dtype
+                    else: 
+                        dtype = {}.dtype
+                    {}.cast(dtype)
+                    '''
+                )
+                code = API_TEMPLACE.format(kwargs['x'], kwargs['x'], kwargs['x'], kwargs['x'], kwargs['x'],
+                                           kwargs['y'], kwargs['y'], self.paddleClass, kwargs['x'], self.paddleClass)
+            else:
+                code = '{}.cast({}.dtype)'.format(self.paddleClass, self.paddleClass)
+
+        return ast.parse(code).body

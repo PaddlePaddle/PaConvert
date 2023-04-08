@@ -985,3 +985,73 @@ print('[torch.utils.data.BatchSampler case-4]: ', list(batch_sampler_train))
 batch_size = 4
 batch_sampler_train = torch.utils.data.BatchSampler(sampler=range(10), batch_size=batch_size, drop_last=False)
 print('[torch.utils.data.BatchSampler case-5]: ', list(batch_sampler_train))
+
+import torch
+cpu = torch.device('cpu')
+a =torch.randn(2, 3)
+c = torch.randn(2, 3, dtype= torch.float64, device=cpu)
+# torch.Tensor.to
+## Case1:  torch.to(device=None, dtype=None, non_blocking=False, copy=False, memory_format=torch.preserve_format)
+### torch code 
+b = a.to(cpu, non_blocking=False, copy=False)
+print('[torch.Tensor.to case-1]: ', b)
+
+## Case2:  torch.to(device=None, dtype=None, non_blocking=False, copy=False, memory_format=torch.preserve_format)
+### torch code 
+b = a.to('cpu')
+print('[torch.Tensor.to case-2]: ', b)
+
+## Case3:  torch.to(device=None, dtype=None, non_blocking=False, copy=False, memory_format=torch.preserve_format)
+### torch code 
+b = a.to(device = cpu, dtype = torch.float64)
+print('[torch.Tensor.to case-3]: ', b)
+
+## Case4:  torch.to(device=None, dtype=None, non_blocking=False, copy=False, memory_format=torch.preserve_format)
+### to(dtype, non_blocking=False, copy=False, memory_format=torch.preserve_format)
+### torch code
+b = a.to(torch.float64)
+print('[torch.Tensor.to case-4]: ', b)
+
+## Case5:  torch.to(dtype, non_blocking=False, copy=False, memory_format=torch.preserve_format)
+### torch code 
+b = a.to(dtype= torch.float64)
+print('[torch.Tensor.to case-5]: ', b)
+
+
+## Case6:  torch.to(other, non_blocking=False, copy=False)
+### torch code 
+b = a.to(c)
+print('[torch.Tensor.to case-6]: ', b)
+
+## Case7:
+# 不支持torch.channels_last
+# a =troch.tensor([[[[1]]]])
+# a = a.to(memory_format=torch.channels_last)
+# print('[torch.Tensor.to case-7]: ', b)
+
+## Case8:
+a = a.to(torch.half)
+print('[torch.Tensor.to case-8]: ', b)
+
+## Case9:
+table =  a
+b = a.to(table.device)
+print('[torch.Tensor.to case-9]: ', b)
+
+## Case10:
+b = a.to(torch.float32)
+print('[torch.Tensor.to case-10]: ', b)
+
+## Case11:
+device = torch.device('cpu')
+b = torch.tensor([-1]).to(torch.bool)
+print('[torch.Tensor.to case-11]: ', b)
+
+## Case12:
+dtype = torch.float32
+b = a.to(dtype=dtype)
+print('[torch.Tensor.to case-12]: ', b)
+
+## Case13:
+b = a.to(torch.device('cpu'))
+print('[torch.Tensor.to case-13: ', b)

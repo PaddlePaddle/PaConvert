@@ -141,30 +141,14 @@ class BasicTransformer(BaseTransformer):
                 if matcher:
                     paddle_api = matcher.get_paddle_api()
                     if paddle_api:
+                        # for tensor attribute , only need to change .attr
+                        node.attr = ast.parse(paddle_api).body[0].value.attr
                         self.success_api_count += 1
                         self.log_debug("[Success]convert Tensor Attribute: {} to Paddle".format(torch_api), self.file_name, node.lineno)
-                        node.attr = ast.parse(paddle_api).body[0].value.attr
+                        
                         if paddle_api == 'paddle.Tensor.stop_gradient':
-                            if isinstance(self.parent_node, (ast.Tuple)):
-                                temp_index = -1
-                                for index in range(len(self.root.body)):
-                                    if isinstance(self.root.body[index], (ast.Assign)) and self.parent_node in self.root.body[index].targets:
-                                        temp_index = index
-                                if temp_index != -1:
-                                    new_node = ast.Name(id='temp', ctx=ast.Load())
-                                    assign_node = ast.Assign(targets=[node], value = ast.UnaryOp(ast.Not(), operand = new_node))
-                                    self.root.body.insert(temp_index+1, assign_node)
-                                    return new_node
-                                else:
-                                    node = ast.UnaryOp(ast.Not(), operand = node)
-                            elif isinstance(self.parent_node, (ast.Assign)) and node == self.parent_node.value:
-                                node = ast.UnaryOp(ast.Not(), operand = node)
-                            elif isinstance(self.parent_node, (ast.Assign, ast.keyword)):
-                                self.parent_node.value = ast.UnaryOp(ast.Not(), operand = self.parent_node.value)
-                            else:
-                                node = ast.UnaryOp(ast.Not(), operand = node)
-                            return node                                
-                        # for tensor attribute , only need to change .attr
+                            node = ast.UnaryOp(ast.Not(), operand = node)                             
+
                         return node
 
         annotate_node = ast.parse("'Tensor Attribute: {}, not convert, please check whether it is torch.Tensor.* and convert manually'".format(torch_api)).body[0]

@@ -6048,7 +6048,15 @@
   "torch.Tensor.symeig": {}, 
   "torch.Tensor.t_": {}, 
   "torch.Tensor.tensor_split": {}, 
-  "torch.Tensor.to": {},
+  "torch.Tensor.to": {
+    "Matcher": "TensorToMatcher",
+    "args_list": [
+      "x",
+      "y",
+      "non_blocking",
+      "copy",
+      "memory_format"]
+  },
   "torch.Tensor.to_mkldnn": {}, 
   "torch.Tensor.take": {}, 
   "torch.Tensor.tan_": {}, 

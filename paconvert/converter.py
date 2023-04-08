@@ -23,6 +23,7 @@ import re
 
 from .transformer.import_transformer import ImportTransformer
 from .transformer.basic_transformer import BasicTransformer
+from .transformer.tensor_requires_grad_transformer import TensorRequiresGradTransformer
 from .base import TORCH_PACKAGE_LIST
 
 def listdir_nohidden(path):
@@ -168,6 +169,9 @@ class Converter:
             shutil.copyfile(old_path, new_path)
 
     def transfer_node(self, root, file):
+        # attribute transformer
+        attribute_requires_grad_trans = TensorRequiresGradTransformer(root, file, self.imports_map, self.logger)
+        attribute_requires_grad_trans.transform()
         # import ast transformer
         import_trans = ImportTransformer(root, file, self.imports_map, self.logger)
         import_trans.transform()
