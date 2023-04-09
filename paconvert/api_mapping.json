@@ -567,7 +567,7 @@
 
   "torch.chunk" : {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.aaa",
+    "paddle_api": "paddle.chunk",
     "args_list" : [
       "input",
       "chunks",
