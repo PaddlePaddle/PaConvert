@@ -1551,9 +1551,10 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.all",
     "args_list" : [
-      "input"],
+      "input", "dim", "keepdim"],
     "kwargs_change": {
-      "input":"x"
+      "input":"x",
+      "dim": "axis"
     }
   },
 
