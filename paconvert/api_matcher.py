@@ -404,8 +404,17 @@ class TensorMatcher(BaseMatcher):
             elif isinstance(args[0], ast.Starred):
                 shape = astor.to_source(args[0].value).strip('\n')
             else:
-                # TODO(hjf):may should use paddle.to_tensor
-                return None
+                data = self.parse_args(args)[0]
+                if "torch.IntTensor" == self.torch_api:
+                    code = "paddle.to_tensor(data={}, dtype='int32')".format(data)
+                elif "torch.LongTensor" == self.torch_api:
+                    code = "paddle.to_tensor(data={}, dtype='int64')".format(data)
+                elif "torch.FloatTensor" == self.torch_api:
+                    code = "paddle.to_tensor(data={}, dtype='float32')".format(data)
+                else:
+                    code = "paddle.to_tensor(data={})".format(data)
+                node = ast.parse(code.strip('\n')).body
+                return node
             shape = str(shape).replace('\'', '')
 
         if "torch.IntTensor" == self.torch_api:
@@ -675,19 +684,10 @@ class TensorNewTensorMatcher(BaseMatcher):
                 kwargs['place'] = 'paddle.CUDAPinnedPlace()'
             kwargs.pop('pin_memory')
 
-        if 'dtype' in kwargs:
-            code = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                '''
-                {} = {}
-                {}({}).astype(str({})[7:])
-                '''
-            )
-            var = get_unique_name('var')
-            code = API_TEMPLATE.format(var, self.paddleClass,
-                                self.get_paddle_api(), self.kwargs_to_str(kwargs), var + '.dtype')
-
+        if 'dtype' not in kwargs:
+            kwargs['dtype'] = '{}.dtype'.format(self.paddleClass)
+            
+        code = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
         return code.strip('\n')
 
 
@@ -1253,13 +1253,15 @@ class TensorRequiresGradMatcher(BaseMatcher):
 
         API_TEMPLACE = textwrap.dedent(
             '''
+            {} = {}
             {}.stop_gradient = not {}
             {}
             '''
         )
-        code = API_TEMPLACE.format(self.paddleClass, stop_gradient, self.paddleClass)
-        return ast.parse(code).body
-
+        out = get_unique_name('out')
+        code = API_TEMPLACE.format(out, self.paddleClass, out, stop_gradient, out)
+        return ast.parse(code.strip('\n')).body
+        
 
 class FunctionalL1LossMatcher(BaseMatcher):
     def generate_code(self, kwargs):
