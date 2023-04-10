@@ -1439,7 +1439,7 @@ class TensorIndexCopyMatcher(BaseMatcher):
             {}.scatter_(temp_index, new_t).reshape(temp_shape)
             '''
         )
-                # kwargs['dim'], kwargs['index'], 
+
         code = API_TEMPLATE.format(self.paddleClass, kwargs['dim'], self.paddleClass, kwargs['index'], 
             self.paddleClass, self.paddleClass, kwargs['dim'], kwargs['tensor'], kwargs['dim'], self.paddleClass)
 
