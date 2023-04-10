@@ -102,9 +102,6 @@ class APIBase(object):
 
     def check_bool(self, pytorch_result, paddle_result):
         """
-        compare tensors' data, shape, requires_grad, dtype
-        args:
-            pytorch_result: pytorch Tensor
-            paddle_result: paddle Tensor
+        compare other types
         """
         return  pytorch_result==paddle_result
