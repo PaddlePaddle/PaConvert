@@ -146,8 +146,8 @@ class BasicTransformer(BaseTransformer):
                         self.success_api_count += 1
                         self.log_debug("[Success]convert Tensor Attribute: {} to Paddle".format(torch_api), self.file_name, node.lineno)
                         
-                        if paddle_api == 'paddle.Tensor.stop_gradient':
-                            node = ast.UnaryOp(ast.Not(), operand = node)                             
+                        # post process
+                        node = matcher.get_attribute_nodes(node)
 
                         return node
 

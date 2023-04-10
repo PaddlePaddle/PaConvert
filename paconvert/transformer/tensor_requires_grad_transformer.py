@@ -64,4 +64,3 @@ class TensorRequiresGradTransformer(BaseTransformer):
     def transform(self):
         self.visit(self.root)
         self.insert_assign_node()
-        self.insert_scope()

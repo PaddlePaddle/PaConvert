@@ -46,7 +46,7 @@
       },
       
       "torch.Tensor.requires_grad" : {
-        "Matcher": "GenericMatcher",
+        "Matcher": "TensorRequires_GradMatcher",
         "paddle_api": "paddle.Tensor.stop_gradient"
       },
 

@@ -1573,13 +1573,13 @@ class TensorToMatcher(BaseMatcher):
         self.parse_func(func)
         kwargs = self.parse_args_and_kwargs(args, kwargs)
         if not kwargs:
-            code = '{}.cast({}.dtype)'.format(self.paddleClass, self.paddleClass)
+            code = '{}'.format(self.paddleClass)
         elif 'tensor' in kwargs:
             code = '{}.cast({}.dtype)'.format(self.paddleClass, kwargs['tensor'])
         elif 'dtype' in kwargs:
             code = '{}.cast({})'.format(self.paddleClass, kwargs['dtype'])
         elif 'device' in kwargs and 'dtype' not in kwargs:
-            code = '{}.cast({}.dtype)'.format(self.paddleClass, self.paddleClass)
+            code = '{}'.format(self.paddleClass)
         else:
             if 'y' not in kwargs and 'x' in kwargs:
                 API_TEMPLACE = textwrap.dedent(
@@ -1613,6 +1613,12 @@ class TensorToMatcher(BaseMatcher):
                 code = API_TEMPLACE.format(kwargs['x'], kwargs['x'], kwargs['x'], kwargs['x'], kwargs['x'],
                                            kwargs['y'], kwargs['y'], self.paddleClass, kwargs['x'], self.paddleClass)
             else:
-                code = '{}.cast({}.dtype)'.format(self.paddleClass, self.paddleClass)
+                code = '{}'.format(self.paddleClass)
 
         return ast.parse(code).body
+
+
+class TensorRequires_GradMatcher(BaseMatcher):
+    def get_attribute_nodes(self, node):
+        node = ast.UnaryOp(ast.Not(), operand = node)    
+        return node 
