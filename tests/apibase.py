@@ -42,7 +42,10 @@ class APIBase(object):
             pytorch_result: pytorch Tensor
             paddle_result: paddle Tensor
         """
-        torch_numpy, paddle_numpy = pytorch_result.numpy(), paddle_result.numpy()
+        if pytorch_result.requires_grad:
+            torch_numpy, paddle_numpy = pytorch_result.detach().numpy(), paddle_result.numpy()
+        else:
+            torch_numpy, paddle_numpy = pytorch_result.numpy(), paddle_result.numpy()
 
         if not np.allclose(paddle_numpy, torch_numpy):
             return False
@@ -74,3 +77,34 @@ class APIBase(object):
         with open(paddle_code_path, 'r', encoding='UTF-8') as f:
             code = f.read()
         return code
+
+    def run_bool(self, pytorch_code, compared_tensor_names=None,  expect_paddle_code=None) -> None:
+        """
+        args:
+            pytorch_code: pytorch code to execute
+            compared_tensor_names: the list of variant name to be compared
+            expect_paddle_code: the string of expect paddle code
+        """
+        if compared_tensor_names:
+            loc = locals()
+            exec(pytorch_code)
+            pytorch_result = [loc[name] for name in compared_tensor_names]
+
+            paddle_code = self.convert(pytorch_code)
+            exec(paddle_code)
+            paddle_result = [loc[name] for name in compared_tensor_names]
+            for i in range(len(compared_tensor_names)):
+                assert self.check_bool(pytorch_result[i], paddle_result[i]), '[{}]: convert failed'.format(self.pytorch_api)
+
+        if expect_paddle_code:
+            convert_paddle_code = self.convert(pytorch_code)
+            assert convert_paddle_code == expect_paddle_code, '[{}]: convert failed'.format(self.pytorch_api)
+
+    def check_bool(self, pytorch_result, paddle_result):
+        """
+        compare tensors' data, shape, requires_grad, dtype
+        args:
+            pytorch_result: pytorch Tensor
+            paddle_result: paddle Tensor
+        """
+        return  pytorch_result==paddle_result
