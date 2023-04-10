@@ -141,14 +141,9 @@ class BasicTransformer(BaseTransformer):
                 if matcher:
                     paddle_api = matcher.get_paddle_api()
                     if paddle_api:
-                        # for tensor attribute , only need to change .attr
-                        node.attr = ast.parse(paddle_api).body[0].value.attr
+                        node = matcher.get_paddle_class_attribute_nodes(node)
                         self.success_api_count += 1
                         self.log_debug("[Success]convert Tensor Attribute: {} to Paddle".format(torch_api), self.file_name, node.lineno)
-                        
-                        # post process
-                        node = matcher.get_attribute_nodes(node)
-
                         return node
 
         annotate_node = ast.parse("'Tensor Attribute: {}, not convert, please check whether it is torch.Tensor.* and convert manually'".format(torch_api)).body[0]

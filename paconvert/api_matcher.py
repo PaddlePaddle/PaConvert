@@ -102,6 +102,12 @@ class GenericMatcher(BaseMatcher):
             code = code.rstrip('\n') + ".astype({})".format(dtype_v)
             
         return code
+    
+    def get_paddle_class_attribute_nodes(self, node):
+
+        code = "{}".format(self.get_paddle_api())
+
+        return ast.parse(code).body[0].value
 
 class DeleteMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
@@ -1619,6 +1625,9 @@ class TensorToMatcher(BaseMatcher):
 
 
 class TensorRequires_GradMatcher(BaseMatcher):
-    def get_attribute_nodes(self, node):
-        node = ast.UnaryOp(ast.Not(), operand = node)    
-        return node 
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+
+        code = "not {}.stop_gradient".format(self.paddleClass)
+
+        return ast.parse(code).body[0].value

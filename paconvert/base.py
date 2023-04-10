@@ -300,5 +300,5 @@ class BaseMatcher(object):
         
         return None
 
-    def get_attribute_nodes(self, node):
+    def get_paddle_class_attribute_nodes(self, node):
         return node

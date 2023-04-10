@@ -174,9 +174,10 @@ class Converter:
         import_trans.transform()
         # basic api ast transformer
         if import_trans.import_paddle:
-            # attribute transformer
+            # attribute requires_grad transformer
             attribute_requires_grad_trans = TensorRequiresGradTransformer(root, file, self.imports_map, self.logger)
             attribute_requires_grad_trans.transform()
+            # api transformer
             api_trans = BasicTransformer(root, file, self.imports_map, self.logger, self.unsupport_map)
             api_trans.transform()
             self.torch_api_count += api_trans.torch_api_count
