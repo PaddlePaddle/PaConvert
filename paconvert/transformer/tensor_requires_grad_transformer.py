@@ -39,20 +39,21 @@ class TensorRequiresGradTransformer(BaseTransformer):
 
     def visit_Assign(self, node):
         # left value
-        if(isinstance(node.targets[0], ast.Attribute)):
-            if node.targets[0].attr == 'requires_grad':
-                node.targets[0].attr = 'stop_gradient'
-                node = ast.Assign(targets=[node.targets[0]], value = ast.UnaryOp(ast.Not(), operand = node.value))
+        if (isinstance(node, (ast.Assign))):
+            if(isinstance(node.targets[0], ast.Attribute)):
+                if node.targets[0].attr == 'requires_grad':
+                    node.targets[0].attr = 'stop_gradient'
+                    node = ast.Assign(targets=[node.targets[0]], value = ast.UnaryOp(ast.Not(), operand = node.value))
 
-        elif(isinstance(node.targets[0], ast.Tuple)):
-            for j in range(len(node.targets[0].dims)):
-                if (isinstance(node.targets[0].elts[j], ast.Attribute) and  (node.targets[0].elts[j].attr == 'requires_grad')):
-                    new_node = ast.Name(id='temp', ctx=ast.Load())
-                    node.targets[0].elts[j].attr ='stop_gradient'
-                    assign_node = ast.Assign(targets=[node.targets[0].elts[j]], value = ast.UnaryOp(ast.Not(), operand = new_node))
-                    node.targets[0].elts[j] = new_node
-                    index = self.parent_node.body.index(node)
-                    self.insert_nodes_list.append((self.parent_node, index, assign_node))
+            elif(isinstance(node.targets[0], ast.Tuple)):
+                for j in range(len(node.targets[0].dims)):
+                    if (isinstance(node.targets[0].elts[j], ast.Attribute) and  (node.targets[0].elts[j].attr == 'requires_grad')):
+                        new_node = ast.Name(id='temp', ctx=ast.Load())
+                        node.targets[0].elts[j].attr ='stop_gradient'
+                        assign_node = ast.Assign(targets=[node.targets[0].elts[j]], value = ast.UnaryOp(ast.Not(), operand = new_node))
+                        node.targets[0].elts[j] = new_node
+                        index = self.parent_node.body.index(node)
+                        self.insert_nodes_list.append((self.parent_node, index, assign_node))
     
         return node
 
