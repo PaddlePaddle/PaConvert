@@ -105,9 +105,9 @@ class GenericMatcher(BaseMatcher):
     
     def get_paddle_class_attribute_nodes(self, node):
 
-        code = "{}".format(self.get_paddle_api())
-
-        return ast.parse(code).body[0].value
+        node.attr = ast.parse(self.get_paddle_api()).body[0].value.attr
+        
+        return node
 
 class DeleteMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
