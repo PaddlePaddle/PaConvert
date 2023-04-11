@@ -299,3 +299,6 @@ class BaseMatcher(object):
                 return ast.parse(new_code).body
         
         return None
+
+    def get_paddle_class_attribute_nodes(self, node):
+        return None
