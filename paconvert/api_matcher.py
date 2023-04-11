@@ -1574,12 +1574,10 @@ class AddCMulMatcher(BaseMatcher):
         else:
             API_TEMPLATE = textwrap.dedent(
                 '''
-                {} = {} + {} * {} * {}
-                {}
+                paddle.add({}, {} * {} * {})
                 '''
             )
-            out = get_unique_name('out')
-            code = API_TEMPLATE.format(out, kwargs['input'], kwargs['value'], kwargs['tensor1'], kwargs['tensor2'], out)
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['value'], kwargs['tensor1'], kwargs['tensor2'])
 
         return code
 
@@ -1598,12 +1596,10 @@ class AddCDivMatcher(BaseMatcher):
         else:
             API_TEMPLATE = textwrap.dedent(
                 '''
-                {} = {} + {} * {} / {}
-                {}
+                paddle.add({}, {} * {} / {})
                 '''
             )
-            out = get_unique_name('out')
-            code = API_TEMPLATE.format(out, kwargs['input'], kwargs['value'], kwargs['tensor1'], kwargs['tensor2'], out)
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['value'], kwargs['tensor1'], kwargs['tensor2'])
 
         return code
 

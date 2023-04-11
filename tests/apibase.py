@@ -42,7 +42,7 @@ class APIBase(object):
             pytorch_result: pytorch Tensor
             paddle_result: paddle Tensor
         """
-        if isinstance(pytorch_result, bool) and isinstance(pytorch_result, bool):
+        if isinstance(pytorch_result, (bool, np.number)) and isinstance(pytorch_result, (bool, np.number)):
             return pytorch_result == paddle_result
 
         if pytorch_result.requires_grad:
