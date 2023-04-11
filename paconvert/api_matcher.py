@@ -191,6 +191,26 @@ class TransposeMatcher(BaseMatcher):
                 perm)
         return code
 
+class SwapAxesMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if len(kwargs) != 3:
+            return None
+
+        API_TEMPLATE = textwrap.dedent(
+            '''
+            x = {}
+            {} = list(range(x.ndim))
+            {}[{}] = {}
+            {}[{}] = {}
+            paddle.transpose(x=x, perm={})
+            '''
+        )
+        perm = get_unique_name('perm')
+        code = API_TEMPLATE.format(kwargs['input'], perm, 
+                perm, kwargs['axis0'], kwargs['axis1'], 
+                perm, kwargs['axis1'], kwargs['axis0'], 
+                perm)
+        return code
 
 class CreateMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
@@ -1285,12 +1305,12 @@ class FunctionalL1LossMatcher(BaseMatcher):
         if 'target' in kwargs:
             kwargs['label'] = kwargs.pop('target')
 
-        API_TEMPLACE = textwrap.dedent(
+        API_TEMPLATE = textwrap.dedent(
             '''
             paddle.nn.functional.l1_loss({})
             '''
         )
-        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
+        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
         return code
 
 
@@ -1339,12 +1359,12 @@ class FunctionalBinaryCrossEntropyWithLogitsMatcher(BaseMatcher):
         if 'target' in kwargs:
             kwargs['label'] = kwargs.pop('target')
 
-        API_TEMPLACE = textwrap.dedent(
+        API_TEMPLATE = textwrap.dedent(
             '''
             paddle.nn.functional.binary_cross_entropy_with_logits({})
             '''
         )
-        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
+        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
         return code
 
 
@@ -1413,3 +1433,210 @@ class WhereMatcher(BaseMatcher):
             return code
         else:
             return GenericMatcher.generate_code(self, kwargs)
+
+class SeedMatcher(BaseMatcher):
+    def generate_code(self, kwargs):           
+        API_TEMPLATE = textwrap.dedent(
+            '''
+            paddle.get_cuda_rng_state()[0].current_seed()
+            '''
+        )
+        return  API_TEMPLATE
+
+class SetPrintOptionsMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'profile' in kwargs and kwargs['profile'] is not None:
+            pro_kwargs = {}
+            if kwargs['profile'] == '"""default"""':
+                pro_kwargs['precision'] = 4
+                pro_kwargs['threshold'] = 1000
+                pro_kwargs['edgeitems'] = 3
+                pro_kwargs['linewidth'] = 80
+            elif kwargs['profile'] == '"""short"""':
+                pro_kwargs['precision'] = 2
+                pro_kwargs['threshold'] = 1000
+                pro_kwargs['edgeitems'] = 2
+                pro_kwargs['linewidth'] = 80
+            elif kwargs['profile'] == '"""full"""':
+                pro_kwargs['precision'] = 4
+                pro_kwargs['threshold'] = 1000000
+                pro_kwargs['edgeitems'] = 3
+                pro_kwargs['linewidth'] = 80
+
+            for k in pro_kwargs.keys():
+                if k not in kwargs.keys():
+                    kwargs[k] = pro_kwargs[k]
+
+            kwargs.pop('profile')
+
+        kwargs = self.set_paddle_default_kwargs(kwargs)
+        API_TEMPLATE = textwrap.dedent(
+            '''
+            paddle.set_printoptions({})
+            '''
+        )
+        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
+        return code
+
+class RandLikeMatcher(BaseMatcher):          
+    def generate_code(self, kwargs):     
+        stop_gradient_v = None
+        if 'requires_grad' in kwargs:
+            stop_gradient_v = 'not ' + kwargs["requires_grad"]
+
+        if 'dtype' in kwargs and 'requires_grad' in kwargs:
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                {} = paddle.rand(shape={}.shape, dtype={})
+                {}.stop_gradient = {}
+                {}
+                '''
+            )
+            out = get_unique_name('out')
+            code = API_TEMPLATE.format(out, kwargs['input'], kwargs['dtype'], out, stop_gradient_v, out)
+        elif 'dtype' not in kwargs and 'requires_grad' in kwargs:
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                {} = paddle.rand(shape={}.shape, dtype={}.dtype)
+                {}.stop_gradient = {}
+                {}
+                '''
+            )
+            out = get_unique_name('out')
+            code = API_TEMPLATE.format(out, kwargs['input'], kwargs['input'], out, stop_gradient_v, out)
+        elif 'dtype' in kwargs and 'requires_grad' not in kwargs:
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                paddle.rand(shape={}.shape, dtype={})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['dtype'])
+        else: 
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                paddle.rand(shape={}.shape, dtype={}.dtype)
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['input'])
+
+        return code
+
+class PolarMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'out' in kwargs and kwargs['out'] is not None:            
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                paddle.assign(paddle.complex({} * paddle.cos({}), {} * paddle.sin({})), output={})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['abs'], kwargs['angle'], kwargs['abs'], kwargs['angle'], kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                paddle.complex({} * paddle.cos({}), {} * paddle.sin({}))
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['abs'], kwargs['angle'], kwargs['abs'], kwargs['angle'])
+            
+        return code
+
+class NarrowMatcher(BaseMatcher):
+    def generate_code(self, kwargs):           
+        API_TEMPLATE = textwrap.dedent(
+            '''
+            {} = ({}.shape[{}] + {}) if {} < 0 else {}
+            paddle.slice({}, [{}], [{}], [{} + {}])
+            '''
+        )
+        start = get_unique_name('start')
+        code = API_TEMPLATE.format(start, kwargs['input'], kwargs['dim'], kwargs['start'], kwargs['start'], kwargs['start'], 
+                kwargs['input'], kwargs['dim'], start, start, kwargs['length'])
+        return code
+
+class AddCMulMatcher(BaseMatcher):
+    def generate_code(self, kwargs):  
+        if 'value' not in kwargs:
+            kwargs['value'] = 1
+        
+        if 'out' in kwargs and kwargs['out'] is not None:          
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                paddle.assign({} + {} * {} * {}, output={})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['value'], kwargs['tensor1'], kwargs['tensor2'], kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                {} = {} + {} * {} * {}
+                {}
+                '''
+            )
+            out = get_unique_name('out')
+            code = API_TEMPLATE.format(out, kwargs['input'], kwargs['value'], kwargs['tensor1'], kwargs['tensor2'], out)
+
+        return code
+
+class AddCDivMatcher(BaseMatcher):
+    def generate_code(self, kwargs):  
+        if 'value' not in kwargs:
+            kwargs['value'] = 1
+        
+        if 'out' in kwargs and kwargs['out'] is not None:          
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                paddle.assign({} + {} * {} / {}, output={})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['value'], kwargs['tensor1'], kwargs['tensor2'], kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                {} = {} + {} * {} / {}
+                {}
+                '''
+            )
+            out = get_unique_name('out')
+            code = API_TEMPLATE.format(out, kwargs['input'], kwargs['value'], kwargs['tensor1'], kwargs['tensor2'], out)
+
+        return code
+
+class IsNonzeroMatcher(BaseMatcher):
+    def generate_code(self, kwargs):           
+        API_TEMPLATE = textwrap.dedent(
+            '''  
+            {}.astype('bool').item() 
+            '''
+        )
+        code = API_TEMPLATE.format(kwargs['input'])
+
+        return code
+
+class VStackMatcher(BaseMatcher):
+    def generate_code(self, kwargs): 
+        if 'out' in kwargs and kwargs['out'] is not None:          
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                if {}[0].ndim == 1:
+                    {} = paddle.stack({})
+                else:
+                    {} = paddle.concat({})
+                paddle.assign({}, output={})
+                '''
+            )
+            out = get_unique_name('out')
+            code = API_TEMPLATE.format(kwargs['tensors'], out, kwargs['tensors'], out, kwargs['tensors'], out, kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                if {}[0].ndim == 1:
+                    {} = paddle.stack({})
+                else:
+                    {} = paddle.concat({})
+                {}
+                '''
+            )
+            out = get_unique_name('out')
+            code = API_TEMPLATE.format(kwargs['tensors'], out, kwargs['tensors'], out, kwargs['tensors'], out)
+
+        return code

@@ -303,6 +303,11 @@
     }
   },
 
+  "torch.is_nonzero" : {
+    "Matcher": "IsNonzeroMatcher",
+    "args_list" : ["input"]
+  },
+  
   "torch.set_default_dtype" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.set_default_dtype",
@@ -312,6 +317,33 @@
   "torch.get_default_dtype" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.get_default_dtype"
+  },
+
+  "torch.set_rng_state" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.set_cuda_rng_state",
+    "args_list" : ["new_state"],
+    "kwargs_change": {
+      "new_state": "state_list"
+    }
+  },
+
+  "torch.get_rng_state" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.get_cuda_rng_state"
+  },
+
+  "torch.set_printoptions" : {
+    "Matcher": "SetPrintOptionsMatcher",
+    "args_list" : [
+      "precision",
+      "threshold",
+      "edgeitems",
+      "linewidth",
+      "profile",
+      "sci_mode"
+      ],
+    "paddle_default_kwargs": {"precision": 4}
   },
 
   "torch.dtype" : {
@@ -674,7 +706,20 @@
       "dim":"axis"
     }
   },
+
+  "torch.vstack" : {
+    "Matcher": "VStackMatcher",
+    "args_list" : [
+      "tensors",
+      "out"]
+  },
  
+  "torch.row_stack" : {
+    "Matcher": "VStackMatcher",
+    "args_list" : [
+      "tensors",
+      "out"]
+  },
   
   "torch.t" : {
     "Matcher": "GenericMatcher",
@@ -735,7 +780,10 @@
     "args_list" : ["seed"]
   },
  
-  
+  "torch.seed" : {
+    "Matcher": "SeedMatcher"
+  },
+
   "torch.bernoulli" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.bernoulli",
@@ -792,7 +840,18 @@
       "generator",
       "pin_memory"]
   },
-  
+
+  "torch.rand_like" : {
+    "Matcher": "RandLikeMatcher",
+    "args_list" : [
+      "input",
+      "dtype",
+      "layout",
+      "device",
+      "requires_grad",
+      "memory_format"
+    ]
+  },
   
   "torch.set_grad_enabled" : {
     "Matcher": "GenericMatcher",
@@ -1004,6 +1063,15 @@
       "input":"x"
     }
   },    
+
+  "torch.narrow" : {
+    "Matcher": "NarrowMatcher",
+    "args_list" : [
+      "input",
+      "dim",
+      "start",
+      "length"]
+  },
 
   "torch.conj" : {
     "Matcher": "GenericMatcher",
@@ -1344,6 +1412,14 @@
       "input":"x",
       "exponent":"y"
     }
+  },
+
+  "torch.polar" : {
+    "Matcher": "PolarMatcher",
+    "args_list" : [
+      "abs",
+      "angle",
+      "out"]    
   },
 
   "torch.rad2deg" : {
@@ -2503,6 +2579,26 @@
     }
   },
 
+  "torch.addcmul" : {
+    "Matcher": "AddCMulMatcher",
+    "args_list" : [
+      "input",
+      "tensor1",
+      "tensor2",
+      "value",
+      "out"]
+  },
+
+  "torch.addcdiv" : {
+    "Matcher": "AddCDivMatcher",
+    "args_list" : [
+      "input",
+      "tensor1",
+      "tensor2",
+      "value",
+      "out"]
+  },
+
   "torch.bmm" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.bmm",
@@ -2664,6 +2760,24 @@
       "LU_pivots":"y"
     }
   },
+
+  "torch.swapaxes": {
+    "Matcher": "SwapAxesMatcher",
+    "args_list" : [
+       "input",
+       "axis0", 
+       "axis1"
+    ]
+  }, 
+
+  "torch.swapdims": {
+    "Matcher": "TransposeMatcher",
+    "args_list" : [
+       "input",
+       "dim0", 
+       "dim1"
+    ]
+  }, 
 
   "torch.matmul" : {
     "Matcher": "GenericMatcher",
