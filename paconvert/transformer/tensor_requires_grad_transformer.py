@@ -46,7 +46,7 @@ class TensorRequiresGradTransformer(BaseTransformer):
                     node = ast.Assign(targets=[node.targets[0]], value = ast.UnaryOp(ast.Not(), operand = node.value))
 
             elif(isinstance(node.targets[0], ast.Tuple)):
-                for j in range(len(node.targets[0].dims)):
+                for j in range(len(node.targets[0].elts)):
                     if (isinstance(node.targets[0].elts[j], ast.Attribute) and  (node.targets[0].elts[j].attr == 'requires_grad')):
                         new_node = ast.Name(id='temp', ctx=ast.Load())
                         node.targets[0].elts[j].attr ='stop_gradient'
