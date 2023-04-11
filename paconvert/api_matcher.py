@@ -1544,10 +1544,13 @@ class NarrowMatcher(BaseMatcher):
     def generate_code(self, kwargs):           
         API_TEMPLATE = textwrap.dedent(
             '''
+            {} = ({}.shape[{}] + {}) if {} < 0 else {}
             paddle.slice({}, [{}], [{}], [{} + {}])
             '''
         )
-        code = API_TEMPLATE.format(kwargs['input'], kwargs['dim'], kwargs['start'], kwargs['start'], kwargs['length'])
+        start = get_unique_name('start')
+        code = API_TEMPLATE.format(start, kwargs['input'], kwargs['dim'], kwargs['start'], kwargs['start'], kwargs['start'], 
+                kwargs['input'], kwargs['dim'], start, start, kwargs['length'])
         return code
 
 class AddCMulMatcher(BaseMatcher):

@@ -42,6 +42,9 @@ class APIBase(object):
             pytorch_result: pytorch Tensor
             paddle_result: paddle Tensor
         """
+        if isinstance(pytorch_result, bool) and isinstance(pytorch_result, bool):
+            return pytorch_result == paddle_result
+
         torch_numpy, paddle_numpy = pytorch_result.numpy(), paddle_result.numpy()
 
         if not np.allclose(paddle_numpy, torch_numpy):
