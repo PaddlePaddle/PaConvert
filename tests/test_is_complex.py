@@ -7,15 +7,7 @@ import textwrap
 
 from tests.apibase import APIBase
 
-class IsComplexAPI(APIBase):
-
-    def __init__(self, pytorch_api) -> None:
-        super().__init__(pytorch_api)
-
-    def check(self, pytorch_result, paddle_result):        
-        return pytorch_result == paddle_result
-
-obj = IsComplexAPI('torch.is_tensor')
+obj = APIBase('torch.is_tensor')
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
@@ -25,7 +17,7 @@ def test_case_1():
         result = torch.is_complex(a)
         '''
     )
-    obj.run(pytorch_code, ['result'])
+    obj.run_bool(pytorch_code, ['result'])
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
@@ -34,7 +26,7 @@ def test_case_2():
         result = torch.is_complex(torch.tensor([[4, 9], [23, 2]], dtype=torch.complex64))
         '''
     )
-    obj.run(pytorch_code, ['result'])
+    obj.run_bool(pytorch_code, ['result'])
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
@@ -44,4 +36,4 @@ def test_case_3():
         result = torch.is_complex(a)
         '''
     )
-    obj.run(pytorch_code, ['result'])
+    obj.run_bool(pytorch_code, ['result'])
