@@ -37,4 +37,4 @@ def test_case_3():
         result = torch.acos(torch.tensor(a), out=out)
         '''
     )
-    obj.run(pytorch_code, ['out'])
+    obj.run(pytorch_code, ['out', 'result'])

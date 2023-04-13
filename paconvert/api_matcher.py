@@ -136,9 +136,9 @@ class LayerMatcher(BaseMatcher):
 class TorchAddMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if 'alpha' in kwargs:
-            code = "paddle.add(x={}, y={}*{})".format(kwargs['input'], kwargs['alpha'], kwargs['other'])
+            code = "paddle.add(x={}, y=paddle.to_tensor({})*{})".format(kwargs['input'], kwargs['alpha'], kwargs['other'])
         else:
-            code = "paddle.add(x={}, y={})".format(kwargs['input'], kwargs['other'])
+            code = "paddle.add(x={}, y=paddle.to_tensor({}))".format(kwargs['input'], kwargs['other'])
         
         if 'out' in kwargs:
             API_TEMPLATE = textwrap.dedent(
@@ -392,7 +392,10 @@ class TensorMatcher(BaseMatcher):
                 elif "torch.FloatTensor" == self.torch_api:
                     code = "paddle.to_tensor(data={}, dtype='float32')".format(data)
                 else:
-                    code = "paddle.to_tensor(data={})".format(data)
+                    if not isinstance(args[0], ast.Name):
+                        code = "paddle.to_tensor(data={}, dtype='float32')".format(data)
+                    else:
+                        code = "paddle.to_tensor(data={})".format(data)
                 node = ast.parse(code.strip('\n')).body
                 return node
             shape = str(shape).replace('\'', '')
@@ -1227,9 +1230,9 @@ class TensorRequiresGradMatcher(BaseMatcher):
         kwargs = self.parse_args_and_kwargs(args, kwargs)
 
         if 'requires_grad' in kwargs:
-            stop_gradient = kwargs['requires_grad']
+            requires_grad_v = kwargs['requires_grad']
         else:
-            stop_gradient = 'True'
+            requires_grad_v = 'True'
 
         API_TEMPLACE = textwrap.dedent(
             '''
@@ -1239,7 +1242,7 @@ class TensorRequiresGradMatcher(BaseMatcher):
             '''
         )
         out = get_unique_name('out')
-        code = API_TEMPLACE.format(out, self.paddleClass, out, stop_gradient, out)
+        code = API_TEMPLACE.format(out, self.paddleClass, out, requires_grad_v, out)
         return ast.parse(code.strip('\n')).body
         
 
@@ -1413,3 +1416,18 @@ class WhereMatcher(BaseMatcher):
             return code
         else:
             return GenericMatcher.generate_code(self, kwargs)
+
+class AllMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs['input'] = kwargs['input'] + '.astype(dtype=\'bool\')'
+        code = GenericMatcher.generate_code(self, kwargs)
+        return code
+
+class ArangeMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if len(kwargs) == 1:
+            kwargs['end'] = kwargs.pop('start')
+        if 'dtype' not in kwargs and '.' in kwargs['end']:
+            kwargs['dtype'] = "'float32'"
+        code = GenericMatcher.generate_code(self, kwargs)
+        return code

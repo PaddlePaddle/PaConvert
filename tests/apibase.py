@@ -29,7 +29,11 @@ class APIBase(object):
             exec(paddle_code)
             paddle_result = [loc[name] for name in compared_tensor_names]
             for i in range(len(compared_tensor_names)):
-                assert self.check(pytorch_result[i], paddle_result[i]), '[{}]: convert failed'.format(self.pytorch_api)
+                if isinstance(pytorch_result[i], list):
+                    for index in range(len(pytorch_result[i])):
+                        assert self.check(pytorch_result[i][index], paddle_result[i][index]), '[{}]: convert failed'.format(self.pytorch_api)
+                else:
+                    assert self.check(pytorch_result[i], paddle_result[i]), '[{}]: convert failed'.format(self.pytorch_api)
 
         if expect_paddle_code:
             convert_paddle_code = self.convert(pytorch_code)
@@ -41,7 +45,7 @@ class APIBase(object):
         args:
             pytorch_result: pytorch Tensor
             paddle_result: paddle Tensor
-        """
+        """ 
         torch_numpy, paddle_numpy = pytorch_result.numpy(), paddle_result.numpy()
 
         if not np.allclose(paddle_numpy, torch_numpy):
@@ -60,11 +64,11 @@ class APIBase(object):
         return:
             paddle code.
         """
-        if not os.path.exists(os.getcwd() + '/paddle_project'):
-            os.makedirs(os.getcwd() + '/paddle_project')
+        if not os.path.exists(os.getcwd() + '/test_project'):
+            os.makedirs(os.getcwd() + '/test_project')
 
-        pytorch_code_path = os.getcwd() + '/paddle_project/pytorch_temp.py'
-        paddle_code_path = os.getcwd() + '/paddle_project/paddle_temp.py'
+        pytorch_code_path = os.getcwd() + '/test_project/pytorch_temp.py'
+        paddle_code_path = os.getcwd() + '/test_project/paddle_temp.py'
         with open(pytorch_code_path, 'w', encoding='UTF-8') as f:
             f.write(pytorch_code)
 
