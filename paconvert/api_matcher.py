@@ -1648,7 +1648,7 @@ class AllMatcher(BaseMatcher):
 
 class ArangeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if len(kwargs) == 1:
+        if 'end' not in kwargs:
             kwargs['end'] = kwargs.pop('start')
         if 'dtype' not in kwargs and '.' in kwargs['end']:
             kwargs['dtype'] = "'float32'"
