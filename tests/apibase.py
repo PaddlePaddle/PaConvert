@@ -63,11 +63,11 @@ class APIBase(object):
         return:
             paddle code.
         """
-        if not os.path.exists(os.getcwd() + '/paddle_project'):
-            os.makedirs(os.getcwd() + '/paddle_project')
+        if not os.path.exists(os.getcwd() + '/test_project'):
+            os.makedirs(os.getcwd() + '/test_project')
 
-        pytorch_code_path = os.getcwd() + '/paddle_project/pytorch_temp.py'
-        paddle_code_path = os.getcwd() + '/paddle_project/paddle_temp.py'
+        pytorch_code_path = os.getcwd() + '/test_project/pytorch_temp.py'
+        paddle_code_path = os.getcwd() + '/test_project/paddle_temp.py'
         with open(pytorch_code_path, 'w', encoding='UTF-8') as f:
             f.write(pytorch_code)
 

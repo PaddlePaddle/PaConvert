@@ -410,9 +410,9 @@ x.new_zeros(x.size())
 **c) 写出所有可能的torch用法case后，全部加入到单测中，并对比结果一致**。单测写法为：
 * 单测位置：所有的单测文件均放在`tests`目录下，单测文件命名以`test_`为前缀，后面接测试的`API`名称（PyTorch API全称去掉`torch`模块名，保留大小写）。
 * 单测默认判断逻辑：采用`pytest`作为单测框架。一般情况下，用户只需要在单测文件中调用`APIBase`类的`run()`方法，传入`pytorch_code`和需要判断的`Tensor`变量名列表即可，参考 [torch.permute测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_permute.py)。`run()`方法会调用`check()`方法，该方法会检查转换前后两个`Tensor`的数值，数据类型，是否计算梯度属性是否相等，是目前默认的判断转换结果是否一致的逻辑。如果不需要运行转换后的`paddle`代码，可以直接传入`expect_paddle_code`参数，此时`check()`方法会比对转换后的`paddle`代码与传入的`paddle`代码是否一致。
-* 自定义判断逻辑：如果需要自定义判断转换结果是否一致的逻辑，可以继承`APIBase`类重写`check()`函数，实现自定义逻辑。
+* 自定义判断逻辑：如果需要自定义判断转换结果是否一致的逻辑，可以继承`APIBase`类重写`check()`函数，实现自定义逻辑, 参考 [torch.Tensor测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_Tensor.py)。
 * 环境搭建：需要同时安装`paddle 2.4.0` 和 `pytorch 1.13.0` 的`CPU`版本。
-* 运行单测：可以在主目录下执行`pytest tests`命令运行所有单测；也可以执行`pytest tests/xxx.py`运行`tests`目录下的某一单测；如果希望遇到`error`则停止单测，可以加上参数`-x`，即`pytest tests/test_add.py -x`，单测运行过程中会将转换后的`paddle`代码写入`paddle_project/paddle_temp.py`，方便排查错误。
+* 运行单测：可以在主目录下执行`pytest tests`命令运行所有单测；也可以执行`pytest tests/xxx.py`运行`tests`目录下的某一单测；如果希望遇到`error`则停止单测，可以加上参数`-x`，即`pytest tests/test_add.py -x`，单测运行过程中会将转换后的`paddle`代码写入`test_project/paddle_temp.py`，方便排查错误。
 
 
 **d) 代码精简与美观性**。要求尽可能只通过一行代码、一个API来实现（越少越好）。如果确实无法实现，才考虑通过多行代码、多个API来辅助实现该功能。

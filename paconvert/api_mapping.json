@@ -395,7 +395,7 @@
   },
 
   "torch.arange" : {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ArangeMatcher",
     "paddle_api": "paddle.arange",
     "args_list" : [
       "start",
@@ -1548,7 +1548,7 @@
   },
 
   "torch.all" : {
-    "Matcher": "GenericMatcher",
+    "Matcher": "AllMatcher",
     "paddle_api": "paddle.all",
     "args_list" : [
       "input", "dim", "keepdim"],
