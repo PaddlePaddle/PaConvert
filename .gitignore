@@ -9,3 +9,4 @@ paconvert/temp_out/
 tests/__pycache__/
 tests/.pytest_cache
 tests/test.py
+test_project

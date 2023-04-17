@@ -1929,7 +1929,6 @@ class ArangeMatcher(BaseMatcher):
         code = GenericMatcher.generate_code(self, kwargs)
         return code
 
-
 class ErfCMatcher(BaseMatcher):
     def generate_code(self, kwargs): 
         if 'out' in kwargs and kwargs['out'] is not None:          
