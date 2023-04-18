@@ -4061,6 +4061,15 @@
     }
   },
 
+  "torch.nn.functional.softmin" : {
+    "Matcher": "FSoftMinMatcher",
+    "args_list" : [
+      "input",
+      "dim",
+      "_stacklevel",
+      "dtype"]
+  },
+
   "torch.nn.functional.softshrink" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.softshrink",
@@ -4115,8 +4124,22 @@
     }
   },
 
+  "torch.nn.functional.batch_norm" : {
+    "Matcher": "FBatchNormMatcher",
+    "paddle_api": "paddle.nn.functional.batch_norm",
+    "args_list" : [
+      "input",
+      "running_mean",
+      "running_var",
+      "weight",
+      "bias",
+      "training",
+      "momentum",
+      "eps"]
+  },
+
   "torch.nn.functional.instance_norm" : {
-    "Matcher": "GenericMatcher",
+    "Matcher": "FInstanceNormMatcher",
     "paddle_api": "paddle.nn.functional.instance_norm",
     "args_list" : [
       "input",
@@ -4124,12 +4147,24 @@
       "running_var",
       "weight",
       "bias",
+      "use_input_stats",
       "eps",
-      "momentum",
-      "use_input_stats"],
+      "momentum"]
+  },
+
+  "torch.nn.functional.layer_norm" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.layer_norm",
+    "args_list" : [
+      "input",
+      "normalized_shape",
+      "weight",
+      "bias",
+      "eps"],
     "kwargs_change": {
-      "input":"x"
-    }
+        "input":"x",
+        "eps":"epsilon"
+      }
   },
 
   "torch.nn.functional.local_response_norm" : {
@@ -4421,6 +4456,44 @@
     }
   },
 
+  "torch.nn.functional.avg_pool1d" : {
+    "Matcher": "AvgPoolMatcher",
+    "paddle_api": "paddle.nn.functional.avg_pool1d",
+    "args_list" : [
+      "input",
+      "kernel_size",
+      "stride",
+      "padding",
+      "ceil_mode",
+      "count_include_pad"]
+  },
+
+  "torch.nn.functional.avg_pool2d" : {
+    "Matcher": "AvgPoolMatcher",
+    "paddle_api": "paddle.nn.functional.avg_pool2d",
+    "args_list" : [
+      "input",
+      "kernel_size",
+      "stride",
+      "padding",
+      "ceil_mode",
+      "count_include_pad",
+      "divisor_override"]
+  },
+
+  "torch.nn.functional.avg_pool3d" : {
+    "Matcher": "AvgPoolMatcher",
+    "paddle_api": "paddle.nn.functional.avg_pool3d",
+    "args_list" : [
+      "input",
+      "kernel_size",
+      "stride",
+      "padding",
+      "ceil_mode",
+      "count_include_pad",
+      "divisor_override"]
+  },
+
   "torch.nn.functional.adaptive_avg_pool1d" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.adaptive_avg_pool1d",
@@ -4610,6 +4683,16 @@
       "device",
       "dtype"
     ]
+  },
+
+  "torch.nn.functional.upsample_nearest": {
+    "Matcher": "FUpsampleNearestMatcher",
+    "args_list" : ["input", "size", "scale_factor"]
+  },
+
+  "torch.nn.functional.upsample_bilinear": {
+    "Matcher": "FUpsampleBilinearMatcher",
+    "args_list" : ["input", "size", "scale_factor"]
   },
 
   "torch.nn.functional.gelu": {
@@ -6772,7 +6855,7 @@
     "args_list" : ["seed"]
   },
 
-  "torch.cuda.empty_cachet" : {
+  "torch.cuda.empty_cache" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.empty_cache"
   },
@@ -7270,7 +7353,7 @@
   }, 
 
   "torch.nn.BatchNorm1d" : {
-    "Matcher": "BatchNorm1DMatcher",
+    "Matcher": "BatchNormMatcher",
     "paddle_api": "paddle.nn.BatchNorm1D",
     "args_list": [
       "num_features", 
@@ -7283,7 +7366,7 @@
   }, 
 
   "torch.nn.BatchNorm2d" : {
-    "Matcher": "BatchNorm2DMatcher",
+    "Matcher": "BatchNormMatcher",
     "paddle_api": "paddle.nn.BatchNorm2D",
     "args_list": [
       "num_features", 
@@ -7296,7 +7379,7 @@
   },
 
   "torch.nn.BatchNorm3d" : {
-    "Matcher": "BatchNorm3DMatcher",
+    "Matcher": "BatchNormMatcher",
     "paddle_api": "paddle.nn.BatchNorm3D",
     "args_list": [
       "num_features", 
@@ -7455,8 +7538,35 @@
     }
   },
 
+  "torch.nn.InstanceNorm1d": {
+    "Matcher": "InstanceNormMatcher",
+    "paddle_api": "paddle.nn.InstanceNorm1D",
+    "args_list": [
+      "num_features",
+      "eps",
+      "momentum",
+      "affine",
+      "track_running_stats",
+      "device",
+      "dtype"]
+  },
+
+  "torch.nn.InstanceNorm2d": {
+    "Matcher": "InstanceNormMatcher",
+    "paddle_api": "paddle.nn.InstanceNorm2D",
+    "args_list": [
+      "num_features",
+      "eps",
+      "momentum",
+      "affine",
+      "track_running_stats",
+      "device",
+      "dtype"]
+  },
+
   "torch.nn.InstanceNorm3d": {
-    "Matcher": "InstanceNorm3DMatcher",
+    "Matcher": "InstanceNormMatcher",
+    "paddle_api": "paddle.nn.InstanceNorm3D",
     "args_list": [
       "num_features",
       "eps",
