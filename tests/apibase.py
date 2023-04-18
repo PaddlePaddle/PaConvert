@@ -42,6 +42,15 @@ class APIBase(object):
             pytorch_result: pytorch Tensor
             paddle_result: paddle Tensor
         """
+        if isinstance(pytorch_result, (bool, np.number)) and isinstance(pytorch_result, (bool, np.number)):
+            return pytorch_result == paddle_result
+        
+        if isinstance(pytorch_result, tuple) and isinstance(pytorch_result, tuple):
+            is_same = True
+            for i in  range(len(pytorch_result)):
+                is_same = is_same and self.check(pytorch_result[i], paddle_result[i])
+            return is_same
+
         if pytorch_result.requires_grad:
             torch_numpy, paddle_numpy = pytorch_result.detach().numpy(), paddle_result.numpy()
         else:
