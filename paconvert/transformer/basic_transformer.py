@@ -240,7 +240,7 @@ class BasicTransformer(BaseTransformer):
                         if isinstance(new_node, ast.Expr):
                             new_node = new_node.value
                         
-                        if isinstance(new_node, (ast.Call, ast.Name, ast.Constant, ast.Attribute, ast.Compare)):
+                        if isinstance(new_node, (ast.Call, ast.Name, ast.Constant, ast.Attribute, ast.Compare, ast.BinOp, ast.UnaryOp)):
                             # if multiple line, record lines and will insert after all node visit
                             if node_list[0:-1]:
                                 self.log_debug("insert extra {} lines for torch api {}".format(len(node_list[0:-1]), torch_api), self.file_name, node.lineno)

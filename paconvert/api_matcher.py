@@ -199,6 +199,26 @@ class TransposeMatcher(BaseMatcher):
                 perm)
         return code
 
+class SwapAxesMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if len(kwargs) != 3:
+            return None
+
+        API_TEMPLATE = textwrap.dedent(
+            '''
+            x = {}
+            {} = list(range(x.ndim))
+            {}[{}] = {}
+            {}[{}] = {}
+            paddle.transpose(x=x, perm={})
+            '''
+        )
+        perm = get_unique_name('perm')
+        code = API_TEMPLATE.format(kwargs['input'], perm, 
+                perm, kwargs['axis0'], kwargs['axis1'], 
+                perm, kwargs['axis1'], kwargs['axis0'], 
+                perm)
+        return code
 
 class CreateMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
@@ -860,7 +880,7 @@ class GroupNormMatcher(BaseMatcher):
         return code
 
 
-class BatchNorm1DMatcher(BaseMatcher):
+class BatchNormMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if 'eps' not in kwargs:
             epsilon = 1e-5
@@ -880,115 +900,29 @@ class BatchNorm1DMatcher(BaseMatcher):
         if 'affine' in kwargs and 'False' in kwargs['affine']:
             API_TEMPLACE = textwrap.dedent(
                 '''
-                paddle.nn.BatchNorm1D(num_features={}, 
-                                    momentum=1-{}, 
-                                    epsilon={}, 
-                                    weight_attr=paddle.ParamAttr(learning_rate=0.0), 
-                                    bias_attr=paddle.ParamAttr(learning_rate=0.0),
-                                    use_global_stats={})
+                {}(num_features={}, 
+                    momentum=1-{}, 
+                    epsilon={}, 
+                    weight_attr=paddle.ParamAttr(learning_rate=0.0), 
+                    bias_attr=paddle.ParamAttr(learning_rate=0.0),
+                    use_global_stats={})
                 '''
             )
         else:
             API_TEMPLACE = textwrap.dedent(
                 '''
-                paddle.nn.BatchNorm1D(num_features={}, 
-                                    momentum=1-{}, 
-                                    epsilon={}, 
-                                    weight_attr=None, 
-                                    bias_attr=None,
-                                    use_global_stats={})
+                {}(num_features={}, 
+                    momentum=1-{}, 
+                    epsilon={}, 
+                    weight_attr=None, 
+                    bias_attr=None,
+                    use_global_stats={})
                 '''
             )
-        code = API_TEMPLACE.format(kwargs['num_features'], momentum, epsilon, track_running_stats)
+        code = API_TEMPLACE.format(self.get_paddle_api(), kwargs['num_features'], momentum, epsilon, track_running_stats)
         return code
 
-
-class BatchNorm2DMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if 'eps' not in kwargs:
-            epsilon = 1e-5
-        else:
-            epsilon = kwargs['eps']
-
-        if 'track_running_stats' in kwargs:
-            track_running_stats = kwargs['track_running_stats']
-        else:
-            track_running_stats = True
-
-        if 'momentum' in kwargs:
-            momentum = kwargs['momentum']
-        else:
-            momentum = 0.1
-
-        if 'affine' in kwargs and 'False' in kwargs['affine']:
-            API_TEMPLACE = textwrap.dedent(
-                '''
-                paddle.nn.BatchNorm2D(num_features={}, 
-                                    momentum=1-{}, 
-                                    epsilon={}, 
-                                    weight_attr=paddle.ParamAttr(learning_rate=0.0), 
-                                    bias_attr=paddle.ParamAttr(learning_rate=0.0), 
-                                    use_global_stats={})
-                '''
-            )
-        else:
-            API_TEMPLACE = textwrap.dedent(
-                '''
-                paddle.nn.BatchNorm2D(num_features={}, 
-                                    momentum=1-{}, 
-                                    epsilon={}, 
-                                    weight_attr=None, 
-                                    bias_attr=None, 
-                                    use_global_stats={})
-                '''
-            )
-        code = API_TEMPLACE.format(kwargs['num_features'], momentum, epsilon, track_running_stats)
-        return code
-
-
-class BatchNorm3DMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if 'eps' not in kwargs:
-            epsilon = 1e-5
-        else:
-            epsilon = kwargs['eps']
-
-        if 'track_running_stats' in kwargs:
-            track_running_stats = kwargs['track_running_stats']
-        else:
-            track_running_stats = True
-
-        if 'momentum' in kwargs:
-            momentum = kwargs['momentum']
-        else:
-            momentum = 0.1
-
-        if 'affine' in kwargs and 'False' in kwargs['affine']:
-            API_TEMPLACE = textwrap.dedent(
-                '''
-                paddle.nn.BatchNorm3D(num_features={}, 
-                                    momentum=1-{}, 
-                                    epsilon={}, 
-                                    weight_attr=paddle.ParamAttr(learning_rate=0.0), 
-                                    bias_attr=paddle.ParamAttr(learning_rate=0.0), 
-                                    use_global_stats={})
-                '''
-            )
-        else:
-            API_TEMPLACE = textwrap.dedent(
-                '''
-                paddle.nn.BatchNorm3D(num_features={}, 
-                                    momentum=1-{}, 
-                                    epsilon={}, 
-                                    weight_attr=None, 
-                                    bias_attr=None, 
-                                    use_global_stats={})
-                '''
-            )
-        code = API_TEMPLACE.format(kwargs['num_features'], momentum, epsilon, track_running_stats)
-        return code
-
-
+        
 class MaxPool2DMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if 'dilation' in kwargs:
@@ -1300,12 +1234,12 @@ class FunctionalL1LossMatcher(BaseMatcher):
         if 'target' in kwargs:
             kwargs['label'] = kwargs.pop('target')
 
-        API_TEMPLACE = textwrap.dedent(
+        API_TEMPLATE = textwrap.dedent(
             '''
             paddle.nn.functional.l1_loss({})
             '''
         )
-        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
+        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
         return code
 
 
@@ -1354,12 +1288,12 @@ class FunctionalBinaryCrossEntropyWithLogitsMatcher(BaseMatcher):
         if 'target' in kwargs:
             kwargs['label'] = kwargs.pop('target')
 
-        API_TEMPLACE = textwrap.dedent(
+        API_TEMPLATE = textwrap.dedent(
             '''
             paddle.nn.functional.binary_cross_entropy_with_logits({})
             '''
         )
-        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
+        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
         return code
 
 
@@ -1421,6 +1355,7 @@ class SaveMatcher(BaseMatcher):
         code = API_TEMPLACE.format(kwargs['obj'], kwargs['f'], protocol)
         return code
 
+
 class WhereMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if len(kwargs) == 1:
@@ -1428,6 +1363,272 @@ class WhereMatcher(BaseMatcher):
             return code
         else:
             return GenericMatcher.generate_code(self, kwargs)
+
+
+class SeedMatcher(BaseMatcher):
+    def generate_code(self, kwargs):           
+        API_TEMPLATE = textwrap.dedent(
+            '''
+            paddle.get_cuda_rng_state()[0].current_seed()
+            '''
+        )
+        return  API_TEMPLATE
+
+
+class SetPrintOptionsMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'profile' in kwargs and kwargs['profile'] is not None:
+            pro_kwargs = {}
+            if kwargs['profile'] == '"""default"""':
+                pro_kwargs['precision'] = 4
+                pro_kwargs['threshold'] = 1000
+                pro_kwargs['edgeitems'] = 3
+                pro_kwargs['linewidth'] = 80
+            elif kwargs['profile'] == '"""short"""':
+                pro_kwargs['precision'] = 2
+                pro_kwargs['threshold'] = 1000
+                pro_kwargs['edgeitems'] = 2
+                pro_kwargs['linewidth'] = 80
+            elif kwargs['profile'] == '"""full"""':
+                pro_kwargs['precision'] = 4
+                pro_kwargs['threshold'] = 1000000
+                pro_kwargs['edgeitems'] = 3
+                pro_kwargs['linewidth'] = 80
+
+            for k in pro_kwargs.keys():
+                if k not in kwargs.keys():
+                    kwargs[k] = pro_kwargs[k]
+
+            kwargs.pop('profile')
+
+        kwargs = self.set_paddle_default_kwargs(kwargs)
+        API_TEMPLATE = textwrap.dedent(
+            '''
+            paddle.set_printoptions({})
+            '''
+        )
+        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
+        return code
+
+
+class RandLikeMatcher(BaseMatcher):          
+    def generate_code(self, kwargs):     
+        stop_gradient_v = None
+        if 'requires_grad' in kwargs:
+            stop_gradient_v = 'not ' + kwargs["requires_grad"]
+
+        if 'dtype' in kwargs and 'requires_grad' in kwargs:
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                {} = paddle.rand(shape={}.shape, dtype={})
+                {}.stop_gradient = {}
+                {}
+                '''
+            )
+            out = get_unique_name('out')
+            code = API_TEMPLATE.format(out, kwargs['input'], kwargs['dtype'], out, stop_gradient_v, out)
+        elif 'dtype' not in kwargs and 'requires_grad' in kwargs:
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                {} = paddle.rand(shape={}.shape, dtype={}.dtype)
+                {}.stop_gradient = {}
+                {}
+                '''
+            )
+            out = get_unique_name('out')
+            code = API_TEMPLATE.format(out, kwargs['input'], kwargs['input'], out, stop_gradient_v, out)
+        elif 'dtype' in kwargs and 'requires_grad' not in kwargs:
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                paddle.rand(shape={}.shape, dtype={})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['dtype'])
+        else: 
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                paddle.rand(shape={}.shape, dtype={}.dtype)
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['input'])
+
+        return code
+
+
+class PolarMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'out' in kwargs and kwargs['out'] is not None:            
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                paddle.assign(paddle.complex({} * paddle.cos({}), {} * paddle.sin({})), output={})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['abs'], kwargs['angle'], kwargs['abs'], kwargs['angle'], kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                paddle.complex({} * paddle.cos({}), {} * paddle.sin({}))
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['abs'], kwargs['angle'], kwargs['abs'], kwargs['angle'])
+            
+        return code
+
+
+class NarrowMatcher(BaseMatcher):
+    def generate_code(self, kwargs):           
+        API_TEMPLATE = textwrap.dedent(
+            '''
+            {} = ({}.shape[{}] + {}) if {} < 0 else {}
+            paddle.slice({}, [{}], [{}], [{} + {}])
+            '''
+        )
+        start = get_unique_name('start')
+        code = API_TEMPLATE.format(start, kwargs['input'], kwargs['dim'], kwargs['start'], kwargs['start'], kwargs['start'], 
+                kwargs['input'], kwargs['dim'], start, start, kwargs['length'])
+        return code
+
+
+class AddCMulMatcher(BaseMatcher):
+    def generate_code(self, kwargs):  
+        if 'value' not in kwargs:
+            kwargs['value'] = 1
+        
+        if 'out' in kwargs and kwargs['out'] is not None:          
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                paddle.assign({} + {} * {} * {}, output={})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['value'], kwargs['tensor1'], kwargs['tensor2'], kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                paddle.add({}, {} * {} * {})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['value'], kwargs['tensor1'], kwargs['tensor2'])
+
+        return code
+
+
+class AddCDivMatcher(BaseMatcher):
+    def generate_code(self, kwargs):  
+        if 'value' not in kwargs:
+            kwargs['value'] = 1
+        
+        if 'out' in kwargs and kwargs['out'] is not None:          
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                paddle.assign({} + {} * {} / {}, output={})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['value'], kwargs['tensor1'], kwargs['tensor2'], kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''
+                paddle.add({}, {} * {} / {})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['value'], kwargs['tensor1'], kwargs['tensor2'])
+
+        return code
+
+
+class IsNonzeroMatcher(BaseMatcher):
+    def generate_code(self, kwargs):           
+        API_TEMPLATE = textwrap.dedent(
+            '''  
+            {}.astype('bool').item() 
+            '''
+        )
+        code = API_TEMPLATE.format(kwargs['input'])
+
+        return code
+
+
+class VStackMatcher(BaseMatcher):
+    def generate_code(self, kwargs): 
+        if 'out' in kwargs and kwargs['out'] is not None:          
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                if {}[0].ndim == 1:
+                    {} = paddle.stack({})
+                else:
+                    {} = paddle.concat({})
+                paddle.assign({}, output={})
+                '''
+            )
+            out = get_unique_name('out')
+            code = API_TEMPLATE.format(kwargs['tensors'], out, kwargs['tensors'], out, kwargs['tensors'], out, kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                if {}[0].ndim == 1:
+                    {} = paddle.stack({})
+                else:
+                    {} = paddle.concat({})
+                {}
+                '''
+            )
+            out = get_unique_name('out')
+            code = API_TEMPLATE.format(kwargs['tensors'], out, kwargs['tensors'], out, kwargs['tensors'], out)
+
+        return code
+
+
+class HStackMatcher(BaseMatcher):
+    def generate_code(self, kwargs): 
+        if 'out' in kwargs and kwargs['out'] is not None:          
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                {} = 0 if {}[0].ndim == 1 else 1
+                paddle.assign(paddle.concat({}, axis={}), output={})
+                '''
+            )
+            axis = get_unique_name('axis')
+            code = API_TEMPLATE.format(axis, kwargs['tensors'], kwargs['tensors'], axis, kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                {} = 0 if {}[0].ndim == 1 else 1
+                paddle.concat({}, axis={})
+                '''
+            )
+            axis = get_unique_name('axis')
+            code = API_TEMPLATE.format(axis, kwargs['tensors'], kwargs['tensors'], axis)
+
+        return code
+  
+    
+class ColumnStackMatcher(BaseMatcher):
+    def generate_code(self, kwargs): 
+        if 'out' in kwargs and kwargs['out'] is not None:          
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                if {}[0].ndim == 1:
+                    {} = paddle.stack({}, axis=1)
+                else:
+                    {} = paddle.concat({}, axis=1)
+                paddle.assign({}, output={})
+                '''
+            )
+            out = get_unique_name('out')
+            code = API_TEMPLATE.format(kwargs['tensors'], out, kwargs['tensors'], out, kwargs['tensors'], out, kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                if {}[0].ndim == 1:
+                    {} = paddle.stack({}, axis=1)
+                else:
+                    {} = paddle.concat({}, axis=1)
+                {}
+                '''
+            )
+            out = get_unique_name('out')
+            code = API_TEMPLATE.format(kwargs['tensors'], out, kwargs['tensors'], out, kwargs['tensors'], out)
+
+        return code    
 
 
 class TensorIndexCopyMatcher(BaseMatcher):
@@ -1455,7 +1656,7 @@ class TensorIndexCopyMatcher(BaseMatcher):
         return code
 
 
-class InstanceNorm3DMatcher(BaseMatcher):
+class InstanceNormMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if 'eps' not in kwargs:
             epsilon = 1e-5
@@ -1470,25 +1671,25 @@ class InstanceNorm3DMatcher(BaseMatcher):
         if 'affine' in kwargs and 'True' in kwargs['affine']:
             API_TEMPLACE = textwrap.dedent(
                 '''
-                paddle.nn.InstanceNorm3D(num_features={},
-                                    momentum=1-{},
-                                    epsilon={},
-                                    weight_attr=None,
-                                    bias_attr=None)
+                {}(num_features={},
+                    momentum=1-{},
+                    epsilon={},
+                    weight_attr=None,
+                    bias_attr=None)
                 '''
             )
         else:
             API_TEMPLACE = textwrap.dedent(
                 '''
-                paddle.nn.InstanceNorm3D(num_features={},
-                                    momentum=1-{},
-                                    epsilon={},
-                                    weight_attr=paddle.ParamAttr(learning_rate=0.0),
-                                    bias_attr=paddle.ParamAttr(learning_rate=0.0))
+                {}(num_features={},
+                    momentum=1-{},
+                    epsilon={},
+                    weight_attr=False,
+                    bias_attr=False)
                 '''
             )
 
-        code = API_TEMPLACE.format(kwargs['num_features'], momentum, epsilon)
+        code = API_TEMPLACE.format(self.get_paddle_api(), kwargs['num_features'], momentum, epsilon)
         return code
 
 
@@ -1646,11 +1847,13 @@ class TensorRequires_GradMatcher(BaseMatcher):
 
         return ast.parse(code).body[0].value
 
+
 class AllMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs['input'] = kwargs['input'] + '.astype(dtype=\'bool\')'
         code = GenericMatcher.generate_code(self, kwargs)
         return code
+
 
 class ArangeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
@@ -1659,4 +1862,433 @@ class ArangeMatcher(BaseMatcher):
         if 'dtype' not in kwargs and '.' in kwargs['end']:
             kwargs['dtype'] = "'float32'"
         code = GenericMatcher.generate_code(self, kwargs)
+        return code
+
+
+class ErfCMatcher(BaseMatcher):
+    def generate_code(self, kwargs): 
+        if 'out' in kwargs and kwargs['out'] is not None:          
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                paddle.assign(1. - paddle.erf({}), output={})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                1. - paddle.erf({})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'])
+
+        return code
+
+
+class Exp2Matcher(BaseMatcher):
+    def generate_code(self, kwargs): 
+        if 'out' in kwargs and kwargs['out'] is not None:          
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                paddle.assign(2. ** {}, output={})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                2. ** {}
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'])
+
+        return code
+
+
+class FModMatcher(BaseMatcher):
+    def generate_code(self, kwargs): 
+        if 'out' in kwargs and kwargs['out'] is not None:          
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                paddle.assign(paddle.mod({}, paddle.to_tensor({}, dtype={}.dtype)), output={})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['other'], kwargs['input'], kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                paddle.mod({}, paddle.to_tensor({}, dtype={}.dtype))
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['other'], kwargs['input'])
+
+        return code
+
+
+class LdExpMatcher(BaseMatcher):
+    def generate_code(self, kwargs): 
+        if 'out' in kwargs and kwargs['out'] is not None:          
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                paddle.assign(paddle.multiply({}, paddle.pow(paddle.to_tensor(2, dtype={}.dtype), {})), output={})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['other'], kwargs['other'], kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                paddle.multiply({}, paddle.pow(paddle.to_tensor(2, dtype={}.dtype), {}))
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['other'], kwargs['other'])
+
+        return code
+
+
+class LogAddExpMatcher(BaseMatcher):
+    def generate_code(self, kwargs): 
+        if 'out' in kwargs and kwargs['out'] is not None:          
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                paddle.assign(paddle.log(paddle.exp({}) + paddle.exp({})), output={})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['other'], kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                paddle.log(paddle.exp({}) + paddle.exp({}))
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['other'])
+
+        return code
+
+
+class LogAddExp2Matcher(BaseMatcher):
+    def generate_code(self, kwargs): 
+        if 'out' in kwargs and kwargs['out'] is not None:          
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                paddle.assign(paddle.log2(paddle.pow(paddle.to_tensor(2, dtype={}.dtype), {}) + paddle.pow(paddle.to_tensor(2, dtype={}.dtype), {})), output={})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['input'], kwargs['other'], kwargs['other'], kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                paddle.log2(paddle.pow(paddle.to_tensor(2, dtype={}.dtype), {}) + paddle.pow(paddle.to_tensor(2, dtype={}.dtype), {}))
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['input'], kwargs['other'], kwargs['other'])
+
+        return code
+
+
+class XLogYMatcher(BaseMatcher):
+    def generate_code(self, kwargs): 
+        if 'out' in kwargs and kwargs['out'] is not None:          
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                paddle.assign(paddle.multiply(paddle.to_tensor({}), paddle.log(paddle.to_tensor({}))), output={})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['other'], kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                paddle.multiply(paddle.to_tensor({}), paddle.log(paddle.to_tensor({})))
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['other'])
+
+        return code
+
+
+class StdMeanMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'correction' not in kwargs and 'unbiased' not in kwargs:
+            kwargs['correction'] = 1 
+
+        if 'unbiased' in kwargs:
+            kwargs['correction'] = kwargs['unbiased'] 
+
+        if 'keepdim' not in kwargs:
+            kwargs['keepdim'] = False
+
+        if 'dim' not in kwargs:
+            kwargs['dim'] = None
+
+        if 'out' in kwargs and kwargs['out'] is not None:          
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                paddle.assign((paddle.std({}, axis={}, unbiased={}, keepdim={}), paddle.mean({}, axis={}, keepdim={})), output={})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['dim'], kwargs['correction'], kwargs['keepdim'], kwargs['input'], kwargs['dim'], kwargs['keepdim'], kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                tuple([paddle.std({}, axis={}, unbiased={}, keepdim={}), paddle.mean({}, axis={}, keepdim={})])
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['dim'], kwargs['correction'], kwargs['keepdim'], kwargs['input'], kwargs['dim'], kwargs['keepdim'])
+
+        return code
+
+
+class VarMeanMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'correction' not in kwargs and 'unbiased' not in kwargs:
+            kwargs['correction'] = 1 
+
+        if 'unbiased' in kwargs:
+            kwargs['correction'] = kwargs['unbiased'] 
+
+        if 'keepdim' not in kwargs:
+            kwargs['keepdim'] = False
+
+        if 'dim' not in kwargs:
+            kwargs['dim'] = None
+
+        if 'out' in kwargs and kwargs['out'] is not None:          
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                paddle.assign((paddle.var({}, axis={}, unbiased={}, keepdim={}), paddle.mean({}, axis={}, keepdim={})), output={})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['dim'], kwargs['correction'], kwargs['keepdim'], kwargs['input'], kwargs['dim'], kwargs['keepdim'], kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                tuple([paddle.var({}, axis={}, unbiased={}, keepdim={}), paddle.mean({}, axis={}, keepdim={})])
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['dim'], kwargs['correction'], kwargs['keepdim'], kwargs['input'], kwargs['dim'], kwargs['keepdim'])
+
+        return code
+
+
+class AddMRMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        params1 = ['mat1', 'mat', 'vec1', 'batch1']
+        params2 = ['mat2', 'vec', 'vec2', 'batch2']
+        param1, param2 = None, None
+        for i, param in  enumerate(params1):
+            if param in kwargs:
+                param1 = kwargs[params1[i]]
+                param2 = kwargs[params2[i]]
+
+        if 'beta' not in kwargs:
+            kwargs['beta'] = 1 
+
+        if 'alpha' not in kwargs:
+            kwargs['alpha'] = 1 
+
+        if 'out' in kwargs and kwargs['out'] is not None:          
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                paddle.assign(paddle.add({}*{}, {}*{}({}, {})), output={})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['beta'], kwargs['input'], kwargs['alpha'], self.get_paddle_api(), param1, param2, kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                paddle.add({}*{}, {}*{}({}, {}))
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['beta'], kwargs['input'], kwargs['alpha'], self.get_paddle_api(), param1, param2)
+
+        return code
+
+
+class AddBmmMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if 'beta' not in kwargs:
+            kwargs['beta'] = 1 
+
+        if 'alpha' not in kwargs:
+            kwargs['alpha'] = 1 
+
+        if 'out' in kwargs and kwargs['out'] is not None:          
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                paddle.assign(paddle.add({}*{}, {}*paddle.sum(paddle.bmm({}, {}), axis=0)), output={})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['beta'], kwargs['input'], kwargs['alpha'], kwargs['batch1'], kwargs['batch2'], kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                paddle.add({}*{}, {}*paddle.sum(paddle.bmm({}, {}), axis=0))
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['beta'], kwargs['input'], kwargs['alpha'], kwargs['batch1'], kwargs['batch2'])
+
+        return code
+
+
+class CholeskyInverseMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if 'upper' not in kwargs:
+            kwargs['upper'] = False
+
+        if 'out' in kwargs and kwargs['out'] is not None:          
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                {} = list(range({}.ndim))
+                {}[-1], {}[-2] = {}[-2], {}[-1]
+                if {}:
+                    {} = paddle.linalg.inv(paddle.transpose({}, perm={}) @ {})
+                else:
+                    {} = paddle.linalg.inv({} @ paddle.transpose({}, perm={}))
+                paddle.assign({}, output={})
+                '''
+            )
+            perm = get_unique_name('perm')
+            out = get_unique_name('out')
+            code = API_TEMPLATE.format(perm, kwargs['input'], perm, perm, perm, perm, kwargs['upper'], out, kwargs['input'], perm, 
+                    kwargs['input'], out, kwargs['input'], kwargs['input'], perm, out, kwargs['out'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                {} = list(range({}.ndim))
+                {}[-1], {}[-2] = {}[-2], {}[-1]
+                if {}:
+                    {} = paddle.linalg.inv(paddle.transpose({}, perm={}) @ {})
+                else:
+                    {} = paddle.linalg.inv({} @ paddle.transpose({}, perm={}))
+                {}
+                '''
+            )
+            perm = get_unique_name('perm')
+            out = get_unique_name('out')
+            code = API_TEMPLATE.format(perm, kwargs['input'], perm, perm, perm, perm, kwargs['upper'], out, kwargs['input'], perm, 
+                    kwargs['input'], out, kwargs['input'], kwargs['input'], perm, out)
+
+        return code
+
+
+class LogDetMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            '''  
+            paddle.log(paddle.linalg.det({}))
+            '''
+        )
+        code = API_TEMPLATE.format(kwargs['input'])
+
+        return code
+
+
+class AvgPoolMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'input' in kwargs:
+            kwargs['x'] = kwargs.pop('input')
+
+        if 'count_include_pad' in kwargs:
+            kwargs['exclusive'] =  'not' + kwargs.pop('count_include_pad')
+        else:
+            kwargs['exclusive'] = 'False'
+        API_TEMPLATE = textwrap.dedent(
+            '''  
+            {}({})
+            '''
+        )
+        code = API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+        return code
+
+
+class FSoftMinMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'dim' not in kwargs or kwargs['dim'] is None:
+            return None
+        
+        if 'dtype' in kwargs and kwargs['dim'] is not None:
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                paddle.nn.functional.softmax(-{}, axis={}).astype({})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['dim'], kwargs['dtype'])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                '''  
+                paddle.nn.functional.softmax(-{}, axis={})
+                '''
+            )
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['dim'])
+
+        return code
+
+
+class FBatchNormMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'input' in kwargs:
+            kwargs['x'] = kwargs.pop('input')
+
+        if 'eps' in kwargs:
+            kwargs['epsilon'] = kwargs.pop('eps')
+
+        if 'momentum' in kwargs :
+            kwargs['momentum'] = '1 - ' + kwargs['momentum']
+
+        API_TEMPLATE = textwrap.dedent(
+                '''  
+                {}({})
+                '''
+            )
+        code = API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+        return code
+
+
+class FInstanceNormMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'input' in kwargs:
+            kwargs['x'] = kwargs.pop('input')
+
+        if 'momentum' in kwargs :
+            kwargs['momentum'] = '1 - ' + kwargs['momentum']
+
+        API_TEMPLATE = textwrap.dedent(
+                '''  
+                {}({})
+                '''
+            )
+        code = API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+        return code
+
+
+class FUpsampleNearestMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'input' in kwargs:
+            kwargs['x'] = kwargs.pop('input')
+
+        API_TEMPLATE = textwrap.dedent(
+            '''  
+            paddle.nn.functional.upsample({}, mode='nearest')
+            '''
+        )
+        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
+
+        return code
+
+class FUpsampleBilinearMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'input' in kwargs:
+            kwargs['x'] = kwargs.pop('input')
+
+        API_TEMPLATE = textwrap.dedent(
+            '''  
+            paddle.nn.functional.upsample({}, mode='bilinear', align_corners=True)
+            '''
+        )
+        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
+
         return code
