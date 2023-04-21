@@ -330,7 +330,7 @@
 
   "torch.sparse_coo_tensor" : {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.incubate.sparse.sparse_coo_tensor",
+    "paddle_api": "paddle.sparse.sparse_coo_tensor",
     "args_list" : [
       "indices", 
       "values", 
@@ -448,10 +448,10 @@
     "args_list" : [
       "n",
       "m",
+      "out",
       "dtype",
       "layout",
       "device",
-      "pin_memory",
       "requires_grad"],
     "kwargs_change": {
       "n": "num_rows",
@@ -567,7 +567,7 @@
 
   "torch.chunk" : {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.aaa",
+    "paddle_api": "paddle.chunk",
     "args_list" : [
       "input",
       "chunks",
@@ -615,7 +615,7 @@
   
   "torch.movedim" : {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.movedim",
+    "paddle_api": "paddle.moveaxis",
     "args_list" : [
       "input",
       "source",
@@ -715,6 +715,7 @@
       "input",
       "dim"],
     "kwargs_change": {
+      "input": "x",
       "dim":"axis"
     }
   },
@@ -722,6 +723,7 @@
   
   "torch.where" : {
     "Matcher": "WhereMatcher",
+    "paddle_api": "paddle.where",
     "args_list" : [
       "condition",
       "x",
