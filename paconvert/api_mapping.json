@@ -5985,14 +5985,7 @@
   "torch.Tensor.repeat": {
     "Matcher": "TensorRepeatMatcher"
   }, 
-  "torch.Tensor.repeat_interleave": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.repeat_interleave",
-    "args_list" : ["dim"],
-    "kwargs_change": {
-        "dim":"axis"
-      }
-  }, 
+  "torch.Tensor.repeat_interleave": {}, 
   "torch.Tensor.requires_grad_": {
     "Matcher": "TensorRequiresGradMatcher",
     "args_list": [
