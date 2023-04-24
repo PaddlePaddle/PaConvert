@@ -18,6 +18,7 @@ from os import path
 import sys
 sys.path.append(path.dirname(__file__)+"../")
 
+from paconvert.api_matcher import *
 from paconvert.base import API_MAPPING, ATTRIBUTE_MAPPING, TORCH_PACKAGE_LIST, BaseTransformer
 
 def iter_fields(node):
