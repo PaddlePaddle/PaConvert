@@ -1,4 +1,4 @@
-# Makefile for PaDiff
+# Makefile for PaConvert
 #
 # 	GitHb: https://github.com/PaddlePaddle/PaConvert
 # 	Author: Paddle Team https://github.com/PaddlePaddle
@@ -34,13 +34,12 @@ lint:
 test: unit-test
 
 unit-test:
-	PYTHONPATH=$(shell pwd) pytest \
-		-n auto --cov paconvert \
-		--cov-report xml:coverage.xml
+	PYTHONPATH=. pytest tests
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 .PHONY: install
 install:
 	pip install -r requirements-dev.txt
+	pip install -r requirements.txt
 	pre-commit install
