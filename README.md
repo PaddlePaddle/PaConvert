@@ -127,11 +127,11 @@ net = MyNet()
 PyTorch to Paddle Convert Start ------>:
 ===========================================
 Start convert /workspace/test_code.py --> /workspace/PaConvert/paddle_project/test_code.py
-[test_code.py:1] remove 'import torch' 
-[test_code.py:2] remove 'import torch.nn as nn' 
-[test_code.py:3] remove 'import torch.optim as optim' 
-[test_code.py:4] remove 'import torch.nn.Linear as Linear' 
-[test_code.py:5] remove 'import torch.nn.functional as F' 
+[test_code.py:1] remove 'import torch'
+[test_code.py:2] remove 'import torch.nn as nn'
+[test_code.py:3] remove 'import torch.optim as optim'
+[test_code.py:4] remove 'import torch.nn.Linear as Linear'
+[test_code.py:5] remove 'import torch.nn.functional as F'
 [test_code.py] add 'import paddle' in first line
 [test_code.py:25] [Not Support] convert torch.optim.SGD to Paddle is not supported currently
 [test_code.py:26] [Not Support] convert torch.optim.lr_scheduler.MultiStepLR to Paddle is not supported currently
@@ -146,8 +146,8 @@ There are 10 Pytorch APIs in this Project:
  2  Pytorch APIs are not supported to convert to Paddle currently!
  Convert Rate is: 80.000%
 
-For these 2 Pytorch APIs that do not support to Convert now, which have been marked by >>> before the line, 
-please refer to https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html 
+For these 2 Pytorch APIs that do not support to Convert now, which have been marked by >>> before the line,
+please refer to https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html
 and convert it by yourself manually. In addition, these APIs will be supported in future.
 
 Thank you to use Paddle Code Convert Tool. You can make any suggestions to us.
@@ -289,9 +289,9 @@ class TransposeMatcher(BaseMatcher):
             '''
         )
         perm = unique_name('perm')
-        code = API_TEMPLACE.format(perm, kwargs['input'], 
-                perm, kwargs['dim0'], kwargs['dim1'], 
-                perm, kwargs['dim1'], kwargs['dim0'], 
+        code = API_TEMPLACE.format(perm, kwargs['input'],
+                perm, kwargs['dim0'], kwargs['dim1'],
+                perm, kwargs['dim1'], kwargs['dim0'],
                 kwargs['input'], perm)
         return code
 ```
@@ -303,7 +303,7 @@ class TransposeMatcher(BaseMatcher):
     "Matcher": "TransposeMatcher",
     "args_list" : [
         "input",
-        "dim0", 
+        "dim0",
         "dim1"
     ]
 }
@@ -314,7 +314,7 @@ class TransposeMatcher(BaseMatcher):
 1）可以参考一些写的较为规范的Matcher：
 - 传入参数既可以是可变参数，也可以是列表或元组时，例如 `TensorExpandMatcher`
 - (待补充)...
-    
+
 2）由于AST语法分析是静态代码分析，也就是Matcher被执行时的并未到代码的运行期，无法知道某个变量的运行值，要避免对变量运行值的判断，否则可能引入错误。
 
 例如：如果在Matcher里的以下判断形式 `if 'True' == kwargs['pin_memory']` ，对以下Python代码将失效，因为 `kwargs['pin_memory']` 只有到代码运行期其值才为'True'，在AST语法分析期，只能获取 `kwargs['pin_memory']='temp'` ，无法获取具体运行值，所以上述判断将失效。
@@ -421,4 +421,3 @@ x.new_zeros(x.size())
 
 
 总的来说，Matcher转换规则的开发具有一定的挑战性，是一项非常细心以及考验思维广度的工作。
-

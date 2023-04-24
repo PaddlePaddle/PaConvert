@@ -19,7 +19,6 @@ import collections
 import re
 from os import path
 
-from paconvert.utils import UniqueNameGenerator
 
 json_file = path.dirname(__file__) + "/api_mapping.json"
 with open(json_file, 'r') as file:
@@ -48,7 +47,7 @@ class BaseTransformer(ast.NodeTransformer):
         self.scope_insert_lines = collections.defaultdict(dict)
         self.logger = logger
         self.black_list = []
-    
+
     def transform(self):
         self.visit(self.root)
         self.insert_scope()
@@ -75,7 +74,7 @@ class BaseTransformer(ast.NodeTransformer):
                 self.scope_insert_lines[scope_node][body].update({index: node})
         else:
             self.scope_insert_lines[scope_node][body] = {index: node}
-            
+
     def insert_scope(self):
         # if multiple line, insert into scope node only One time
         for scope_node in self.scope_insert_lines:
@@ -137,7 +136,7 @@ class BaseTransformer(ast.NodeTransformer):
                 # array(1.).abs() ...
                 if re.match('%s\(' % item, node_str):
                     return 'NonTorchClass'
-            
+
             return 'TorchClass'
         # others not torch, such as 'str'.split
         else:
@@ -187,7 +186,7 @@ class BaseMatcher(object):
             v = astor.to_source(node).strip('\n')
             # have comma indicates a tuple
             new_kwargs[k] = v
-        
+
         for node in kwargs:
             k = node.arg
             # not support 'torch.rot90(tensor, **config)'
@@ -225,16 +224,16 @@ class BaseMatcher(object):
             new_paddle_api = re.sub("paddle.Tensor|paddle.nn.Layer|paddle.optimizer.Optimizer",
                 self.paddleClass, self.get_paddle_api())
             self.set_paddle_api(new_paddle_api)
-  
+
         return new_func
 
     def args_to_str(self, args):
         str_list = []
         for ele in args:
             str_list.append('{}'.format(ele))
-        
+
         return ', '.join(str_list)
-        
+
     def kwargs_to_str(self, kwargs):
         str_list = []
         for k, v in kwargs.items():
@@ -246,7 +245,7 @@ class BaseMatcher(object):
         str_list = []
         for ele in args:
             str_list.append('{}'.format(ele))
-        
+
         for k, v in kwargs.items():
             str_list.append('{}={}'.format(k, v))
 
@@ -297,7 +296,7 @@ class BaseMatcher(object):
                 return "NonTorchClass"
             elif new_code is not None:
                 return ast.parse(new_code).body
-        
+
         return None
 
     def get_paddle_class_attribute_nodes(self, node):

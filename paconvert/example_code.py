@@ -1,19 +1,30 @@
+# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-import torch, six
+import torch
 
 import torch.nn
 
-import torch.nn as nn, six as ss
+import torch.nn as nn
 
-from torch.nn import functional as F, init as I
+from torch.nn import functional as F
 
 from torch.nn import Module, Linear
 
 from torch import add, Tensor
 
-from io import open
 
-from . import functional_pil as F_pil, functional_tensor as F_t
 
 class MyNet(nn.Module):
     test = "str"
@@ -992,17 +1003,17 @@ a =torch.randn(2, 3)
 c = torch.randn(2, 3, dtype= torch.float64, device=cpu)
 # torch.Tensor.to
 ## Case1:  torch.to(device=None, dtype=None, non_blocking=False, copy=False, memory_format=torch.preserve_format)
-### torch code 
+### torch code
 b = a.to(cpu, non_blocking=False, copy=False)
 print('[torch.Tensor.to case-1]: ', b)
 
 ## Case2:  torch.to(device=None, dtype=None, non_blocking=False, copy=False, memory_format=torch.preserve_format)
-### torch code 
+### torch code
 b = a.to('cpu')
 print('[torch.Tensor.to case-2]: ', b)
 
 ## Case3:  torch.to(device=None, dtype=None, non_blocking=False, copy=False, memory_format=torch.preserve_format)
-### torch code 
+### torch code
 b = a.to(device = cpu, dtype = torch.float64)
 print('[torch.Tensor.to case-3]: ', b)
 
@@ -1013,13 +1024,13 @@ b = a.to(torch.float64)
 print('[torch.Tensor.to case-4]: ', b)
 
 ## Case5:  torch.to(dtype, non_blocking=False, copy=False, memory_format=torch.preserve_format)
-### torch code 
+### torch code
 b = a.to(dtype= torch.float64)
 print('[torch.Tensor.to case-5]: ', b)
 
 
 ## Case6:  torch.to(other, non_blocking=False, copy=False)
-### torch code 
+### torch code
 b = a.to(c)
 print('[torch.Tensor.to case-6]: ', b)
 

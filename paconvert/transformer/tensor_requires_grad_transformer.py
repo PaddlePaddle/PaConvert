@@ -24,7 +24,7 @@ class TensorRequiresGradTransformer(BaseTransformer):
     '''
     process torch.requires_grad attribute left value
     -  *.requires_grad = value -> *.stop_gradient = not value
-    -  a, *.requires_grad = value -> 
+    -  a, *.requires_grad = value ->
                         a, temp = value
                         *.stop_gradient = not temp
     '''
@@ -32,7 +32,7 @@ class TensorRequiresGradTransformer(BaseTransformer):
     def __init__(self, root, file, imports_map, logger):
         super(TensorRequiresGradTransformer, self).__init__(root, file, imports_map, logger)
         self.insert_nodes_list = []
-    
+
     @property
     def parent_node(self):
         return self.node_stack[-2]
@@ -54,7 +54,7 @@ class TensorRequiresGradTransformer(BaseTransformer):
                         node.targets[0].elts[j] = new_node
                         index = self.parent_node.body.index(node)
                         self.insert_nodes_list.append((self.parent_node, index, assign_node))
-    
+
         return node
 
     def insert_assign_node(self):

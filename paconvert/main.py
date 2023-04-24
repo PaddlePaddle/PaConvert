@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import os
-import logging
 import argparse
 import sys
 sys.path.append(os.path.dirname(__file__) + '/..')
@@ -24,7 +23,7 @@ def main():
     if sys.version_info < (3, 8):
         raise RuntimeError(
             "PaConvert use new AST syntax and only supports Python version >= 3.8 now.")
-            
+
     parser = argparse.ArgumentParser(prog="paconvert", description="PaConverter tool entry point")
     parser.add_argument("--in_dir", default='./tests/test_transpose.py', type=str, help='the input PyTorch file or directory.')
     parser.add_argument("--out_dir", default=None, type=str, help='the output Paddle directory.')
