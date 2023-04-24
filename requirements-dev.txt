@@ -3,6 +3,5 @@ pytest
 parameterized
 pytest-cov
 regex
-pytest-xdists
 paddlepaddle>=2.4.2
 torch>=1.12.0
