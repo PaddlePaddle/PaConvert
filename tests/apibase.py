@@ -29,11 +29,7 @@ class APIBase(object):
             exec(paddle_code)
             paddle_result = [loc[name] for name in compared_tensor_names]
             for i in range(len(compared_tensor_names)):
-                if isinstance(pytorch_result[i], tuple) or isinstance(pytorch_result[i], list):
-                    for k in range(len(pytorch_result[i])):
-                        assert self.check(pytorch_result[i][k], paddle_result[i][k]), '[{}]: convert failed'.format(self.pytorch_api)
-                else:
-                    assert self.check(pytorch_result[i], paddle_result[i]), '[{}]: convert failed'.format(self.pytorch_api)
+                assert self.check(pytorch_result[i], paddle_result[i]), '[{}]: convert failed'.format(self.pytorch_api)
 
         if expect_paddle_code:
             convert_paddle_code = self.convert(pytorch_code)
@@ -49,9 +45,9 @@ class APIBase(object):
         if isinstance(pytorch_result, (bool, np.number)) and isinstance(pytorch_result, (bool, np.number)):
             return pytorch_result == paddle_result
         
-        if isinstance(pytorch_result, tuple) and isinstance(pytorch_result, tuple):
+        if isinstance(pytorch_result, (tuple, list)) and isinstance(pytorch_result, (tuple, list)):
             is_same = True
-            for i in  range(len(pytorch_result)):
+            for i in range(len(pytorch_result)):
                 is_same = is_same and self.check(pytorch_result[i], paddle_result[i])
             return is_same
 
