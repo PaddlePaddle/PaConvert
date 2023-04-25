@@ -17,7 +17,7 @@ def test_case_1():
         result = torch.is_floating_point(a)
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
@@ -27,7 +27,7 @@ def test_case_2():
         result = torch.is_floating_point(a)
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
@@ -36,7 +36,7 @@ def test_case_3():
         result = torch.is_floating_point(torch.tensor([[4, 9], [23, 2]], dtype=torch.float32))
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
@@ -45,7 +45,7 @@ def test_case_4():
         result = torch.is_floating_point(torch.tensor([[4, 9], [23, 2]], dtype=torch.float16))
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
@@ -54,4 +54,4 @@ def test_case_5():
         result = torch.is_floating_point(torch.tensor([[4, 9], [23, 2]], dtype=torch.bfloat16))
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])

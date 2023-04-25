@@ -35,3 +35,5 @@ def test_case_3():
         '''
     )
     obj.run(pytorch_code, ['result'])
+
+test_case_1()

@@ -15,7 +15,7 @@ def test_case_1():
         result = list(torch.Size([2, 8, 64, 64]))
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
@@ -24,7 +24,7 @@ def test_case_2():
         result = torch.randn(6, 5, 7).size() == torch.Size([6, 5, 7])
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
@@ -34,7 +34,7 @@ def test_case_3():
         result = out == torch.Size([6, 5, 7])
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
@@ -44,7 +44,7 @@ def test_case_4():
         result = list(data)
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
@@ -54,4 +54,5 @@ def test_case_5():
         result = list(shape)
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
+test_case_1()

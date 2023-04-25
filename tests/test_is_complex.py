@@ -17,7 +17,7 @@ def test_case_1():
         result = torch.is_complex(a)
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
@@ -26,7 +26,7 @@ def test_case_2():
         result = torch.is_complex(torch.tensor([[4, 9], [23, 2]], dtype=torch.complex64))
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
@@ -36,4 +36,4 @@ def test_case_3():
         result = torch.is_complex(a)
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
