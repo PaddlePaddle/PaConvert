@@ -1414,37 +1414,37 @@ class RandLikeMatcher(BaseMatcher):
         if 'dtype' in kwargs and 'requires_grad' in kwargs:
             API_TEMPLATE = textwrap.dedent(
                 '''
-                {} = paddle.rand(shape={}.shape, dtype={})
+                {} = {}(shape={}.shape, dtype={})
                 {}.stop_gradient = {}
                 {}
                 '''
             )
             out = get_unique_name('out')
-            code = API_TEMPLATE.format(out, kwargs['input'], kwargs['dtype'], out, stop_gradient_v, out)
+            code = API_TEMPLATE.format(out, self.get_paddle_api(), kwargs['input'], kwargs['dtype'], out, stop_gradient_v, out)
         elif 'dtype' not in kwargs and 'requires_grad' in kwargs:
             API_TEMPLATE = textwrap.dedent(
                 '''
-                {} = paddle.rand(shape={}.shape, dtype={}.dtype)
+                {} = {}(shape={}.shape, dtype={}.dtype)
                 {}.stop_gradient = {}
                 {}
                 '''
             )
             out = get_unique_name('out')
-            code = API_TEMPLATE.format(out, kwargs['input'], kwargs['input'], out, stop_gradient_v, out)
+            code = API_TEMPLATE.format(out, self.get_paddle_api(), kwargs['input'], kwargs['input'], out, stop_gradient_v, out)
         elif 'dtype' in kwargs and 'requires_grad' not in kwargs:
             API_TEMPLATE = textwrap.dedent(
                 '''
-                paddle.rand(shape={}.shape, dtype={})
+                {}(shape={}.shape, dtype={})
                 '''
             )
-            code = API_TEMPLATE.format(kwargs['input'], kwargs['dtype'])
+            code = API_TEMPLATE.format(self.get_paddle_api(), kwargs['input'], kwargs['dtype'])
         else: 
             API_TEMPLATE = textwrap.dedent(
                 '''
-                paddle.rand(shape={}.shape, dtype={}.dtype)
+                {}(shape={}.shape, dtype={}.dtype)
                 '''
             )
-            code = API_TEMPLATE.format(kwargs['input'], kwargs['input'])
+            code = API_TEMPLATE.format(self.get_paddle_api(), kwargs['input'], kwargs['input'])
 
         return code
 
@@ -1964,17 +1964,17 @@ class LogAddExp2Matcher(BaseMatcher):
         if 'out' in kwargs and kwargs['out'] is not None:          
             API_TEMPLATE = textwrap.dedent(
                 '''  
-                paddle.assign(paddle.log2(paddle.pow(paddle.to_tensor(2, dtype={}.dtype), {}) + paddle.pow(paddle.to_tensor(2, dtype={}.dtype), {})), output={})
+                paddle.assign(paddle.log2(2 ** {} + 2 ** {}), output={})
                 '''
             )
-            code = API_TEMPLATE.format(kwargs['input'], kwargs['input'], kwargs['other'], kwargs['other'], kwargs['out'])
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['other'], kwargs['out'])
         else:
             API_TEMPLATE = textwrap.dedent(
                 '''  
-                paddle.log2(paddle.pow(paddle.to_tensor(2, dtype={}.dtype), {}) + paddle.pow(paddle.to_tensor(2, dtype={}.dtype), {}))
+                paddle.log2(2 ** {} + 2 ** {})
                 '''
             )
-            code = API_TEMPLATE.format(kwargs['input'], kwargs['input'], kwargs['other'], kwargs['other'])
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['other'])
 
         return code
 
@@ -2286,3 +2286,186 @@ class FUpsampleBilinearMatcher(BaseMatcher):
         code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
 
         return code
+
+
+class TensorAddBmmMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+
+        if 'beta' not in kwargs:
+            kwargs['beta'] = 1 
+
+        if 'alpha' not in kwargs:
+            kwargs['alpha'] = 1 
+
+        API_TEMPLATE = textwrap.dedent(
+            '''  
+            paddle.add({}*{}, {}*paddle.sum(paddle.bmm({}, {}), axis=0))
+            '''
+        )
+        code = API_TEMPLATE.format(kwargs['beta'], self.paddleClass, kwargs['alpha'], kwargs['batch1'], kwargs['batch2'])
+        return ast.parse(code).body
+
+
+class TensorAddMRMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+
+        params1 = ['mat1', 'mat', 'vec1', 'batch1']
+        params2 = ['mat2', 'vec', 'vec2', 'batch2']
+        param1, param2 = None, None
+        for i, param in  enumerate(params1):
+            if param in kwargs:
+                param1 = kwargs[params1[i]]
+                param2 = kwargs[params2[i]]
+
+        if 'beta' not in kwargs:
+            kwargs['beta'] = 1 
+
+        if 'alpha' not in kwargs:
+            kwargs['alpha'] = 1 
+
+        API_TEMPLATE = textwrap.dedent(
+            '''  
+            paddle.add({}*{}, {}*{}({}, {}))
+            '''
+        )
+        code = API_TEMPLATE.format(kwargs['beta'], self.paddleClass, kwargs['alpha'], self.get_paddle_api(), param1, param2)
+
+        return ast.parse(code).body
+
+
+class TensorAddCMulMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+        
+        if 'value' not in kwargs:
+            kwargs['value'] = 1
+
+        API_TEMPLATE = textwrap.dedent(
+            '''
+            paddle.add({}, {} * {} * {})
+            '''
+        )
+        code = API_TEMPLATE.format(self.paddleClass, kwargs['value'], kwargs['tensor1'], kwargs['tensor2'])
+
+        return ast.parse(code).body
+
+
+class TensorAddCDivMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+        
+        if 'value' not in kwargs:
+            kwargs['value'] = 1
+
+        API_TEMPLATE = textwrap.dedent(
+            '''
+            paddle.add({}, {} * {} / {})
+            '''
+        )
+        code = API_TEMPLATE.format(self.paddleClass, kwargs['value'], kwargs['tensor1'], kwargs['tensor2'])
+
+        return ast.parse(code).body
+
+class TensorCholeskyInverseMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+
+        if 'upper' not in kwargs:
+            kwargs['upper'] = False
+
+        API_TEMPLATE = textwrap.dedent(
+            '''  
+            {} = list(range({}.ndim))
+            {}[-1], {}[-2] = {}[-2], {}[-1]
+            if {}:
+                {} = paddle.linalg.inv(paddle.transpose({}, perm={}) @ {})
+            else:
+                {} = paddle.linalg.inv({} @ paddle.transpose({}, perm={}))
+            {}
+            '''
+        )
+        perm = get_unique_name('perm')
+        out = get_unique_name('out')
+        code = API_TEMPLATE.format(perm, self.paddleClass, perm, perm, perm, perm, kwargs['upper'], out, self.paddleClass, perm, 
+                self.paddleClass, out, self.paddleClass, self.paddleClass, perm, out)
+
+        return ast.parse(code).body
+
+
+class TensorErfCMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+        API_TEMPLATE = textwrap.dedent(
+            '''  
+            1. - paddle.erf({})
+            '''
+        )
+        code = API_TEMPLATE.format(self.paddleClass)
+
+        return ast.parse(code).body
+
+
+class TensorExpM1Matcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+        API_TEMPLATE = textwrap.dedent(
+            '''  
+            paddle.expm1({})
+            '''
+        )
+        code = API_TEMPLATE.format(self.paddleClass)
+
+        return ast.parse(code).body
+
+class TensorLdExpMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+
+        API_TEMPLATE = textwrap.dedent(
+            '''  
+            paddle.multiply({}, 2 ** {})
+            '''
+        )
+        code = API_TEMPLATE.format(self.paddleClass, kwargs['other'])
+
+        return ast.parse(code).body
+
+
+class TensorLogAddExpMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+        
+        API_TEMPLATE = textwrap.dedent(
+            '''  
+            paddle.log(paddle.exp({}) + paddle.exp({}))
+            '''
+        )
+        code = API_TEMPLATE.format(self.paddleClass, kwargs['other'])
+
+        return ast.parse(code).body
+
+
+class TensorLogAddExp2Matcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+        
+        API_TEMPLATE = textwrap.dedent(
+            '''  
+            paddle.log2(2 ** {} + 2 ** {})
+            '''
+        )
+        code = API_TEMPLATE.format(self.paddleClass, kwargs['other'])
+
+        return ast.parse(code).body
