@@ -63,43 +63,45 @@ class GenericMatcher(BaseMatcher):
             stop_gradient_v = 'not ' + new_kwargs.pop("requires_grad").strip('()')
 
         new_kwargs = self.set_paddle_default_kwargs(new_kwargs)
+
+        out_v = new_kwargs.pop('out') if 'out' in new_kwargs else None
+
+        res = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
         
-        if stop_gradient_v and 'out' in new_kwargs:
-            out_v = new_kwargs.pop('out')
+        if dtype_v:
+            res += '.astype({})'.format(dtype_v)
+
+        if pin_memory_v:
+            res += ".pin_memory()"
+        
+        if stop_gradient_v and out_v:
             API_TEMPLATE = textwrap.dedent(
                 '''
-                x = {}({})
+                x = {}
                 x.stop_gradient = {}
                 paddle.assign(x, output={})
                 '''
             )
-            code = API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs), stop_gradient_v, out_v)
-        elif stop_gradient_v and 'out' not in new_kwargs:
+            code = API_TEMPLATE.format(res, stop_gradient_v, out_v)
+        elif stop_gradient_v and not out_v:
             API_TEMPLATE = textwrap.dedent(
                 '''
-                {} = {}({})
+                {} = {}
                 {}.stop_gradient = {}
                 {}
                 '''
             )
             out = get_unique_name('out')
-            code = API_TEMPLATE.format(out, self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out, stop_gradient_v, out)
-        elif not stop_gradient_v and 'out' in new_kwargs:
-            out_v = new_kwargs.pop('out')
+            code = API_TEMPLATE.format(out, res, out, stop_gradient_v, out)
+        elif not stop_gradient_v and out_v:
             API_TEMPLATE = textwrap.dedent(
                 '''
-                paddle.assign({}({}), output={})
+                paddle.assign({}, output={})
                 '''
             )
-            code = API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out_v)
+            code = API_TEMPLATE.format(res, out_v)
         else:
-            code = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
-
-        if pin_memory_v:
-            code = code.rstrip('\n') + ".pin_memory()"
-
-        if dtype_v:
-            code = code.rstrip('\n') + ".astype({})".format(dtype_v)
+            code = '{}'.format(res)
             
         return code
     
@@ -240,44 +242,48 @@ class CreateMatcher(BaseMatcher):
         pin_memory_v = False
         if 'pin_memory' in kwargs:
             pin_memory_v = eval(kwargs.pop('pin_memory'))
-        
+
         stop_gradient_v = None
         if 'requires_grad' in kwargs:
             stop_gradient_v = 'not ' + kwargs.pop("requires_grad").strip('()')
 
-        if stop_gradient_v and 'out' in kwargs:
-            out_v = kwargs.pop('out')
+        kwargs = self.set_paddle_default_kwargs(kwargs)
+
+        out_v = kwargs.pop('out') if 'out' in kwargs else None
+
+        res = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+        if pin_memory_v:
+            res += ".pin_memory()"
+        
+        if stop_gradient_v and out_v:
             API_TEMPLATE = textwrap.dedent(
                 '''
-                x = {}({})
+                x = {}
                 x.stop_gradient = {}
                 paddle.assign(x, output={})
                 '''
             )
-            code = API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs), stop_gradient_v, out_v)
-        elif stop_gradient_v and 'out' not in kwargs:
+            code = API_TEMPLATE.format(res, stop_gradient_v, out_v)
+        elif stop_gradient_v and not out_v:
             API_TEMPLATE = textwrap.dedent(
                 '''
-                {} = {}({})
+                {} = {}
                 {}.stop_gradient = {}
                 {}
                 '''
             )
             out = get_unique_name('out')
-            code = API_TEMPLATE.format(out, self.get_paddle_api(), self.kwargs_to_str(kwargs), out, stop_gradient_v, out)
-        elif not stop_gradient_v and 'out' in kwargs:
-            out_v = kwargs.pop('out')
+            code = API_TEMPLATE.format(out, res, out, stop_gradient_v, out)
+        elif not stop_gradient_v and out_v:
             API_TEMPLATE = textwrap.dedent(
                 '''
-                paddle.assign({}({}), output={})
+                paddle.assign({}, output={})
                 '''
             )
-            code = API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v)
+            code = API_TEMPLATE.format(res, out_v)
         else:
-            code = '{}({})'.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-
-        if pin_memory_v:
-            code = code.rstrip('\n') + ".pin_memory()"
+            code = '{}'.format(res)
   
         return ast.parse(code).body
 

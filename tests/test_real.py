@@ -1,18 +1,20 @@
+
 import sys
 import os
 sys.path.append(os.path.dirname(__file__) + '/../')
+
 import textwrap
+
 from tests.apibase import APIBase
 
-
-obj = APIBase('torch.Tensor.erfc')
+obj = APIBase('torch.real')
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         '''
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        result = a.erfc()
+        x = torch.tensor([4], dtype=torch.cfloat)
+        result = torch.real(x)
         '''
     )
     obj.run(pytorch_code, ['result'])
@@ -21,8 +23,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         '''
         import torch
-        a = torch.tensor([[1., 2., -3., -4., 5.], [1., 2., -3., -4., 5.]])
-        result = 2 * a.erfc()
+        result = torch.real(torch.tensor([4, 6], dtype=torch.cfloat))
         '''
     )
     obj.run(pytorch_code, ['result'])
@@ -31,9 +32,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         '''
         import torch
-        result = torch.tensor([1., 2., -3., -4., 5.]).erfc()
+        result = torch.real(torch.tensor([6, 9.], dtype=torch.complex128))
         '''
     )
     obj.run(pytorch_code, ['result'])
-
-test_case_1()

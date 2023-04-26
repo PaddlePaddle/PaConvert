@@ -1,18 +1,19 @@
+
 import sys
 import os
 sys.path.append(os.path.dirname(__file__) + '/../')
+
 import textwrap
+
 from tests.apibase import APIBase
 
-
-obj = APIBase('torch.Tensor.erfc')
+obj = APIBase('torch.angle')
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         '''
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        result = a.erfc()
+        result = torch.angle(torch.tensor([-1 + 1j, -2 + 2j, 3 - 3j]))
         '''
     )
     obj.run(pytorch_code, ['result'])
@@ -21,8 +22,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         '''
         import torch
-        a = torch.tensor([[1., 2., -3., -4., 5.], [1., 2., -3., -4., 5.]])
-        result = 2 * a.erfc()
+        x = torch.tensor([-1 + 1j, -2 + 2j, 3 - 3j])
+        result = torch.angle(x) * 180 / 3.14159
         '''
     )
     obj.run(pytorch_code, ['result'])
@@ -31,9 +32,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         '''
         import torch
-        result = torch.tensor([1., 2., -3., -4., 5.]).erfc()
+        x = torch.tensor([-1 + 1j, -2 + 2j, 3 - 3j])
+        out = torch.tensor([2., 3.])
+        result = torch.angle(x, out=out)
         '''
     )
-    obj.run(pytorch_code, ['result'])
-
-test_case_1()
+    obj.run(pytorch_code, ['result', 'out'])

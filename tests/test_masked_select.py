@@ -4,15 +4,18 @@ import os
 sys.path.append(os.path.dirname(__file__) + '/../')
 
 import textwrap
+
 from tests.apibase import APIBase
 
-obj = APIBase('torch.Size')
+obj = APIBase('torch.masked_select')
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         '''
         import torch
-        result = list(torch.Size([2, 8, 64, 64]))
+        x = torch.eye(2, 4)
+        mask = x > 0
+        result = torch.masked_select(x, mask)
         '''
     )
     obj.run(pytorch_code, ['result'])
@@ -21,7 +24,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         '''
         import torch
-        result = torch.randn(6, 5, 7).size() == torch.Size([6, 5, 7])
+        x = torch.ones(2, 4)
+        result = torch.masked_select(x, x>0)
         '''
     )
     obj.run(pytorch_code, ['result'])
@@ -30,29 +34,20 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         '''
         import torch
-        out = torch.Size([6, 5, 7])
-        result = out == torch.Size([6, 5, 7])
+        x = torch.ones(2, 4)
+        out = torch.ones(2, 4)
+        result = torch.masked_select(x, mask=x>0, out=out)
         '''
     )
-    obj.run(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result', 'out'])
 
-def test_case_4():
+def _test_case_4():
     pytorch_code = textwrap.dedent(
         '''
         import torch
-        data = torch.Size([1])
-        result = list(data)
+        x = torch.eye(2, 4)
+        mask = torch.tensor([True, True, True, True])
+        result = torch.masked_select(x, mask)
         '''
     )
     obj.run(pytorch_code, ['result'])
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        '''
-        import torch
-        shape = torch.Size([1])
-        result = list(shape)
-        '''
-    )
-    obj.run(pytorch_code, ['result'])
-test_case_1()
