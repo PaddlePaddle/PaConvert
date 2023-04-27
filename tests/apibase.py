@@ -42,10 +42,10 @@ class APIBase(object):
             pytorch_result: pytorch Tensor
             paddle_result: paddle Tensor
         """
-        if isinstance(pytorch_result, (bool, np.number, int, str)) and isinstance(pytorch_result, (bool, np.number, int, str)):
+        if isinstance(pytorch_result, (bool, np.number, int, str)) and isinstance(paddle_result, (bool, np.number, int, str)):
             return pytorch_result == paddle_result
         
-        if isinstance(pytorch_result, (tuple, list)) and isinstance(pytorch_result, (tuple, list)):
+        if isinstance(pytorch_result, (tuple, list)) and isinstance(paddle_result, (tuple, list)):
             is_same = True
             for i in range(len(pytorch_result)):
                 is_same = is_same and self.check(pytorch_result[i], paddle_result[i])
