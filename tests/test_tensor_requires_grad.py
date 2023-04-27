@@ -18,7 +18,7 @@ def test_case_1():
             result = 2
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
@@ -28,7 +28,7 @@ def test_case_2():
         result = data.requires_grad
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
@@ -39,7 +39,7 @@ def test_case_3():
         result = data.requires_grad
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
@@ -50,7 +50,7 @@ def test_case_4():
         result = data.requires_grad
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
@@ -60,7 +60,7 @@ def test_case_5():
         result = data.requires_grad == False
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_6():
     pytorch_code = textwrap.dedent(
@@ -70,7 +70,7 @@ def test_case_6():
         result = not data.requires_grad
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_7():
     pytorch_code = textwrap.dedent(
@@ -80,7 +80,7 @@ def test_case_7():
         result = '{} , {}'.format("1", str(data.requires_grad))
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_8():
     pytorch_code = textwrap.dedent(
@@ -93,7 +93,7 @@ def test_case_8():
         result = data.requires_grad
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_9():
     pytorch_code = textwrap.dedent(
@@ -105,4 +105,4 @@ def test_case_9():
         result = data.requires_grad
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])

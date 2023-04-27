@@ -15,7 +15,7 @@ def test_case_1():
         result = list(BatchSampler(range(10), batch_size=3, drop_last=True))
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
@@ -24,7 +24,7 @@ def test_case_2():
         result = list(BatchSampler(range(10), batch_size=3, drop_last=False))
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
@@ -34,7 +34,7 @@ def test_case_3():
         result = list(result)
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
@@ -45,7 +45,7 @@ def test_case_4():
         result = list(result)
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
@@ -55,4 +55,4 @@ def test_case_5():
         result = list(torch.utils.data.BatchSampler(sampler=range(10), batch_size=batch_size, drop_last=False))
         '''
     )
-    obj.run_bool(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result'])
