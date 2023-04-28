@@ -811,11 +811,7 @@
     ],
     "kwargs_change": {
       "input": "x",
-<<<<<<< Updated upstream
-      "dim":"axis"
-=======
       "dim": "axis"
->>>>>>> Stashed changes
     }
   },
   "torch.where": {
