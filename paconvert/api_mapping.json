@@ -371,17 +371,10 @@
   "torch.sparse_coo_tensor": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.sparse.sparse_coo_tensor",
-<<<<<<< Updated upstream
     "args_list" : [
       "indices", 
       "values", 
       "size", 
-=======
-    "args_list": [
-      "indices",
-      "values",
-      "size",
->>>>>>> Stashed changes
       "dtype",
       "device",
       "requires_grad"
@@ -500,12 +493,8 @@
       "dtype",
       "layout",
       "device",
-<<<<<<< Updated upstream
-      "requires_grad"],
-=======
       "requires_grad"
     ],
->>>>>>> Stashed changes
     "kwargs_change": {
       "n": "num_rows",
       "m": "num_columns"
@@ -628,11 +617,7 @@
   "torch.chunk": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.chunk",
-<<<<<<< Updated upstream
-    "args_list" : [
-=======
     "args_list": [
->>>>>>> Stashed changes
       "input",
       "chunks",
       "dim"
@@ -682,11 +667,7 @@
   "torch.movedim": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.moveaxis",
-<<<<<<< Updated upstream
-    "args_list" : [
-=======
     "args_list": [
->>>>>>> Stashed changes
       "input",
       "source",
       "destination"
@@ -817,11 +798,7 @@
   "torch.where": {
     "Matcher": "WhereMatcher",
     "paddle_api": "paddle.where",
-<<<<<<< Updated upstream
     "args_list" : [
-=======
-    "args_list": [
->>>>>>> Stashed changes
       "condition",
       "x",
       "y"
@@ -907,28 +884,10 @@
       "memory_format"
     ]
   },
-  "torch.randn_like": {
-    "Matcher": "RandLikeMatcher",
-<<<<<<< Updated upstream
-    "paddle_api": "paddle.rand",
-    "args_list" : [
-      "input",
-      "dtype",
-      "layout",
-      "device",
-      "requires_grad",
-      "memory_format"
-    ]
-  },
-
   "torch.randn_like" : {
     "Matcher": "RandLikeMatcher",
     "paddle_api": "paddle.randn",
-    "args_list" : [
-=======
-    "paddle_api": "paddle.randn",
     "args_list": [
->>>>>>> Stashed changes
       "input",
       "dtype",
       "layout",
@@ -6330,50 +6289,6 @@
     "paddle_api": "paddle.Tensor.zero_"
   },
   "torch.Tensor.lcm_": {},
-<<<<<<< Updated upstream
-
-  "torch.Tensor.ldexp": {
-    "Matcher": "TensorLdExpMatcher",
-    "args_list" : ["other"]
-  }, 
-
-  "torch.Tensor.ldexp_": {}, 
-  "torch.Tensor.le_": {}, 
-  "torch.Tensor.lgamma_": {}, 
-  "torch.Tensor.log_": {}, 
-  "torch.Tensor.logdet": {}, 
-  "torch.Tensor.log10_": {}, 
-  "torch.Tensor.log1p_": {}, 
-  "torch.Tensor.log2_": {}, 
-  "torch.Tensor.log_normal_": {}, 
-
-  "torch.Tensor.logaddexp": {
-    "Matcher": "TensorLogAddExpMatcher",
-    "args_list" : [
-      "other"]
-  }, 
-
-  "torch.Tensor.logaddexp2": {
-    "Matcher": "TensorLogAddExp2Matcher",
-    "args_list" : [
-      "other"]
-  }, 
-
-  "torch.Tensor.logical_and_": {}, 
-  "torch.Tensor.logical_not_": {}, 
-  "torch.Tensor.logical_or_": {}, 
-  "torch.Tensor.logical_xor_": {}, 
-  "torch.Tensor.logit_": {}, 
-  "torch.Tensor.lstsq": {}, 
-  "torch.Tensor.lt_": {}, 
-  "torch.Tensor.less_": {}, 
-  "torch.Tensor.lu_solve": {}, 
-  "torch.Tensor.as_subclass": {}, 
-  "torch.Tensor.map_": {}, 
-  "torch.Tensor.masked_scatter_": {}, 
-  "torch.Tensor.masked_scatter": {}, 
-  "torch.Tensor.masked_fill_": {}, 
-=======
   "torch.Tensor.ldexp": {
     "Matcher": "TensorLdExpMatcher",
     "args_list": [
@@ -6415,7 +6330,6 @@
   "torch.Tensor.masked_scatter_": {},
   "torch.Tensor.masked_scatter": {},
   "torch.Tensor.masked_fill_": {},
->>>>>>> Stashed changes
   "torch.Tensor.masked_fill": {
     "Matcher": "TensorMaskedFillMatcher",
     "args_list": [
@@ -6605,53 +6519,6 @@
   "torch.Tensor.xlogy": {},
   "torch.Tensor.xlogy_": {},
   "torch.Tensor.add_": {},
-<<<<<<< Updated upstream
-
-  "torch.Tensor.addbmm": { 
-    "Matcher": "TensorAddBmmMatcher",
-    "args_list": [
-      "batch1", 
-      "batch2",
-      "beta",
-      "alpha"]
-  },
-
-  "torch.Tensor.addbmm_": {},
-
-  "torch.Tensor.addcdiv": {
-    "Matcher": "TensorAddCDivMatcher",
-    "args_list" : [
-      "tensor1",
-      "tensor2",
-      "value"]
-  },
-
-  "torch.Tensor.addcdiv_": {},
-
-  "torch.Tensor.addcmul": {
-    "Matcher": "TensorAddCMulMatcher",
-    "args_list" : [
-      "tensor1",
-      "tensor2",
-      "value"]
-  },
-
-  "torch.Tensor.addcmul_": {},
-  "torch.Tensor.sspaddmm": {},
-
-  "torch.Tensor.addmv": {
-    "Matcher": "TensorAddMRMatcher",
-    "paddle_api": "paddle.mm",
-    "args_list" : [
-      "mat",
-      "vec",
-      "beta",
-      "alpha"]
-  },
-
-  "torch.Tensor.addmv_": {},
-
-=======
   "torch.Tensor.addbmm": {
     "Matcher": "TensorAddBmmMatcher",
     "args_list": [
@@ -6692,43 +6559,20 @@
     ]
   },
   "torch.Tensor.addmv_": {},
->>>>>>> Stashed changes
   "torch.Tensor.addr": {
     "Matcher": "TensorAddMRMatcher",
     "paddle_api": "paddle.outer",
     "args_list": [
-<<<<<<< Updated upstream
-      "vec1", 
-      "vec2",
-      "beta",
-      "alpha"]
-  },
-
-=======
       "vec1",
       "vec2",
       "beta",
       "alpha"
     ]
   },
->>>>>>> Stashed changes
   "torch.Tensor.addr_": {},
   "torch.Tensor.apply_": {},
   "torch.Tensor.as_strided": {},
   "torch.Tensor.backward": {},
-<<<<<<< Updated upstream
-
-  "torch.Tensor.baddbmm": {
-    "Matcher": "TensorAddMRMatcher",
-    "paddle_api": "paddle.bmm",
-    "args_list" : [
-      "batch1",
-      "batch2",
-      "alpha",
-      "beta"]
-  },
-
-=======
   "torch.Tensor.baddbmm": {
     "Matcher": "TensorAddMRMatcher",
     "paddle_api": "paddle.bmm",
@@ -6739,7 +6583,6 @@
       "beta"
     ]
   },
->>>>>>> Stashed changes
   "torch.Tensor.baddbmm_": {},
   "torch.Tensor.bernoulli": {},
   "torch.Tensor.bernoulli_": {},
@@ -6821,21 +6664,12 @@
   "torch.Tensor.bitwise_or_": {},
   "torch.Tensor.bitwise_xor_": {},
   "torch.Tensor.cauchy_": {},
-<<<<<<< Updated upstream
-
-  "torch.Tensor.cholesky_inverse": {
-    "Matcher": "TensorCholeskyInverseMatcher",
-    "args_list": ["upper"]
-  },
-
-=======
   "torch.Tensor.cholesky_inverse": {
     "Matcher": "TensorCholeskyInverseMatcher",
     "args_list": [
       "upper"
     ]
   },
->>>>>>> Stashed changes
   "torch.Tensor.cholesky_solve": {},
   "torch.Tensor.contiguous": {
     "Matcher": "TensorSkipMatcher"
