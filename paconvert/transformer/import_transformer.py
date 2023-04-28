@@ -14,47 +14,65 @@
 
 import ast
 import os
-
 import sys
-sys.path.append(os.path.dirname(__file__)+"../")
 
-from paconvert.base import BaseTransformer, TORCH_PACKAGE_LIST
+sys.path.append(os.path.dirname(__file__) + "../")
+
+from paconvert.base import TORCH_PACKAGE_LIST, BaseTransformer
+
 
 class ImportTransformer(BaseTransformer):
-    '''
+    """
     Record import information
-    '''
+    """
 
     def __init__(self, root, file, imports_map, logger):
         super(ImportTransformer, self).__init__(root, file, imports_map, logger)
-        self.imports_map[self.file]['other_pacakages'] = []
+        self.imports_map[self.file]["other_pacakages"] = []
         self.import_paddle = False
 
     def visit_Import(self, node):
-        '''
+        """
         1. remove import torch.nn
         2. remove import torch.nn as nn
         3. record which paddle
-        '''
+        """
         new_node_names = []
         for alias_node in node.names:
             belong_torch = False
             for torch_package in TORCH_PACKAGE_LIST:
-                if "%s." % torch_package in alias_node.name or torch_package == alias_node.name:
+                if (
+                    "%s." % torch_package in alias_node.name
+                    or torch_package == alias_node.name
+                ):
                     belong_torch = True
                     self.import_paddle = True
                     if alias_node.asname:
-                        self.log_info("remove 'import {} as {}' ".format(alias_node.name, alias_node.asname), self.file_name, node.lineno)
+                        self.log_info(
+                            "remove 'import {} as {}' ".format(
+                                alias_node.name, alias_node.asname
+                            ),
+                            self.file_name,
+                            node.lineno,
+                        )
                         self.imports_map[self.file][alias_node.asname] = alias_node.name
                     else:
-                        self.log_info("remove 'import {}' ".format(alias_node.name), self.file_name, node.lineno)
+                        self.log_info(
+                            "remove 'import {}' ".format(alias_node.name),
+                            self.file_name,
+                            node.lineno,
+                        )
                         self.imports_map[self.file][torch_package] = torch_package
 
             if not belong_torch:
                 if alias_node.asname:
-                    self.imports_map[self.file]['other_pacakages'].append(alias_node.asname)
+                    self.imports_map[self.file]["other_pacakages"].append(
+                        alias_node.asname
+                    )
                 else:
-                    self.imports_map[self.file]['other_pacakages'].append(alias_node.name)
+                    self.imports_map[self.file]["other_pacakages"].append(
+                        alias_node.name
+                    )
                 new_node_names.append(alias_node)
 
         if len(new_node_names) > 0:
@@ -62,12 +80,12 @@ class ImportTransformer(BaseTransformer):
             return node
         else:
             return None
-            
+
     def visit_ImportFrom(self, node):
-        '''
+        """
         1. remove from torch import nn
         2. remove from torch import nn.functional as F
-        '''
+        """
         # from . import Net (node.module is None)
         if node.module:
             for torch_package in TORCH_PACKAGE_LIST:
@@ -75,11 +93,27 @@ class ImportTransformer(BaseTransformer):
                     self.import_paddle = True
                     for alias_node in node.names:
                         if alias_node.asname:
-                            self.log_info("remove 'from {} import {} as {}' ".format(node.module, alias_node.name, alias_node.asname), self.file_name, node.lineno)
-                            self.imports_map[self.file][alias_node.asname] = '.'.join([node.module, alias_node.name])
+                            self.log_info(
+                                "remove 'from {} import {} as {}' ".format(
+                                    node.module, alias_node.name, alias_node.asname
+                                ),
+                                self.file_name,
+                                node.lineno,
+                            )
+                            self.imports_map[self.file][alias_node.asname] = ".".join(
+                                [node.module, alias_node.name]
+                            )
                         else:
-                            self.log_info("remove 'from {} import {}' ".format(node.module, alias_node.name), self.file_name, node.lineno)
-                            self.imports_map[self.file][alias_node.name] = '.'.join([node.module, alias_node.name])
+                            self.log_info(
+                                "remove 'from {} import {}' ".format(
+                                    node.module, alias_node.name
+                                ),
+                                self.file_name,
+                                node.lineno,
+                            )
+                            self.imports_map[self.file][alias_node.name] = ".".join(
+                                [node.module, alias_node.name]
+                            )
                     return None
 
         # import from this directory
@@ -89,40 +123,43 @@ class ImportTransformer(BaseTransformer):
             while i < node.level:
                 import_path += "../"
                 i += 1
-            
+
             # from . import Net (node.module is None)
             if node.module:
                 import_path = import_path + "/" + node.module.replace(".", "/")
-            if os.path.exists(import_path) or os.path.exists(import_path+'.py'):
+            if os.path.exists(import_path) or os.path.exists(import_path + ".py"):
                 return node
         else:
             dir_name = os.path.dirname(self.file)
             # the case of dir_name = 'E:/' will happen with windows
-            while len(dir_name) > 1 and dir_name[-2] != ':':
+            while len(dir_name) > 1 and dir_name[-2] != ":":
                 import_path = dir_name + "/" + node.module.replace(".", "/")
-                if os.path.exists(import_path) or os.path.exists(import_path+'.py'):
+                if os.path.exists(import_path) or os.path.exists(import_path + ".py"):
                     return node
                 dir_name = os.path.dirname(dir_name)
 
         # import from site-packages, third_paty module, just add to others
         for alias_node in node.names:
             if alias_node.asname:
-                self.imports_map[self.file]['other_pacakages'].append(alias_node.asname)
+                self.imports_map[self.file]["other_pacakages"].append(alias_node.asname)
             else:
                 # from data_loader.modules import *
-                if alias_node.name != '*':
-                    self.imports_map[self.file]['other_pacakages'].append(alias_node.name)
+                if alias_node.name != "*":
+                    self.imports_map[self.file]["other_pacakages"].append(
+                        alias_node.name
+                    )
 
         return node
 
-
     def visit_Attribute(self, node):
-        '''
+        """
         change torch api to full api according to import info.
         eg.
             nn.Module -> torch.nn.Module
-        '''
-        if isinstance(node.value, (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript)):
+        """
+        if isinstance(
+            node.value, (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript)
+        ):
             super(ImportTransformer, self).generic_visit(node)
 
         torch_api = self.get_full_api_from_node(node)
@@ -131,22 +168,22 @@ class ImportTransformer(BaseTransformer):
         return node
 
     def visit_Name(self, node):
-        '''
+        """
         change torch api to full api according to import info.
         eg.
             Module -> torch.nn.Module
-        '''
+        """
         torch_api = self.get_full_api_from_node(node)
         if torch_api:
             return ast.parse(torch_api).body[0].value
         return node
-    
+
     def visit_Module(self, node):
-        '''
+        """
         add import paddle
-        '''
+        """
         super(ImportTransformer, self).generic_visit(node)
 
         if self.import_paddle:
             self.log_info("add 'import paddle' in first line", self.file_name)
-            self.record_scope( (self.root, 'body', 0), ast.parse('import paddle').body)
+            self.record_scope((self.root, "body", 0), ast.parse("import paddle").body)

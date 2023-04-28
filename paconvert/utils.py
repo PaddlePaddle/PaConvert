@@ -14,18 +14,19 @@
 
 import collections
 
-class UniqueNameGenerator():
-    
+
+class UniqueNameGenerator:
     def __init__(self):
         self.ids = collections.defaultdict(int)
 
     def __call__(self, key):
         counter = self.ids[key]
         self.ids[key] += 1
-        return '_'.join([key, str(counter)])
+        return "_".join([key, str(counter)])
 
 
 Generator = UniqueNameGenerator()
+
 
 def get_unique_name(key):
     return Generator(key)
