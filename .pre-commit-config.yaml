@@ -43,15 +43,15 @@ repos:
             - --ignore-init-module-imports
             - --exclude=paconvert/transformer/basic_transformer.py
 # For json files
-# -   repo: local
-#     hooks:
-#     -   id: check-json
-#         name: json format check
-#         entry: python ./tools/codestyle/json.hook
-#         language: system
-#         files: \.json$
-# -   repo: https://github.com/pre-commit/pre-commit-hooks
-#     rev: v4.1.0
-#     hooks:
-#     -   id: check-json
-#         files: \.json$
+-   repo: local
+    hooks:
+    -   id: check-json
+        name: json format check
+        entry: python ./tools/codestyle/json.hook
+        language: system
+        files: \.json$
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.1.0
+    hooks:
+    -   id: check-json
+        files: \.json$
