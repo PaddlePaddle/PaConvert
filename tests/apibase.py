@@ -76,9 +76,15 @@ class APIBase(object):
             return is_same
 
         if pytorch_result.requires_grad:
-            torch_numpy, paddle_numpy = pytorch_result.detach().numpy(), paddle_result.numpy()
+            torch_numpy, paddle_numpy = (
+                pytorch_result.detach().numpy(),
+                paddle_result.numpy(),
+            )
         elif pytorch_result.is_conj():
-            torch_numpy, paddle_numpy = pytorch_result.resolve_conj().numpy(), paddle_result.numpy()
+            torch_numpy, paddle_numpy = (
+                pytorch_result.resolve_conj().numpy(),
+                paddle_result.numpy(),
+            )
         else:
             torch_numpy, paddle_numpy = pytorch_result.numpy(), paddle_result.numpy()
 

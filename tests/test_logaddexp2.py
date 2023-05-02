@@ -69,9 +69,9 @@ def test_case_4():
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
-        '''
+        """
         import torch
         result = torch.logaddexp2(torch.tensor([1.]),torch.tensor([1, 2, -3]))
-        '''
+        """
     )
-    obj.run(pytorch_code, ['result'])
+    obj.run(pytorch_code, ["result"])

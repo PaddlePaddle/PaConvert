@@ -79,28 +79,30 @@ def test_case_5():
 
 def _test_case_6():
     pytorch_code = textwrap.dedent(
-        '''
+        """
         import torch
         result = torch.xlogy(1, torch.tensor([1, 2, 3, 4, 5]))
-        '''
+        """
     )
-    obj.run(pytorch_code, ['result'])
+    obj.run(pytorch_code, ["result"])
+
 
 def _test_case_7():
     pytorch_code = textwrap.dedent(
-        '''
+        """
         import torch
         x = torch.tensor([1., float('inf'), float('nan')])
         result = torch.xlogy(0, x)
-        '''
+        """
     )
-    obj.run(pytorch_code, ['result'])
+    obj.run(pytorch_code, ["result"])
+
 
 def _test_case_8():
     pytorch_code = textwrap.dedent(
-        '''
+        """
         import torch
         result = torch.xlogy(1, torch.tensor([1., 2., 3., 4., 5.], dtype=torch.float64))
-        '''
+        """
     )
-    obj.run(pytorch_code, ['result'])
+    obj.run(pytorch_code, ["result"])
