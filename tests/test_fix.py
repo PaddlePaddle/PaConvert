@@ -1,19 +1,20 @@
+
 import sys
 import os
 sys.path.append(os.path.dirname(__file__) + '/../')
+
 import textwrap
 from tests.apibase import APIBase
 
 
-obj = APIBase('torch.logaddexp')
+obj = APIBase('torch.fix')
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         '''
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        b = torch.tensor([1., 2., -3., -4., 5.])
-        result = torch.logaddexp(a, b)
+        input = torch.tensor([3.4742,  0.5466, -0.8008, -0.9079])
+        result = torch.fix(input)
         '''
     )
     obj.run(pytorch_code, ['result'])
@@ -22,7 +23,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         '''
         import torch
-        result = torch.logaddexp(input=torch.tensor([1., 2., -3., -4., 5.]), other=torch.tensor([1., 2., -3., -4., 5.]))
+        result = torch.fix(torch.tensor([3.4742,  0.5466, -0.8008, -0.9079]))
         '''
     )
     obj.run(pytorch_code, ['result'])
@@ -31,27 +32,27 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         '''
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        out = torch.tensor([1., 2., -3., -4., 5.])
-        result = torch.logaddexp(a, a, out=out)
+        result = torch.fix(input=torch.tensor([3.4742,  0.5466, -0.8008, -0.9079]))
         '''
     )
-    obj.run(pytorch_code, ['out'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         '''
         import torch
-        result = torch.logaddexp(torch.tensor([1.]),torch.tensor([1., 2., -3., -4., 5.]))
+        input = torch.tensor([3.4742,  0.5466, -0.8008, -0.9079])
+        out = torch.tensor([3.4742,  0.5466, -0.8008, -0.9079])
+        result = torch.fix(input, out=out)
         '''
     )
-    obj.run(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result', 'out'])
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         '''
         import torch
-        result = torch.logaddexp(torch.tensor([1.]),torch.tensor([1, 2, -3]))
+        result = torch.fix(torch.tensor([3,  0, 5, -9]))
         '''
     )
     obj.run(pytorch_code, ['result'])

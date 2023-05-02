@@ -1,19 +1,21 @@
+
 import sys
 import os
 sys.path.append(os.path.dirname(__file__) + '/../')
+
 import textwrap
 from tests.apibase import APIBase
 
 
-obj = APIBase('torch.logaddexp')
+obj = APIBase('torch.mul')
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         '''
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        b = torch.tensor([1., 2., -3., -4., 5.])
-        result = torch.logaddexp(a, b)
+        input = torch.tensor([0.2015, -0.4255, 2.6087])
+        other = torch.tensor([0.2015, -0.4255, 2.6087])
+        result = torch.mul(input, other)
         '''
     )
     obj.run(pytorch_code, ['result'])
@@ -22,7 +24,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         '''
         import torch
-        result = torch.logaddexp(input=torch.tensor([1., 2., -3., -4., 5.]), other=torch.tensor([1., 2., -3., -4., 5.]))
+        input = torch.tensor([0.2015, -0.4255,  2.6087])
+        other = torch.tensor([2, 6, 4])
+        result = torch.mul(input, other)
         '''
     )
     obj.run(pytorch_code, ['result'])
@@ -31,18 +35,18 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         '''
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        out = torch.tensor([1., 2., -3., -4., 5.])
-        result = torch.logaddexp(a, a, out=out)
+        input = torch.tensor([0.2015, -0.4255,  2.6087])
+        result = torch.mul(input, other=5)
         '''
     )
-    obj.run(pytorch_code, ['out'])
+    obj.run(pytorch_code, ['result'])
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         '''
         import torch
-        result = torch.logaddexp(torch.tensor([1.]),torch.tensor([1., 2., -3., -4., 5.]))
+        input = torch.tensor([3, 6, 9])
+        result = torch.mul(input, other=5)
         '''
     )
     obj.run(pytorch_code, ['result'])
@@ -51,7 +55,9 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         '''
         import torch
-        result = torch.logaddexp(torch.tensor([1.]),torch.tensor([1, 2, -3]))
+        input = torch.tensor([0.2015, -0.4255,  2.6087])
+        out = torch.tensor([0.2015, -0.4255,  2.6087])
+        result = torch.mul(input, other=5, out=out)
         '''
     )
-    obj.run(pytorch_code, ['result'])
+    obj.run(pytorch_code, ['result', 'out'])

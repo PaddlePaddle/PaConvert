@@ -1356,15 +1356,6 @@ class SaveMatcher(BaseMatcher):
         return code
 
 
-class WhereMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if len(kwargs) == 1:
-            code = "paddle.nonzero(x={}, as_tuple=True)".format(kwargs['condition'])
-            return code
-        else:
-            return GenericMatcher.generate_code(self, kwargs)
-
-
 class SeedMatcher(BaseMatcher):
     def generate_code(self, kwargs):           
         API_TEMPLATE = textwrap.dedent(
@@ -1930,23 +1921,29 @@ class LdExpMatcher(BaseMatcher):
         if 'out' in kwargs and kwargs['out'] is not None:          
             API_TEMPLATE = textwrap.dedent(
                 '''  
-                paddle.assign(paddle.multiply({}, paddle.pow(paddle.to_tensor(2, dtype={}.dtype), {})), output={})
+                paddle.assign({} * (2. ** {}), output={})
                 '''
             )
-            code = API_TEMPLATE.format(kwargs['input'], kwargs['other'], kwargs['other'], kwargs['out'])
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['other'], kwargs['out'])
         else:
             API_TEMPLATE = textwrap.dedent(
                 '''  
-                paddle.multiply({}, paddle.pow(paddle.to_tensor(2, dtype={}.dtype), {}))
+                {} * (2. ** {})
                 '''
             )
-            code = API_TEMPLATE.format(kwargs['input'], kwargs['other'], kwargs['other'])
+            code = API_TEMPLATE.format(kwargs['input'], kwargs['other'])
 
         return code
 
 
 class LogAddExpMatcher(BaseMatcher):
     def generate_code(self, kwargs): 
+        if 'input' in kwargs:
+            kwargs['input'] = kwargs.pop('input').strip('\n') + ".astype('float32')"
+
+        if 'other' in kwargs:
+            kwargs['other'] = kwargs.pop('other').strip('\n') + ".astype('float32')"
+
         if 'out' in kwargs and kwargs['out'] is not None:          
             API_TEMPLATE = textwrap.dedent(
                 '''  
@@ -1970,14 +1967,14 @@ class LogAddExp2Matcher(BaseMatcher):
         if 'out' in kwargs and kwargs['out'] is not None:          
             API_TEMPLATE = textwrap.dedent(
                 '''  
-                paddle.assign(paddle.log2(2 ** {} + 2 ** {}), output={})
+                paddle.assign(paddle.log2(2. ** {} + 2. ** {}), output={})
                 '''
             )
             code = API_TEMPLATE.format(kwargs['input'], kwargs['other'], kwargs['out'])
         else:
             API_TEMPLATE = textwrap.dedent(
                 '''  
-                paddle.log2(2 ** {} + 2 ** {})
+                paddle.log2(2. ** {} + 2. ** {})
                 '''
             )
             code = API_TEMPLATE.format(kwargs['input'], kwargs['other'])
@@ -2475,3 +2472,43 @@ class TensorLogAddExp2Matcher(BaseMatcher):
         code = API_TEMPLATE.format(self.paddleClass, kwargs['other'])
 
         return ast.parse(code).body
+
+class ExpMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'input' in kwargs:
+            kwargs['x'] = kwargs.pop('input').strip('\n') + ".astype('float32')"
+
+        if 'out' in kwargs and kwargs['out'] is not None:
+            out_v = kwargs.pop('out').strip('\n')
+            code = "paddle.assign({}({}), output={})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v)
+        else :
+            code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+        return code
+
+class LogicalMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'input' in kwargs:
+            kwargs['x'] = kwargs.pop('input')
+
+        if 'other' in kwargs:
+            kwargs['y'] = kwargs.pop('other')
+
+        if 'out' in kwargs and kwargs['out'] is not None:
+            out_v = kwargs.pop('out').strip('\n')
+            code = "paddle.assign({}(x={}, y={}.astype({}.dtype)), output={})".format(self.get_paddle_api(), kwargs['x'], kwargs['y'],  kwargs['x'], out_v)
+        else :
+            code = "{}(x={}, y={}.astype({}.dtype))".format(self.get_paddle_api(), kwargs['x'], kwargs['y'], kwargs['x'])
+
+        return code
+
+class MulMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if 'out' in kwargs and kwargs['out'] is not None:
+            out_v = kwargs.pop('out').strip('\n')
+            code = "paddle.assign({} * {}, output={})".format(kwargs['input'], kwargs['other'], out_v)
+        else :
+            code = "{} * {}".format(kwargs['input'], kwargs['other'])
+
+        return code
