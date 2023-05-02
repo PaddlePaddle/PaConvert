@@ -34,7 +34,6 @@ y = paddle.transpose(x=x, perm=perm_0)
 # 安装与使用
 
 由于使用了一些较新的Python语法树特性，你需要使用>=python3.8的解释器。
-
 1. 使用pip安装
 
 ```bash
@@ -127,11 +126,11 @@ net = MyNet()
 PyTorch to Paddle Convert Start ------>:
 ===========================================
 Start convert /workspace/test_code.py --> /workspace/PaConvert/paddle_project/test_code.py
-[test_code.py:1] remove 'import torch' 
-[test_code.py:2] remove 'import torch.nn as nn' 
-[test_code.py:3] remove 'import torch.optim as optim' 
-[test_code.py:4] remove 'import torch.nn.Linear as Linear' 
-[test_code.py:5] remove 'import torch.nn.functional as F' 
+[test_code.py:1] remove 'import torch'
+[test_code.py:2] remove 'import torch.nn as nn'
+[test_code.py:3] remove 'import torch.optim as optim'
+[test_code.py:4] remove 'import torch.nn.Linear as Linear'
+[test_code.py:5] remove 'import torch.nn.functional as F'
 [test_code.py] add 'import paddle' in first line
 [test_code.py:25] [Not Support] convert torch.optim.SGD to Paddle is not supported currently
 [test_code.py:26] [Not Support] convert torch.optim.lr_scheduler.MultiStepLR to Paddle is not supported currently
@@ -146,8 +145,8 @@ There are 10 Pytorch APIs in this Project:
  2  Pytorch APIs are not supported to convert to Paddle currently!
  Convert Rate is: 80.000%
 
-For these 2 Pytorch APIs that do not support to Convert now, which have been marked by >>> before the line, 
-please refer to https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html 
+For these 2 Pytorch APIs that do not support to Convert now, which have been marked by >>> before the line,
+please refer to https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html
 and convert it by yourself manually. In addition, these APIs will be supported in future.
 
 Thank you to use Paddle Code Convert Tool. You can make any suggestions to us.
@@ -166,8 +165,38 @@ Thank you to use Paddle Code Convert Tool. You can make any suggestions to us.
 # 贡献代码
 
 欢迎你向我们贡献代码。具体的开发步骤如下：
+## 步骤1: 开发环境准备与CI检查
 
-## 步骤1：编写API映射关系
+### 依赖项
+在开发本项目之前，请确保已经安装了以下依赖项：
+
+```bash
+pip install -r requirements-dev.txt
+```
+
+### 代码审查
+代码审查包括两部分，一个是基于现有开源代码格式规范的审查，通过pre-commit来审查，另一个是基于自定义要求的审查，在tools/codestyle下。
+
+#### Pre-commit审查
+
+本项目使用了 pre-commit 工具来进行代码规范和格式化，主要包括black,flake8,pylint，在CI阶段代码审查执行，具体规范配置请见根目录.pre-commit-config.yaml文件。在提交代码之前，pre-commit 钩子将自动运行相关的检查和修复。本地运行方式如下
+
+```bash
+# 要安装 pre-commit 钩子，请执行以下命令：
+pip install pre-commit
+pre-commit install
+# 调整代码格式和规范错误
+pre-commit run --file [file_name]
+```
+#### 自定义审查
+
+本项目使用了基于自定义要求的审查，相关代码文件在tools/codestyle下。
+
+### 合入规范
+
+合入**必须**要求通过全部CI检测，原则上禁止强行Merge，如果有Pylint代码格式阻塞，可以讨论是否禁止某一条规范生效，**必须**要求一个Reviewer，禁止出现敏感代码。
+
+## 步骤2：编写API映射关系
 
 首先你需要熟悉我们的 [Pytorch-Paddle API映射关系表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html#pytorch-1-13-paddle-2-4-api) ，映射关系相当于人工转换的思路，其是开发自动转换功能的前提，基于这些映射关系，我们才可以进行后续的开发。
 
@@ -194,7 +223,7 @@ Thank you to use Paddle Code Convert Tool. You can make any suggestions to us.
 
 > 注意：当前已有一部分存量映射关系，但可能存在错误或考虑不全面之处，在后续开发自动转换规则时，如发现问题，需要对这些文档进行校正修改。
 
-## 步骤2：配置JSON
+## 步骤3：配置JSON
 
 在 `paconvert/api_mapping.json` 中增加该 API 的各项配置，每个配置字段的定义如下：
 
@@ -252,7 +281,7 @@ paddle_default_kwargs :可选，当 paddle 参数更多 或者 参数默认值�
 如果不属于上述分类，则需要开发 **自定义的Matcher**，命名标准为：`API名+Matcher`， 例如 `torch.add` 可命名为`TorchAddMatcher` 。详见下面步骤3。
 
 
-## 步骤3：编写Matcher（转换规则）
+## 步骤4：编写Matcher（转换规则）
 
 该步骤有一定难度，需要对AST相关知识有一定熟悉。
 
@@ -289,9 +318,9 @@ class TransposeMatcher(BaseMatcher):
             '''
         )
         perm = unique_name('perm')
-        code = API_TEMPLACE.format(perm, kwargs['input'], 
-                perm, kwargs['dim0'], kwargs['dim1'], 
-                perm, kwargs['dim1'], kwargs['dim0'], 
+        code = API_TEMPLACE.format(perm, kwargs['input'],
+                perm, kwargs['dim0'], kwargs['dim1'],
+                perm, kwargs['dim1'], kwargs['dim0'],
                 kwargs['input'], perm)
         return code
 ```
@@ -303,7 +332,7 @@ class TransposeMatcher(BaseMatcher):
     "Matcher": "TransposeMatcher",
     "args_list" : [
         "input",
-        "dim0", 
+        "dim0",
         "dim1"
     ]
 }
@@ -314,7 +343,7 @@ class TransposeMatcher(BaseMatcher):
 1）可以参考一些写的较为规范的Matcher：
 - 传入参数既可以是可变参数，也可以是列表或元组时，例如 `TensorExpandMatcher`
 - (待补充)...
-    
+
 2）由于AST语法分析是静态代码分析，也就是Matcher被执行时的并未到代码的运行期，无法知道某个变量的运行值，要避免对变量运行值的判断，否则可能引入错误。
 
 例如：如果在Matcher里的以下判断形式 `if 'True' == kwargs['pin_memory']` ，对以下Python代码将失效，因为 `kwargs['pin_memory']` 只有到代码运行期其值才为'True'，在AST语法分析期，只能获取 `kwargs['pin_memory']='temp'` ，无法获取具体运行值，所以上述判断将失效。
@@ -421,4 +450,3 @@ x.new_zeros(x.size())
 
 
 总的来说，Matcher转换规则的开发具有一定的挑战性，是一项非常细心以及考验思维广度的工作。
-

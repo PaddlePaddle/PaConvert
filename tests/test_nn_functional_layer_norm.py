@@ -1,17 +1,32 @@
-import sys
+# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import os
-sys.path.append(os.path.dirname(__file__) + '/../')
+import sys
+
+sys.path.append(os.path.dirname(__file__) + "/../")
 
 import textwrap
-import numpy as np
+
 from tests.apibase import APIBase
 
+obj = APIBase("torch.nn.functional.layer_norm")
 
-obj = APIBase('torch.nn.functional.layer_norm')
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
-        '''
+        """
         import torch.nn.functional as F
         import torch
         input = torch.tensor([[[ 1.1524,  0.4714,  0.2857],
@@ -23,13 +38,14 @@ def test_case_1():
          [ 0.4135, -0.2587,  0.0482]]])
         data = torch.tensor([1., 1., 1.])
         result = F.layer_norm(input, [3], data, data)
-        '''
+        """
     )
-    obj.run(pytorch_code,['result'])
+    obj.run(pytorch_code, ["result"])
+
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
-        '''
+        """
         import torch.nn.functional as F
         import torch
         input = torch.tensor([[[ 1.1524,  0.4714,  0.2857],
@@ -41,13 +57,14 @@ def test_case_2():
          [ 0.4135, -0.2587,  0.0482]]])
         data = torch.tensor([1., 1., 1.])
         result = F.layer_norm(input=input, normalized_shape=[3], weight=data, bias=data)
-        '''
+        """
     )
-    obj.run(pytorch_code, ['result'])
+    obj.run(pytorch_code, ["result"])
+
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
-        '''
+        """
         import torch.nn.functional as F
         import torch
         input = torch.tensor([[[ 1.1524,  0.4714,  0.2857],
@@ -59,6 +76,6 @@ def test_case_3():
          [ 0.4135, -0.2587,  0.0482]]])
         data = torch.tensor([1., 1., 1.])
         result = F.layer_norm(input=input, normalized_shape=[3], weight=data, bias=data, eps=1e-4)
-        '''
+        """
     )
-    obj.run(pytorch_code, ['result'])
+    obj.run(pytorch_code, ["result"])
