@@ -90,8 +90,6 @@ class GenericMatcher(BaseMatcher):
             )
             code = API_TEMPLATE.format(res, stop_gradient_v, out_v)
         elif stop_gradient_v and not out_v:
-            code = API_TEMPLATE.format(res, stop_gradient_v, out_v)
-        elif stop_gradient_v and not out_v:
             API_TEMPLATE = textwrap.dedent(
                 """
                 {} = {}
@@ -298,8 +296,8 @@ class CreateMatcher(BaseMatcher):
                 """
             )
             code = API_TEMPLATE.format(res, stop_gradient_v, out_v)
-        elif stop_gradient_v and not out_v:
-            code = API_TEMPLATE.format(res, stop_gradient_v, out_v)
+        # elif stop_gradient_v and not out_v:
+        #     code = API_TEMPLATE.format(res, stop_gradient_v, out_v)
         elif stop_gradient_v and not out_v:
             API_TEMPLATE = textwrap.dedent(
                 """

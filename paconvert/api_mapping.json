@@ -371,10 +371,10 @@
   "torch.sparse_coo_tensor": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.sparse.sparse_coo_tensor",
-    "args_list" : [
-      "indices", 
-      "values", 
-      "size", 
+    "args_list": [
+      "indices",
+      "values",
+      "size",
       "dtype",
       "device",
       "requires_grad"
@@ -798,7 +798,7 @@
   "torch.where": {
     "Matcher": "WhereMatcher",
     "paddle_api": "paddle.where",
-    "args_list" : [
+    "args_list": [
       "condition",
       "x",
       "y"
@@ -884,7 +884,7 @@
       "memory_format"
     ]
   },
-  "torch.randn_like" : {
+  "torch.randn_like": {
     "Matcher": "RandLikeMatcher",
     "paddle_api": "paddle.randn",
     "args_list": [
