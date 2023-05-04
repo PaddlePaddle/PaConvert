@@ -16,7 +16,7 @@ import argparse
 import re
 import sys
 import os
-import subprocess
+import json
 
 def _check_json_file(path):
     lang_type=re.compile(r"\.json$")
@@ -26,11 +26,20 @@ def _check_json_file(path):
     return False
 
 def _format_json_file(path):
-    process = subprocess.Popen(["jq", ".", path], stdout=subprocess.PIPE)
-    output = process.stdout.read()
+    with open(path, 'r') as file:
+        data = json.load(file)
 
-    with open(path, mode='wb') as file:
-        file.write(output)
+    with open(path, mode='w') as file:
+        json.dump(data, file, indent=2)
+
+    # Read the file again and remove the trailing newline character
+    with open(path, 'r') as f:
+        content = f.read()
+
+    content = content.rstrip('\n') + '\n'
+
+    with open(path, 'w') as f:
+        f.write(content)
 
 def main(argv=None):
     parser = argparse.ArgumentParser(

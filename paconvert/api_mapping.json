@@ -371,10 +371,10 @@
   "torch.sparse_coo_tensor": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.sparse.sparse_coo_tensor",
-    "args_list" : [
-      "indices", 
-      "values", 
-      "size", 
+    "args_list": [
+      "indices",
+      "values",
+      "size",
       "dtype",
       "device",
       "requires_grad"
@@ -795,12 +795,10 @@
       "dim": "axis"
     }
   },
- 
-  
-  "torch.where" : {
+  "torch.where": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.where",
-    "args_list" : [
+    "args_list": [
       "condition",
       "x",
       "y"
@@ -847,7 +845,8 @@
       "mean",
       "std",
       "generator",
-      "out"],
+      "out"
+    ],
     "kwargs_change": {
       "size": "shape"
     }
@@ -888,7 +887,7 @@
       "memory_format"
     ]
   },
-  "torch.randn_like" : {
+  "torch.randn_like": {
     "Matcher": "RandLikeMatcher",
     "paddle_api": "paddle.randn",
     "args_list": [
@@ -1237,13 +1236,13 @@
       "input": "x"
     }
   },
-
-  "torch.exp" : {
+  "torch.exp": {
     "Matcher": "ExpMatcher",
     "paddle_api": "paddle.exp",
     "args_list": [
       "input",
-      "out"]
+      "out"
+    ]
   },
   "torch.exp2": {
     "Matcher": "Exp2Matcher",
@@ -1252,8 +1251,7 @@
       "out"
     ]
   },
-
-  "torch.expm1" : {
+  "torch.expm1": {
     "Matcher": "ExpMatcher",
     "paddle_api": "paddle.expm1",
     "args_list": [
@@ -1416,14 +1414,14 @@
       "input": "x"
     }
   },
-
-  "torch.logical_and" : {
+  "torch.logical_and": {
     "Matcher": "LogicalMatcher",
     "paddle_api": "paddle.logical_and",
     "args_list": [
       "input",
       "other",
-      "out"]
+      "out"
+    ]
   },
   "torch.logical_not": {
     "Matcher": "GenericMatcher",
@@ -1436,8 +1434,7 @@
       "input": "x"
     }
   },
-
-  "torch.logical_or" : {
+  "torch.logical_or": {
     "Matcher": "LogicalMatcher",
     "paddle_api": "paddle.logical_or",
     "args_list": [
@@ -1450,8 +1447,7 @@
       "other": "y"
     }
   },
-
-  "torch.logical_xor" : {
+  "torch.logical_xor": {
     "Matcher": "LogicalMatcher",
     "paddle_api": "paddle.logical_xor",
     "args_list": [
@@ -1476,14 +1472,14 @@
       "input": "x"
     }
   },
-
-  "torch.mul" : {
+  "torch.mul": {
     "Matcher": "MulMatcher",
     "paddle_api": "paddle.multiply",
     "args_list": [
       "input",
       "other",
-      "out"]
+      "out"
+    ]
   },
   "torch.multiply": {
     "Matcher": "GenericMatcher",
