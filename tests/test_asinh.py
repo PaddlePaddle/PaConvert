@@ -11,25 +11,25 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import os
 import sys
 
 sys.path.append(os.path.dirname(__file__) + "/../")
+
 import textwrap
 
 from tests.apibase import APIBase
 
-obj = APIBase("torch.ldexp")
+obj = APIBase("torch.asinh")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        b = torch.tensor([1., 2., -3., -4., 5.])
-        result = torch.ldexp(a, b)
+        result = torch.asinh(torch.tensor([ 0.1606, -1.4267, -1.0899, -1.0250 ]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -39,7 +39,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.ldexp(input=torch.tensor([1., 2., -3., -4., 5.]), other=torch.tensor([1., 2., -3., -4., 5.]))
+        a = torch.tensor([ 0.1606, -1.4267, -1.0899, -1.0250 ])
+        result = torch.asinh(a)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -49,29 +50,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        out = torch.tensor([1., 2., -3., -4., 5.])
-        result = torch.ldexp(a, a, out=out)
+        a = [ 0.1606, -1.4267, -1.0899, -1.0250 ]
+        out = torch.tensor(a)
+        result = torch.asinh(torch.tensor(a), out=out)
         """
     )
-    obj.run(pytorch_code, ["out"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.ldexp(torch.tensor([1.]),torch.tensor([1., 2., -3., -4., 5.]))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.ldexp(torch.tensor([1.]), torch.tensor([1, 2, -3, -4, 5]))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["out", "result"])

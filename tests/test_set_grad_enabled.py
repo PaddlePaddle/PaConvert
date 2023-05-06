@@ -11,25 +11,28 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import os
 import sys
 
 sys.path.append(os.path.dirname(__file__) + "/../")
+
 import textwrap
 
 from tests.apibase import APIBase
 
-obj = APIBase("torch.ldexp")
+obj = APIBase("torch.set_grad_enabled")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        b = torch.tensor([1., 2., -3., -4., 5.])
-        result = torch.ldexp(a, b)
+        x = torch.tensor([1.], requires_grad=True)
+        is_train = False
+        with torch.set_grad_enabled(is_train):
+            result = x * 2
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -39,39 +42,21 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.ldexp(input=torch.tensor([1., 2., -3., -4., 5.]), other=torch.tensor([1., 2., -3., -4., 5.]))
+        x = torch.tensor([1.], requires_grad=True)
+        with torch.set_grad_enabled(False):
+            result = x * 2
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_3():
+def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        out = torch.tensor([1., 2., -3., -4., 5.])
-        result = torch.ldexp(a, a, out=out)
-        """
-    )
-    obj.run(pytorch_code, ["out"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.ldexp(torch.tensor([1.]),torch.tensor([1., 2., -3., -4., 5.]))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.ldexp(torch.tensor([1.]), torch.tensor([1, 2, -3, -4, 5]))
+        x = torch.tensor([1.], requires_grad=True)
+        _ = torch.set_grad_enabled(False)
+        result = x * 2
         """
     )
     obj.run(pytorch_code, ["result"])

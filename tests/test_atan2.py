@@ -11,25 +11,27 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import os
 import sys
 
 sys.path.append(os.path.dirname(__file__) + "/../")
+
 import textwrap
 
 from tests.apibase import APIBase
 
-obj = APIBase("torch.ldexp")
+obj = APIBase("torch.atan2")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        b = torch.tensor([1., 2., -3., -4., 5.])
-        result = torch.ldexp(a, b)
+        input = torch.tensor([ 0.9041,  0.0196, -0.3108, -2.4423])
+        other = torch.tensor([ 0.2341,  0.2539, -0.6256, -0.6448])
+        result = torch.atan2(input, other)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -39,7 +41,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.ldexp(input=torch.tensor([1., 2., -3., -4., 5.]), other=torch.tensor([1., 2., -3., -4., 5.]))
+        result = torch.atan2(torch.tensor([ 0.9041,  0.0196, -0.3108, -2.4423]), torch.tensor([ 0.2341,  0.2539, -0.6256, -0.6448]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -49,29 +51,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        out = torch.tensor([1., 2., -3., -4., 5.])
-        result = torch.ldexp(a, a, out=out)
+        input = torch.tensor([ 0.9041,  0.0196, -0.3108, -2.4423])
+        other = torch.tensor([ 0.2341,  0.2539, -0.6256, -0.6448])
+        out = torch.tensor(input)
+        result = torch.atan2(input, other, out=out)
         """
     )
-    obj.run(pytorch_code, ["out"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.ldexp(torch.tensor([1.]),torch.tensor([1., 2., -3., -4., 5.]))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.ldexp(torch.tensor([1.]), torch.tensor([1, 2, -3, -4, 5]))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])

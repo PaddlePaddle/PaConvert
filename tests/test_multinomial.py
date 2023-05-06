@@ -11,25 +11,42 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import os
 import sys
 
 sys.path.append(os.path.dirname(__file__) + "/../")
+
 import textwrap
 
 from tests.apibase import APIBase
 
-obj = APIBase("torch.ldexp")
+
+class MultinomialAPI(APIBase):
+    def __init__(self, pytorch_api) -> None:
+        super().__init__(pytorch_api)
+
+    def check(self, pytorch_result, paddle_result):
+        if pytorch_result.requires_grad == paddle_result.stop_gradient:
+            return False
+        if str(pytorch_result.dtype)[6:] != str(paddle_result.dtype)[7:]:
+            return False
+        if pytorch_result.numpy().shape != paddle_result.numpy().shape:
+            return False
+        return True
+
+
+obj = MultinomialAPI("torch.multinomial")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        b = torch.tensor([1., 2., -3., -4., 5.])
-        result = torch.ldexp(a, b)
+        torch.manual_seed(100)
+        weights = torch.tensor([0, 10, 3, 0], dtype=torch.float)
+        result = torch.multinomial(weights, 2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -39,7 +56,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.ldexp(input=torch.tensor([1., 2., -3., -4., 5.]), other=torch.tensor([1., 2., -3., -4., 5.]))
+        torch.manual_seed(100)
+        weights = torch.tensor([0, 10, 3, 0], dtype=torch.float)
+        result = torch.multinomial(weights, 4, replacement=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -49,19 +68,20 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        out = torch.tensor([1., 2., -3., -4., 5.])
-        result = torch.ldexp(a, a, out=out)
+        torch.manual_seed(100)
+        result = torch.multinomial(torch.tensor([1., 10., 3., 2.]), 4, replacement=True)
         """
     )
-    obj.run(pytorch_code, ["out"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.ldexp(torch.tensor([1.]),torch.tensor([1., 2., -3., -4., 5.]))
+        torch.manual_seed(100)
+        weight = torch.tensor([[2., 4.], [4., 9.]])
+        result = torch.multinomial(weight, 4, replacement=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -71,7 +91,10 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.ldexp(torch.tensor([1.]), torch.tensor([1, 2, -3, -4, 5]))
+        torch.manual_seed(100)
+        weight = torch.tensor([[2., 4.], [4., 9.]])
+        out = torch.zeros(2, 4, dtype=torch.int64)
+        result = torch.multinomial(weight, 4, replacement=True, out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])

@@ -11,67 +11,58 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import os
 import sys
 
 sys.path.append(os.path.dirname(__file__) + "/../")
+
 import textwrap
 
 from tests.apibase import APIBase
 
-obj = APIBase("torch.ldexp")
+obj = APIBase("torch.divide")
 
 
-def test_case_1():
+def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        b = torch.tensor([1., 2., -3., -4., 5.])
-        result = torch.ldexp(a, b)
+        a = torch.tensor([4.0, 3.0])
+        b = torch.tensor([2.0, 2.0])
+        result = torch.floor_divide(a, b)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_2():
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.ldexp(input=torch.tensor([1., 2., -3., -4., 5.]), other=torch.tensor([1., 2., -3., -4., 5.]))
+        result = torch.floor_divide(torch.tensor([4.0, 3.0]), torch.tensor([2.0, 2.0]))
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_3():
+def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        out = torch.tensor([1., 2., -3., -4., 5.])
-        result = torch.ldexp(a, a, out=out)
-        """
-    )
-    obj.run(pytorch_code, ["out"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.ldexp(torch.tensor([1.]),torch.tensor([1., 2., -3., -4., 5.]))
+        result = torch.floor_divide(input=torch.tensor([4.0, 3.0]), other=2)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_5():
+def _test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.ldexp(torch.tensor([1.]), torch.tensor([1, 2, -3, -4, 5]))
+        out = torch.tensor([4.0, 3.0])
+        result = torch.floor_divide(input=torch.tensor([4.0, 3.0]), other=torch.tensor([2.0, 2.0]))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])

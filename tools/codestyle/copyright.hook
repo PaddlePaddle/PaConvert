@@ -30,10 +30,12 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License.'''
+limitations under the License.
+'''
 
 def _generate_copyright(comment_mark):
-    copyright=COPYRIGHT.split(os.linesep)
+    linesep = '\n' if os.linesep == '\r\n' else os.linesep
+    copyright=COPYRIGHT.split(linesep)
     header = copyright[0].rstrip()
 
     p = re.search('(\d{4})', header).group(0)
@@ -41,9 +43,9 @@ def _generate_copyright(comment_mark):
 
     header = header.replace(p,str(now.year))
 
-    ans=[comment_mark + " " + header + os.linesep]
+    ans=[comment_mark + " " + header + linesep]
     for idx, line in enumerate(copyright[1:]):
-        ans.append(comment_mark + " " + line.rstrip() + os.linesep)
+        ans.append(comment_mark + " " + line.rstrip() + linesep)
 
     return ans
 
