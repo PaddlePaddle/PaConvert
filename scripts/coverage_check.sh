@@ -28,15 +28,18 @@ git config --global user.name "John Doe"
 git config --global user.email johndoe@example.com
 git remote add upstream https://github.com/PaddlePaddle/PaConvert
 git fetch upstream 
-git merge -X ours --allow-unrelated-histories upstream/master
-diff-cover coverage.xml --compare-branch upstream/master > temp.txt
+git merge -X ours --allow-unrelated-histories upstream/master;check_error1=$?
+diff-cover coverage.xml --compare-branch upstream/master > temp.txt;check_error2=$?
+
+# Check the coverage results
+echo temp.txt
 
 
-python tools/coverage/coverage_diff.py;check_error=$?
+python tools/coverage/coverage_diff.py;check_error3=$?
 
 
 echo -e '\n************************************************************************************'
-if [ ${check_error} != 0 ];then
+if [ ${check_error1} != 0 ] || [ ${check_error2} != 0 ] || [ ${check_error3} != 0 ];then
     echo "Your PR code coverage rate check failed."
 else
     echo "Your PR code coverage rate check passed."
