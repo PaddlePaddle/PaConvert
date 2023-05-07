@@ -32,8 +32,7 @@ git merge -X ours --allow-unrelated-histories upstream/master;check_error1=$?
 diff-cover coverage.xml --compare-branch upstream/master > temp.txt;check_error2=$?
 
 # Check the coverage results
-echo temp.txt
-
+cat temp.txt
 
 python tools/coverage/coverage_diff.py;check_error3=$?
 
@@ -46,4 +45,5 @@ else
 fi
 echo -e '************************************************************************************\n'
 
+check_error=$((check_error1 || check_error2 || check_error3))
 exit ${check_error}
