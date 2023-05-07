@@ -28,7 +28,7 @@ git config --global user.name "John Doe"
 git config --global user.email johndoe@example.com
 git remote add upstream https://github.com/PaddlePaddle/PaConvert
 git fetch upstream 
-git merge --allow-unrelated-histories upstream/master
+git merge -X ours --allow-unrelated-histories upstream/master
 diff-cover coverage.xml --compare-branch upstream/master > temp.txt
 
 
