@@ -137,11 +137,11 @@ Print the information as follows：
 PyTorch to Paddle Convert Start ------>:
 ===========================================
 Start convert /workspace/test_code.py --> /workspace/PaConvert/paddle_project/test_code.py
-[test_code.py:1] remove 'import torch' 
-[test_code.py:2] remove 'import torch.nn as nn' 
-[test_code.py:3] remove 'import torch.optim as optim' 
-[test_code.py:4] remove 'import torch.nn.Linear as Linear' 
-[test_code.py:5] remove 'import torch.nn.functional as F' 
+[test_code.py:1] remove 'import torch'
+[test_code.py:2] remove 'import torch.nn as nn'
+[test_code.py:3] remove 'import torch.optim as optim'
+[test_code.py:4] remove 'import torch.nn.Linear as Linear'
+[test_code.py:5] remove 'import torch.nn.functional as F'
 [test_code.py] add 'import paddle' in first line
 [test_code.py:25] [Not Support] convert torch.optim.SGD to Paddle is not supported currently
 [test_code.py:26] [Not Support] convert torch.optim.lr_scheduler.MultiStepLR to Paddle is not supported currently
@@ -156,7 +156,7 @@ There are 10 Pytorch APIs in this Project:
  2  Pytorch APIs are not supported to convert to Paddle currently!
  Convert Rate is: 80.000%
 
-For these 2 Pytorch APIs that do not support to Convert now, which have been marked by >>> before the line, 
+For these 2 Pytorch APIs that do not support to Convert now, which have been marked by >>> before the line,
 please refer to https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html
 and convert it by yourself manually. In addition, these APIs will be supported in future.
 
@@ -193,11 +193,11 @@ Only need to modify paconvert/api_mapping.json, add the following information：
     "Matcher" : "GenericMatcher",
     "paddle_api": "paddle.nn.AvgPool2D",
     "args_list" : [
-        "kernel_size", 
-        "stride", 
-        "padding", 
-        "count_include_pad", 
-        "ceil_mode", 
+        "kernel_size",
+        "stride",
+        "padding",
+        "count_include_pad",
+        "ceil_mode",
         "divisor_override"
     ],
     "kwargs_change": {
@@ -229,9 +229,9 @@ class TransposeMatcher(BaseMatcher):
             '''
         )
         perm = unique_name('perm')
-        code = API_TEMPLACE.format(perm, kwargs['input'], 
-                perm, kwargs['dim0'], kwargs['dim1'], 
-                perm, kwargs['dim1'], kwargs['dim0'], 
+        code = API_TEMPLACE.format(perm, kwargs['input'],
+                perm, kwargs['dim0'], kwargs['dim1'],
+                perm, kwargs['dim1'], kwargs['dim0'],
                 kwargs['input'], perm)
         return code
 ```
@@ -243,7 +243,7 @@ Then add the json configuration to paconvert/api_mapping.json：
     "Matcher": "TransposeMatcher",
     "args_list" : [
         "input",
-        "dim0", 
+        "dim0",
         "dim1"
     ]
 }
@@ -256,4 +256,3 @@ In local development, for quick debugging, you can run the code directly through
 ```
 python3.8 paconvert/main.py  --in_dir tests/test_model.py  --out_dir tests/out
 ```
-

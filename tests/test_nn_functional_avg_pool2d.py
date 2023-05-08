@@ -1,17 +1,32 @@
+# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-import sys
 import os
-sys.path.append(os.path.dirname(__file__) + '/../')
+import sys
+
+sys.path.append(os.path.dirname(__file__) + "/../")
 
 import textwrap
+
 from tests.apibase import APIBase
 
+obj = APIBase("torch.nn.functional.avg_pool2d")
 
-obj = APIBase('torch.nn.functional.avg_pool2d')
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
-        '''
+        """
         import torch
         import torch.nn as nn
         input = torch.tensor([[[[-0.5743,  0.4889, -0.0878,  0.4210, -0.0844],
@@ -20,13 +35,14 @@ def test_case_1():
             [ 0.3789, -0.0560, -0.4090, -0.1070, -1.0139],
             [ 0.9204,  1.0817, -2.6126,  0.4244,  0.3272]]]])
         result = torch.nn.functional.avg_pool2d(input, 3, stride=2)
-        '''
+        """
     )
-    obj.run(pytorch_code,['result'])
+    obj.run(pytorch_code, ["result"])
+
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
-        '''
+        """
         import torch
         import torch.nn as nn
         input = torch.tensor([[[[ 0.6430,  0.4511, -1.6757,  1.7116],
@@ -49,13 +65,14 @@ def test_case_2():
             [-0.0991, -0.5112, -0.1785,  2.0903],
             [-1.3286, -0.9333, -0.1404,  1.2582]]]])
         result = torch.nn.functional.avg_pool2d(input, 4, stride=2, padding=2)
-        '''
+        """
     )
-    obj.run(pytorch_code, ['result'])
+    obj.run(pytorch_code, ["result"])
+
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
-        '''
+        """
         import torch
         import torch.nn as nn
         input = torch.tensor([[[[-0.5743,  0.4889, -0.0878,  0.4210, -0.0844],
@@ -64,13 +81,14 @@ def test_case_3():
             [ 0.3789, -0.0560, -0.4090, -0.1070, -1.0139],
             [ 0.9204,  1.0817, -2.6126,  0.4244,  0.3272]]]])
         result = nn.functional.avg_pool2d(input, 3, stride=2, ceil_mode=True)
-        '''
+        """
     )
-    obj.run(pytorch_code, ['result'])
+    obj.run(pytorch_code, ["result"])
+
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
-        '''
+        """
         import torch
         import torch.nn as nn
         input = torch.tensor([[[[-0.5743,  0.4889, -0.0878,  0.4210, -0.0844],
@@ -79,13 +97,14 @@ def test_case_4():
             [ 0.3789, -0.0560, -0.4090, -0.1070, -1.0139],
             [ 0.9204,  1.0817, -2.6126,  0.4244,  0.3272]]]])
         result = torch.nn.functional.avg_pool2d(input, 3, stride=2, ceil_mode=True, count_include_pad=False)
-        '''
+        """
     )
-    obj.run(pytorch_code, ['result'])
+    obj.run(pytorch_code, ["result"])
+
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
-        '''
+        """
         import torch
         import torch.nn.functional as F
         input = torch.tensor([[[[ 0.6430,  0.4511, -1.6757,  1.7116],
@@ -108,6 +127,6 @@ def test_case_5():
             [-0.0991, -0.5112, -0.1785,  2.0903],
             [-1.3286, -0.9333, -0.1404,  1.2582]]]])
         result = F.avg_pool2d(input=input, kernel_size=2, stride=2, padding=1, ceil_mode=True, count_include_pad=False)
-        '''
+        """
     )
-    obj.run(pytorch_code, ['result'])
+    obj.run(pytorch_code, ["result"])
