@@ -24,8 +24,8 @@ coverage run -m pytest
 coverage xml -o coverage.xml
 
 git --version
-git config --global user.name "John Doe"
-git config --global user.email johndoe@example.com
+git config --global user.name "paddle-ci"
+git config --global user.email paddle-ci@baidu.com
 git remote add upstream https://github.com/PaddlePaddle/PaConvert
 git fetch upstream 
 git merge -X ours --allow-unrelated-histories upstream/master;check_error1=$?

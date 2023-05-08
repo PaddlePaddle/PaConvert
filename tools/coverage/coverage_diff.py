@@ -20,25 +20,22 @@ number = 90
 
 
 def _check_coverage_rate():
-    """ "Run it every time and if coverage rate is too low,
-    it warns the user and updates the coverage data"""
+    """
+    Run it every time and if coverage rate is too low,
+    it warns the user and updates the coverage data
+    """
 
-    result = []
-    flag = 100
+    coverage_rate = 100
     with open("./temp.txt", "r") as f:
         lines = f.readlines()
         for line in lines:
             line = line.strip()
             if line.startswith("Coverage:"):
-                flag = int(line[-4:-1])
-            if line.endswith("%)"):
-                temp_percent = int(line.split(" ")[1][1:-2])
-                if temp_percent < number:
-                    result.append(line)
+                coverage_rate = int(line[-4:-1])
 
     os.system("rm temp.txt")
 
-    if flag > number:
+    if coverage_rate > number:
         return False
 
     return True
