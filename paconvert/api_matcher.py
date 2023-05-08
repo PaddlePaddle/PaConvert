@@ -2896,6 +2896,7 @@ class MSortMatcher(BaseMatcher):
                 """
             )
             code = API_TEMPLATE.format(kwargs["input"])
+        return code
 
 
 class ExpMatcher(BaseMatcher):
@@ -3145,6 +3146,7 @@ class IndexAddMatcher(BaseMatcher):
                 kwargs["alpha"],
                 kwargs["source"],
             )
+        return code
 
 
 class LogicalMatcher(BaseMatcher):
