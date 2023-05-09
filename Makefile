@@ -14,6 +14,14 @@ format:
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+# # # # # # # # # # # # # # # Install Block # # # # # # # # # # # # # # # 
+
+.PHONY: install
+install:
+	pip install -r requirements.txt
+	pip install -r requirements-dev.txt
+	pre-commit install
+
 # # # # # # # # # # # # # # # Lint Block # # # # # # # # # # # # # # # 
 
 .PHONY: lint
@@ -30,10 +38,10 @@ test: unit-test
 unit-test:
 	PYTHONPATH=. pytest tests
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # Coverage Block # # # # # # # # # # # # # # # 
 
-.PHONY: install
-install:
-	pip install -r requirements.txt
-	pip install -r requirements-dev.txt
-	pre-commit install
+.PHONY: coverage
+coverage:
+	bash scripts/coverage_check.sh
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
