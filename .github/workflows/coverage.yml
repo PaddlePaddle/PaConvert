@@ -1,0 +1,28 @@
+name: Coverage
+
+on: [push, pull_request]
+
+jobs:
+  Coverage:
+    name: Coverage
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: checkout develop
+        run: |
+          if ! git show-ref --quiet refs/heads/master; then \
+              echo "local master branch is missing, creating local develop branch that tracks remote master branch"
+              git fetch origin master
+              git branch master --track origin/master
+          else
+            echo "local master branch exist, skipping"
+          fi
+      - uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          make install
+      - name: run the command
+        run: make coverage
