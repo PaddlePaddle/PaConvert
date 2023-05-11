@@ -106,7 +106,15 @@ def generate_copyright(path, comment_mark):
     with open(path, 'w', encoding='utf-8') as output_file:
         output_file.write(new_contents)
 
+def exclude(path):
+    exclude_dir = [
+        "tests/code_library/code_case_v1",
+        ]
+    for dir in exclude_dir:
+        if path.startswith(dir):
+            return True
 
+    return False
 
 def main(argv=None):
     parser = argparse.ArgumentParser(
@@ -117,6 +125,8 @@ def main(argv=None):
     retv = 0
     for path in args.filenames:
         comment_mark = _get_comment_mark(path)
+        if exclude(path):
+            continue
         if comment_mark is None:
             print("warning:Unsupported file", path, file=sys.stderr)
             continue
