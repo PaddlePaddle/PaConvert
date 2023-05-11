@@ -14,6 +14,5 @@
 #
 
 import torch
-
 print("#########################case1#########################")
 torch.cuda.is_available()
