@@ -29,7 +29,7 @@ repos:
     rev: 5.11.5
     hooks:
     -   id: isort
-        exclude: ^tests/code_library/code_case_v1/(paddle_code|torch_code|temp_paddle_code)
+        exclude: ^tests/code_library/code_case_v1
 -   repo: https://github.com/PyCQA/flake8
     rev: 5.0.4
     hooks:
