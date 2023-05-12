@@ -14,10 +14,7 @@
 
 # pre-commit multi-thread running.
 echo "Checking code unit test by pytest ..."
-export PATH="/root/anaconda3/bin/python/bin:$PATH"
-which python
-which pytest
-pytest /workspace/$1/PaConvert/tests;check_error=$?
+/root/anaconda3/bin/pytest /workspace/$1/PaConvert/tests;check_error=$?
 
 echo -e '************************************************************************************\n'
 if [ ${check_error} != 0 ];then
