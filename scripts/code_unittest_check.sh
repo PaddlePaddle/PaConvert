@@ -14,22 +14,38 @@
 
 # pre-commit multi-thread running.
 echo "Checking code unit test by pytest ..."
-pytest tests;check_error=$?
-pwd
-echo -e '\n************************************************************************************'
-if [ ${check_error} != 0 ];then
-    echo "Your PR code unit test check failed."
-    echo "Please run the following command"
-    echo ""
-    echo "    pytest tests"
-    echo ""
-    echo "For more information, please refer to our check guide:"
-    echo "https://github.com/PaddlePaddle/PaConvert#readme"
-else
-    echo "Your PR code unit test check passed."
-fi
-echo -e '************************************************************************************\n'
+export PATH="/root/anaconda3/bin/python/bin:$PATH"
+pytest /workspace/$1/PaConvert/tests;check_error=$?
 
+echo -e '************************************************************************************\n'
+if [ ${check_error} != 0 ];then
+    echo '************************************************************************************' > /dev/null
+    echo "______                                   _   "  > /dev/null
+    echo "| ___ \                                 | |  "  > /dev/null
+    echo "| |_/ /_ _  ___ ___  _ ____   _____ _ __| |_ "  > /dev/null
+    echo "|  __/ _  |/ __/ _ \\| \_ \ \ / / _ \ \__| __|"  > /dev/null
+    echo "| | | (_| | (_| (_) | | | \\ V /  __/ |  | |_ "  > /dev/null
+    echo "\\_|  \\__,_|\\___\\___/|_| |_|\\_/ \\___|_|   \\__|"  > /dev/null
+    echo '************************************************************************************' > /dev/null
+    echo "Your PR code unit test check failed." > /dev/null
+    echo "Please run the following command." > /dev/null
+    echo "" > /dev/null
+    echo "    pytest tests" > /dev/null
+    echo "" > /dev/null
+    echo "For more information, please refer to our check guide:" > /dev/null
+    echo "https://github.com/PaddlePaddle/PaConvert#readme." > /dev/null
+else
+    echo '************************************************************************************' > /dev/null
+    echo "______                                   _   "  > /dev/null
+    echo "| ___ \                                 | |  "  > /dev/null
+    echo "| |_/ /_ _  ___ ___  _ ____   _____ _ __| |_ "  > /dev/null
+    echo "|  __/ _  |/ __/ _ \\| \_ \ \ / / _ \ \__| __|"  > /dev/null
+    echo "| | | (_| | (_| (_) | | | \\ V /  __/ |  | |_ "  > /dev/null
+    echo "\\_|  \\__,_|\\___\\___/|_| |_|\\_/ \\___|_|   \\__|"  > /dev/null
+    echo '************************************************************************************' > /dev/null
+    echo "Your PR code unit test check passed."
+    echo '************************************************************************************'
+fi
 exit ${check_error}
 
                                              
