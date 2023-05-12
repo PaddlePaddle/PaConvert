@@ -11,24 +11,28 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import os
 import sys
 
 sys.path.append(os.path.dirname(__file__) + "/../")
+
 import textwrap
 
 from tests.apibase import APIBase
 
-obj = APIBase("torch.Tensor.erfc")
+obj = APIBase("torch.linalg.cholesky")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        result = a.erfc()
+        a = torch.tensor([[1.1481, 0.9974, 0.9413],
+                [0.9974, 1.3924, 0.6773],
+                [0.9413, 0.6773, 1.1315]])
+        result = torch.linalg.cholesky(a)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -38,8 +42,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1., 2., -3., -4., 5.], [1., 2., -3., -4., 5.]])
-        result = 2 * a.erfc()
+        a = torch.tensor([[1.1481, 0.9974, 0.9413],
+                [0.9974, 1.3924, 0.6773],
+                [0.9413, 0.6773, 1.1315]])
+        result = torch.linalg.cholesky(a, upper=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -49,7 +55,11 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1., 2., -3., -4., 5.]).erfc()
+        a = torch.tensor([[1.1481, 0.9974, 0.9413],
+                [0.9974, 1.3924, 0.6773],
+                [0.9413, 0.6773, 1.1315]])
+        out = torch.randn(3, 3)
+        result = torch.linalg.cholesky(a, upper=True, out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])

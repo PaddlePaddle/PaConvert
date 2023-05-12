@@ -20,15 +20,16 @@ import textwrap
 
 from tests.apibase import APIBase
 
-obj = APIBase("torch.Tensor.erfc")
+obj = APIBase("torch.sgn")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        result = a.erfc()
+        boundaries = torch.tensor([1, 3, 5, 7, 9])
+        v = torch.tensor([[3, 6, 9], [3, 6, 9]])
+        result = torch.bucketize(v, boundaries)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -38,8 +39,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1., 2., -3., -4., 5.], [1., 2., -3., -4., 5.]])
-        result = 2 * a.erfc()
+        boundaries = torch.tensor([1, 3, 5, 7, 9])
+        v = torch.tensor([[3, 6, 9], [3, 6, 9]])
+        result = torch.bucketize(input=v, boundaries=boundaries, right=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -49,7 +51,22 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1., 2., -3., -4., 5.]).erfc()
+        boundaries = torch.tensor([1, 3, 5, 7, 9])
+        v = torch.tensor([[3, 6, 9], [3, 6, 9]])
+        result = torch.bucketize(input=v, boundaries=boundaries, out_int32=True, right=True)
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        boundaries = torch.tensor([1, 3, 5, 7, 9])
+        v = torch.tensor([[3, 6, 9], [3, 6, 9]])
+        out = torch.tensor([[3, 6, 9], [3, 6, 9]])
+        result = torch.bucketize(input=v, boundaries=boundaries, right=True, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["out"])

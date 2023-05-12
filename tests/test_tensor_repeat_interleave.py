@@ -11,24 +11,26 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import os
 import sys
 
 sys.path.append(os.path.dirname(__file__) + "/../")
+
 import textwrap
 
 from tests.apibase import APIBase
 
-obj = APIBase("torch.Tensor.erfc")
+obj = APIBase("torch.Tensor.repeat_interleave")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        result = a.erfc()
+        a = torch.tensor([[4, 9], [23, 2]])
+        result = a.repeat_interleave(3, 0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -38,8 +40,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1., 2., -3., -4., 5.], [1., 2., -3., -4., 5.]])
-        result = 2 * a.erfc()
+        a = torch.tensor([[4, 9], [23, 2]])
+        result = a.repeat_interleave(repeats=3, dim=1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -49,7 +51,19 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1., 2., -3., -4., 5.]).erfc()
+        a = torch.tensor([[4, 9], [23, 2]])
+        result = a.repeat_interleave(repeats=torch.tensor([2, 2]), dim=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4., 9], [23, 2]])
+        result = a.repeat_interleave(repeats=3)
         """
     )
     obj.run(pytorch_code, ["result"])

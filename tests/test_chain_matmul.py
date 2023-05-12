@@ -20,15 +20,15 @@ import textwrap
 
 from tests.apibase import APIBase
 
-obj = APIBase("torch.Tensor.erfc")
+obj = APIBase("torch.chain_matmul")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        result = a.erfc()
+        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
+        result = torch.chain_matmul(v, v, v)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -38,18 +38,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1., 2., -3., -4., 5.], [1., 2., -3., -4., 5.]])
-        result = 2 * a.erfc()
+        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
+        out = torch.ones_like(v)
+        result = torch.chain_matmul(v, v, out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.tensor([1., 2., -3., -4., 5.]).erfc()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])
