@@ -3279,23 +3279,6 @@ class MulMatcher(BaseMatcher):
         return code
 
 
-class RemainderMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-
-        kwargs["x"] = "paddle.to_tensor({})".format(kwargs.pop("input"))
-        kwargs["y"] = "paddle.to_tensor({})".format(kwargs.pop("other"))
-
-        if "out" in kwargs and kwargs["out"] is not None:
-            out_v = kwargs.pop("out").strip("\n")
-            code = "paddle.assign(paddle.remainder({}), output={})".format(
-                self.kwargs_to_str(kwargs), out_v
-            )
-        else:
-            code = "paddle.remainder({})".format(self.kwargs_to_str(kwargs))
-
-        return code
-
-
 class TrueDivideMatcher(BaseMatcher):
     def generate_code(self, kwargs):
 
@@ -3324,7 +3307,7 @@ class AllcloseMatcher(BaseMatcher):
         return code
 
 
-class Num2TensorMatcher(BaseMatcher):
+class Num2TensorBinaryMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs["x"] = kwargs.pop("input").strip("\n")
         kwargs["y"] = "paddle.to_tensor({})".format(kwargs.pop("other").strip("\n"))
