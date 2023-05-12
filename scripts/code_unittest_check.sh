@@ -11,21 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+set -x
 # pre-commit multi-thread running.
 echo "Checking code unit test by pytest ..."
 /root/anaconda3/bin/pytest /workspace/$1/PaConvert/tests;check_error=$?
 
-echo  '************************************************************************************'
+echo '************************************************************************************'
+echo "______                                   _   "
+echo "| ___ \                                 | |  "
+echo "| |_/ /_ _  ___ ___  _ ____   _____ _ __| |_ "
+echo "|  __/ _  |/ __/ _ \\| \_ \ \ / / _ \ \__| __|"
+echo "| | | (_| | (_| (_) | | | \\ V /  __/ |  | |_ "  
+echo "\\_|  \\__,_|\\___\\___/|_| |_|\\_/ \\___|_|   \\__|"  
+echo '************************************************************************************' 
 if [ ${check_error} != 0 ];then
-    echo '************************************************************************************'
-    echo "______                                   _   "
-    echo "| ___ \                                 | |  "
-    echo "| |_/ /_ _  ___ ___  _ ____   _____ _ __| |_ "
-    echo "|  __/ _  |/ __/ _ \\| \_ \ \ / / _ \ \__| __|"
-    echo "| | | (_| | (_| (_) | | | \\ V /  __/ |  | |_ "  
-    echo "\\_|  \\__,_|\\___\\___/|_| |_|\\_/ \\___|_|   \\__|"  
-    echo '************************************************************************************' 
     echo "Your PR code unit test check failed." 
     echo "Please run the following command." 
     echo "" 
@@ -34,17 +33,10 @@ if [ ${check_error} != 0 ];then
     echo "For more information, please refer to our check guide:" 
     echo "https://github.com/PaddlePaddle/PaConvert#readme." 
 else
-    echo '************************************************************************************' 
-    echo "______                                   _   "  
-    echo "| ___ \                                 | |  "  
-    echo "| |_/ /_ _  ___ ___  _ ____   _____ _ __| |_ "  
-    echo "|  __/ _  |/ __/ _ \\| \_ \ \ / / _ \ \__| __|"  
-    echo "| | | (_| | (_| (_) | | | \\ V /  __/ |  | |_ "  
-    echo "\\_|  \\__,_|\\___\\___/|_| |_|\\_/ \\___|_|   \\__|"  
-    echo '************************************************************************************' 
     echo "Your PR code unit test check passed."
-    echo '************************************************************************************'
 fi
+echo '************************************************************************************'
+
 exit ${check_error}
 
                                              
