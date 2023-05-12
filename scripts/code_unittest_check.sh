@@ -15,7 +15,7 @@
 # pre-commit multi-thread running.
 echo "Checking code unit test by pytest ..."
 pytest tests;check_error=$?
-
+pwd
 echo -e '\n************************************************************************************'
 if [ ${check_error} != 0 ];then
     echo "Your PR code unit test check failed."
@@ -31,3 +31,6 @@ fi
 echo -e '************************************************************************************\n'
 
 exit ${check_error}
+
+                                             
+                                             
