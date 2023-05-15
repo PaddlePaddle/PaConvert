@@ -3274,7 +3274,7 @@
       "name",
       "dim"],
     "kwargs_change": {
-      "module":"Layer"
+      "module":"layer"
     }
   },
 
