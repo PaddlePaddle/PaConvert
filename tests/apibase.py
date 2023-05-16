@@ -63,12 +63,12 @@ class APIBase(object):
             paddle_result: paddle Tensor
         """
         if isinstance(pytorch_result, (bool, np.number, int, str)) and isinstance(
-            pytorch_result, (bool, np.number, int, str)
+            paddle_result, (bool, np.number, int, str)
         ):
             return pytorch_result == paddle_result
 
         if isinstance(pytorch_result, (tuple, list)) and isinstance(
-            pytorch_result, (tuple, list)
+            paddle_result, (tuple, list)
         ):
             is_same = True
             for i in range(len(pytorch_result)):

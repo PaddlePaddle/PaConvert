@@ -14,16 +14,29 @@
 
 set +x
 
-# use pre-commit 2.17
-if ! [[ $(pre-commit --version) == *"2.17.0"* ]]; then
-    pip install pre-commit==2.17.0 1>nul
+DEVELOP_IF="OFF"
+
+if [[ "$DEVELOP_IF" == "OFF" ]]; then
+    cd /workspace/$2/PaConvert/
+    PATH=$1
+else
+    # use pre-commit 2.17
+    if ! [[ $(pre-commit --version) == *"2.17.0"* ]]; then
+        pip install pre-commit==2.17.0 1>nul
+    fi
 fi
 
 # pre-commit multi-thread running.
 echo "Checking code style by pre-commit ..."
 pre-commit run --all-files;check_error=$?
-
-echo -e '\n************************************************************************************'
+echo '************************************************************************************'
+echo "______                                   _   "
+echo "| ___ \                                 | |  "
+echo "| |_/ /_ _  ___ ___  _ ____   _____ _ __| |_ "
+echo "|  __/ _  |/ __/ _ \\| \_ \ \ / / _ \ \__| __|"
+echo "| | | (_| | (_| (_) | | | \\ V /  __/ |  | |_ "
+echo "\\_|  \\__,_|\\___\\___/|_| |_|\\_/ \\___|_|   \\__|"
+echo '************************************************************************************'
 if [ ${check_error} != 0 ];then
     echo "Your PR code style check failed."
     echo "Please install pre-commit locally and set up git hook scripts:"
@@ -40,6 +53,6 @@ if [ ${check_error} != 0 ];then
 else
     echo "Your PR code style check passed."
 fi
-echo -e '************************************************************************************\n'
+echo '************************************************************************************'
 
 exit ${check_error}

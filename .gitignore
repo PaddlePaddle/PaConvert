@@ -10,3 +10,10 @@ tests/__pycache__/
 tests/.pytest_cache
 tests/test.py
 test_project
+.pytest_cache
+coverage.xml
+.coverage
+tools/coverage/__pycache__
+temp.txt
+test_set
+torch_project

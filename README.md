@@ -190,7 +190,12 @@ pre-commit run --file [file_name]
 ```
 #### 自定义审查
 
-本项目使用了基于自定义要求的审查，相关代码文件在tools/codestyle下。
+本项目使用了基于自定义要求的审查，相关代码文件在tools和scripts下。
+
+本地CI测试方法
+```bash
+bash scripts/run_ci.sh
+```
 
 ### 合入规范
 
