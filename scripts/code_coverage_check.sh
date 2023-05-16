@@ -15,20 +15,35 @@
 set +x
 
 DEVELOP_IF="OFF"
-
+ADD_GIT="OFF"
 if [[ "$DEVELOP_IF" == "OFF" ]]; then
     cd /workspace/$2/PaConvert/
     PATH=$1
-else
-    # use pre-commit 2.17
-    if ! [[ $(pre-commit --version) == *"2.17.0"* ]]; then
-        pip install pre-commit==2.17.0 1>nul
+fi
+
+# use Coverage diff-cover
+echo "Insalling coverage and diff-cover for incremental code inspection"
+
+if [[ "$DEVELOP_IF" == "ON" ]]; then
+    pip install coverage diff-cover
+    if [[ "$DEVELOP_IF" == "ON" ]]; then
+        git remote add upstream https://github.com/PaddlePaddle/PaConvert
+        git fetch upstream 
+        git merge -X ours --allow-unrelated-histories upstream/master
     fi
 fi
 
-# pre-commit multi-thread running.
-echo "Checking code style by pre-commit ..."
-pre-commit run --all-files;check_error=$?
+# coverage code check
+coverage run -m pytest
+coverage xml -o coverage.xml
+
+diff-cover coverage.xml --compare-branch origin/master > temp.txt;check_error1=$?
+
+# Check the coverage results
+cat temp.txt
+
+python  tools/coverage/coverage_diff.py;check_error2=$?
+
 echo '************************************************************************************'
 echo "______                                   _   "
 echo "| ___ \                                 | |  "
@@ -37,22 +52,12 @@ echo "|  __/ _  |/ __/ _ \\| \_ \ \ / / _ \ \__| __|"
 echo "| | | (_| | (_| (_) | | | \\ V /  __/ |  | |_ "
 echo "\\_|  \\__,_|\\___\\___/|_| |_|\\_/ \\___|_|   \\__|"
 echo '************************************************************************************'
-if [ ${check_error} != 0 ];then
-    echo "Your PR code style check failed."
-    echo "Please install pre-commit locally and set up git hook scripts:"
-    echo ""
-    echo "    pip install pre-commit==2.17.0"
-    echo "    pre-commit install"
-    echo ""
-    echo "Then, run pre-commit to check codestyle issues in your PR:"
-    echo ""
-    echo "    pre-commit run --all-files"
-    echo ""
-    echo "For more information, please refer to our codestyle check guide:"
-    echo "https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/dev_guides/git_guides/codestyle_check_guide_cn.html"
+if [ ${check_error1} != 0 ] || [ ${check_error2} != 0 ];then
+    echo "Your PR code coverage rate check failed."
 else
-    echo "Your PR code style check passed."
+    echo "Your PR code coverage rate check passed."
 fi
-echo '************************************************************************************'
+echo -e '************************************************************************************\n'
 
+check_error=$((check_error1&&check_error2))
 exit ${check_error}
