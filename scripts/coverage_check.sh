@@ -14,6 +14,12 @@
 
 set +x
 
+DEVELOP_MACHINE_IF = "ON"
+
+if ["$DEVELOP_MACHINE_IF" == "ON"]; then
+    PATH = $1
+fi
+
 # use Coverage diff-cover
 echo "Insalling coverage and diff-cover for incremental code inspection"
 pip install coverage diff-cover
