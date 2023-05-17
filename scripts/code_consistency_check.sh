@@ -74,9 +74,9 @@ fi
 python paconvert/main.py --in_dir $TORCH_PROJECT_PATH;check_error1=$?
 echo '************************************************************************************'
 #check whether common API transfer is successful
-mkdir tests/code_library/code_case_v1/temp_paddle_code
+mkdir tests/code_library/code_case/temp_paddle_code
 python tools/consistency/api_code_consistency_check.py;check_error2=$?
-rm -rf tests/code_library/code_case_v1/temp_paddle_code
+rm -rf tests/code_library/code_case/temp_paddle_code
 
 echo '************************************************************************************'
 echo "______                                   _   "
