@@ -13,7 +13,7 @@
 # limitations under the License.
 
 DOWNLOAD_DATASET_IF="OFF"
-DEVELOP_IF="OFF"
+DEVELOP_IF="ON"
 TORCH_PROJECT_PATH="torch_project"
 
 if [[ "$DEVELOP_IF" == "OFF" ]]; then
@@ -71,9 +71,12 @@ if [[ "$DOWNLOAD_DATASET_IF" == "ON" ]]; then
 fi
 
 # Check the grammar mechanism of the test set and other issues
+echo '**************************start converting test case********************************'
 python paconvert/main.py --in_dir $TORCH_PROJECT_PATH;check_error1=$?
 echo '************************************************************************************'
 #check whether common API transfer is successful
+
+echo '**************************start converting common API case********************************'
 mkdir tests/code_library/code_case/temp_paddle_code
 python tools/consistency/api_code_consistency_check.py;check_error2=$?
 rm -rf tests/code_library/code_case/temp_paddle_code
