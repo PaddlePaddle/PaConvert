@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-DEVELOP_IF="ON"
+DEVELOP_IF="OFF"
 
 if [[ "$DEVELOP_IF" == "OFF" ]]; then
     cd /workspace/$2/PaConvert/

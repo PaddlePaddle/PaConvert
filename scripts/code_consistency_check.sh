@@ -13,7 +13,7 @@
 # limitations under the License.
 
 DOWNLOAD_DATASET_IF="OFF"
-DEVELOP_IF="ON"
+DEVELOP_IF="OFF"
 TORCH_PROJECT_PATH="torch_project"
 
 if [[ "$DEVELOP_IF" == "OFF" ]]; then
