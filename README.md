@@ -190,9 +190,31 @@ pre-commit run --file [file_name]
 ```
 #### 自定义审查 (如果无需本地调试，请跳过)
 
-本项目使用了基于自定义要求的审查，相关代码文件在tools和scripts下, 需修改scriptes中*.sh的环境变量DEVELOP_IF="ON".
+本项目使用了基于自定义要求的审查，相关代码文件在tools和scripts下,可自行本地调试。
 
-本地CI测试方法
+相关CI的测试代码和本地scriptes的脚本文件对应如下
+|  CI名称   | repo对应脚本文件  |
+|  ----  | ----  |
+| PR-CI-ModelTest   | scripts/code_modeltest_check.sh |
+| PR-CI-CodeCosistency   | scripts/code_consistency_check.sh |
+| PR-CI-CodeStyle   | scripts/code_style_check.sh |
+| PR-CI-UnitTest   | scripts/code_unittest_check.sh |
+| PR-CI-Coverage   | scripts/code_modeltest_check.sh |
+```
+
+运行对应CI文件需修改scriptes中*.sh的环境变量DEVELOP_IF="ON".
+
+
+本地单个CI测试方法
+```bash
+bash scripts/code_modeltest_check.sh
+bash scripts/code_consistency_check.sh
+bash scripts/code_style_check.sh
+bash scripts/code_unittest_check.sh
+bash scripts/code_modeltest_check.sh
+```
+
+本地全部CI测试方法
 ```bash
 bash scripts/run_ci.sh
 ```
