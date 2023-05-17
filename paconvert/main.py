@@ -19,6 +19,7 @@ import sys
 sys.path.append(os.path.dirname(__file__) + "/..")
 
 from paconvert.converter import Converter
+from paconvert.transformer.basic_transformer import change_torch_package_list
 
 
 def main():
@@ -83,11 +84,16 @@ def main():
         sys.exit(0)
 
     if args.separate_convert:
+        change_torch_package_list()
         project_num_100 = 0
         project_num_95 = 0
         project_num_90 = 0
-        for pytorch_project in os.listdir(args.in_dir):
+
+        in_dir = os.path.abspath(args.in_dir)
+        for pytorch_project in os.listdir(in_dir):
+            pytorch_project = os.path.join(in_dir, pytorch_project)
             coverter = Converter(args.log_dir, args.log_level, args.show_unsupport)
+            print(pytorch_project)
             coverter.run(pytorch_project, args.out_dir, args.exclude_dirs)
             if coverter.convert_rate == 1.0:
                 project_num_100 += 1
@@ -96,13 +102,13 @@ def main():
             if coverter.convert_rate >= 0.90:
                 project_num_90 += 1
 
-        project_num = len(os.listdir(args.in_dir))
+        project_num = len(os.listdir(in_dir))
         print("\n**************************************************************")
         print("Model Convert Summary:")
         print("\n**************************************************************")
         print(
-            "There are {} Pytorch Projects, {}({}) Project's Convert-Rate is 100%, "
-            "{}({}) Project's Convert-Rate >=95%, {}({}) Project's Convert-Rate >=90%".format(
+            "There are {} Pytorch Projects:\n : {}({:.2%}) Project's Convert-Rate is 100%\n "
+            ": {}({:.2%}) Project's Convert-Rate >=95%\n : {}({:.2%}) Project's Convert-Rate >=90%".format(
                 project_num,
                 project_num_100,
                 project_num_100 / project_num,

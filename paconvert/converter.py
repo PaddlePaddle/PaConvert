@@ -30,6 +30,7 @@ from paconvert.transformer.import_transformer import ImportTransformer
 from paconvert.transformer.tensor_requires_grad_transformer import (
     TensorRequiresGradTransformer,
 )
+from paconvert.utils import get_unique_name
 
 
 def listdir_nohidden(path):
@@ -43,7 +44,7 @@ class Converter:
         self.imports_map = collections.defaultdict(dict)
         self.torch_api_count = 0
         self.success_api_count = 0
-        self.logger = logging.getLogger(name="Converter")
+        self.logger = logging.getLogger(name=get_unique_name("Converter"))
         if log_dir is None:
             self.logger.addHandler(logging.StreamHandler())
         elif log_dir == "disable":
@@ -213,7 +214,11 @@ class Converter:
             attribute_requires_grad_trans.transform()
             # api transformer
             api_trans = BasicTransformer(
-                root, file, self.imports_map, self.logger, self.unsupport_map
+                root,
+                file,
+                self.imports_map,
+                self.logger,
+                self.unsupport_map,
             )
             api_trans.transform()
             self.torch_api_count += api_trans.torch_api_count
