@@ -34,14 +34,19 @@ if [[ "$DEVELOP_IF" == "ON" ]]; then
 fi
 
 # coverage code check
+echo '****************************start detecting coverate rate*********************************'
 coverage run -m pytest
+
+echo '**************************start generating coverage.xml file******************************'
 coverage xml -o coverage.xml
 
+echo '************************start generating coverage rate report*****************************'
 diff-cover coverage.xml --compare-branch origin/master > temp.txt;check_error1=$?
 
 # Check the coverage results
 cat temp.txt
 
+echo '***********************start generating coverage rate detect******************************'
 python  tools/coverage/coverage_diff.py;check_error2=$?
 
 echo '************************************************************************************'

@@ -24,6 +24,7 @@ fi
 
 # obtain the test case
 if [[ "$DOWNLOAD_DATASET_IF" == "ON" ]]; then
+    echo '**************************start downloading datasets.....*********************************'
     mkdir -p torch_project
     git clone https://github.com/open-mmlab/mmcv.git torch_project/mmcv
     git clone https://github.com/open-mmlab/mmdetection3d.git torch_project/mmdetection3d

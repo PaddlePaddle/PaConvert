@@ -19,7 +19,7 @@ if [[ "$DEVELOP_IF" == "OFF" ]]; then
     PATH=$1
 fi
 
-echo '**********************************start test****************************************'
+echo '*******************************start modeltest test*********************************'
 mkdir tests/code_library/model_case/paddle_code
 python tools/modeltest/code_modeltest_check.py;check_error1=$?
 rm -rf tests/code_library/model_case/paddle_code

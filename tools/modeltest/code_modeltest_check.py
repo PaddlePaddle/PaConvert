@@ -62,7 +62,8 @@ def test_run() -> Tuple[bool, list[str]]:
             print(f"{process(pytorch_file)} -> {process(paddle_file)} :fail!")
             run_file_fail_list.append(pytorch_file)
             run_file_flag = True
-
+        else:
+            print(f"{process(paddle_file)} run success!")
     return run_file_flag, run_file_fail_list
 
 
