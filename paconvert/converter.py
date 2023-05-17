@@ -53,6 +53,7 @@ class Converter:
         self.logger.setLevel(log_level)
         self.show_unsupport = show_unsupport
         self.unsupport_map = collections.defaultdict(int)
+        self.convert_rate = 0.0
 
         self.log_info("===========================================")
         self.log_info("PyTorch to Paddle Convert Start ------>:")
@@ -81,9 +82,9 @@ class Converter:
             unsupport_map = sorted(
                 self.unsupport_map.items(), key=lambda x: x[1], reverse=True
             )
-            self.log_info("\n========================================")
+            self.log_info("\n===========================================")
             self.log_info("Not Support API List:")
-            self.log_info("========================================")
+            self.log_info("===========================================")
             self.log_info(
                 "These Pytorch APIs are not supported to convert to Paddle now, which will be supppored in future!\n"
             )
@@ -91,9 +92,9 @@ class Converter:
                 self.log_info("{}: {}".format(k, v))
 
         faild_api_count = self.torch_api_count - self.success_api_count
-        self.log_info("\n========================================")
+        self.log_info("\n===========================================")
         self.log_info("Convert Summary:")
-        self.log_info("========================================")
+        self.log_info("===========================================")
         self.log_info(
             "There are {} Pytorch APIs in this Project:".format(self.torch_api_count)
         )
@@ -108,10 +109,8 @@ class Converter:
             )
         )
         if self.torch_api_count > 0:
-            convert_rate = self.success_api_count / self.torch_api_count
-        else:
-            convert_rate = 0.0
-        self.log_info(" Convert Rate is: {:.3%}".format(convert_rate))
+            self.convert_rate = self.success_api_count / self.torch_api_count
+        self.log_info(" Convert Rate is: {:.3%}".format(self.convert_rate))
         if faild_api_count > 0:
             self.log_info(
                 "\nFor these {} Pytorch APIs that do not support to Convert now, which have been marked by >>> before the line, \nplease refer to "

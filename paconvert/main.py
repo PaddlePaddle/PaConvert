@@ -67,6 +67,12 @@ def main():
         type=bool,
         help="show these APIs which are not supported to convert now",
     )
+    parser.add_argument(
+        "--separate_convert",
+        default=False,
+        type=bool,
+        help="Convert Pytorch project each element Separately",
+    )
 
     args = parser.parse_args()
 
@@ -76,9 +82,50 @@ def main():
         coverter.run(cwd + "/example_code.py", cwd + "/temp_out/example_code.py")
         sys.exit(0)
 
+    if args.separate_convert:
+        project_num_100 = 0
+        project_num_95 = 0
+        project_num_90 = 0
+        for pytorch_project in os.listdir(args.in_dir):
+            coverter = Converter(args.log_dir, args.log_level, args.show_unsupport)
+            coverter.run(pytorch_project, args.out_dir, args.exclude_dirs)
+            if coverter.convert_rate == 1.0:
+                project_num_100 += 1
+            if coverter.convert_rate >= 0.95:
+                project_num_95 += 1
+            if coverter.convert_rate >= 0.90:
+                project_num_90 += 1
+
+        project_num = len(os.listdir(args.in_dir))
+        print("\n**************************************************************")
+        print("Model Convert Summary:")
+        print("\n**************************************************************")
+        print(
+            "There are {} Pytorch Projects, {}({}) Project's Convert-Rate is 100%, "
+            "{}({}) Project's Convert-Rate >=95%, {}({}) Project's Convert-Rate >=90%".format(
+                project_num,
+                project_num_100,
+                project_num_100 / project_num,
+                project_num_95,
+                project_num_95 / project_num,
+                project_num_90,
+                project_num_90 / project_num,
+            )
+        )
+        sys.exit(0)
+
     assert args.in_dir is not None, "User must specify --in_dir "
     coverter = Converter(args.log_dir, args.log_level, args.show_unsupport)
     coverter.run(args.in_dir, args.out_dir, args.exclude_dirs)
+
+    print("****************************************************************")
+    print(r"______                                   _   ")
+    print(r"| ___ \                                 | |  ")
+    print(r"| |_/ /_ _  ___ ___  _ ____   _____ _ __| |_ ")
+    print(r"|  __/ _  |/ __/ _ \\| \_ \ \ / / _ \ \__| __|")
+    print(r"| | | (_| | (_| (_) | | | \\ V /  __/ |  | |_ ")
+    print(r"\\_|  \\__,_|\\___\\___/|_| |_|\\_/ \\___|_|   \\__|")
+    print("\n***************************************************************")
 
 
 if __name__ == "__main__":
