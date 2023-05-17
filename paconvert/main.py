@@ -93,7 +93,6 @@ def main():
         for pytorch_project in os.listdir(in_dir):
             pytorch_project = os.path.join(in_dir, pytorch_project)
             coverter = Converter(args.log_dir, args.log_level, args.show_unsupport)
-            print(pytorch_project)
             coverter.run(pytorch_project, args.out_dir, args.exclude_dirs)
             if coverter.convert_rate == 1.0:
                 project_num_100 += 1
