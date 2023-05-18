@@ -5,6 +5,7 @@ exclude =
     paconvert/legacy.py
     paconvert/__init__.py
     paconvert/transformer/basic_transformer.py
+    tests/code_library/*
 ignore =
     # Whitespace before ‘,’, ‘;’, or ‘:’, it is not compatible with black
     E203,

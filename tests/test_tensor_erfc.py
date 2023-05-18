@@ -11,14 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-import os
-import sys
-
-sys.path.append(os.path.dirname(__file__) + "/../")
 import textwrap
 
-from tests.apibase import APIBase
+from apibase import APIBase
 
 obj = APIBase("torch.Tensor.erfc")
 
@@ -53,6 +48,3 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-test_case_1()
