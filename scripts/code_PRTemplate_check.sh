@@ -15,8 +15,10 @@
 DEVELOP_IF="OFF"
 
 if [[ "$DEVELOP_IF" == "OFF" ]]; then
-    cd /workspace/$2/PaConvert/
+    cd /workspace/$2/PaConvert/ 
     PATH=$1
+    AGILE_PULL_ID=$3
+    GITHUB_API_TOKEN=$4
 fi
 
 echo "start PR template testing..."
