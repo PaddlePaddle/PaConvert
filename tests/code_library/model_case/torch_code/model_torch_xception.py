@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -563,20 +564,22 @@ class XceptionA(nn.Module):
 
 
 # Constructor
-def get_xception(root="~/.torch/models", **kwargs):
+def get_xception(**kwargs):
     model = Xception65(**kwargs)
     return model
 
 
-def get_xception_71(root="~/.torch/models", **kwargs):
+def get_xception_71(**kwargs):
     model = Xception71(**kwargs)
     return model
 
 
-def get_xception_a(root="~/.torch/models", **kwargs):
+def get_xception_a(**kwargs):
     model = XceptionA(**kwargs)
     return model
 
 
 if __name__ == "__main__":
+    img = torch.randn((1, 3, 224, 224))
     model = get_xception_a()
+    out = model(img)

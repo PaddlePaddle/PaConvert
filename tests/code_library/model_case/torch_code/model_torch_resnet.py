@@ -1,3 +1,4 @@
+import torch
 from torch import nn
 
 BN_MOMENTUM = 0.1
@@ -94,11 +95,10 @@ resnet_spec = {
 
 
 class Resnet(nn.Module):
-    def __init__(self, opt):
+    def __init__(self, num_layers):
         super().__init__()
-        assert (not opt.pre_hm) and (not opt.pre_img)
         self.inplanes = 64
-        block, layers = resnet_spec[opt.num_layers]
+        block, layers = resnet_spec[num_layers]
         self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False)
         self.bn1 = nn.BatchNorm2d(64, momentum=BN_MOMENTUM)
         self.relu = nn.ReLU(inplace=True)
@@ -157,3 +157,9 @@ class Resnet(nn.Module):
         y.append(x)
 
         return y
+
+
+if __name__ == "__main__":
+    img = torch.randn((1, 3, 224, 224))
+    model = Resnet(18)
+    out = model(img)

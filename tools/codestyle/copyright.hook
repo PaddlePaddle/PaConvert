@@ -108,7 +108,8 @@ def generate_copyright(path, comment_mark):
 
 def exclude(path):
     exclude_dir = [
-        "tests/code_library/code_case_v1",
+        "tests/code_library/code_case",
+        "tests/code_library/model_case",
         ]
     for dir in exclude_dir:
         if path.startswith(dir):

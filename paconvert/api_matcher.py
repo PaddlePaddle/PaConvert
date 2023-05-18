@@ -661,6 +661,8 @@ class TensorNew_Matcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
         kwargs = self.parse_kwargs(kwargs)
+        if None in kwargs:
+            kwargs.pop(None)
         if "size" in kwargs:
             kwargs = {"shape": kwargs.pop("size"), **kwargs}
         else:
@@ -1946,8 +1948,10 @@ class TorchUtilDataBatchSampler(BaseMatcher):
 
 class SizeMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
-
-        code = "list({})".format(astor.to_source(args[0]).strip("\n"))
+        if len(args) == 0:
+            code = "list([])"
+        else:
+            code = "list({})".format(astor.to_source(args[0]).strip("\n"))
 
         node = ast.parse(code.strip("\n")).body
         return node
@@ -2852,7 +2856,7 @@ class MSortMatcher(BaseMatcher):
 class ExpMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" in kwargs:
-            kwargs["x"] = kwargs.pop("input").strip("\n") + ".astype('float32')"
+            kwargs["x"] = "(" + kwargs.pop("input").strip("\n") + ").astype('float32')"
 
         if "out" in kwargs and kwargs["out"] is not None:
             out_v = kwargs.pop("out").strip("\n")
