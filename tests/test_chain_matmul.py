@@ -40,3 +40,15 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
+        out = torch.ones_like(v)
+        result = torch.chain_matmul(v, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

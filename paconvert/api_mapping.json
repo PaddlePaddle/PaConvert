@@ -121,20 +121,6 @@
       "stable": ""
     }
   },
-  "torch.argsort": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.argsort",
-    "args_list": [
-      "input",
-      "dim",
-      "descending",
-      "stable"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis"
-    }
-  },
   "torch.sgn": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.sgn",
@@ -7148,7 +7134,20 @@
   "torch.Tensor.is_set_to": {},
   "torch.Tensor.is_shared": {},
   "torch.Tensor.is_signed": {},
-  "torch.Tensor.istft": {},
+  "torch.Tensor.istft": {
+    "Matcher": "TensorIstftMatcher",
+    "args_list": [
+      "n_fft",
+      "hop_length",
+      "win_length",
+      "window",
+      "center",
+      "normalized",
+      "onesided",
+      "length",
+      "return_complex"
+    ]
+  },
   "torch.Tensor.isreal": {},
   "torch.Tensor.less_equal_": {},
   "torch.Tensor.scatter_add_": {},

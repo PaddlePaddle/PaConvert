@@ -3334,55 +3334,15 @@ class SubMatcher(BaseMatcher):
 
 class Chain_MatmulMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
-        new_args = self.args_to_str(self.parse_args(args))
+        new_args = self.parse_args(args)
         new_kwargs = self.parse_kwargs(kwargs)
+
+        code = "{}".format(new_args[0])
+        for arg in new_args[1:]:
+            code = code + " @ {}".format(arg)
         if "out" in new_kwargs and new_kwargs["out"] is not None:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {} = [{}]
-                {} = {}[0]
-                for i in range(1, len({})):
-                    {} = {} @ {}[i]
-                paddle.assign({}, output={})
-                """
-            )
-            out = get_unique_name("out")
-            tensor_list = get_unique_name("tensor_list")
-            code = API_TEMPLATE.format(
-                tensor_list,
-                new_args,
-                out,
-                tensor_list,
-                tensor_list,
-                out,
-                out,
-                tensor_list,
-                out,
-                new_kwargs["out"],
-            )
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {} = [{}]
-                {} = {}[0]
-                for i in range(1, len({})):
-                    {} = {} @ {}[i]
-                {}
-                """
-            )
-            out = get_unique_name("out")
-            tensor_list = get_unique_name("tensor_list")
-            code = API_TEMPLATE.format(
-                tensor_list,
-                new_args,
-                out,
-                tensor_list,
-                tensor_list,
-                out,
-                out,
-                tensor_list,
-                out,
-            )
+            code = "paddle.assign({}, output={})".format(code, new_kwargs["out"])
+
         return ast.parse(code).body
 
 
@@ -3390,7 +3350,7 @@ class HypotMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            ({}**2 + {}**2) ** (1/2)
+            paddle.pow({}**2 + {}**2, 1/2)
             """
         )
         code = API_TEMPLATE.format(kwargs["input"], kwargs["other"])
@@ -3408,7 +3368,7 @@ class TensorHypotMatcher(BaseMatcher):
 
         API_TEMPLATE = textwrap.dedent(
             """
-            ({}**2 + {}**2) ** (1/2)
+            paddle.pow({}**2 + {}**2, 1/2)
             """
         )
         code = API_TEMPLATE.format(self.paddleClass, kwargs["other"])
