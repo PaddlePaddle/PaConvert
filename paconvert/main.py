@@ -103,8 +103,8 @@ def main():
 
         project_num = len(os.listdir(in_dir))
         print("\n**************************************************************")
-        print("Model Convert Summary:")
-        print("\n**************************************************************")
+        print("Model Set Convert Summary:")
+        print("**************************************************************")
         print(
             "There are {} Pytorch Projects:\n : {}({:.2%}) Project's Convert-Rate is 100%\n "
             ": {}({:.2%}) Project's Convert-Rate >=95%\n : {}({:.2%}) Project's Convert-Rate >=90%".format(

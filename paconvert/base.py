@@ -208,9 +208,8 @@ class BaseMatcher(object):
             # not support 'torch.rot90(tensor, **config)'
             if k is None:
                 return None
-            # TODO: will open after all args have been add in args_list
-            # if k not in args_list:
-            #    return 'NonTorchClass'
+            if k not in args_list:
+                return "NonTorchClass"
             v = astor.to_source(node.value).strip("\n")
             new_kwargs[k] = v
 
@@ -297,6 +296,8 @@ class BaseMatcher(object):
 
     def get_paddle_nodes(self, args, kwargs):
         new_kwargs = self.parse_args_and_kwargs(args, kwargs)
+        if new_kwargs == "NonTorchClass":
+            return None
         if new_kwargs is not None:
             new_code = self.generate_code(new_kwargs)
             if new_code:
