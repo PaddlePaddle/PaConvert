@@ -182,7 +182,7 @@ pip install -r requirements-dev.txt
 ```
 
 ### 代码审查
-代码审查包括两部分，一个是基于现有开源代码格式规范的审查，通过pre-commit来审查，另一个是基于自定义要求的审查，在tools/codestyle下。
+代码审查包括两部分，一个是基于现有开源代码格式规范的审查，通过pre-commit来审查，另一个是基于自定义要求的审查，在tools下。
 
 #### Pre-commit审查
 
@@ -219,10 +219,8 @@ bash scripts/code_consistency_check.sh
 bash scripts/code_style_check.sh
 bash scripts/code_unittest_check.sh
 bash scripts/code_modeltest_check.sh
-```
 
 本地全部CI测试方法
-```bash
 bash scripts/run_ci.sh
 ```
 
