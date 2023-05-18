@@ -207,10 +207,11 @@ pre-commit run --file [file_name]
 | PR-CI-CodeStyle   | scripts/code_style_check.sh |
 | PR-CI-UnitTest   | scripts/code_unittest_check.sh |
 | PR-CI-Coverage   | scripts/code_modeltest_check.sh |
+| PR-CI-Pipeline   | scripts/code_pipeline_check.sh |
+| PR-CI-PRTemplate   | scripts/code_PRtemplate_check.sh |
 ```
 
 运行对应CI文件需修改scriptes中*.sh的环境变量DEVELOP_IF="ON".
-
 
 本地单个CI测试方法
 ```bash
@@ -219,6 +220,8 @@ bash scripts/code_consistency_check.sh
 bash scripts/code_style_check.sh
 bash scripts/code_unittest_check.sh
 bash scripts/code_modeltest_check.sh
+bash scripts/code_pipeline_check.sh
+bash scripts/code_PRtemplate_check.sh
 ```
 
 本地CI测试方法
