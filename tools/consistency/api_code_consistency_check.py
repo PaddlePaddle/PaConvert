@@ -20,7 +20,6 @@ import sys
 from typing import Tuple
 
 sys.path.append(os.path.dirname(__file__) + "/../..")
-print(os.path.dirname(__file__) + "/../..")
 from tests.code_library.code_case_v1.file_mapping_dict import (
     global_file_mapping_dict,
 )

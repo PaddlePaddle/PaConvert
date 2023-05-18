@@ -13,10 +13,6 @@
 # limitations under the License.
 
 import ast
-import os
-import sys
-
-sys.path.append(os.path.dirname(__file__) + "../")
 
 from paconvert.base import BaseTransformer
 

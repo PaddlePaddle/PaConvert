@@ -16,11 +16,8 @@
 """
 
 import ast
-from os import path
-
+import os
 import sys
-
-sys.path.append(path.dirname(__file__) + "../")
 
 from paconvert.api_matcher import *
 from paconvert.base import (
@@ -41,6 +38,11 @@ def iter_fields(node):
             yield field, getattr(node, field)
         except AttributeError:
             pass
+
+
+def change_torch_package_list():
+    global TORCH_PACKAGE_LIST
+    TORCH_PACKAGE_LIST = ["torch"]
 
 
 class BasicTransformer(BaseTransformer):
