@@ -19,8 +19,6 @@ from apibase import APIBase
 
 obj = APIBase("torch.addbmm")
 
-obj = APIBase("torch.addbmm")
-
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
