@@ -25,8 +25,6 @@ if [[ "$DEVELOP_IF" == "OFF" ]]; then
     GITHUB_API_TOKEN=$4
 fi
 
-set -x
-
 echo "start PR template testing..."
 
 python tools/prTemplate.py/prTemplate_check.py $AGILE_PULL_ID $GITHUB_API_TOKEN;check_error=$?

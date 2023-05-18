@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+set +x
+
 DEVELOP_IF="OFF"
 
 if [[ "$DEVELOP_IF" == "OFF" ]]; then
