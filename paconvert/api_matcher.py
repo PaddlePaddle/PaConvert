@@ -75,7 +75,7 @@ class GenericMatcher(BaseMatcher):
         res = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
 
         if dtype_v:
-            res = "(" + res + ").astype({})".format(dtype_v)
+            res += ".astype({})".format(dtype_v)
 
         if pin_memory_v:
             res += ".pin_memory()"
@@ -581,79 +581,79 @@ class TensorRepeatMatcher(BaseMatcher):
 
 class TensorBF16Matcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "({}).astype(dtype='bfloat16')".format(self.paddleClass)
+        code = "{}.astype(dtype='bfloat16')".format(self.paddleClass)
         return code
 
 
 class TensorBoolMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "({}).astype(dtype='bool')".format(self.paddleClass)
+        code = "{}.astype(dtype='bool')".format(self.paddleClass)
         return code
 
 
 class TensorByteMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "({}).astype(dtype='uint8')".format(self.paddleClass)
+        code = "{}.astype(dtype='uint8')".format(self.paddleClass)
         return code
 
 
 class TensorCharMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "({}).astype(dtype='int8')".format(self.paddleClass)
+        code = "{}.astype(dtype='int8')".format(self.paddleClass)
         return code
 
 
 class TensorDoubleMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "({}).astype(dtype='float64')".format(self.paddleClass)
+        code = "{}.astype(dtype='float64')".format(self.paddleClass)
         return code
 
 
 class TensorFloatMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "({}).astype(dtype='float32')".format(self.paddleClass)
+        code = "{}.astype(dtype='float32')".format(self.paddleClass)
         return code
 
 
 class TensorFP16Matcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "({}).astype(dtype='float16')".format(self.paddleClass)
+        code = "{}.astype(dtype='float16')".format(self.paddleClass)
         return code
 
 
 class TensorIntMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "({}).astype(dtype='int32')".format(self.paddleClass)
+        code = "{}.astype(dtype='int32')".format(self.paddleClass)
         return code
 
 
 class TensorLongMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "({}).astype(dtype='int64')".format(self.paddleClass)
+        code = "{}.astype(dtype='int64')".format(self.paddleClass)
         return code
 
 
 class TensorShortMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "({}).astype(dtype='int16')".format(self.paddleClass)
+        code = "{}.astype(dtype='int16')".format(self.paddleClass)
         return code
 
 
 class TensorCfloatMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "({}).astype(dtype='complex64')".format(self.paddleClass)
+        code = "{}.astype(dtype='complex64')".format(self.paddleClass)
         return code
 
 
 class TensorCdoubleMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "({}).astype(dtype='complex128')".format(self.paddleClass)
+        code = "{}.astype(dtype='complex128')".format(self.paddleClass)
         return code
 
 
 class TensorTypeAsMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "({}).astype(dtype={}.dtype)".format(self.paddleClass, kwargs["tensor"])
+        code = "{}.astype(dtype={}.dtype)".format(self.paddleClass, kwargs["tensor"])
         return code
 
 
@@ -1718,7 +1718,7 @@ class IsNonzeroMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            ({}).astype('bool').item()
+            {}.astype('bool').item()
             """
         )
         code = API_TEMPLATE.format(kwargs["input"])
@@ -2090,7 +2090,7 @@ class TensorRequires_GradMatcher(BaseMatcher):
 
 class AllMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs["input"] = "(" + kwargs["input"] + ").astype(dtype='bool')"
+        kwargs["input"] = kwargs["input"] + ".astype(dtype='bool')"
         code = GenericMatcher.generate_code(self, kwargs)
         return code
 
@@ -2192,14 +2192,10 @@ class LdExpMatcher(BaseMatcher):
 class LogAddExpMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" in kwargs:
-            kwargs["input"] = (
-                "(" + kwargs.pop("input").strip("\n") + ").astype('float32')"
-            )
+            kwargs["input"] = kwargs.pop("input").strip("\n") + ".astype('float32')"
 
         if "other" in kwargs:
-            kwargs["other"] = (
-                "(" + kwargs.pop("other").strip("\n") + ").astype('float32')"
-            )
+            kwargs["other"] = kwargs.pop("other").strip("\n") + ".astype('float32')"
 
         if "out" in kwargs and kwargs["out"] is not None:
             API_TEMPLATE = textwrap.dedent(

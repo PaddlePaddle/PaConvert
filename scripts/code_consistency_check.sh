@@ -103,4 +103,5 @@ else
 fi
 echo -e '************************************************************************************'
 
-exit ${check_error1}&&${check_error2}
+check_error=$((check_error1||check_error2))
+exit ${check_error}
