@@ -11,19 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.erfc")
+obj = APIBase("torch.subtract")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        result = a.erfc()
+        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
+        b = torch.tensor([1, 1, 1, 0])
+        result = torch.subtract(a, b)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,8 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1., 2., -3., -4., 5.], [1., 2., -3., -4., 5.]])
-        result = 2 * a.erfc()
+        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
+        b = torch.tensor([1, 1, 1, 0])
+        result = torch.subtract(input=a, other=b)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,7 +47,32 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1., 2., -3., -4., 5.]).erfc()
+        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
+        b = torch.tensor([1, 1, 1, 0])
+        result = torch.subtract(a, b, alpha=3)
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
+        result = torch.subtract(a, 0.5, alpha=3)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
+        out = torch.tensor([1., 1, 1, 0])
+        result = torch.subtract(a, 0.5, alpha=3, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["out"])

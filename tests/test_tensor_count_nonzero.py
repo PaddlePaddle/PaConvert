@@ -11,19 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.erfc")
+obj = APIBase("torch.Tensor.count_nonzero")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        result = a.erfc()
+        a = torch.tensor([[0., 1.1, 1.2], [0., 0., 1.3], [0., 0., 0.]])
+        result = a.count_nonzero()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,18 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1., 2., -3., -4., 5.], [1., 2., -3., -4., 5.]])
-        result = 2 * a.erfc()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.tensor([1., 2., -3., -4., 5.]).erfc()
+        a = torch.tensor([[0., 1.1, 1.2], [0., 0., 1.3], [0., 0., 0.]])
+        result = a.count_nonzero(dim=1)
         """
     )
     obj.run(pytorch_code, ["result"])
