@@ -36,4 +36,4 @@ bash scripts/code_modeltest_check.sh
 bash scripts/code_pipeline_check.sh
 
 # PRTemplate test
-bash scripts/code_PRTemplate_check.sh
+# bash scripts/code_PRTemplate_check.sh

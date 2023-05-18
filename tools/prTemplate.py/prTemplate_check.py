@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
 import re
 import sys
 
@@ -129,8 +128,7 @@ def pull_request_event_template(event, repo, *args, **kwargs):
 
 
 def get_a_pull(pull_id):
-    url = "https://api.github.com/repos/PaddlePaddle/Paddle/pulls/ " + str(pull_id)
-
+    url = "https://api.github.com/repos/PaddlePaddle/PaConvert/pulls/" + str(pull_id)
     payload = {}
     headers = {
         "Authorization": "token " + GITHUB_API_TOKEN,
@@ -146,6 +144,6 @@ def main(org, repo, pull_id):
 
 
 if __name__ == "__main__":
-    AGILE_PULL_ID = os.getenv("AGILE_PULL_ID")
-    GITHUB_API_TOKEN = os.getenv("GITHUB_API_TOKEN")
+    AGILE_PULL_ID = sys.argv[1]
+    GITHUB_API_TOKEN = sys.argv[2]
     main("PaddlePaddle", "Paddle", AGILE_PULL_ID)

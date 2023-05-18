@@ -12,7 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+set +x
+
 DEVELOP_IF="OFF"
+AGILE_PULL_ID="AGILE_PULL_ID"
+GITHUB_API_TOKEN="GITHUB_API_TOKEN"
 
 if [[ "$DEVELOP_IF" == "OFF" ]]; then
     cd /workspace/$2/PaConvert/ 
@@ -21,9 +25,11 @@ if [[ "$DEVELOP_IF" == "OFF" ]]; then
     GITHUB_API_TOKEN=$4
 fi
 
+set -x
+
 echo "start PR template testing..."
 
-python tools/prTemplate.py/prTemplate_check.py;check_error=$?
+python tools/prTemplate.py/prTemplate_check.py $AGILE_PULL_ID $GITHUB_API_TOKEN;check_error=$?
 
 echo '************************************************************************************'
 echo "______                                   _   "

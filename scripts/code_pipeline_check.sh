@@ -13,7 +13,7 @@
 # limitations under the License.
 
 DEVELOP_IF="OFF"
-DEVELOP_IF="ON"
+
 if [[ "$DEVELOP_IF" == "OFF" ]]; then
     cd /workspace/$2/PaConvert/
     PATH=$1
