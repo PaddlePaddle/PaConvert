@@ -3234,6 +3234,7 @@ class MulMatcher(BaseMatcher):
 
         return code
 
+
 class TrueDivideMatcher(BaseMatcher):
     def generate_code(self, kwargs):
 
@@ -3246,7 +3247,7 @@ class TrueDivideMatcher(BaseMatcher):
             code = "{} / {}".format(kwargs["input"], kwargs["other"])
         return code
 
-      
+
 class TensorDiagMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
@@ -3285,6 +3286,7 @@ class DivMatcher(BaseMatcher):
 
         return code
 
+
 class LogsumexpMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs["input"] = kwargs["input"] + ".astype(dtype='float32')"
@@ -3312,6 +3314,7 @@ class Num2TensorBinaryMatcher(BaseMatcher):
             code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
         return code
+
 
 class TensorDivMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
