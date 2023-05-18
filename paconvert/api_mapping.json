@@ -628,6 +628,14 @@
       "input": "x"
     }
   },
+  "torch.hypot": {
+    "Matcher": "HypotMatcher",
+    "args_list": [
+      "input",
+      "other",
+      "out"
+    ]
+  },
   "torch.angle": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.angle",
@@ -7076,7 +7084,12 @@
   "torch.Tensor.gt_": {},
   "torch.Tensor.greater_": {},
   "torch.Tensor.hardshrink": {},
-  "torch.Tensor.hypot": {},
+  "torch.Tensor.hypot": {
+    "Matcher": "TensorHypotMatcher",
+    "args_list": [
+      "other"
+    ]
+  },
   "torch.Tensor.hypot_": {},
   "torch.Tensor.i0": {},
   "torch.Tensor.i0_": {},
@@ -7168,6 +7181,14 @@
   "torch.Tensor.conj_physical": {},
   "torch.Tensor.bitwise_right_shift_": {},
   "torch.Tensor.is_conj": {},
+  "torch.Tensor.histc": {
+    "Matcher": "TensorHistcMatcher",
+    "args_list": [
+      "bins",
+      "min",
+      "max"
+    ]
+  },
   "torch.Tensor.histogram": {},
   "torch.Tensor.retains_grad": {},
   "torch.Tensor.is_inference": {},

@@ -3380,3 +3380,75 @@ class Chain_MatmulMatcher(BaseMatcher):
                 out,
             )
         return ast.parse(code).body
+
+
+class HypotMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            ({}**2 + {}**2) ** (1/2)
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["input"], kwargs["other"])
+
+        if "out" in kwargs and kwargs["out"] is not None:
+            code = "paddle.assign({}, output={})".format(code, kwargs["out"])
+
+        return code
+
+
+class TensorHypotMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            ({}**2 + {}**2) ** (1/2)
+            """
+        )
+        code = API_TEMPLATE.format(self.paddleClass, kwargs["other"])
+
+        return ast.parse(code).body
+
+
+class TensorHistcMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+        if "bins" not in kwargs:
+            kwargs["bins"] = 100
+        if "min" not in kwargs:
+            kwargs["min"] = 0
+        if "max" not in kwargs:
+            kwargs["max"] = 0
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}.histogram(bins={}, min={}, max={}).astype({}.dtype)
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.paddleClass,
+            kwargs["bins"],
+            kwargs["min"],
+            kwargs["max"],
+            self.paddleClass,
+        )
+
+        return ast.parse(code).body
+
+
+class TensorIstftMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.signal.istft({}, {})
+            """
+        )
+        code = API_TEMPLATE.format(self.paddleClass, self.kwargs_to_str(kwargs))
+
+        return ast.parse(code).body
