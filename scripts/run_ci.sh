@@ -28,3 +28,6 @@ bash scripts/code_coverage_check.sh
 
 # code consistency 
 bash scripts/code_consistency_check.sh
+
+# modeltest consistency 
+bash scripts/code_modeltest_check.sh

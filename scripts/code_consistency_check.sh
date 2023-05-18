@@ -24,6 +24,7 @@ fi
 
 # obtain the test case
 if [[ "$DOWNLOAD_DATASET_IF" == "ON" ]]; then
+    echo '**************************start downloading datasets.....*********************************'
     mkdir -p torch_project
     git clone https://github.com/open-mmlab/mmcv.git torch_project/mmcv
     git clone https://github.com/open-mmlab/mmdetection3d.git torch_project/mmdetection3d
@@ -71,12 +72,15 @@ if [[ "$DOWNLOAD_DATASET_IF" == "ON" ]]; then
 fi
 
 # Check the grammar mechanism of the test set and other issues
+echo '**************************start converting test case********************************'
 python paconvert/main.py --in_dir $TORCH_PROJECT_PATH;check_error1=$?
 echo '************************************************************************************'
 #check whether common API transfer is successful
-mkdir tests/code_library/code_case_v1/temp_paddle_code
+
+echo '**************************start converting common API case********************************'
+mkdir tests/code_library/code_case/temp_paddle_code
 python tools/consistency/api_code_consistency_check.py;check_error2=$?
-rm -rf tests/code_library/code_case_v1/temp_paddle_code
+rm -rf tests/code_library/code_case/temp_paddle_code
 
 echo '************************************************************************************'
 echo "______                                   _   "
@@ -99,4 +103,5 @@ else
 fi
 echo -e '************************************************************************************'
 
-exit ${check_error1}&&${check_error2}
+check_error=$((check_error1||check_error2))
+exit ${check_error}

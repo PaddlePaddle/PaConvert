@@ -34,14 +34,19 @@ if [[ "$DEVELOP_IF" == "ON" ]]; then
 fi
 
 # coverage code check
+echo '****************************start detecting coverate rate*********************************'
 coverage run -m pytest
+
+echo '**************************start generating coverage.xml file******************************'
 coverage xml -o coverage.xml
 
+echo '************************start generating coverage rate report*****************************'
 diff-cover coverage.xml --compare-branch origin/master > temp.txt;check_error1=$?
 
 # Check the coverage results
 cat temp.txt
 
+echo '***********************start generating coverage rate detect******************************'
 python  tools/coverage/coverage_diff.py;check_error2=$?
 
 echo '************************************************************************************'
@@ -51,7 +56,7 @@ echo "| |_/ /_ _  ___ ___  _ ____   _____ _ __| |_ "
 echo "|  __/ _  |/ __/ _ \\| \_ \ \ / / _ \ \__| __|"
 echo "| | | (_| | (_| (_) | | | \\ V /  __/ |  | |_ "
 echo "\\_|  \\__,_|\\___\\___/|_| |_|\\_/ \\___|_|   \\__|"
-echo '************************************************************************************'
+echo -e '\n************************************************************************************'
 if [ ${check_error1} != 0 ] || [ ${check_error2} != 0 ];then
     echo "Your PR code coverage rate check failed."
 else
@@ -59,5 +64,5 @@ else
 fi
 echo -e '************************************************************************************\n'
 
-check_error=$((check_error1&&check_error2))
+check_error=$((check_error1||check_error2))
 exit ${check_error}

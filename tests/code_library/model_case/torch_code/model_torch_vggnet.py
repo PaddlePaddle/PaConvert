@@ -165,6 +165,6 @@ def vgg19_bn(**kwargs):
 
 
 if __name__ == "__main__":
-    img = torch.randn((4, 3, 480, 480))
+    img = torch.randn((1, 3, 224, 224))
     model = vgg16()
     out = model(img)

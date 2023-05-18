@@ -1,3 +1,4 @@
+import torch
 from torch import nn
 
 BN_MOMENTUM = 0.1
@@ -190,3 +191,9 @@ class MobileNetV2(nn.Module):
             if self.key_block[i]:
                 y.append(x)
         return y
+
+
+if __name__ == "__main__":
+    img = torch.randn((1, 3, 224, 224))
+    model = MobileNetV2()
+    out = model(img)
