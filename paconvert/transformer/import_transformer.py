@@ -14,9 +14,6 @@
 
 import ast
 import os
-import sys
-
-sys.path.append(os.path.dirname(__file__) + "../")
 
 from paconvert.base import TORCH_PACKAGE_LIST, BaseTransformer
 
