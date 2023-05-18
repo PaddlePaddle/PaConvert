@@ -219,6 +219,15 @@ bash scripts/code_consistency_check.sh
 bash scripts/code_style_check.sh
 bash scripts/code_unittest_check.sh
 bash scripts/code_modeltest_check.sh
+```
+
+本地CI测试方法
+```bash
+bash scripts/code_modeltest_check.sh
+bash scripts/code_consistency_check.sh
+bash scripts/code_style_check.sh
+bash scripts/code_unittest_check.sh
+bash scripts/code_modeltest_check.sh
 
 本地全部CI测试方法
 bash scripts/run_ci.sh
