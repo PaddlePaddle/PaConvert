@@ -71,12 +71,3 @@ add_to_dict(
     "attribute_torch_Tensor_requires_grad.py",
     "attribute_paddle_Tensor_stop_gradient.py",
 )
-
-
-# this part is about model mapping file
-
-# add_to_dict("torch_mobilenet.py", "paddle_resnet.py")
-# add_to_dict("torch_resnet.py", "paddle_resnet.py")
-# add_to_dict("torch_vggnet.py", "paddle_vggnet.py")
-# add_to_dict("torch_xception.py", "paddle_xception.py")
-add_to_dict("model_torch_lenet.py", "model_paddle_lenet.py")
