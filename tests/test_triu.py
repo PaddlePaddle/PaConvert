@@ -16,17 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.cholesky_inverse")
+obj = APIBase("torch.triu")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(a)
+        x = torch.tensor([[-1.0813, -0.8619,  0.7105],
+                        [ 0.0935,  0.1380,  2.2112],
+                        [-0.3409, -0.9828,  0.0289]])
+        result = torch.triu(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -36,10 +36,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967, -0.6374,  1.5858],
-            [ 0.0000,  0.6860, -1.0314],
-            [ 0.0000,  0.0000,  2.6615]])
-        result = torch.cholesky_inverse(a, upper=True)
+        x = torch.tensor([[-1.0813, -0.8619,  0.7105],
+                        [ 0.0935,  0.1380,  2.2112],
+                        [-0.3409, -0.9828,  0.0289]])
+        result = torch.triu(x, 1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -49,26 +49,24 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        out = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(a, out=out)
+        x = torch.tensor([[-1.0813, -0.8619,  0.7105],
+                        [ 0.0935,  0.1380,  2.2112],
+                        [-0.3409, -0.9828,  0.0289]])
+        result = torch.triu(x, diagonal=-1)
         """
     )
-    obj.run(pytorch_code, ["out"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(input=a, upper=False)
+        x = torch.tensor([[-1.0813, -0.8619,  0.7105],
+                        [ 0.0935,  0.1380,  2.2112],
+                        [-0.3409, -0.9828,  0.0289]])
+        out = torch.tensor([2.])
+        result = torch.triu(x, 1, out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])

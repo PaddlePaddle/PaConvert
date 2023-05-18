@@ -16,17 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.addr")
+obj = APIBase("torch.rot90")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([4., 5., 6.])
-        b = torch.tensor([1., 2., 3.])
-        input = torch.tensor([1., 2., 3.])
-        result = torch.addr(input, a, b)
+        x = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        result = torch.rot90(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -36,10 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([4., 5., 6.])
-        b = torch.tensor([1., 2., 3.])
-        input = torch.tensor([1., 2., 3.])
-        result = torch.addr(input, a, b, beta=3)
+        x = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        result = torch.rot90(x, 2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -49,10 +45,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([4., 5., 6.])
-        b = torch.tensor([1., 2., 3.])
-        input = torch.tensor([1., 2., 3.])
-        result = torch.addr(input=input, vec1=a, vec2=b, beta=3, alpha=3)
+        x = torch.tensor([[[1, 2, 3], [4, 5, 6], [7, 8, 9]]])
+        result = torch.rot90(x, dims=[1, 2])
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -62,35 +56,18 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([4., 5., 6.])
-        b = torch.tensor([1., 2., 3.])
-        input = torch.tensor([1., 2., 3.])
-        out = torch.tensor([[1., 2., 3.] * 3])
-        result = torch.addr(input=input, vec1=a, vec2=b, beta=3, alpha=3, out=out)
+        x = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        result = torch.rot90(input=x, k=2)
         """
     )
-    obj.run(pytorch_code, ["out"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([1., 2., 3.])
-        result = torch.addr(input=input, vec1=torch.tensor([4., 5., 6.]), vec2=torch.tensor([1., 2., 3.]), beta=3, alpha=3)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def _test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([4, 5, 6])
-        b = torch.tensor([1, 2, 3])
-        input = torch.tensor([1, 2, 3])
-        result = torch.addr(input, a, b)
+        result = torch.rot90(torch.tensor([[[1, 2, 3], [4, 5, 6], [7, 8, 9]]]), dims=[1, 2])
         """
     )
     obj.run(pytorch_code, ["result"])

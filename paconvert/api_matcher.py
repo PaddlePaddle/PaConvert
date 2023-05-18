@@ -3278,3 +3278,45 @@ class MulMatcher(BaseMatcher):
             code = "{} * {}".format(kwargs["input"], kwargs["other"])
 
         return code
+
+
+class CumprodMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        kwargs["x"] = kwargs.pop("input").strip("\n")
+
+        if "out" in kwargs and kwargs["out"] is not None:
+            out_v = kwargs.pop("out").strip("\n")
+            code = "paddle.assign({}({}), output={})".format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v
+            )
+        else:
+            code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+        return code
+
+
+class CumsumMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        kwargs["x"] = kwargs.pop("input").strip("\n")
+
+        if "dim" in kwargs:
+            kwargs["axis"] = kwargs.pop("dim").strip("\n")
+
+        if "out" in kwargs and kwargs["out"] is not None:
+            out_v = kwargs.pop("out").strip("\n")
+            code = "paddle.assign({}({}), output={})".format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v
+            )
+        else:
+            code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+        return code
+
+
+class FliplrMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        code = "paddle.flip(x={}, axis=-1)".format(kwargs.pop("input").strip("\n"))
+        return code
