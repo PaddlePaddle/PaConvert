@@ -106,7 +106,6 @@ class GenericMatcher(BaseMatcher):
                 """
             )
             code = API_TEMPLATE.format(res, out_v)
-            code = API_TEMPLATE.format(res, out_v)
         else:
             code = "{}".format(res)
 
@@ -3236,6 +3235,19 @@ class MulMatcher(BaseMatcher):
         return code
 
 
+class TrueDivideMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if "out" in kwargs and kwargs["out"] is not None:
+            out_v = kwargs.pop("out").strip("\n")
+            code = "paddle.assign({} / {}, output={})".format(
+                kwargs["input"], kwargs["other"], out_v
+            )
+        else:
+            code = "{} / {}".format(kwargs["input"], kwargs["other"])
+        return code
+
+
 class TensorDiagMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
@@ -3271,6 +3283,35 @@ class DivMatcher(BaseMatcher):
 
         if "out" in kwargs and kwargs["out"] is not None:
             code = "paddle.assign({}, output={})".format(code, kwargs["out"])
+
+        return code
+
+
+class LogsumexpMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["input"] = kwargs["input"] + ".astype(dtype='float32')"
+        code = GenericMatcher.generate_code(self, kwargs)
+        return code
+
+
+class AllcloseMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = GenericMatcher.generate_code(self, kwargs)
+        code = code.strip("\n") + ".item()"
+        return code
+
+
+class Num2TensorBinaryMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["x"] = kwargs.pop("input").strip("\n")
+        kwargs["y"] = "paddle.to_tensor({})".format(kwargs.pop("other").strip("\n"))
+        if "out" in kwargs and kwargs["out"] is not None:
+            out_v = kwargs.pop("out").strip("\n")
+            code = "paddle.assign({}({}), output={})".format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v
+            )
+        else:
+            code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
         return code
 
