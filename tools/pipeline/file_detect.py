@@ -47,5 +47,5 @@ def check_build_output():
     return True
 
 
-if not check_build_output:
+if not check_build_output():
     sys.exit(1)

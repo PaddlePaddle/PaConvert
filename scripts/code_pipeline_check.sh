@@ -13,7 +13,7 @@
 # limitations under the License.
 
 DEVELOP_IF="OFF"
-
+DEVELOP_IF="ON"
 if [[ "$DEVELOP_IF" == "OFF" ]]; then
     cd /workspace/$2/PaConvert/
     PATH=$1
@@ -28,7 +28,7 @@ echo '*******************start detecting source and wheel distribution**********
 
 python tools/pipeline/file_detect.py;check_error=$?
 
-rm -rf dist paconvert.egg-info
+rm -rf dist paconvert.egg-info build
 echo '************************************************************************************'
 echo "______                                   _   "
 echo "| ___ \                                 | |  "
