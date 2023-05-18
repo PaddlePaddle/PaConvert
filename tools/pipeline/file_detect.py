@@ -43,7 +43,7 @@ def check_build_output():
         if not os.path.exists(item):
             print(f"Missing file or directory: {item}")
             return False
-
+        print(f"Got file or directory : {item}")
     return True
 
 
