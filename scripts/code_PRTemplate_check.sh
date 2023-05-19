@@ -27,7 +27,7 @@ fi
 
 echo "start PR template testing..."
 
-python tools/prTemplate.py/prTemplate_check.py $AGILE_PULL_ID $GITHUB_API_TOKEN;check_error=$?
+python tools/prTemplate/prTemplate_check.py $AGILE_PULL_ID $GITHUB_API_TOKEN;check_error=$?
 
 echo '************************************************************************************'
 echo "______      _____                          _   "

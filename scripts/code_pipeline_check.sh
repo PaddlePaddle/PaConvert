@@ -24,7 +24,7 @@ fi
 echo "start pipline testing..."
 echo '*******************start generating source and wheel distribution*******************'
 
-python tools/pipeline/build_and_deploy.py sdist bdist_wheel;check_error=$?
+python setup.py sdist bdist_wheel;check_error=$?
 
 echo '************************************************************************************'
 echo "______      _____                          _   "
