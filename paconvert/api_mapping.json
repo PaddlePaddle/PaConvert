@@ -505,6 +505,7 @@
       "start",
       "end",
       "steps",
+      "out",
       "dtype",
       "layout",
       "device",
@@ -523,6 +524,7 @@
       "end",
       "steps",
       "base",
+      "out",
       "dtype",
       "layout",
       "device",
@@ -889,7 +891,8 @@
     "paddle_api": "paddle.bernoulli",
     "args_list": [
       "input",
-      "generator"
+      "generator",
+      "out"
     ],
     "kwargs_change": {
       "input": "x"
@@ -916,7 +919,8 @@
       "input",
       "num_samples",
       "replacement",
-      "generator"
+      "generator",
+      "out"
     ],
     "kwargs_change": {
       "input": "x"
@@ -951,11 +955,12 @@
     "paddle_api": "paddle.randperm",
     "args_list": [
       "n",
+      "generator",
+      "out",
       "dtype",
       "layout",
       "device",
       "requires_grad",
-      "generator",
       "pin_memory"
     ]
   },
@@ -1855,7 +1860,8 @@
     "args_list": [
       "input",
       "dim",
-      "keepdim"
+      "keepdim",
+      "out"
     ],
     "kwargs_change": {
       "input": "x",
@@ -1910,7 +1916,8 @@
       "input",
       "dim",
       "keepdim",
-      "dtype"
+      "dtype",
+      "out"
     ],
     "kwargs_change": {
       "input": "x",
