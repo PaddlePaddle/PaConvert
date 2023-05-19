@@ -903,8 +903,8 @@ class LayerNormMatcher(BaseMatcher):
                 """
                 paddle.nn.LayerNorm(normalized_shape={},
                                     epsilon={},
-                                    weight_attr=paddle.ParamAttr(learning_rate=0.0),
-                                    bias_attr=paddle.ParamAttr(learning_rate=0.0))
+                                    weight_attr=False,
+                                    bias_attr=False)
                 """
             )
         else:
@@ -933,8 +933,8 @@ class GroupNormMatcher(BaseMatcher):
                 paddle.nn.GroupNorm(num_groups={},
                                     num_channels={},
                                     epsilon={},
-                                    weight_attr=paddle.ParamAttr(learning_rate=0.0),
-                                    bias_attr=paddle.ParamAttr(learning_rate=0.0))
+                                    weight_attr=False,
+                                    bias_attr=False)
                 """
             )
         else:
@@ -976,8 +976,8 @@ class BatchNormMatcher(BaseMatcher):
                 {}(num_features={},
                     momentum=1-{},
                     epsilon={},
-                    weight_attr=paddle.ParamAttr(learning_rate=0.0),
-                    bias_attr=paddle.ParamAttr(learning_rate=0.0),
+                    weight_attr=False,
+                    bias_attr=False,
                     use_global_stats={})
                 """
             )
