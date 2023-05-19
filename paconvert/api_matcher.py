@@ -902,8 +902,8 @@ class LayerNormMatcher(BaseMatcher):
                 """
                 paddle.nn.LayerNorm(normalized_shape={},
                                     epsilon={},
-                                    weight_attr=paddle.ParamAttr(learning_rate=0.0),
-                                    bias_attr=paddle.ParamAttr(learning_rate=0.0))
+                                    weight_attr=False,
+                                    bias_attr=False)
                 """
             )
         else:
@@ -932,8 +932,8 @@ class GroupNormMatcher(BaseMatcher):
                 paddle.nn.GroupNorm(num_groups={},
                                     num_channels={},
                                     epsilon={},
-                                    weight_attr=paddle.ParamAttr(learning_rate=0.0),
-                                    bias_attr=paddle.ParamAttr(learning_rate=0.0))
+                                    weight_attr=False,
+                                    bias_attr=False)
                 """
             )
         else:
@@ -975,8 +975,60 @@ class BatchNormMatcher(BaseMatcher):
                 {}(num_features={},
                     momentum=1-{},
                     epsilon={},
-                    weight_attr=paddle.ParamAttr(learning_rate=0.0),
-                    bias_attr=paddle.ParamAttr(learning_rate=0.0),
+                    weight_attr=False,
+                    bias_attr=False,
+                    use_global_stats={})
+                """
+            )
+        else:
+            API_TEMPLACE = textwrap.dedent(
+                """
+                {}(num_features={},
+                    momentum=1-{},
+                    epsilon={},
+                    weight_attr=None,
+                    bias_attr=None,
+                    use_global_stats={})
+                """
+            )
+        code = API_TEMPLACE.format(
+            self.get_paddle_api(),
+            kwargs["num_features"],
+            momentum,
+            epsilon,
+            track_running_stats,
+        )
+        return code
+
+
+class SyncBatchNormMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "process_group" in kwargs and "None" not in kwargs["process_group"]:
+            return None
+
+        if "eps" not in kwargs:
+            epsilon = 1e-5
+        else:
+            epsilon = kwargs["eps"]
+
+        if "track_running_stats" in kwargs:
+            track_running_stats = kwargs["track_running_stats"]
+        else:
+            track_running_stats = True
+
+        if "momentum" in kwargs:
+            momentum = kwargs["momentum"]
+        else:
+            momentum = 0.1
+
+        if "affine" in kwargs and "False" in kwargs["affine"]:
+            API_TEMPLACE = textwrap.dedent(
+                """
+                {}(num_features={},
+                    momentum=1-{},
+                    epsilon={},
+                    weight_attr=False,
+                    bias_attr=False,
                     use_global_stats={})
                 """
             )
@@ -2478,6 +2530,21 @@ class LogDetMatcher(BaseMatcher):
         return code
 
 
+class TensorLogDetMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.log(paddle.linalg.det({}))
+            """
+        )
+        code = API_TEMPLATE.format(self.paddleClass)
+
+        return ast.parse(code).body
+
+
 class AvgPoolMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" in kwargs:
@@ -3457,3 +3524,118 @@ class TensorIstftMatcher(BaseMatcher):
         code = API_TEMPLATE.format(self.paddleClass, self.kwargs_to_str(kwargs))
 
         return ast.parse(code).body
+
+
+class TensorPinverseMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.linalg.pinv({})
+            """
+        )
+        code = API_TEMPLATE.format(self.paddleClass)
+
+        return ast.parse(code).body
+
+
+class TensorReshape_asMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.reshape({}, {}.shape)
+            """
+        )
+        code = API_TEMPLATE.format(self.paddleClass, kwargs["other"])
+
+        return ast.parse(code).body
+
+
+class SelectMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.index_select({}, index=paddle.to_tensor([{}]), axis={}).squeeze({})
+            """
+        )
+        code = API_TEMPLATE.format(
+            kwargs["input"], kwargs["index"], kwargs["dim"], kwargs["dim"]
+        )
+
+        return code
+
+
+class TensorSelectMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.index_select({}, index=paddle.to_tensor([{}]), axis={}).squeeze({})
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.paddleClass, kwargs["index"], kwargs["dim"], kwargs["dim"]
+        )
+
+        return ast.parse(code).body
+
+
+class SincMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.where({}==0, x=paddle.to_tensor([1.], dtype={}.dtype), y=paddle.sin(numpy.pi * {}) / (numpy.pi * {}))
+            """
+        )
+        code = API_TEMPLATE.format(
+            kwargs["input"], kwargs["input"], kwargs["input"], kwargs["input"]
+        )
+        if "out" in kwargs and kwargs["out"] is not None:
+            code = "paddle.assign({}, output={})".format(code, kwargs["out"])
+
+        return code
+
+
+class TensorSincMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.where({}==0, x=paddle.to_tensor([1.], dtype={}.dtype), y=paddle.sin(numpy.pi * {}) / (numpy.pi * {}))
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.paddleClass, self.paddleClass, self.paddleClass, self.paddleClass
+        )
+
+        return ast.parse(code).body
+
+
+class SLogDetMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "input" in kwargs:
+            kwargs["A"] = kwargs.pop("input")
+
+        if "out" in kwargs and "None" not in kwargs["out"]:
+            return None
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            slogdet_result = paddle.linalg.slogdet({})
+            tuple([slogdet_result[0], slogdet_result[1]])
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["A"])
+
+        return code
