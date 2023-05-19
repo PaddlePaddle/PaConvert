@@ -1001,58 +1001,6 @@ class BatchNormMatcher(BaseMatcher):
         return code
 
 
-class SyncBatchNormMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "process_group" in kwargs and "None" not in kwargs["process_group"]:
-            return None
-
-        if "eps" not in kwargs:
-            epsilon = 1e-5
-        else:
-            epsilon = kwargs["eps"]
-
-        if "track_running_stats" in kwargs:
-            track_running_stats = kwargs["track_running_stats"]
-        else:
-            track_running_stats = True
-
-        if "momentum" in kwargs:
-            momentum = kwargs["momentum"]
-        else:
-            momentum = 0.1
-
-        if "affine" in kwargs and "False" in kwargs["affine"]:
-            API_TEMPLACE = textwrap.dedent(
-                """
-                {}(num_features={},
-                    momentum=1-{},
-                    epsilon={},
-                    weight_attr=False,
-                    bias_attr=False,
-                    use_global_stats={})
-                """
-            )
-        else:
-            API_TEMPLACE = textwrap.dedent(
-                """
-                {}(num_features={},
-                    momentum=1-{},
-                    epsilon={},
-                    weight_attr=None,
-                    bias_attr=None,
-                    use_global_stats={})
-                """
-            )
-        code = API_TEMPLACE.format(
-            self.get_paddle_api(),
-            kwargs["num_features"],
-            momentum,
-            epsilon,
-            track_running_stats,
-        )
-        return code
-
-
 class MaxPool2DMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "dilation" in kwargs:
