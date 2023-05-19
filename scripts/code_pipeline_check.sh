@@ -24,13 +24,8 @@ fi
 echo "start pipline testing..."
 echo '*******************start generating source and wheel distribution*******************'
 
-python tools/pipeline/build_and_deploy.py sdist bdist_wheel
+python tools/pipeline/build_and_deploy.py sdist bdist_wheel;check_error=$?
 
-echo '*******************start detecting source and wheel distribution*******************'
-
-python tools/pipeline/file_detect.py;check_error=$?
-
-rm -rf dist paconvert.egg-info build
 echo '************************************************************************************'
 echo "______                                   _   "
 echo "| ___ \                                 | |  "

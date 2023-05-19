@@ -213,8 +213,8 @@ pre-commit run --file [file_name]
 
 运行对应CI文件需修改scriptes中*.sh的环境变量DEVELOP_IF="ON".
 
-本地单个CI测试方法
 ```bash
+本地单个CI测试方法
 bash scripts/code_modeltest_check.sh
 bash scripts/code_consistency_check.sh
 bash scripts/code_style_check.sh
@@ -222,15 +222,6 @@ bash scripts/code_unittest_check.sh
 bash scripts/code_modeltest_check.sh
 bash scripts/code_pipeline_check.sh
 bash scripts/code_PRtemplate_check.sh
-```
-
-本地CI测试方法
-```bash
-bash scripts/code_modeltest_check.sh
-bash scripts/code_consistency_check.sh
-bash scripts/code_style_check.sh
-bash scripts/code_unittest_check.sh
-bash scripts/code_modeltest_check.sh
 
 本地全部CI测试方法
 bash scripts/run_ci.sh
@@ -239,6 +230,22 @@ bash scripts/run_ci.sh
 ### 合入规范
 
 合入**必须**要求通过全部CI检测，原则上禁止强行Merge，如果有Pylint代码格式阻塞，可以讨论是否禁止某一条规范生效，**必须**要求一个Reviewer，禁止出现敏感代码。
+
+提交PR时，请尽可能按照一下规范
+```bash
+### PR APIs
+<!-- APIs what you’ve done -->
+torch.transpose
+torch.Tensor._index_copy
+torch.permute
+...
+### PR Docs
+<!-- Describe the docs PR corresponding the APIs -->
+https://github.com/PaddlePaddle/docs/pull/_prID
+### Description
+<!-- Describe what you’ve done -->
+...
+```
 
 ## 步骤2：编写API映射关系
 
