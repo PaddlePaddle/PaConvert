@@ -16,15 +16,25 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.chain_matmul")
+
+class RandintTest(APIBase):
+    def check(self, pytorch_result, paddle_result):
+
+        if pytorch_result.requires_grad == paddle_result.stop_gradient:
+            return False
+        if str(pytorch_result.dtype)[6:] != str(paddle_result.dtype)[7:]:
+            return False
+        return True
+
+
+obj = RandintTest("torch.randint")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        result = torch.chain_matmul(v, v, v)
+        result = torch.randint(3, 5, (3,))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,33 +44,47 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        out = torch.ones_like(v)
-        result = torch.chain_matmul(v, v, out=out)
+        result = torch.randint(10, (2, 2))
         """
     )
-    obj.run(pytorch_code, ["result", "out"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        out = torch.ones_like(v)
-        result = torch.chain_matmul(v, out=out)
+        result = torch.randint(3, 10, (2, 2))
         """
     )
-    obj.run(pytorch_code, ["result", "out"])
+    obj.run(pytorch_code, ["result"])
 
 
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        matrixs = (v, v, v)
-        result = torch.chain_matmul(*matrixs)
+        result = torch.randint(3, 10, (2, 2), dtype=torch.int32)
+        """
+    )
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.randint(3, 10, (2, 2), dtype=torch.float32, requires_grad=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        flag = False
+        result = torch.randint(3, 10, (2, 2), dtype=torch.int32, requires_grad=flag)
         """
     )
     obj.run(pytorch_code, ["result"])

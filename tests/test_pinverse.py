@@ -16,15 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.chain_matmul")
+obj = APIBase("torch.pinverse")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        result = torch.chain_matmul(v, v, v)
+        x = torch.tensor([[ 0.5495,  0.0979, -1.4092, -0.1128,  0.4132],
+                            [-1.1143, -0.3662,  0.3042,  1.6374, -0.9294],
+                            [-0.3269, -0.5745, -0.0382, -0.5922, -0.6759]])
+        result = torch.pinverse(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,33 +36,23 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        out = torch.ones_like(v)
-        result = torch.chain_matmul(v, v, out=out)
+        x = torch.tensor([[ 0.5495,  0.0979, -1.4092, -0.1128,  0.4132],
+                            [-1.1143, -0.3662,  0.3042,  1.6374, -0.9294],
+                            [-0.3269, -0.5745, -0.0382, -0.5922, -0.6759]])
+        result = torch.pinverse(x, rcond=1e-13)
         """
     )
-    obj.run(pytorch_code, ["result", "out"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        out = torch.ones_like(v)
-        result = torch.chain_matmul(v, out=out)
-        """
-    )
-    obj.run(pytorch_code, ["result", "out"])
-
-
-def _test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        matrixs = (v, v, v)
-        result = torch.chain_matmul(*matrixs)
+        x = torch.tensor([[ 0.5495,  0.0979, -1.4092, -0.1128,  0.4132],
+                            [-1.1143, -0.3662,  0.3042,  1.6374, -0.9294],
+                            [-0.3269, -0.5745, -0.0382, -0.5922, -0.6759]])
+        result = torch.pinverse(input=x, rcond=1e-13)
         """
     )
     obj.run(pytorch_code, ["result"])

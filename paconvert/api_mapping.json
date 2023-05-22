@@ -2637,7 +2637,7 @@
     }
   },
   "torch.histc": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "HistcMatcher",
     "paddle_api": "paddle.histogram",
     "args_list": [
       "input",
@@ -3107,7 +3107,8 @@
     ],
     "kwargs_change": {
       "LU_data": "x",
-      "LU_pivots": "y"
+      "LU_pivots": "y",
+      "unpack_data": "unpack_ludata"
     }
   },
   "torch.swapaxes": {

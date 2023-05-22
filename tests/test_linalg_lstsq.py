@@ -16,51 +16,28 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.chain_matmul")
+obj = APIBase("torch.linalg.lstsq")
 
 
-def test_case_1():
+def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        result = torch.chain_matmul(v, v, v)
+        x = torch.tensor([[1, 3], [3, 2], [5, 6.]])
+        y = torch.tensor([[3, 4, 6], [5, 3, 4], [1, 2, 1.]])
+        result = torch.linalg.lstsq(x, y, driver="gelsd")
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_2():
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        out = torch.ones_like(v)
-        result = torch.chain_matmul(v, v, out=out)
-        """
-    )
-    obj.run(pytorch_code, ["result", "out"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        out = torch.ones_like(v)
-        result = torch.chain_matmul(v, out=out)
-        """
-    )
-    obj.run(pytorch_code, ["result", "out"])
-
-
-def _test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        matrixs = (v, v, v)
-        result = torch.chain_matmul(*matrixs)
+        x = torch.tensor([[10, 2, 3], [3, 10, 5], [5, 6, 12.]])
+        y = torch.tensor([[4, 2, 9], [2, 0, 3], [2, 5, 3.]])
+        result = torch.linalg.lstsq(x, y, driver="gels")
         """
     )
     obj.run(pytorch_code, ["result"])

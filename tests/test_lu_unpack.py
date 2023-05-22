@@ -16,51 +16,40 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.chain_matmul")
+obj = APIBase("torch.lu_unpack")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        result = torch.chain_matmul(v, v, v)
+        LU = torch.tensor([[5., 6.], [0.2, 0.8], [0.6, 0.5]])
+        pivots = torch.tensor([3, 3], dtype=torch.int32)
+        P, L, U = torch.lu_unpack(LU, pivots)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["P", "L", "U"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        out = torch.ones_like(v)
-        result = torch.chain_matmul(v, v, out=out)
+        LU = torch.tensor([[5., 6.], [0.2, 0.8], [0.6, 0.5]])
+        pivots = torch.tensor([3, 3], dtype=torch.int32)
+        P, L, U = torch.lu_unpack(LU, pivots, unpack_data=False)
         """
     )
-    obj.run(pytorch_code, ["result", "out"])
+    obj.run(pytorch_code, ["P", "L", "U"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        out = torch.ones_like(v)
-        result = torch.chain_matmul(v, out=out)
+        LU = torch.tensor([[5., 6.], [0.2, 0.8], [0.6, 0.5]])
+        pivots = torch.tensor([3, 3], dtype=torch.int32)
+        P, L, U = torch.lu_unpack(LU, pivots, unpack_pivots=False)
         """
     )
-    obj.run(pytorch_code, ["result", "out"])
-
-
-def _test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        matrixs = (v, v, v)
-        result = torch.chain_matmul(*matrixs)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["P", "L", "U"])

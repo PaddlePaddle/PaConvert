@@ -16,15 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.chain_matmul")
+obj = APIBase("torch.matrix_power")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        result = torch.chain_matmul(v, v, v)
+        x = torch.tensor([[4., 5., 6.], [1., 2., 3.], [4., 9., 10.]])
+        result = torch.matrix_power(x, 2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,33 +34,52 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        out = torch.ones_like(v)
-        result = torch.chain_matmul(v, v, out=out)
+        x = torch.tensor([[4., 5., 6.], [1., 2., 3.], [4., 9., 10.]])
+        result = torch.matrix_power(x, -2)
         """
     )
-    obj.run(pytorch_code, ["result", "out"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        out = torch.ones_like(v)
-        result = torch.chain_matmul(v, out=out)
+        result = torch.matrix_power(torch.tensor([[4., 5., 6.], [1., 2., 3.], [4., 9., 10.]]), 2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[4., 5., 6.], [1., 2., 3.], [4., 9., 10.]])
+        result = torch.matrix_power(input=x, n=-2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[4., 5., 6.], [1., 2., 3.], [4., 9., 10.]])
+        out = torch.tensor([[4., 5., 6.], [1., 2., 3.], [4., 9., 10.]])
+        result = torch.matrix_power(x, 2, out=out)
         """
     )
     obj.run(pytorch_code, ["result", "out"])
 
 
-def _test_case_4():
+def _test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        matrixs = (v, v, v)
-        result = torch.chain_matmul(*matrixs)
+        x = torch.tensor([[4, 5, 6], [1, 2, 3], [4, 9, 10]])
+        result = torch.matrix_power(x, 2)
         """
     )
     obj.run(pytorch_code, ["result"])
