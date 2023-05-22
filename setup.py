@@ -42,6 +42,8 @@ def get_tag():
         cmd = ["git", "tag"]
         git_tag = subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0].strip()
         git_tag = git_tag.decode()
+        # keeop latest Paddle version
+        git_tag = git_tag.split("\n")[-1]
     except:
         git_tag = "0.0.0"
 

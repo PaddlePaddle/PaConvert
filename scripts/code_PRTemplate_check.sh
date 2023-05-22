@@ -15,14 +15,19 @@
 set +x
 
 DEVELOP_IF="OFF"
+AGILE_PULL_ID="AGILE_PULL_ID"
+GITHUB_API_TOKEN="GITHUB_API_TOKEN"
 
 if [[ "$DEVELOP_IF" == "OFF" ]]; then
-    cd /workspace/$2/PaConvert/
+    cd /workspace/$2/PaConvert/ 
     PATH=$1
+    AGILE_PULL_ID=$3
+    GITHUB_API_TOKEN=$4
 fi
 
-echo "Checking code unit test by pytest ..."
-pytest /workspace/$2/PaConvert/tests;check_error=$?
+echo "start PR template testing..."
+
+python tools/prTemplate/prTemplate_check.py $AGILE_PULL_ID $GITHUB_API_TOKEN;check_error=$?
 
 echo '************************************************************************************'
 echo "______      _____                          _   "
@@ -31,17 +36,11 @@ echo "| |_/ /_ _| |     ___  _ ____   _____ _ __| |_ "
 echo "|  __/ _  | |    / _ \\| \\_ \\ \\ / / _ \\ \\__| __|"
 echo "| | | (_| | |___| (_) | | | \\ V /  __/ |  | |_ "
 echo "\\_|  \\__,_|\\_____\\___/|_| |_|\\_/ \\___|_|   \\__|"
-echo -e '\n************************************************************************************' 
+echo -e '\n************************************************************************************'
 if [ ${check_error} != 0 ];then
-    echo "Your PR code unit test check failed." 
-    echo "Please run the following command." 
-    echo "" 
-    echo "    pytest tests" 
-    echo "" 
-    echo "For more information, please refer to our check guide:" 
-    echo "https://github.com/PaddlePaddle/PaConvert#readme." 
+    echo "Your PR template test check failed." 
 else
-    echo "Your PR code unit test check passed."
+    echo "Your PR template test check passed."
 fi
 echo '************************************************************************************'
 

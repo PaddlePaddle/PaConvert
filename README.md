@@ -182,7 +182,7 @@ pip install -r requirements-dev.txt
 ```
 
 ### 代码审查
-代码审查包括两部分，一个是基于现有开源代码格式规范的审查，通过pre-commit来审查，另一个是基于自定义要求的审查，在tools/codestyle下。
+代码审查包括两部分，一个是基于现有开源代码格式规范的审查，通过pre-commit来审查，另一个是基于自定义要求的审查，在tools下。
 
 #### Pre-commit审查
 
@@ -207,28 +207,45 @@ pre-commit run --file [file_name]
 | PR-CI-CodeStyle   | scripts/code_style_check.sh |
 | PR-CI-UnitTest   | scripts/code_unittest_check.sh |
 | PR-CI-Coverage   | scripts/code_modeltest_check.sh |
+| PR-CI-Pipeline   | scripts/code_pipeline_check.sh |
+| PR-CI-PRTemplate   | scripts/code_PRtemplate_check.sh |
 ```
 
 运行对应CI文件需修改scriptes中*.sh的环境变量DEVELOP_IF="ON".
 
-
-本地单个CI测试方法
 ```bash
+本地单个CI测试方法
 bash scripts/code_modeltest_check.sh
 bash scripts/code_consistency_check.sh
 bash scripts/code_style_check.sh
 bash scripts/code_unittest_check.sh
 bash scripts/code_modeltest_check.sh
-```
+bash scripts/code_pipeline_check.sh
+bash scripts/code_PRtemplate_check.sh
 
 本地全部CI测试方法
-```bash
 bash scripts/run_ci.sh
 ```
 
 ### 合入规范
 
-合入**必须**要求通过全部CI检测，原则上禁止强行Merge，如果有Pylint代码格式阻塞，可以讨论是否禁止某一条规范生效，**必须**要求一个Reviewer，禁止出现敏感代码。
+合入**必须**要求通过全部CI检测，原则上禁止强行Merge，如果有代码风格阻塞，可以讨论是否禁止某一条pre-commit规范，**必须**要求一个Reviewer的approve，禁止出现敏感代码。
+
+提交PR时，请尽可能按照一下规范
+```bash
+### PR APIs
+<!-- APIs what you’ve done -->
+torch.transpose
+torch.Tensor._index_copy
+torch.permute
+...
+### PR Docs
+<!-- Describe the docs PR corresponding the APIs -->
+https://github.com/PaddlePaddle/docs/pull/_prID
+### Description
+<!-- Describe what you’ve done -->
+...
+```
 
 ## 步骤2：编写API映射关系
 
@@ -421,17 +438,25 @@ if x:
 
 4）在开发时可能需要查询各种 `ast.Node` 的组成属性，可以参考 https://greentreesnakes.readthedocs.io/en/latest/nodes.html#function-and-class-definitions ，同时也建议熟悉各种常用AST节点，有利于开发效率的提升。
 
-## 开发测试规范
 
-**a) 调试，确认验证集中该API已全部被转换**。通过以下命令在本地调试，打印报表中的 `Not Support API List` 不应还有待提交的API：
+## 步骤5：编写单元测试
 
-```
-python3.9 paconvert/main.py --in_dir paconvert/test_code.py --log_level "DEBUG" --show_unsupport True
-```
 
-**b) 需考虑所有可能的torch用法case**，另外从验证集中搜索并抽取尽可能多的用法case，要求至少列举5种完全不同的case（越多越好）。涉及到多个参数的，应包含各种参数组合的情况，不能只考虑最简单最常见的用法。
+**单测写法**：
 
-对任意torch用法case只允许有两种结果：a)正常转换且对比结果一致；b)不支持转换，此时返回None。不允许出现其他的错误情况，包括但不限于 **报错退出、错误转换** 等各种问题。
+* 单测位置：所有的单测文件均放在`tests`目录下，单测文件命名以`test_`为前缀，后面接测试的`API`名称（PyTorch API全称去掉模块名，保留大小写）。例如 `torch.add` 命名为 `test_add.py` ， `torch.Tensor.add` 命名为  `test_Tensor_add.py` 。
+
+* 单测默认检查逻辑：采用`pytest`作为单测框架。一般情况下，用户只需要在单测文件中调用 `APIBase` 类的 `run()` 方法，传入 `pytorch_code` 和需要判断的 `Tensor` 变量名列表即可，参考 [torch.permute测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_permute.py)。`run()`方法会调用`check()`方法，该方法默认检查逻辑为：转换前后两个`Tensor`的数值，数据类型、stop_gradient、形状属性是否一致。如果不需要运行转换后的 `paddle` 代码，可以直接传入 `expect_paddle_code` 字符串，此时`check()` 方法会比对转换后的`paddle`代码与`expect_paddle_code`代码字符串是否一致。
+
+* 自定义检查逻辑：如果需要自定义转换结果是否正确的检查逻辑，可以继承`APIBase`类并重写`check()`函数，实现自定义的检查逻辑, 参考 [torch.Tensor测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_Tensor.py)。
+
+* 运行单测：可以在主目录下执行`pytest tests`命令运行所有单测；也可以执行`pytest tests/xxx.py`运行`tests`目录下的某一单测；如果希望遇到`error`则停止单测，可以加上参数`-x`，即`pytest tests/test_add.py -x`，单测运行过程中会将转换后的`paddle`代码写入`test_project/paddle_temp.py`，方便排查错误。
+
+**单测要求**：
+
+需要考虑该torch api所有可能的用法case，可以从模型验证集中搜索并抽取尽可能多的用法case，要求至少列举5种完全不同的case（越多越好）。涉及到多个API参数的，应包含各种参数组合的情况（是否指定关键字、调整关键字顺序等），不能只考虑最简单常见的用法。
+
+对任意torch API的用法case只允许有两种结果：a)正常转换且对比结果一致；b)不支持转换，此时返回None。不允许出现其他的错误情况，包括但不限于 **报错异常退出、错误转换** 等各种其他问题。
 
 以 `torch.Tensor.new_zeros` 为例，其至少包含12种以上的torch用法case，如下：
 
@@ -470,17 +495,10 @@ case 12:
 x.new_zeros(x.size())
 ```
 
-**c) 写出所有可能的torch用法case后，全部加入到单测中，并对比结果一致**。单测写法为：
-* 单测位置：所有的单测文件均放在`tests`目录下，单测文件命名以`test_`为前缀，后面接测试的`API`名称（PyTorch API全称去掉`torch`模块名，保留大小写）。
-* 单测默认判断逻辑：采用`pytest`作为单测框架。一般情况下，用户只需要在单测文件中调用`APIBase`类的`run()`方法，传入`pytorch_code`和需要判断的`Tensor`变量名列表即可，参考 [torch.permute测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_permute.py)。`run()`方法会调用`check()`方法，该方法会检查转换前后两个`Tensor`的数值，数据类型，是否计算梯度属性是否相等，是目前默认的判断转换结果是否一致的逻辑。如果不需要运行转换后的`paddle`代码，可以直接传入`expect_paddle_code`参数，此时`check()`方法会比对转换后的`paddle`代码与传入的`paddle`代码是否一致。
-* 自定义判断逻辑：如果需要自定义判断转换结果是否一致的逻辑，可以继承`APIBase`类重写`check()`函数，实现自定义逻辑, 参考 [torch.Tensor测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_Tensor.py)。
-* 环境搭建：需要同时安装`paddle 2.4.0` 和 `pytorch 1.13.0` 的`CPU`版本。
-* 运行单测：可以在主目录下执行`pytest tests`命令运行所有单测；也可以执行`pytest tests/xxx.py`运行`tests`目录下的某一单测；如果希望遇到`error`则停止单测，可以加上参数`-x`，即`pytest tests/test_add.py -x`，单测运行过程中会将转换后的`paddle`代码写入`test_project/paddle_temp.py`，方便排查错误。
+总的来说，转换规则及单测开发具有一定的挑战性，是一项非常细心以及考验思维广度的工作。
 
+# 注意事项
 
-**d) 代码精简与美观性**。要求尽可能只通过一行代码、一个API来实现（越少越好）。如果确实无法实现，才考虑通过多行代码、多个API来辅助实现该功能。
+**1) 代码精简与美观性**。要求尽可能只通过一行代码、一个API来实现（越少越好）。如果确实无法实现，才考虑通过多行代码、多个API来辅助实现该功能。
 
-**e) 维护与负责**。由于单测仍可能覆盖不全面，导致引入了非常隐蔽的用法bug，开发者需要对自身开发的API转换规则负责并后续维护。解决新发现的case问题。
-
-
-总的来说，Matcher转换规则的开发具有一定的挑战性，是一项非常细心以及考验思维广度的工作。
+**2) 维护与负责**。由于单测可能覆盖不全面，导致引入了非常隐蔽的用法bug，开发者需要对自身开发的API转换规则负责并后续维护。解决新发现的该API的用法case问题。

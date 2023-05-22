@@ -19,6 +19,6 @@ import torch.nn as nn
 print("#########################case1#########################")
 bn = torch.nn.BatchNorm2d(5)
 print("#########################case2#########################")
-bn = nn.BatchNorm1d(27)
+bn = nn.BatchNorm2d(27)
 print("#########################case3#########################")
-nn.BatchNorm1d(10, eps=1e-5, affine=False)
+nn.BatchNorm2d(10, eps=1e-5, affine=False)

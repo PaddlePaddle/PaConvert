@@ -21,8 +21,10 @@ if [[ "$DEVELOP_IF" == "OFF" ]]; then
     PATH=$1
 fi
 
-echo "Checking code unit test by pytest ..."
-pytest /workspace/$2/PaConvert/tests;check_error=$?
+echo "start pipline testing..."
+echo '*******************start generating source and wheel distribution*******************'
+
+python setup.py sdist bdist_wheel;check_error=$?
 
 echo '************************************************************************************'
 echo "______      _____                          _   "
@@ -31,17 +33,11 @@ echo "| |_/ /_ _| |     ___  _ ____   _____ _ __| |_ "
 echo "|  __/ _  | |    / _ \\| \\_ \\ \\ / / _ \\ \\__| __|"
 echo "| | | (_| | |___| (_) | | | \\ V /  __/ |  | |_ "
 echo "\\_|  \\__,_|\\_____\\___/|_| |_|\\_/ \\___|_|   \\__|"
-echo -e '\n************************************************************************************' 
+echo -e '\n************************************************************************************'
 if [ ${check_error} != 0 ];then
-    echo "Your PR code unit test check failed." 
-    echo "Please run the following command." 
-    echo "" 
-    echo "    pytest tests" 
-    echo "" 
-    echo "For more information, please refer to our check guide:" 
-    echo "https://github.com/PaddlePaddle/PaConvert#readme." 
+    echo "Your PR code pipeline test check failed." 
 else
-    echo "Your PR code unit test check passed."
+    echo "Your PR code pipeline test check passed."
 fi
 echo '************************************************************************************'
 
