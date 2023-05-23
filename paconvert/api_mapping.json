@@ -6581,7 +6581,9 @@
       "requires_grad"
     ]
   },
-  "torch.Tensor.reshape": {},
+  "torch.Tensor.reshape": {
+    "Matcher": "TensorReshapeMatcher"
+  },
   "torch.Tensor.reshape_as": {},
   "torch.Tensor.resize_": {},
   "torch.Tensor.resize_as_": {},
