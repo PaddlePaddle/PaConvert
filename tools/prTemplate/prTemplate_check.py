@@ -14,6 +14,7 @@
 
 import re
 import sys
+import textwrap
 
 import requests
 
@@ -100,9 +101,31 @@ def pull_request_event_template(event, repo, *args, **kwargs):
         check_pr_template, check_pr_template_message = checkPRTemplate(
             repo, BODY, CHECK_TEMPLATE
         )
+
+        Template = textwrap.dedent(
+            """
+                    We list the example in details as follows!!
+                    ----------------------------------------------------------------
+                    ### PR APIs
+                    <!-- APIs what you've done -->
+                    torch.transpose
+                    torch.Tensor._index_copy
+                    torch.permute
+                    ...
+                    ### PR Docs
+                    <!-- Describe the docs PR corresponding the APIs -->
+                    https://github.com/PaddlePaddle/docs/pull/_prID
+                    ### Description
+                    <!-- Describe what you've done -->
+                    ...
+                    ----------------------------------------------------------------
+                    """
+        )
         print(f"check_pr_template: {check_pr_template} pr: {pr_num}")
         if check_pr_template is False:
-            print("ERROR MESSAGE:", check_pr_template_message)
+            print("ERROR MESSAGE: Please follow the PR template as follows!")
+            print(CHECK_TEMPLATE)
+            print(Template)
             sys.exit(7)
         else:
             sys.exit(0)
