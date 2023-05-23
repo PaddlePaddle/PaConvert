@@ -16,17 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.cholesky_inverse")
+obj = APIBase("torch.logcumsumexp")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(a)
+        x = torch.tensor([[0.56, 0.34, 0.78], [0.98, 0.21, 1.78]])
+        result = torch.logcumsumexp(x, 0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -36,10 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967, -0.6374,  1.5858],
-            [ 0.0000,  0.6860, -1.0314],
-            [ 0.0000,  0.0000,  2.6615]])
-        result = torch.cholesky_inverse(a, upper=True)
+        x = torch.tensor([[0.56, 0.34, 0.78], [0.98, 0.21, 1.78]])
+        result = torch.logcumsumexp(x, 1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -49,26 +45,30 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        out = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(a, out=out)
+        x = torch.tensor([[0.56, 0.34, 0.78], [0.98, 0.21, 1.78]])
+        result = torch.logcumsumexp(input=x, dim=1)
         """
     )
-    obj.run(pytorch_code, ["out"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(input=a, upper=False)
+        result = torch.logcumsumexp(torch.tensor([[0.56, 0.34, 0.78], [0.98, 0.21, 1.78]]), dim=0)
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0.56, 0.34, 0.78], [0.98, 0.21, 1.78]])
+        out = torch.tensor([[0.56, 0.34, 0.78], [0.98, 0.21, 1.78]])
+        result = torch.logcumsumexp(x, 1, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

@@ -16,17 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.cholesky_inverse")
+obj = APIBase("torch.diag")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(a)
+        x = torch.tensor([[-0.4264, 0.0255,-0.1064],
+                        [ 0.8795,-0.2429, 0.1374],
+                        [ 0.1029,-0.6482,-1.6300]])
+        result = torch.diag(x, 0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -36,10 +36,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967, -0.6374,  1.5858],
-            [ 0.0000,  0.6860, -1.0314],
-            [ 0.0000,  0.0000,  2.6615]])
-        result = torch.cholesky_inverse(a, upper=True)
+        x = torch.tensor([ 0.5950,-0.0872, 2.3298])
+        result = torch.diag(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -49,26 +47,37 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        out = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(a, out=out)
+        x = torch.tensor([[-0.4264, 0.0255,-0.1064],
+                        [ 0.8795,-0.2429, 0.1374],
+                        [ 0.1029,-0.6482,-1.6300]])
+        result = torch.diag(x, 2)
         """
     )
-    obj.run(pytorch_code, ["out"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(input=a, upper=False)
+        x = torch.tensor([[-0.4264, 0.0255,-0.1064],
+                        [ 0.8795,-0.2429, 0.1374],
+                        [ 0.1029,-0.6482,-1.6300]])
+        result = torch.diag(input=x, diagonal=-3)
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[-0.4264, 0.0255,-0.1064],
+                        [ 0.8795,-0.2429, 0.1374],
+                        [ 0.1029,-0.6482,-1.6300]])
+        out = torch.tensor([-0.4264, 0.0255,-0.1064])
+        result = torch.diag(input=x, diagonal=0, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

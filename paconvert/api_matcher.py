@@ -488,7 +488,7 @@ class TensorMatcher(BaseMatcher):
 
 class RandintMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "high" in kwargs and kwargs["high"].startswith("["):
+        if "high" in kwargs and "," in kwargs["high"]:
             kwargs["shape"] = kwargs["high"]
             kwargs["high"] = kwargs["low"]
             kwargs["low"] = "0"
@@ -3457,3 +3457,54 @@ class TensorIstftMatcher(BaseMatcher):
         code = API_TEMPLATE.format(self.paddleClass, self.kwargs_to_str(kwargs))
 
         return ast.parse(code).body
+
+
+class CumprodMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        kwargs["x"] = kwargs.pop("input").strip("\n")
+
+        if "out" in kwargs and kwargs["out"] is not None:
+            out_v = kwargs.pop("out").strip("\n")
+            code = "paddle.assign({}({}), output={})".format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v
+            )
+        else:
+            code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+        return code
+
+
+class CumsumMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        kwargs["x"] = kwargs.pop("input").strip("\n")
+
+        if "dim" in kwargs:
+            kwargs["axis"] = kwargs.pop("dim").strip("\n")
+
+        if "out" in kwargs and kwargs["out"] is not None:
+            out_v = kwargs.pop("out").strip("\n")
+            code = "paddle.assign({}({}), output={})".format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v
+            )
+        else:
+            code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+        return code
+
+
+class HistcMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if "out" in kwargs and kwargs["out"] is not None:
+            out_v = kwargs.pop("out").strip("\n")
+            code = "paddle.assign({}({}).astype('float32'), output={})".format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v
+            )
+        else:
+            code = "{}({}).astype('float32')".format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs)
+            )
+
+        return code

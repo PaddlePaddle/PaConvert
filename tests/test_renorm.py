@@ -16,15 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.chain_matmul")
+obj = APIBase("torch.renorm")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        result = torch.chain_matmul(v, v, v)
+        x = torch.tensor([[ 1.,  1.,  1.],
+                            [ 2.,  2.,  2.],
+                            [ 3.,  3.,  3.]])
+        result = torch.renorm(x, 1, 0, 5)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,33 +36,24 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        out = torch.ones_like(v)
-        result = torch.chain_matmul(v, v, out=out)
+        x = torch.tensor([[ 1.,  1.,  1.],
+                            [ 2.,  2.,  2.],
+                            [ 3.,  3.,  3.]])
+        result = torch.renorm(input=x, p=1, dim=0, maxnorm=5)
         """
     )
-    obj.run(pytorch_code, ["result", "out"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        out = torch.ones_like(v)
-        result = torch.chain_matmul(v, out=out)
+        x = torch.tensor([[ 1.,  1.,  1.],
+                            [ 2.,  2.,  2.],
+                            [ 3.,  3.,  3.]])
+        out = torch.tensor([1., 3.])
+        result = torch.renorm(x, 1, 0, 5, out=out)
         """
     )
     obj.run(pytorch_code, ["result", "out"])
-
-
-def _test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        matrixs = (v, v, v)
-        result = torch.chain_matmul(*matrixs)
-        """
-    )
-    obj.run(pytorch_code, ["result"])

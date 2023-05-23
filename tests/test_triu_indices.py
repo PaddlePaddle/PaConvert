@@ -16,17 +16,14 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.cholesky_inverse")
+obj = APIBase("torch.triu_indices")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(a)
+        result = torch.triu_indices(3, 3)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -36,10 +33,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967, -0.6374,  1.5858],
-            [ 0.0000,  0.6860, -1.0314],
-            [ 0.0000,  0.0000,  2.6615]])
-        result = torch.cholesky_inverse(a, upper=True)
+        result = torch.triu_indices(4, 3, -1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -49,26 +43,27 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        out = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(a, out=out)
+        result = torch.triu_indices(4, 3, 1)
         """
     )
-    obj.run(pytorch_code, ["out"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(input=a, upper=False)
+        result = torch.triu_indices(row=4, col=3, offset=-1, dtype=torch.int64)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.triu_indices(4, 3, -1, device=torch.device('cpu'), layout=torch.strided)
         """
     )
     obj.run(pytorch_code, ["result"])

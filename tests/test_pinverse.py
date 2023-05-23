@@ -16,17 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.cholesky_inverse")
+obj = APIBase("torch.pinverse")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(a)
+        x = torch.tensor([[ 0.5495,  0.0979, -1.4092, -0.1128,  0.4132],
+                            [-1.1143, -0.3662,  0.3042,  1.6374, -0.9294],
+                            [-0.3269, -0.5745, -0.0382, -0.5922, -0.6759]])
+        result = torch.pinverse(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -36,10 +36,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967, -0.6374,  1.5858],
-            [ 0.0000,  0.6860, -1.0314],
-            [ 0.0000,  0.0000,  2.6615]])
-        result = torch.cholesky_inverse(a, upper=True)
+        x = torch.tensor([[ 0.5495,  0.0979, -1.4092, -0.1128,  0.4132],
+                            [-1.1143, -0.3662,  0.3042,  1.6374, -0.9294],
+                            [-0.3269, -0.5745, -0.0382, -0.5922, -0.6759]])
+        result = torch.pinverse(x, rcond=1e-13)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -49,26 +49,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        out = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(a, out=out)
-        """
-    )
-    obj.run(pytorch_code, ["out"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(input=a, upper=False)
+        x = torch.tensor([[ 0.5495,  0.0979, -1.4092, -0.1128,  0.4132],
+                            [-1.1143, -0.3662,  0.3042,  1.6374, -0.9294],
+                            [-0.3269, -0.5745, -0.0382, -0.5922, -0.6759]])
+        result = torch.pinverse(input=x, rcond=1e-13)
         """
     )
     obj.run(pytorch_code, ["result"])

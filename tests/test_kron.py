@@ -16,15 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.chain_matmul")
+obj = APIBase("torch.kron")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        result = torch.chain_matmul(v, v, v)
+        mat1 = torch.eye(2)
+        mat2 = torch.ones(2, 2)
+        result = torch.kron(mat1, mat2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,33 +35,22 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        out = torch.ones_like(v)
-        result = torch.chain_matmul(v, v, out=out)
+        mat1 = torch.eye(2)
+        mat2 = torch.ones(2, 2)
+        result = torch.kron(input=mat1, other=mat2)
         """
     )
-    obj.run(pytorch_code, ["result", "out"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        out = torch.ones_like(v)
-        result = torch.chain_matmul(v, out=out)
+        mat1 = torch.eye(2)
+        mat2 = torch.ones(2, 2)
+        out = torch.ones(2, 2)
+        result = torch.kron(input=mat1, other=mat2, out=out)
         """
     )
     obj.run(pytorch_code, ["result", "out"])
-
-
-def _test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
-        matrixs = (v, v, v)
-        result = torch.chain_matmul(*matrixs)
-        """
-    )
-    obj.run(pytorch_code, ["result"])

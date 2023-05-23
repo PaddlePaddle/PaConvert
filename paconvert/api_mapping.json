@@ -2448,18 +2448,7 @@
       "input": "x"
     }
   },
-  "torch.vander": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.vander",
-    "args_list": [
-      "x",
-      "N",
-      "increasing"
-    ],
-    "kwargs_change": {
-      "N": "n"
-    }
-  },
+  "torch.vander": {},
   "torch.cross": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.cross",
@@ -2476,30 +2465,24 @@
     }
   },
   "torch.cumprod": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "CumprodMatcher",
     "paddle_api": "paddle.cumprod",
     "args_list": [
       "input",
       "dim",
       "dtype",
       "out"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    ]
   },
   "torch.cumsum": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "CumsumMatcher",
     "paddle_api": "paddle.cumsum",
     "args_list": [
       "input",
       "dim",
       "dtype",
       "out"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    ]
   },
   "torch.diag": {
     "Matcher": "GenericMatcher",
@@ -2522,10 +2505,7 @@
       "offset",
       "dim1",
       "dim2"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    ]
   },
   "torch.diagflat": {
     "Matcher": "GenericMatcher",
@@ -2565,7 +2545,6 @@
     ],
     "kwargs_change": {
       "input": "x",
-      "n": "offset",
       "dim": "axis"
     }
   },
@@ -2665,7 +2644,7 @@
     }
   },
   "torch.histc": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "HistcMatcher",
     "paddle_api": "paddle.histogram",
     "args_list": [
       "input",
@@ -2723,7 +2702,8 @@
     ],
     "kwargs_change": {
       "input": "x",
-      "dim": "axis"
+      "dim": "axis",
+      "maxnorm": "max_norm"
     }
   },
   "torch.unflatten": {
@@ -2753,11 +2733,11 @@
     "args_list": [
       "input",
       "shifts",
-      "dim"
+      "dims"
     ],
     "kwargs_change": {
       "input": "x",
-      "dim": "axis"
+      "dims": "axis"
     }
   },
   "torch.tensordot": {
@@ -3000,12 +2980,12 @@
     "paddle_api": "paddle.dot",
     "args_list": [
       "input",
-      "other",
+      "tensor",
       "out"
     ],
     "kwargs_change": {
       "input": "x",
-      "other": "y"
+      "tensor": "y"
     }
   },
   "torch.vdot": {
@@ -3134,7 +3114,8 @@
     ],
     "kwargs_change": {
       "LU_data": "x",
-      "LU_pivots": "y"
+      "LU_pivots": "y",
+      "unpack_data": "unpack_ludata"
     }
   },
   "torch.swapaxes": {

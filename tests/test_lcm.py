@@ -16,17 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.cholesky_inverse")
+obj = APIBase("torch.lcm")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(a)
+        a = torch.tensor([5, 10, 15])
+        b = torch.tensor([3, 4, 5])
+        result = torch.lcm(a, b)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -36,10 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967, -0.6374,  1.5858],
-            [ 0.0000,  0.6860, -1.0314],
-            [ 0.0000,  0.0000,  2.6615]])
-        result = torch.cholesky_inverse(a, upper=True)
+        a = torch.tensor([5, 10, 15])
+        b = torch.tensor([3, 4, 5])
+        result = torch.lcm(input=a, other=b)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -49,26 +47,42 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        out = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(a, out=out)
+        result = torch.lcm(torch.tensor([5, 10, 15]), torch.tensor([3, 4, 5]))
         """
     )
-    obj.run(pytorch_code, ["out"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(input=a, upper=False)
+        result = torch.lcm(input=torch.tensor([5, 10, 15]), other=torch.tensor([3, 4, 5]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([5, 10, 15])
+        b = torch.tensor([3, 4, 5])
+        out = torch.tensor([3, 4, 5])
+        result = torch.lcm(input=a, other=b, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([5, 10, 15])
+        b = torch.tensor([3])
+        result = torch.lcm(input=a, other=b)
         """
     )
     obj.run(pytorch_code, ["result"])

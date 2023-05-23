@@ -16,17 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.cholesky_inverse")
+obj = APIBase("torch.mv")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(a)
+        a = torch.tensor([[1., 2.], [4., 5.]])
+        b = torch.tensor([1., 3.])
+        result = torch.mv(a, b)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -36,39 +35,34 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967, -0.6374,  1.5858],
-            [ 0.0000,  0.6860, -1.0314],
-            [ 0.0000,  0.0000,  2.6615]])
-        result = torch.cholesky_inverse(a, upper=True)
+        a = torch.tensor([[1., 2.], [4., 5.]])
+        b = torch.tensor([1., 3.])
+        result = torch.mv(input=a, vec=b)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_3():
+def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        out = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(a, out=out)
+        a = torch.tensor([[1, 2], [4, 5]])
+        b = torch.tensor([1, 3])
+        result = torch.mv(a, b)
         """
     )
-    obj.run(pytorch_code, ["out"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(input=a, upper=False)
+        a = torch.tensor([[1., 2.], [4., 5.]])
+        b = torch.tensor([1., 3.])
+        out = torch.tensor([[1., 2.], [4., 5.]])
+        result = torch.mv(a, b, out=out)
         """
     )
     obj.run(pytorch_code, ["result"])

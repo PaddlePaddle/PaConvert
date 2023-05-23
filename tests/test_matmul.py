@@ -16,17 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.cholesky_inverse")
+obj = APIBase("torch.matmul")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(a)
+        x = torch.tensor([[4., 5., 6.], [1., 2., 3.], [4., 9., 10.]])
+        y = torch.tensor([[1., 2., 3.], [4., 5., 6.], [7., 8., 9.]])
+        result = torch.matmul(x, y)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -36,10 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967, -0.6374,  1.5858],
-            [ 0.0000,  0.6860, -1.0314],
-            [ 0.0000,  0.0000,  2.6615]])
-        result = torch.cholesky_inverse(a, upper=True)
+        x = torch.tensor([[4., 5., 6.], [1., 2., 3.], [4., 9., 10.]])
+        y = torch.tensor([1., 2., 3.])
+        result = torch.matmul(x, y)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -49,26 +47,22 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        out = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(a, out=out)
+        x = torch.tensor([[4., 5., 6.], [1., 2., 3.], [4., 9., 10.]])
+        y = torch.tensor([1., 2., 3.])
+        result = torch.matmul(input=x, other=y)
         """
     )
-    obj.run(pytorch_code, ["out"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
-            [-0.6374,  0.6860,  0.0000],
-            [ 1.5858, -1.0314,  2.6615]])
-        result = torch.cholesky_inverse(input=a, upper=False)
+        x = torch.tensor([[4., 5., 6.], [1., 2., 3.], [4., 9., 10.]])
+        y = torch.tensor([[1., 2., 3.], [4., 5., 6.], [7., 8., 9.]])
+        out = torch.tensor([[4., 5., 6.], [1., 2., 3.], [4., 9., 10.]])
+        result = torch.matmul(x, y, out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])
