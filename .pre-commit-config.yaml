@@ -11,7 +11,7 @@ repos:
         files: .+\.yaml$
     -   id: trailing-whitespace
         files: (.*\.(py|bzl|md|rst|c|cc|cxx|cpp|cu|h|hpp|hxx|xpu|kps|cmake|yaml|yml|hook)|BUILD|.*\.BUILD|WORKSPACE|CMakeLists\.txt)$
-        exclude: ^tests/code_library/code_case
+        exclude: ^tests/code_library/[code_case|model_case]
 -   repo: local
     hooks:
     -   id: copyright_checker
@@ -19,19 +19,19 @@ repos:
         entry: python ./tools/codestyle/copyright.hook
         language: system
         files: \.(c|cc|cxx|cpp|cu|h|hpp|hxx|proto|xpu|kps|py|sh)$
-        exclude: ^tests/code_library/code_case
+        exclude: ^tests/code_library/[code_case|model_case]
 # For Python files
 -   repo: https://github.com/psf/black.git
     rev: 22.8.0
     hooks:
     -   id: black
         files: (.*\.(py|pyi|bzl)|BUILD|.*\.BUILD|WORKSPACE)$
-        exclude: ^tests/code_library/code_case_v1
+        exclude: ^tests/code_library/[code_case|model_case]
 -   repo: https://github.com/pycqa/isort
     rev: 5.11.5
     hooks:
     -   id: isort
-        exclude: ^tests/code_library/code_case_v1
+        exclude: ^tests/code_library/[code_case|model_case]
 -   repo: https://github.com/PyCQA/flake8
     rev: 5.0.4
     hooks:

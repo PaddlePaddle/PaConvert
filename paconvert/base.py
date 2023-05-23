@@ -28,7 +28,6 @@ json_file = path.dirname(__file__) + "/attribute_mapping.json"
 with open(json_file, "r") as file:
     ATTRIBUTE_MAPPING = json.load(file)
 
-# will configure torch package in jsom
 TORCH_PACKAGE_LIST = [
     "torch",
     "mmseg",

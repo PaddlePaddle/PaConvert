@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+set +x
+
 DOWNLOAD_DATASET_IF="OFF"
 DEVELOP_IF="OFF"
 TORCH_PROJECT_PATH="torch_project"
@@ -24,6 +26,7 @@ fi
 
 # obtain the test case
 if [[ "$DOWNLOAD_DATASET_IF" == "ON" ]]; then
+    echo '**************************start downloading datasets.....*********************************'
     mkdir -p torch_project
     git clone https://github.com/open-mmlab/mmcv.git torch_project/mmcv
     git clone https://github.com/open-mmlab/mmdetection3d.git torch_project/mmdetection3d
@@ -71,21 +74,28 @@ if [[ "$DOWNLOAD_DATASET_IF" == "ON" ]]; then
 fi
 
 # Check the grammar mechanism of the test set and other issues
+echo '**************************start converting test case********************************'
 python paconvert/main.py --in_dir $TORCH_PROJECT_PATH;check_error1=$?
 echo '************************************************************************************'
 #check whether common API transfer is successful
+
+echo '**************************start converting common API case********************************'
 mkdir tests/code_library/code_case/temp_paddle_code
 python tools/consistency/api_code_consistency_check.py;check_error2=$?
 rm -rf tests/code_library/code_case/temp_paddle_code
 
+
+                                                 
+                                                 
 echo '************************************************************************************'
-echo "______                                   _   "
-echo "| ___ \                                 | |  "
-echo "| |_/ /_ _  ___ ___  _ ____   _____ _ __| |_ "
-echo "|  __/ _  |/ __/ _ \\| \_ \ \ / / _ \ \__| __|"
-echo "| | | (_| | (_| (_) | | | \\ V /  __/ |  | |_ "  
-echo "\\_|  \\__,_|\\___\\___/|_| |_|\\_/ \\___|_|   \\__|"  
+echo "______      _____                          _   "
+echo "| ___ \    / ____|                        | |  "
+echo "| |_/ /_ _| |     ___  _ ____   _____ _ __| |_ "
+echo "|  __/ _  | |    / _ \\| \\_ \\ \\ / / _ \\ \\__| __|"
+echo "| | | (_| | |___| (_) | | | \\ V /  __/ |  | |_ "
+echo "\\_|  \\__,_|\\_____\\___/|_| |_|\\_/ \\___|_|   \\__|"
 echo -e '\n************************************************************************************'
+
 if [ ${check_error1} != 0  ]; then  
     echo "Your PR code test set translation check failed."
 else
@@ -99,4 +109,5 @@ else
 fi
 echo -e '************************************************************************************'
 
-exit ${check_error1}&&${check_error2}
+check_error=$((check_error1||check_error2))
+exit ${check_error}
