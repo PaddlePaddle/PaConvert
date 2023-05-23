@@ -247,22 +247,6 @@ https://github.com/PaddlePaddle/docs/pull/_prID
 ...
 ```
 
-提交PR时，请尽可能按照一下规范
-```bash
-### PR APIs
-<!-- APIs what you’ve done -->
-torch.transpose
-torch.Tensor._index_copy
-torch.permute
-...
-### PR Docs
-<!-- Describe the docs PR corresponding the APIs -->
-https://github.com/PaddlePaddle/docs/pull/_prID
-### Description
-<!-- Describe what you’ve done -->
-...
-```
-
 ## 步骤2：编写API映射关系
 
 首先你需要熟悉我们的 [Pytorch-Paddle API映射关系表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html#pytorch-1-13-paddle-2-4-api) ，映射关系相当于人工转换的思路，其是开发自动转换功能的前提，基于这些映射关系，我们才可以进行后续的开发。

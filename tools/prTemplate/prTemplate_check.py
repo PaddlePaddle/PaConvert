@@ -14,6 +14,7 @@
 
 import re
 import sys
+import textwrap
 
 import requests
 
@@ -100,7 +101,11 @@ def pull_request_event_template(event, repo, *args, **kwargs):
         check_pr_template, check_pr_template_message = checkPRTemplate(
             repo, BODY, CHECK_TEMPLATE
         )
-        Template = """Please follow the PR template as follows:
+
+        Template = textwrap.dedent(
+            """
+                    We list the example in details as follows!!
+                    ----------------------------------------------------------------
                     ### PR APIs
                     <!-- APIs what you've done -->
                     torch.transpose
@@ -113,11 +118,14 @@ def pull_request_event_template(event, repo, *args, **kwargs):
                     ### Description
                     <!-- Describe what you've done -->
                     ...
+                    ----------------------------------------------------------------
                     """
+        )
         print(f"check_pr_template: {check_pr_template} pr: {pr_num}")
         if check_pr_template is False:
+            print("ERROR MESSAGE: Please follow the PR template as follows!")
+            print(CHECK_TEMPLATE)
             print(Template)
-            print("ERROR MESSAGE:", check_pr_template_message)
             sys.exit(7)
         else:
             sys.exit(0)
