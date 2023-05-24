@@ -14,15 +14,28 @@
 
 set +x
 
-# use pre-commit 2.17
-if ! [[ $(pre-commit --version) == *"2.17.0"* ]]; then
-    pip install pre-commit==2.17.0 1>nul
+DEVELOP_IF="OFF"
+
+if [[ "$DEVELOP_IF" == "OFF" ]]; then
+    cd /workspace/$2/PaConvert/
+    PATH=$1
+else
+    # use pre-commit 2.17
+    if ! [[ $(pre-commit --version) == *"2.17.0"* ]]; then
+        pip install pre-commit==2.17.0 1>nul
+    fi
 fi
 
 # pre-commit multi-thread running.
 echo "Checking code style by pre-commit ..."
 pre-commit run --all-files;check_error=$?
-
+echo '************************************************************************************'
+echo "______      _____                          _   "
+echo "| ___ \    / ____|                        | |  "
+echo "| |_/ /_ _| |     ___  _ ____   _____ _ __| |_ "
+echo "|  __/ _  | |    / _ \\| \\_ \\ \\ / / _ \\ \\__| __|"
+echo "| | | (_| | |___| (_) | | | \\ V /  __/ |  | |_ "
+echo "\\_|  \\__,_|\\_____\\___/|_| |_|\\_/ \\___|_|   \\__|"
 echo -e '\n************************************************************************************'
 if [ ${check_error} != 0 ];then
     echo "Your PR code style check failed."
@@ -40,6 +53,6 @@ if [ ${check_error} != 0 ];then
 else
     echo "Your PR code style check passed."
 fi
-echo -e '************************************************************************************\n'
+echo '************************************************************************************'
 
 exit ${check_error}

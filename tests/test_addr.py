@@ -11,14 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-import os
-import sys
-
-sys.path.append(os.path.dirname(__file__) + "/../")
 import textwrap
 
-from tests.apibase import APIBase
+from apibase import APIBase
 
 obj = APIBase("torch.addr")
 
@@ -82,6 +77,19 @@ def test_case_5():
         import torch
         input = torch.tensor([1., 2., 3.])
         result = torch.addr(input=input, vec1=torch.tensor([4., 5., 6.]), vec2=torch.tensor([1., 2., 3.]), beta=3, alpha=3)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def _test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([4, 5, 6])
+        b = torch.tensor([1, 2, 3])
+        input = torch.tensor([1, 2, 3])
+        result = torch.addr(input, a, b)
         """
     )
     obj.run(pytorch_code, ["result"])

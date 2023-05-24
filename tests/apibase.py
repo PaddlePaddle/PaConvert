@@ -13,9 +13,11 @@
 # limitations under the License.
 
 import os
+import sys
 
 import numpy as np
 
+sys.path.append(os.path.dirname(__file__) + "/..")
 from paconvert.converter import Converter
 
 

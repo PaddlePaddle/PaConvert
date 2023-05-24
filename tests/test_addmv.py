@@ -12,13 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-import sys
-
-sys.path.append(os.path.dirname(__file__) + "/../")
 import textwrap
 
-from tests.apibase import APIBase
+from apibase import APIBase
 
 obj = APIBase("torch.addmv")
 
@@ -82,6 +78,19 @@ def test_case_5():
         import torch
         input = torch.tensor([1., 2.])
         result = torch.addmv(input=input, mat=torch.tensor([[1., 2., 3.], [4., 5., 6.]]), vec=torch.tensor([1., 2., 3.]), beta=3, alpha=3)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def _test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1, 2, 3], [4, 5, 6]])
+        b = torch.tensor([1, 2, 3])
+        input = torch.tensor([1, 2])
+        result = torch.addmv(input, a, b)
         """
     )
     obj.run(pytorch_code, ["result"])

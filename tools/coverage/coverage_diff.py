@@ -31,7 +31,7 @@ def _check_coverage_rate():
         for line in lines:
             line = line.strip()
             if line.startswith("Coverage:"):
-                coverage_rate = int(line[-4:-1])
+                coverage_rate = int(line[10:-1])
 
     os.system("rm temp.txt")
 

@@ -13,14 +13,9 @@
 # limitations under the License.
 #
 
-import os
-import sys
-
-sys.path.append(os.path.dirname(__file__) + "/../")
-
 import textwrap
 
-from tests.apibase import APIBase
+from apibase import APIBase
 
 obj = APIBase("torch.vdot")
 
@@ -71,3 +66,15 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["out"])
+
+
+def _test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor((1 +2j, 3 - 1j))
+        b = torch.tensor((2 +1j, 4 - 0j))
+        result = torch.vdot(input=a, other=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
