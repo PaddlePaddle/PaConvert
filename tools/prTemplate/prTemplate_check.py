@@ -68,7 +68,7 @@ def checkPRTemplate(repo, body, CHECK_TEMPLATE):
         res: True or False
     """
     res = False
-    note = r"<!-- Demo: https://github.com/PaddlePaddle/PaConvert/blob/master/README.md -->\r\n|<!-- APIs what you’ve done -->|<!-- Describe the docs PR corresponding the APIs -->|<!-- Describe what you’ve done -->"
+    note = r"<!-- Demo: https://github.com/PaddlePaddle/PaConvert/pull/71 -->\r\n|<!-- APIs what you’ve done -->|<!-- Describe the docs PR corresponding the APIs -->|<!-- Describe what you’ve done -->"
     if body is None:
         body = ""
     body = re.sub(note, "", body)
