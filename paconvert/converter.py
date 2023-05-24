@@ -30,7 +30,7 @@ from paconvert.transformer.import_transformer import ImportTransformer
 from paconvert.transformer.tensor_requires_grad_transformer import (
     TensorRequiresGradTransformer,
 )
-from paconvert.utils import get_unique_name
+from paconvert.utils import get_unique_name, PaddleAuxFile
 
 
 def listdir_nohidden(path):
@@ -77,8 +77,15 @@ class Converter:
             for item in exclude_dirs:
                 exclude_dir_list.append(os.path.abspath(item))
 
-        self.transfer_dir(in_dir, out_dir, exclude_dir_list)
+        if out_dir.endswith(".py"):
+            PaddleAuxFile(os.path.dirname(out_dir) + "/utils/paddle_aux.py")
+        else:
+            PaddleAuxFile(out_dir + "/utils/paddle_aux.py")
+        self.log_info(
+            "Will write paddle aux code to {}".format(PaddleAuxFile().fileName)
+        )
 
+        self.transfer_dir(in_dir, out_dir, exclude_dir_list)
         if self.show_unsupport:
             unsupport_map = sorted(
                 self.unsupport_map.items(), key=lambda x: x[1], reverse=True

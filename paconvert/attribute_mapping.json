@@ -1,40 +1,31 @@
 {
   "torch.Tensor.device": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.place",
-    "is_attribute": "True"
+    "paddle_api": "paddle.Tensor.place"
   },
   "torch.Tensor.dtype": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.dtype"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.grad": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.grad"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.ndim": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.ndim"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.T": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.T"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.real": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.real"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.imag": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.imag"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.is_leaf": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.is_leaf"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.shape": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.shape"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.requires_grad": {
     "Matcher": "TensorRequires_GradMatcher",
