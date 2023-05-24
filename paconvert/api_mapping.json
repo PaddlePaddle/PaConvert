@@ -8013,5 +8013,16 @@
   "torch.Size": {
     "Matcher": "SizeMatcher",
     "args_list": []
+  },
+  "torch.take": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.take",
+    "args_list": [
+      "input",
+      "index"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
   }
 }
