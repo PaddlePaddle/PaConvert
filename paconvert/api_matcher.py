@@ -3589,16 +3589,30 @@ class TensorSelectMatcher(BaseMatcher):
 class SincMatcher(BaseMatcher):
     def generate_code(self, kwargs):
 
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle.where({}==0, x=paddle.to_tensor([1.], dtype={}.dtype), y=paddle.sin(numpy.pi * {}) / (numpy.pi * {}))
-            """
-        )
-        code = API_TEMPLATE.format(
-            kwargs["input"], kwargs["input"], kwargs["input"], kwargs["input"]
-        )
         if "out" in kwargs and kwargs["out"] is not None:
-            code = "paddle.assign({}, output={})".format(code, kwargs["out"])
+            API_TEMPLATE = textwrap.dedent(
+                """
+                import numpy
+                paddle.assign(paddle.where({}==0, x=paddle.to_tensor([1.], dtype={}.dtype), y=paddle.sin(numpy.pi * {}) / (numpy.pi * {})), output={})
+                """
+            )
+            code = API_TEMPLATE.format(
+                kwargs["input"],
+                kwargs["input"],
+                kwargs["input"],
+                kwargs["input"],
+                kwargs["out"],
+            )
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                import numpy
+                paddle.where({}==0, x=paddle.to_tensor([1.], dtype={}.dtype), y=paddle.sin(numpy.pi * {}) / (numpy.pi * {}))
+                """
+            )
+            code = API_TEMPLATE.format(
+                kwargs["input"], kwargs["input"], kwargs["input"], kwargs["input"]
+            )
 
         return code
 
@@ -3645,6 +3659,7 @@ class TensorSincMatcher(BaseMatcher):
 
         API_TEMPLATE = textwrap.dedent(
             """
+            import numpy
             paddle.where({}==0, x=paddle.to_tensor([1.], dtype={}.dtype), y=paddle.sin(numpy.pi * {}) / (numpy.pi * {}))
             """
         )
@@ -3686,5 +3701,90 @@ class HistcMatcher(BaseMatcher):
             code = "{}({}).astype('float32')".format(
                 self.get_paddle_api(), self.kwargs_to_str(kwargs)
             )
+
+        return code
+
+
+class SpecialNdtriMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            2 ** (1/2) * paddle.erfinv(2*{}-1)
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["input"])
+        if "out" in kwargs and kwargs["out"] is not None:
+            code = "paddle.assign({}, output={})".format(code, kwargs["out"])
+
+        return code
+
+
+class TensorAtan2Matcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.atan2({}, {})
+            """
+        )
+        code = API_TEMPLATE.format(self.paddleClass, kwargs["other"])
+
+        return ast.parse(code).body
+
+
+class AdjointMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {} = list(range({}.ndim))
+            {}[-1], {}[-2] = {}[-2], {}[-1]
+            paddle.conj(paddle.transpose({}, perm={}))
+            """
+        )
+        perm = get_unique_name("perm")
+        code = API_TEMPLATE.format(
+            perm, kwargs["input"], perm, perm, perm, perm, kwargs["input"], perm
+        )
+
+        return code
+
+
+class TensorAdjointMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {} = list(range({}.ndim))
+            {}[-1], {}[-2] = {}[-2], {}[-1]
+            paddle.conj(paddle.transpose({}, perm={}))
+            """
+        )
+        perm = get_unique_name("perm")
+        code = API_TEMPLATE.format(
+            perm, self.paddleClass, perm, perm, perm, perm, self.paddleClass, perm
+        )
+
+        return ast.parse(code).body
+
+
+class SpecialXLog1pYMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {} * paddle.log1p({} if isinstance({}, paddle.Tensor) else paddle.to_tensor([{}]))
+            """
+        )
+        code = API_TEMPLATE.format(
+            kwargs["input"], kwargs["other"], kwargs["other"], kwargs["other"]
+        )
+        if "out" in kwargs and kwargs["out"] is not None:
+            code = "paddle.assign({}, output={})".format(code, kwargs["out"])
 
         return code

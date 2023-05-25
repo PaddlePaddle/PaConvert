@@ -23,7 +23,6 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import numpy
         a = torch.tensor([ 0.5950,-0.0872, 0, -0.2972])
         result = torch.sinc(a)
         """
@@ -35,7 +34,6 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import numpy
         a = torch.tensor([ 0.5950,-0.0872, 0, -0.2972])
         result = torch.sinc(input=a)
         """
@@ -47,7 +45,6 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import numpy
         a = torch.tensor([ 0.5950,-0.0872, 0, -0.2972])
         out = torch.tensor([ 0.5950,-0.0872, 0, -0.2972])
         result = torch.sinc(input=a, out=out)
@@ -60,7 +57,6 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import numpy
         a = torch.tensor([ 0.5950,-0.0872, 0, -0.2972])
         out = torch.tensor([ 0.5950,-0.0872, 0, -0.2972])
         result = torch.sinc(input=a+1, out=out)
