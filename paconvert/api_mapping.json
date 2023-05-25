@@ -549,6 +549,7 @@
       "end",
       "steps",
       "base",
+      "out",
       "dtype",
       "layout",
       "device",
@@ -2319,11 +2320,7 @@
       "input",
       "other",
       "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "other": "y"
-    }
+    ]
   },
   "torch.greater_equal": {
     "Matcher": "Num2TensorBinaryMatcher",
@@ -2419,11 +2416,7 @@
       "input",
       "other",
       "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "other": "y"
-    }
+    ]
   },
   "torch.less_equal": {
     "Matcher": "Num2TensorBinaryMatcher",
