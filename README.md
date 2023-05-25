@@ -231,7 +231,7 @@ bash scripts/run_ci.sh
 
 合入**必须**要求通过全部CI检测，原则上禁止强行Merge，如果有代码风格阻塞，可以讨论是否禁止某一条pre-commit规范，**必须**要求一个Reviewer的approve，禁止出现敏感代码。
 
-提交PR时，请尽可能按照一下规范
+提交PR时，请尽可能按照以下规范
 ```bash
 ### PR APIs
 <!-- APIs what you’ve done -->

@@ -68,7 +68,7 @@ def checkPRTemplate(repo, body, CHECK_TEMPLATE):
         res: True or False
     """
     res = False
-    note = r"<!-- Demo: https://github.com/PaddlePaddle/PaConvert/blob/master/README.md -->\r\n|<!-- APIs what you’ve done -->|<!-- Describe the docs PR corresponding the APIs -->|<!-- Describe what you’ve done -->"
+    note = r"<!-- Demo: https://github.com/PaddlePaddle/PaConvert/pull/71 -->\r\n|<!-- APIs what you’ve done -->|<!-- Describe the docs PR corresponding the APIs -->|<!-- Describe what you’ve done -->"
     if body is None:
         body = ""
     body = re.sub(note, "", body)
@@ -106,18 +106,41 @@ def pull_request_event_template(event, repo, *args, **kwargs):
             """
                     We list the example in details as follows!!
                     ----------------------------------------------------------------
+                    <!-- Demo: https://github.com/PaddlePaddle/PaConvert/pull/71 -->
                     ### PR APIs
                     <!-- APIs what you've done -->
+                    ```bash
+                    torch.dist
+                    torch.abs
                     torch.transpose
-                    torch.Tensor._index_copy
-                    torch.permute
-                    ...
+                    torch.addcmul
+                    ```
                     ### PR Docs
                     <!-- Describe the docs PR corresponding the APIs -->
-                    https://github.com/PaddlePaddle/docs/pull/_prID
+                    the docs PR corresponding the APIs is as follows:
+                    PR: https://github.com/PaddlePaddle/docs/pull/xxx
                     ### Description
                     <!-- Describe what you've done -->
-                    ...
+                    #### A total of 4 translatedd APIs.
+                    The corresponding configuration file is written in PaConvert/paconvert/api_mapping.json and the corresponding writing policy is in PaConvert/paconvert/api_matcher.py, the basic correspondence can be found as follows.
+                    * first-class APIs
+                    ```bash
+                    torch.dist-->GenericMatcher
+                    ```
+                    * second-class APIs
+                    ```bash
+                    torch.abs-->GenericMatcher
+                    ```
+                    * third-class APIs
+                    ```bash
+                    torch.transpose-->TransposeMatcher
+                    ```
+                    * fourth-class APIs
+                    ```bash
+                    torch.addcmul-->AddCMulMatcher
+                    ```
+                    #### others
+                    * add pull request template in .github/PULL_REQUEST_TEMPLATE.md
                     ----------------------------------------------------------------
                     """
         )
