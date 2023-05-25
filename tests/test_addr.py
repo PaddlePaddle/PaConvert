@@ -80,3 +80,16 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def _test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([4, 5, 6])
+        b = torch.tensor([1, 2, 3])
+        input = torch.tensor([1, 2, 3])
+        result = torch.addr(input, a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

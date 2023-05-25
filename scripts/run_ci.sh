@@ -31,3 +31,6 @@ bash scripts/code_consistency_check.sh
 
 # modeltest consistency 
 bash scripts/code_modeltest_check.sh
+
+# pipline test 
+bash scripts/code_pipeline_check.sh

@@ -52,3 +52,15 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def _test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        v = torch.tensor([[3., 6, 9], [1, 3, 5], [2, 2, 2]])
+        matrixs = (v, v, v)
+        result = torch.chain_matmul(*matrixs)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

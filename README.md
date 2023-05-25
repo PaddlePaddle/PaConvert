@@ -182,7 +182,7 @@ pip install -r requirements-dev.txt
 ```
 
 ### 代码审查
-代码审查包括两部分，一个是基于现有开源代码格式规范的审查，通过pre-commit来审查，另一个是基于自定义要求的审查，在tools/codestyle下。
+代码审查包括两部分，一个是基于现有开源代码格式规范的审查，通过pre-commit来审查，另一个是基于自定义要求的审查，在tools下。
 
 #### Pre-commit审查
 
@@ -207,28 +207,45 @@ pre-commit run --file [file_name]
 | PR-CI-CodeStyle   | scripts/code_style_check.sh |
 | PR-CI-UnitTest   | scripts/code_unittest_check.sh |
 | PR-CI-Coverage   | scripts/code_modeltest_check.sh |
+| PR-CI-Pipeline   | scripts/code_pipeline_check.sh |
+| PR-CI-PRTemplate   | scripts/code_PRtemplate_check.sh |
 ```
 
 运行对应CI文件需修改scriptes中*.sh的环境变量DEVELOP_IF="ON".
 
-
-本地单个CI测试方法
 ```bash
+本地单个CI测试方法
 bash scripts/code_modeltest_check.sh
 bash scripts/code_consistency_check.sh
 bash scripts/code_style_check.sh
 bash scripts/code_unittest_check.sh
 bash scripts/code_modeltest_check.sh
-```
+bash scripts/code_pipeline_check.sh
+bash scripts/code_PRtemplate_check.sh
 
 本地全部CI测试方法
-```bash
 bash scripts/run_ci.sh
 ```
 
 ### 合入规范
 
 合入**必须**要求通过全部CI检测，原则上禁止强行Merge，如果有代码风格阻塞，可以讨论是否禁止某一条pre-commit规范，**必须**要求一个Reviewer的approve，禁止出现敏感代码。
+
+提交PR时，请尽可能按照一下规范
+```bash
+### PR APIs
+<!-- APIs what you’ve done -->
+torch.transpose
+torch.Tensor._index_copy
+torch.permute
+...
+### PR Docs
+<!-- Describe the docs PR corresponding the APIs -->
+https://github.com/PaddlePaddle/docs/pull/_prID
+### Description
+<!-- Describe what you’ve done -->
+...
+```
 
 ## 步骤2：编写API映射关系
 
@@ -480,7 +497,7 @@ x.new_zeros(x.size())
 
 总的来说，转换规则及单测开发具有一定的挑战性，是一项非常细心以及考验思维广度的工作。
 
-# 注意事项
+## 开发注意事项
 
 **1) 代码精简与美观性**。要求尽可能只通过一行代码、一个API来实现（越少越好）。如果确实无法实现，才考虑通过多行代码、多个API来辅助实现该功能。
 

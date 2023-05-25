@@ -112,9 +112,7 @@ class GenericMatcher(BaseMatcher):
         return code
 
     def get_paddle_class_attribute_nodes(self, node):
-
         node.attr = ast.parse(self.get_paddle_api()).body[0].value.attr
-
         return node
 
 
@@ -124,6 +122,22 @@ class DeleteMatcher(BaseMatcher):
 
     def get_paddle_api(self):
         return "delete"
+
+
+class TensorDeleteMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        return "delete"
+
+    def get_paddle_class_attribute_nodes(self, node):
+        return "delete"
+
+
+class TensorUnchangeMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        return "unchange"
+
+    def get_paddle_class_attribute_nodes(self, node):
+        return "unchange"
 
 
 class IdentityMatcher(BaseMatcher):
@@ -488,7 +502,7 @@ class TensorMatcher(BaseMatcher):
 
 class RandintMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "high" in kwargs and kwargs["high"].startswith("["):
+        if "high" in kwargs and "," in kwargs["high"]:
             kwargs["shape"] = kwargs["high"]
             kwargs["high"] = kwargs["low"]
             kwargs["low"] = "0"
@@ -2031,9 +2045,7 @@ class TensorToMatcher(BaseMatcher):
 class TensorRequires_GradMatcher(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
-
         code = "not {}.stop_gradient".format(self.paddleClass)
-
         return ast.parse(code).body[0].value
 
 
@@ -3459,6 +3471,44 @@ class TensorHistcMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
+class TensorReshapeMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def reshape(self, *args, **kwargs):
+                if args:
+                    if len(args)==1 and isinstance(args[0], (tuple, list)):
+                        return paddle.reshape(self, args[0])
+                    else:
+                        return paddle.reshape(self, list(args))
+                elif kwargs:
+                    return paddle.reshape(self, **kwargs)
+
+            setattr(paddle.Tensor, 'reshape', reshape)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        new_args = self.parse_args(args)
+        new_kwargs = self.parse_kwargs(kwargs)
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import sys
+            sys.path.append('{}')
+            import paddle_aux
+            {}.reshape({})
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.get_aux_dir(),
+            self.paddleClass,
+            self.args_and_kwargs_to_str(new_args, new_kwargs),
+        )
+        return ast.parse(code).body
+
+
 class TensorIstftMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
@@ -3553,6 +3603,41 @@ class SincMatcher(BaseMatcher):
         return code
 
 
+class CumprodMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        kwargs["x"] = kwargs.pop("input").strip("\n")
+
+        if "out" in kwargs and kwargs["out"] is not None:
+            out_v = kwargs.pop("out").strip("\n")
+            code = "paddle.assign({}({}), output={})".format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v
+            )
+        else:
+            code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+        return code
+
+
+class CumsumMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        kwargs["x"] = kwargs.pop("input").strip("\n")
+
+        if "dim" in kwargs:
+            kwargs["axis"] = kwargs.pop("dim").strip("\n")
+
+        if "out" in kwargs and kwargs["out"] is not None:
+            out_v = kwargs.pop("out").strip("\n")
+            code = "paddle.assign({}({}), output={})".format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v
+            )
+        else:
+            code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+        return code
+
+
 class TensorSincMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
@@ -3585,5 +3670,21 @@ class SLogDetMatcher(BaseMatcher):
             """
         )
         code = API_TEMPLATE.format(kwargs["A"])
+
+        return code
+
+
+class HistcMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if "out" in kwargs and kwargs["out"] is not None:
+            out_v = kwargs.pop("out").strip("\n")
+            code = "paddle.assign({}({}).astype('float32'), output={})".format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v
+            )
+        else:
+            code = "{}({}).astype('float32')".format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs)
+            )
 
         return code
