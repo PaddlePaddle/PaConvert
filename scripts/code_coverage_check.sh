@@ -39,6 +39,7 @@ coverage run -m pytest
 
 echo '**************************start generating coverage.xml file******************************'
 coverage xml -o coverage.xml
+coverage html
 
 echo '************************start generating coverage rate report*****************************'
 diff-cover coverage.xml --compare-branch origin/master > temp.txt;check_error1=$?
