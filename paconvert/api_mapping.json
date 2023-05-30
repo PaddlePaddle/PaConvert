@@ -3664,7 +3664,7 @@
     ]
   },
   "torch.nn.ELU": {
-    "Matcher": "InplaceMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.ELU",
     "args_list": [
       "alpha",
@@ -3682,14 +3682,14 @@
     }
   },
   "torch.nn.Hardsigmoid": {
-    "Matcher": "InplaceMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Hardsigmoid",
     "args_list": [
       "inplace"
     ]
   },
   "torch.nn.Hardtanh": {
-    "Matcher": "InplaceMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Hardtanh",
     "args_list": [
       "min_val",
@@ -3702,14 +3702,14 @@
     }
   },
   "torch.nn.Hardswish": {
-    "Matcher": "InplaceMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Hardswish",
     "args_list": [
       "inplace"
     ]
   },
   "torch.nn.LeakyReLU": {
-    "Matcher": "InplaceMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.LeakyReLU",
     "args_list": [
       "negative_slope",
@@ -3731,21 +3731,21 @@
     ]
   },
   "torch.nn.ReLU": {
-    "Matcher": "InplaceMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.ReLU",
     "args_list": [
       "inplace"
     ]
   },
   "torch.nn.ReLU6": {
-    "Matcher": "InplaceMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.ReLU6",
     "args_list": [
       "inplace"
     ]
   },
   "torch.nn.RReLU": {
-    "Matcher": "InplaceMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.RReLU",
     "args_list": [
       "lower",
@@ -3754,14 +3754,14 @@
     ]
   },
   "torch.nn.SELU": {
-    "Matcher": "InplaceMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.SELU",
     "args_list": [
       "inplace"
     ]
   },
   "torch.nn.CELU": {
-    "Matcher": "InplaceMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.CELU",
     "args_list": [
       "alpha",
@@ -3773,7 +3773,7 @@
     "paddle_api": "paddle.nn.Sigmoid"
   },
   "torch.nn.SiLU": {
-    "Matcher": "InplaceMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Silu",
     "args_list": [
       "inplace"
@@ -3849,7 +3849,7 @@
     ]
   },
   "torch.nn.Dropout": {
-    "Matcher": "InplaceMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Dropout",
     "args_list": [
       "p",
@@ -3857,7 +3857,7 @@
     ]
   },
   "torch.nn.Dropout2d": {
-    "Matcher": "InplaceMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Dropout2D",
     "args_list": [
       "p",
@@ -3865,7 +3865,7 @@
     ]
   },
   "torch.nn.Dropout3d": {
-    "Matcher": "InplaceMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Dropout3D",
     "args_list": [
       "p",
@@ -3873,7 +3873,7 @@
     ]
   },
   "torch.nn.AlphaDropout": {
-    "Matcher": "InplaceMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.AlphaDropout",
     "args_list": [
       "p",
@@ -4217,7 +4217,7 @@
     }
   },
   "torch.nn.functional.relu": {
-    "Matcher": "InplaceMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.relu",
     "args_list": [
       "input",
