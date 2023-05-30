@@ -2118,7 +2118,7 @@
     }
   },
   "torch.mode": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "TupleAssignMatcher",
     "paddle_api": "paddle.mode",
     "args_list": [
       "input",
@@ -2404,7 +2404,7 @@
     }
   },
   "torch.kthvalue": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "TupleAssignMatcher",
     "paddle_api": "paddle.kthvalue",
     "args_list": [
       "input",
@@ -2533,7 +2533,7 @@
     }
   },
   "torch.topk": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "TupleAssignMatcher",
     "paddle_api": "paddle.topk",
     "args_list": [
       "input",
@@ -2700,7 +2700,7 @@
     }
   },
   "torch.diff": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "DiffMatcher",
     "paddle_api": "paddle.diff",
     "args_list": [
       "input",
@@ -2754,7 +2754,7 @@
       "input": "x"
     },
     "paddle_default_kwargs": {
-      "axis": -1
+      "axis": 1
     }
   },
   "torch.flipud": {
@@ -3161,7 +3161,6 @@
     }
   },
   "torch.vdot": {
-    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.dot",
     "args_list": [
       "input",

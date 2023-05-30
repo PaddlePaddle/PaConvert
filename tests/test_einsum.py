@@ -24,7 +24,7 @@ def _test_case_1():
         """
         import torch
         x = torch.tensor([[1, 2, 3],[6, 2, 9], [1, 2, 3]])
-        result = torch.einsum('ii->i', x)
+        result = torch.einsum('ij->', x)
         """
     )
     obj.run(pytorch_code, ["result"])
