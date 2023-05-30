@@ -3324,10 +3324,7 @@
     }
   },
   "torch.chain_matmul": {
-    "Matcher": "Chain_MatmulMatcher",
-    "args_list": [
-      "out"
-    ]
+    "Matcher": "Chain_MatmulMatcher"
   },
   "torch.matrix_power": {
     "Matcher": "GenericMatcher",
