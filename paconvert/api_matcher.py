@@ -3558,3 +3558,11 @@ class HistcMatcher(BaseMatcher):
             )
 
         return code
+
+
+class InplaceMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if "inplace" in kwargs and kwargs["inplace"] != "(False)":
+            return None
+        return GenericMatcher.generate_code(self, kwargs)
