@@ -3161,7 +3161,6 @@
     }
   },
   "torch.vdot": {
-    "paddle_api": "paddle.dot",
     "args_list": [
       "input",
       "other",
