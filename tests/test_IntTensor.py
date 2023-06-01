@@ -109,6 +109,7 @@ def test_case_7():
     obj.run(pytorch_code, ["result"])
 
 
+# paddle not support 0-size Tensor
 def _test_case_8():
     pytorch_code = textwrap.dedent(
         """

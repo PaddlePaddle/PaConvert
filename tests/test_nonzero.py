@@ -42,6 +42,7 @@ def test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
+# When as_tuple is specified, the return value types are inconsistent, pytorch is c * [n], paddle is c * [n, 1], and c is the number of non-zero values.
 def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
@@ -56,6 +57,7 @@ def _test_case_3():
     obj.run(pytorch_code, ["result"])
 
 
+# When as_tuple is specified, the return value types are inconsistent, pytorch is c * [n], paddle is c * [n, 1], and c is the number of non-zero values.
 def _test_case_4():
     pytorch_code = textwrap.dedent(
         """

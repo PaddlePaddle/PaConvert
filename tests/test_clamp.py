@@ -52,6 +52,7 @@ def test_case_3():
     obj.run(pytorch_code, ["result"])
 
 
+# paddle does not support specifying multiple upper or lower bounds. By default, only the first element is taken when passed into a list.
 def _test_case_4():
     pytorch_code = textwrap.dedent(
         """
@@ -64,6 +65,7 @@ def _test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
+# paddle does not support specifying multiple upper or lower bounds. By default, only the first element is taken when passed into a list.
 def _test_case_5():
     pytorch_code = textwrap.dedent(
         """

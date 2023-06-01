@@ -19,6 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.sort")
 
 
+# paddle does not return index.
 def _test_case_1():
     pytorch_code = textwrap.dedent(
         """

@@ -32,6 +32,7 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
+# The size parameter of paddle does not support a single number.
 def _test_case_2():
     pytorch_code = textwrap.dedent(
         """

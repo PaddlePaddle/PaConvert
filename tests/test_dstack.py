@@ -19,6 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.dstack")
 
 
+# torch will reshape 1-D and 2-D inputs into 3-D, and then operate along the third axis. paddle directly using stack, which is inconsistent in implementation.
 def _test_case_1():
     pytorch_code = textwrap.dedent(
         """

@@ -54,6 +54,7 @@ def test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
+# paddle does not support complex number
 def _test_case_3():
     pytorch_code = textwrap.dedent(
         """

@@ -3373,3 +3373,10 @@ class TupleAssignMatcher(BaseMatcher):
         else:
             code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
             return code.strip("\n")
+
+
+class FloorDivideMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["other"] = "paddle.to_tensor({})".format(kwargs.pop("other").strip("\n"))
+
+        return GenericMatcher.generate_code(self, kwargs)

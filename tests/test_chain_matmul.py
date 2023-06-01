@@ -54,6 +54,7 @@ def test_case_3():
     obj.run(pytorch_code, ["result", "out"])
 
 
+# paddle does not support tuple or list input
 def _test_case_4():
     pytorch_code = textwrap.dedent(
         """

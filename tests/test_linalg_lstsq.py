@@ -19,6 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.linalg.lstsq")
 
 
+# The third return value's type of torch is int64 and the third return value's type of paddle is 'int32'.
 def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
@@ -31,6 +32,7 @@ def _test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
+# The third return value's type of torch is int64 and the third return value's type of paddle is 'int32'.
 def _test_case_2():
     pytorch_code = textwrap.dedent(
         """

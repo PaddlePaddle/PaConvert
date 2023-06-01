@@ -83,6 +83,7 @@ def test_case_5():
     obj.run(pytorch_code, ["result"])
 
 
+# paddle does not support integer input
 def _test_case_6():
     pytorch_code = textwrap.dedent(
         """

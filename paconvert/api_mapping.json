@@ -1547,7 +1547,7 @@
     }
   },
   "torch.floor_divide": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "FloorDivideMatcher",
     "paddle_api": "paddle.floor_divide",
     "args_list": [
       "input",

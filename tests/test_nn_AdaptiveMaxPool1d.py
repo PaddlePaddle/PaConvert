@@ -61,6 +61,7 @@ def test_case_3():
     obj.run(pytorch_code, ["result"])
 
 
+# The second return value's type of torch is int64 and the second return value's type of paddle is int32.
 def _test_case_4():
     pytorch_code = textwrap.dedent(
         """

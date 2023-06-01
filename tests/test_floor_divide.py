@@ -20,38 +20,40 @@ from apibase import APIBase
 obj = APIBase("torch.divide")
 
 
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([4.0, 3.0])
-        b = torch.tensor([2.0, 2.0])
+        a = torch.tensor([4, 3])
+        b = torch.tensor([2, 2])
         result = torch.floor_divide(a, b)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.floor_divide(torch.tensor([4.0, 3.0]), torch.tensor([2.0, 2.0]))
+        result = torch.floor_divide(torch.tensor([4, 3]), torch.tensor([2, 2]))
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_3():
+# paddle only support Tensor
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.floor_divide(input=torch.tensor([4.0, 3.0]), other=2)
+        result = torch.floor_divide(input=torch.tensor([4, 3]), other=2)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
+# paddle not support float input
 def _test_case_4():
     pytorch_code = textwrap.dedent(
         """

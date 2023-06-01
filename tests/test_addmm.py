@@ -19,6 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.addmm")
 
 
+# paddle does not support integer input
 def _test_case_1():
     pytorch_code = textwrap.dedent(
         """

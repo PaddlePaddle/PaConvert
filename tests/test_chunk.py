@@ -40,6 +40,7 @@ def test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
+# The chunks parameters of paddle must be evenly divided
 def _test_case_3():
     pytorch_code = textwrap.dedent(
         """

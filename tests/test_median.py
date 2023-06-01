@@ -30,6 +30,7 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
+# When dim is specified, torch returns an index, whereas paddle does not.
 def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -41,6 +42,7 @@ def _test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
+# When dim is specified, torch returns an index, whereas paddle does not.
 def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
@@ -52,6 +54,7 @@ def _test_case_3():
     obj.run(pytorch_code, ["result"])
 
 
+# When dim is specified, torch returns an index, whereas paddle does not.
 def _test_case_4():
     pytorch_code = textwrap.dedent(
         """
@@ -63,6 +66,7 @@ def _test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
+# When dim is specified, torch returns an index, whereas paddle does not.
 def _test_case_5():
     pytorch_code = textwrap.dedent(
         """
@@ -75,6 +79,7 @@ def _test_case_5():
     obj.run(pytorch_code, ["result"])
 
 
+# When dim is specified, torch returns an index, whereas paddle does not.
 def _test_case_6():
     pytorch_code = textwrap.dedent(
         """

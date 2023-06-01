@@ -30,6 +30,7 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
+# paddle only support Tensor
 def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -75,6 +76,7 @@ def test_case_5():
     obj.run(pytorch_code, ["result", "out"])
 
 
+# The data types of two inputs must be the same. When two input types are different, type conversion is not performed automatically.
 def _test_case_6():
     pytorch_code = textwrap.dedent(
         """

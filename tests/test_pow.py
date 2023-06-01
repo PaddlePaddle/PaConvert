@@ -30,6 +30,7 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
+# The data types of two inputs must be the same. When two input types are different, type conversion is not performed automatically.
 def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -42,6 +43,7 @@ def _test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
+# The data types of two inputs must be the same. When two input types are different, type conversion is not performed automatically.
 def _test_case_3():
     pytorch_code = textwrap.dedent(
         """

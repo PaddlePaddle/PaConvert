@@ -30,6 +30,7 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
+# When dim is specified, torch returns an index, whereas paddle does not.
 def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
