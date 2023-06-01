@@ -3,7 +3,7 @@
 **Pa**ddlePaddle Code **Convert** Toolkits
 
 # 最近更新
-- 增加了约100个高频Pytorch API的转换支持
+- 当前共支持约900个Pytorch API的意见转换
 
 # 概述
 PaConvert是一个代码转换工具，能自动将其它深度学习框架训练或推理的**代码**，转换为PaddlePaddle的**代码**，方便**代码迁移**。
