@@ -11,42 +11,43 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.ravel")
+obj = APIBase("torch.special.sinc")
 
 
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]])
-        result = a.ravel()
+        a = torch.tensor([ 0.5950,-0.0872, 0, -0.2972])
+        result = torch.special.sinc(a)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([[4, 9], [23, 2]]).ravel()
+        a = torch.tensor([ 0.5950,-0.0872, 0, -0.2972])
+        result = torch.special.sinc(input=a)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4., 9.], [23., 2.]])
-        result = a.ravel()
+        a = torch.tensor([ 0.5950,-0.0872, 0, -0.2972])
+        out = torch.tensor([ 0.5950,-0.0872, 0, -0.2972])
+        result = torch.special.sinc(input=a, out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["out"])
