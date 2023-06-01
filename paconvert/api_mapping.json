@@ -5135,8 +5135,7 @@
     ]
   },
   "torch.Tensor.abs": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.abs"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.abs_": {},
   "torch.Tensor.absolute": {
@@ -5247,8 +5246,7 @@
   },
   "torch.Tensor.asin_": {},
   "torch.Tensor.arcsin": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.asin"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.arcsin_": {},
   "torch.Tensor.atan": {
@@ -5257,8 +5255,7 @@
   },
   "torch.Tensor.atan_": {},
   "torch.Tensor.arctan": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.atan"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.arctan_": {},
   "torch.Tensor.atan2": {
@@ -5350,8 +5347,7 @@
     ]
   },
   "torch.Tensor.ceil": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.ceil"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.ceil_": {
     "Matcher": "GenericMatcher",
@@ -5415,8 +5411,7 @@
     ]
   },
   "torch.Tensor.conj": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.conj"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.cos": {
     "Matcher": "GenericMatcher",
@@ -5468,8 +5463,7 @@
     }
   },
   "torch.Tensor.deg2rad": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.deg2rad"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.detach": {
     "Matcher": "GenericMatcher",
@@ -5673,13 +5667,11 @@
     }
   },
   "torch.Tensor.floor": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.floor"
+    "Matcher": "TensorUnchangeMatcher"
   },
-  "torch.Tensor.is_cuda": {
-    "Matcher": "TensorIsCudaMatcher",
-    "args_list": []
-  },
+  "torch.Tensor.is_cuda": {},
+  "torch.Tensor.is_quantized": {},
+  "torch.Tensor.is_meta": {},
   "torch.Tensor.floor_": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.floor_"
@@ -5853,8 +5845,7 @@
     "paddle_api": "paddle.Tensor.is_floating_point"
   },
   "torch.Tensor.item": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.item"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.kthvalue": {
     "Matcher": "GenericMatcher",
@@ -5933,8 +5924,7 @@
     "paddle_api": "paddle.Tensor.log10"
   },
   "torch.Tensor.log1p": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.log1p"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.log2": {
     "Matcher": "GenericMatcher",
@@ -6238,8 +6228,7 @@
     "paddle_api": "paddle.Tensor.size"
   },
   "torch.Tensor.nonzero": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.nonzero"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.norm": {
     "Matcher": "GenericMatcher",
@@ -6295,8 +6284,7 @@
     }
   },
   "torch.Tensor.rad2deg": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.rad2deg"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.reciprocal": {
     "Matcher": "GenericMatcher",
@@ -6364,24 +6352,20 @@
     "paddle_api": "paddle.Tensor.rsqrt_"
   },
   "torch.Tensor.sign": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.sign"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.sin": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.sin"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.sinh": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.sinh"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.asinh": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.asinh"
   },
   "torch.Tensor.arcsinh": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.arcsinh"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.sort": {
     "Matcher": "GenericMatcher",
@@ -6402,8 +6386,7 @@
     ]
   },
   "torch.Tensor.sqrt": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.sqrt"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.sqrt_": {
     "Matcher": "GenericMatcher",
@@ -6472,12 +6455,10 @@
     }
   },
   "torch.Tensor.tan": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.tan"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.tanh": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.tanh"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.tanh_": {
     "Matcher": "GenericMatcher",
@@ -6488,12 +6469,10 @@
     "paddle_api": "paddle.Tensor.atanh"
   },
   "torch.Tensor.arctanh": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.arctanh"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.tolist": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.tolist"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.topk": {
     "Matcher": "GenericMatcher",
@@ -6509,8 +6488,7 @@
     }
   },
   "torch.Tensor.trace": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.trace"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.true_divide": {
     "Matcher": "GenericMatcher",
@@ -6523,8 +6501,7 @@
     }
   },
   "torch.Tensor.trunc": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.trunc"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.unbind": {
     "Matcher": "GenericMatcher",
@@ -6732,8 +6709,7 @@
   "torch.Tensor.q_per_channel_axis": {},
   "torch.Tensor.random_": {},
   "torch.Tensor.ravel": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.flatten"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.record_stream": {},
   "torch.Tensor.renorm_": {},
@@ -7181,9 +7157,7 @@
     "Matcher": "ErfCMatcher"
   },
   "torch.Tensor.erfc_": {},
-  "torch.Tensor.expm1": {
-    "Matcher": "TensorExpM1Matcher"
-  },
+  "torch.Tensor.expm1": {},
   "torch.Tensor.expm1_": {},
   "torch.Tensor.expand": {
     "Matcher": "TensorExpandMatcher",
@@ -7268,8 +7242,7 @@
     "paddle_api": "paddle.Tensor.indices"
   },
   "torch.Tensor.values": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.values"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.int_repr": {},
   "torch.Tensor.isposinf": {},
@@ -7921,8 +7894,7 @@
     "paddle_api": "paddle.nn.Layer.train"
   },
   "torch.nn.Module.eval": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.Layer.eval"
+    "Matcher": "TensorUnchangeMatcher"
   },
   "torch.nn.Module.requires_grad_": {},
   "torch.nn.Module.zero_grad": {},

@@ -470,22 +470,54 @@ class TransposeMatcher(BaseMatcher):
 }
 ```
 
-该方式适用 [Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html) 中的如下分类：
+基于[Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html)，其中的 **无参数、参数完全一致、仅paddle 参数更多** 分类，均符合该情形。
 
-- 所有用法均适用：无参数、参数完全一致、仅paddle 参数更多
-- 部分用法适用：仅参数名不一致但未指定关键字、Pytorch参数更多但未使用torch多的参数
+**2）部分用法需要辅助代码**
 
-对于 `部分用法适用` 的，需要在AST中加入判断。
+对于不符合上述情形的API，可能API的部分用法 **不需要辅助代码**，部分用法 **需要辅助代码**。对于 **代码保持完全不变，无法直接运行** 的用法场景，我们在后台对Paddle的相应类方法进行一些修改，使得在 **转换前后代码保持不变** 的前提下，仍可正常运行。
 
-**2）需要辅助代码**
+**开发方式**：在 `get_paddle_class_nodes` 或 `generate_code` 增加相应的判断，对于 **不需要辅助代码** 即可运行的用法，直接返回 'unchange'；对于 **需要辅助代码** 才可运行的用法，首先要额外重写 `generate_aux_code` 函数，其是模仿Pytorch类API用法的辅助代码，然后显式的调用 `write_aux_code` ，此时将在后台模块里注入辅助代码，最后原封不动返回原代码的调用形式并在此基础上增加 `import paddle_aux` 从而导入辅助模块。
 
-判断标准：**代码保持完全不变，无法直接运行**。此时我们在后台对Paddle的相应类方法进行一些修改，使得在 **转换前后代码保持不变** 的前提下，仍可正常运行。开发时，首先要在 `get_paddle_class_nodes` 或 `generate_code` 里增加相应的 `import paddle_aux` 代码（后台辅助module），以及与原来一致的调用代码，然后还要额外重写 `generate_aux_code` 函数，使得后台注入辅助代码，来调整该类方法。
+由于 **辅助代码** 会不可避免的改变一些Paddle API的用法外观，因此需要尽可能减少使用辅助代码。我们需要判断用户的不同用法，只对必要的情形使用辅助代码。
 
-以 `torch.Tensor.reshape` 为例：
+基于[Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html)，可参考以下原则来判断是否需要辅助代码：
+
+|分类|不需要辅助代码的用法|需要辅助代码的用法|
+|---|---|---|
+|仅参数名不一致|未指定关键字参数|指定了关键字参数|
+|torch参数更多|未使用torch多的参数|使用了torch多的参数|
+|参数不一致|未使用不一致的用法|使用了不一致的用法|
+|其他分类||全部需要辅助代码|
+
+以 `torch.Tensor.reshape` 为例，其映射关系分类属于 **参数不一致**，是由于torch的shape即可以使用可变参数，也可以使用list/tuple，而Paddle仅支持list/tuple，因此我们只需对**可变参数**的用法使用辅助代码，其他用法下直接返回 'unchange' 即可，这样可最小力度的减少辅助代码。
 
 ```
 class TensorReshapeMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def reshape(self, *args, **kwargs):
+                if args:
+                    if len(args)==1 and isinstance(args[0], (tuple, list)):
+                        return paddle.reshape(self, args[0])
+                    else:
+                        return paddle.reshape(self, list(args))
+                elif kwargs:
+                    return paddle.reshape(self, **kwargs)
+
+            setattr(paddle.Tensor, 'reshape', reshape)
+            """
+        )
+        return CODE_TEMPLATE
+
     def get_paddle_class_nodes(self, func, args, kwargs):
+        if len(args) == 1 and isinstance(args[0], (ast.List, ast.Tuple)):
+            return "unchange"
+
+        if len(kwargs) == 1 and "shape" in kwargs:
+            return "unchange"
+
+        self.write_aux_code()
         self.parse_func(func)
         new_args = self.parse_args(args)
         new_kwargs = self.parse_kwargs(kwargs)
@@ -504,22 +536,6 @@ class TensorReshapeMatcher(BaseMatcher):
         )
         return ast.parse(code).body
 
-    def generate_aux_code(self):
-        CODE_TEMPLATE = textwrap.dedent(
-            """
-            def reshape(self, *args, **kwargs):
-                if args:
-                    if len(args)==1 and isinstance(args[0], (tuple, list)):
-                        return paddle.reshape(self, args[0])
-                    else:
-                        return paddle.reshape(self, list(args))
-                elif kwargs:
-                    return paddle.reshape(self, **kwargs)
-
-            setattr(paddle.Tensor, 'reshape', reshape)
-            """
-        )
-        return CODE_TEMPLATE
 ```
 
 对应的json配置为：
@@ -528,6 +544,20 @@ class TensorReshapeMatcher(BaseMatcher):
 "torch.Tensor.reshape": {
     "Matcher": "TensorReshapeMatcher"
 }
+```
+
+需要注意的是，在使用辅助代码时，不仅要原封不动返回原代码的调用形式，还要加上 `import paddle_aux` 来导入辅助模块从而保证付主代码在运行时会生效。即：
+
+```
+转换前：
+x.reshape(2, 3)
+
+转换后：
+import sys
+sys.append('/paddle_project/utils')
+import paddle_aux
+
+x.reshape(2, 3)
 ```
 
 **开发经验技巧**
@@ -637,8 +667,9 @@ x.new_zeros(x.size())
 
 总的来说，转换规则及单测开发具有一定的挑战性，是一项非常细心以及考验思维广度的工作。
 
-## 开发注意事项
 
-**1) 代码精简与美观性**。要求尽可能只通过一行代码、一个API来实现（越少越好）。如果确实无法实现，才考虑通过多行代码、多个API来辅助实现该功能。
+**开发规范**：
 
-**2) 维护与负责**。由于单测可能覆盖不全面，导致引入了非常隐蔽的用法bug，开发者需要对自身开发的API转换规则负责并后续维护。解决新发现的该API的用法case问题。
+**1) 代码精简与美观性**。要求尽可能只通过一行代码、一个API来实现（代码越少越好）。如果确实无法实现，才考虑通过多行代码、多个API来辅助实现该功能。
+
+**2) 维护与负责**。由于单测可能覆盖不全面，导致引入了非常隐蔽的用法bug，开发者需要对自己开发的API转换规则，负责后续维护。解决新发现的用法case问题。

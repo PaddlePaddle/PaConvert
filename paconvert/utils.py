@@ -67,3 +67,25 @@ class PaddleAuxFile(object):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
+
+
+def log_debug(logger, msg, file=None, line=None):
+    if file:
+        if line:
+            msg = "[{}:{}] {}".format(file, line, msg)
+        else:
+            msg = "[{}] {}".format(file, msg)
+    else:
+        msg = "{}".format(msg)
+    logger.debug(msg)
+
+
+def log_info(logger, msg, file=None, line=None):
+    if file:
+        if line:
+            msg = "[{}:{}] {}".format(file, line, msg)
+        else:
+            msg = "[{}] {}".format(file, msg)
+    else:
+        msg = "{}".format(msg)
+    logger.info(msg)
