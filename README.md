@@ -302,7 +302,7 @@ paddle_default_kwargs :可选，当 paddle 参数更多 或者 参数默认值�
 
 对于一个待开发API，首先依据步骤1的映射关系，确定其属于哪种分类情况。
 
-对于以下分类情况，都可以通过框架封装好的通用转换器：`GenericMatcher` 来处理：
+对于以下映射关系的分类，都可以通过框架封装好的通用转换器：`GenericMatcher` 来处理：
 
 - 第1类 `API可直接映射` ：
     - 无参数：无需其他配置
@@ -336,26 +336,54 @@ paddle_default_kwargs :可选，当 paddle 参数更多 或者 参数默认值�
 
 该步骤有一定难度，需要对AST相关知识有一定熟悉。
 
-首先在 `paconvert/api_matcher.py` 中增加自定义的Matcher，继承自 `BaseMatcher` 基类，然后在json中配置必选的 `Matcher` 和 `args_list` 字段，其他字段不做要求，可选配 `paddle_api` 字段。
+首先在 `paconvert/api_matcher.py` 中增加自定义的Matcher，继承自 `BaseMatcher` 基类，然后在json中配置必选的 `Matcher` 字段 和 `args_list(类方法无需配置)` 字段，其他字段不做要求，可选配 `paddle_api` 字段。
 
-根据 **是否含可变参数、是否为类方法调用** ，我们需要分别重写父类 `BaseMatcher` 的不同函数。
+根据 **是否为类方法** ，共有三种开发方式：
+
+### 方式一：适用非类方法
+
+判断标准：**所有不是类方法的API**。
+
+根据 **是否支持可变参数** ，又分为以下两种情况：
 
 > 可变参数是指Python语法中的`*args` 用法，例如 `torch.empty(*size)`，则含可变参数。通常来讲，大多数API不含可变参数。
 
-**a) 不含可变参数的API**，则重写：
-* `generate_code()`: 传入的是字符串字典形式的关键字参数，即kwargs，根据该字典，组装字符串形式的代码并返回。
+**1）支持可变参数**，则重写：
 
-**b) 含可变参数的API，且为类方法调用**，则重写：
-* `get_paddle_nodes()`: 传入的是AST形式的位置参数和关键字参数，即args和kwargs，需针对AST语法进行处理，组装代码并生成新的AST节点返回。
+* `get_paddle_nodes(self, args, kwargs)`: 传入的是AST形式的位置参数和关键字参数（其中args为ast.Node的列表，kwargs为ast.keyword的列表），需针对AST语法进行处理，组装代码并生成新的AST节点返回。
 
-**c) 含可变参数的API，且不为类方法调用**，则重写：
-* `get_paddle_class_nodes()`: 主要用来处理类成员函数，与`get_paddle_nodes`不同的地方在于传入了func，根据这个func可以找到完整的调用链，首先需使用 `self.parse_func(func)` ，解析外部的调用链，然后 `self.paddleClass` 会存储调用类方法的对象。如 `x.abs().add(y)`中，对于`add(y)` 调用来说，它调用类方法的对象为 `x.abs()` ，即 `self.paddleClass='x.abs()'` ，通过 `self.paddleClass` 来组装代码，并生成新的AST节点返回。
+以 `torch.chain_matmul` 为例，由于其支持可变参数，可以传入任意个矩阵，因此重新 `get_paddle_nodes` 函数，通过`parse_args`、`parse_kwargs`来解析AST形式的参数为字符串，具体代码如下：
 
-对于类方法调用的API，由于难以准确识别，我们根据以下原则来开发。（待补充，暂无需关注）
+```
+class Chain_MatmulMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        new_args = self.parse_args(args)
+        new_kwargs = self.parse_kwargs(kwargs)
 
-以 `torch.transpose` 为例，首先参照 [torch.transpose映射关系](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/ops/torch.transpose.md)，其属于 **参数用法不一致** 的情况，不符合 `GenericMatcher` 的适用范围。因此需要编写自定义Matcher：`TransposeMatcher` 。
+        code = "{}".format(new_args[0])
+        for arg in new_args[1:]:
+            code = code + " @ {}".format(arg)
+        if "out" in new_kwargs and new_kwargs["out"] is not None:
+            code = "paddle.assign({}, output={})".format(code, new_kwargs["out"])
 
-由于 `torch.transpose` 不含可变参数，因此重新 `generate_code` 函数，具体代码如下：
+        return ast.parse(code).body
+```
+
+对应的json配置为：
+
+```
+"torch.chain_matmul": {
+    "Matcher": "Chain_MatmulMatcher",
+}
+```
+
+**2）不支持可变参数**，则重写：
+
+* `generate_code(self, kwargs)`: 传入的kwargs是 `字符串字典` 形式的关键字参数，根据kwargs组装字符串形式的代码并返回。其相比 `get_paddle_nodes` 更为high_level一些，无需自行处理AST节点与字符串的各种解析、转换，直接处理纯字符串组装代码即可，相对容易些。
+
+以 `torch.transpose` 为例，首先参照 [torch.transpose映射关系](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/ops/torch.transpose.md)，其属于 **参数不一致** 的情况，不符合 `GenericMatcher` 的适用范围。因此需要编写自定义Matcher：`TransposeMatcher` 。
+
+由于 `torch.transpose` 不支持可变参数，因此重新 `generate_code` 函数，具体代码如下：
 
 ```
 class TransposeMatcher(BaseMatcher):
@@ -389,7 +417,120 @@ class TransposeMatcher(BaseMatcher):
 }
 ```
 
-**开发经验技巧**：
+### 方式二：适用于类方法且不会误识别
+
+由于 **类方法** 在识别时可能会造成误识别，如果该API具有独特的深度学习API名称，例如 `x.backward()` 、 `sgd.step()` ，则不会造成误识别问题，使用本方式开发。
+
+判断标准：**类方法API且具有独特的API名**。需要与 numpy、scipy、python原生class(list/tuple/set/dict等)的类方法进行对比，若有任意相同API，则不符合此标准。
+
+根据 **是否支持可变参数** ，又分为以下两种情况：
+
+**1）支持可变参数**，则重写：
+
+* `get_paddle_class_nodes()`: 主要用来处理类成员函数，与 `get_paddle_nodes` 不同的地方在于传入了func，根据这个func可以找到完整的调用链，首先需使用 `self.parse_func(func)` ，解析外部的调用链，然后 `self.paddleClass` 会存储调用类方法的对象。如 `x.abs().add(y)`中，对于`add(y)` 调用来说，它调用类方法的对象为 `x.abs()` ，即 `self.paddleClass='x.abs()'` ，通过 `self.paddleClass` 来组装新的调用代码，并生成新的AST节点返回。
+
+
+**2）不支持可变参数**，则重写：
+
+* `generate_code(self, kwargs)`: 传入的是字符串字典形式的关键字参数，即kwargs，根据该字典，组装字符串形式的代码并返回。其相比 `get_paddle_class_nodes` 更为high_level一些，已经进行了 `self.paddleClass`的设置，也无需自行处理AST节点与字符串的各种解析、转换，直接处理纯字符串组装代码即可，相对容易些。
+
+以 `torch.Tensor.repeat_interleave` 为例，由于该API名称很长，不容易出现误识别；numpy等其他库也没有 `ndarray.repeat_interleave` API，因此符合此标准。参照 [torch.transpose映射关系](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/ops/torch.transpose.md)，其属于 **仅参数名不一致** 的情况，符合 `GenericMatcher` 的适用范围。因此只需配置json字段即可，其中已编写了通用的 `generate_code` 函数。
+
+
+```
+"torch.Tensor.repeat_interleave": {
+  "Matcher": "GenericMatcher",
+  "paddle_api": "paddle.Tensor.repeat_interleave",
+  "args_list": [
+    "repeats",
+    "dim",
+    "output_size"
+  ],
+  "kwargs_change": {
+    "dim": "axis"
+  }
+}
+```
+
+所有不符合开发方式二的类API，均采用方式三开发。
+
+### 方式三：适用于类方法但容易误识别
+
+方式三与方式二的区别在于，其原理为**保持转换前后代码不变，则可100%消除误转换的负面影响**。同时通过后台对API的调整，来保证代码在完全不变的前提下，仍可以正常运行。根据是否需要辅助代码，其又分为 **需要辅助代码** 、**不需要辅助代码** 两种情况。
+
+**1）不需要辅助代码**
+
+判断标准：**代码保持完全不变，即可直接正常运行**。此时直接在json中配置已封装好的 `TensorUnchangeMatcher` 即可，无需编写新的Matcher。
+
+以 `torch.Tensor.tan` 为例：
+
+```
+"torch.Tensor.tan": {
+    "Matcher": "TensorUnchangeMatcher"
+}
+```
+
+该方式适用 [Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html) 中的如下分类：
+
+- 所有用法均适用：无参数、参数完全一致、仅paddle 参数更多
+- 部分用法适用：仅参数名不一致但未指定关键字、Pytorch参数更多但未使用torch多的参数
+
+对于 `部分用法适用` 的，需要在AST中加入判断。
+
+**2）需要辅助代码**
+
+判断标准：**代码保持完全不变，无法直接运行**。此时我们在后台对Paddle的相应类方法进行一些修改，使得在 **转换前后代码保持不变** 的前提下，仍可正常运行。开发时，首先要在 `get_paddle_class_nodes` 或 `generate_code` 里增加相应的 `import paddle_aux` 代码（后台辅助module），以及与原来一致的调用代码，然后还要额外重写 `generate_aux_code` 函数，使得后台注入辅助代码，来调整该类方法。
+
+以 `torch.Tensor.reshape` 为例：
+
+```
+class TensorReshapeMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        new_args = self.parse_args(args)
+        new_kwargs = self.parse_kwargs(kwargs)
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import sys
+            sys.path.append('{}')
+            import paddle_aux
+            {}.reshape({})
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.get_aux_dir(),
+            self.paddleClass,
+            self.args_and_kwargs_to_str(new_args, new_kwargs),
+        )
+        return ast.parse(code).body
+
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def reshape(self, *args, **kwargs):
+                if args:
+                    if len(args)==1 and isinstance(args[0], (tuple, list)):
+                        return paddle.reshape(self, args[0])
+                    else:
+                        return paddle.reshape(self, list(args))
+                elif kwargs:
+                    return paddle.reshape(self, **kwargs)
+
+            setattr(paddle.Tensor, 'reshape', reshape)
+            """
+        )
+        return CODE_TEMPLATE
+```
+
+对应的json配置为：
+
+```
+"torch.Tensor.reshape": {
+    "Matcher": "TensorReshapeMatcher"
+}
+```
+
+**开发经验技巧**
 
 1）可以参考一些写的较为规范的Matcher：
 - 传入参数既可以是可变参数，也可以是列表或元组时，例如 `TensorExpandMatcher`
@@ -440,7 +581,6 @@ if x:
 
 
 ## 步骤5：编写单元测试
-
 
 **单测写法**：
 
