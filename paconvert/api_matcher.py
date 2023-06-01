@@ -417,9 +417,9 @@ class MaxMinMatcher(BaseMatcher):
             call_maximinimum = True
 
         if call_maximinimum:
-            return GenericMatcher(self.torch_api, self.api_mapping).get_paddle_nodes(
-                args, kwargs
-            )
+            return GenericMatcher(
+                self.torch_api, self.api_mapping, self.logger
+            ).get_paddle_nodes(args, kwargs)
 
         # return (values, indices) and paddle not implement, not convert
         if len(args) > 1 and isinstance(args[1], ast.Num):
@@ -2645,18 +2645,6 @@ class FUpsampleBilinearMatcher(BaseMatcher):
         return code
 
 
-class TensorExpM1Matcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle.expm1({})
-            """
-        )
-        code = API_TEMPLATE.format(self.paddleClass)
-
-        return code
-
-
 class TensorBernoulli_Matcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "p" not in kwargs:
@@ -3062,6 +3050,13 @@ class TensorReshapeMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def get_paddle_class_nodes(self, func, args, kwargs):
+        if len(args) == 1 and isinstance(args[0], (ast.List, ast.Tuple)):
+            return "unchange"
+
+        if len(kwargs) == 1 and "shape" in kwargs:
+            return "unchange"
+
+        self.write_aux_code()
         self.parse_func(func)
         new_args = self.parse_args(args)
         new_kwargs = self.parse_kwargs(kwargs)

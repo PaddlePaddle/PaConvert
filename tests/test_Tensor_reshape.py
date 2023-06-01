@@ -46,8 +46,7 @@ def test_case_3():
         """
         import torch
         a = torch.arange(9)
-        shape = (3, 3)
-        result = a.reshape(shape)
+        result = a.reshape([3, 3])
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -58,7 +57,8 @@ def test_case_4():
         """
         import torch
         a = torch.arange(9)
-        result = a.reshape([3, 3])
+        shape = (3, 3)
+        result = a.reshape(shape)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -93,7 +93,7 @@ def test_case_7():
         """
         import torch
         a = torch.arange(24.)
-        result = a.reshape(-1, )
+        result = a.reshape(-1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -105,6 +105,28 @@ def test_case_8():
         import torch
         a = torch.tensor(1.)
         result = a.reshape(1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(6.)
+        result = a.reshape(shape=(2, 3))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(6.)
+        result = a.reshape(shape=[2, 3])
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -30,7 +30,7 @@ from paconvert.transformer.import_transformer import ImportTransformer
 from paconvert.transformer.tensor_requires_grad_transformer import (
     TensorRequiresGradTransformer,
 )
-from paconvert.utils import get_unique_name, PaddleAuxFile
+from paconvert.utils import PaddleAuxFile, get_unique_name, log_info
 
 
 def listdir_nohidden(path):
@@ -56,9 +56,9 @@ class Converter:
         self.unsupport_map = collections.defaultdict(int)
         self.convert_rate = 0.0
 
-        self.log_info("===========================================")
-        self.log_info("PyTorch to Paddle Convert Start ------>:")
-        self.log_info("===========================================")
+        log_info(self.logger, "===========================================")
+        log_info(self.logger, "PyTorch to Paddle Convert Start ------>:")
+        log_info(self.logger, "===========================================")
 
     def run(self, in_dir, out_dir=None, exclude_dirs=None):
         in_dir = os.path.abspath(in_dir)
@@ -81,8 +81,9 @@ class Converter:
             PaddleAuxFile(os.path.dirname(out_dir) + "/utils/paddle_aux.py")
         else:
             PaddleAuxFile(out_dir + "/utils/paddle_aux.py")
-        self.log_info(
-            "Will write paddle aux code to {}".format(PaddleAuxFile().fileName)
+        log_info(
+            self.logger,
+            "Will write paddle aux code to {}".format(PaddleAuxFile().fileName),
         )
 
         self.transfer_dir(in_dir, out_dir, exclude_dir_list)
@@ -90,45 +91,51 @@ class Converter:
             unsupport_map = sorted(
                 self.unsupport_map.items(), key=lambda x: x[1], reverse=True
             )
-            self.log_info("\n===========================================")
-            self.log_info("Not Support API List:")
-            self.log_info("===========================================")
-            self.log_info(
-                "These Pytorch APIs are not supported to convert to Paddle now, which will be supppored in future!\n"
+            log_info(self.logger, "\n===========================================")
+            log_info(self.logger, "Not Support API List:")
+            log_info(self.logger, "===========================================")
+            log_info(
+                self.logger,
+                "These Pytorch APIs are not supported to convert to Paddle now, which will be supppored in future!\n",
             )
             for k, v in unsupport_map:
-                self.log_info("{}: {}".format(k, v))
+                log_info(self.logger, "{}: {}".format(k, v))
 
         faild_api_count = self.torch_api_count - self.success_api_count
-        self.log_info("\n===========================================")
-        self.log_info("Convert Summary:")
-        self.log_info("===========================================")
-        self.log_info(
-            "There are {} Pytorch APIs in this Project:".format(self.torch_api_count)
+        log_info(self.logger, "\n===========================================")
+        log_info(self.logger, "Convert Summary:")
+        log_info(self.logger, "===========================================")
+        log_info(
+            self.logger,
+            "There are {} Pytorch APIs in this Project:".format(self.torch_api_count),
         )
-        self.log_info(
+        log_info(
+            self.logger,
             " {}  Pytorch APIs have been converted to Paddle successfully!".format(
                 self.success_api_count
-            )
+            ),
         )
-        self.log_info(
+        log_info(
+            self.logger,
             " {}  Pytorch APIs are not supported to convert to Paddle currently!".format(
                 faild_api_count
-            )
+            ),
         )
         if self.torch_api_count > 0:
             self.convert_rate = self.success_api_count / self.torch_api_count
-        self.log_info(" Convert Rate is: {:.3%}".format(self.convert_rate))
+        log_info(self.logger, " Convert Rate is: {:.3%}".format(self.convert_rate))
         if faild_api_count > 0:
-            self.log_info(
+            log_info(
+                self.logger,
                 "\nFor these {} Pytorch APIs that do not support to Convert now, which have been marked by >>> before the line, \nplease refer to "
                 "https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html"
                 " \nand convert it by yourself manually. In addition, these APIs will be supported in future.".format(
                     faild_api_count
-                )
+                ),
             )
-        self.log_info(
-            "\nThank you to use Paddle Code Convert Tool. You can make any suggestions to us.\n"
+        log_info(
+            self.logger,
+            "\nThank you to use Paddle Code Convert Tool. You can make any suggestions to us.\n",
         )
         return self.success_api_count, faild_api_count
 
@@ -182,7 +189,7 @@ class Converter:
 
     def transfer_file(self, old_path, new_path):
         if old_path.endswith(".py"):
-            self.log_info("Start convert {} --> {}".format(old_path, new_path))
+            log_info(self.logger, "Start convert {} --> {}".format(old_path, new_path))
             with open(old_path, "r", encoding="UTF-8") as f:
                 code = f.read()
                 root = ast.parse(code)
@@ -193,18 +200,23 @@ class Converter:
 
             with open(new_path, "w", encoding="UTF-8") as file:
                 file.write(code)
-            self.log_info("Finish convert {} --> {}\n".format(old_path, new_path))
+            log_info(
+                self.logger, "Finish convert {} --> {}\n".format(old_path, new_path)
+            )
         elif old_path.endswith("requirements.txt"):
-            self.log_info("Start convert {} --> {}".format(old_path, new_path))
+            log_info(self.logger, "Start convert {} --> {}".format(old_path, new_path))
             with open(old_path, "r", encoding="UTF-8") as old_file:
                 code = old_file.read()
             code = code.replace("torch", "paddlepaddle-gpu")
             with open(new_path, "w", encoding="UTF-8") as new_file:
                 new_file.write(code)
-            self.log_info("Finish convert {} --> {}\n".format(old_path, new_path))
+            log_info(
+                self.logger, "Finish convert {} --> {}\n".format(old_path, new_path)
+            )
         else:
-            self.log_info(
-                "No need to convert, just Copy {} --> {}\n".format(old_path, new_path)
+            log_info(
+                self.logger,
+                "No need to convert, just Copy {} --> {}\n".format(old_path, new_path),
             )
             shutil.copyfile(old_path, new_path)
 
@@ -265,23 +277,3 @@ class Converter:
                     lines[i] = ">>>" + line
 
         return "\n".join(lines)
-
-    def log_debug(self, msg, file=None, line=None):
-        if file:
-            if line:
-                msg = "[{}:{}] {}".format(file, line, msg)
-            else:
-                msg = "[{}] {}".format(file, msg)
-        else:
-            msg = "{}".format(msg)
-        self.logger.debug(msg)
-
-    def log_info(self, msg, file=None, line=None):
-        if file:
-            if line:
-                msg = "[{}:{}] {}".format(file, line, msg)
-            else:
-                msg = "[{}] {}".format(file, msg)
-        else:
-            msg = "{}".format(msg)
-        self.logger.info(msg)
