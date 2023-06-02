@@ -20,9 +20,7 @@ import requests
 
 PR_checkTemplate = ["Paddle"]
 
-REPO_TEMPLATE = {
-    "Paddle": r"""### PR APIs(.*[^\s].*)### PR Docs(.*[^\s].*)### Description(.*[^\s].*)"""
-}
+REPO_TEMPLATE = {"Paddle": r"""### PR Docs(.*[^\s].*)### PR APIs(.*[^\s].*)"""}
 
 
 def re_rule(body, CHECK_TEMPLATE):
@@ -36,10 +34,9 @@ def parameter_accuracy(body):
     PR_APIs = []
     PR_Docs = []
     body = re.sub("\r\n", "", body)
-    APIs_end = body.find("### PR Docs")
-    Docs_end = body.find("### Description")
-    PR_dic["PR APIs"] = body[len("### PR Docs") : APIs_end]
-    PR_dic["PR Docs"] = body[APIs_end + 11 : Docs_end]
+    Docs_end = body.find("### PR APIs")
+    PR_dic["PR Docs"] = body[len("### PR Docs") : Docs_end]
+    PR_dic["PR APIs"] = body[Docs_end + 11 :]
     message = ""
     for key in PR_dic:
         test_list = PR_APIs if key == "PR APIs" else PR_Docs
@@ -68,7 +65,7 @@ def checkPRTemplate(repo, body, CHECK_TEMPLATE):
         res: True or False
     """
     res = False
-    note = r"<!-- Demo: https://github.com/PaddlePaddle/PaConvert/pull/71 -->\r\n|<!-- APIs what you’ve done -->|<!-- Describe the docs PR corresponding the APIs -->|<!-- Describe what you’ve done -->"
+    note = r"<!-- Demo: https://github.com/PaddlePaddle/PaConvert/pull/71 -->\r\n|<!-- Describe the docs PR corresponding the APIs -->|<!-- APIs what you’ve done -->"
     if body is None:
         body = ""
     body = re.sub(note, "", body)
@@ -107,42 +104,17 @@ def pull_request_event_template(event, repo, *args, **kwargs):
                     We list the example in details as follows!!
                     ----------------------------------------------------------------
                     <!-- Demo: https://github.com/PaddlePaddle/PaConvert/pull/71 -->
-                    ### PR APIs
-                    <!-- APIs what you've done -->
-                    ```bash
-                    torch.dist
-                    torch.abs
-                    torch.transpose
-                    torch.addcmul
-                    ```
                     ### PR Docs
                     <!-- Describe the docs PR corresponding the APIs -->
-                    the docs PR corresponding the APIs is as follows:
-                    PR: https://github.com/PaddlePaddle/docs/pull/xxx
-                    ### Description
-                    <!-- Describe what you've done -->
-                    #### A total of 4 translatedd APIs.
-                    The corresponding configuration file is written in PaConvert/paconvert/api_mapping.json and the corresponding writing policy is in PaConvert/paconvert/api_matcher.py, the basic correspondence can be found as follows.
-                    * first-class APIs
-                    ```bash
-                    torch.dist-->GenericMatcher
-                    ```
-                    * second-class APIs
-                    ```bash
-                    torch.abs-->GenericMatcher
-                    ```
-                    * third-class APIs
-                    ```bash
-                    torch.transpose-->TransposeMatcher
-                    ```
-                    * fourth-class APIs
-                    ```bash
-                    torch.addcmul-->AddCMulMatcher
-                    ```
-                    #### others
-                    * add pull request template in .github/PULL_REQUEST_TEMPLATE.md
+                    https://github.com/PaddlePaddle/docs/pull/_prID
+                    ### PR APIs
+                    <!-- APIs what you’ve done -->
+                    torch.transpose
+                    torch.Tensor._index_copy
+                    torch.permute
+                    ...
                     ----------------------------------------------------------------
-                    """
+            """
         )
         print(f"check_pr_template: {check_pr_template} pr: {pr_num}")
         if check_pr_template is False:
