@@ -233,15 +233,15 @@ bash scripts/run_ci.sh
 
 提交PR时，请尽可能按照以下规范
 ```bash
+### PR Docs
+<!-- Describe the docs PR corresponding the APIs -->
+https://github.com/PaddlePaddle/docs/pull/_prID
 ### PR APIs
 <!-- APIs what you’ve done -->
 torch.transpose
 torch.Tensor._index_copy
 torch.permute
 ...
-### PR Docs
-<!-- Describe the docs PR corresponding the APIs -->
-https://github.com/PaddlePaddle/docs/pull/_prID
 ### Description
 <!-- Describe what you’ve done -->
 ...
