@@ -173,10 +173,15 @@ Thank you to use Paddle Code Convert Tool. You can make any suggestions to us.
 
 欢迎你向我们贡献代码。具体的开发步骤如下：
 ## 步骤1: 开发环境准备与CI检查
-
 ### 依赖项
 在开发本项目之前，请确保已经安装了以下依赖项：
 
+#### 最新的develop版本的paddlepaddle库
+```bash
+python -m pip install paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
+```
+
+#### 其它库
 ```bash
 pip install -r requirements-dev.txt
 ```
@@ -241,9 +246,6 @@ https://github.com/PaddlePaddle/docs/pull/_prID
 torch.transpose
 torch.Tensor._index_copy
 torch.permute
-...
-### Description
-<!-- Describe what you’ve done -->
 ...
 ```
 
