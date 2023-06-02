@@ -96,7 +96,7 @@ def test_case_6():
         import torch.nn as nn
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([[1., 2., 1.],[1., 2., 3.]])
+        target = torch.tensor([1, 2])
         result = torch.nn.functional.cross_entropy(input, target, reduce=True)
         """
     )
@@ -110,7 +110,7 @@ def test_case_7():
         import torch.nn as nn
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([[1., 2., 1.],[1., 2., 3.]])
+        target = torch.tensor([1, 2])
         result = torch.nn.functional.cross_entropy(input, target, reduce=False)
         """
     )
