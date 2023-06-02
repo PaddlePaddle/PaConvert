@@ -26,7 +26,7 @@ def test_case_1():
         import torch.nn as nn
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([[1., 2., 1.],[1., 2., 3.]])
+        target = torch.tensor([1, 2])
         result = torch.nn.functional.cross_entropy(input, target, size_average=True)
         """
     )
@@ -40,7 +40,7 @@ def test_case_2():
         import torch.nn as nn
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([[1., 2., 1.],[1., 2., 3.]])
+        target = torch.tensor([1, 2])
         result = torch.nn.functional.cross_entropy(input, target, size_average=False)
         """
     )
@@ -54,7 +54,7 @@ def test_case_3():
         import torch.nn as nn
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([[1., 2., 1.],[1., 2., 3.]])
+        target = torch.tensor([1, 2])
         result = torch.nn.functional.cross_entropy(input, target, reduction='none')
         """
     )
@@ -68,7 +68,7 @@ def test_case_4():
         import torch.nn as nn
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([[1., 2., 1.],[1., 2., 3.]])
+        target = torch.tensor([1, 2])
         result = torch.nn.functional.cross_entropy(input, target, reduction='mean')
         """
     )
@@ -82,8 +82,36 @@ def test_case_5():
         import torch.nn as nn
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([[1., 2., 1.],[1., 2., 3.]])
+        target = torch.tensor([1, 2])
         result = torch.nn.functional.cross_entropy(input, target, reduction='sum')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        target = torch.tensor([[1., 2., 1.],[1., 2., 3.]])
+        result = torch.nn.functional.cross_entropy(input, target, reduce=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        target = torch.tensor([[1., 2., 1.],[1., 2., 3.]])
+        result = torch.nn.functional.cross_entropy(input, target, reduce=False)
         """
     )
     obj.run(pytorch_code, ["result"])
