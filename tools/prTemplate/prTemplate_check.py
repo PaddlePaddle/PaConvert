@@ -36,10 +36,10 @@ def parameter_accuracy(body):
     PR_APIs = []
     PR_Docs = []
     body = re.sub("\r\n", "", body)
-    APIs_end = body.find("### PR Docs")
-    Docs_end = body.find("### Description")
-    PR_dic["PR APIs"] = body[len("### PR Docs") : APIs_end]
-    PR_dic["PR Docs"] = body[APIs_end + 11 : Docs_end]
+    Docs_end = body.find("### PR APIs")
+    APIs_end = body.find("### Description")
+    PR_dic["PR Docs"] = body[len("### PR Docs") : Docs_end]
+    PR_dic["PR APIs"] = body[Docs_end + 11 : APIs_end]
     message = ""
     for key in PR_dic:
         test_list = PR_APIs if key == "PR APIs" else PR_Docs
