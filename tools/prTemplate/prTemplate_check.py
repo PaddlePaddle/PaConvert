@@ -20,9 +20,7 @@ import requests
 
 PR_checkTemplate = ["Paddle"]
 
-REPO_TEMPLATE = {
-    "Paddle": r"""### PR Docs(.*[^\s].*)### PR APIs(.*[^\s].*)### Description(.*[^\s].*)"""
-}
+REPO_TEMPLATE = {"Paddle": r"""### PR Docs(.*[^\s].*)### PR APIs(.*[^\s].*)"""}
 
 
 def re_rule(body, CHECK_TEMPLATE):
@@ -37,9 +35,8 @@ def parameter_accuracy(body):
     PR_Docs = []
     body = re.sub("\r\n", "", body)
     Docs_end = body.find("### PR APIs")
-    APIs_end = body.find("### Description")
     PR_dic["PR Docs"] = body[len("### PR Docs") : Docs_end]
-    PR_dic["PR APIs"] = body[Docs_end + 11 : APIs_end]
+    PR_dic["PR APIs"] = body[Docs_end + 11 :]
     message = ""
     for key in PR_dic:
         test_list = PR_APIs if key == "PR APIs" else PR_Docs
@@ -68,7 +65,7 @@ def checkPRTemplate(repo, body, CHECK_TEMPLATE):
         res: True or False
     """
     res = False
-    note = r"<!-- Demo: https://github.com/PaddlePaddle/PaConvert/pull/71 -->\r\n|<!-- Describe the docs PR corresponding the APIs -->|<!-- APIs what you’ve done -->|<!-- Describe what you’ve done -->"
+    note = r"<!-- Demo: https://github.com/PaddlePaddle/PaConvert/pull/71 -->\r\n|<!-- Describe the docs PR corresponding the APIs -->|<!-- APIs what you’ve done -->"
     if body is None:
         body = ""
     body = re.sub(note, "", body)
@@ -115,9 +112,6 @@ def pull_request_event_template(event, repo, *args, **kwargs):
                     torch.transpose
                     torch.Tensor._index_copy
                     torch.permute
-                    ...
-                    ### Description
-                    <!-- Describe what you’ve done -->
                     ...
                     ----------------------------------------------------------------
             """
