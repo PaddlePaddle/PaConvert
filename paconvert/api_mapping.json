@@ -1547,7 +1547,7 @@
     }
   },
   "torch.floor_divide": {
-    "Matcher": "FloorDivideMatcher",
+    "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.floor_divide",
     "args_list": [
       "input",
@@ -3723,7 +3723,10 @@
       "init",
       "device",
       "dtype"
-    ]
+    ],
+    "kwargs_change": {
+      "dtype": ""
+    }
   },
   "torch.nn.ReLU": {
     "Matcher": "GenericMatcher",

@@ -3578,13 +3578,6 @@ class TupleAssignMatcher(BaseMatcher):
             return code.strip("\n")
 
 
-class FloorDivideMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        kwargs["other"] = "paddle.to_tensor({})".format(kwargs.pop("other").strip("\n"))
-
-        return GenericMatcher.generate_code(self, kwargs)
-
-
 class UnpoolMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs["indices"] = kwargs.pop("indices").strip("\n") + ".astype('int32')"

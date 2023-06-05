@@ -59,8 +59,7 @@ def test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
-# paddle step argument does not support float numbers
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -70,8 +69,7 @@ def _test_case_5():
     obj.run(pytorch_code, ["result"])
 
 
-# paddle step argument does not support float numbers
-def _test_case_6():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
