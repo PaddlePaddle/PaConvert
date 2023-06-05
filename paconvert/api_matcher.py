@@ -60,6 +60,8 @@ class GenericMatcher(BaseMatcher):
                 if k == "dtype":
                     dtype_v = new_kwargs.pop("dtype")
 
+        new_kwargs = self.set_paddle_default_kwargs(new_kwargs)
+
         pin_memory_v = False
         if "pin_memory" in new_kwargs:
             pin_memory_v = eval(new_kwargs.pop("pin_memory"))
@@ -1433,6 +1435,7 @@ class SetPrintOptionsMatcher(BaseMatcher):
 
             kwargs.pop("profile")
 
+        kwargs = self.set_paddle_default_kwargs(kwargs)
         API_TEMPLATE = textwrap.dedent(
             """
             paddle.set_printoptions({})
