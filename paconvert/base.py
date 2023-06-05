@@ -263,7 +263,6 @@ class BaseMatcher(object):
             v = astor.to_source(node.value).strip("\n")
             new_kwargs[k] = v
 
-        new_kwargs = self.set_paddle_default_kwargs(new_kwargs)
         return new_kwargs
 
     def parse_args(self, args):
@@ -285,7 +284,6 @@ class BaseMatcher(object):
             v = astor.to_source(node.value).strip("\n")
             new_kwargs[k] = v
 
-        new_kwargs = self.set_paddle_default_kwargs(new_kwargs)
         return new_kwargs
 
     def parse_func(self, func):
