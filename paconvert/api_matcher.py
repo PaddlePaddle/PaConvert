@@ -68,8 +68,6 @@ class GenericMatcher(BaseMatcher):
         if "requires_grad" in new_kwargs:
             stop_gradient_v = "not " + new_kwargs.pop("requires_grad").strip("()")
 
-        new_kwargs = self.set_paddle_default_kwargs(new_kwargs)
-
         out_v = new_kwargs.pop("out") if "out" in new_kwargs else None
 
         res = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
@@ -158,9 +156,6 @@ class LayerMatcher(BaseMatcher):
             del kwargs["dtype"]
         if "bias" in kwargs:
             kwargs["bias_attr"] = kwargs.pop("bias")
-        if "padding_mode" in kwargs:
-            # TODO: just not support now
-            return None
         code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
         return code
 
@@ -297,8 +292,6 @@ class CreateMatcher(BaseMatcher):
         stop_gradient_v = None
         if "requires_grad" in kwargs:
             stop_gradient_v = "not " + kwargs.pop("requires_grad").strip("()")
-
-        kwargs = self.set_paddle_default_kwargs(kwargs)
 
         out_v = kwargs.pop("out") if "out" in kwargs else None
 
@@ -832,9 +825,6 @@ class TensorNormal_Matcher(BaseMatcher):
 
 class CrossEntropyLossMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "label_smoothing" in kwargs:
-            return None
-
         if "size_average" in kwargs:
             size_average = kwargs.pop("size_average")
             if "True" in size_average:
@@ -1391,32 +1381,8 @@ class FunctionalMaxPool2DMatcher(BaseMatcher):
         return code
 
 
-class LoadMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        unsupported_params = [
-            "map_location",
-            "pickle_module",
-            "weights_only",
-            "pickle_load_args",
-        ]
-        for param in unsupported_params:
-            if param in kwargs:
-                return None
-
-        API_TEMPLACE = textwrap.dedent(
-            """
-            paddle.load(path={})
-            """
-        )
-        code = API_TEMPLACE.format(kwargs["f"])
-        return code
-
-
 class SaveMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "pickle_module" in kwargs or "_use_new_zipfile_serialization" in kwargs:
-            return None
-
         if "pickle_protocol" in kwargs:
             protocol = kwargs["pickle_protocol"]
         else:
@@ -1467,7 +1433,6 @@ class SetPrintOptionsMatcher(BaseMatcher):
 
             kwargs.pop("profile")
 
-        kwargs = self.set_paddle_default_kwargs(kwargs)
         API_TEMPLATE = textwrap.dedent(
             """
             paddle.set_printoptions({})

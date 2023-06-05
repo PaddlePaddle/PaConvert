@@ -269,18 +269,20 @@ torch.permute
 
 * 第7类为 `功能缺失` ，表示当前无该API功能，则不支持自动转换。
 
-其中第1~6类API可按后续步骤开发，第7类需要先开发框架对应功能，目前不能开发自动转换功能。
+其中第1~6类API需按后续步骤开发，第7类由于无法支持自动转换，仅在 API映射表页面 标注 **功能缺失** 即可，无需其他开发。。
 
-对于一个待支持转换的Pytorch API，首先查阅 [Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html)，如果已经有了该API的映射关系，则可以直接参考编写转换规则。
-如果没有该API映射关系，需要自行分析，并根据统一模板来编写映射关系文档，提交PR到 https://github.com/PaddlePaddle/docs/tree/develop/docs/guides/model_convert/convert_from_pytorch/api_difference 目录下。具体写法详见：[API映射关系模板](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/pytorch_api_mapping_format_cn.md)。
+对于一个待支持转换的Pytorch API，首先查阅 [Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html)，如果已经有了该API的映射关系，则无需新增映射关系文档，可以直接参考来编写转换规则。但如果发现其问题，则需要进行修复。
 
-> 注意：当前已有一部分存量映射关系，但可能存在错误或考虑不全面之处，在后续开发自动转换规则时，如发现问题，需要对这些文档进行校正修改。
+> 注意：当前已有一部分存量映射关系文档，但可能存在错误或考虑不全面之处，在开发自动转换规则时，如发现文档问题，需要对这些文档进行校正修改。
+
+如果没有该API映射关系，则需要自行分析API，并根据统一模板来编写映射关系文档，提交PR到 https://github.com/PaddlePaddle/docs/tree/develop/docs/guides/model_convert/convert_from_pytorch/api_difference 目录下。统一模板详见：[API映射关系模板](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/pytorch_api_mapping_format_cn.md)。
 
 ## 步骤3：配置JSON
 
 在 `paconvert/api_mapping.json` 中增加该 API 的各项配置，每个配置字段的定义如下：
 
 ```python
+{
   "torch.permute" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.transpose",
@@ -289,7 +291,8 @@ torch.permute
       "input": "x",
       "dims": "perm"
     }
-  }
+  },
+  "unsupport_args": {},
   "paddle_default_kwargs": {}
 }
 ```
@@ -299,6 +302,7 @@ Matcher       :必须，转换器，亦称为转换规则，表示执行转换�
 paddle_api    :可选，对应的 Paddle API，仅 `GenericMatcher` 时需要。
 args_list     :必须，根据顺序填写 torch api 的 **全部参数名**，所有API都需要配置。
 kwargs_change :可选，参数名称的差异，仅 `GenericMatcher` 且有参数名差异时需要。
+unsupport_args:可选，Paddle API不支持的参数功能，通过该字段配置后，这些参数如被使用将直接标记为不支持转换。
 paddle_default_kwargs :可选，当 paddle 参数更多 或者 参数默认值不一致 时，可以通过该配置，设置参数默认值。
 ```
 
@@ -331,8 +335,7 @@ paddle_default_kwargs :可选，当 paddle 参数更多 或者 参数默认值�
 }
 ```
 
-如果不属于上述分类，则需要开发 **自定义的Matcher**，命名标准为：`API名+Matcher`， 例如 `torch.add` 可命名为`TorchAddMatcher` 。详见下面步骤3。
-
+如果不属于上述分类，则需要开发 **自定义的Matcher**，命名标准为：`API名+Matcher` 。例如 `torch.transpose` 可命名为`TransposeMatcher` ，`torch.Tensor.transpose` 可命名为 `TensorTransposeMatcher`。详见下面步骤3。
 
 ## 步骤4：编写Matcher（转换规则）
 
@@ -488,6 +491,7 @@ class TransposeMatcher(BaseMatcher):
 
 |分类|不需要辅助代码的用法|需要辅助代码的用法|
 |---|---|---|
+|对应API名称不一致||全部需要辅助代码|
 |仅参数名不一致|未指定关键字参数|指定了关键字参数|
 |torch参数更多|未使用torch多的参数|使用了torch多的参数|
 |参数不一致|未使用不一致的用法|使用了不一致的用法|
@@ -564,7 +568,15 @@ import paddle_aux
 x.reshape(2, 3)
 ```
 
-**开发经验技巧**
+**开发注意事项**：
+
+**1) 代码精简与美观性**。要求尽可能只通过一行代码、一个API来实现（代码越少越好）。如果确实无法实现，才考虑通过多行代码、多个API来辅助实现该功能。
+
+**2) 维护与负责**。由于单测可能覆盖不全面，导致引入了非常隐蔽的用法bug，开发者需要后续维护自己开发的API转换规则。解决新反馈的用法case问题。
+
+**3) API功能缺失**。如果是整个API都缺失的，只需在API映射表中标注 **功能缺失** 即可，无需其他开发。如果是API局部功能缺失，则对功能缺失点，在代码中返回None表示不支持，同时在API映射表中说明此功能点 **Paddle暂无转写方式**，同时编写单测但可以注释掉不运行；对其他功能点正常开发即可。
+
+**开发技巧**
 
 1）可以参考一些写的较为规范的Matcher：
 - 传入参数既可以是可变参数，也可以是列表或元组时，例如 `TensorExpandMatcher`
@@ -620,7 +632,7 @@ if x:
 
 * 单测位置：所有的单测文件均放在`tests`目录下，单测文件命名以`test_`为前缀，后面接测试的`API`名称（PyTorch API全称去掉模块名，保留大小写）。例如 `torch.add` 命名为 `test_add.py` ， `torch.Tensor.add` 命名为  `test_Tensor_add.py` 。
 
-* 单测默认检查逻辑：采用`pytest`作为单测框架。一般情况下，用户只需要在单测文件中调用 `APIBase` 类的 `run()` 方法，传入 `pytorch_code` 和需要判断的 `Tensor` 变量名列表即可，参考 [torch.permute测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_permute.py)。`run()`方法会调用`check()`方法，该方法默认检查逻辑为：转换前后两个`Tensor`的数值，数据类型、stop_gradient、形状属性是否一致。如果不需要运行转换后的 `paddle` 代码，可以直接传入 `expect_paddle_code` 字符串，此时`check()` 方法会比对转换后的`paddle`代码与`expect_paddle_code`代码字符串是否一致。
+* 单测默认检查逻辑：采用`pytest`作为单测框架。一般情况下，用户只需要在单测文件中调用 `APIBase` 类的 `run()` 方法，传入 `pytorch_code` 和需要判断的 `Tensor` 变量名列表即可，参考 [torch.permute测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_permute.py)。 `run()` 方法会调用`check()`方法，该方法默认检查逻辑为：转换前后两个`Tensor`的数值、数据类型、stop_gradient属性、形状 是否一致。如果不需要运行转换后的 `paddle` 代码，可以直接传入 `expect_paddle_code` 字符串，此时`check()` 方法会比对转换后的`paddle`代码与`expect_paddle_code`代码字符串是否一致。
 
 * 自定义检查逻辑：如果需要自定义转换结果是否正确的检查逻辑，可以继承`APIBase`类并重写`check()`函数，实现自定义的检查逻辑, 参考 [torch.Tensor测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_Tensor.py)。
 
@@ -628,7 +640,7 @@ if x:
 
 **单测要求**：
 
-需要考虑该torch api所有可能的用法case，可以从模型验证集中搜索并抽取尽可能多的用法case，要求至少列举5种完全不同的case（越多越好）。涉及到多个API参数的，应包含各种参数组合的情况（是否指定关键字、调整关键字顺序等），不能只考虑最简单常见的用法。
+需要考虑该torch api所有可能的用法case，可以从模型验证集中搜索并抽取尽可能多的用法case，要求至少列举3种完全不同的case（越多越好）。涉及到多个API参数的，应包含各种参数组合的情况（是否指定关键字、调整关键字顺序等），不能只考虑最简单常见的用法。
 
 对任意torch API的用法case只允许有两种结果：a)正常转换且对比结果一致；b)不支持转换，此时返回None。不允许出现其他的错误情况，包括但不限于 **报错异常退出、错误转换** 等各种其他问题。
 
@@ -670,10 +682,3 @@ x.new_zeros(x.size())
 ```
 
 总的来说，转换规则与单测的开发具有一定的挑战性，是一项非常细心以及考验思维广度的工作。
-
-
-**开发规范**：
-
-**1) 代码精简与美观性**。要求尽可能只通过一行代码、一个API来实现（代码越少越好）。如果确实无法实现，才考虑通过多行代码、多个API来辅助实现该功能。
-
-**2) 维护与负责**。由于单测可能覆盖不全面，导致引入了非常隐蔽的用法bug，开发者需要对自己开发的API转换规则，负责后续维护。解决新发现的用法case问题。
