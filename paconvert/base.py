@@ -234,12 +234,17 @@ class BaseMatcher(object):
         if len(args) > len(args_list):
             return "NonTorchClass"
 
+        unsupport_args = self.api_mapping.get("unsupport_args") or []
+
         new_kwargs = {}
         for i, node in enumerate(args):
             # not support 'torch.rot90(tensor, *config)'
             if isinstance(node, ast.Starred):
                 return None
             k = args_list[i]
+            # not support some API args
+            if k in unsupport_args:
+                return None
             v = astor.to_source(node).strip("\n")
             # have comma indicates a tuple
             new_kwargs[k] = v
@@ -249,12 +254,16 @@ class BaseMatcher(object):
             # not support 'torch.rot90(tensor, **config)'
             if k is None:
                 return None
+            # not support some API args
+            if k in unsupport_args:
+                return None
             # TODO: will open after all args have been add in args_list
             # if k not in args_list:
             #    return 'NonTorchClass'
             v = astor.to_source(node.value).strip("\n")
             new_kwargs[k] = v
 
+        new_kwargs = self.set_paddle_default_kwargs(new_kwargs)
         return new_kwargs
 
     def parse_args(self, args):
@@ -266,12 +275,17 @@ class BaseMatcher(object):
         return new_args
 
     def parse_kwargs(self, kwargs):
+        unsupport_args = self.api_mapping.get("unsupport_args") or []
+
         new_kwargs = {}
         for node in kwargs:
             k = node.arg
+            if k in unsupport_args:
+                return None
             v = astor.to_source(node.value).strip("\n")
             new_kwargs[k] = v
 
+        new_kwargs = self.set_paddle_default_kwargs(new_kwargs)
         return new_kwargs
 
     def parse_func(self, func):
