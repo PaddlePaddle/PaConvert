@@ -16,14 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.isclose")
+obj = APIBase("torch.save")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.isclose(torch.tensor([10000., 1e-07]), torch.tensor([10000.1, 1e-08]))
+        result = torch.tensor([0, 1, 2, 3, 4])
+        torch.save(result, 'tensor.pt', _use_new_zipfile_serialization=False)
+        result = torch.load('tensor.pt', map_location=torch.device('cpu'))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,7 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.isclose(torch.tensor([10000., 1e-08]), torch.tensor([10000.1, 1e-09]))
+        result = torch.tensor([0, 1, 2, 3, 4])
+        torch.save(result, 'tensor.pt', _use_new_zipfile_serialization=True)
+        result = torch.load('tensor.pt', map_location=torch.device('cpu'))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -43,7 +47,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.isclose(torch.tensor([1.0, float('nan')]), torch.tensor([1.0, float('nan')]))
+        result = torch.tensor([0, 1, 2, 3, 4])
+        torch.save(result, 'tensor.pt')
+        result = torch.load('tensor.pt', map_location=torch.device('cpu'))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -53,7 +59,9 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.isclose(torch.tensor([1.0, float('inf')]), torch.tensor([1.0, float('inf')]), equal_nan=True)
+        result = torch.tensor([0, 1, 2, 3, 4])
+        torch.save(result, 'tensor.pt', pickle_protocol=4)
+        result = torch.load('tensor.pt', map_location=torch.device('cpu'))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -63,7 +71,10 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.isclose(torch.tensor([10000., 1e-07]), torch.tensor([10000.1, 1e-08]), atol=2.)
+        result = torch.tensor([0, 1, 2, 3, 4])
+        args = [result, 'tensor.pt']
+        kwargs = {"pickle_protocol": 4}
+        torch.save(*args, **kwargs)
         """
     )
     obj.run(pytorch_code, ["result"])

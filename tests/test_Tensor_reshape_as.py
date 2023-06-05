@@ -16,14 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.isclose")
+obj = APIBase("torch.Tensor.reshape_as")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.isclose(torch.tensor([10000., 1e-07]), torch.tensor([10000.1, 1e-08]))
+        a = torch.ones([15])
+        b = torch.zeros([3, 5])
+        result = a.reshape_as(b)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,7 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.isclose(torch.tensor([10000., 1e-08]), torch.tensor([10000.1, 1e-09]))
+        a = torch.ones([15])
+        b = torch.zeros([3, 5])
+        result = a.reshape_as(other=b)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -43,27 +47,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.isclose(torch.tensor([1.0, float('nan')]), torch.tensor([1.0, float('nan')]))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.isclose(torch.tensor([1.0, float('inf')]), torch.tensor([1.0, float('inf')]), equal_nan=True)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.isclose(torch.tensor([10000., 1e-07]), torch.tensor([10000.1, 1e-08]), atol=2.)
+        a = torch.ones([15])
+        b = torch.zeros([3, 5])
+        result = a.reshape_as(other=b+1)
         """
     )
     obj.run(pytorch_code, ["result"])

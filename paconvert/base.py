@@ -15,16 +15,18 @@
 import ast
 import collections
 import json
+import os
 import re
-from os import path
 
 import astor
 
-json_file = path.dirname(__file__) + "/api_mapping.json"
+from paconvert.utils import PaddleAuxFile, log_debug
+
+json_file = os.path.dirname(__file__) + "/api_mapping.json"
 with open(json_file, "r") as file:
     API_MAPPING = json.load(file)
 
-json_file = path.dirname(__file__) + "/attribute_mapping.json"
+json_file = os.path.dirname(__file__) + "/attribute_mapping.json"
 with open(json_file, "r") as file:
     ATTRIBUTE_MAPPING = json.load(file)
 
@@ -51,7 +53,7 @@ class BaseTransformer(ast.NodeTransformer):
     def __init__(self, root, file, imports_map, logger):
         self.root = root
         self.file = file
-        self.file_name = path.basename(file)
+        self.file_name = os.path.basename(file)
         self.imports_map = imports_map
         self.torch_api_count = 0
         self.success_api_count = 0
@@ -72,22 +74,61 @@ class BaseTransformer(ast.NodeTransformer):
         self.node_stack.pop()
         return node
 
-    def record_scope(self, scope_node_body_index, node):
-        if node is None:
+    @property
+    def parent_node(self):
+        return self.node_stack[-2]
+
+    def scope_body_index(self, level=-1):
+        scope_node = self.scope_stack[level]
+
+        # reverse find scope_node in node_stack
+        lower = -1 * (len(self.node_stack) + 1)
+        for i in range(-1, lower, -1):
+            if self.node_stack[i] == scope_node:
+                for index, node in enumerate(scope_node.body):
+                    if node == self.node_stack[i + 1]:
+                        return scope_node, "body", index
+
+                if getattr(scope_node, "orelse", None):
+                    for index, node in enumerate(scope_node.orelse):
+                        if node == self.node_stack[i + 1]:
+                            return scope_node, "orelse", index
+
+                if getattr(scope_node, "decorator_list", None):
+                    for index, node in enumerate(scope_node.decorator_list):
+                        if node == self.node_stack[i + 1]:
+                            return scope_node, "decorator_list", index
+
+        return self.scope_body_index(-2)
+
+    def record_scope(self, scope_body_index, node_list):
+        if not isinstance(node_list, list):
+            node_list = [node_list]
+
+        if len(node_list) == 0:
             return
-        if not isinstance(node, list):
-            node = [node]
-        scope_node = scope_node_body_index[0]
-        body = scope_node_body_index[1]
-        index = scope_node_body_index[2]
+        scope_node = scope_body_index[0]
+        body = scope_body_index[1]
+        index = scope_body_index[2]
 
         if body in self.scope_insert_lines[scope_node]:
             if index in self.scope_insert_lines[scope_node][body]:
-                self.scope_insert_lines[scope_node][body][index].extend(node)
+                origin_node_list = self.scope_insert_lines[scope_node][body][index]
+                for node in node_list.copy():
+                    # remove dumplicate node
+                    for ele in origin_node_list:
+                        if ast.dump(node) == ast.dump(ele):
+                            node_list.remove(node)
+                            break
+
+                origin_node_list.extend(node_list)
             else:
-                self.scope_insert_lines[scope_node][body].update({index: node})
+                self.scope_insert_lines[scope_node][body].update({index: node_list})
         else:
-            self.scope_insert_lines[scope_node][body] = {index: node}
+            self.scope_insert_lines[scope_node][body] = {index: node_list}
+
+        if len(node_list) > 0:
+            log_debug(self.logger, "insert extra {} lines".format(len(node_list)))
 
     def insert_scope(self):
         # if multiple line, insert into scope node only One time
@@ -101,25 +142,21 @@ class BaseTransformer(ast.NodeTransformer):
                     for line in lines[::-1]:
                         getattr(scope_node, body).insert(index, line)
 
-    def log_debug(self, msg, file=None, line=None):
-        if file:
-            if line:
-                msg = "[{}:{}] {}".format(file, line, msg)
+    def insert_multi_node(self, node_list):
+        if len(node_list) == 0:
+            return
+        import_nodes = []
+        other_nodes = []
+        for node in node_list:
+            if isinstance(node, (ast.Import, ast.ImportFrom)):
+                import_nodes.append(node)
+            elif "sys.path" in astor.to_source(node):
+                import_nodes.append(node)
             else:
-                msg = "[{}] {}".format(file, msg)
-        else:
-            msg = "{}".format(msg)
-        self.logger.debug(msg)
+                other_nodes.append(node)
 
-    def log_info(self, msg, file=None, line=None):
-        if file:
-            if line:
-                msg = "[{}:{}] {}".format(file, line, msg)
-            else:
-                msg = "[{}] {}".format(file, msg)
-        else:
-            msg = "{}".format(msg)
-        self.logger.info(msg)
+        self.record_scope((self.root, "body", 0), import_nodes)
+        self.record_scope(self.scope_body_index(), other_nodes)
 
     def get_full_attr(self, node):
         # torch.nn.fucntional.relu
@@ -172,10 +209,14 @@ class BaseTransformer(ast.NodeTransformer):
 
 
 class BaseMatcher(object):
-    def __init__(self, torch_api, api_mapping):
+    def __init__(self, torch_api, api_mapping, logger):
         self.torch_api = torch_api
         self.paddle_api = None
         self.api_mapping = api_mapping
+        self.logger = logger
+
+    def get_aux_dir(self):
+        return os.path.dirname(PaddleAuxFile().fileName)
 
     def get_paddle_api(self):
         if self.paddle_api:
@@ -291,6 +332,15 @@ class BaseMatcher(object):
 
         return kwargs
 
+    def generate_aux_code(self):
+        return None
+
+    def write_aux_code(self):
+        aux_code = self.generate_aux_code()
+        if aux_code:
+            log_debug(self.logger, "Write auxiliary code for {}".format(self.torch_api))
+            PaddleAuxFile().write_code(aux_code, self.torch_api)
+
     @staticmethod
     def generate_code(self, kwargs):
         return None
@@ -313,7 +363,7 @@ class BaseMatcher(object):
             new_code = self.generate_code(new_kwargs)
             if new_code == "NonTorchClass":
                 return "NonTorchClass"
-            elif new_code is not None:
+            elif new_code:
                 return ast.parse(new_code).body
 
         return None

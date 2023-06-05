@@ -11,19 +11,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.isclose")
+obj = APIBase("torch.Tensor.histc")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.isclose(torch.tensor([10000., 1e-07]), torch.tensor([10000.1, 1e-08]))
+        a = torch.tensor([1., 2., 3.])
+        result = a.histc(4, 0, 3)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,7 +33,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.isclose(torch.tensor([10000., 1e-08]), torch.tensor([10000.1, 1e-09]))
+        a = torch.tensor([1., 2., 3.])
+        result = a.histc(bins=4, min=0, max=3)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -43,7 +44,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.isclose(torch.tensor([1.0, float('nan')]), torch.tensor([1.0, float('nan')]))
+        a = torch.tensor([1., 2., 3.])
+        result = a.histc(bins=4, min=0, max=2+1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -53,7 +55,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.isclose(torch.tensor([1.0, float('inf')]), torch.tensor([1.0, float('inf')]), equal_nan=True)
+        result = torch.tensor([1., 2., 3.]).histc(bins=4, min=0, max=2+1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -63,7 +65,8 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.isclose(torch.tensor([10000., 1e-07]), torch.tensor([10000.1, 1e-08]), atol=2.)
+        a = torch.tensor([1., 2., 3.])
+        result = a.histc(bins=4, max=2+1)
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -16,6 +16,7 @@ import ast
 import os
 
 from paconvert.base import TORCH_PACKAGE_LIST, BaseTransformer
+from paconvert.utils import log_info
 
 
 class ImportTransformer(BaseTransformer):
@@ -45,7 +46,8 @@ class ImportTransformer(BaseTransformer):
                     belong_torch = True
                     self.import_paddle = True
                     if alias_node.asname:
-                        self.log_info(
+                        log_info(
+                            self.logger,
                             "remove 'import {} as {}' ".format(
                                 alias_node.name, alias_node.asname
                             ),
@@ -54,7 +56,8 @@ class ImportTransformer(BaseTransformer):
                         )
                         self.imports_map[self.file][alias_node.asname] = alias_node.name
                     else:
-                        self.log_info(
+                        log_info(
+                            self.logger,
                             "remove 'import {}' ".format(alias_node.name),
                             self.file_name,
                             node.lineno,
@@ -90,7 +93,8 @@ class ImportTransformer(BaseTransformer):
                     self.import_paddle = True
                     for alias_node in node.names:
                         if alias_node.asname:
-                            self.log_info(
+                            log_info(
+                                self.logger,
                                 "remove 'from {} import {} as {}' ".format(
                                     node.module, alias_node.name, alias_node.asname
                                 ),
@@ -101,7 +105,8 @@ class ImportTransformer(BaseTransformer):
                                 [node.module, alias_node.name]
                             )
                         else:
-                            self.log_info(
+                            log_info(
+                                self.logger,
                                 "remove 'from {} import {}' ".format(
                                     node.module, alias_node.name
                                 ),
@@ -182,5 +187,5 @@ class ImportTransformer(BaseTransformer):
         super(ImportTransformer, self).generic_visit(node)
 
         if self.import_paddle:
-            self.log_info("add 'import paddle' in first line", self.file_name)
+            log_info(self.logger, "add 'import paddle' in first line", self.file_name)
             self.record_scope((self.root, "body", 0), ast.parse("import paddle").body)
