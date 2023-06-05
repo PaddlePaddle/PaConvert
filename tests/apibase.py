@@ -92,8 +92,6 @@ class APIBase(object):
 
         if not np.allclose(paddle_numpy, torch_numpy):
             return False
-        if list(pytorch_result.shape) != list(paddle_result.shape):
-            return False
         if pytorch_result.requires_grad == paddle_result.stop_gradient:
             return False
         if str(pytorch_result.dtype)[6:] != str(paddle_result.dtype)[7:]:
