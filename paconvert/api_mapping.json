@@ -4131,7 +4131,7 @@
     }
   },
   "torch.nn.functional.max_unpool1d": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "UnpoolMatcher",
     "paddle_api": "paddle.nn.functional.max_unpool1d",
     "args_list": [
       "input",
@@ -4146,7 +4146,7 @@
     }
   },
   "torch.nn.functional.max_unpool2d": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "UnpoolMatcher",
     "paddle_api": "paddle.nn.functional.max_unpool2d",
     "args_list": [
       "input",
@@ -4161,7 +4161,7 @@
     }
   },
   "torch.nn.functional.max_unpool3d": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "UnpoolMatcher",
     "paddle_api": "paddle.nn.functional.max_unpool3d",
     "args_list": [
       "input",

@@ -3380,3 +3380,10 @@ class FloorDivideMatcher(BaseMatcher):
         kwargs["other"] = "paddle.to_tensor({})".format(kwargs.pop("other").strip("\n"))
 
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class UnpoolMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["indices"] = kwargs.pop("indices").strip("\n") + ".astype('int32')"
+
+        return GenericMatcher.generate_code(self, kwargs)
