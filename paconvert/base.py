@@ -20,7 +20,7 @@ import re
 
 import astor
 
-from paconvert.utils import PaddleAuxFile
+from paconvert.utils import PaddleAuxFile, log_debug
 
 json_file = os.path.dirname(__file__) + "/api_mapping.json"
 with open(json_file, "r") as file:
@@ -128,7 +128,7 @@ class BaseTransformer(ast.NodeTransformer):
             self.scope_insert_lines[scope_node][body] = {index: node_list}
 
         if len(node_list) > 0:
-            self.log_debug("insert extra {} lines".format(len(node_list)))
+            log_debug(self.logger, "insert extra {} lines".format(len(node_list)))
 
     def insert_scope(self):
         # if multiple line, insert into scope node only One time
@@ -157,26 +157,6 @@ class BaseTransformer(ast.NodeTransformer):
 
         self.record_scope((self.root, "body", 0), import_nodes)
         self.record_scope(self.scope_body_index(), other_nodes)
-
-    def log_debug(self, msg, file=None, line=None):
-        if file:
-            if line:
-                msg = "[{}:{}] {}".format(file, line, msg)
-            else:
-                msg = "[{}] {}".format(file, msg)
-        else:
-            msg = "{}".format(msg)
-        self.logger.debug(msg)
-
-    def log_info(self, msg, file=None, line=None):
-        if file:
-            if line:
-                msg = "[{}:{}] {}".format(file, line, msg)
-            else:
-                msg = "[{}] {}".format(file, msg)
-        else:
-            msg = "{}".format(msg)
-        self.logger.info(msg)
 
     def get_full_attr(self, node):
         # torch.nn.fucntional.relu
@@ -229,13 +209,11 @@ class BaseTransformer(ast.NodeTransformer):
 
 
 class BaseMatcher(object):
-    def __init__(self, torch_api, api_mapping):
+    def __init__(self, torch_api, api_mapping, logger):
         self.torch_api = torch_api
         self.paddle_api = None
         self.api_mapping = api_mapping
-        aux_code = self.generate_aux_code()
-        if aux_code:
-            PaddleAuxFile().write_code(aux_code, self.torch_api)
+        self.logger = logger
 
     def get_aux_dir(self):
         return os.path.dirname(PaddleAuxFile().fileName)
@@ -357,6 +335,12 @@ class BaseMatcher(object):
     def generate_aux_code(self):
         return None
 
+    def write_aux_code(self):
+        aux_code = self.generate_aux_code()
+        if aux_code:
+            log_debug(self.logger, "Write auxiliary code for {}".format(self.torch_api))
+            PaddleAuxFile().write_code(aux_code, self.torch_api)
+
     @staticmethod
     def generate_code(self, kwargs):
         return None
@@ -379,7 +363,7 @@ class BaseMatcher(object):
             new_code = self.generate_code(new_kwargs)
             if new_code == "NonTorchClass":
                 return "NonTorchClass"
-            elif new_code is not None:
+            elif new_code:
                 return ast.parse(new_code).body
 
         return None

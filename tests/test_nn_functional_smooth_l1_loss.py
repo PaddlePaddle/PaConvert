@@ -16,15 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.reshape")
+obj = APIBase("torch.nn.functional.smooth_l1_loss")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(4.)
-        result = a.reshape(2, 2)
+        input = torch.tensor([1., 2., 3.]).requires_grad_(True)
+        label = torch.tensor([1., 2., 1.]).requires_grad_(True)
+        result = torch.nn.functional.smooth_l1_loss(input, label, beta=0.2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(4.)
-        result = a.reshape((2, 2))
+        input = torch.tensor([[1., 2., 3.],[1., 2., 3.]])
+        label = torch.tensor([[1., 2., 1.],[1., 2., 3.]])
+        result = torch.nn.functional.smooth_l1_loss(input, label, beta=0.2, size_average=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,8 +47,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(9)
-        result = a.reshape([3, 3])
+        input = torch.tensor([[1., 2., 3.],[1., 2., 3.]])
+        label = torch.tensor([[1., 2., 1.],[1., 2., 3.]])
+        result = torch.nn.functional.smooth_l1_loss(input, label, beta=0.2, size_average=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -56,9 +59,9 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(9)
-        shape = (3, 3)
-        result = a.reshape(shape)
+        input = torch.tensor([[1., 2., 3.],[1., 2., 3.]])
+        label = torch.tensor([[1., 2., 1.],[1., 2., 3.]])
+        result = torch.nn.functional.smooth_l1_loss(input, label, beta=0.2, reduction='mean')
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -68,9 +71,9 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(4.)
-        k = 2
-        result = a.reshape((k, k))
+        input = torch.tensor([[1., 2., 3.],[1., 2., 3.]])
+        label = torch.tensor([[1., 2., 1.],[1., 2., 3.]])
+        result = torch.nn.functional.smooth_l1_loss(input, label, beta=0.2, reduction='sum')
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -80,9 +83,11 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(2.)
-        k = 2
-        result = a.reshape(k)
+        import torch.nn as nn
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        target = torch.tensor([[1., 2., 1.],[1., 2., 3.]])
+        result = torch.nn.functional.smooth_l1_loss(input, target, reduce=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -92,41 +97,11 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(24.)
-        result = a.reshape(-1)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_8():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor(1.)
-        result = a.reshape(1)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_9():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(6.)
-        result = a.reshape(shape=(2, 3))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_10():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(6.)
-        result = a.reshape(shape=[2, 3])
+        import torch.nn as nn
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        target = torch.tensor([[1., 2., 1.],[1., 2., 3.]])
+        result = torch.nn.functional.smooth_l1_loss(input, target, reduce=False)
         """
     )
     obj.run(pytorch_code, ["result"])
