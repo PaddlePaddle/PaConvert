@@ -2,7 +2,6 @@ pre-commit
 pytest
 pytest-cov
 regex
-paddlepaddle==2.4.2
 torch==1.13.0
 coverage
 diff-cover

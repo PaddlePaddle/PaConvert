@@ -54,6 +54,7 @@ def test_case_3():
 
 
 def _test_case_4():
+    # Paddle 暂不支持 int 类型输入。
     pytorch_code = textwrap.dedent(
         """
         import torch

@@ -63,7 +63,7 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.allclose(torch.tensor([10000., 1e-07]), torch.tensor([10000.1, 1e-08]), atol=2)
+        result = torch.allclose(torch.tensor([10000., 1e-07]), torch.tensor([10000.1, 1e-08]), atol=2.)
         """
     )
     obj.run(pytorch_code, ["result"])

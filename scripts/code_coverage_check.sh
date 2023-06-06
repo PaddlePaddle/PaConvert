@@ -50,20 +50,7 @@ cat temp.txt
 echo '***********************start generating coverage rate detect******************************'
 python  tools/coverage/coverage_diff.py;check_error2=$?
 
-echo '************************************************************************************'
-echo "______      _____                          _   "
-echo "| ___ \    / ____|                        | |  "
-echo "| |_/ /_ _| |     ___  _ ____   _____ _ __| |_ "
-echo "|  __/ _  | |    / _ \\| \\_ \\ \\ / / _ \\ \\__| __|"
-echo "| | | (_| | |___| (_) | | | \\ V /  __/ |  | |_ "
-echo "\\_|  \\__,_|\\_____\\___/|_| |_|\\_/ \\___|_|   \\__|"
-echo -e '\n************************************************************************************'
-if [ ${check_error1} != 0 ] || [ ${check_error2} != 0 ];then
-    echo "Your PR code coverage rate check failed."
-else
-    echo "Your PR code coverage rate check passed."
-fi
-echo -e '************************************************************************************\n'
+check_error=$((check_error1||check_error2)) 
+echo "$check_error" > flag.txt
 
-check_error=$((check_error1||check_error2))
-exit ${check_error}
+echo '*******************start generating coverage rate visualization************************\n'
