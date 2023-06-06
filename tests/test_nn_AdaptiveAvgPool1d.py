@@ -16,15 +16,18 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.fliplr")
+obj = APIBase("torch.nn.AdaptiveAvgPool1d")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[0, 1],[2, 3]])
-        result = torch.fliplr(x)
+        import torch.nn as nn
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        model = nn.AdaptiveMaxPool1d(5)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,28 +37,11 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.fliplr(torch.tensor([[0, 1],[2, 3]]))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.fliplr(input=torch.tensor([[0, 1],[2, 3]]))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[[0, 1],[2, 3]], [[0, 1],[2, 3]]])
-        result = torch.fliplr(x)
+        import torch.nn as nn
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        model = nn.AdaptiveAvgPool1d(output_size=5)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])

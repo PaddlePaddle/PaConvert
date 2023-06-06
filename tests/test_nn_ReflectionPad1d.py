@@ -16,15 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.fliplr")
+obj = APIBase("torch.nn.ReflectionPad1d")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[0, 1],[2, 3]])
-        result = torch.fliplr(x)
+        import torch.nn as nn
+        x = torch.tensor([[[0., 1., 2., 3.], [4., 5., 6., 7.]]])
+        model = nn.ReflectionPad1d(2)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,7 +36,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.fliplr(torch.tensor([[0, 1],[2, 3]]))
+        import torch.nn as nn
+        x = torch.tensor([[[0., 1., 2., 3.], [4., 5., 6., 7.]]])
+        model = nn.ReflectionPad1d((2, 1))
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,7 +49,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.fliplr(input=torch.tensor([[0, 1],[2, 3]]))
+        import torch.nn as nn
+        x = torch.tensor([[[0., 1., 2., 3.], [4., 5., 6., 7.]]])
+        model = nn.ReflectionPad1d(padding=2)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -54,8 +62,10 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[[0, 1],[2, 3]], [[0, 1],[2, 3]]])
-        result = torch.fliplr(x)
+        import torch.nn as nn
+        x = torch.tensor([[[0., 1., 2., 3.], [4., 5., 6., 7.]]])
+        model = torch.nn.ReflectionPad1d(padding=2)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
