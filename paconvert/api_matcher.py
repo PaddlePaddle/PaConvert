@@ -411,6 +411,13 @@ class MaxMinMatcher(BaseMatcher):
         if "other" in new_kwargs:
             call_maximinimum = True
 
+        if (
+            len(args) >= 2
+            and isinstance(args[0], ast.Subscript)
+            and isinstance(args[1], ast.Subscript)
+        ):
+            call_maximinimum = True
+
         if call_maximinimum:
             return GenericMatcher(
                 self.torch_api, self.api_mapping, self.logger
