@@ -7689,7 +7689,7 @@
     ],
     "kwargs_change": {
       "input": "x",
-      "dim": "axis"
+      "dim": "axes"
     }
   },
   "torch.linalg.norm": {
@@ -8044,10 +8044,16 @@
     ]
   },
   "torch.load": {
-    "Matcher": "LoadMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.load",
     "args_list": [
       "f",
+      "map_location",
+      "pickle_module",
+      "weights_only",
+      "pickle_load_args"
+    ],
+    "unsupport_args": [
       "map_location",
       "pickle_module",
       "weights_only",
@@ -8058,13 +8064,17 @@
     }
   },
   "torch.save": {
-    "Matcher": "SaveMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.save",
     "args_list": [
       "obj",
       "f",
       "pickle_module",
       "pickle_protocol",
+      "_use_new_zipfile_serialization"
+    ],
+    "unsupport_args": [
+      "pickle_module",
       "_use_new_zipfile_serialization"
     ],
     "kwargs_change": {
@@ -8227,7 +8237,6 @@
   },
   "torch.utils.data.BatchSampler": {
     "Matcher": "TorchUtilDataBatchSampler",
-    "paddle_api": "paddle.io.BatchSampler",
     "args_list": [
       "sampler",
       "batch_size",
@@ -8241,7 +8250,6 @@
     ]
   },
   "torch.Size": {
-    "paddle_api": "list",
     "Matcher": "SizeMatcher",
     "args_list": []
   },
