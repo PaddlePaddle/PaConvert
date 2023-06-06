@@ -11,21 +11,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.ravel")
+obj = APIBase("torch.nn.ChannelShuffle")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]])
-        result = a.ravel()
+        import torch.nn as nn
+        x = torch.tensor([[[[0.]],[[0.10000000]],[[0.20000000]],[[0.30000001]],[[0.40000001]],[[0.50000000]]]])
+        model = nn.ChannelShuffle(3)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,18 +36,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([[4, 9], [23, 2]]).ravel()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([[4., 9.], [23., 2.]])
-        result = a.ravel()
+        import torch.nn as nn
+        x = torch.tensor([[[[0.]],[[0.10000000]],[[0.20000000]],[[0.30000001]],[[0.40000001]],[[0.50000000]]]])
+        model = nn.ChannelShuffle(groups=2)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])

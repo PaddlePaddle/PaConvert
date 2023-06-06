@@ -16,16 +16,18 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.save")
+obj = APIBase("torch.nn.ReLU")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0., 1., 2., 3., 4.])
-        torch.save(result, 'tensor.pt', _use_new_zipfile_serialization=False)
-        result = torch.load('tensor.pt', map_location=torch.device('cpu'))
+        import torch.nn as nn
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        model = nn.ReLU()
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,9 +37,11 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0., 1., 2., 3., 4.])
-        torch.save(result, 'tensor.pt', _use_new_zipfile_serialization=True)
-        result = torch.load('tensor.pt', map_location=torch.device('cpu'))
+        import torch.nn as nn
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        model = nn.ReLU(False)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -47,9 +51,11 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0., 1., 2., 3., 4.])
-        torch.save(result, 'tensor.pt')
-        result = torch.load('tensor.pt', map_location=torch.device('cpu'))
+        import torch.nn as nn
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        model = nn.ReLU(inplace=False)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -59,9 +65,11 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0., 1., 2., 3., 4.])
-        torch.save(result, 'tensor.pt', pickle_protocol=4)
-        result = torch.load('tensor.pt', map_location=torch.device('cpu'))
+        import torch.nn as nn
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        model = nn.ReLU(True)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])

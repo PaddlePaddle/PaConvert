@@ -48,7 +48,7 @@ class Converter:
         if log_dir is None:
             self.logger.addHandler(logging.StreamHandler())
         elif log_dir == "disable":
-            logging.disable(log_level)
+            logging.disable(3)
         else:
             self.logger.addHandler(logging.FileHandler(log_dir, mode="w"))
         self.logger.setLevel(log_level)

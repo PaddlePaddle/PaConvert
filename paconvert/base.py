@@ -30,6 +30,10 @@ json_file = os.path.dirname(__file__) + "/attribute_mapping.json"
 with open(json_file, "r") as file:
     ATTRIBUTE_MAPPING = json.load(file)
 
+json_file = os.path.dirname(__file__) + "/api_alias_mapping.json"
+with open(json_file, "r") as file:
+    ALIAS_MAPPING = json.load(file)
+
 TORCH_PACKAGE_LIST = [
     "torch",
     "mmseg",
@@ -234,12 +238,17 @@ class BaseMatcher(object):
         if len(args) > len(args_list):
             return "NonTorchClass"
 
+        unsupport_args = self.api_mapping.get("unsupport_args") or []
+
         new_kwargs = {}
         for i, node in enumerate(args):
             # not support 'torch.rot90(tensor, *config)'
             if isinstance(node, ast.Starred):
                 return None
             k = args_list[i]
+            # not support some API args
+            if k in unsupport_args:
+                return None
             v = astor.to_source(node).strip("\n")
             # have comma indicates a tuple
             new_kwargs[k] = v
@@ -248,6 +257,9 @@ class BaseMatcher(object):
             k = node.arg
             # not support 'torch.rot90(tensor, **config)'
             if k is None:
+                return None
+            # not support some API args
+            if k in unsupport_args:
                 return None
             # TODO: will open after all args have been add in args_list
             # if k not in args_list:
@@ -266,9 +278,13 @@ class BaseMatcher(object):
         return new_args
 
     def parse_kwargs(self, kwargs):
+        unsupport_args = self.api_mapping.get("unsupport_args") or []
+
         new_kwargs = {}
         for node in kwargs:
             k = node.arg
+            if k in unsupport_args:
+                return None
             v = astor.to_source(node.value).strip("\n")
             new_kwargs[k] = v
 
