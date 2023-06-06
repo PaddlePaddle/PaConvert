@@ -3510,3 +3510,30 @@ class FunctionalMseLossMatcher(BaseMatcher):
         )
         code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
         return code
+
+
+class TupleAssignMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs_change = {}
+        if "kwargs_change" in self.api_mapping:
+            kwargs_change = self.api_mapping["kwargs_change"]
+
+        for k in kwargs_change:
+            if k in kwargs:
+                kwargs[kwargs_change[k]] = kwargs.pop(k)
+
+        if "out" in kwargs:
+            out_v = kwargs.pop("out")
+            API_TEMPLATE = textwrap.dedent(
+                """
+                out1, out2 = {}({})
+                paddle.assign(out1, {}[0]), paddle.assign(out2, {}[1])
+                """
+            )
+            code = API_TEMPLATE.format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v, out_v
+            )
+            return code.strip("\n")
+        else:
+            code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+            return code.strip("\n")
