@@ -47,56 +47,72 @@ class APIBase(object):
             exec(paddle_code)
             paddle_result = [loc[name] for name in compared_tensor_names]
             for i in range(len(compared_tensor_names)):
-                assert self.check(
-                    pytorch_result[i], paddle_result[i]
-                ), "[{}]: convert failed".format(self.pytorch_api)
+                self.compare(self.pytorch_api, pytorch_result[i], paddle_result[i])
 
         if expect_paddle_code:
             convert_paddle_code = self.convert(pytorch_code)
             assert (
                 convert_paddle_code == expect_paddle_code
-            ), "[{}]: convert failed".format(self.pytorch_api)
+            ), "[{}]: get unexpected code".format(self.pytorch_api)
 
-    def check(self, pytorch_result, paddle_result):
+    def compare(self, name, pytorch_result, paddle_result):
         """
         compare tensors' data, shape, requires_grad, dtype
         args:
             pytorch_result: pytorch Tensor
             paddle_result: paddle Tensor
         """
+        if isinstance(pytorch_result, (tuple, list)):
+            assert isinstance(
+                paddle_result, (tuple, list)
+            ), "paddle result shoule be list/tuple"
+            assert len(pytorch_result) == len(
+                paddle_result
+            ), "paddle result have different length with pytorch"
+            for i in range(len(pytorch_result)):
+                self.compare(self.pytorch_api, pytorch_result[i], paddle_result[i])
+            return
+
         if isinstance(pytorch_result, (bool, np.number, int, str)) and isinstance(
             paddle_result, (bool, np.number, int, str)
         ):
-            return pytorch_result == paddle_result
-
-        if isinstance(pytorch_result, (tuple, list)) and isinstance(
-            paddle_result, (tuple, list)
-        ):
-            is_same = True
-            for i in range(len(pytorch_result)):
-                is_same = is_same and self.check(pytorch_result[i], paddle_result[i])
-            return is_same
-
-        if pytorch_result.requires_grad:
-            torch_numpy, paddle_numpy = (
-                pytorch_result.detach().numpy(),
-                paddle_result.numpy(),
+            assert (
+                pytorch_result == paddle_result
+            ), "API ({}): pytorch result is {}, but paddle result is {}".format(
+                name, pytorch_result, paddle_result
             )
-        elif pytorch_result.is_conj():
-            torch_numpy, paddle_numpy = (
+            return
+
+        if pytorch_result.is_conj():
+            pytorch_numpy, paddle_numpy = (
                 pytorch_result.resolve_conj().numpy(),
                 paddle_result.numpy(),
             )
         else:
-            torch_numpy, paddle_numpy = pytorch_result.numpy(), paddle_result.numpy()
+            pytorch_numpy, paddle_numpy = pytorch_result.numpy(), paddle_result.numpy()
 
-        if not np.allclose(paddle_numpy, torch_numpy):
-            return False
-        if pytorch_result.requires_grad == paddle_result.stop_gradient:
-            return False
-        if str(pytorch_result.dtype)[6:] != str(paddle_result.dtype)[7:]:
-            return False
-        return True
+        assert (
+            pytorch_result.requires_grad != paddle_result.stop_gradient
+        ), "API ({}): requires grad mismatch, torch tensor's requires_grad is {}, paddle tensor's stop_gradient is {}".format(
+            name, pytorch_result.requires_grad, paddle_result.stop_gradient
+        )
+        assert (
+            pytorch_numpy.shape == paddle_numpy.shape
+        ), "API ({}): shape mismatch, torch shape is {}, paddle shape is {}".format(
+            name, pytorch_numpy.shape, paddle_numpy.shape
+        )
+        assert (
+            pytorch_numpy.dtype == paddle_numpy.dtype
+        ), "API ({}): dtype mismatch, torch dtype is {}, paddle dtype is {}".format(
+            name, pytorch_numpy.dtype, paddle_numpy.dtype
+        )
+        np.testing.assert_allclose(
+            pytorch_numpy,
+            paddle_numpy,
+            err_msg="API ({}):  pytorch result is {}, but paddle result is {}".format(
+                name, pytorch_numpy, paddle_numpy
+            ),
+        )
 
     def convert(self, pytorch_code):
         """

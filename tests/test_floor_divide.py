@@ -20,7 +20,7 @@ from apibase import APIBase
 obj = APIBase("torch.divide")
 
 
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -32,7 +32,7 @@ def _test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -52,7 +52,7 @@ def _test_case_3():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
