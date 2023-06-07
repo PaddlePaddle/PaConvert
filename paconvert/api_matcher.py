@@ -371,7 +371,7 @@ class GeluMatcher(BaseMatcher):
         return code
 
 
-class SquentialMatcher(BaseMatcher):
+class SequentialMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         # nn.Sequential(OrderedDict([...]) / nn.Sequential(OrderedDict(blocks))
         if (
@@ -404,7 +404,7 @@ class MaxMinMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         # call maximum usage, convert
         call_maximinimum = False
-        if len(args) > 1 and isinstance(args[1], ast.Name):
+        if len(args) > 1 and isinstance(args[1], (ast.Name, ast.Subscript)):
             call_maximinimum = True
 
         new_kwargs = self.parse_kwargs(kwargs)
@@ -1383,8 +1383,35 @@ class FunctionalMaxPool2DMatcher(BaseMatcher):
         return code
 
 
+class LoadMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        unsupported_params = [
+            "map_location",
+            "pickle_module",
+            "weights_only",
+            "pickle_load_args",
+        ]
+        for param in unsupported_params:
+            if param in kwargs:
+                kwargs.pop(param)
+
+        API_TEMPLACE = textwrap.dedent(
+            """
+            paddle.load(path={})
+            """
+        )
+        code = API_TEMPLACE.format(kwargs["f"])
+        return code
+
+
 class SaveMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        if "pickle_module" in kwargs:
+            kwargs.pop("pickle_module")
+
+        if "_use_new_zipfile_serialization" in kwargs:
+            kwargs.pop("_use_new_zipfile_serialization")
+
         if "pickle_protocol" in kwargs:
             protocol = kwargs["pickle_protocol"]
         else:

@@ -17,3 +17,4 @@ tools/coverage/__pycache__
 temp.txt
 test_set
 torch_project
+tensor.pt

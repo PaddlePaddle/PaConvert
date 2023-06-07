@@ -15,7 +15,7 @@
 import ast
 import os
 
-from paconvert.base import TORCH_PACKAGE_LIST, BaseTransformer
+from paconvert.base import ALIAS_MAPPING, TORCH_PACKAGE_LIST, BaseTransformer
 from paconvert.utils import log_info
 
 
@@ -166,6 +166,8 @@ class ImportTransformer(BaseTransformer):
 
         torch_api = self.get_full_api_from_node(node)
         if torch_api:
+            if torch_api in ALIAS_MAPPING:
+                torch_api = ALIAS_MAPPING[torch_api]
             return ast.parse(torch_api).body[0].value
         return node
 
@@ -177,6 +179,8 @@ class ImportTransformer(BaseTransformer):
         """
         torch_api = self.get_full_api_from_node(node)
         if torch_api:
+            if torch_api in ALIAS_MAPPING:
+                torch_api = ALIAS_MAPPING[torch_api]
             return ast.parse(torch_api).body[0].value
         return node
 

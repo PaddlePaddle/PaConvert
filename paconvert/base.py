@@ -30,6 +30,10 @@ json_file = os.path.dirname(__file__) + "/attribute_mapping.json"
 with open(json_file, "r") as file:
     ATTRIBUTE_MAPPING = json.load(file)
 
+json_file = os.path.dirname(__file__) + "/api_alias_mapping.json"
+with open(json_file, "r") as file:
+    ALIAS_MAPPING = json.load(file)
+
 TORCH_PACKAGE_LIST = [
     "torch",
     "mmseg",

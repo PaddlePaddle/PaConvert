@@ -14,6 +14,7 @@
 
 set +x
 
+FLAGS_set_to_1d=0
 DEVELOP_IF="OFF"
 ADD_GIT="OFF"
 if [[ "$DEVELOP_IF" == "OFF" ]]; then

@@ -7414,7 +7414,8 @@
     }
   },
   "torch.nn.Sequential": {
-    "Matcher": "SquentialMatcher"
+    "Matcher": "SequentialMatcher",
+    "paddle_api": "paddle.nn.Sequential"
   },
   "torch.cuda.Event": {
     "Matcher": "GenericMatcher",
@@ -7672,6 +7673,24 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axes"
+    }
+  },
+  "torch.linalg.norm": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.norm",
+    "args_list": [
+      "A",
+      "ord",
+      "dim",
+      "keepdim",
+      "out",
+      "dtype"
+    ],
+    "kwargs_change": {
+      "A": "x",
+      "ord": "p",
+      "dim": "axis",
+      "keepdim": "keepdim"
     }
   },
   "torch.fft.rfftn": {
@@ -8008,16 +8027,10 @@
     ]
   },
   "torch.load": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "LoadMatcher",
     "paddle_api": "paddle.load",
     "args_list": [
       "f",
-      "map_location",
-      "pickle_module",
-      "weights_only",
-      "pickle_load_args"
-    ],
-    "unsupport_args": [
       "map_location",
       "pickle_module",
       "weights_only",
@@ -8028,17 +8041,13 @@
     }
   },
   "torch.save": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "SaveMatcher",
     "paddle_api": "paddle.save",
     "args_list": [
       "obj",
       "f",
       "pickle_module",
       "pickle_protocol",
-      "_use_new_zipfile_serialization"
-    ],
-    "unsupport_args": [
-      "pickle_module",
       "_use_new_zipfile_serialization"
     ],
     "kwargs_change": {
