@@ -34,7 +34,7 @@ def get_unique_name(key):
     return Generator(key)
 
 
-class PaddleAuxFile(object):
+class AuxFileHelper(object):
     _instance = None
 
     def __init__(self, fileName=None, *args, **kwargs):

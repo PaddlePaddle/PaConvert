@@ -16,16 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-
-class NumelAPI(APIBase):
-    def __init__(self, pytorch_api) -> None:
-        super().__init__(pytorch_api)
-
-    def check(self, pytorch_result, paddle_result):
-        return pytorch_result == paddle_result
-
-
-obj = NumelAPI("torch.numel")
+obj = APIBase("torch.numel")
 
 
 def test_case_1():

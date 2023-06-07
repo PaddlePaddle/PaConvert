@@ -430,14 +430,10 @@
     "paddle_api": "paddle.dtype"
   },
   "torch.numel": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.numel",
+    "Matcher": "NumelMatcher",
     "args_list": [
       "input"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    ]
   },
   "torch.sparse_coo_tensor": {
     "Matcher": "GenericMatcher",
@@ -2099,20 +2095,7 @@
       "dim": "axis"
     }
   },
-  "torch.nanmedian": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nanmedian",
-    "args_list": [
-      "input",
-      "dim",
-      "keepdim",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis"
-    }
-  },
+  "torch.nanmedian": {},
   "torch.mode": {
     "Matcher": "TupleAssignMatcher",
     "paddle_api": "paddle.mode",
@@ -3367,7 +3350,7 @@
     }
   },
   "torch.triangular_solve": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "TriangularSolveMatcher",
     "paddle_api": "paddle.linalg.triangular_solve",
     "args_list": [
       "b",

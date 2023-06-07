@@ -16,22 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-
-class MultinomialAPI(APIBase):
-    def __init__(self, pytorch_api) -> None:
-        super().__init__(pytorch_api)
-
-    def check(self, pytorch_result, paddle_result):
-        if pytorch_result.requires_grad == paddle_result.stop_gradient:
-            return False
-        if str(pytorch_result.dtype)[6:] != str(paddle_result.dtype)[7:]:
-            return False
-        if pytorch_result.numpy().shape != paddle_result.numpy().shape:
-            return False
-        return True
-
-
-obj = MultinomialAPI("torch.multinomial")
+obj = APIBase("torch.multinomial")
 
 
 def test_case_1():
@@ -43,7 +28,7 @@ def test_case_1():
         result = torch.multinomial(weights, 2)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
@@ -55,7 +40,7 @@ def test_case_2():
         result = torch.multinomial(weights, 4, replacement=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
@@ -66,7 +51,7 @@ def test_case_3():
         result = torch.multinomial(torch.tensor([1., 10., 3., 2.]), 4, replacement=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_4():
@@ -78,7 +63,7 @@ def test_case_4():
         result = torch.multinomial(weight, 4, replacement=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_5():
@@ -91,4 +76,4 @@ def test_case_5():
         result = torch.multinomial(weight, 4, replacement=True, out=out)
         """
     )
-    obj.run(pytorch_code, ["result", "out"])
+    obj.run(pytorch_code, ["result", "out"], check_value=False)

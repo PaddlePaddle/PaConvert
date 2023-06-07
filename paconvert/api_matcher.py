@@ -2729,6 +2729,39 @@ class UnflattenMatcher(BaseMatcher):
         return code
 
 
+class NumelMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        return "{}.size".format(kwargs["input"])
+
+
+class TriangularSolveMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        out_v = kwargs.pop("out") if "out" in kwargs else None
+        new_kwargs = {}
+        new_kwargs["x"] = kwargs.pop("A")
+        new_kwargs["y"] = kwargs.pop("b")
+        new_kwargs.update(kwargs)
+
+        if out_v:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                paddle.assign(paddle.linalg.triangular_solve({}), {}[0]), paddle.assign({}, {}[1])
+                """
+            )
+            code = API_TEMPLATE.format(
+                self.kwargs_to_str(new_kwargs), out_v, new_kwargs["x"], out_v
+            )
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                paddle.linalg.triangular_solve({}), {}
+                """
+            )
+            code = API_TEMPLATE.format(self.kwargs_to_str(new_kwargs), new_kwargs["x"])
+
+        return code
+
+
 class IndexAddMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" not in kwargs:
@@ -3170,19 +3203,27 @@ class CumsumMatcher(BaseMatcher):
 
 class SLogDetMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        out_v = kwargs.pop("out") if "out" in kwargs else None
+
         if "input" in kwargs:
             kwargs["A"] = kwargs.pop("input")
 
-        if "out" in kwargs and "None" not in kwargs["out"]:
-            return None
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            slogdet_result = paddle.linalg.slogdet({})
-            tuple([slogdet_result[0], slogdet_result[1]])
-            """
-        )
-        code = API_TEMPLATE.format(kwargs["A"])
+        if out_v:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                res = paddle.linalg.slogdet({})
+                paddle.assign(res[0], {}[0]), paddle.assign(res[1], {}[1])
+                """
+            )
+            code = API_TEMPLATE.format(kwargs["A"], out_v, out_v)
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                res = paddle.linalg.slogdet({})
+                res[0], res[1]
+                """
+            )
+            code = API_TEMPLATE.format(kwargs["A"])
 
         return code
 
