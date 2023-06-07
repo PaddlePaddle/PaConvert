@@ -16,20 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-
-class API(APIBase):
-    def check(self, pytorch_result, paddle_result):
-        torch_numpy, paddle_numpy = pytorch_result.numpy(), paddle_result.numpy()
-        if torch_numpy.shape != paddle_numpy.shape:
-            return False
-        if pytorch_result.requires_grad == paddle_result.stop_gradient:
-            return False
-        if str(pytorch_result.dtype)[6:] != str(paddle_result.dtype)[7:]:
-            return False
-        return True
-
-
-obj = API("torch.nn.PixelShuffle")
+obj = APIBase("torch.nn.PixelShuffle")
 
 
 def test_case_1():
@@ -37,7 +24,7 @@ def test_case_1():
         """
         import torch
         import torch.nn as nn
-        x = torch.randn(1, 9, 4, 4)
+        x = torch.ones(1, 9, 4, 4)
         model = nn.PixelShuffle(3)
         result = model(x)
         """
@@ -50,7 +37,7 @@ def test_case_2():
         """
         import torch
         import torch.nn as nn
-        x = torch.randn(1, 9, 4, 4)
+        x = torch.ones(1, 9, 4, 4)
         model = nn.PixelShuffle(upscale_factor=3)
         result = model(x)
         """

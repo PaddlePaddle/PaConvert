@@ -30,7 +30,7 @@ from paconvert.transformer.import_transformer import ImportTransformer
 from paconvert.transformer.tensor_requires_grad_transformer import (
     TensorRequiresGradTransformer,
 )
-from paconvert.utils import PaddleAuxFile, get_unique_name, log_info
+from paconvert.utils import AuxFileHelper, get_unique_name, log_info
 
 
 def listdir_nohidden(path):
@@ -48,7 +48,7 @@ class Converter:
         if log_dir is None:
             self.logger.addHandler(logging.StreamHandler())
         elif log_dir == "disable":
-            logging.disable(3)
+            logging.disable(1)
         else:
             self.logger.addHandler(logging.FileHandler(log_dir, mode="w"))
         self.logger.setLevel(log_level)
@@ -78,13 +78,9 @@ class Converter:
                 exclude_dir_list.append(os.path.abspath(item))
 
         if out_dir.endswith(".py"):
-            PaddleAuxFile(os.path.dirname(out_dir) + "/utils/paddle_aux.py")
+            AuxFileHelper(os.path.dirname(out_dir) + "/utils/paddle_aux.py")
         else:
-            PaddleAuxFile(out_dir + "/utils/paddle_aux.py")
-        log_info(
-            self.logger,
-            "Will write paddle aux code to {}".format(PaddleAuxFile().fileName),
-        )
+            AuxFileHelper(out_dir + "/utils/paddle_aux.py")
 
         self.transfer_dir(in_dir, out_dir, exclude_dir_list)
         if self.show_unsupport:

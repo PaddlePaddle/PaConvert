@@ -16,18 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-
-class RandintTest(APIBase):
-    def check(self, pytorch_result, paddle_result):
-
-        if pytorch_result.requires_grad == paddle_result.stop_gradient:
-            return False
-        if str(pytorch_result.dtype)[6:] != str(paddle_result.dtype)[7:]:
-            return False
-        return True
-
-
-obj = RandintTest("torch.randint")
+obj = APIBase("torch.randint")
 
 
 def test_case_1():
@@ -37,7 +26,7 @@ def test_case_1():
         result = torch.randint(3, 5, (3,))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
@@ -47,7 +36,7 @@ def test_case_2():
         result = torch.randint(10, (2, 2))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
@@ -57,7 +46,7 @@ def test_case_3():
         result = torch.randint(3, 10, (2, 2))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_4():
@@ -67,6 +56,7 @@ def test_case_4():
         result = torch.randint(3, 10, (2, 2), dtype=torch.int32)
         """
     )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_5():
@@ -76,7 +66,7 @@ def test_case_5():
         result = torch.randint(3, 10, (2, 2), dtype=torch.float32, requires_grad=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_6():
@@ -87,4 +77,4 @@ def test_case_6():
         result = torch.randint(3, 10, (2, 2), dtype=torch.int32, requires_grad=flag)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)

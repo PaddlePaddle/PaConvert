@@ -16,20 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-
-class API(APIBase):
-    def check(self, pytorch_result, paddle_result):
-        torch_numpy, paddle_numpy = pytorch_result.numpy(), paddle_result.numpy()
-        if torch_numpy.shape != paddle_numpy.shape:
-            return False
-        if pytorch_result.requires_grad == paddle_result.stop_gradient:
-            return False
-        if str(pytorch_result.dtype)[6:] != str(paddle_result.dtype)[7:]:
-            return False
-        return True
-
-
-obj = API("torch.nn.Fold")
+obj = APIBase("torch.nn.Fold")
 
 
 def test_case_1():
@@ -37,7 +24,7 @@ def test_case_1():
         """
         import torch
         import torch.nn as nn
-        x = torch.randn([2, 3*2*2, 12])
+        x = torch.ones([2, 3*2*2, 12])
         fold = nn.Fold([4, 5], 2)
         result = fold(x)
         """
@@ -50,7 +37,7 @@ def test_case_2():
         """
         import torch
         import torch.nn as nn
-        x = torch.randn([2, 3*2*2, 40])
+        x = torch.ones([2, 3*2*2, 40])
         fold = nn.Fold([4, 5], 2, 1, [1, 2], 1)
         result = fold(x)
         """
@@ -63,7 +50,7 @@ def test_case_3():
         """
         import torch
         import torch.nn as nn
-        x = torch.randn([2, 3*2*2, 12])
+        x = torch.ones([2, 3*2*2, 12])
         fold = nn.Fold(output_size=[4, 5], kernel_size=2)
         result = fold(x)
         """
@@ -76,7 +63,7 @@ def test_case_4():
         """
         import torch
         import torch.nn as nn
-        x = torch.randn([2, 3*2*2, 40])
+        x = torch.ones([2, 3*2*2, 40])
         fold = nn.Fold([4, 5], 2, stride=1, padding=[1, 2], dilation=1)
         result = fold(x)
         """
@@ -89,7 +76,7 @@ def test_case_5():
         """
         import torch
         import torch.nn as nn
-        x = torch.randn([2, 3*2*2, 40])
+        x = torch.ones([2, 3*2*2, 40])
         fold = nn.Fold([4, 5], 2, padding=[1, 2], dilation=1)
         result = fold(x)
         """
@@ -102,7 +89,7 @@ def test_case_6():
         """
         import torch
         import torch.nn as nn
-        x = torch.randn([2, 3*2*2, 12])
+        x = torch.ones([2, 3*2*2, 12])
         fold = nn.Fold([4, 5], 2)
         result = fold(x)
         """

@@ -20,7 +20,7 @@ import re
 
 import astor
 
-from paconvert.utils import PaddleAuxFile, log_debug
+from paconvert.utils import AuxFileHelper, log_debug
 
 json_file = os.path.dirname(__file__) + "/api_mapping.json"
 with open(json_file, "r") as file:
@@ -220,7 +220,7 @@ class BaseMatcher(object):
         self.logger = logger
 
     def get_aux_dir(self):
-        return os.path.dirname(PaddleAuxFile().fileName)
+        return os.path.dirname(AuxFileHelper().fileName)
 
     def get_paddle_api(self):
         if self.paddle_api:
@@ -354,8 +354,14 @@ class BaseMatcher(object):
     def write_aux_code(self):
         aux_code = self.generate_aux_code()
         if aux_code:
-            log_debug(self.logger, "Write auxiliary code for {}".format(self.torch_api))
-            PaddleAuxFile().write_code(aux_code, self.torch_api)
+            aux_file_helper = AuxFileHelper()
+            log_debug(
+                self.logger,
+                "Write auxiliary code for {} to {}".format(
+                    self.torch_api, aux_file_helper.fileName
+                ),
+            )
+            aux_file_helper.write_code(aux_code, self.torch_api)
 
     @staticmethod
     def generate_code(self, kwargs):
