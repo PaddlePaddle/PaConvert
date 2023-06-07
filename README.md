@@ -632,9 +632,13 @@ if x:
 
 * 单测位置：所有的单测文件均放在`tests`目录下，单测文件命名以`test_`为前缀，后面接测试的`API`名称（PyTorch API全称去掉模块名，保留大小写）。例如 `torch.add` 命名为 `test_add.py` ， `torch.Tensor.add` 命名为  `test_Tensor_add.py` 。
 
-* 单测默认检查逻辑：采用`pytest`作为单测框架。一般情况下，用户只需要在单测文件中调用 `APIBase` 类的 `run()` 方法，传入 `pytorch_code` 和需要判断的 `Tensor` 变量名列表即可，参考 [torch.permute测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_permute.py)。 `run()` 方法会调用`compare()`函数，该方法默认检查逻辑为：转换前后两个`Tensor`的 `计算数值、数据类型、stop_gradient属性、形状` 是否一致。如果不需要运行转换后的 `paddle` 代码，可以直接传入 `expect_paddle_code` 字符串，此时会比对转换后的`paddle`代码与`expect_paddle_code`代码字符串是否一致。
+* 默认检查逻辑：采用`pytest`作为单测框架。一般情况下，用户只需要在单测文件中调用 `APIBase` 类的 `run()` 方法，传入 `pytorch_code` 和需要判断的 `Tensor` 变量名列表即可，参考 [torch.permute测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_permute.py)。 `run()` 方法会调用`compare()`函数，该方法默认检查逻辑为：转换前后两个`Tensor`的 `计算数值、数据类型、stop_gradient属性、形状` 是否一致。
 
-* 自定义检查逻辑：如果需要自定义检查逻辑，可以继承`APIBase`类并重写`compare()`函数，实现自定义的检查逻辑，但需要有充分理由，例如随机数API可以允许 `计算数值` 不同。 参考 [torch.Tensor测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_Tensor.py)。
+* 关闭数值检查：对于随机数API，允许 `计算数值` 不同，可通过设置 `run(check_value=False)` 来实现，默认下不允许关闭数值检查。
+
+* 不支持的检查：如果不支持转换，则无法运行转换后的 `paddle` 代码。（待补充）
+
+* 自定义检查：如果需要自定义检查逻辑，可以继承 `APIBase` 类并重写`compare()`函数，实现自定义的检查逻辑，但需要有充分理由，例如 `torch.Generator` 由于返回的不为Tensor，无法使用常规方法测试。 参考 [torch.Tensor测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_Generator.py)。
 
 * 运行单测：可以在主目录下执行`pytest tests`命令运行所有单测；也可以执行`pytest tests/xxx.py`运行`tests`目录下的某一单测；如果希望遇到`error`则停止单测，可以加上参数`-x`，即`pytest tests/test_add.py -x`，单测运行过程中会将转换后的`paddle`代码写入`test_project/paddle_temp.py`，方便排查错误。
 
