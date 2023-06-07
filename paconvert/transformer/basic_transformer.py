@@ -23,6 +23,7 @@ from paconvert.api_matcher import *
 from paconvert.base import (
     API_MAPPING,
     ATTRIBUTE_MAPPING,
+    ALIAS_MAPPING,
     TORCH_PACKAGE_LIST,
     BaseTransformer,
 )
