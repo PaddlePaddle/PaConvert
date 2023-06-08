@@ -67,5 +67,5 @@ def test_case_4():
         pytorch_code,
         ["result"],
         unsupport=True,
-        reason="paddle does not support list or tuple",
+        reason="paddle does not support variable parameter",
     )
