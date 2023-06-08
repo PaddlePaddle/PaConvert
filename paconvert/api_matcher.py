@@ -3769,3 +3769,27 @@ class RoundMatcher(BaseMatcher):
             code = "paddle.assign({}, output={})".format(code, kwargs["out"])
 
         return code
+
+
+class LSTMCellMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "bias" in kwargs and "False" in kwargs["bias"]:
+            API_TEMPLACE = textwrap.dedent(
+                """
+                {}(input_size={},
+                    hidden_size={},
+                    bias_ih_attr=False,
+                    bias_hh_attr=False)
+                """
+            )
+        else:
+            API_TEMPLACE = textwrap.dedent(
+                """
+                {}(input_size={},
+                    hidden_size={})
+                """
+            )
+        code = API_TEMPLACE.format(
+            self.get_paddle_api(), kwargs["input_size"], kwargs["hidden_size"]
+        )
+        return code

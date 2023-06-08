@@ -8190,6 +8190,29 @@
       "momentum",
       "affine",
       "track_running_stats",
+      "process_group",
+      "device",
+      "dtype"
+    ]
+  },
+  "torch.nn.LSTMCell": {
+    "Matcher": "LSTMCellMatcher",
+    "paddle_api": "paddle.nn.LSTMCell",
+    "args_list": [
+      "input_size",
+      "hidden_size",
+      "bias",
+      "device",
+      "dtype"
+    ]
+  },
+  "torch.nn.GRUCell": {
+    "Matcher": "LSTMCellMatcher",
+    "paddle_api": "paddle.nn.GRUCell",
+    "args_list": [
+      "input_size",
+      "hidden_size",
+      "bias",
       "device",
       "dtype"
     ]
