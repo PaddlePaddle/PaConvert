@@ -3616,13 +3616,6 @@ class DiffMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-class MedianMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "dim" in kwargs:
-            return None
-        return GenericMatcher.generate_code(self, kwargs)
-
-
 class NonzeroMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "as_tuple" in kwargs and kwargs["as_tuple"] != "(False)":

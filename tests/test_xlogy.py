@@ -96,7 +96,7 @@ def _test_case_7():
     obj.run(pytorch_code, ["result"])
 
 
-# The two input types of paddle must be consistent and cannot be transformed automatically
+# paddle.log not support type promote and x/y must have same dtype
 def _test_case_8():
     pytorch_code = textwrap.dedent(
         """
