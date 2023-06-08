@@ -2072,7 +2072,7 @@
     }
   },
   "torch.median": {
-    "Matcher": "MedianMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.median",
     "args_list": [
       "input",
@@ -2083,7 +2083,10 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axis"
-    }
+    },
+    "unsupport_args": [
+      "dim"
+    ]
   },
   "torch.nanmedian": {},
   "torch.mode": {

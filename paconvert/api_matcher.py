@@ -3614,10 +3614,3 @@ class DiffMatcher(BaseMatcher):
         if "n" in kwargs and kwargs["n"] != "(1)":
             return None
         return GenericMatcher.generate_code(self, kwargs)
-
-
-class MedianMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "dim" in kwargs:
-            return None
-        return GenericMatcher.generate_code(self, kwargs)
