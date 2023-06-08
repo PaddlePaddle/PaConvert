@@ -1049,6 +1049,17 @@
       "mode"
     ]
   },
+  "torch.absolute": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.abs",
+    "args_list": [
+      "input",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.acos": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.acos",
@@ -2106,20 +2117,7 @@
       "dim": "axis"
     }
   },
-  "torch.nanmedian": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nanmedian",
-    "args_list": [
-      "input",
-      "dim",
-      "keepdim",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis"
-    }
-  },
+  "torch.nanmedian": {},
   "torch.mode": {
     "Matcher": "TupleAssignMatcher",
     "paddle_api": "paddle.mode",
@@ -2943,14 +2941,6 @@
       "input": "x",
       "dims": "axis"
     }
-  },
-  "torch.round": {
-    "Matcher": "RoundMatcher",
-    "args_list": [
-      "input",
-      "decimals",
-      "out"
-    ]
   },
   "torch.tensordot": {
     "Matcher": "GenericMatcher",
