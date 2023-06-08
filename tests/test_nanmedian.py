@@ -19,7 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.nanmedian")
 
 
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -30,7 +30,7 @@ def _test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -38,10 +38,15 @@ def _test_case_2():
         result = torch.nanmedian(input, 1)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not return index when dim is specified",
+    )
 
 
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -49,10 +54,15 @@ def _test_case_3():
         result = torch.nanmedian(input, 1, keepdim=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not return index when dim is specified",
+    )
 
 
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -60,10 +70,15 @@ def _test_case_4():
         result = torch.nanmedian(input, dim=1, keepdim=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not return index when dim is specified",
+    )
 
 
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -72,10 +87,15 @@ def _test_case_5():
         result = torch.nanmedian(input, dim=1, keepdim=True, out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not return index when dim is specified",
+    )
 
 
-def _test_case_6():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -83,4 +103,9 @@ def _test_case_6():
         result = torch.nanmedian(input, 0)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not return index when dim is specified",
+    )

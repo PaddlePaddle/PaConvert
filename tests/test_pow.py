@@ -30,6 +30,7 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
+# The two input types of paddle must be consistent and cannot be transformed automatically
 def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -42,12 +43,12 @@ def _test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
         a = torch.tensor([0.4331])
-        b = torch.tensor([1, 2, 3, 4])
+        b = torch.tensor([1., 2, 3, 4])
         result = torch.pow(a, b)
         """
     )

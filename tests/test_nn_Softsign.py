@@ -16,16 +16,18 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.mv")
+obj = APIBase("torch.nn.Softsign")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1., 2.], [4., 5.]])
-        b = torch.tensor([1., 3.])
-        result = torch.mv(a, b)
+        import torch.nn as nn
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        model = nn.Softsign()
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,35 +37,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1., 2.], [4., 5.]])
-        b = torch.tensor([1., 3.])
-        result = torch.mv(input=a, vec=b)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-# The paddle input does not support integer type
-def _test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([[1, 2], [4, 5]])
-        b = torch.tensor([1, 3])
-        result = torch.mv(a, b)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([[1., 2.], [4., 5.]])
-        b = torch.tensor([1., 3.])
-        out = torch.tensor([[1., 2.], [4., 5.]])
-        result = torch.mv(a, b, out=out)
+        import torch.nn as nn
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        result = nn.Softsign()(x)
         """
     )
     obj.run(pytorch_code, ["result"])

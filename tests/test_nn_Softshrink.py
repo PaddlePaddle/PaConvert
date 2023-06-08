@@ -16,15 +16,18 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.sort")
+obj = APIBase("torch.nn.Softshrink")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]])
-        result = torch.sort(a)
+        import torch.nn as nn
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        model = nn.Softshrink()
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +37,11 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]])
-        result = torch.sort(a, 0)
+        import torch.nn as nn
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        model = nn.Softshrink(0.7)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,31 +51,11 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]])
-        result = torch.sort(input=a, dim=1, descending=True, stable=True)
+        import torch.nn as nn
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        model = nn.Softshrink(lambd=0.6)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        descending=False
-        result = torch.sort(torch.tensor([[4, 9], [23, 2]]), dim=1, descending=descending, stable=True)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([[4, 9], [23, 2]])
-        out = (torch.tensor(a), torch.tensor(a))
-        result = torch.sort(input=a, dim=1, descending=True, stable=True, out=out)
-        """
-    )
-    obj.run(pytorch_code, ["result", "out"])

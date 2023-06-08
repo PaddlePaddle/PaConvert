@@ -11,48 +11,31 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.set_grad_enabled")
+obj = APIBase("torch.nn.utils.parameters_to_vector")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1.], requires_grad=True)
-        is_train = False
-        with torch.set_grad_enabled(is_train):
-            result = x * 2
+        linear = torch.nn.Linear(10, 15)
+        result = torch.nn.utils.parameters_to_vector(linear.parameters())
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1.], requires_grad=True)
-        with torch.set_grad_enabled(False):
-            result = x * 2
+        linear = torch.nn.Linear(10, 15)
+        result = torch.nn.utils.parameters_to_vector(parameters=linear.parameters())
         """
     )
-    obj.run(pytorch_code, ["result"])
-
-
-# paddle can only be used in with block
-def _test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1.], requires_grad=True)
-        _ = torch.set_grad_enabled(False)
-        result = x * 2
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)

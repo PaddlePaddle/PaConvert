@@ -73,6 +73,7 @@ def test_case_5():
     obj.run(pytorch_code, ["result"])
 
 
+# The paddle input does not support integer type
 def _test_case_6():
     pytorch_code = textwrap.dedent(
         """
@@ -83,6 +84,7 @@ def _test_case_6():
     obj.run(pytorch_code, ["result"])
 
 
+# When input1 is zero and input2 is inf, torch.xlogy() outputs zero, but paddle is implemented with log() instead, and will output nan
 def _test_case_7():
     pytorch_code = textwrap.dedent(
         """
@@ -94,6 +96,7 @@ def _test_case_7():
     obj.run(pytorch_code, ["result"])
 
 
+# The two input types of paddle must be consistent and cannot be transformed automatically
 def _test_case_8():
     pytorch_code = textwrap.dedent(
         """

@@ -3621,3 +3621,61 @@ class MedianMatcher(BaseMatcher):
         if "dim" in kwargs:
             return None
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class NonzeroMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "as_tuple" in kwargs and kwargs["as_tuple"] != "(False)":
+            return None
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class NormMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "p" in kwargs and "nuc" in kwargs["p"]:
+            return None
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class SortMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        change_kwargs = self.api_mapping["kwargs_change"]
+        for key in change_kwargs:
+            if key in kwargs:
+                if change_kwargs[key]:
+                    kwargs[change_kwargs[key]] = kwargs.pop(key).strip("\n")
+                else:
+                    kwargs.pop(key)
+
+        if "out" not in kwargs:
+            code = "paddle.sort({}), paddle.argsort({})".format(
+                self.kwargs_to_str(kwargs), self.kwargs_to_str(kwargs)
+            )
+        else:
+            out_v = kwargs.pop("out")
+            API_TEMPLATE = textwrap.dedent(
+                """
+                out1, out2 = paddle.sort({}), paddle.argsort({})
+                paddle.assign(out1, {}[0]), paddle.assign(out2, {}[1])
+                """
+            )
+            code = API_TEMPLATE.format(
+                self.kwargs_to_str(kwargs), self.kwargs_to_str(kwargs), out_v, out_v
+            )
+        return code.strip("\n")
+
+
+class WhereMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if len(kwargs) == 1:
+            return None
+        else:
+            code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        return code
+
+
+class UpsampleMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "size" in kwargs and "," not in kwargs["size"]:
+            return None
+        return GenericMatcher.generate_code(self, kwargs)
