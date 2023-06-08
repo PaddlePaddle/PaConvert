@@ -967,6 +967,9 @@ class GroupNormMatcher(BaseMatcher):
 
 class BatchNormMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        if "process_group" in kwargs and kwargs["process_group"] is not None:
+            return None
+
         if "eps" not in kwargs:
             epsilon = 1e-5
         else:

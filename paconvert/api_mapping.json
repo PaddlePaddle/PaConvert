@@ -8181,6 +8181,19 @@
       "dtype"
     ]
   },
+  "torch.nn.SyncBatchNorm": {
+    "Matcher": "BatchNormMatcher",
+    "paddle_api": "paddle.nn.SyncBatchNorm",
+    "args_list": [
+      "num_features",
+      "eps",
+      "momentum",
+      "affine",
+      "track_running_stats",
+      "device",
+      "dtype"
+    ]
+  },
   "torch.nn.MaxPool1d": {
     "Matcher": "MaxPoolMatcher",
     "paddle_api": "paddle.nn.MaxPool1D",
