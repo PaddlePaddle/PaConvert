@@ -3093,7 +3093,7 @@ class TensorReshapeMatcher(BaseMatcher):
             import sys
             sys.path.append('{}')
             import paddle_aux
-            {}.cdist({})
+            {}.reshape({})
             """
         )
         code = API_TEMPLATE.format(
