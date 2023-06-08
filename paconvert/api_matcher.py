@@ -3597,7 +3597,7 @@ class CDistMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def cdist(self, x1, x2, p=2.0):
+            def cdist(x1, x2, p=2.0):
                 dist_list = []
                 if x1.ndim == 2:
                     for i in range(x1.shape[0]):
@@ -3611,8 +3611,6 @@ class CDistMatcher(BaseMatcher):
                                 dist_list.append(paddle.dist(x1[b, i, :], x2[b, j, :], p=p).item())
                     out = paddle.to_tensor(dist_list).reshape([x1.shape[0],x1.shape[1], x2.shape[1]])
                 return out
-
-            setattr(paddle_aux, 'cdist', cdist)
             """
         )
         return CODE_TEMPLATE
