@@ -3093,7 +3093,7 @@ class TensorReshapeMatcher(BaseMatcher):
             import sys
             sys.path.append('{}')
             import paddle_aux
-            {}.reshape({})
+            {}.cdist({})
             """
         )
         code = API_TEMPLATE.format(
@@ -3594,48 +3594,44 @@ class FunctionalMseLossMatcher(BaseMatcher):
 
 
 class CDistMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def cdist(self, x1, x2, p):
+                dist_list = []
+                if x1.ndim == 2:
+                    for i in range(x1.shape[0]):
+                        for j in range(x2.shape[0]):
+                            dist_list.append(paddle.dist(x1[i, :], x2[j, :], p=p).item())
+                    out = paddle.to_tensor(dist_list).reshape([x1.shape[0], x2.shape[0]])
+                else:
+                    for b in range(x1.shape[0]):
+                        for i in range(x1.shape[1]):
+                            for j in range(x2.shape[1]):
+                                dist_list.append(paddle.dist(x1[b, i, :], x2[b, j, :], p=p).item())
+                    out = paddle.to_tensor(dist_list).reshape([x1.shape[0],x1.shape[1], x2.shape[1]])
+                out
+
+            setattr(paddle, 'cdist', cdist)
+            """
+        )
+        return CODE_TEMPLATE
+
     def generate_code(self, kwargs):
         if "p" not in kwargs:
             kwargs["p"] = 2.0
+
+        self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            dist_list = []
-            if {}.ndim == 2:
-                for i in range({}.shape[0]):
-                    for j in range({}.shape[0]):
-                        dist_list.append(paddle.dist({}[i, :], {}[j, :], p={}).item())
-                {} = paddle.to_tensor(dist_list).reshape([{}.shape[0], {}.shape[0]])
-            else:
-                for b in range({}.shape[0]):
-                    for i in range({}.shape[1]):
-                        for j in range({}.shape[1]):
-                            dist_list.append(paddle.dist({}[b, i, :], {}[b, j, :], p={}).item())
-                {} = paddle.to_tensor(dist_list).reshape([{}.shape[0],{}.shape[1], {}.shape[1]])
-            {}
+            import sys
+            sys.path.append('{}')
+            import paddle_aux
+            paddle.cdist({}, {}, {})
             """
         )
-        out = get_unique_name("out")
         code = API_TEMPLATE.format(
-            kwargs["x1"],
-            kwargs["x1"],
-            kwargs["x2"],
-            kwargs["x1"],
-            kwargs["x2"],
-            kwargs["p"],
-            out,
-            kwargs["x1"],
-            kwargs["x2"],
-            kwargs["x1"],
-            kwargs["x1"],
-            kwargs["x2"],
-            kwargs["x1"],
-            kwargs["x2"],
-            kwargs["p"],
-            out,
-            kwargs["x1"],
-            kwargs["x1"],
-            kwargs["x2"],
-            out,
+            self.get_aux_dir(), kwargs["x1"], kwargs["x2"], kwargs["p"]
         )
 
         return code
