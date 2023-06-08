@@ -1956,6 +1956,23 @@
       "dim": "axis"
     }
   },
+  "torch.argsort": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.argsort",
+    "args_list": [
+      "input",
+      "dim",
+      "descending",
+      "stable"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axis"
+    },
+    "unsupport_args": [
+      "stable"
+    ]
+  },
   "torch.argwhere": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nonzero",
@@ -2142,20 +2159,7 @@
       "dim": "axis"
     }
   },
-  "torch.nanmedian": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nanmedian",
-    "args_list": [
-      "input",
-      "dim",
-      "keepdim",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis"
-    }
-  },
+  "torch.nanmedian": {},
   "torch.nan_to_num": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nanmedian",
@@ -8177,9 +8181,39 @@
       "dtype"
     ]
   },
+  "torch.nn.MaxPool1d": {
+    "Matcher": "MaxPoolMatcher",
+    "paddle_api": "paddle.nn.MaxPool1D",
+    "args_list": [
+      "kernel_size",
+      "stride",
+      "padding",
+      "dilation",
+      "return_indices",
+      "ceil_mode"
+    ],
+    "kwargs_change": {
+      "return_indices": "return_mask"
+    }
+  },
   "torch.nn.MaxPool2d": {
-    "Matcher": "MaxPool2DMatcher",
+    "Matcher": "MaxPoolMatcher",
     "paddle_api": "paddle.nn.MaxPool2D",
+    "args_list": [
+      "kernel_size",
+      "stride",
+      "padding",
+      "dilation",
+      "return_indices",
+      "ceil_mode"
+    ],
+    "kwargs_change": {
+      "return_indices": "return_mask"
+    }
+  },
+  "torch.nn.MaxPool3d": {
+    "Matcher": "MaxPoolMatcher",
+    "paddle_api": "paddle.nn.MaxPool3D",
     "args_list": [
       "kernel_size",
       "stride",
