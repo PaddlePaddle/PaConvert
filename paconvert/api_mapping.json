@@ -726,8 +726,6 @@
     ]
   },
   "torch.dstack": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.stack",
     "args_list": [
       "tensors",
       "out"
@@ -2085,7 +2083,10 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axis"
-    }
+    },
+    "unsupport_args": [
+      "dim"
+    ]
   },
   "torch.nanmedian": {
     "Matcher": "MedianMatcher",
