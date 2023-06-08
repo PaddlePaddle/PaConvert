@@ -53,8 +53,8 @@ def test_case_3():
     obj.run(pytorch_code, ["result"])
 
 
+# Paddle does not currently support int type input.
 def _test_case_4():
-    # Paddle does not currently support int type input.
     pytorch_code = textwrap.dedent(
         """
         import torch

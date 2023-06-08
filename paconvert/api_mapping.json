@@ -6810,6 +6810,7 @@
       "other"
     ]
   },
+  "torch.Tensor.resize_": {},
   "torch.Tensor.resize_as_": {},
   "torch.Tensor.retain_grad": {
     "Matcher": "GenericMatcher",
