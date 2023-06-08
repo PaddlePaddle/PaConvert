@@ -2089,7 +2089,6 @@
     ]
   },
   "torch.nanmedian": {
-    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nanmedian",
     "args_list": [
       "input",
