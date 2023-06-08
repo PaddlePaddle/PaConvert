@@ -3739,30 +3739,3 @@ class TupleAssignMatcher(BaseMatcher):
         else:
             code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
             return code.strip("\n")
-
-
-class RoundMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "input" not in kwargs:
-            kwargs["input"] = self.paddleClass
-
-        if "decimals" in kwargs:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.round((10**{}) * {}) / (10**{})
-                """
-            )
-            code = API_TEMPLATE.format(
-                kwargs["decimals"], kwargs["input"], kwargs["decimals"]
-            )
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.round({})
-                """
-            )
-            code = API_TEMPLATE.format(kwargs["input"])
-        if "out" in kwargs and kwargs["out"] is not None:
-            code = "paddle.assign({}, output={})".format(code, kwargs["out"])
-
-        return code
