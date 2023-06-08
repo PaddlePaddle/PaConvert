@@ -35,13 +35,25 @@ class APIBase(object):
         compared_tensor_names=None,
         expect_paddle_code=None,
         check_value=True,
+        unsupport=False,
+        reason=None,
     ) -> None:
         """
         args:
             pytorch_code: pytorch code to execute
             compared_tensor_names: the list of variant name to be compared
             expect_paddle_code: the string of expect paddle code
+            check_value: If false, the value will not be checked
+            unsupport: If true, conversion is not supported
+            reason: the reason why it is not supported
         """
+        if unsupport:
+            assert (
+                reason is not None
+            ), "Please explain the reason why it is not supported"
+            paddle_code = self.convert(pytorch_code)
+            assert ">>>" in paddle_code
+            return
         if compared_tensor_names:
             loc = locals()
             exec(pytorch_code)
@@ -65,8 +77,10 @@ class APIBase(object):
         """
         compare tensors' data, shape, requires_grad, dtype
         args:
+            name: pytorch api name
             pytorch_result: pytorch Tensor
             paddle_result: paddle Tensor
+            check_value: If false, the value will not be checked
         """
         if isinstance(pytorch_result, (tuple, list)):
             assert isinstance(

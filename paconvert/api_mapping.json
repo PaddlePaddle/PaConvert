@@ -726,8 +726,6 @@
     ]
   },
   "torch.dstack": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.stack",
     "args_list": [
       "tensors",
       "out"
@@ -1539,17 +1537,13 @@
     }
   },
   "torch.floor_divide": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.floor_divide",
     "args_list": [
       "input",
       "other",
       "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "other": "y"
-    }
+    ]
   },
   "torch.frac": {
     "Matcher": "GenericMatcher",
@@ -1699,17 +1693,13 @@
     ]
   },
   "torch.multiply": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.multiply",
     "args_list": [
       "input",
       "other",
       "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "other": "y"
-    }
+    ]
   },
   "torch.neg": {
     "Matcher": "GenericMatcher",
@@ -2093,7 +2083,10 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axis"
-    }
+    },
+    "unsupport_args": [
+      "dim"
+    ]
   },
   "torch.nanmedian": {},
   "torch.mode": {
@@ -2679,7 +2672,7 @@
     }
   },
   "torch.diff": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "DiffMatcher",
     "paddle_api": "paddle.diff",
     "args_list": [
       "input",

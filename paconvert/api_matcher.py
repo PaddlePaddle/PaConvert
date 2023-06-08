@@ -3004,6 +3004,8 @@ class SubMatcher(BaseMatcher):
 
 class Chain_MatmulMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
+        if len(args) == 1 and isinstance(args[0], ast.Starred):
+            return None
         new_args = self.parse_args(args)
         new_kwargs = self.parse_kwargs(kwargs)
 
@@ -3605,3 +3607,10 @@ class TupleAssignMatcher(BaseMatcher):
         else:
             code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
             return code.strip("\n")
+
+
+class DiffMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "n" in kwargs and kwargs["n"] != "(1)":
+            return None
+        return GenericMatcher.generate_code(self, kwargs)

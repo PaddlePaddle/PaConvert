@@ -19,7 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.bernoulli")
 
 
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -27,7 +27,7 @@ def _test_case_1():
         result = torch.bernoulli(a)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
