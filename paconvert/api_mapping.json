@@ -726,8 +726,6 @@
     ]
   },
   "torch.dstack": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.stack",
     "args_list": [
       "tensors",
       "out"
