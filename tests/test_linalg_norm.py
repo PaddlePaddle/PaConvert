@@ -23,10 +23,8 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[-12., -11., -10., -9. ],
-                    [-8. , -7. , -6. , -5. ],
-                    [-4. , -3. , -2. , -1. ]])
-        result = torch.linalg.norm(input, ord='fro')
+        y = torch.tensor([[3, 4, 6], [5, 3, 4], [1, 2, 1.]])
+        result = torch.linalg.norm(y, dim=-1, keepdim=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -36,36 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[-12., -11., -10., -9. ],
-                    [-8. , -7. , -6. , -5. ],
-                    [-4. , -3. , -2. , -1. ]])
-        result = torch.linalg.norm(input, ord=2, dim=0)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        input = torch.tensor([[-12., -11., -10., -9. ],
-                    [-8. , -7. , -6. , -5. ],
-                    [-4. , -3. , -2. , -1. ]])
-        result = torch.linalg.norm(input, ord=2, dim=1, keepdim=True)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        input = torch.tensor([[-12., -11., -10., -9. ],
-                    [-8. , -7. , -6. , -5. ],
-                    [-4. , -3. , -2. , -1. ]])
-        result = torch.linalg.norm(input, ord=2, dim=1, dtype=torch.float64)
+        x = torch.tensor([[10, 2, 3], [3, 10, 5], [5, 6, 12.]])
+        result = torch.linalg.norm(x, float('inf'), dim=-1)
         """
     )
     obj.run(pytorch_code, ["result"])

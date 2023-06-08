@@ -14,6 +14,7 @@
 
 set +x
 
+export FLAGS_set_to_1d=0
 DOWNLOAD_DATASET_IF="OFF"
 DEVELOP_IF="OFF"
 TORCH_PROJECT_PATH="torch_project"

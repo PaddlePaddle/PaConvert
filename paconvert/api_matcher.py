@@ -371,7 +371,7 @@ class GeluMatcher(BaseMatcher):
         return code
 
 
-class SquentialMatcher(BaseMatcher):
+class SequentialMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         # nn.Sequential(OrderedDict([...]) / nn.Sequential(OrderedDict(blocks))
         if (
@@ -404,7 +404,7 @@ class MaxMinMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         # call maximum usage, convert
         call_maximinimum = False
-        if len(args) > 1 and isinstance(args[1], ast.Name):
+        if len(args) > 1 and isinstance(args[1], (ast.Name, ast.Subscript)):
             call_maximinimum = True
 
         new_kwargs = self.parse_kwargs(kwargs)
@@ -1383,8 +1383,35 @@ class FunctionalMaxPool2DMatcher(BaseMatcher):
         return code
 
 
+class LoadMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        unsupported_params = [
+            "map_location",
+            "pickle_module",
+            "weights_only",
+            "pickle_load_args",
+        ]
+        for param in unsupported_params:
+            if param in kwargs:
+                kwargs.pop(param)
+
+        API_TEMPLACE = textwrap.dedent(
+            """
+            paddle.load(path={})
+            """
+        )
+        code = API_TEMPLACE.format(kwargs["f"])
+        return code
+
+
 class SaveMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        if "pickle_module" in kwargs:
+            kwargs.pop("pickle_module")
+
+        if "_use_new_zipfile_serialization" in kwargs:
+            kwargs.pop("_use_new_zipfile_serialization")
+
         if "pickle_protocol" in kwargs:
             protocol = kwargs["pickle_protocol"]
         else:
@@ -2729,6 +2756,39 @@ class UnflattenMatcher(BaseMatcher):
         return code
 
 
+class NumelMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        return "{}.size".format(kwargs["input"])
+
+
+class TriangularSolveMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        out_v = kwargs.pop("out") if "out" in kwargs else None
+        new_kwargs = {}
+        new_kwargs["x"] = kwargs.pop("A")
+        new_kwargs["y"] = kwargs.pop("b")
+        new_kwargs.update(kwargs)
+
+        if out_v:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                paddle.assign(paddle.linalg.triangular_solve({}), {}[0]), paddle.assign({}, {}[1])
+                """
+            )
+            code = API_TEMPLATE.format(
+                self.kwargs_to_str(new_kwargs), out_v, new_kwargs["x"], out_v
+            )
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                paddle.linalg.triangular_solve({}), {}
+                """
+            )
+            code = API_TEMPLATE.format(self.kwargs_to_str(new_kwargs), new_kwargs["x"])
+
+        return code
+
+
 class IndexAddMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" not in kwargs:
@@ -3170,19 +3230,27 @@ class CumsumMatcher(BaseMatcher):
 
 class SLogDetMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        out_v = kwargs.pop("out") if "out" in kwargs else None
+
         if "input" in kwargs:
             kwargs["A"] = kwargs.pop("input")
 
-        if "out" in kwargs and "None" not in kwargs["out"]:
-            return None
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            slogdet_result = paddle.linalg.slogdet({})
-            tuple([slogdet_result[0], slogdet_result[1]])
-            """
-        )
-        code = API_TEMPLATE.format(kwargs["A"])
+        if out_v:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                res = paddle.linalg.slogdet({})
+                paddle.assign(res[0], {}[0]), paddle.assign(res[1], {}[1])
+                """
+            )
+            code = API_TEMPLATE.format(kwargs["A"], out_v, out_v)
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                res = paddle.linalg.slogdet({})
+                res[0], res[1]
+                """
+            )
+            code = API_TEMPLATE.format(kwargs["A"])
 
         return code
 
@@ -3644,3 +3712,57 @@ class TensorResize_Matcher(BaseMatcher):
                 self.paddleClass,
             )
         return ast.parse(code).body
+
+
+class TupleAssignMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs_change = {}
+        if "kwargs_change" in self.api_mapping:
+            kwargs_change = self.api_mapping["kwargs_change"]
+
+        for k in kwargs_change:
+            if k in kwargs:
+                kwargs[kwargs_change[k]] = kwargs.pop(k)
+
+        if "out" in kwargs:
+            out_v = kwargs.pop("out")
+            API_TEMPLATE = textwrap.dedent(
+                """
+                out1, out2 = {}({})
+                paddle.assign(out1, {}[0]), paddle.assign(out2, {}[1])
+                """
+            )
+            code = API_TEMPLATE.format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v, out_v
+            )
+            return code.strip("\n")
+        else:
+            code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+            return code.strip("\n")
+
+
+class RoundMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "input" not in kwargs:
+            kwargs["input"] = self.paddleClass
+
+        if "decimals" in kwargs:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                paddle.round((10**{}) * {}) / (10**{})
+                """
+            )
+            code = API_TEMPLATE.format(
+                kwargs["decimals"], kwargs["input"], kwargs["decimals"]
+            )
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                paddle.round({})
+                """
+            )
+            code = API_TEMPLATE.format(kwargs["input"])
+        if "out" in kwargs and kwargs["out"] is not None:
+            code = "paddle.assign({}, output={})".format(code, kwargs["out"])
+
+        return code

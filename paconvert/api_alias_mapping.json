@@ -1,0 +1,3 @@
+{
+  "torch.nn.modules.GroupNorm": "torch.nn.GroupNorm"
+}
