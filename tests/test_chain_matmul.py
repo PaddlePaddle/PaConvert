@@ -54,7 +54,7 @@ def test_case_3():
     obj.run(pytorch_code, ["result", "out"])
 
 
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -63,4 +63,9 @@ def _test_case_4():
         result = torch.chain_matmul(*matrixs)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support list or tuple",
+    )

@@ -30,7 +30,7 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -38,10 +38,15 @@ def _test_case_2():
         result = torch.max(x, dim=1)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not return index when dim is specified",
+    )
 
 
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -49,10 +54,15 @@ def _test_case_3():
         result = torch.max(x, 1, True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not return index when dim is specified",
+    )
 
 
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -60,7 +70,12 @@ def _test_case_4():
         result = torch.max(x, dim=0, keepdim=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not return index when dim is specified",
+    )
 
 
 def test_case_5():
@@ -73,7 +88,7 @@ def test_case_5():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_6():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -82,9 +97,15 @@ def _test_case_6():
         torch.max(x, dim=1, keepdim=False, out=out)
         """
     )
-    obj.run(pytorch_code, ["out"])
+    obj.run(
+        pytorch_code,
+        ["out"],
+        unsupport=True,
+        reason="paddle does not return index when dim is specified",
+    )
 
 
+# paddle does not return index when dim is specified
 def _test_case_7():
     pytorch_code = textwrap.dedent(
         """

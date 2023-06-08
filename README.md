@@ -300,7 +300,7 @@ torch.permute
 ```python
 Matcher       :必须，转换器，亦称为转换规则，表示执行转换时的核心逻辑。每一个API均对应一种转换规则，所有API都需要配置。
 paddle_api    :可选，对应的 Paddle API，仅 `GenericMatcher` 时需要。
-args_list     :必须，根据顺序填写 torch api 的 **全部参数名**，所有API都需要配置。
+args_list     :必须，根据顺序填写 torch api 的 `全部参数名`，所有API都需要配置。
 kwargs_change :可选，参数名称的差异，仅 `GenericMatcher` 且有参数名差异时需要。
 unsupport_args:可选，Paddle API不支持的参数功能，通过该字段配置后，这些参数如被使用将直接标记为不支持转换。
 paddle_default_kwargs :可选，当 paddle 参数更多 或者 参数默认值不一致 时，可以通过该配置，设置参数默认值。
@@ -636,7 +636,7 @@ if x:
 
 * **关闭数值检查**：对于随机数API，允许 `计算数值` 不同，可通过设置 `run(check_value=False)` 来实现，默认下不允许关闭数值检查。
 
-* **不支持的检查**：如果不支持转换，则无法运行转换后的 `paddle` 代码。（待补充）
+* **不支持的检查**：对于目前不支持的转换，负责转换的`Matcher` 需要返回`None`，表示暂不支持转换。在单测端可设置`run(unsupport=True, reason="")`来检测转换`Matcher`的正确性，其中`reason`表示不支持的原因(必填)。参考 [torch.median测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_median.py)。对于不支持的转换且`Matcher`在转写层难以判断是否支持，例如不支持某种特定类型的输入，单测函数可以以`_`开头表示暂不运行该单测，同时需要注释不支持的原因(原则上要避免这种不运行单测的情况)。参考 [torch.addmm测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_addmm.py)。
 
 * **自定义检查**：如果需要自定义检查逻辑，可以继承 `APIBase` 类并重写`compare()`函数，实现自定义的检查逻辑，但需要有充分理由，例如 `torch.Generator` 由于返回的不为Tensor，无法使用常规方法测试。 参考 [torch.Generator测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_Generator.py)。
 

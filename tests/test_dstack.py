@@ -19,6 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.dstack")
 
 
+# The function is inconsistent
 def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
@@ -31,6 +32,7 @@ def _test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
+# The function is inconsistent
 def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -43,6 +45,7 @@ def _test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
+# The function is inconsistent
 def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
@@ -55,6 +58,7 @@ def _test_case_3():
     obj.run(pytorch_code, ["result"])
 
 
+# The function is inconsistent
 def _test_case_4():
     pytorch_code = textwrap.dedent(
         """
@@ -65,6 +69,7 @@ def _test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
+# The function is inconsistent
 def _test_case_5():
     pytorch_code = textwrap.dedent(
         """

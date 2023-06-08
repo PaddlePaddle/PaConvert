@@ -53,6 +53,7 @@ def test_case_3():
     obj.run(pytorch_code, ["result"])
 
 
+# the min param of paddle does not support specifying multiple lower bounds, and by default only the first element is taken.
 def _test_case_4():
     pytorch_code = textwrap.dedent(
         """

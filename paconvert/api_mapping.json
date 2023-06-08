@@ -1539,17 +1539,13 @@
     }
   },
   "torch.floor_divide": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.floor_divide",
     "args_list": [
       "input",
       "other",
       "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "other": "y"
-    }
+    ]
   },
   "torch.frac": {
     "Matcher": "GenericMatcher",
@@ -1699,17 +1695,13 @@
     ]
   },
   "torch.multiply": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.multiply",
     "args_list": [
       "input",
       "other",
       "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "other": "y"
-    }
+    ]
   },
   "torch.neg": {
     "Matcher": "GenericMatcher",
@@ -2082,7 +2074,7 @@
     }
   },
   "torch.median": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "MedianMatcher",
     "paddle_api": "paddle.median",
     "args_list": [
       "input",
@@ -2679,7 +2671,7 @@
     }
   },
   "torch.diff": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "DiffMatcher",
     "paddle_api": "paddle.diff",
     "args_list": [
       "input",
