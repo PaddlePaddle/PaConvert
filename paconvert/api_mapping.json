@@ -1929,6 +1929,23 @@
       "dim": "axis"
     }
   },
+  "torch.argsort": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.argsort",
+    "args_list": [
+      "input",
+      "dim",
+      "descending",
+      "stable"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axis"
+    },
+    "unsupport_args": [
+      "stable"
+    ]
+  },
   "torch.argwhere": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nonzero",
@@ -2083,12 +2100,24 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axis"
-    },
-    "unsupport_args": [
-      "dim"
-    ]
+    }
   },
   "torch.nanmedian": {},
+  "torch.nan_to_num": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nanmedian",
+    "args_list": [
+      "input",
+      "nan",
+      "posinf",
+      "neginf",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axis"
+    }
+  },
   "torch.mode": {
     "Matcher": "TupleAssignMatcher",
     "paddle_api": "paddle.mode",
@@ -4239,6 +4268,16 @@
     "args_list": [
       "input",
       "inplace"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+  "torch.relu": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.relu",
+    "args_list": [
+      "input"
     ],
     "kwargs_change": {
       "input": "x"
@@ -8030,9 +8069,128 @@
       "dtype"
     ]
   },
+  "torch.nn.SyncBatchNorm": {
+    "Matcher": "BatchNormMatcher",
+    "paddle_api": "paddle.nn.SyncBatchNorm",
+    "args_list": [
+      "num_features",
+      "eps",
+      "momentum",
+      "affine",
+      "track_running_stats",
+      "process_group",
+      "device",
+      "dtype"
+    ]
+  },
+  "torch.nn.RNNCell": {
+    "Matcher": "RNNCellMatcher",
+    "paddle_api": "paddle.nn.SimpleRNNCell",
+    "args_list": [
+      "input_size",
+      "hidden_size",
+      "bias",
+      "nonlinearity",
+      "device",
+      "dtype"
+    ]
+  },
+  "torch.nn.LSTMCell": {
+    "Matcher": "RNNCellMatcher",
+    "paddle_api": "paddle.nn.LSTMCell",
+    "args_list": [
+      "input_size",
+      "hidden_size",
+      "bias",
+      "device",
+      "dtype"
+    ]
+  },
+  "torch.nn.GRUCell": {
+    "Matcher": "RNNCellMatcher",
+    "paddle_api": "paddle.nn.GRUCell",
+    "args_list": [
+      "input_size",
+      "hidden_size",
+      "bias",
+      "device",
+      "dtype"
+    ]
+  },
+  "torch.nn.RNN": {
+    "Matcher": "RNNMatcher",
+    "paddle_api": "paddle.nn.SimpleRNN",
+    "args_list": [
+      "input_size",
+      "hidden_size",
+      "num_layers",
+      "nonlinearity",
+      "bias",
+      "batch_first",
+      "dropout",
+      "bidirectional"
+    ]
+  },
+  "torch.nn.LSTM": {
+    "Matcher": "RNNMatcher",
+    "paddle_api": "paddle.nn.LSTM",
+    "args_list": [
+      "input_size",
+      "hidden_size",
+      "num_layers",
+      "bias",
+      "batch_first",
+      "dropout",
+      "bidirectional",
+      "proj_size"
+    ]
+  },
+  "torch.nn.GRU": {
+    "Matcher": "RNNMatcher",
+    "paddle_api": "paddle.nn.GRU",
+    "args_list": [
+      "input_size",
+      "hidden_size",
+      "num_layers",
+      "bias",
+      "batch_first",
+      "dropout",
+      "bidirectional"
+    ]
+  },
+  "torch.nn.MaxPool1d": {
+    "Matcher": "MaxPoolMatcher",
+    "paddle_api": "paddle.nn.MaxPool1D",
+    "args_list": [
+      "kernel_size",
+      "stride",
+      "padding",
+      "dilation",
+      "return_indices",
+      "ceil_mode"
+    ],
+    "kwargs_change": {
+      "return_indices": "return_mask"
+    }
+  },
   "torch.nn.MaxPool2d": {
-    "Matcher": "MaxPool2DMatcher",
+    "Matcher": "MaxPoolMatcher",
     "paddle_api": "paddle.nn.MaxPool2D",
+    "args_list": [
+      "kernel_size",
+      "stride",
+      "padding",
+      "dilation",
+      "return_indices",
+      "ceil_mode"
+    ],
+    "kwargs_change": {
+      "return_indices": "return_mask"
+    }
+  },
+  "torch.nn.MaxPool3d": {
+    "Matcher": "MaxPoolMatcher",
+    "paddle_api": "paddle.nn.MaxPool3D",
     "args_list": [
       "kernel_size",
       "stride",
