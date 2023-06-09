@@ -1340,19 +1340,6 @@
       "input": "x"
     }
   },
-  "torch.cosine_similarity": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.cosine_similarity",
-    "args_list": [
-      "x1",
-      "x2",
-      "dim",
-      "eps"
-    ],
-    "kwargs_change": {
-      "dim": "axis"
-    }
-  },
   "torch.cosh": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.cosh",
@@ -4700,6 +4687,19 @@
     ],
     "kwargs_change": {
       "input": "x"
+    }
+  },
+  "torch.nn.functional.cosine_similarity": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.cosine_similarity",
+    "args_list": [
+      "x1",
+      "x2",
+      "dim",
+      "eps"
+    ],
+    "kwargs_change": {
+      "dim": "axis"
     }
   },
   "torch.nn.functional.cross_entropy": {
