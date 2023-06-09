@@ -64,7 +64,7 @@ def test_case_4():
     obj.run(pytorch_code, ["result", "index"])
 
 
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -73,7 +73,7 @@ def _test_case_5():
         result, index = torch.mode(input, 1, out=out)
         """
     )
-    obj.run(pytorch_code, ["result", "index"])
+    obj.run(pytorch_code, ["result", "index", "out"])
 
 
 def test_case_6():

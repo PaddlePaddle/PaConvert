@@ -96,11 +96,16 @@ def test_case_7():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_8():
+def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
         result = torch.FloatTensor()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support 0-Size Tensor",
+    )
