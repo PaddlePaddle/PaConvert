@@ -3595,45 +3595,6 @@ class FunctionalMseLossMatcher(BaseMatcher):
         return code
 
 
-class CDistMatcher(BaseMatcher):
-    def generate_aux_code(self):
-        CODE_TEMPLATE = textwrap.dedent(
-            """
-            def cdist(x1, x2, p=2.0):
-                dist_list = []
-                if x1.ndim == 2:
-                    for i in range(x1.shape[0]):
-                        for j in range(x2.shape[0]):
-                            dist_list.append(paddle.dist(x1[i, :], x2[j, :], p=p).item())
-                    out = paddle.to_tensor(dist_list).reshape([x1.shape[0], x2.shape[0]])
-                else:
-                    for b in range(x1.shape[0]):
-                        for i in range(x1.shape[1]):
-                            for j in range(x2.shape[1]):
-                                dist_list.append(paddle.dist(x1[b, i, :], x2[b, j, :], p=p).item())
-                    out = paddle.to_tensor(dist_list).reshape([x1.shape[0],x1.shape[1], x2.shape[1]])
-                return out
-            """
-        )
-        return CODE_TEMPLATE
-
-    def generate_code(self, kwargs):
-        if "compute_mode" in kwargs:
-            kwargs.pop("compute_mode")
-        self.write_aux_code()
-        API_TEMPLATE = textwrap.dedent(
-            """
-            import sys
-            sys.path.append('{}')
-            import paddle_aux
-            paddle_aux.cdist({})
-            """
-        )
-        code = API_TEMPLATE.format(self.get_aux_dir(), self.kwargs_to_str(kwargs))
-
-        return code
-
-
 class TupleAssignMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs_change = {}
