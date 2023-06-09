@@ -3672,3 +3672,19 @@ class UpsampleMatcher(BaseMatcher):
         if "size" in kwargs and "," not in kwargs["size"]:
             return None
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class ParametersToVectorMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {} = {}({})
+            {}.stop_gradient = False
+            {}
+            """
+        )
+        out_v = get_unique_name("out")
+        code = API_TEMPLATE.format(
+            out_v, self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v, out_v
+        )
+        return code
