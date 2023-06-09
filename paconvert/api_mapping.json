@@ -3640,6 +3640,45 @@
       "inplace"
     ]
   },
+  "torch.nn.Embedding": {
+    "Matcher": "EmbeddingMatcher",
+    "paddle_api": "paddle.nn.Embedding",
+    "args_list": [
+      "num_embeddings",
+      "embedding_dim",
+      "padding_idx",
+      "max_norm",
+      "norm_type",
+      "scale_grad_by_freq",
+      "sparse"
+    ],
+    "unsupport_args": [
+      "max_norm",
+      "norm_type",
+      "scale_grad_by_freq"
+    ]
+  },
+  "torch.nn.functional.embedding": {
+    "Matcher": "FunctionalEmbeddingDMatcher",
+    "paddle_api": "paddle.nn.functional.embedding",
+    "args_list": [
+      "input",
+      "weight",
+      "padding_idx",
+      "max_norm",
+      "norm_type",
+      "scale_grad_by_freq",
+      "sparse"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    },
+    "unsupport_args": [
+      "max_norm",
+      "norm_type",
+      "scale_grad_by_freq"
+    ]
+  },
   "torch.nn.Hardshrink": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Hardshrink",
