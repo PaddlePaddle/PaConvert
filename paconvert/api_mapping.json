@@ -2146,7 +2146,7 @@
   "torch.nanmedian": {},
   "torch.nan_to_num": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nanmedian",
+    "paddle_api": "paddle.nan_to_num",
     "args_list": [
       "input",
       "nan",
@@ -2155,8 +2155,7 @@
       "out"
     ],
     "kwargs_change": {
-      "input": "x",
-      "dim": "axis"
+      "input": "x"
     }
   },
   "torch.mode": {
