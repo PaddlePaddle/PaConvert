@@ -91,7 +91,6 @@ def test_case_4():
 
 
 def test_case_5():
-    # Paddle 暂不支持 decimals 参数
     pytorch_code = textwrap.dedent(
         """
         import torch
