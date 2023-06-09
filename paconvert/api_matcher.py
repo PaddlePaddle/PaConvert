@@ -3358,6 +3358,19 @@ class CovMatcher(BaseMatcher):
         return code
 
 
+class TensorHardShrinkMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "lambd" not in kwargs:
+            kwargs["lambd"] = 0.5
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.nn.functional.hardshrink({}, threshold={})
+            """
+        )
+        code = API_TEMPLATE.format(self.paddleClass, kwargs["lambd"])
+        return code
+
+
 class FunctionalCrossEntropyMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "size_average" in kwargs:

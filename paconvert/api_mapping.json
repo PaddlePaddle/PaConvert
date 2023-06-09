@@ -2108,6 +2108,22 @@
     "paddle_api": "paddle.linalg.norm",
     "args_list": [
       "input",
+      "ord",
+      "dim",
+      "keepdim",
+      "out",
+      "dtype"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axis"
+    }
+  },
+  "torch.linalg.norm": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.norm",
+    "args_list": [
+      "input",
       "p",
       "dim",
       "keepdim",
@@ -2116,6 +2132,7 @@
     ],
     "kwargs_change": {
       "input": "x",
+      "ord": "p",
       "dim": "axis"
     }
   },
@@ -2600,6 +2617,24 @@
       "input": "x",
       "other": "y",
       "dim": "axis"
+    }
+  },
+  "torch.linalg.cross": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.cross",
+    "args_list": [
+      "input",
+      "other",
+      "dim",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "other": "y",
+      "dim": "axis"
+    },
+    "paddle_default_kwargs": {
+      "axis": -1
     }
   },
   "torch.cumprod": {
@@ -3214,6 +3249,17 @@
     ],
     "kwargs_change": {
       "input": "x"
+    }
+  },
+  "torch.linalg.det": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.det",
+    "args_list": [
+      "A",
+      "out"
+    ],
+    "kwargs_change": {
+      "A": "x"
     }
   },
   "torch.slogdet": {
@@ -7196,7 +7242,12 @@
   "torch.Tensor.geqrf": {},
   "torch.Tensor.gt_": {},
   "torch.Tensor.greater_": {},
-  "torch.Tensor.hardshrink": {},
+  "torch.Tensor.hardshrink": {
+    "Matcher": "TensorHardShrinkMatcher",
+    "args_list": [
+      "lambd"
+    ]
+  },
   "torch.Tensor.hypot": {
     "Matcher": "HypotMatcher",
     "args_list": [
@@ -7666,24 +7717,6 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axes"
-    }
-  },
-  "torch.linalg.norm": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.linalg.norm",
-    "args_list": [
-      "A",
-      "ord",
-      "dim",
-      "keepdim",
-      "out",
-      "dtype"
-    ],
-    "kwargs_change": {
-      "A": "x",
-      "ord": "p",
-      "dim": "axis",
-      "keepdim": "keepdim"
     }
   },
   "torch.fft.rfftn": {
