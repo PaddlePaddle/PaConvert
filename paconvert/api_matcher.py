@@ -3618,7 +3618,8 @@ class CDistMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-
+        if "compute_mode" in kwargs:
+            kwargs.pop("compute_mode")
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
