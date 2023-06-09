@@ -3771,13 +3771,21 @@ class RoundMatcher(BaseMatcher):
         return code
 
 
-class LSTMCellMatcher(BaseMatcher):
+class RNNCellMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        if "dtype" in kwargs:
+            return None
+
+        if "nonlinearity" in kwargs:
+            kwargs["activation"] = kwargs.pop("nonlinearity")
+
+        if "device" in kwargs:
+            kwargs.pop("device")
+
         if "bias" in kwargs and "False" in kwargs["bias"]:
             API_TEMPLACE = textwrap.dedent(
                 """
-                {}(input_size={},
-                    hidden_size={},
+                {}({},
                     bias_ih_attr=False,
                     bias_hh_attr=False)
                 """
@@ -3785,11 +3793,54 @@ class LSTMCellMatcher(BaseMatcher):
         else:
             API_TEMPLACE = textwrap.dedent(
                 """
-                {}(input_size={},
-                    hidden_size={})
+                {}({})
                 """
             )
+        if "bias" in kwargs:
+            kwargs.pop("bias")
         code = API_TEMPLACE.format(
             self.get_paddle_api(), kwargs["input_size"], kwargs["hidden_size"]
+        )
+        return code
+
+
+class RNNMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "proj_size" in kwargs:
+            return None
+
+        if "batch_first" in kwargs:
+            batch_first = kwargs.pop("batch_first")
+        else:
+            batch_first = False
+
+        if "nonlinearity" in kwargs:
+            kwargs["activation"] = kwargs.pop("nonlinearity")
+
+        direction = "'forward'"
+        if "bidirectional" in kwargs:
+            if "True" in kwargs["bidirectional"]:
+                direction = "'bidirect'"
+            kwargs.pop("bidirectional")
+
+        if "bias" in kwargs and "False" in kwargs["bias"]:
+            API_TEMPLACE = textwrap.dedent(
+                """
+                {}({}, direction={}, time_major= not {},
+                    bias_ih_attr=False,
+                    bias_hh_attr=False)
+                """
+            )
+        else:
+            API_TEMPLACE = textwrap.dedent(
+                """
+                {}({}, direction={}, time_major= not {})
+                """
+            )
+
+        if "bias" in kwargs:
+            kwargs.pop("bias")
+        code = API_TEMPLACE.format(
+            self.get_paddle_api(), self.kwargs_to_str(kwargs), direction, batch_first
         )
         return code

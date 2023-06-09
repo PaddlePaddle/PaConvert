@@ -4382,6 +4382,16 @@
       "input": "x"
     }
   },
+  "torch.relu": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.relu",
+    "args_list": [
+      "input"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.nn.functional.hardtanh": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.hardtanh",
@@ -8195,8 +8205,20 @@
       "dtype"
     ]
   },
+  "torch.nn.RNNCell": {
+    "Matcher": "RNNCellMatcher",
+    "paddle_api": "paddle.nn.SimpleRNNCell",
+    "args_list": [
+      "input_size",
+      "hidden_size",
+      "bias",
+      "nonlinearity",
+      "device",
+      "dtype"
+    ]
+  },
   "torch.nn.LSTMCell": {
-    "Matcher": "LSTMCellMatcher",
+    "Matcher": "RNNCellMatcher",
     "paddle_api": "paddle.nn.LSTMCell",
     "args_list": [
       "input_size",
@@ -8207,7 +8229,7 @@
     ]
   },
   "torch.nn.GRUCell": {
-    "Matcher": "LSTMCellMatcher",
+    "Matcher": "RNNCellMatcher",
     "paddle_api": "paddle.nn.GRUCell",
     "args_list": [
       "input_size",
@@ -8215,6 +8237,47 @@
       "bias",
       "device",
       "dtype"
+    ]
+  },
+  "torch.nn.RNN": {
+    "Matcher": "RNNMatcher",
+    "paddle_api": "paddle.nn.SimpleRNN",
+    "args_list": [
+      "input_size",
+      "hidden_size",
+      "num_layers",
+      "nonlinearity",
+      "bias",
+      "batch_first",
+      "dropout",
+      "bidirectional"
+    ]
+  },
+  "torch.nn.LSTM": {
+    "Matcher": "RNNMatcher",
+    "paddle_api": "paddle.nn.LSTM",
+    "args_list": [
+      "input_size",
+      "hidden_size",
+      "num_layers",
+      "bias",
+      "batch_first",
+      "dropout",
+      "bidirectional",
+      "proj_size"
+    ]
+  },
+  "torch.nn.GRU": {
+    "Matcher": "RNNMatcher",
+    "paddle_api": "paddle.nn.GRU",
+    "args_list": [
+      "input_size",
+      "hidden_size",
+      "num_layers",
+      "bias",
+      "batch_first",
+      "dropout",
+      "bidirectional"
     ]
   },
   "torch.nn.MaxPool1d": {
