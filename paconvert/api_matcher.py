@@ -3798,9 +3798,7 @@ class RNNCellMatcher(BaseMatcher):
             )
         if "bias" in kwargs:
             kwargs.pop("bias")
-        code = API_TEMPLACE.format(
-            self.get_paddle_api(), kwargs["input_size"], kwargs["hidden_size"]
-        )
+        code = API_TEMPLACE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
         return code
 
 
