@@ -1014,7 +1014,7 @@ class BatchNormMatcher(BaseMatcher):
         return code
 
 
-class MaxPool2DMatcher(BaseMatcher):
+class MaxPoolMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "dilation" in kwargs:
             if kwargs["dilation"] != "(1)":
@@ -1031,10 +1031,10 @@ class MaxPool2DMatcher(BaseMatcher):
 
         API_TEMPLACE = textwrap.dedent(
             """
-            paddle.nn.MaxPool2D({})
+            {}({})
             """
         )
-        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
+        code = API_TEMPLACE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
         return code
 
 

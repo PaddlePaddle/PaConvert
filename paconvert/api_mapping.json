@@ -3020,6 +3020,14 @@
       "dims": "axis"
     }
   },
+  "torch.round": {
+    "Matcher": "RoundMatcher",
+    "args_list": [
+      "input",
+      "decimals",
+      "out"
+    ]
+  },
   "torch.tensordot": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.tensordot",
