@@ -481,13 +481,13 @@ class TransposeMatcher(BaseMatcher):
 
 对于某些API，可能部分用法 **不需要辅助代码**，部分用法 **需要辅助代码**。
 
-如果 **代码保持完全不变时，无法直接运行**，我们就需要在后台对Paddle相应类方法进行一些修改，使得在 **转换前后代码保持不变** 的前提下，仍可正常运行。
+如果 **代码保持完全不变时，无法直接运行**，我们就需要在后台通过辅助代码对Paddle相应类方法进行一些修改，使得在 **转换前后代码保持不变** 的前提下，仍可正常运行。
 
-**开发方式**：在 `get_paddle_class_nodes` 或 `generate_code` 增加相应的判断，对于 **不需要辅助代码** 即可运行的用法，直接返回 'unchange'；对于 **需要辅助代码** 才可运行的用法，首先要额外重写 `generate_aux_code` 函数，其是模仿Pytorch类API用法的辅助代码，然后显式的调用 `write_aux_code` ，此时将在后台模块里注入辅助代码，最后原封不动返回原代码的调用形式并在此基础上增加 `import paddle_aux` 从而导入辅助模块。
+**开发方式**：在 `get_paddle_class_nodes` 或 `generate_code` 增加相应的判断，对于 **不需要辅助代码** 即可运行的用法，直接返回 'unchange'；对于 **需要辅助代码** 才可运行的用法，首先要额外重写 `generate_aux_code` 函数，其是模仿Pytorch类API用法的辅助代码，然后显式的调用 `write_aux_code` ，此时将在后台模块里注入辅助代码，最后再返回 'unchange' 即可。
 
-由于 **辅助代码** 会不可避免的改变一些Paddle API的用法外观，因此需要尽可能减少使用辅助代码。我们需要判断用户的不同用法，只对必要的情形使用辅助代码。
+由于 **辅助代码** 会不可避免的改变一些Paddle API的用法外观，因此需要尽可能减少使用辅助代码，即调用 `write_aux_code` 的场景。所以我们需要判断用户的不同用法，只在必要的情形下才  `write_aux_code` 。
 
-基于[Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html)，可参考以下原则来判断是否需要辅助代码：
+基于[Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html)，我们可参考以下原则来判断是否需要辅助代码：
 
 |分类|不需要辅助代码的用法|需要辅助代码的用法|
 |---|---|---|
@@ -497,7 +497,7 @@ class TransposeMatcher(BaseMatcher):
 |参数不一致|未使用不一致的用法|使用了不一致的用法|
 |其他分类||全部需要辅助代码|
 
-以 `torch.Tensor.reshape` 为例，其映射关系分类属于 **参数不一致**，是由于torch的shape即可以使用可变参数，也可以使用list/tuple，而Paddle仅支持list/tuple，因此我们只需对**可变参数**的用法使用辅助代码，其他用法下直接返回 'unchange' 即可，这样可最小力度的减少辅助代码。
+以 `torch.Tensor.reshape` 为例，其映射关系分类属于 **参数不一致**，是由于torch的shape即可为可变参数，也可为list/tuple，而Paddle仅支持list/tuple，因此我们只需对**可变参数**的用法 `write_aux_code` 。
 
 ```
 class TensorReshapeMatcher(BaseMatcher):
@@ -526,23 +526,7 @@ class TensorReshapeMatcher(BaseMatcher):
             return "unchange"
 
         self.write_aux_code()
-        self.parse_func(func)
-        new_args = self.parse_args(args)
-        new_kwargs = self.parse_kwargs(kwargs)
-        API_TEMPLATE = textwrap.dedent(
-            """
-            import sys
-            sys.path.append('{}')
-            import paddle_aux
-            {}.reshape({})
-            """
-        )
-        code = API_TEMPLATE.format(
-            self.get_aux_dir(),
-            self.paddleClass,
-            self.args_and_kwargs_to_str(new_args, new_kwargs),
-        )
-        return ast.parse(code).body
+        return "unchange"
 
 ```
 
@@ -553,8 +537,6 @@ class TensorReshapeMatcher(BaseMatcher):
     "Matcher": "TensorReshapeMatcher"
 }
 ```
-
-需要注意的是，在使用辅助代码时，不仅要原封不动返回原代码的调用形式，还要加上 `import paddle_aux` 来导入辅助模块从而保证付主代码在运行时会生效。即：
 
 ```
 转换前：
