@@ -17,10 +17,11 @@ import collections
 import json
 import os
 import re
+import textwrap
 
 import astor
 
-from paconvert.utils import PaddleAuxFile, log_debug
+from paconvert.utils import AuxFileHelper, log_debug
 
 json_file = os.path.dirname(__file__) + "/api_mapping.json"
 with open(json_file, "r") as file:
@@ -29,6 +30,10 @@ with open(json_file, "r") as file:
 json_file = os.path.dirname(__file__) + "/attribute_mapping.json"
 with open(json_file, "r") as file:
     ATTRIBUTE_MAPPING = json.load(file)
+
+json_file = os.path.dirname(__file__) + "/api_alias_mapping.json"
+with open(json_file, "r") as file:
+    ALIAS_MAPPING = json.load(file)
 
 TORCH_PACKAGE_LIST = [
     "torch",
@@ -127,9 +132,6 @@ class BaseTransformer(ast.NodeTransformer):
         else:
             self.scope_insert_lines[scope_node][body] = {index: node_list}
 
-        if len(node_list) > 0:
-            log_debug(self.logger, "insert extra {} lines".format(len(node_list)))
-
     def insert_scope(self):
         # if multiple line, insert into scope node only One time
         for scope_node in self.scope_insert_lines:
@@ -139,6 +141,11 @@ class BaseTransformer(ast.NodeTransformer):
                     insert_lines.items(), key=lambda x: x[0], reverse=True
                 )
                 for index, lines in insert_lines:
+                    log_debug(
+                        self.logger,
+                        "insert extra {} lines".format(len(lines)),
+                        self.file_name,
+                    )
                     for line in lines[::-1]:
                         getattr(scope_node, body).insert(index, line)
 
@@ -209,14 +216,15 @@ class BaseTransformer(ast.NodeTransformer):
 
 
 class BaseMatcher(object):
-    def __init__(self, torch_api, api_mapping, logger):
+    def __init__(self, transformer, torch_api, api_mapping, logger):
+        self.transformer = transformer
         self.torch_api = torch_api
         self.paddle_api = None
         self.api_mapping = api_mapping
         self.logger = logger
 
     def get_aux_dir(self):
-        return os.path.dirname(PaddleAuxFile().fileName)
+        return os.path.dirname(AuxFileHelper().fileName)
 
     def get_paddle_api(self):
         if self.paddle_api:
@@ -234,12 +242,17 @@ class BaseMatcher(object):
         if len(args) > len(args_list):
             return "NonTorchClass"
 
+        unsupport_args = self.api_mapping.get("unsupport_args") or []
+
         new_kwargs = {}
         for i, node in enumerate(args):
             # not support 'torch.rot90(tensor, *config)'
             if isinstance(node, ast.Starred):
                 return None
             k = args_list[i]
+            # not support some API args
+            if k in unsupport_args:
+                return None
             v = astor.to_source(node).strip("\n")
             # have comma indicates a tuple
             new_kwargs[k] = v
@@ -248,6 +261,9 @@ class BaseMatcher(object):
             k = node.arg
             # not support 'torch.rot90(tensor, **config)'
             if k is None:
+                return None
+            # not support some API args
+            if k in unsupport_args:
                 return None
             # TODO: will open after all args have been add in args_list
             # if k not in args_list:
@@ -266,9 +282,13 @@ class BaseMatcher(object):
         return new_args
 
     def parse_kwargs(self, kwargs):
+        unsupport_args = self.api_mapping.get("unsupport_args") or []
+
         new_kwargs = {}
         for node in kwargs:
             k = node.arg
+            if k in unsupport_args:
+                return None
             v = astor.to_source(node.value).strip("\n")
             new_kwargs[k] = v
 
@@ -338,8 +358,29 @@ class BaseMatcher(object):
     def write_aux_code(self):
         aux_code = self.generate_aux_code()
         if aux_code:
-            log_debug(self.logger, "Write auxiliary code for {}".format(self.torch_api))
-            PaddleAuxFile().write_code(aux_code, self.torch_api)
+            aux_file_helper = AuxFileHelper()
+            log_debug(
+                self.logger,
+                "When convert {}, write auxiliary code to file: {}".format(
+                    self.torch_api, aux_file_helper.fileName
+                ),
+            )
+            aux_file_helper.write_code(aux_code, self.torch_api)
+
+            CODE_TEMPLATE = textwrap.dedent(
+                """
+                import sys
+                sys.path.append('{}')
+                import paddle_aux
+                """
+            )
+            code = CODE_TEMPLATE.format(
+                self.get_aux_dir(),
+            )
+            log_debug(
+                self.logger, "add 'import paddle_aux'", self.transformer.file_name
+            )
+            self.transformer.insert_multi_node(ast.parse(code).body)
 
     @staticmethod
     def generate_code(self, kwargs):
@@ -362,6 +403,8 @@ class BaseMatcher(object):
         elif new_kwargs is not None:
             new_code = self.generate_code(new_kwargs)
             if new_code == "NonTorchClass":
+                return "NonTorchClass"
+            elif new_code == "unchange":
                 return "NonTorchClass"
             elif new_code:
                 return ast.parse(new_code).body

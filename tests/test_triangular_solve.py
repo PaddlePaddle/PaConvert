@@ -16,18 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-
-class TriangularTest(APIBase):
-    def check(self, pytorch_result, paddle_result):
-
-        if pytorch_result.requires_grad == paddle_result.stop_gradient:
-            return False
-        if str(pytorch_result.dtype)[6:] != str(paddle_result.dtype)[7:]:
-            return False
-        return True
-
-
-obj = TriangularTest("torch.triangular_solve")
+obj = APIBase("torch.triangular_solve")
 
 
 def test_case_1():
@@ -78,7 +67,7 @@ def test_case_4():
     obj.run(pytorch_code, ["result1", "result2"])
 
 
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch

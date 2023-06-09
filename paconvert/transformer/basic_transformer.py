@@ -23,6 +23,7 @@ from paconvert.api_matcher import *
 from paconvert.base import (
     API_MAPPING,
     ATTRIBUTE_MAPPING,
+    ALIAS_MAPPING,
     TORCH_PACKAGE_LIST,
     BaseTransformer,
 )
@@ -157,7 +158,7 @@ class BasicTransformer(BaseTransformer):
             attribute_mapping = ATTRIBUTE_MAPPING[torch_api]
             if "Matcher" in attribute_mapping:
                 matcher = eval(attribute_mapping["Matcher"])(
-                    torch_api, attribute_mapping, self.logger
+                    self, torch_api, attribute_mapping, self.logger
                 )
                 if matcher:
                     new_node = matcher.get_paddle_class_attribute_nodes(node)
@@ -318,6 +319,7 @@ class BasicTransformer(BaseTransformer):
                                 ast.Compare,
                                 ast.BinOp,
                                 ast.UnaryOp,
+                                ast.Tuple,
                             ),
                         ):
                             self.insert_multi_node(node_list[0:-1])
@@ -494,7 +496,7 @@ class BasicTransformer(BaseTransformer):
 
             if "Matcher" in api_mapping:
                 matcher = api_mapping["Matcher"]
-                return eval(matcher)(torch_api, api_mapping, self.logger)
+                return eval(matcher)(self, torch_api, api_mapping, self.logger)
         return None
 
     def visit_Expr(self, node):

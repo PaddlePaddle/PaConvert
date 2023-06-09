@@ -54,6 +54,7 @@ def test_case_3():
     obj.run(pytorch_code, ["result", "out"])
 
 
+# param mask of paddle does not support broadcast
 def _test_case_4():
     pytorch_code = textwrap.dedent(
         """

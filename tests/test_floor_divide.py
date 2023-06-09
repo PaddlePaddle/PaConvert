@@ -17,10 +17,10 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.divide")
+obj = APIBase("torch.floor_divide")
 
 
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -32,7 +32,7 @@ def _test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -42,17 +42,17 @@ def _test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.floor_divide(input=torch.tensor([4.0, 3.0]), other=2)
+        result = torch.floor_divide(input=torch.tensor([4.0, 3.0]), other=2.)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch

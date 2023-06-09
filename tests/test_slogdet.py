@@ -50,6 +50,7 @@ def test_case_2():
     obj.run(pytorch_code, ["result1", "result2"])
 
 
+# paddle does not support complex type
 def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
@@ -64,7 +65,7 @@ def _test_case_3():
     obj.run(pytorch_code, ["result1", "result2"])
 
 
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -72,7 +73,7 @@ def _test_case_4():
                         [-0.1383,  1.5706,  0.4724,  0.4141],
                         [ 0.1193,  0.2829,  0.9037,  0.3957],
                         [-0.8202, -0.6474, -0.1631, -0.6543]])
-        out = (torch.tensor([1.23, 4.56]), torch.tensor([1.23, 4.56]))
+        out = (torch.tensor(0.), torch.tensor(0.))
         result1, result2 = torch.slogdet(x, out=out)
         """
     )

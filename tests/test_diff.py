@@ -53,7 +53,7 @@ def test_case_3():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -61,7 +61,12 @@ def _test_case_4():
         result = torch.diff(x, 2, dim=1)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="param n of paddle only support 1, not support other values",
+    )
 
 
 def test_case_5():

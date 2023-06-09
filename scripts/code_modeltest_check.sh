@@ -14,6 +14,7 @@
 
 set +x
 
+export FLAGS_set_to_1d=0
 DEVELOP_IF="OFF"
 
 if [[ "$DEVELOP_IF" == "OFF" ]]; then

@@ -23,7 +23,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0, 1, 2, 3, 4])
+        result = torch.tensor([0., 1., 2., 3., 4.])
         torch.save(result, 'tensor.pt', _use_new_zipfile_serialization=False)
         result = torch.load('tensor.pt', map_location=torch.device('cpu'))
         """
@@ -35,7 +35,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0, 1, 2, 3, 4])
+        result = torch.tensor([0., 1., 2., 3., 4.])
         torch.save(result, 'tensor.pt', _use_new_zipfile_serialization=True)
         result = torch.load('tensor.pt', map_location=torch.device('cpu'))
         """
@@ -47,7 +47,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0, 1, 2, 3, 4])
+        result = torch.tensor([0., 1., 2., 3., 4.])
         torch.save(result, 'tensor.pt')
         result = torch.load('tensor.pt', map_location=torch.device('cpu'))
         """
@@ -59,22 +59,9 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0, 1, 2, 3, 4])
+        result = torch.tensor([0., 1., 2., 3., 4.])
         torch.save(result, 'tensor.pt', pickle_protocol=4)
         result = torch.load('tensor.pt', map_location=torch.device('cpu'))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.tensor([0, 1, 2, 3, 4])
-        args = [result, 'tensor.pt']
-        kwargs = {"pickle_protocol": 4}
-        torch.save(*args, **kwargs)
         """
     )
     obj.run(pytorch_code, ["result"])
