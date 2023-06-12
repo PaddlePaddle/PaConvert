@@ -116,6 +116,19 @@
       "sparse_grad": ""
     }
   },
+  "torch.softmax": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.softmax",
+    "args_list": [
+      "input",
+      "dim",
+      "dtype"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axis"
+    }
+  },
   "torch.sort": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.sort",
