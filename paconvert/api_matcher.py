@@ -413,7 +413,7 @@ class MaxMinMatcher(BaseMatcher):
 
         if call_maximinimum:
             return GenericMatcher(
-                self.torch_api, self.api_mapping, self.logger
+                self.transformer, self.torch_api, self.api_mapping, self.logger
             ).get_paddle_nodes(args, kwargs)
 
         # return (values, indices) and paddle not implement, not convert
@@ -3087,23 +3087,7 @@ class TensorReshapeMatcher(BaseMatcher):
             return "unchange"
 
         self.write_aux_code()
-        self.parse_func(func)
-        new_args = self.parse_args(args)
-        new_kwargs = self.parse_kwargs(kwargs)
-        API_TEMPLATE = textwrap.dedent(
-            """
-            import sys
-            sys.path.append('{}')
-            import paddle_aux
-            {}.reshape({})
-            """
-        )
-        code = API_TEMPLATE.format(
-            self.get_aux_dir(),
-            self.paddleClass,
-            self.args_and_kwargs_to_str(new_args, new_kwargs),
-        )
-        return ast.parse(code).body
+        return "unchange"
 
 
 class TensorIstftMatcher(BaseMatcher):
@@ -3371,6 +3355,19 @@ class CovMatcher(BaseMatcher):
             kwargs["input"], kwargs["ddof"], kwargs["fweights"], kwargs["aweights"]
         )
 
+        return code
+
+
+class TensorHardShrinkMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "lambd" not in kwargs:
+            kwargs["lambd"] = 0.5
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.nn.functional.hardshrink({}, threshold={})
+            """
+        )
+        code = API_TEMPLATE.format(self.paddleClass, kwargs["lambd"])
         return code
 
 
