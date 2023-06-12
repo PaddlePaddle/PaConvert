@@ -336,14 +336,13 @@ class CreateMatcher(BaseMatcher):
 
 
 class DeviceMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        new_kwargs = self.parse_args_and_kwargs(args, kwargs)
-        if len(new_kwargs) == 1:
-            code = f'str({new_kwargs["type"]}.replace("cuda", "gpu"))'
+    def generate_code(self, kwargs):
+        if len(kwargs) == 1:
+            code = f'str({kwargs["type"]}).replace("cuda", "gpu")'
 
-        if len(new_kwargs) == 2:
-            code = f'":".join([{new_kwargs["type"]}.replace("cuda", "gpu"),str({new_kwargs["index"]})])'
-        return ast.parse(code).body
+        if len(kwargs) == 2:
+            code = f'":".join([{kwargs["type"]}.replace("cuda", "gpu"),str({kwargs["index"]})])'
+        return code
 
 
 class GeluMatcher(BaseMatcher):
@@ -3600,7 +3599,7 @@ class ParameterMatcher(BaseMatcher):
 
         API_TEMPLACE = textwrap.dedent(
             """
-            {} = paddle.create_parameter(shape={}.shape, dtype=str(paddle.to_tensor({}.numpy()).dtype), default_initializer=paddle.nn.initializer.Assign({}))
+            {} = paddle.create_parameter(shape={}.shape, dtype={}.numpy().dtype, default_initializer=paddle.nn.initializer.Assign({}))
             {}.stop_gradient = not {}
             {}
             """

@@ -58,6 +58,19 @@ def test_case_3():
     obj.run(pytorch_code, ["result"])
 
 
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.zeros(5, 16, 50, 100)
+        model = nn.Conv2d(16, 33, (3, 5), stride=(2, 1), padding=(4, 2), dilation=(3, 1), bias=True)
+        result = model(x) * 0
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
 def test_alias_case_1():
     pytorch_code = textwrap.dedent(
         """

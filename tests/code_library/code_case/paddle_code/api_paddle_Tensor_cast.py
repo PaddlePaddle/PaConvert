@@ -1,5 +1,5 @@
 import sys
-sys.path.append('paddle_project/utils')
+sys.path.append('tests/code_library/code_case/temp_paddle_code/utils')
 import paddle_aux
 import paddle
 print('#########################case1#########################')
