@@ -64,14 +64,13 @@ def test_case_4():
     obj.run(pytorch_code, ["result", "index"])
 
 
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
         x = torch.tensor([[1, 2, 3, 4, 5], [2, 5, 6, 2, 3]])
         out = (torch.tensor(1), torch.tensor(2))
         result, index = torch.topk(x, 3, dim=1, out=out)
-        out1, out2 = out[0], out[1]
         """
     )
-    obj.run(pytorch_code, ["result", "index", "out1", "out2"])
+    obj.run(pytorch_code, ["result", "index", "out"])
