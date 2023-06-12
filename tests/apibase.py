@@ -18,6 +18,8 @@ import sys
 import numpy as np
 
 sys.path.append(os.path.dirname(__file__) + "/..")
+import textwrap
+
 from paconvert.converter import Converter
 
 
@@ -37,6 +39,7 @@ class APIBase(object):
         check_value=True,
         unsupport=False,
         reason=None,
+        is_aux_api=False,
     ) -> None:
         """
         args:
@@ -46,6 +49,7 @@ class APIBase(object):
             check_value: If false, the value will not be checked
             unsupport: If true, conversion is not supported
             reason: the reason why it is not supported
+            is_aux_api: the bool value for api that need Auxiliary code
         """
         if unsupport:
             assert (
@@ -60,6 +64,19 @@ class APIBase(object):
             pytorch_result = [loc[name] for name in compared_tensor_names]
 
             paddle_code = self.convert(pytorch_code)
+            if is_aux_api:
+                paddle_code = (
+                    textwrap.dedent(
+                        """
+                    import sys
+                    import importlib
+                    sys.path.append('test_project/utils')
+                    import paddle_aux
+                    paddle_aux=importlib.reload(paddle_aux)
+                    """
+                    )
+                    + paddle_code
+                )
             exec(paddle_code)
             paddle_result = [loc[name] for name in compared_tensor_names]
             for i in range(len(compared_tensor_names)):

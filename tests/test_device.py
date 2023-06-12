@@ -16,117 +16,93 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.reshape")
+
+class DeviceAPIBase(APIBase):
+    def compare(self, name, pytorch_result, paddle_result, value):
+        return str(pytorch_result) == str(paddle_result)
+
+
+obj = DeviceAPIBase("torch.device")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(4.)
-        result = a.reshape(2, 2)
+        result = torch.device("{}".format("cpu"))
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(4.)
-        result = a.reshape((2, 2))
+        a = "cpu"
+        result = torch.device(a)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(9)
-        result = a.reshape([3, 3])
+        result = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(9)
-        shape = (3, 3)
-        result = a.reshape(shape)
+        result = isinstance(torch.device("cpu", 0), torch.device)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(4.)
-        k = 2
-        result = a.reshape((k, k))
+        result = torch.device(type = "cpu", index = 0)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(2.)
-        k = 2
-        result = a.reshape(k)
+        a = "cpu"
+        result = torch.device(a)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(24.)
-        result = a.reshape(-1)
+        a = torch.device("cuda")
+        result = torch.device(a)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor(1.)
-        result = a.reshape(1)
+        result = torch.device(type = "cuda", index = 0)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
-
-
-def test_case_9():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(6.)
-        result = a.reshape(shape=(2, 3))
-        """
-    )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
-
-
-def test_case_10():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(6.)
-        result = a.reshape(shape=[2, 3])
-        """
-    )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
