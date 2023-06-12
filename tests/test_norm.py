@@ -35,7 +35,7 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -45,7 +45,12 @@ def _test_case_2():
         result = torch.norm(input, p='nuc')
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="the param p of paddle only support fro, does not support nuc",
+    )
 
 
 def test_case_3():

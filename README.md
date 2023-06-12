@@ -176,9 +176,15 @@ Thank you to use Paddle Code Convert Tool. You can make any suggestions to us.
 ### 依赖项
 在开发本项目之前，请确保已经安装了以下依赖项：
 
-#### 最新的develop版本的paddlepaddle库
+#### 最新版本的paddle库和torch库
 ```bash
+# cpu 版本的paddle
 python -m pip install paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
+```
+
+```bash
+# cpu 版本的torch
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 ```
 
 #### 其它库
@@ -292,7 +298,7 @@ torch.permute
       "dims": "perm"
     }
   },
-  "unsupport_args": {},
+  "unsupport_args": [],
   "paddle_default_kwargs": {}
 }
 ```
@@ -335,7 +341,9 @@ paddle_default_kwargs :可选，当 paddle 参数更多 或者 参数默认值�
 }
 ```
 
-如果不属于上述分类，则需要开发 **自定义的Matcher**，命名标准为：`API名+Matcher` 。例如 `torch.transpose` 可命名为`TransposeMatcher` ，`torch.Tensor.transpose` 可命名为 `TensorTransposeMatcher`。详见下面步骤3。
+如果不属于上述情形，则需要 **新增Matcher**，当前已经有100+种其他`Matcher`，建议尽可能复用已有`Matcher`，提升代码的可复用性。如果已有的100+种 `Matcher` 无法满足要求，才需要新增开发 `Matcher`。
+
+新增Matcher的命名标准为：`API名+Matcher` 。例如 `torch.transpose` 可命名为`TransposeMatcher` ，`torch.Tensor.transpose` 可命名为 `TensorTransposeMatcher`。详见下面步骤。
 
 ## 步骤4：编写Matcher（转换规则）
 
@@ -393,7 +401,7 @@ class Chain_MatmulMatcher(BaseMatcher):
 ```
 class TransposeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        API_TEMPLACE = textwrap.dedent(
+        API_TEMPLATE = textwrap.dedent(
             '''
             {} = list(range(len({}.shape)))
             {}[{}] = {}
@@ -402,7 +410,7 @@ class TransposeMatcher(BaseMatcher):
             '''
         )
         perm = unique_name('perm')
-        code = API_TEMPLACE.format(perm, kwargs['input'],
+        code = API_TEMPLATE.format(perm, kwargs['input'],
                 perm, kwargs['dim0'], kwargs['dim1'],
                 perm, kwargs['dim1'], kwargs['dim0'],
                 kwargs['input'], perm)
@@ -422,9 +430,9 @@ class TransposeMatcher(BaseMatcher):
 }
 ```
 
-### 方式二：适用于类方法且不会误识别
+### 方式二：适用于类方法且可以识别
 
-由于 **类方法** 在识别时可能会造成误识别，如果该API具有独特的深度学习API名称，例如 `x.backward()` 、 `sgd.step()` ，则不会造成误识别问题，使用本方式开发。
+由于 **类方法** 可能与其他Python class的类方式混淆，导致无法识别，如果该API具有独特的深度学习API名称，例如 `x.backward()` 、 `sgd.step()` ，则可以准确识别，可使用本方式开发。
 
 判断标准：**类方法API且具有独特的API名**。需要与 numpy、scipy、python原生class(list/tuple/set/dict等)的类方法进行对比，若有任意相同API，则不符合此标准。
 
@@ -457,11 +465,11 @@ class TransposeMatcher(BaseMatcher):
 }
 ```
 
-所有不符合开发方式二的类API，均采用方式三开发。
+所有不符合方式二的类方法，均采用方式三开发。
 
-### 方式三：适用于类方法但容易误识别
+### 方式三：适用于类方法但无法识别
 
-方式三与方式二的区别在于，其原理为**保持转换前后代码不变，则可100%消除误转换的负面影响**。同时通过后台对API的调整，来保证代码在完全不变的前提下，仍可以正常运行。根据是否需要辅助代码，其又分为 **需要辅助代码** 、**不需要辅助代码** 两种情况。
+方式三与方式二的区别在于，其原理为**保持转换前后代码不变，则可消除无法识别的问题**。同时增加后台辅助代码对API的调整，来保证代码在完全不变的前提下，仍可正常运行。根据是否需要辅助代码，其又分为 **不需要辅助代码** 、**需要辅助代码** 两种情况。
 
 **1）不需要辅助代码**
 
@@ -477,15 +485,15 @@ class TransposeMatcher(BaseMatcher):
 
 基于[Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html)，其中的 **无参数、参数完全一致、仅paddle 参数更多** 分类，均符合该情形。
 
-**2）部分用法需要辅助代码**
+**2）需要辅助代码**
 
-对于某些API，可能部分用法 **不需要辅助代码**，部分用法 **需要辅助代码**。
+对于某些API，如果 **代码保持完全不变时，无法直接运行**，我们就需要在后台通过辅助代码对Paddle相应类方法进行一些修改，使得在 **转换前后代码保持不变** 的前提下，仍可正常运行。
 
-如果 **代码保持完全不变时，无法直接运行**，我们就需要在后台通过辅助代码对Paddle相应类方法进行一些修改，使得在 **转换前后代码保持不变** 的前提下，仍可正常运行。
+**开发方式**：在 `get_paddle_class_nodes` 或 `generate_code` 增加相应的判断：
+- 对于 **不需要辅助代码** 即可运行的用法，直接返回 'unchange'
+- 对于 **需要辅助代码** 才可运行的用法，首先要额外重写 `generate_aux_code` 函数，其是模仿Pytorch类API用法的辅助代码，然后显式的调用 `write_aux_code` ，此时将在后台模块里注入辅助代码，最后再返回 'unchange' 即可
 
-**开发方式**：在 `get_paddle_class_nodes` 或 `generate_code` 增加相应的判断，对于 **不需要辅助代码** 即可运行的用法，直接返回 'unchange'；对于 **需要辅助代码** 才可运行的用法，首先要额外重写 `generate_aux_code` 函数，其是模仿Pytorch类API用法的辅助代码，然后显式的调用 `write_aux_code` ，此时将在后台模块里注入辅助代码，最后再返回 'unchange' 即可。
-
-由于 **辅助代码** 会不可避免的改变一些Paddle API的用法外观，因此需要尽可能减少使用辅助代码，即调用 `write_aux_code` 的场景。所以我们需要判断用户的不同用法，只在必要的情形下才  `write_aux_code` 。
+由于 **辅助代码** 会不可避免的改变一些Paddle API的用法感官，因此尽可能减少使用辅助代码（即调用 `self.write_aux_code()`）。所以我们需要判断用户的不同用法，在必要的情形下才 `write_aux_code` 。
 
 基于[Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html)，我们可参考以下原则来判断是否需要辅助代码：
 
@@ -550,15 +558,23 @@ import paddle_aux
 x.reshape(2, 3)
 ```
 
-**开发注意事项**：
+### 开发规范
 
-**1) 代码精简与美观性**。要求尽可能只通过一行代码、一个API来实现（代码越少越好）。如果确实无法实现，才考虑通过多行代码、多个API来辅助实现该功能。
+1) 代码精简与美观性。要求尽可能只通过一行代码、一个API来实现（代码越少越好）。如果确实无法实现，才考虑通过多行代码、多个API来辅助实现该功能。
 
-**2) 维护与负责**。由于单测可能覆盖不全面，导致引入了非常隐蔽的用法bug，开发者需要后续维护自己开发的API转换规则。解决新反馈的用法case问题。
+2) 维护与负责。由于单测可能覆盖不全面，导致引入了非常隐蔽的用法bug，开发者需要后续维护自己开发的API转换规则。解决新反馈的用法case问题。
 
-**3) API功能缺失**。如果是整个API都缺失的，只需在API映射表中标注 **功能缺失** 即可，无需其他开发。如果是API局部功能缺失，则对功能缺失点，在代码中返回None表示不支持，同时在API映射表中说明此功能点 **Paddle暂无转写方式**，同时编写单测但可以注释掉不运行；对其他功能点正常开发即可。
+3) API功能缺失。如果是整个API都缺失的，只需在API映射表中标注 **功能缺失** 即可，无需其他开发。如果是API局部功能缺失，则对功能缺失点，在代码中返回None表示不支持，同时在API映射表中说明此功能点 **Paddle暂无转写方式**，同时编写单测但可以注释掉不运行；对其他功能点正常开发即可。
 
-**开发技巧**
+4) 别名实现。如果一个API是别名API(alias API)，例如 `torch.nn.modules.GroupNorm` 是 `torch.nn.GroupNorm` 的别名，那么就无需编写相关 Matcher，只需在 `paconvert/api_alias_mapping.json` 中增加该别名 API 的配置，同时也无需增加相应单测文件，只需在主API的单测文件中增加 `test_alias_case_1/test_alias_case_2...` 即可。
+
+    ```bash
+    {
+      "torch.nn.modules.GroupNorm": "torch.nn.GroupNorm"
+    }
+    ```
+
+### 开发技巧
 
 1）可以参考一些写的较为规范的Matcher：
 - 传入参数既可以是可变参数，也可以是列表或元组时，例如 `TensorExpandMatcher`
@@ -612,7 +628,7 @@ if x:
 
 **单测写法**：
 
-* **单测位置**：所有的单测文件均放在`tests`目录下，单测文件命名以`test_`为前缀，后面接测试的`API`名称（PyTorch API全称去掉模块名，保留大小写）。例如 `torch.add` 命名为 `test_add.py` ， `torch.Tensor.add` 命名为  `test_Tensor_add.py` 。
+* **单测位置**：所有的单测文件均放在`tests`目录下，单测文件命名以`test_`为前缀，后面接测试的`API`名称（PyTorch API名称即可，保留大小写，无需Module前缀）。例如 `torch.nn.functional.relu` 命名为 `test_relu.py` ， `torch.Tensor.add` 命名为 `test_Tensor_add.py` 。
 
 * **默认检查逻辑**：采用`pytest`作为单测框架。一般情况下，用户只需要在单测文件中调用 `APIBase` 类的 `run()` 方法，传入 `pytorch_code` 和需要判断的 `Tensor` 变量名列表即可，参考 [torch.permute测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_permute.py)。 `run()` 方法会调用`compare()`函数，该方法默认检查逻辑为：转换前后两个`Tensor`的 `计算数值、数据类型、stop_gradient属性、形状` 是否一致。
 

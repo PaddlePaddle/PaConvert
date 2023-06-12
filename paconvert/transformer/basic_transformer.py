@@ -51,7 +51,7 @@ class BasicTransformer(BaseTransformer):
     def __init__(self, root, file, imports_map, logger, unsupport_map=None):
         super(BasicTransformer, self).__init__(root, file, imports_map, logger)
         # use to identify tensor method/attribute
-        self.black_list = self.imports_map[self.file]["other_pacakages"] + [
+        self.black_list = self.imports_map[self.file]["other_packages"] + [
             "ndarray",
             "args",
             "arg",
@@ -60,7 +60,7 @@ class BasicTransformer(BaseTransformer):
 
     def visit_Attribute(self, node):
         """
-        torch api is not used by funcition call, so only match api name and not need to handle params.
+        torch api is not used by function call, so only match api name and not need to handle params.
         """
         # 1. torch.abs(x).transpose(1, 0)
         # 2. (x == y).transpose(1, 0)
@@ -68,7 +68,8 @@ class BasicTransformer(BaseTransformer):
         # 4. (-x).transpose(1, 0)
         # 5. x[0].transpose(1, 0)
         if isinstance(
-            node.value, (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript)
+            node.value,
+            (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript, ast.Assert),
         ):
             super(BasicTransformer, self).generic_visit(node)
 
@@ -184,16 +185,34 @@ class BasicTransformer(BaseTransformer):
                         )
                         return node
                     elif new_node:
-                        self.success_api_count += 1
-                        log_debug(
-                            self.logger,
-                            "[Success]convert Tensor Attribute: {} to Paddle".format(
-                                torch_api
+                        new_node = new_node[-1]
+                        if isinstance(new_node, ast.Expr):
+                            new_node = new_node.value
+
+                        if isinstance(
+                            new_node,
+                            (
+                                ast.Call,
+                                ast.Attribute,
+                                ast.Name,
+                                ast.Constant,
+                                ast.Compare,
+                                ast.BinOp,
+                                ast.UnaryOp,
+                                ast.Tuple,
+                                ast.Assert,
                             ),
-                            self.file_name,
-                            node.lineno,
-                        )
-                        return new_node
+                        ):
+                            self.success_api_count += 1
+                            log_debug(
+                                self.logger,
+                                "[Success]convert Tensor Attribute: {} to Paddle".format(
+                                    torch_api
+                                ),
+                                self.file_name,
+                                node.lineno,
+                            )
+                            return new_node
 
         annotate_node = ast.parse(
             "'Tensor Attribute: {}, not convert, please check whether it is torch.Tensor.* and convert manually'".format(
@@ -320,6 +339,7 @@ class BasicTransformer(BaseTransformer):
                                 ast.BinOp,
                                 ast.UnaryOp,
                                 ast.Tuple,
+                                ast.Assert,
                             ),
                         ):
                             self.insert_multi_node(node_list[0:-1])
@@ -346,16 +366,29 @@ class BasicTransformer(BaseTransformer):
         # Torch Class call
         #   such as : x.add(y) / x.abs().add / sgd.step() / model.to(torch.device('cuda'))
         if "NonTorchClass" not in full_attr:
-            attr_list = full_attr.split(".")
+            is_tensor_api = False
+            is_module_api = False
+            is_optim_api = False
             #  x.reshape
             #  self.weight.reshape
             #  x.T.reshape
             # when > 2, need to more strict
-            if (
-                (len(attr_list) == 2 and "self" not in full_attr)
-                or (len(attr_list) > 2 and "self" in full_attr)
-                or ".T." in full_attr
-            ):
+            attr_list = full_attr.split(".")
+            if len(attr_list) > 2:
+                if "self." in full_attr:
+                    is_tensor_api = True
+                if ".T." in full_attr:
+                    is_tensor_api = True
+            elif len(attr_list) == 2:
+                if "self." in full_attr:
+                    is_module_api = True
+                    is_optim_api = True
+                else:
+                    is_tensor_api = True
+                    is_module_api = True
+                    is_optim_api = True
+
+            if is_tensor_api:
                 torch_api = ".".join(["torch.Tensor", attr_list[-1]])
                 if torch_api in API_MAPPING:
                     self.torch_api_count += 1
@@ -369,6 +402,7 @@ class BasicTransformer(BaseTransformer):
                     )
                     return self.trans_class_method(node, torch_api)
 
+            if is_module_api:
                 torch_api = ".".join(["torch.nn.Module", attr_list[-1]])
                 if torch_api in API_MAPPING:
                     self.torch_api_count += 1
@@ -382,6 +416,7 @@ class BasicTransformer(BaseTransformer):
                     )
                     return self.trans_class_method(node, torch_api)
 
+            if is_optim_api:
                 torch_api = ".".join(["torch.optim.Optimizer", attr_list[-1]])
                 if torch_api in API_MAPPING:
                     self.torch_api_count += 1
@@ -458,6 +493,8 @@ class BasicTransformer(BaseTransformer):
                         ast.Attribute,
                         ast.Subscript,
                         ast.BinOp,
+                        ast.Assert,
+                        ast.Tuple,
                     ),
                 ):
                     self.insert_multi_node(node_list[0:-1])

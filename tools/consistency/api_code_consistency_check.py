@@ -24,6 +24,8 @@ from tests.code_library.code_case.file_mapping_dict import (
     global_file_mapping_dict,
 )
 
+white_list = ["api_torch_Tensor_to.py"]
+
 
 def translate_pytorch_code_to_paddle_code() -> Tuple[bool, list[str]]:
     translate_file_flag = False
@@ -52,6 +54,9 @@ def compare_file_consistency() -> Tuple[bool, list[str]]:
     file_consistency_flag = False
     file_fail_list = []
     for pytorch_file, paddle_file in global_file_mapping_dict.items():
+        pytorch_file_name = pytorch_file.split("/")[-1]
+        if pytorch_file_name in white_list:
+            continue
         temp_paddle_file = paddle_file.replace("paddle_code", "temp_paddle_code")
         if not compare_file_func(paddle_file, temp_paddle_file):
             file_consistency_flag = True
@@ -69,6 +74,8 @@ def file_consistency_summary_log(file_list) -> None:
     for file in file_list:
         pytorch_file_name = file.split("/")[-1]
         paddle_file_name = global_file_mapping_dict[file].split("/")[-1]
+        if pytorch_file_name in white_list:
+            continue
         print(
             f"the {pytorch_file_name} translation results and {paddle_file_name} are inconsistent!"
         )

@@ -18,6 +18,8 @@ import sys
 import numpy as np
 
 sys.path.append(os.path.dirname(__file__) + "/..")
+import textwrap
+
 from paconvert.converter import Converter
 
 
@@ -35,8 +37,10 @@ class APIBase(object):
         compared_tensor_names=None,
         expect_paddle_code=None,
         check_value=True,
+        check_dtype=True,
         unsupport=False,
         reason=None,
+        is_aux_api=False,
     ) -> None:
         """
         args:
@@ -44,8 +48,10 @@ class APIBase(object):
             compared_tensor_names: the list of variant name to be compared
             expect_paddle_code: the string of expect paddle code
             check_value: If false, the value will not be checked
+            check_dtype: If false, the dtype will not be checked
             unsupport: If true, conversion is not supported
             reason: the reason why it is not supported
+            is_aux_api: the bool value for api that need Auxiliary code
         """
         if unsupport:
             assert (
@@ -56,24 +62,42 @@ class APIBase(object):
             return
         if compared_tensor_names:
             loc = locals()
-            exec(pytorch_code)
+            exec(pytorch_code, locals())
             pytorch_result = [loc[name] for name in compared_tensor_names]
 
             paddle_code = self.convert(pytorch_code)
-            exec(paddle_code)
+            if is_aux_api:
+                paddle_code = (
+                    textwrap.dedent(
+                        """
+                    import sys
+                    import importlib
+                    sys.path.append('test_project/utils')
+                    import paddle_aux
+                    paddle_aux=importlib.reload(paddle_aux)
+                    """
+                    )
+                    + paddle_code
+                )
+            exec(paddle_code, locals())
             paddle_result = [loc[name] for name in compared_tensor_names]
             for i in range(len(compared_tensor_names)):
                 self.compare(
-                    self.pytorch_api, pytorch_result[i], paddle_result[i], check_value
+                    self.pytorch_api,
+                    pytorch_result[i],
+                    paddle_result[i],
+                    check_value,
+                    check_dtype,
                 )
-
         if expect_paddle_code:
             convert_paddle_code = self.convert(pytorch_code)
             assert (
                 convert_paddle_code == expect_paddle_code
             ), "[{}]: get unexpected code".format(self.pytorch_api)
 
-    def compare(self, name, pytorch_result, paddle_result, check_value=True):
+    def compare(
+        self, name, pytorch_result, paddle_result, check_value=True, check_dtype=True
+    ):
         """
         compare tensors' data, shape, requires_grad, dtype
         args:
@@ -81,11 +105,12 @@ class APIBase(object):
             pytorch_result: pytorch Tensor
             paddle_result: paddle Tensor
             check_value: If false, the value will not be checked
+            check_dtype: If false, the dtype will not be checked
         """
         if isinstance(pytorch_result, (tuple, list)):
             assert isinstance(
                 paddle_result, (tuple, list)
-            ), "paddle result shoule be list/tuple"
+            ), "paddle result should be list/tuple"
             assert len(pytorch_result) == len(
                 paddle_result
             ), "paddle result have different length with pytorch"
@@ -93,15 +118,16 @@ class APIBase(object):
                 self.compare(self.pytorch_api, pytorch_result[i], paddle_result[i])
             return
 
-        if isinstance(pytorch_result, (bool, np.number, int, str)):
+        if isinstance(pytorch_result, (bool, np.number, int, str, type(None))):
             assert isinstance(
-                paddle_result, (bool, np.number, int, str)
-            ), "paddle result shoule be bool/np.number/int/str"
-            assert (
-                pytorch_result == paddle_result
-            ), "API ({}): pytorch result is {}, but paddle result is {}".format(
-                name, pytorch_result, paddle_result
-            )
+                paddle_result, (bool, np.number, int, str, type(None))
+            ), "paddle result should be bool/np.number/int/str"
+            if check_value:
+                assert (
+                    pytorch_result == paddle_result
+                ), "API ({}): pytorch result is {}, but paddle result is {}".format(
+                    name, pytorch_result, paddle_result
+                )
             return
 
         if pytorch_result.requires_grad:
@@ -129,11 +155,12 @@ class APIBase(object):
         ), "API ({}): shape mismatch, torch shape is {}, paddle shape is {}".format(
             name, pytorch_numpy.shape, paddle_numpy.shape
         )
-        assert (
-            pytorch_numpy.dtype == paddle_numpy.dtype
-        ), "API ({}): dtype mismatch, torch dtype is {}, paddle dtype is {}".format(
-            name, pytorch_numpy.dtype, paddle_numpy.dtype
-        )
+        if check_dtype:
+            assert (
+                pytorch_numpy.dtype == paddle_numpy.dtype
+            ), "API ({}): dtype mismatch, torch dtype is {}, paddle dtype is {}".format(
+                name, pytorch_numpy.dtype, paddle_numpy.dtype
+            )
         if check_value:
             assert np.allclose(
                 pytorch_numpy, paddle_numpy
@@ -155,8 +182,8 @@ class APIBase(object):
         with open(pytorch_code_path, "w", encoding="UTF-8") as f:
             f.write(pytorch_code)
 
-        coverter = Converter(log_dir="disable")
-        coverter.run(pytorch_code_path, paddle_code_path)
+        converter = Converter(log_dir="disable")
+        converter.run(pytorch_code_path, paddle_code_path)
 
         with open(paddle_code_path, "r", encoding="UTF-8") as f:
             code = f.read()

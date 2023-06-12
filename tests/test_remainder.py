@@ -30,12 +30,13 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
+# The paddle input does not support integer type
 def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
         a = torch.tensor([1, 2, 3, 4, 5])
-        result = torch.remainder(a, -1.5)
+        result = torch.remainder(a, torch.tensor(1.5))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -75,6 +76,7 @@ def test_case_5():
     obj.run(pytorch_code, ["result", "out"])
 
 
+# paddle.remainder not support type promote and x/y must have same dtype
 def _test_case_6():
     pytorch_code = textwrap.dedent(
         """

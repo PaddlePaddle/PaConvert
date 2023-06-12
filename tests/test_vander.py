@@ -19,7 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.vander")
 
 
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -30,7 +30,7 @@ def _test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -41,17 +41,17 @@ def _test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.vander(input=torch.tensor([1, 2, 3, 5]), N=3)
+        result = torch.vander(x=torch.tensor([1, 2, 3, 5]), N=3)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -62,13 +62,24 @@ def _test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
         x = torch.tensor([1, 2, 3, 5])
         increasing = True
         result = torch.vander(x, 5, increasing)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 2, 3, 5])
+        result = torch.vander(x = x, N = 5, increasing=True)
         """
     )
     obj.run(pytorch_code, ["result"])

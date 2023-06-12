@@ -120,7 +120,7 @@ class BaseTransformer(ast.NodeTransformer):
             if index in self.scope_insert_lines[scope_node][body]:
                 origin_node_list = self.scope_insert_lines[scope_node][body][index]
                 for node in node_list.copy():
-                    # remove dumplicate node
+                    # remove duplicate node
                     for ele in origin_node_list:
                         if ast.dump(node) == ast.dump(ele):
                             node_list.remove(node)
@@ -166,7 +166,7 @@ class BaseTransformer(ast.NodeTransformer):
         self.record_scope(self.scope_body_index(), other_nodes)
 
     def get_full_attr(self, node):
-        # torch.nn.fucntional.relu
+        # torch.nn.functional.relu
         if isinstance(node, ast.Attribute):
             return self.get_full_attr(node.value) + "." + node.attr
         # x.abs() -> 'x'
@@ -183,7 +183,8 @@ class BaseTransformer(ast.NodeTransformer):
         # 4. x[0].transpose(1, 0) -> 'torchClass'
         # 5. (-x).transpose(1, 0) -> 'torchClass'
         elif isinstance(
-            node, (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript)
+            node,
+            (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript, ast.Assert),
         ):
             node_str = astor.to_source(node).strip("\n")
             for item in self.black_list:
