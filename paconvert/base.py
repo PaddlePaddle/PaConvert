@@ -224,7 +224,8 @@ class BaseMatcher(object):
         self.logger = logger
 
     def get_aux_dir(self):
-        return os.path.dirname(AuxFileHelper().fileName)
+        path = os.path.dirname(AuxFileHelper().fileName)
+        return path[path.index("PaConvert") + len("Paconvert/") :]
 
     def get_paddle_api(self):
         if self.paddle_api:

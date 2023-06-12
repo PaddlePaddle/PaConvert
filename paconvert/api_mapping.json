@@ -4956,7 +4956,11 @@
   },
   "torch.device": {
     "Matcher": "DeviceMatcher",
-    "paddle_api": "str"
+    "paddle_api": "str",
+    "args_list": [
+      "type",
+      "index"
+    ]
   },
   "torch.nn.Linear": {
     "Matcher": "LayerMatcher",
@@ -6915,14 +6919,7 @@
   "torch.Tensor.t_": {},
   "torch.Tensor.tensor_split": {},
   "torch.Tensor.to": {
-    "Matcher": "TensorToMatcher",
-    "args_list": [
-      "x",
-      "y",
-      "non_blocking",
-      "copy",
-      "memory_format"
-    ]
+    "Matcher": "TensorToMatcher"
   },
   "torch.Tensor.to_mkldnn": {},
   "torch.Tensor.take": {
@@ -8108,7 +8105,8 @@
     "args_list": [
       "input",
       "other",
-      "rounding_mode"
+      "rounding_mode",
+      "out"
     ]
   },
   "torch.divide": {

@@ -70,10 +70,18 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.device("cpu", 0)
+        result = torch.device(type = "cpu", index = 0)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-test_case_1()
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = "cpu"
+        result = torch.device(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

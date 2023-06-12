@@ -337,12 +337,12 @@ class CreateMatcher(BaseMatcher):
 
 class DeviceMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
-        new_args = self.parse_args(args)
-        if len(new_args) == 1:
-            code = f'str({new_args[0]}.replace("cuda", "gpu"))'
+        new_kwargs = self.parse_args_and_kwargs(args, kwargs)
+        if len(new_kwargs) == 1:
+            code = f'str({new_kwargs["type"]}.replace("cuda", "gpu"))'
 
-        if len(args) == 2:
-            code = f'":".join([{astor.to_source(args[0])}.replace("cuda", "gpu"),str({astor.to_source(args[1])})])'
+        if len(new_kwargs) == 2:
+            code = f'":".join([{new_kwargs["type"]}.replace("cuda", "gpu"),str({new_kwargs["index"]})])'
         return ast.parse(code).body
 
 
@@ -404,7 +404,7 @@ class MaxMinMatcher(BaseMatcher):
 
         if call_maximinimum:
             return GenericMatcher(
-                self.torch_api, self.api_mapping, self.logger
+                self.transformer, self.torch_api, self.api_mapping, self.logger
             ).get_paddle_nodes(args, kwargs)
 
         # return (values, indices) and paddle not implement, not convert
@@ -1981,6 +1981,15 @@ class TensorToMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def to(self, *args, **kwargs):
+                args_list = ["x", "y", "non_blocking", "copy", "memory_format"]
+                new_kwargs = {}
+                for i, node in enumerate(args):
+                    k = args_list[i]
+                    new_kwargs[k] = node
+                for node in kwargs:
+                    v = kwargs[node]
+                    new_kwargs[node] = v
+                kwargs = new_kwargs
                 if not kwargs:
                     return self
                 elif "tensor" in kwargs:
@@ -2021,23 +2030,8 @@ class TensorToMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def get_paddle_class_nodes(self, func, args, kwargs):
-        self.parse_func(func)
         self.write_aux_code()
-        new_kwargs = self.parse_args_and_kwargs(args, kwargs)
-        API_TEMPLACE = textwrap.dedent(
-            """
-            import sys
-            sys.path.append('{}')
-            import paddle_aux
-            {}.to({})
-            """
-        )
-        code = API_TEMPLACE.format(
-            self.get_aux_dir(),
-            self.paddleClass,
-            self.kwargs_to_str(new_kwargs),
-        )
-        return ast.parse(code).body
+        return "unchange"
 
 
 class TensorRequires_GradMatcher(BaseMatcher):
@@ -2987,6 +2981,8 @@ class SubMatcher(BaseMatcher):
 
 class Chain_MatmulMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
+        if len(args) == 1 and isinstance(args[0], ast.Starred):
+            return None
         new_args = self.parse_args(args)
         new_kwargs = self.parse_kwargs(kwargs)
 
@@ -3068,23 +3064,7 @@ class TensorReshapeMatcher(BaseMatcher):
             return "unchange"
 
         self.write_aux_code()
-        self.parse_func(func)
-        new_args = self.parse_args(args)
-        new_kwargs = self.parse_kwargs(kwargs)
-        API_TEMPLATE = textwrap.dedent(
-            """
-            import sys
-            sys.path.append('{}')
-            import paddle_aux
-            {}.reshape({})
-            """
-        )
-        code = API_TEMPLATE.format(
-            self.get_aux_dir(),
-            self.paddleClass,
-            self.args_and_kwargs_to_str(new_args, new_kwargs),
-        )
-        return ast.parse(code).body
+        return "unchange"
 
 
 class TensorIstftMatcher(BaseMatcher):
@@ -3355,6 +3335,19 @@ class CovMatcher(BaseMatcher):
         return code
 
 
+class TensorHardShrinkMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "lambd" not in kwargs:
+            kwargs["lambd"] = 0.5
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.nn.functional.hardshrink({}, threshold={})
+            """
+        )
+        code = API_TEMPLATE.format(self.paddleClass, kwargs["lambd"])
+        return code
+
+
 class FunctionalCrossEntropyMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "size_average" in kwargs:
@@ -3607,7 +3600,7 @@ class ParameterMatcher(BaseMatcher):
 
         API_TEMPLACE = textwrap.dedent(
             """
-            {} = paddle.create_parameter(shape={}.shape, dtype=str({}.numpy().dtype), default_initializer=paddle.nn.initializer.Assign({}))
+            {} = paddle.create_parameter(shape={}.shape, dtype=str(paddle.to_tensor({}.numpy()).dtype), default_initializer=paddle.nn.initializer.Assign({}))
             {}.stop_gradient = not {}
             {}
             """
@@ -3691,23 +3684,7 @@ class TensorTakeMatcher(BaseMatcher):
 
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.write_aux_code()
-        self.parse_func(func)
-        new_args = self.parse_args(args)
-        new_kwargs = self.parse_kwargs(kwargs)
-        API_TEMPLATE = textwrap.dedent(
-            """
-            import sys
-            sys.path.append('{}')
-            import paddle_aux
-            {}.take({})
-            """
-        )
-        code = API_TEMPLATE.format(
-            self.get_aux_dir(),
-            self.paddleClass,
-            self.args_and_kwargs_to_str(new_args, new_kwargs),
-        )
-        return ast.parse(code.strip("\n")).body
+        return "unchange"
 
 
 class TensorSplitMatcher(BaseMatcher):
@@ -3734,25 +3711,8 @@ class TensorSplitMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def get_paddle_class_nodes(self, func, args, kwargs):
-
         self.write_aux_code()
-        self.parse_func(func)
-        new_args = self.parse_args(args)
-        new_kwargs = self.parse_kwargs(kwargs)
-        API_TEMPLATE = textwrap.dedent(
-            """
-            import sys
-            sys.path.append('{}')
-            import paddle_aux
-            {}.split({})
-            """
-        )
-        code = API_TEMPLATE.format(
-            self.get_aux_dir(),
-            self.paddleClass,
-            self.args_and_kwargs_to_str(new_args, new_kwargs),
-        )
-        return ast.parse(code).body
+        return "unchange"
 
 
 class TensorRoundMatcher(BaseMatcher):
@@ -3770,22 +3730,8 @@ class TensorRoundMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def get_paddle_class_nodes(self, func, args, kwargs):
+        if args is None and kwargs is None:
+            return "unchange"
 
         self.write_aux_code()
-        self.parse_func(func)
-        new_args = self.parse_args(args)
-        new_kwargs = self.parse_kwargs(kwargs)
-        API_TEMPLATE = textwrap.dedent(
-            """
-            import sys
-            sys.path.append('{}')
-            import paddle_aux
-            {}.round({})
-            """
-        )
-        code = API_TEMPLATE.format(
-            self.get_aux_dir(),
-            self.paddleClass,
-            self.args_and_kwargs_to_str(new_args, new_kwargs),
-        )
-        return ast.parse(code).body
+        return "unchange"

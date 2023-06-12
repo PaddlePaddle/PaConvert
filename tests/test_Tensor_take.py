@@ -28,7 +28,7 @@ def test_case_1():
         result = input.take(torch.tensor([0, 2, 5]))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_2():
@@ -40,4 +40,4 @@ def test_case_2():
         result = input.take(index=torch.tensor([0, 2, 5]))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
