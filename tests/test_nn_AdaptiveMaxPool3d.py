@@ -14,9 +14,34 @@
 
 import textwrap
 
+import numpy as np
 from apibase import APIBase
 
-obj = APIBase("torch.nn.AdaptiveMaxPool3d")
+
+class MaxPoolAPI(APIBase):
+    def compare(self, name, pytorch_result, paddle_result, check_value=True):
+        if isinstance(pytorch_result, (tuple, list)):
+            for i in range(len(pytorch_result)):
+                self.compare(self.pytorch_api, pytorch_result[i], paddle_result[i])
+            return
+
+        pytorch_numpy, paddle_numpy = pytorch_result.numpy(), paddle_result.numpy()
+        assert (
+            pytorch_result.requires_grad != paddle_result.stop_gradient
+        ), "API ({}): requires grad mismatch, torch tensor's requires_grad is {}, paddle tensor's stop_gradient is {}".format(
+            name, pytorch_result.requires_grad, paddle_result.stop_gradient
+        )
+        assert (
+            pytorch_numpy.shape == paddle_numpy.shape
+        ), "API ({}): shape mismatch, torch shape is {}, paddle shape is {}".format(
+            name, pytorch_numpy.shape, paddle_numpy.shape
+        )
+        assert np.allclose(
+            pytorch_numpy, paddle_numpy
+        ), "API ({}): paddle result has diff with pytorch result".format(name)
+
+
+obj = MaxPoolAPI("torch.nn.AdaptiveMaxPool3d")
 
 
 def test_case_1():
@@ -96,9 +121,4 @@ def test_case_5():
         result = model(x)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="When index is returned, the type of paddle is int32 and torch is int64",
-    )
+    obj.run(pytorch_code, ["result"])

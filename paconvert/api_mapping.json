@@ -1,5 +1,6 @@
 {
   "torch.nn.functional.log_softmax": {
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.log_softmax",
     "args_list": [
       "input",
@@ -3541,10 +3542,7 @@
     ],
     "kwargs_change": {
       "return_indices": "return_mask"
-    },
-    "unsupport_args": [
-      "return_indices"
-    ]
+    }
   },
   "torch.nn.AdaptiveMaxPool2d": {
     "Matcher": "GenericMatcher",
@@ -3555,10 +3553,7 @@
     ],
     "kwargs_change": {
       "return_indices": "return_mask"
-    },
-    "unsupport_args": [
-      "return_indices"
-    ]
+    }
   },
   "torch.nn.AdaptiveMaxPool3d": {
     "Matcher": "GenericMatcher",
@@ -3569,10 +3564,7 @@
     ],
     "kwargs_change": {
       "return_indices": "return_mask"
-    },
-    "unsupport_args": [
-      "return_indices"
-    ]
+    }
   },
   "torch.nn.AdaptiveAvgPool1d": {
     "Matcher": "GenericMatcher",
