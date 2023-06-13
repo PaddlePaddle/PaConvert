@@ -45,7 +45,7 @@ repos:
             - --in-place
             - --remove-all-unused-imports
             - --ignore-init-module-imports
-            - --exclude=paconvert/transformer/basic_transformer.py
+            - --exclude=paconvert/transformer/basic_transformer.py,tests/code_library/code_case/paddle_code/*
 # For json files
 -   repo: local
     hooks:
