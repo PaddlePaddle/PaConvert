@@ -1,6 +1,5 @@
 {
   "torch.nn.functional.log_softmax": {
-    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.log_softmax",
     "args_list": [
       "input",
