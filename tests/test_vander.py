@@ -19,7 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.vander")
 
 
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -27,10 +27,15 @@ def _test_case_1():
         result = torch.vander(x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle has no corresponding api tentatively",
+    )
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -38,20 +43,30 @@ def _test_case_2():
         result = torch.vander(x, 3)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle has no corresponding api tentatively",
+    )
 
 
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
         result = torch.vander(input=torch.tensor([1, 2, 3, 5]), N=3)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle has no corresponding api tentatively",
+    )
 
 
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -59,10 +74,15 @@ def _test_case_4():
         result = torch.vander(x, 5, increasing=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle has no corresponding api tentatively",
+    )
 
 
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -71,4 +91,9 @@ def _test_case_5():
         result = torch.vander(x, 5, increasing)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle has no corresponding api tentatively",
+    )

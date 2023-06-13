@@ -20,12 +20,13 @@ DEVELOP_IF="OFF"
 if [[ "$DEVELOP_IF" == "OFF" ]]; then
     cd /workspace/$2/PaConvert/
     PATH=$1
+    echo "Insalling develop version paddle"
     python -m pip install --no-cache-dir  --force-reinstall paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
-    python -c "import paddle; print('paddle version information:' ,paddle.__version__); print('paddle commit information:' ,paddle.__git_commit__)"
+    python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 fi
 
 echo "Checking code unit test by pytest ..."
-pytest /workspace/$2/PaConvert/tests;check_error=$?
+/root/anaconda3/envs/converage/bin/pytest /workspace/$2/PaConvert/tests;check_error=$?
 
 echo '************************************************************************************'
 echo "______      _____                          _   "
