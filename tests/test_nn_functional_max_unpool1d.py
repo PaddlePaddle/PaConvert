@@ -71,7 +71,7 @@ def test_case_4():
         import torch.nn.functional as F
         x = torch.tensor([[[0.5023, 0.7704]]])
         indices = torch.tensor([[[0, 3]]])
-        result = F.max_unpool1d(x, indices, kernel_size=2, output_size=(1, 1, 4), )
+        result = F.max_unpool1d(x, indices, kernel_size=2, output_size=(1, 1, 4))
         """
     )
     obj.run(
