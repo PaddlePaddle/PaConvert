@@ -3282,7 +3282,7 @@
     ]
   },
   "torch.linalg.lstsq": {
-    "Matcher": "LstsqMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linalg.lstsq",
     "args_list": [
       "A",
@@ -4213,7 +4213,7 @@
     }
   },
   "torch.nn.functional.adaptive_max_pool1d": {
-    "Matcher": "FunctionalAdaptiveMaxPoolMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.adaptive_max_pool1d",
     "args_list": [
       "input",
@@ -4226,7 +4226,7 @@
     }
   },
   "torch.nn.functional.adaptive_max_pool2d": {
-    "Matcher": "FunctionalAdaptiveMaxPoolMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.adaptive_max_pool2d",
     "args_list": [
       "input",
@@ -4239,7 +4239,7 @@
     }
   },
   "torch.nn.functional.adaptive_max_pool3d": {
-    "Matcher": "FunctionalAdaptiveMaxPoolMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.adaptive_max_pool3d",
     "args_list": [
       "input",

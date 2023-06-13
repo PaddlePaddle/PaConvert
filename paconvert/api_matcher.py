@@ -3736,32 +3736,6 @@ class TensorRoundMatcher(BaseMatcher):
         return "unchange"
 
 
-class FunctionalAdaptiveMaxPoolMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "input" in kwargs:
-            kwargs["x"] = kwargs.pop("input").strip("\n")
-
-        if "return_indices" in kwargs:
-            kwargs["return_mask"] = kwargs.pop("return_indices").strip("\n")
-            if "True" in kwargs["return_mask"]:
-                API_TEMPLATE = textwrap.dedent(
-                    """
-                    out1, out2 = {}({})
-                    out1, out2.astype('int64')
-                    """
-                )
-                return API_TEMPLATE.format(
-                    self.get_paddle_api(), self.kwargs_to_str(kwargs)
-                )
-            elif "False" in kwargs["return_mask"]:
-                return "{}({})".format(
-                    self.get_paddle_api(), self.kwargs_to_str(kwargs)
-                )
-            else:
-                return None
-        return "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-
-
 class UnpoolMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs["indices"] = (
@@ -3769,24 +3743,6 @@ class UnpoolMatcher(BaseMatcher):
         )
 
         return GenericMatcher.generate_code(self, kwargs)
-
-
-class LstsqMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "A" in kwargs:
-            kwargs["x"] = kwargs.pop("A").strip("\n")
-        if "B" in kwargs:
-            kwargs["y"] = kwargs.pop("B").strip("\n")
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            solution, residuals, rank, singular_values = {}({})
-            rank = rank.astype('int64')
-            solution, residuals, rank, singular_values
-            """
-        )
-        code = API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-        return code.strip("\n")
 
 
 class SoftmaxMatcher(BaseMatcher):
