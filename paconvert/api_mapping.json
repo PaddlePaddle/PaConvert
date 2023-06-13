@@ -3990,7 +3990,7 @@
     ]
   },
   "torch.nn.utils.parameters_to_vector": {
-    "Matcher": "ParametersToVectorMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.utils.parameters_to_vector",
     "args_list": [
       "parameters"
