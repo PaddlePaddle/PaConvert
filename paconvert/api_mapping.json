@@ -117,7 +117,7 @@
     }
   },
   "torch.sort": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "SortMatcher",
     "paddle_api": "paddle.sort",
     "args_list": [
       "input",
@@ -793,7 +793,7 @@
     }
   },
   "torch.nonzero": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "NonzeroMatcher",
     "paddle_api": "paddle.nonzero",
     "args_list": [
       "input",
@@ -900,7 +900,7 @@
     }
   },
   "torch.where": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "WhereMatcher",
     "paddle_api": "paddle.where",
     "args_list": [
       "condition",
@@ -2088,7 +2088,22 @@
       "dim"
     ]
   },
-  "torch.nanmedian": {},
+  "torch.nanmedian": {
+    "paddle_api": "paddle.nanmedian",
+    "args_list": [
+      "input",
+      "dim",
+      "keepdim",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axis"
+    },
+    "unsupport_args": [
+      "dim"
+    ]
+  },
   "torch.mode": {
     "Matcher": "TupleAssignMatcher",
     "paddle_api": "paddle.mode",
@@ -2104,7 +2119,7 @@
     }
   },
   "torch.norm": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "NormMatcher",
     "paddle_api": "paddle.linalg.norm",
     "args_list": [
       "input",
@@ -3952,7 +3967,7 @@
     ]
   },
   "torch.nn.UpsamplingNearest2d": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "UpsampleMatcher",
     "paddle_api": "paddle.nn.UpsamplingNearest2D",
     "args_list": [
       "size",
@@ -3960,7 +3975,7 @@
     ]
   },
   "torch.nn.UpsamplingBilinear2d": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "UpsampleMatcher",
     "paddle_api": "paddle.nn.UpsamplingBilinear2D",
     "args_list": [
       "size",
@@ -7245,7 +7260,7 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.flip",
     "paddle_default_kwargs": {
-      "axis": -1
+      "axis": 1
     }
   },
   "torch.Tensor.flipud": {

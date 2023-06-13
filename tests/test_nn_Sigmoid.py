@@ -16,46 +16,31 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.where")
-
-# The type of data we are trying to retrieve does not match the type of data currently contained in the container
+obj = APIBase("torch.nn.Sigmoid")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[0.9383, -0.1983, 3.2, -1.2]])
-        y = torch.tensor([[1.0, 1.0, 1.0, 1.0]])
-        result = torch.where(x>0, x, y)
+        import torch.nn as nn
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        model = nn.Sigmoid()
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# paddle.where not support type promote and x/y must have same dtype
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[0.9383, -0.1983, 3.2, -1.2]])
-        result = torch.where(x>0, x, torch.tensor(90))
+        import torch.nn as nn
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        result = nn.Sigmoid()(x)
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[3, 0], [4.8, 9.2]])
-        result = torch.where(x)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="The return shape is inconsistent when only pass condition param",
-    )

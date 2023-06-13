@@ -68,6 +68,7 @@ def test_case_4():
     obj.run(pytorch_code, ["out"])
 
 
+# The paddle input does not support complex type
 def _test_case_5():
     pytorch_code = textwrap.dedent(
         """

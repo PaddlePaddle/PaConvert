@@ -28,3 +28,14 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        v = torch.tensor([[[3, 6, 9], [1, 3, 5]]])
+        result = v.fliplr()
+        """
+    )
+    obj.run(pytorch_code, ["result"])

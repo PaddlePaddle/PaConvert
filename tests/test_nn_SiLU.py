@@ -16,16 +16,18 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.outer")
+obj = APIBase("torch.nn.SiLU")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        y = torch.tensor([1., 2, 3, 4])
-        result = torch.outer(x, y)
+        import torch.nn as nn
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        model = nn.SiLU()
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,22 +37,25 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        y = torch.tensor([1., 2, 3, 4])
-        result = torch.outer(input=x, vec2=y)
+        import torch.nn as nn
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        model = nn.SiLU(False)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# The paddle input does not support integer type
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3.])
-        y = torch.tensor([1, 2, 3, 4])
-        result = torch.outer(x, y)
+        import torch.nn as nn
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        model = nn.SiLU(inplace=False)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -60,33 +65,11 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.outer(torch.tensor([1., 2, 3]), torch.tensor([1., 2, 3, 4]))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1., 2, 3])
-        y = torch.tensor([1., 2, 3, 4])
-        out = torch.tensor([1., 2, 3])
-        result = torch.outer(x, y, out=out)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-# The paddle input does not support integer type
-def _test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1, 2, 3])
-        y = torch.tensor([1, 2, 3, 4])
-        result = torch.outer(x, y)
+        import torch.nn as nn
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        model = nn.SiLU(True)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
