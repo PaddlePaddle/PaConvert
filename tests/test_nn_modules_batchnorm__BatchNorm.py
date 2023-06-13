@@ -16,40 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Parameter")
+obj = APIBase("torch.nn.modules.batchnorm._BatchNorm")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        result = torch.nn.Parameter(x)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        result = torch.nn.Parameter(x, requires_grad=False)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_alias_case_1():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        result = torch.nn.parameter.Parameter(x)
+        model = torch.nn.modules.batchnorm._BatchNorm(num_features=1)
+        result = isinstance(model, torch.nn.Module)
         """
     )
     obj.run(pytorch_code, ["result"])

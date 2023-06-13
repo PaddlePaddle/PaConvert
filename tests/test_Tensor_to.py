@@ -29,7 +29,7 @@ def test_case_1():
         result = a.to(cpu, non_blocking=False, copy=False)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_2():
@@ -41,7 +41,7 @@ def test_case_2():
         result = a.to('cpu')
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_3():
@@ -53,7 +53,7 @@ def test_case_3():
         result = a.to(device = cpu, dtype = torch.float64)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_4():
@@ -65,7 +65,7 @@ def test_case_4():
         result = a.to(torch.float64)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_5():
@@ -77,7 +77,7 @@ def test_case_5():
         result = a.to(dtype= torch.float64)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_6():
@@ -90,7 +90,7 @@ def test_case_6():
         result = a.to(c)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_7():
@@ -102,7 +102,7 @@ def test_case_7():
         result = a.to(torch.half)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_8():
@@ -115,7 +115,7 @@ def test_case_8():
         result = a.to(table.device)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_9():
@@ -127,7 +127,7 @@ def test_case_9():
         result = a.to(torch.float32)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_10():
@@ -137,7 +137,7 @@ def test_case_10():
         result = torch.tensor([-1]).to(torch.bool)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_11():
@@ -149,7 +149,7 @@ def test_case_11():
         result = a.to(dtype=dtype)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_12():
@@ -161,4 +161,4 @@ def test_case_12():
         result = a.to(torch.device('cpu'))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)

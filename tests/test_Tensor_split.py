@@ -11,45 +11,64 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+#
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Parameter")
+obj = APIBase("torch.Tensor.split")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        result = torch.nn.Parameter(x)
+        a = torch.arange(8).reshape(4, 2)
+        result = a.split(1)[0]
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        result = torch.nn.Parameter(x, requires_grad=False)
+        a = torch.arange(8).reshape(4, 2)
+        result = a.split(split_size=1)[0]
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
-def test_alias_case_1():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        result = torch.nn.parameter.Parameter(x)
+        a = torch.arange(8).reshape(4, 2)
+        result = a.split(1, 0)[0]
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(8).reshape(4, 2)
+        result = a.split(1, dim=0)[0]
+        """
+    )
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(8).reshape(4, 2)
+        result = a.split(split_size = 1, dim = 0)[0]
+        """
+    )
+    obj.run(pytorch_code, ["result"], is_aux_api=True)

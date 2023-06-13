@@ -16,16 +16,18 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Parameter")
+obj = APIBase("torch.Tensor.backward")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        result = torch.nn.Parameter(x)
+        a = torch.tensor([[[4., 5., 6.], [1., 2., 3.]]], requires_grad=True)
+        out = a ** 2
+        out.sum().backward()
+        a.grad = torch.tensor(a.grad, requires_grad=True)
+        result = a.grad
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,21 +37,26 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        result = torch.nn.Parameter(x, requires_grad=False)
+        a = torch.tensor([[[4., 5., 6.], [1., 2., 3.]]], requires_grad=True)
+        out = a ** 2
+        out.sum().backward(retain_graph=True)
+        a.grad = torch.tensor(a.grad, requires_grad=True)
+        result = a.grad
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_alias_case_1():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        result = torch.nn.parameter.Parameter(x)
+        a = torch.tensor([[[4., 5., 6.], [1., 2., 3.]]], requires_grad=True)
+        out = a ** 2
+        gradient = torch.tensor(2.0)
+        out.sum().backward(gradient=gradient, retain_graph=True)
+        a.grad = torch.tensor(a.grad, requires_grad=True)
+        result = a.grad
         """
     )
     obj.run(pytorch_code, ["result"])

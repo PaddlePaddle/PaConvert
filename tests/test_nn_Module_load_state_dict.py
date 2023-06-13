@@ -16,40 +16,23 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Parameter")
+obj = APIBase("torch.nn.Module.load_state_dict")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        result = torch.nn.Parameter(x)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+        class TheModelClass(torch.nn.Module):
+            def forward(self, x):
+                return x
 
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        result = torch.nn.Parameter(x, requires_grad=False)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_alias_case_1():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        result = torch.nn.parameter.Parameter(x)
+        a = torch.tensor([[[[1.,2.,3.,4.]]]])
+        model = TheModelClass()
+        PATH = './tensor.pt'
+        torch.save(model.state_dict(), PATH)
+        model.load_state_dict(torch.load(PATH))
+        result = model(a)
         """
     )
     obj.run(pytorch_code, ["result"])
