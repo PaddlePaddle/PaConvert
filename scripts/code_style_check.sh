@@ -20,6 +20,9 @@ DEVELOP_IF="OFF"
 if [[ "$DEVELOP_IF" == "OFF" ]]; then
     cd /workspace/$2/PaConvert/
     PATH=$1
+    python -m pip install --no-cache-dir  --force-reinstall paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
+    python -c "import paddle; print('paddle version information:' ,paddle.__version__); print('paddle commit information:' ,paddle.__git_commit__)"
+
 else
     # use pre-commit 2.17
     if ! [[ $(pre-commit --version) == *"2.17.0"* ]]; then

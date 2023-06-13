@@ -24,6 +24,8 @@ if [[ "$DEVELOP_IF" == "OFF" ]]; then
     PATH=$1
     AGILE_PULL_ID=$3
     GITHUB_API_TOKEN=$4
+    python -m pip install --no-cache-dir  --force-reinstall paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
+    python -c "import paddle; print('paddle version information:' ,paddle.__version__); print('paddle commit information:' ,paddle.__git_commit__)"
 fi
 
 echo "start PR template testing..."
