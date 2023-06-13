@@ -11,19 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.utils.data.BatchSampler")
+obj = APIBase("torch.conj_physical")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data import BatchSampler
-        result = list(BatchSampler(range(10), batch_size=3, drop_last=True))
+        import torch
+        x = torch.tensor([-1 + 1j, -2 + 2j, 3 - 3j])
+        result = torch.conj_physical(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -32,8 +34,8 @@ def test_case_1():
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data import BatchSampler
-        result = list(BatchSampler(range(10), batch_size=3, drop_last=False))
+        import torch
+        result = torch.conj_physical(torch.tensor([-1 + 1j, -2 + 2j, 3 - 3j]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -43,8 +45,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = batch_sampler_train = torch.utils.data.BatchSampler(range(10), 2, drop_last=True)
-        result = list(result)
+        x = torch.tensor([-1, 2, 3])
+        result = torch.conj_physical(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -54,9 +56,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        batch_size = 4
-        result = batch_sampler_train = torch.utils.data.BatchSampler(range(10), batch_size, drop_last=False)
-        result = list(result)
+        result = torch.conj_physical(torch.tensor([-1, 2, 8]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -66,19 +66,9 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        batch_size = 4
-        result = list(torch.utils.data.BatchSampler(sampler=range(10), batch_size=batch_size, drop_last=False))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_alias_case_1():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        batch_size = 4
-        result = list(torch.utils.data.sampler.BatchSampler(sampler=range(10), batch_size=batch_size, drop_last=False))
+        x = torch.tensor([-1 + 1j, -2 + 2j, 3 - 3j])
+        out = torch.tensor([-1 + 1j, -2 + 2j, 3 - 3j])
+        result = torch.conj_physical(x, out=out)
         """
     )
     obj.run(pytorch_code, ["result"])

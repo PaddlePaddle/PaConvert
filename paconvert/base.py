@@ -17,6 +17,7 @@ import collections
 import json
 import os
 import re
+import textwrap
 
 import astor
 
@@ -131,9 +132,6 @@ class BaseTransformer(ast.NodeTransformer):
         else:
             self.scope_insert_lines[scope_node][body] = {index: node_list}
 
-        if len(node_list) > 0:
-            log_debug(self.logger, "insert extra {} lines".format(len(node_list)))
-
     def insert_scope(self):
         # if multiple line, insert into scope node only One time
         for scope_node in self.scope_insert_lines:
@@ -143,6 +141,11 @@ class BaseTransformer(ast.NodeTransformer):
                     insert_lines.items(), key=lambda x: x[0], reverse=True
                 )
                 for index, lines in insert_lines:
+                    log_debug(
+                        self.logger,
+                        "insert extra {} lines".format(len(lines)),
+                        self.file_name,
+                    )
                     for line in lines[::-1]:
                         getattr(scope_node, body).insert(index, line)
 
@@ -213,7 +216,8 @@ class BaseTransformer(ast.NodeTransformer):
 
 
 class BaseMatcher(object):
-    def __init__(self, torch_api, api_mapping, logger):
+    def __init__(self, transformer, torch_api, api_mapping, logger):
+        self.transformer = transformer
         self.torch_api = torch_api
         self.paddle_api = None
         self.api_mapping = api_mapping
@@ -357,11 +361,26 @@ class BaseMatcher(object):
             aux_file_helper = AuxFileHelper()
             log_debug(
                 self.logger,
-                "Write auxiliary code for {} to {}".format(
+                "When convert {}, write auxiliary code to file: {}".format(
                     self.torch_api, aux_file_helper.fileName
                 ),
             )
             aux_file_helper.write_code(aux_code, self.torch_api)
+
+            CODE_TEMPLATE = textwrap.dedent(
+                """
+                import sys
+                sys.path.append('{}')
+                import paddle_aux
+                """
+            )
+            code = CODE_TEMPLATE.format(
+                self.get_aux_dir(),
+            )
+            log_debug(
+                self.logger, "add 'import paddle_aux'", self.transformer.file_name
+            )
+            self.transformer.insert_multi_node(ast.parse(code).body)
 
     @staticmethod
     def generate_code(self, kwargs):
@@ -384,6 +403,8 @@ class BaseMatcher(object):
         elif new_kwargs is not None:
             new_code = self.generate_code(new_kwargs)
             if new_code == "NonTorchClass":
+                return "NonTorchClass"
+            elif new_code == "unchange":
                 return "NonTorchClass"
             elif new_code:
                 return ast.parse(new_code).body

@@ -16,14 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.utils.data.BatchSampler")
+obj = APIBase("torch.special.logsumexp")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data import BatchSampler
-        result = list(BatchSampler(range(10), batch_size=3, drop_last=True))
+        import torch
+        input = torch.tensor([1.4907, 1.0593, 1.5696])
+        result = torch.special.logsumexp(input, 0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -32,8 +33,9 @@ def test_case_1():
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data import BatchSampler
-        result = list(BatchSampler(range(10), batch_size=3, drop_last=False))
+        import torch
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = torch.special.logsumexp(input, 1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -43,8 +45,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = batch_sampler_train = torch.utils.data.BatchSampler(range(10), 2, drop_last=True)
-        result = list(result)
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = torch.special.logsumexp(input, 1, keepdim=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -54,9 +56,8 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        batch_size = 4
-        result = batch_sampler_train = torch.utils.data.BatchSampler(range(10), batch_size, drop_last=False)
-        result = list(result)
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = torch.special.logsumexp(input, dim=1, keepdim=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -66,19 +67,20 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        batch_size = 4
-        result = list(torch.utils.data.BatchSampler(sampler=range(10), batch_size=batch_size, drop_last=False))
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        out = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = torch.special.logsumexp(input, dim=1, keepdim=True, out=out)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_alias_case_1():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        batch_size = 4
-        result = list(torch.utils.data.sampler.BatchSampler(sampler=range(10), batch_size=batch_size, drop_last=False))
+        input = torch.tensor([1, 4, 6])
+        result = torch.special.logsumexp(input, 0)
         """
     )
     obj.run(pytorch_code, ["result"])

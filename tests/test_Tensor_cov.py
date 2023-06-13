@@ -11,19 +11,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.utils.data.BatchSampler")
+obj = APIBase("torch.Tensor.cov")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data import BatchSampler
-        result = list(BatchSampler(range(10), batch_size=3, drop_last=True))
+        import torch
+        a = torch.tensor([[0.95311481, 0.56955051, 0.50434124],
+            [0.73109186, 0.35652584, 0.86189222]])
+        result = a.cov()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -32,8 +35,10 @@ def test_case_1():
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data import BatchSampler
-        result = list(BatchSampler(range(10), batch_size=3, drop_last=False))
+        import torch
+        a = torch.tensor([[0.95311481, 0.56955051, 0.50434124],
+            [0.73109186, 0.35652584, 0.86189222]])
+        result = a.cov(correction=0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -43,8 +48,11 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = batch_sampler_train = torch.utils.data.BatchSampler(range(10), 2, drop_last=True)
-        result = list(result)
+        a = torch.tensor([[0.95311481, 0.56955051, 0.50434124],
+            [0.73109186, 0.35652584, 0.86189222]])
+        fw = torch.tensor([1, 6, 9])
+        aw = torch.tensor([0.4282, 0.0255, 0.4144])
+        result = a.cov(correction=0, fweights=fw, aweights=aw)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -54,9 +62,10 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        batch_size = 4
-        result = batch_sampler_train = torch.utils.data.BatchSampler(range(10), batch_size, drop_last=False)
-        result = list(result)
+        a = torch.tensor([[0., 1., 2.],
+            [2., 1., 0.]])
+        fw = torch.tensor([1, 6, 9])
+        result = a.cov(correction=1, fweights=fw)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -66,19 +75,10 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        batch_size = 4
-        result = list(torch.utils.data.BatchSampler(sampler=range(10), batch_size=batch_size, drop_last=False))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_alias_case_1():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        batch_size = 4
-        result = list(torch.utils.data.sampler.BatchSampler(sampler=range(10), batch_size=batch_size, drop_last=False))
+        a = torch.tensor([[0.95311481, 0.56955051, 0.50434124],
+            [0.73109186, 0.35652584, 0.86189222]])
+        aw = torch.tensor([0.4282, 0.0255, 0.4144])
+        result = a.cov(correction=1, aweights=aw)
         """
     )
     obj.run(pytorch_code, ["result"])

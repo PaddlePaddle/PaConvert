@@ -16,14 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.utils.data.BatchSampler")
+obj = APIBase("torch.nn.Conv2d")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data import BatchSampler
-        result = list(BatchSampler(range(10), batch_size=3, drop_last=True))
+        import torch
+        import torch.nn as nn
+        x = torch.zeros(20, 16, 50, 100)
+        model = nn.Conv2d(16, 33, 3, stride=2, bias=False)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -32,8 +35,11 @@ def test_case_1():
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data import BatchSampler
-        result = list(BatchSampler(range(10), batch_size=3, drop_last=False))
+        import torch
+        import torch.nn as nn
+        x = torch.zeros(20, 16, 50, 100)
+        model = nn.Conv2d(16, 33, (3, 5), stride=(2, 1), padding=(4, 2), bias=False)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -43,8 +49,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = batch_sampler_train = torch.utils.data.BatchSampler(range(10), 2, drop_last=True)
-        result = list(result)
+        import torch.nn as nn
+        x = torch.zeros(20, 16, 50, 100)
+        model = nn.Conv2d(16, 33, (3, 5), stride=(2, 1), padding=(4, 2), dilation=(3, 1), bias=False)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -54,20 +62,10 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        batch_size = 4
-        result = batch_sampler_train = torch.utils.data.BatchSampler(range(10), batch_size, drop_last=False)
-        result = list(result)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        batch_size = 4
-        result = list(torch.utils.data.BatchSampler(sampler=range(10), batch_size=batch_size, drop_last=False))
+        import torch.nn as nn
+        x = torch.zeros(5, 16, 50, 100)
+        model = nn.Conv2d(16, 33, (3, 5), stride=(2, 1), padding=(4, 2), dilation=(3, 1), bias=True)
+        result = model(x) * 0
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -77,8 +75,10 @@ def test_alias_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        batch_size = 4
-        result = list(torch.utils.data.sampler.BatchSampler(sampler=range(10), batch_size=batch_size, drop_last=False))
+        import torch.nn as nn
+        x = torch.zeros(20, 16, 50, 100)
+        model = nn.modules.conv.Conv2d(16, 33, (3, 5), stride=(2, 1), padding=(4, 2), dilation=(3, 1), bias=False)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])

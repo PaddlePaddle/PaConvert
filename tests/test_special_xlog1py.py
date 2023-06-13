@@ -16,117 +16,88 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.reshape")
+obj = APIBase("torch.special.xlog1py")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(4.)
-        result = a.reshape(2, 2)
+        a = torch.tensor([1., 2., 3., 4., 5.])
+        b = torch.tensor([1., 2., 3., 4., 5.])
+        result = torch.special.xlog1py(a, b)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(4.)
-        result = a.reshape((2, 2))
+        result = torch.special.xlog1py(input=torch.tensor([1., 2., 3., 4., 5.]), other=torch.tensor([1., 2., 3., 4., 5.]))
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(9)
-        result = a.reshape([3, 3])
+        a = torch.tensor([1., 2., 3., 4., 5.])
+        out = torch.tensor([1., 2., 3., 4., 5.])
+        result = torch.special.xlog1py(a, a, out=out)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["out"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(9)
-        shape = (3, 3)
-        result = a.reshape(shape)
+        result = torch.special.xlog1py(torch.tensor([1.]),torch.tensor([1., 2., 3., 4., 5.]))
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(4.)
-        k = 2
-        result = a.reshape((k, k))
+        result = torch.special.xlog1py(1.,torch.tensor([1., 2., 3., 4., 5.]))
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(2.)
-        k = 2
-        result = a.reshape(k)
+        result = torch.special.xlog1py(1, torch.tensor([1., 2., 3, 4, 5]))
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(24.)
-        result = a.reshape(-1)
+        result = torch.special.xlog1py(1, torch.tensor([1., 2., 3., 4., 5.], dtype=torch.float64))
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor(1.)
-        result = a.reshape(1)
+        result = torch.special.xlog1py(torch.tensor([1., 2., 3., 4., 5.]), 1.)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
-
-
-def test_case_9():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(6.)
-        result = a.reshape(shape=(2, 3))
-        """
-    )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
-
-
-def test_case_10():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(6.)
-        result = a.reshape(shape=[2, 3])
-        """
-    )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
