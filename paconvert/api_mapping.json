@@ -933,6 +933,9 @@
   "torch.random.seed": {
     "Matcher": "SeedMatcher"
   },
+  "torch.initial_seed": {
+    "Matcher": "SeedMatcher"
+  },
   "torch.bernoulli": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.bernoulli",
@@ -6949,13 +6952,7 @@
       "other"
     ]
   },
-  "torch.Tensor.resize_": {
-    "Matcher": "TensorResize_Matcher",
-    "args_list": [
-      "size",
-      "memory_format"
-    ]
-  },
+  "torch.Tensor.resize_": {},
   "torch.Tensor.resize_as_": {},
   "torch.Tensor.retain_grad": {
     "Matcher": "GenericMatcher",

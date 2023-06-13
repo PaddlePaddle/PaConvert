@@ -3767,52 +3767,6 @@ class Modules_BatchNormBaseMatcher(BaseMatcher):
         return code
 
 
-class TensorResize_Matcher(BaseMatcher):
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        self.parse_func(func)
-        kwargs = self.parse_kwargs(kwargs)
-
-        if len(args) == 0 and "size" in kwargs:
-            kwargs["shape"] = kwargs.pop("size")
-        else:
-            if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
-                shape = self.parse_args(args)
-            elif isinstance(args[0], ast.Starred):
-                shape = astor.to_source(args[0].value).strip("\n")
-            else:
-                shape = self.parse_args(args)[0]
-            kwargs = {
-                "shape": str(shape).replace("'", "").replace("(", "").replace(")", ""),
-                **kwargs,
-            }
-
-        if (
-            "memory_format" in kwargs
-            and "contiguous_format" not in kwargs["memory_format"]
-        ):
-            return None
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {} = 1
-                for ele in {}:
-                    {} *= ele
-                paddle.assign(paddle.flatten({})[:{}].reshape({}), {})
-                """
-            )
-            num = get_unique_name("num")
-            code = API_TEMPLATE.format(
-                num,
-                kwargs["shape"],
-                num,
-                self.paddleClass,
-                num,
-                kwargs["shape"],
-                self.paddleClass,
-            )
-        return ast.parse(code).body
-
-
 class TensorTakeMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(

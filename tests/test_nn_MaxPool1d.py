@@ -84,15 +84,19 @@ def test_case_5():
     obj.run(pytorch_code, ["result"])
 
 
-# paddle.nn.MaxPool1D dose not support 'dilation' now!
-def _test_case_6():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
         import torch.nn as nn
         x = torch.tensor([[[0., 1., 2., 3.], [4., 5., 6., 7.]]])
-        model = nn.MaxPool1d(kernel_size=2, stride=1, dialation=2)
+        model = nn.MaxPool1d(kernel_size=2, stride=1, dilation=2)
         result, indices = model(x)
         """
     )
-    obj.run(pytorch_code, ["result", "indices"])
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        unsupport=True,
+        reason="paddle.nn.MaxPool1D dose not support 'dilation' now!",
+    )
