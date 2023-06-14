@@ -8183,7 +8183,10 @@
   },
   "torch.utils.data.Sampler": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.io.Sampler"
+    "paddle_api": "paddle.io.Sampler",
+    "args_list": [
+      "data_source"
+    ]
   },
   "torch.nn.functional.l1_loss": {
     "Matcher": "FunctionalL1LossMatcher",
