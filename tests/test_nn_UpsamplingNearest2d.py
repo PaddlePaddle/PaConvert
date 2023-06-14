@@ -16,61 +16,61 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.topk")
+obj = APIBase("torch.nn.UpsamplingNearest2d")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3, 4, 5])
-        result, index = torch.topk(x, 3)
+        import torch.nn as nn
+        x = torch.tensor([[[[1., 2.], [3., 4.]]]])
+        model = nn.UpsamplingNearest2d(scale_factor=2)
+        result = model(x)
         """
     )
-    obj.run(pytorch_code, ["result", "index"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3, 4, 5])
-        res = torch.topk(x, 3)
-        result, index = res[0], res[1]
+        import torch.nn as nn
+        x = torch.tensor([[[[1., 2.], [3., 4.]]]])
+        model = nn.UpsamplingNearest2d(size=4)
+        result = model(x)
         """
     )
-    obj.run(pytorch_code, ["result", "index"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support passing in a single number",
+    )
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, 2, 3, 4, 5], [2, 5, 6, 2, 3]])
-        result, index = torch.topk(x, 3, dim=1, sorted=True)
+        import torch.nn as nn
+        x = torch.tensor([[[[1., 2.], [3., 4.]]]])
+        model = nn.UpsamplingNearest2d(size=(4, 4))
+        result = model(x)
         """
     )
-    obj.run(pytorch_code, ["result", "index"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, 2, 3, 4, 5], [2, 5, 6, 2, 3]])
-        result, index = torch.topk(x, 3, 1, True)
+        import torch.nn as nn
+        x = torch.tensor([[[[1., 2.], [3., 4.]]]])
+        model = nn.UpsamplingNearest2d((6, 6))
+        result = model(x)
         """
     )
-    obj.run(pytorch_code, ["result", "index"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[1, 2, 3, 4, 5], [2, 5, 6, 2, 3]])
-        out = (torch.tensor(1), torch.tensor(2))
-        result, index = torch.topk(x, 3, dim=1, out=out)
-        """
-    )
-    obj.run(pytorch_code, ["result", "index", "out"])
+    obj.run(pytorch_code, ["result"])
