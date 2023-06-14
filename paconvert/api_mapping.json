@@ -3641,7 +3641,7 @@
     ]
   },
   "torch.nn.Embedding": {
-    "Matcher": "EmbeddingMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Embedding",
     "args_list": [
       "num_embeddings",

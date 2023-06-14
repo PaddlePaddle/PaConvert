@@ -3616,19 +3616,6 @@ class DiffMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-class EmbeddingMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "max_norm" in kwargs and kwargs["max_norm"] is not None:
-            return None
-        if "norm_type" in kwargs:
-            return None
-        if "scale_grad_by_freq" in kwargs:
-            return None
-
-        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-        return code
-
-
 class FunctionalEmbeddingDMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "max_norm" in kwargs and kwargs["max_norm"] is not None:
