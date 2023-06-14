@@ -4683,6 +4683,15 @@
       "target": "label"
     }
   },
+  "torch.nn.MSELoss": {
+    "Matcher": "MseLossMatcher",
+    "paddle_api": "paddle.nn.MSELoss",
+    "args_list": [
+      "size_average",
+      "reduce",
+      "reduction"
+    ]
+  },
   "torch.nn.functional.margin_ranking_loss": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.margin_ranking_loss",
@@ -8125,6 +8134,21 @@
       "pos_weight"
     ]
   },
+  "torch.nn.functional.binary_cross_entropy": {
+    "Matcher": "FunctionalBinaryCrossEntropyMatcher",
+    "paddle_api": "paddle.nn.functional.binary_cross_entropy",
+    "args_list": [
+      "input",
+      "target",
+      "weight",
+      "size_average",
+      "reduce",
+      "reduction"
+    ],
+    "kwargs_change": {
+      "target": "label"
+    }
+  },
   "torch.nn.functional.max_pool2d": {
     "Matcher": "FunctionalMaxPool2DMatcher",
     "paddle_api": "paddle.nn.functional.max_pool2d",
@@ -8201,6 +8225,16 @@
       "pos_weight"
     ]
   },
+  "torch.nn.BCELoss": {
+    "Matcher": "BCELossMatcher",
+    "paddle_api": "paddle.nn.BCELoss",
+    "args_list": [
+      "weight",
+      "size_average",
+      "reduce",
+      "reduction"
+    ]
+  },
   "torch.utils.data.BatchSampler": {
     "Matcher": "TorchUtilDataBatchSampler",
     "args_list": [
@@ -8228,6 +8262,49 @@
     ],
     "kwargs_change": {
       "input": "x"
+    }
+  },
+  "torch.nn.L1Loss": {
+    "Matcher": "L1LossMatcher",
+    "paddle_api": "paddle.nn.L1Loss",
+    "args_list": [
+      "size_average",
+      "reduce",
+      "reduction"
+    ]
+  },
+  "torch.nn.Unfold": {
+    "Matcher": "UnfoldMatcher",
+    "paddle_api": "paddle.nn.Unfold",
+    "args_list": [
+      "kernel_size",
+      "dilation",
+      "padding",
+      "stride"
+    ],
+    "kwargs_change": {
+      "kernel_size": "kernel_sizes",
+      "dilation": "dilations",
+      "padding": "paddings",
+      "stride": "strides"
+    }
+  },
+  "torch.nn.functional.unfold": {
+    "Matcher": "FunctionalUnfoldMatcher",
+    "paddle_api": "paddle.nn.functional.unfold",
+    "args_list": [
+      "input",
+      "kernel_size",
+      "dilation",
+      "padding",
+      "stride"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "kernel_size": "kernel_sizes",
+      "dilation": "dilations",
+      "padding": "paddings",
+      "stride": "strides"
     }
   }
 }

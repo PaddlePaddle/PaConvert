@@ -3582,6 +3582,55 @@ class FunctionalMseLossMatcher(BaseMatcher):
         return code
 
 
+class MseLossMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "size_average" in kwargs:
+            size_average = kwargs.pop("size_average")
+            if "True" in size_average:
+                size_average = True
+            elif "False" in size_average:
+                size_average = False
+            else:
+                size_average = None
+        else:
+            size_average = None
+
+        if "reduce" in kwargs:
+            reduce = kwargs.pop("reduce")
+            if "True" in reduce:
+                reduce = True
+            elif "False" in reduce:
+                reduce = False
+            else:
+                reduce = None
+        else:
+            reduce = None
+
+        if size_average is not None or reduce is not None:
+            if size_average is None:
+                size_average = True
+            if reduce is None:
+                reduce = True
+
+            if size_average and reduce:
+                reduction = '"""mean"""'
+            elif reduce:
+                reduction = '"""sum"""'
+            else:
+                reduction = '"""none"""'
+
+            kwargs["reduction"] = reduction
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.nn.MSELoss({})
+            """
+        )
+        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
+
+        return code
+
+
 class TupleAssignMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs_change = {}
@@ -3614,3 +3663,208 @@ class DiffMatcher(BaseMatcher):
         if "n" in kwargs and kwargs["n"] != "(1)":
             return None
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class L1LossMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if "size_average" in kwargs:
+            size_average = kwargs.pop("size_average")
+            if "True" in size_average:
+                size_average = True
+            elif "False" in size_average:
+                size_average = False
+            else:
+                size_average = None
+        else:
+            size_average = None
+
+        if "reduce" in kwargs:
+            reduce = kwargs.pop("reduce")
+            if "True" in reduce:
+                reduce = True
+            elif "False" in reduce:
+                reduce = False
+            else:
+                reduce = None
+        else:
+            reduce = None
+
+        if size_average is not None or reduce is not None:
+            if size_average is None:
+                size_average = True
+            if reduce is None:
+                reduce = True
+
+            if size_average and reduce:
+                reduction = '"""mean"""'
+            elif reduce:
+                reduction = '"""sum"""'
+            else:
+                reduction = '"""none"""'
+
+            kwargs["reduction"] = reduction
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.nn.L1Loss({})
+            """
+        )
+
+        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
+
+        return code
+
+
+class BCELossMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if "size_average" in kwargs:
+            size_average = kwargs.pop("size_average")
+            if "True" in size_average:
+                size_average = True
+            elif "False" in size_average:
+                size_average = False
+            else:
+                size_average = None
+        else:
+            size_average = None
+
+        if "reduce" in kwargs:
+            reduce = kwargs.pop("reduce")
+            if "True" in reduce:
+                reduce = True
+            elif "False" in reduce:
+                reduce = False
+            else:
+                reduce = None
+        else:
+            reduce = None
+
+        if size_average is not None or reduce is not None:
+            if size_average is None:
+                size_average = True
+            if reduce is None:
+                reduce = True
+
+            if size_average and reduce:
+                reduction = '"""mean"""'
+            elif reduce:
+                reduction = '"""sum"""'
+            else:
+                reduction = '"""none"""'
+
+            kwargs["reduction"] = reduction
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.nn.BCELoss({})
+            """
+        )
+
+        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
+
+        return code
+
+
+class FunctionalBinaryCrossEntropyMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "size_average" in kwargs:
+            size_average = kwargs.pop("size_average")
+            if "True" in size_average:
+                size_average = True
+            elif "False" in size_average:
+                size_average = False
+            else:
+                size_average = None
+        else:
+            size_average = None
+
+        if "reduce" in kwargs:
+            reduce = kwargs.pop("reduce")
+            if "True" in reduce:
+                reduce = True
+            elif "False" in reduce:
+                reduce = False
+            else:
+                reduce = None
+        else:
+            reduce = None
+
+        if size_average is not None or reduce is not None:
+            if size_average is None:
+                size_average = True
+            if reduce is None:
+                reduce = True
+
+            if size_average and reduce:
+                reduction = '"""mean"""'
+            elif reduce:
+                reduction = '"""sum"""'
+            else:
+                reduction = '"""none"""'
+
+            kwargs["reduction"] = reduction
+
+        if "kwargs_change" in self.api_mapping:
+            kwargs_change = self.api_mapping["kwargs_change"]
+            for key in list(kwargs_change.keys()):
+                if key in kwargs:
+                    kwargs[kwargs_change[key]] = kwargs[key]
+                    kwargs.pop(key)
+
+        API_TEMPLACE = textwrap.dedent(
+            """
+            paddle.nn.functional.binary_cross_entropy({})
+            """
+        )
+        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
+
+        return code
+
+
+class UnfoldMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "kwargs_change" in self.api_mapping:
+            kwargs_change = self.api_mapping["kwargs_change"]
+            for key in list(kwargs_change.keys()):
+                if key in kwargs:
+                    if isinstance(ast.literal_eval(kwargs[key]), tuple):
+                        kwargs[key] = list(ast.literal_eval(kwargs[key]))
+                    kwargs[kwargs_change[key]] = kwargs[key]
+                    kwargs.pop(key)
+
+        if "paddings" not in kwargs:
+            kwargs["paddings"] = 0
+
+        API_TEMPLACE = textwrap.dedent(
+            """
+            paddle.nn.Unfold({})
+            """
+        )
+        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
+
+        return code
+
+
+class FunctionalUnfoldMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "kwargs_change" in self.api_mapping:
+            kwargs_change = self.api_mapping["kwargs_change"]
+            for key in list(kwargs_change.keys()):
+                if key in kwargs:
+                    if "input" not in key:
+                        if isinstance(ast.literal_eval(kwargs[key]), tuple):
+                            kwargs[key] = list(ast.literal_eval(kwargs[key]))
+                    kwargs[kwargs_change[key]] = kwargs[key]
+                    kwargs.pop(key)
+
+        API_TEMPLACE = textwrap.dedent(
+            """
+            paddle.nn.functional.unfold({})
+            """
+        )
+
+        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
+
+        return code
