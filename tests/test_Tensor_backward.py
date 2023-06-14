@@ -11,21 +11,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.log1p")
+obj = APIBase("torch.Tensor.backward")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
-        result = torch.log1p(input)
+        a = torch.tensor([[[4., 5., 6.], [1., 2., 3.]]], requires_grad=True)
+        out = a ** 2
+        out.sum().backward()
+        a.grad = torch.tensor(a.grad, requires_grad=True)
+        result = a.grad
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,7 +37,11 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.log1p(torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739]))
+        a = torch.tensor([[[4., 5., 6.], [1., 2., 3.]]], requires_grad=True)
+        out = a ** 2
+        out.sum().backward(retain_graph=True)
+        a.grad = torch.tensor(a.grad, requires_grad=True)
+        result = a.grad
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,30 +51,12 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
-        out = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
-        result = torch.log1p(input, out=out)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.log1p(torch.tensor([4, 10, 7, 9]))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        out =  torch.rand([4])
-        result = torch.log1p(torch.tensor([4, 10, 7, 9]), out=out)
+        a = torch.tensor([[[4., 5., 6.], [1., 2., 3.]]], requires_grad=True)
+        out = a ** 2
+        gradient = torch.tensor(2.0)
+        out.sum().backward(gradient=gradient, retain_graph=True)
+        a.grad = torch.tensor(a.grad, requires_grad=True)
+        result = a.grad
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -17,15 +17,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.log1p")
+obj = APIBase("torch.cosine_similarity")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
-        result = torch.log1p(input)
+        x1 = torch.tensor([[1.4309,  1.2706], [-0.8562,  0.9796]])
+        x2 = torch.ones_like(x1)
+        result = torch.cosine_similarity(x1, x2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,7 +36,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.log1p(torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739]))
+        x1 = torch.tensor([[1.4309,  1.2706], [-0.8562,  0.9796]])
+        x2 = torch.ones_like(x1)
+        result = torch.cosine_similarity(x1=x1, x2=x2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,9 +48,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
-        out = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
-        result = torch.log1p(input, out=out)
+        x1 = torch.tensor([1.4309,  1.2706, -0.8562,  0.9796])
+        x2 = torch.ones_like(x1)
+        result = torch.cosine_similarity(x1=x1, x2=x2, axis=0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -57,18 +60,9 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.log1p(torch.tensor([4, 10, 7, 9]))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        out =  torch.rand([4])
-        result = torch.log1p(torch.tensor([4, 10, 7, 9]), out=out)
+        x1 = torch.tensor([1.4309,  1.2706, -0.8562,  0.9796])
+        x2 = torch.ones_like(x1)
+        result = torch.cosine_similarity(x1=x1, x2=x2, axis=0, eps=0.1)
         """
     )
     obj.run(pytorch_code, ["result"])

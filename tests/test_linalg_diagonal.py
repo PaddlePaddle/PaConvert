@@ -11,21 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.log1p")
+obj = APIBase("torch.linalg.diagonal")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
-        result = torch.log1p(input)
+        x = torch.tensor([[ 0.7545889 , -0.25074545,  0.5929117 ], [-0.6097662 , -0.01753256,  0.619769  ]])
+        result = torch.linalg.diagonal(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,7 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.log1p(torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739]))
+        x = torch.tensor([[ 0.7545889 , -0.25074545,  0.5929117 ], [-0.6097662 , -0.01753256,  0.619769  ]])
+        result = torch.linalg.diagonal(x, offset=1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,9 +45,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
-        out = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
-        result = torch.log1p(input, out=out)
+        x = torch.tensor([[ 0.7545889 , -0.25074545,  0.5929117 ], [-0.6097662 , -0.01753256,  0.619769  ]])
+        result = torch.linalg.diagonal(x, offset=1, dim1=0, dim2=1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -57,18 +56,8 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.log1p(torch.tensor([4, 10, 7, 9]))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        out =  torch.rand([4])
-        result = torch.log1p(torch.tensor([4, 10, 7, 9]), out=out)
+        x = torch.tensor([[ 0.7545889 , -0.25074545,  0.5929117 ], [-0.6097662 , -0.01753256,  0.619769  ]])
+        result = torch.linalg.diagonal(A=x, offset=1, dim1=-2)
         """
     )
     obj.run(pytorch_code, ["result"])

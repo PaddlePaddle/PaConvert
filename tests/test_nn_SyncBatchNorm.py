@@ -11,64 +11,75 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.log1p")
+obj = APIBase("torch.nn.SyncBatchNorm")
 
 
-def test_case_1():
+# All test cases need to run on GPU
+def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
+        import torch.nn as nn
         import torch
-        input = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
-        result = torch.log1p(input)
+        m = nn.SyncBatchNorm(2)
+        input = torch.tensor([[[[0.3, 0.4], [0.3, 0.07]], [[0.83, 0.37], [0.18, 0.93]]]])
+        result = m(input)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_2():
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
+        import torch.nn as nn
         import torch
-        result = torch.log1p(torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739]))
+        m = nn.SyncBatchNorm(2, affine=True)
+        input = torch.tensor([[[[0.3, 0.4], [0.3, 0.07]], [[0.83, 0.37], [0.18, 0.93]]]])
+        result = m(input)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_3():
+def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
+        import torch.nn as nn
         import torch
-        input = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
-        out = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
-        result = torch.log1p(input, out=out)
+        m = nn.SyncBatchNorm(2, affine=False)
+        input = torch.tensor([[[[0.3, 0.4], [0.3, 0.07]], [[0.83, 0.37], [0.18, 0.93]]]])
+        result = m(input)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_4():
+def _test_case_4():
     pytorch_code = textwrap.dedent(
         """
+        import torch.nn as nn
         import torch
-        result = torch.log1p(torch.tensor([4, 10, 7, 9]))
+        m = nn.SyncBatchNorm(2, affine=True, momentum=0.1)
+        input = torch.tensor([[[[0.3, 0.4], [0.3, 0.07]], [[0.83, 0.37], [0.18, 0.93]]]])
+        result = m(input)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_5():
+def _test_case_5():
     pytorch_code = textwrap.dedent(
         """
+        import torch.nn as nn
         import torch
-        out =  torch.rand([4])
-        result = torch.log1p(torch.tensor([4, 10, 7, 9]), out=out)
+        m = nn.SyncBatchNorm(num_features=2, affine=False, momentum=0.1)
+        input = torch.tensor([[[[0.3, 0.4], [0.3, 0.07]], [[0.83, 0.37], [0.18, 0.93]]]])
+        result = m(input)
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -422,9 +422,9 @@ class TransposeMatcher(BaseMatcher):
 }
 ```
 
-### 方式二：适用于类方法且不会误识别
+### 方式二：适用于类方法且可以识别
 
-由于 **类方法** 在识别时可能会造成误识别，如果该API具有独特的深度学习API名称，例如 `x.backward()` 、 `sgd.step()` ，则不会造成误识别问题，使用本方式开发。
+由于 **类方法** 可能与其他Python class的类方式混淆，导致无法识别，如果该API具有独特的深度学习API名称，例如 `x.backward()` 、 `sgd.step()` ，则可以准确识别，可使用本方式开发。
 
 判断标准：**类方法API且具有独特的API名**。需要与 numpy、scipy、python原生class(list/tuple/set/dict等)的类方法进行对比，若有任意相同API，则不符合此标准。
 
@@ -457,11 +457,11 @@ class TransposeMatcher(BaseMatcher):
 }
 ```
 
-所有不符合开发方式二的类API，均采用方式三开发。
+所有不符合方式二的类方法，均采用方式三开发。
 
-### 方式三：适用于类方法但容易误识别
+### 方式三：适用于类方法但无法识别
 
-方式三与方式二的区别在于，其原理为**保持转换前后代码不变，则可100%消除误转换的负面影响**。同时通过后台对API的调整，来保证代码在完全不变的前提下，仍可以正常运行。根据是否需要辅助代码，其又分为 **需要辅助代码** 、**不需要辅助代码** 两种情况。
+方式三与方式二的区别在于，其原理为**保持转换前后代码不变，则可消除无法识别的问题**。同时增加后台辅助代码对API的调整，来保证代码在完全不变的前提下，仍可正常运行。根据是否需要辅助代码，其又分为 **不需要辅助代码** 、**需要辅助代码** 两种情况。
 
 **1）不需要辅助代码**
 
@@ -477,15 +477,15 @@ class TransposeMatcher(BaseMatcher):
 
 基于[Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html)，其中的 **无参数、参数完全一致、仅paddle 参数更多** 分类，均符合该情形。
 
-**2）部分用法需要辅助代码**
+**2）需要辅助代码**
 
-对于某些API，可能部分用法 **不需要辅助代码**，部分用法 **需要辅助代码**。
+对于某些API，如果 **代码保持完全不变时，无法直接运行**，我们就需要在后台通过辅助代码对Paddle相应类方法进行一些修改，使得在 **转换前后代码保持不变** 的前提下，仍可正常运行。
 
-如果 **代码保持完全不变时，无法直接运行**，我们就需要在后台通过辅助代码对Paddle相应类方法进行一些修改，使得在 **转换前后代码保持不变** 的前提下，仍可正常运行。
+**开发方式**：在 `get_paddle_class_nodes` 或 `generate_code` 增加相应的判断：
+- 对于 **不需要辅助代码** 即可运行的用法，直接返回 'unchange'
+- 对于 **需要辅助代码** 才可运行的用法，首先要额外重写 `generate_aux_code` 函数，其是模仿Pytorch类API用法的辅助代码，然后显式的调用 `write_aux_code` ，此时将在后台模块里注入辅助代码，最后再返回 'unchange' 即可
 
-**开发方式**：在 `get_paddle_class_nodes` 或 `generate_code` 增加相应的判断，对于 **不需要辅助代码** 即可运行的用法，直接返回 'unchange'；对于 **需要辅助代码** 才可运行的用法，首先要额外重写 `generate_aux_code` 函数，其是模仿Pytorch类API用法的辅助代码，然后显式的调用 `write_aux_code` ，此时将在后台模块里注入辅助代码，最后再返回 'unchange' 即可。
-
-由于 **辅助代码** 会不可避免的改变一些Paddle API的用法外观，因此需要尽可能减少使用辅助代码，即调用 `write_aux_code` 的场景。所以我们需要判断用户的不同用法，只在必要的情形下才  `write_aux_code` 。
+由于 **辅助代码** 会不可避免的改变一些Paddle API的用法感官，因此尽可能减少使用辅助代码（即调用 `self.write_aux_code()`）。所以我们需要判断用户的不同用法，在必要的情形下才 `write_aux_code` 。
 
 基于[Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html)，我们可参考以下原则来判断是否需要辅助代码：
 

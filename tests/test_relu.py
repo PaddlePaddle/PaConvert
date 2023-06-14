@@ -11,21 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.log10")
+obj = APIBase("torch.relu")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
-        result = torch.log10(input)
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        result = torch.relu(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,29 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.log10(torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739]))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        input = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
-        out = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
-        result = torch.log10(input, out=out)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.log10(torch.tensor([4, 10, 7, 9]))
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        result = torch.relu(input=x)
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -1004,7 +1004,7 @@ class BatchNormMatcher(BaseMatcher):
         return code
 
 
-class MaxPool2DMatcher(BaseMatcher):
+class MaxPoolMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "dilation" in kwargs:
             if kwargs["dilation"] != "(1)":
@@ -1021,10 +1021,10 @@ class MaxPool2DMatcher(BaseMatcher):
 
         API_TEMPLACE = textwrap.dedent(
             """
-            paddle.nn.MaxPool2D({})
+            {}({})
             """
         )
-        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
+        code = API_TEMPLACE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
         return code
 
 
@@ -3582,6 +3582,106 @@ class TupleAssignMatcher(BaseMatcher):
             return code.strip("\n")
 
 
+class RoundMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "input" not in kwargs:
+            kwargs["input"] = self.paddleClass
+
+        if "decimals" in kwargs:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                paddle.round((10**{}) * {}) / (10**{})
+                """
+            )
+            code = API_TEMPLATE.format(
+                kwargs["decimals"], kwargs["input"], kwargs["decimals"]
+            )
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                paddle.round({})
+                """
+            )
+            code = API_TEMPLATE.format(kwargs["input"])
+        if "out" in kwargs and kwargs["out"] is not None:
+            code = "paddle.assign({}, output={})".format(code, kwargs["out"])
+
+        return code
+
+
+class RNNCellMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "dtype" in kwargs:
+            return None
+
+        if "nonlinearity" in kwargs:
+            kwargs["activation"] = kwargs.pop("nonlinearity")
+
+        if "device" in kwargs:
+            kwargs.pop("device")
+
+        if "bias" in kwargs and "False" in kwargs["bias"]:
+            API_TEMPLACE = textwrap.dedent(
+                """
+                {}({},
+                    bias_ih_attr=False,
+                    bias_hh_attr=False)
+                """
+            )
+        else:
+            API_TEMPLACE = textwrap.dedent(
+                """
+                {}({})
+                """
+            )
+        if "bias" in kwargs:
+            kwargs.pop("bias")
+        code = API_TEMPLACE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        return code
+
+
+class RNNMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "proj_size" in kwargs:
+            return None
+
+        if "batch_first" in kwargs:
+            batch_first = kwargs.pop("batch_first")
+        else:
+            batch_first = False
+
+        if "nonlinearity" in kwargs:
+            kwargs["activation"] = kwargs.pop("nonlinearity")
+
+        direction = "'forward'"
+        if "bidirectional" in kwargs:
+            if "True" in kwargs["bidirectional"]:
+                direction = "'bidirect'"
+            kwargs.pop("bidirectional")
+
+        if "bias" in kwargs and "False" in kwargs["bias"]:
+            API_TEMPLACE = textwrap.dedent(
+                """
+                {}({}, direction={}, time_major= not {},
+                    bias_ih_attr=False,
+                    bias_hh_attr=False)
+                """
+            )
+        else:
+            API_TEMPLACE = textwrap.dedent(
+                """
+                {}({}, direction={}, time_major= not {})
+                """
+            )
+
+        if "bias" in kwargs:
+            kwargs.pop("bias")
+        code = API_TEMPLACE.format(
+            self.get_paddle_api(), self.kwargs_to_str(kwargs), direction, batch_first
+        )
+        return code
+
+
 class DiffMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "n" in kwargs and kwargs["n"] != "(1)":
@@ -3663,6 +3763,7 @@ class Modules_BatchNormBaseMatcher(BaseMatcher):
             epsilon,
             track_running_stats,
         )
+
         return code
 
 

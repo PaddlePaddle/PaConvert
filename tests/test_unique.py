@@ -11,21 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.log1p")
+obj = APIBase("torch.unique")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
-        result = torch.log1p(input)
+        a = torch.tensor(
+            [[2, 1, 3], [3, 0, 1], [2, 1, 3]])
+        result = torch.unique(a)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,7 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.log1p(torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739]))
+        a = torch.tensor(
+            [[2, 1, 3], [3, 0, 1], [2, 1, 3]])
+        result = torch.unique(input=a, return_inverse=True, return_counts=True, dim=1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,9 +47,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
-        out = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
-        result = torch.log1p(input, out=out)
+        a = torch.tensor(
+            [[2, 1, 3], [3, 0, 1], [2, 1, 3]])
+        dim = 1
+        result = torch.unique(input=a, return_inverse=True, return_counts=False, dim=dim)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -57,18 +60,15 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.log1p(torch.tensor([4, 10, 7, 9]))
+        a = torch.tensor(
+            [[2, 1, 3], [3, 0, 1], [2, 1, 3]])
+        dim = 1
+        result = torch.unique(input=a, sorted=False, return_inverse=True, return_counts=False, dim=dim)
         """
     )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        out =  torch.rand([4])
-        result = torch.log1p(torch.tensor([4, 10, 7, 9]), out=out)
-        """
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Paddle does not currently support the 'sorted' input parameter.",
     )
-    obj.run(pytorch_code, ["result"])
