@@ -879,6 +879,18 @@ class CudaIsAvailableMatcher(BaseMatcher):
         return code
 
 
+class CudaIsBuiltMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "not 'False' in paddle.version.cuda()"
+        return code
+
+
+class CudnnIsAvailableMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "bool({}())".format(self.get_paddle_api().strip("\n"))
+        return code
+
+
 class FunctionInterpolateMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs_change = {}
@@ -3713,6 +3725,30 @@ class RNNMatcher(BaseMatcher):
         return code
 
 
+class MultiHeadAttentionMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        for arg in ["batch_first", "add_bias_kv", "add_zero_attn"]:
+            if arg in kwargs and "False" not in kwargs[arg]:
+                return None
+
+        if "dtype" in kwargs:
+            return None
+
+        if "device" in kwargs:
+            kwargs.pop("device")
+
+        if "bias" in kwargs:
+            kwargs["bias_attr"] = kwargs.pop("bias")
+
+        API_TEMPLACE = textwrap.dedent(
+            """
+            paddle.nn.MultiHeadAttention({})
+            """
+        )
+        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
+        return code
+
+
 class ParameterMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "requires_grad" not in kwargs:
@@ -3784,3 +3820,87 @@ class TensorResize_Matcher(BaseMatcher):
                 self.paddleClass,
             )
         return ast.parse(code).body
+
+
+class NTupleMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            import collections
+            from itertools import repeat
+            def _ntuple(n, name="parse"):
+                def parse(x):
+                    if isinstance(x, collections.abc.Iterable):
+                        return tuple(x)
+                    return tuple(repeat(x, n))
+
+                parse.__name__ = name
+                return parse
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        if "x" not in kwargs:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                import sys
+                sys.path.append('{}')
+                import paddle_aux
+                paddle_aux._ntuple({})
+                """
+            )
+            code = API_TEMPLATE.format(self.get_aux_dir(), self.kwargs_to_str(kwargs))
+        else:
+            kwargs = self.set_paddle_default_kwargs(kwargs)
+            API_TEMPLATE = textwrap.dedent(
+                """
+                import sys
+                sys.path.append('{}')
+                import paddle_aux
+                paddle_aux._ntuple({})({})
+                """
+            )
+            code = API_TEMPLATE.format(self.get_aux_dir(), kwargs["n"], kwargs["x"])
+
+        return code
+
+
+class CDistMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def cdist(x1, x2, p=2.0):
+                dist_list = []
+                if x1.ndim == 2:
+                    for i in range(x1.shape[0]):
+                        for j in range(x2.shape[0]):
+                            dist_list.append(paddle.dist(x1[i, :], x2[j, :], p=p).item())
+                    out = paddle.to_tensor(dist_list).reshape([x1.shape[0], x2.shape[0]])
+                else:
+                    for b in range(x1.shape[0]):
+                        for i in range(x1.shape[1]):
+                            for j in range(x2.shape[1]):
+                                dist_list.append(paddle.dist(x1[b, i, :], x2[b, j, :], p=p).item())
+                    out = paddle.to_tensor(dist_list).reshape([x1.shape[0],x1.shape[1], x2.shape[1]])
+                return out
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        if "compute_mode" in kwargs:
+            kwargs.pop("compute_mode")
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import sys
+            sys.path.append('{}')
+            import paddle_aux
+            paddle_aux.cdist({})
+            """
+        )
+        code = API_TEMPLATE.format(self.get_aux_dir(), self.kwargs_to_str(kwargs))
+
+        return code
