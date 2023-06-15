@@ -392,37 +392,59 @@ class PadMatcher(BaseMatcher):
 
 class MaxMinMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
-        # call maximum usage, convert
-        call_maximinimum = False
-        if len(args) > 1 and isinstance(args[1], (ast.Name, ast.Subscript)):
-            call_maximinimum = True
+
+        if len(args) == 2 and len(kwargs) == 0:
+            return None
 
         new_kwargs = self.parse_kwargs(kwargs)
-        if "other" in new_kwargs:
-            call_maximinimum = True
-
-        if call_maximinimum:
+        if ("out" in new_kwargs) or ("other" in new_kwargs):
             return GenericMatcher(
                 self.transformer, self.torch_api, self.api_mapping, self.logger
             ).get_paddle_nodes(args, kwargs)
 
-        # return (values, indices) and paddle not implement, not convert
-        if len(args) > 1 and isinstance(args[1], ast.Num):
-            return None
-        if "dim" in new_kwargs:
-            return None
+        args_list = ["input", "dim", "keepdim", "out"]
 
-        # only return values, not return indices, convert
-        paddle_api = self.torch_api.replace("torch", "paddle")
-        if len(args) == 1:
-            x_v = astor.to_source(args[0]).strip("\n")
-            return ast.parse("{}(x={})".format(paddle_api, x_v)).body
+        for i in range(len(args)):
+            new_kwargs[args_list[i]] = astor.to_source(args[i]).strip("\n")
+        for node in kwargs:
+            new_kwargs[node.arg] = astor.to_source(node.value).strip("\n")
 
         if "input" in new_kwargs:
-            x_v = new_kwargs["input"]
-            return ast.parse("{}(x={})".format(paddle_api, x_v)).body
+            new_kwargs["x"] = new_kwargs.pop("input")
+        if "dim" in new_kwargs:
+            new_kwargs["axis"] = new_kwargs.pop("dim")
 
-        return None
+        if "axis" in new_kwargs and "out" not in new_kwargs:
+            return ast.parse(
+                "paddle.min({}), paddle.argmin({})".format(
+                    self.kwargs_to_str(new_kwargs), self.kwargs_to_str(new_kwargs)
+                )
+            ).body
+        elif "axis" not in new_kwargs and "out" not in new_kwargs:
+            return ast.parse(
+                "paddle.min({})".format(self.kwargs_to_str(new_kwargs))
+            ).body
+        elif "axis" in new_kwargs and "out" in new_kwargs:
+            out_v = new_kwargs.pop("out")
+            API_TEMPLATE = textwrap.dedent(
+                """
+                paddle.assign(paddle.min({}), {}[0]), paddle.assign(paddle.argmin({}), {}[1])
+                """
+            )
+            code = API_TEMPLATE.format(
+                self.kwargs_to_str(new_kwargs),
+                out_v,
+                self.kwargs_to_str(new_kwargs),
+                out_v,
+            )
+            return ast.parse(code.strip("\n")).body
+        else:
+            out_v = new_kwargs.pop("out")
+            return ast.parse(
+                "paddle.assign(paddle.min({}), {})".format(
+                    self.kwargs_to_str(new_kwargs), out_v
+                )
+            ).body
 
 
 class EqualMatcher(BaseMatcher):

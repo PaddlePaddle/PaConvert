@@ -38,12 +38,7 @@ def test_case_2():
         result = torch.min(x, dim=1)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not return index when dim is specified",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -54,12 +49,7 @@ def test_case_3():
         result = torch.min(x, 1, True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not return index when dim is specified",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -70,12 +60,7 @@ def test_case_4():
         result = torch.min(x, dim=0, keepdim=True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not return index when dim is specified",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -97,21 +82,41 @@ def test_case_6():
         torch.min(x, dim=1, keepdim=False, out=out)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["out"],
-        unsupport=True,
-        reason="paddle does not return index when dim is specified",
-    )
+    obj.run(pytorch_code, ["out"])
 
 
-# paddle does not return index when dim is specified
-def _test_case_7():
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
         dim, keepdim = 1, False
         result = torch.min(torch.tensor([[1, 2, 3], [3, 4, 6]]), dim, keepdim)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        dim = 1
+        result = torch.min(torch.tensor([[1, 2, 3], [3, 4, 6]]), dim)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Usage cannot be determined when there are only two variable parameters, please use key-value param",
+    )
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.min(torch.tensor([[1, 2, 3], [3, 4, 6]]), other=torch.tensor([[1, 0, 3], [3, 4, 3]]))
         """
     )
     obj.run(pytorch_code, ["result"])
