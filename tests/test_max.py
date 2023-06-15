@@ -120,3 +120,6 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+test_case_6()
