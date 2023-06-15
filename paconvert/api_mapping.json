@@ -5143,6 +5143,12 @@
       "input": "x"
     }
   },
+  "torch.nn.functional._Reduction.get_enum": {
+    "Matcher": "Get_EnumMatcher",
+    "args_list": [
+      "reduction"
+    ]
+  },
   "torch.device": {
     "Matcher": "DeviceMatcher",
     "paddle_api": "str",
@@ -8593,6 +8599,28 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.io.Dataset"
   },
+  "torch.utils.data.Sampler": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.io.Sampler",
+    "args_list": [
+      "data_source"
+    ]
+  },
+  "torch.utils.cpp_extension.CUDA_HOME": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.utils.cpp_extension.cpp_extension.CUDA_HOME"
+  },
+  "torch.utils.cpp_extension.BuildExtension": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.utils.cpp_extension.BuildExtension",
+    "args_list": [
+      "dist"
+    ]
+  },
+  "torch.utils.cpp_extension.BuildExtension.with_options": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.utils.cpp_extension.BuildExtension.with_options"
+  },
   "torch.nn.functional.l1_loss": {
     "Matcher": "FunctionalL1LossMatcher",
     "paddle_api": "paddle.nn.functional.l1_loss",
@@ -8738,5 +8766,19 @@
     "kwargs_change": {
       "eps": "epsilon"
     }
+  },
+  "torch.autograd.grad": {
+    "Matcher": "GradMatcher",
+    "paddle_api": "paddle.grad",
+    "args_list": [
+      "outputs",
+      "inputs",
+      "grad_outputs",
+      "retain_graph",
+      "create_graph",
+      "only_inputs",
+      "allow_unused",
+      "is_grads_batched"
+    ]
   }
 }

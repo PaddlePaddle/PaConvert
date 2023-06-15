@@ -4013,3 +4013,49 @@ class CDistMatcher(BaseMatcher):
         code = API_TEMPLATE.format(self.get_aux_dir(), self.kwargs_to_str(kwargs))
 
         return code
+
+
+class Get_EnumMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def get_enum(reduction: str) -> int:
+                if reduction == 'none':
+                    ret = 0
+                elif reduction == 'mean':
+                    ret = 1
+                elif reduction == 'elementwise_mean':
+                    warnings.warn("reduction='elementwise_mean' is deprecated, please use reduction='mean' instead.")
+                    ret = 1
+                elif reduction == 'sum':
+                    ret = 2
+                else:
+                    ret = -1
+                    raise ValueError("{} is not a valid value for reduction".format(reduction))
+                return ret
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import sys
+            sys.path.append('{}')
+            import paddle_aux
+            paddle_aux.get_enum({})
+            """
+        )
+        code = API_TEMPLATE.format(self.get_aux_dir(), kwargs["reduction"])
+
+        return code
+
+
+class GradMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "only_inputs " in kwargs and "False" in kwargs["only_inputs"]:
+            return None
+        if "is_grads_batched" in kwargs:
+            kwargs.pop("is_grads_batched")
+        return GenericMatcher.generate_code(self, kwargs)

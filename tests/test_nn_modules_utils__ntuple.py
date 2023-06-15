@@ -28,7 +28,7 @@ def test_case_1():
         result = torch.nn.modules.utils._ntuple(3)(3)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_2():
@@ -38,7 +38,7 @@ def test_case_2():
         result = torch.nn.modules.utils._ntuple(3)((2, 3, 4))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_3():
@@ -48,7 +48,7 @@ def test_case_3():
         result = torch.nn.modules.utils._ntuple(2)((2, 3, 4))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_4():
@@ -59,4 +59,4 @@ def test_case_4():
         result = torch.nn.modules.utils._ntuple(2)(x.size())
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)

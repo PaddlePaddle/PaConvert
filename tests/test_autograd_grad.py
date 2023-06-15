@@ -11,21 +11,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.log1p")
+obj = APIBase("torch.autograd.grad")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
-        result = torch.log1p(input)
+        x = torch.tensor([1.1, 2.2, 3.3], requires_grad=True)
+        y = x * x
+
+        result = torch.autograd.grad([y.sum()], [x])[0]
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,7 +36,11 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.log1p(torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739]))
+        x = torch.tensor([1.1, 2.2, 3.3], requires_grad=True)
+        z = torch.tensor([1.1, 2.2, 3.3], requires_grad=True)
+        y = x * x + z
+
+        result = torch.autograd.grad([y.sum()], [x, z])
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,9 +50,12 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
-        out = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
-        result = torch.log1p(input, out=out)
+        x = torch.tensor([1.1, 2.2, 3.3], requires_grad=True)
+        z = torch.tensor([1.1, 2.2, 3.3], requires_grad=True)
+        grad = torch.tensor(2.0)
+        y = x * x + z
+
+        result = torch.autograd.grad(outputs=[y.sum()], inputs=[x, z], grad_outputs=grad)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -57,7 +65,12 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.log1p(torch.tensor([4, 10, 7, 9]))
+        x = torch.tensor([1.1, 2.2, 3.3], requires_grad=True)
+        z = torch.tensor([1.1, 2.2, 3.3], requires_grad=True)
+        grad = torch.tensor(2.0)
+        y = x * x + z
+
+        result = torch.autograd.grad(outputs=[y.sum()], inputs=[x, z], grad_outputs=grad)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -67,8 +80,13 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        out =  torch.rand([4])
-        result = torch.log1p(torch.tensor([4, 10, 7, 9]), out=out)
+        x = torch.tensor([1.1, 2.2, 3.3], requires_grad=True)
+        z = torch.tensor([1.1, 2.2, 3.3], requires_grad=True)
+        grad = torch.tensor(2.0)
+        y = x * x + z
+
+        result = torch.autograd.grad(outputs=[y.sum()], inputs=[x, z], grad_outputs=grad, retain_graph=True,
+            create_graph=False, allow_unused=True, is_grads_batched=False)
         """
     )
     obj.run(pytorch_code, ["result"])

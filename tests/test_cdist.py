@@ -31,7 +31,7 @@ def test_case_1():
         result = torch.cdist(x1, x2)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_2():
@@ -46,7 +46,7 @@ def test_case_2():
         result = torch.cdist(x1=x1, x2=x2, p=1.0, compute_mode='use_mm_for_euclid_dist_if_necessary')
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_3():
@@ -68,4 +68,4 @@ def test_case_3():
         result = torch.cdist(x1, x2)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
