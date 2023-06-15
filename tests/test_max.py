@@ -89,8 +89,8 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        dim, keepdim = 1, False
-        result = torch.max(torch.tensor([[1, 2, 3], [3, 4, 6]]), dim, keepdim)
+        keepdim = False
+        result = torch.max(torch.tensor([[1, 2, 3], [3, 4, 6]]), 1, keepdim)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -100,16 +100,10 @@ def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        dim = 1
-        result = torch.max(torch.tensor([[1, 2, 3], [3, 4, 6]]), dim)
+        result = torch.max(torch.tensor([[1, 2, 3], [3, 4, 6]]), torch.tensor([[1, 0, 3], [3, 4, 3]]))
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="Usage cannot be determaxed when there are only two variable parameters, please use key-value param",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_9():
@@ -122,4 +116,12 @@ def test_case_9():
     obj.run(pytorch_code, ["result"])
 
 
-test_case_6()
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        y = torch.tensor([[1, 0, 3], [3, 4, 3]])
+        result = torch.max(torch.tensor([[1, 2, 3], [3, 4, 6]]), y)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

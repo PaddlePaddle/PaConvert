@@ -395,11 +395,15 @@ class MaxMinMatcher(BaseMatcher):
 
         new_kwargs = self.parse_kwargs(kwargs)
 
-        if len(args) == 2 and len(new_kwargs) == 0:
-            return None
+        call_maximinimum = False
+        if len(args) > 1 and not isinstance(args[1], ast.Num):
+            call_maximinimum = True
+
+        if "other" in new_kwargs:
+            call_maximinimum = True
 
         # the case of two Tensor
-        if "other" in new_kwargs:
+        if call_maximinimum:
             return GenericMatcher(
                 self.transformer, self.torch_api, self.api_mapping, self.logger
             ).get_paddle_nodes(args, kwargs)
