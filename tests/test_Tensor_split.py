@@ -11,76 +11,64 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+#
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.resize_")
+obj = APIBase("torch.Tensor.split")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[0.3817, 0.1472],
-            [0.3758, 0.9468],
-            [0.7074, 0.3895]])
-        result = a.resize_(1, 2)
+        a = torch.arange(8).reshape(4, 2)
+        result = a.split(1)[0]
         """
     )
-    obj.run(pytorch_code, ["result", "a"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[0.3817, 0.1472],
-            [0.3758, 0.9468],
-            [0.7074, 0.3895]])
-        result = a.resize_(1, 2, memory_format=torch.contiguous_format)
+        a = torch.arange(8).reshape(4, 2)
+        result = a.split(split_size=1)[0]
         """
     )
-    obj.run(pytorch_code, ["result", "a"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[0.3817, 0.1472],
-            [0.3758, 0.9468],
-            [0.7074, 0.3895]])
-        result = a.resize_([1, 2], memory_format=torch.contiguous_format)
+        a = torch.arange(8).reshape(4, 2)
+        result = a.split(1, 0)[0]
         """
     )
-    obj.run(pytorch_code, ["result", "a"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[0.3817, 0.1472],
-            [0.3758, 0.9468],
-            [0.7074, 0.3895]])
-        b = torch.ones(1, 2)
-        result = a.resize_(b.shape, memory_format=torch.contiguous_format)
+        a = torch.arange(8).reshape(4, 2)
+        result = a.split(1, dim=0)[0]
         """
     )
-    obj.run(pytorch_code, ["result", "a"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[0.3817, 0.1472],
-            [0.3758, 0.9468],
-            [0.7074, 0.3895]])
-        b = torch.ones(1, 2)
-        result = a.resize_(size=[1, 2], memory_format=torch.contiguous_format)
+        a = torch.arange(8).reshape(4, 2)
+        result = a.split(split_size = 1, dim = 0)[0]
         """
     )
-    obj.run(pytorch_code, ["result", "a"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)

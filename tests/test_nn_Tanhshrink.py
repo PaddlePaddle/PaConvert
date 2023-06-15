@@ -16,40 +16,29 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Parameter")
+obj = APIBase("torch.nn.Tanhshrink")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        result = torch.nn.Parameter(x)
+        import torch.nn as nn
+        x = torch.tensor([-0.4, -0.2, 0.1, 0.3])
+        model = nn.Tanhshrink()
+        result = model(x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        result = torch.nn.Parameter(x, requires_grad=False)
+        import torch.nn as nn
+        x = torch.tensor([-0.4, -0.2, 0.1, 0.3])
+        result = nn.Tanhshrink()(x)
         """
     )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_alias_case_1():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        result = torch.nn.parameter.Parameter(x)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)

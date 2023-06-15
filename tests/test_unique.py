@@ -56,8 +56,7 @@ def test_case_3():
     obj.run(pytorch_code, ["result"])
 
 
-# Paddle does not currently support the "sorted" input parameter.
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -67,4 +66,9 @@ def _test_case_4():
         result = torch.unique(input=a, sorted=False, return_inverse=True, return_counts=False, dim=dim)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Paddle does not currently support the 'sorted' input parameter.",
+    )

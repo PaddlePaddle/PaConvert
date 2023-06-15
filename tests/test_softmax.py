@@ -16,16 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.outer")
+obj = APIBase("torch.softmax")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        y = torch.tensor([1., 2, 3, 4])
-        result = torch.outer(x, y)
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        result = torch.softmax(input, dim=0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,22 +35,21 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        y = torch.tensor([1., 2, 3, 4])
-        result = torch.outer(input=x, vec2=y)
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        result = torch.softmax(input, dim=1)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# The paddle input does not support integer type
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3.])
-        y = torch.tensor([1, 2, 3, 4])
-        result = torch.outer(x, y)
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        result = torch.softmax(input, dim=1, dtype=torch.float64)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -60,33 +59,9 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.outer(torch.tensor([1., 2, 3]), torch.tensor([1., 2, 3, 4]))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1., 2, 3])
-        y = torch.tensor([1., 2, 3, 4])
-        out = torch.tensor([1., 2, 3])
-        result = torch.outer(x, y, out=out)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-# The paddle input does not support integer type
-def _test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1, 2, 3])
-        y = torch.tensor([1, 2, 3, 4])
-        result = torch.outer(x, y)
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        result = torch.softmax(input, dim=1, dtype=torch.float32)
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -16,30 +16,32 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.where")
-
-# The type of data we are trying to retrieve does not match the type of data currently contained in the container
+obj = APIBase("torch.Tensor.backward")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[0.9383, -0.1983, 3.2, -1.2]])
-        y = torch.tensor([[1.0, 1.0, 1.0, 1.0]])
-        result = torch.where(x>0, x, y)
+        a = torch.tensor([[[4., 5., 6.], [1., 2., 3.]]], requires_grad=True)
+        out = a ** 2
+        out.sum().backward()
+        a.grad = torch.tensor(a.grad, requires_grad=True)
+        result = a.grad
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# paddle.where not support type promote and x/y must have same dtype
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[0.9383, -0.1983, 3.2, -1.2]])
-        result = torch.where(x>0, x, torch.tensor(90))
+        a = torch.tensor([[[4., 5., 6.], [1., 2., 3.]]], requires_grad=True)
+        out = a ** 2
+        out.sum().backward(retain_graph=True)
+        a.grad = torch.tensor(a.grad, requires_grad=True)
+        result = a.grad
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -49,13 +51,12 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[3, 0], [4.8, 9.2]])
-        result = torch.where(x)
+        a = torch.tensor([[[4., 5., 6.], [1., 2., 3.]]], requires_grad=True)
+        out = a ** 2
+        gradient = torch.tensor(2.0)
+        out.sum().backward(gradient=gradient, retain_graph=True)
+        a.grad = torch.tensor(a.grad, requires_grad=True)
+        result = a.grad
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="The return shape is inconsistent when only pass condition param",
-    )
+    obj.run(pytorch_code, ["result"])

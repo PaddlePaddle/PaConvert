@@ -16,16 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.outer")
+obj = APIBase("torch.nn.Conv2d")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        y = torch.tensor([1., 2, 3, 4])
-        result = torch.outer(x, y)
+        import torch.nn as nn
+        x = torch.zeros(20, 16, 50, 100)
+        model = nn.Conv2d(16, 33, 3, stride=2, bias=False)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,22 +36,23 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        y = torch.tensor([1., 2, 3, 4])
-        result = torch.outer(input=x, vec2=y)
+        import torch.nn as nn
+        x = torch.zeros(20, 16, 50, 100)
+        model = nn.Conv2d(16, 33, (3, 5), stride=(2, 1), padding=(4, 2), bias=False)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# The paddle input does not support integer type
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3.])
-        y = torch.tensor([1, 2, 3, 4])
-        result = torch.outer(x, y)
+        import torch.nn as nn
+        x = torch.zeros(20, 16, 50, 100)
+        model = nn.Conv2d(16, 33, (3, 5), stride=(2, 1), padding=(4, 2), dilation=(3, 1), bias=False)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -60,33 +62,23 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.outer(torch.tensor([1., 2, 3]), torch.tensor([1., 2, 3, 4]))
+        import torch.nn as nn
+        x = torch.zeros(5, 16, 50, 100)
+        model = nn.Conv2d(16, 33, (3, 5), stride=(2, 1), padding=(4, 2), dilation=(3, 1), bias=True)
+        result = model(x) * 0
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_5():
+def test_alias_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        y = torch.tensor([1., 2, 3, 4])
-        out = torch.tensor([1., 2, 3])
-        result = torch.outer(x, y, out=out)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-# The paddle input does not support integer type
-def _test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1, 2, 3])
-        y = torch.tensor([1, 2, 3, 4])
-        result = torch.outer(x, y)
+        import torch.nn as nn
+        x = torch.zeros(20, 16, 50, 100)
+        model = nn.modules.conv.Conv2d(16, 33, (3, 5), stride=(2, 1), padding=(4, 2), dilation=(3, 1), bias=False)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -42,7 +42,7 @@ def test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -53,10 +53,15 @@ def _test_case_3():
         result = torch.nonzero(x, as_tuple=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="The return shape is inconsistent when as_tuple=True",
+    )
 
 
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -66,6 +71,25 @@ def _test_case_4():
                         [0.0, 0.0, 0.0,-0.4]])
         as_tuple = True
         result = torch.nonzero(x, as_tuple=as_tuple)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="The return shape is inconsistent when as_tuple=True",
+    )
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0.6, 0.0, 0.0, 0.0],
+                        [0.0, 0.4, 0.0, 0.0],
+                        [0.0, 0.0, 1.2, 0.0],
+                        [0.0, 0.0, 0.0,-0.4]])
+        result = torch.nonzero(x, as_tuple=False)
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -11,66 +11,63 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.topk")
+obj = APIBase("torch.Tenosor.round")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3, 4, 5])
-        result, index = torch.topk(x, 3)
+        a = torch.tensor([[ 0.9254, -0.6213]])
+        result = a.round()
         """
     )
-    obj.run(pytorch_code, ["result", "index"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3, 4, 5])
-        res = torch.topk(x, 3)
-        result, index = res[0], res[1]
+        a = torch.tensor([[ 102003.9254, -12021.6213]])
+        result = a.round(decimals=1)
         """
     )
-    obj.run(pytorch_code, ["result", "index"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, 2, 3, 4, 5], [2, 5, 6, 2, 3]])
-        result, index = torch.topk(x, 3, dim=1, sorted=True)
+        a = torch.tensor([[ 102003.9254, -12021.6213]])
+        result = a.round(decimals=-1)
         """
     )
-    obj.run(pytorch_code, ["result", "index"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, 2, 3, 4, 5], [2, 5, 6, 2, 3]])
-        result, index = torch.topk(x, 3, 1, True)
+        a = torch.tensor([[ 102003.9254, -12021.6213]])
+        result = a.round(decimals=3)
         """
     )
-    obj.run(pytorch_code, ["result", "index"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, 2, 3, 4, 5], [2, 5, 6, 2, 3]])
-        out = (torch.tensor(1), torch.tensor(2))
-        result, index = torch.topk(x, 3, dim=1, out=out)
+        a = torch.tensor([[ 102003.9254, -12021.6213]])
+        result = a.round(decimals=-3)
         """
     )
-    obj.run(pytorch_code, ["result", "index", "out"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)

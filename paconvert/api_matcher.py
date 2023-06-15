@@ -336,23 +336,13 @@ class CreateMatcher(BaseMatcher):
 
 
 class DeviceMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        if len(args) == 1 and isinstance(args[0], ast.Str):
-            device_str = args[0].value
-            valid = False
-            for ele in ["cpu", "cuda", "ipu", "xpu"]:
-                if ele in device_str:
-                    valid = True
-            if not valid:
-                return None
+    def generate_code(self, kwargs):
+        if len(kwargs) == 1:
+            code = f'str({kwargs["type"]}).replace("cuda", "gpu")'
 
-            if "cuda" in device_str:
-                device_str = device_str.replace("cuda", "gpu")
-
-            code = "'{}'".format(device_str)
-            return ast.parse(code).body
-
-        return None
+        if len(kwargs) == 2:
+            code = f'":".join([{kwargs["type"]}.replace("cuda", "gpu"),str({kwargs["index"]})])'
+        return code
 
 
 class GeluMatcher(BaseMatcher):
@@ -1998,75 +1988,61 @@ class SizeMatcher(BaseMatcher):
 
 
 class TensorToMatcher(BaseMatcher):
-    def get_paddle_class_nodes(self, func, args, kwargs):
-
-        self.parse_func(func)
-        kwargs = self.parse_args_and_kwargs(args, kwargs)
-        if not kwargs:
-            code = "{}".format(self.paddleClass)
-        elif "tensor" in kwargs:
-            code = "{}.cast({}.dtype)".format(self.paddleClass, kwargs["tensor"])
-        elif "dtype" in kwargs:
-            code = "{}.cast({})".format(self.paddleClass, kwargs["dtype"])
-        elif "device" in kwargs and "dtype" not in kwargs:
-            code = "{}".format(self.paddleClass)
-        else:
-            if "y" not in kwargs and "x" in kwargs:
-                API_TEMPLACE = textwrap.dedent(
-                    """
-                    if isinstance({}, paddle.dtype):
-                        dtype = {}
-                    elif isinstance({}, str) and {} not in ['cpu', 'cuda', 'ipu', 'xpu']:
-                        dtype = {}
-                    elif isinstance({}, paddle.Tensor):
-                        dtype = {}.dtype
-                    else:
-                        dtype = {}.dtype
-                    {}.cast(dtype)
-                    """
-                )
-                code = API_TEMPLACE.format(
-                    kwargs["x"],
-                    kwargs["x"],
-                    kwargs["x"],
-                    kwargs["x"],
-                    kwargs["x"],
-                    kwargs["x"],
-                    kwargs["x"],
-                    self.paddleClass,
-                    self.paddleClass,
-                )
-            elif "y" in kwargs and "x" in kwargs:
-                API_TEMPLACE = textwrap.dedent(
-                    """
-                    if isinstance({}, paddle.dtype):
-                        dtype = {}
-                    elif isinstance({}, str):
-                        if {} not in ['cpu', 'cuda', 'ipu', 'xpu']:
-                            dtype = {}
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def to(self, *args, **kwargs):
+                args_list = ["x", "y", "non_blocking", "copy", "memory_format"]
+                new_kwargs = {}
+                for i, node in enumerate(args):
+                    k = args_list[i]
+                    new_kwargs[k] = node
+                for node in kwargs:
+                    v = kwargs[node]
+                    new_kwargs[node] = v
+                kwargs = new_kwargs
+                if not kwargs:
+                    return self
+                elif "tensor" in kwargs:
+                    return paddle.cast(self, "{}.dtype".format(kwargs["tensor"]))
+                elif "dtype" in kwargs:
+                    return paddle.cast(self, "{}".format(kwargs["dtype"]))
+                elif "device" in kwargs and "dtype" not in kwargs:
+                    return self
+                elif kwargs:
+                    if "y" not in kwargs and "x" in kwargs:
+                        if isinstance(kwargs["x"], paddle.dtype):
+                            dtype = kwargs["x"]
+                        elif isinstance(kwargs["x"], str) and kwargs["x"] not in ['cpu', 'cuda', 'ipu', 'xpu']:
+                            dtype = kwargs["x"]
+                        elif isinstance(kwargs["x"], paddle.Tensor):
+                            dtype = kwargs["x"].dtype
                         else:
-                            dtype = {} if isinstance({}, str) else {}.dtype
-                    else:
-                        dtype = {}.dtype
-                    {}.cast(dtype)
-                    """
-                )
-                code = API_TEMPLACE.format(
-                    kwargs["x"],
-                    kwargs["x"],
-                    kwargs["x"],
-                    kwargs["x"],
-                    kwargs["x"],
-                    kwargs["y"],
-                    kwargs["y"],
-                    self.paddleClass,
-                    kwargs["x"],
-                    self.paddleClass,
-                )
-            else:
-                code = "{}".format(self.paddleClass)
+                            dtype = self.dtype
+                        return paddle.cast(self, dtype)
 
-        return ast.parse(code).body
+                    elif "y" in kwargs and "x" in kwargs:
+                        if isinstance(kwargs["x"], paddle.dtype):
+                            dtype = kwargs["x"]
+                        elif isinstance(kwargs["x"], str):
+                            if x not in ['cpu', 'cuda', 'ipu', 'xpu']:
+                                dtype = kwargs["x"]
+                            else:
+                                dtype = kwargs["y"] if isinstance(kwargs["y"], str) else self.dtype
+                        else:
+                            dtype = kwargs["x"]
+                        return paddle.cast(self, dtype)
+                    else:
+                        return self
+
+            setattr(paddle.Tensor, 'to', to)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.write_aux_code()
+        return "unchange"
 
 
 class TensorRequires_GradMatcher(BaseMatcher):
@@ -3618,13 +3594,6 @@ class TupleAssignMatcher(BaseMatcher):
             return code.strip("\n")
 
 
-class DiffMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "n" in kwargs and kwargs["n"] != "(1)":
-            return None
-        return GenericMatcher.generate_code(self, kwargs)
-
-
 class RoundMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" not in kwargs:
@@ -3749,77 +3718,217 @@ class MultiHeadAttentionMatcher(BaseMatcher):
         return code
 
 
-class ParameterMatcher(BaseMatcher):
+class DiffMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "requires_grad" not in kwargs:
-            kwargs["requires_grad"] = True
-        API_TEMPLATE = textwrap.dedent(
+        if "n" in kwargs and kwargs["n"] != "(1)":
+            return None
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class ParameterMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        kwargs = self.parse_args_and_kwargs(args, kwargs)
+        if "requires_grad" in kwargs:
+            requires_grad_v = kwargs["requires_grad"]
+        else:
+            requires_grad_v = "True"
+
+        API_TEMPLACE = textwrap.dedent(
             """
-            {} = paddle.create_parameter(shape={}.shape,
-                        dtype={}.dtype,
-                        default_initializer=paddle.nn.initializer.Assign({}))
+            {} = paddle.create_parameter(shape={}.shape, dtype={}.numpy().dtype, default_initializer=paddle.nn.initializer.Assign({}))
             {}.stop_gradient = not {}
             {}
             """
         )
-        param = get_unique_name("param")
-        code = API_TEMPLATE.format(
-            param,
+        out = get_unique_name("out")
+        code = API_TEMPLACE.format(
+            out,
             kwargs["data"],
             kwargs["data"],
             kwargs["data"],
-            param,
-            kwargs["requires_grad"],
-            param,
+            out,
+            requires_grad_v,
+            out,
+        )
+        return ast.parse(code.strip("\n")).body
+
+
+class Modules_BatchNormBaseMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "eps" not in kwargs:
+            epsilon = 1e-5
+        else:
+            epsilon = kwargs["eps"]
+
+        if "track_running_stats" in kwargs:
+            track_running_stats = kwargs["track_running_stats"]
+        else:
+            track_running_stats = True
+
+        if "momentum" in kwargs:
+            momentum = kwargs["momentum"]
+        else:
+            momentum = 0.1
+
+        if "affine" in kwargs and "False" in kwargs["affine"]:
+            API_TEMPLACE = textwrap.dedent(
+                """
+                {}(num_features={},
+                    momentum=1-{},
+                    epsilon={},
+                    weight_attr=False,
+                    bias_attr=False,
+                    use_global_stats={})
+                """
+            )
+        else:
+            API_TEMPLACE = textwrap.dedent(
+                """
+                {}(num_features={},
+                    momentum=1-{},
+                    epsilon={},
+                    weight_attr=None,
+                    bias_attr=None,
+                    use_global_stats={})
+                """
+            )
+        code = API_TEMPLACE.format(
+            self.get_paddle_api(),
+            kwargs["num_features"],
+            momentum,
+            epsilon,
+            track_running_stats,
         )
 
         return code
 
 
-class TensorResize_Matcher(BaseMatcher):
+class TensorTakeMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def take(self, *args, **kwargs):
+                if args:
+                    return paddle.take(self, *args)
+                elif kwargs:
+                    return paddle.take(self, **kwargs)
+
+            setattr(paddle.Tensor, 'take', take)
+            """
+        )
+        return CODE_TEMPLATE
+
     def get_paddle_class_nodes(self, func, args, kwargs):
-        self.parse_func(func)
-        kwargs = self.parse_kwargs(kwargs)
+        self.write_aux_code()
+        return "unchange"
 
-        if len(args) == 0 and "size" in kwargs:
-            kwargs["shape"] = kwargs.pop("size")
-        else:
-            if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
-                shape = self.parse_args(args)
-            elif isinstance(args[0], ast.Starred):
-                shape = astor.to_source(args[0].value).strip("\n")
-            else:
-                shape = self.parse_args(args)[0]
-            kwargs = {
-                "shape": str(shape).replace("'", "").replace("(", "").replace(")", ""),
-                **kwargs,
-            }
 
-        if (
-            "memory_format" in kwargs
-            and "contiguous_format" not in kwargs["memory_format"]
-        ):
+class TensorSplitMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def split(self, *args, **kwargs):
+                if args:
+                    if len(args)==1:
+                        return paddle.split(self, self.shape[0]//args[0])
+                    else:
+                        return paddle.split(self, self.shape[args[1]]//args[0], args[1])
+                elif kwargs:
+                    if  "dim" in kwargs:
+                        kwargs["axis"] = kwargs.pop("dim")
+                        kwargs["num_or_sections"] = self.shape[kwargs["axis"]]//kwargs.pop("split_size")
+                    else:
+                        kwargs["num_or_sections"] = self.shape[0]//kwargs.pop("split_size")
+                    return paddle.split(self, **kwargs)
+
+            setattr(paddle.Tensor, 'split', split)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.write_aux_code()
+        return "unchange"
+
+
+class TensorRoundMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def round(self, decimals=None):
+                if decimals:
+                    x = paddle.abs(self)//(10**-decimals)*(10**-decimals)
+                    return paddle.where(self<0, -x, x)
+                return paddle.round(self)
+            setattr(paddle.Tensor, 'round', round)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        if args is None and kwargs is None:
+            return "unchange"
+
+        self.write_aux_code()
+        return "unchange"
+
+
+class NonzeroMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "as_tuple" in kwargs and kwargs["as_tuple"] != "(False)":
             return None
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class NormMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "p" in kwargs and "nuc" in kwargs["p"]:
+            return None
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class SortMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        change_kwargs = self.api_mapping["kwargs_change"]
+        for key in change_kwargs:
+            if key in kwargs:
+                if change_kwargs[key]:
+                    kwargs[change_kwargs[key]] = kwargs.pop(key).strip("\n")
+                else:
+                    kwargs.pop(key)
+
+        if "out" not in kwargs:
+            code = "paddle.sort({}), paddle.argsort({})".format(
+                self.kwargs_to_str(kwargs), self.kwargs_to_str(kwargs)
+            )
         else:
+            out_v = kwargs.pop("out")
             API_TEMPLATE = textwrap.dedent(
                 """
-                {} = 1
-                for ele in {}:
-                    {} *= ele
-                paddle.assign(paddle.flatten({})[:{}].reshape({}), {})
+                out1, out2 = paddle.sort({}), paddle.argsort({})
+                paddle.assign(out1, {}[0]), paddle.assign(out2, {}[1])
                 """
             )
-            num = get_unique_name("num")
             code = API_TEMPLATE.format(
-                num,
-                kwargs["shape"],
-                num,
-                self.paddleClass,
-                num,
-                kwargs["shape"],
-                self.paddleClass,
+                self.kwargs_to_str(kwargs), self.kwargs_to_str(kwargs), out_v, out_v
             )
-        return ast.parse(code).body
+        return code.strip("\n")
+
+
+class WhereMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if len(kwargs) == 1:
+            return None
+        else:
+            code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        return code
+
+
+class UpsampleMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "size" in kwargs and "," not in kwargs["size"]:
+            return None
+        return GenericMatcher.generate_code(self, kwargs)
 
 
 class NTupleMatcher(BaseMatcher):

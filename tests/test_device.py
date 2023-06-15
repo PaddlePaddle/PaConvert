@@ -16,16 +16,20 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.outer")
+
+class DeviceAPIBase(APIBase):
+    def compare(self, name, pytorch_result, paddle_result, value):
+        return str(pytorch_result) == str(paddle_result)
+
+
+obj = DeviceAPIBase("torch.device")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        y = torch.tensor([1., 2, 3, 4])
-        result = torch.outer(x, y)
+        result = torch.device("{}".format("cpu"))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,22 +39,18 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        y = torch.tensor([1., 2, 3, 4])
-        result = torch.outer(input=x, vec2=y)
+        a = "cpu"
+        result = torch.device(a)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# The paddle input does not support integer type
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3.])
-        y = torch.tensor([1, 2, 3, 4])
-        result = torch.outer(x, y)
+        result = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -60,7 +60,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.outer(torch.tensor([1., 2, 3]), torch.tensor([1., 2, 3, 4]))
+        result = isinstance(torch.device("cpu", 0), torch.device)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -70,23 +70,39 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        y = torch.tensor([1., 2, 3, 4])
-        out = torch.tensor([1., 2, 3])
-        result = torch.outer(x, y, out=out)
+        result = torch.device(type = "cpu", index = 0)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# The paddle input does not support integer type
-def _test_case_6():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3])
-        y = torch.tensor([1, 2, 3, 4])
-        result = torch.outer(x, y)
+        a = "cpu"
+        result = torch.device(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.device("cuda")
+        result = torch.device(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.device(type = "cuda", index = 0)
         """
     )
     obj.run(pytorch_code, ["result"])

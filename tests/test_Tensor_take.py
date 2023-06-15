@@ -16,40 +16,28 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Parameter")
+obj = APIBase("torch.Tensor.take")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        result = torch.nn.Parameter(x)
+        input = torch.tensor([[4, 3, 5],
+                              [6, 7, 8]])
+        result = input.take(torch.tensor([0, 2, 5]))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        result = torch.nn.Parameter(x, requires_grad=False)
+        input = torch.tensor([[4, 3, 5],
+                              [6, 7, 8]])
+        result = input.take(index=torch.tensor([0, 2, 5]))
         """
     )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_alias_case_1():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        result = torch.nn.parameter.Parameter(x)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
