@@ -23,6 +23,9 @@ if [[ "$DEVELOP_IF" == "OFF" ]]; then
     cd /workspace/$3/PaConvert/
     PATH=$1
     TORCH_PROJECT_PATH=$2
+    echo "Insalling cpu version paddle"
+    pip install --no-cache-dir  --force-reinstall torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+    python -c "import torch; print('torch version information:' ,torch.__version__)"
     echo "Insalling develop version paddle"
     python -m pip install --no-cache-dir  --force-reinstall paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
     python -c "import paddle; print('paddle version information:' ,paddle.__version__); print('paddle commit information:' ,paddle.__git_commit__)"
