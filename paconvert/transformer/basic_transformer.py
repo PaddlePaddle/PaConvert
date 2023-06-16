@@ -51,7 +51,7 @@ class BasicTransformer(BaseTransformer):
     def __init__(self, root, file, imports_map, logger, unsupport_map=None):
         super(BasicTransformer, self).__init__(root, file, imports_map, logger)
         # use to identify tensor method/attribute
-        self.black_list = self.imports_map[self.file]["other_pacakages"] + [
+        self.black_list = self.imports_map[self.file]["other_packages"] + [
             "ndarray",
             "args",
             "arg",
@@ -60,7 +60,7 @@ class BasicTransformer(BaseTransformer):
 
     def visit_Attribute(self, node):
         """
-        torch api is not used by funcition call, so only match api name and not need to handle params.
+        torch api is not used by function call, so only match api name and not need to handle params.
         """
         # 1. torch.abs(x).transpose(1, 0)
         # 2. (x == y).transpose(1, 0)
@@ -458,6 +458,7 @@ class BasicTransformer(BaseTransformer):
                         ast.Attribute,
                         ast.Subscript,
                         ast.BinOp,
+                        ast.Tuple,
                     ),
                 ):
                     self.insert_multi_node(node_list[0:-1])

@@ -176,9 +176,15 @@ Thank you to use Paddle Code Convert Tool. You can make any suggestions to us.
 ### 依赖项
 在开发本项目之前，请确保已经安装了以下依赖项：
 
-#### 最新的develop版本的paddlepaddle库
+#### 最新版本的paddle库和torch库
 ```bash
+# cpu 版本的paddle
 python -m pip install paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
+```
+
+```bash
+# cpu 版本的torch
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 ```
 
 #### 其它库
@@ -292,7 +298,7 @@ torch.permute
       "dims": "perm"
     }
   },
-  "unsupport_args": {},
+  "unsupport_args": [],
   "paddle_default_kwargs": {}
 }
 ```
@@ -304,6 +310,13 @@ args_list     :必须，根据顺序填写 torch api 的 `全部参数名`，所
 kwargs_change :可选，参数名称的差异，仅 `GenericMatcher` 且有参数名差异时需要。
 unsupport_args:可选，Paddle API不支持的参数功能，通过该字段配置后，这些参数如被使用将直接标记为不支持转换。
 paddle_default_kwargs :可选，当 paddle 参数更多 或者 参数默认值不一致 时，可以通过该配置，设置参数默认值。
+```
+
+**需要注意的是**，如果一个API是别名API(alias API), 比如 `torch.nn.modules.GroupNorm` 和 `torch.nn.GroupNorm` 是同一个API，只是按照模块路径采用了不同的调用方式，那么就无需编写相关 Matcher，只需在 paconvert/api_alias_mapping.json 中增加如下该 API 的配置即可：
+```bash
+{
+  "torch.nn.modules.GroupNorm": "torch.nn.GroupNorm"
+}
 ```
 
 对于一个待开发API，首先依据步骤1的映射关系，确定其属于哪种分类情况。
@@ -393,7 +406,7 @@ class Chain_MatmulMatcher(BaseMatcher):
 ```
 class TransposeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        API_TEMPLACE = textwrap.dedent(
+        API_TEMPLATE = textwrap.dedent(
             '''
             {} = list(range(len({}.shape)))
             {}[{}] = {}
@@ -402,7 +415,7 @@ class TransposeMatcher(BaseMatcher):
             '''
         )
         perm = unique_name('perm')
-        code = API_TEMPLACE.format(perm, kwargs['input'],
+        code = API_TEMPLATE.format(perm, kwargs['input'],
                 perm, kwargs['dim0'], kwargs['dim1'],
                 perm, kwargs['dim1'], kwargs['dim0'],
                 kwargs['input'], perm)
@@ -550,15 +563,15 @@ import paddle_aux
 x.reshape(2, 3)
 ```
 
-**开发注意事项**：
+### 开发规范
 
-**1) 代码精简与美观性**。要求尽可能只通过一行代码、一个API来实现（代码越少越好）。如果确实无法实现，才考虑通过多行代码、多个API来辅助实现该功能。
+1) 代码精简与美观性。要求尽可能只通过一行代码、一个API来实现（代码越少越好）。如果确实无法实现，才考虑通过多行代码、多个API来辅助实现该功能。
 
-**2) 维护与负责**。由于单测可能覆盖不全面，导致引入了非常隐蔽的用法bug，开发者需要后续维护自己开发的API转换规则。解决新反馈的用法case问题。
+2) 维护与负责。由于单测可能覆盖不全面，导致引入了非常隐蔽的用法bug，开发者需要后续维护自己开发的API转换规则。解决新反馈的用法case问题。
 
-**3) API功能缺失**。如果是整个API都缺失的，只需在API映射表中标注 **功能缺失** 即可，无需其他开发。如果是API局部功能缺失，则对功能缺失点，在代码中返回None表示不支持，同时在API映射表中说明此功能点 **Paddle暂无转写方式**，同时编写单测但可以注释掉不运行；对其他功能点正常开发即可。
+3) API功能缺失。如果是整个API都缺失的，只需在API映射表中标注 **功能缺失** 即可，无需其他开发。如果是API局部功能缺失，则对功能缺失点，在代码中返回None表示不支持，同时在API映射表中说明此功能点 **Paddle暂无转写方式**，同时编写单测但可以注释掉不运行；对其他功能点正常开发即可。
 
-**开发技巧**
+### 开发技巧
 
 1）可以参考一些写的较为规范的Matcher：
 - 传入参数既可以是可变参数，也可以是列表或元组时，例如 `TensorExpandMatcher`
@@ -612,7 +625,7 @@ if x:
 
 **单测写法**：
 
-* **单测位置**：所有的单测文件均放在`tests`目录下，单测文件命名以`test_`为前缀，后面接测试的`API`名称（PyTorch API全称去掉模块名，保留大小写）。例如 `torch.add` 命名为 `test_add.py` ， `torch.Tensor.add` 命名为  `test_Tensor_add.py` 。
+* **单测位置**：所有的单测文件均放在`tests`目录下，单测文件命名以`test_`为前缀，后面接测试的`API`名称（PyTorch API名称即可，保留大小写，无需Module前缀）。例如 `torch.nn.functional.relu` 命名为 `test_relu.py` ， `torch.Tensor.add` 命名为 `test_Tensor_add.py` 。
 
 * **默认检查逻辑**：采用`pytest`作为单测框架。一般情况下，用户只需要在单测文件中调用 `APIBase` 类的 `run()` 方法，传入 `pytorch_code` 和需要判断的 `Tensor` 变量名列表即可，参考 [torch.permute测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_permute.py)。 `run()` 方法会调用`compare()`函数，该方法默认检查逻辑为：转换前后两个`Tensor`的 `计算数值、数据类型、stop_gradient属性、形状` 是否一致。
 

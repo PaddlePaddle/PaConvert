@@ -16,14 +16,87 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.cuda.max_memory_allocated")
+
+class cudaMaxMemoryAllocatedAPI(APIBase):
+    def compare(self, name, pytorch_result, paddle_result, check_value=True):
+        return pytorch_result == paddle_result
 
 
-def _test_case_1():
+obj = cudaMaxMemoryAllocatedAPI("torch.cuda.max_memory_allocated")
+
+
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.cuda.max_memory_allocated()
+        result = None
+        if torch.cuda.is_available():
+            result = torch.cuda.max_memory_allocated()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = None
+        if torch.cuda.is_available():
+            t = torch.tensor([1,2,3]).cuda()
+            result = torch.cuda.max_memory_allocated()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = None
+        if torch.cuda.is_available():
+            t = torch.tensor([1,2,3]).cuda()
+            result = torch.cuda.max_memory_allocated(0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = None
+        if torch.cuda.is_available():
+            t = torch.tensor([1,2,3]).cuda()
+            result = torch.cuda.max_memory_allocated(device=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = None
+        if torch.cuda.is_available():
+            t = torch.tensor([1,2,3]).cuda()
+            result = torch.cuda.max_memory_allocated(torch.device("cuda:0"))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = None
+        if torch.cuda.is_available():
+            t = torch.tensor([1,2,3]).cuda()
+            result = torch.cuda.max_memory_allocated(device=torch.device("cuda:0"))
         """
     )
     obj.run(pytorch_code, ["result"])

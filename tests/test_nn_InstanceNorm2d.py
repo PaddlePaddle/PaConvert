@@ -50,6 +50,7 @@ def test_case_1():
           [0.5224, 0.9840, 0.0497],
           [0.8938, 0.5135, 0.5939]]]])
         result = m(input)
+        result.requires_grad = False
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -169,6 +170,42 @@ def test_case_5():
         import torch.nn as nn
         import torch
         m = nn.InstanceNorm2d(3, affine=False, momentum=0.1)
+        input = torch.tensor([[[[0.9436, 0.7335, 0.9228],
+          [0.5443, 0.3380, 0.0676],
+          [0.2152, 0.2725, 0.2988]],
+
+         [[0.3839, 0.7517, 0.8147],
+          [0.7681, 0.0924, 0.3781],
+          [0.6991, 0.2401, 0.4732]],
+
+         [[0.3631, 0.5113, 0.4535],
+          [0.9779, 0.4084, 0.5979],
+          [0.6865, 0.5924, 0.9122]]],
+
+
+        [[[0.1519, 0.2828, 0.0797],
+          [0.5871, 0.1052, 0.2343],
+          [0.0323, 0.0754, 0.6707]],
+
+         [[0.6969, 0.4170, 0.0762],
+          [0.2514, 0.5124, 0.3972],
+          [0.1007, 0.7754, 0.4779]],
+
+         [[0.1753, 0.2245, 0.0369],
+          [0.5224, 0.9840, 0.0497],
+          [0.8938, 0.5135, 0.5939]]]])
+        result = m(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        m = nn.InstanceNorm2d(3, affine=False, momentum=0.1, dtype=torch.float32)
         input = torch.tensor([[[[0.9436, 0.7335, 0.9228],
           [0.5443, 0.3380, 0.0676],
           [0.2152, 0.2725, 0.2988]],
