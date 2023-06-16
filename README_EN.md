@@ -220,7 +220,7 @@ First you need to add **Matcher** in paconvert/api_matcher.py one by one, and ov
 
 class TransposeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        API_TEMPLACE = textwrap.dedent(
+        API_TEMPLATE = textwrap.dedent(
             '''
             {} = list(range(len({}.shape)))
             {}[{}] = {}
@@ -229,7 +229,7 @@ class TransposeMatcher(BaseMatcher):
             '''
         )
         perm = unique_name('perm')
-        code = API_TEMPLACE.format(perm, kwargs['input'],
+        code = API_TEMPLATE.format(perm, kwargs['input'],
                 perm, kwargs['dim0'], kwargs['dim1'],
                 perm, kwargs['dim1'], kwargs['dim0'],
                 kwargs['input'], perm)

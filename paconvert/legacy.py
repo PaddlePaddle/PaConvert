@@ -42,18 +42,18 @@ class RandintMatcher(BaseMatcher):
 
         if requires_grad_v and "out" in new_kwargs:
             out_v = kwargs.pop("out")
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 """
                 {} = paddle.randint({})
                 {}.stop_gradient = False
                 {}
                 """
             )
-            code = API_TEMPLACE.format(
+            code = API_TEMPLATE.format(
                 out_v, self.kwargs_to_str(new_kwargs), out_v, out_v
             )
         elif requires_grad_v and "out" not in new_kwargs:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 """
                 {} = paddle.randint({})
                 {}.stop_gradient = False
@@ -61,16 +61,16 @@ class RandintMatcher(BaseMatcher):
                 """
             )
             out = get_unique_name("out")
-            code = API_TEMPLACE.format(out, self.kwargs_to_str(new_kwargs), out, out)
+            code = API_TEMPLATE.format(out, self.kwargs_to_str(new_kwargs), out, out)
         elif not requires_grad_v and "out" in kwargs:
             out_v = kwargs.pop("out")
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 """
                 {} = paddle.randint({})
                 {}
                 """
             )
-            code = API_TEMPLACE.format(out_v, self.kwargs_to_str(new_kwargs), out_v)
+            code = API_TEMPLATE.format(out_v, self.kwargs_to_str(new_kwargs), out_v)
         else:
             code = "paddle.randint({})".format(self.kwargs_to_str(new_kwargs))
 
@@ -97,7 +97,7 @@ class TensorToMatcher(BaseMatcher):
 class TensorRequiresGradMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "requires_grad" in kwargs:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 """
                 {} = {}
                 {}.stop_gradient = not {}
@@ -105,7 +105,7 @@ class TensorRequiresGradMatcher(BaseMatcher):
                 """
             )
             out = get_unique_name("out")
-            code = API_TEMPLACE.format(
+            code = API_TEMPLATE.format(
                 out,
                 self.paddleClass,
                 out,
@@ -113,7 +113,7 @@ class TensorRequiresGradMatcher(BaseMatcher):
                 self.paddleClass,
             )
         else:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 """
                 {} = {}
                 {}.stop_gradient = False
@@ -121,7 +121,7 @@ class TensorRequiresGradMatcher(BaseMatcher):
                 """
             )
             out = get_unique_name("out")
-            code = API_TEMPLACE.format(out, self.paddleClass, out, out)
+            code = API_TEMPLATE.format(out, self.paddleClass, out, out)
 
         return code
 

@@ -2,6 +2,5 @@ pre-commit
 pytest
 pytest-cov
 regex
-torch==1.13.0
 coverage
 diff-cover

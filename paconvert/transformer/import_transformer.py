@@ -26,7 +26,7 @@ class ImportTransformer(BaseTransformer):
 
     def __init__(self, root, file, imports_map, logger):
         super(ImportTransformer, self).__init__(root, file, imports_map, logger)
-        self.imports_map[self.file]["other_pacakages"] = []
+        self.imports_map[self.file]["other_packages"] = []
         self.import_paddle = False
 
     def visit_Import(self, node):
@@ -66,11 +66,11 @@ class ImportTransformer(BaseTransformer):
 
             if not belong_torch:
                 if alias_node.asname:
-                    self.imports_map[self.file]["other_pacakages"].append(
+                    self.imports_map[self.file]["other_packages"].append(
                         alias_node.asname
                     )
                 else:
-                    self.imports_map[self.file]["other_pacakages"].append(
+                    self.imports_map[self.file]["other_packages"].append(
                         alias_node.name
                     )
                 new_node_names.append(alias_node)
@@ -140,14 +140,14 @@ class ImportTransformer(BaseTransformer):
                     return node
                 dir_name = os.path.dirname(dir_name)
 
-        # import from site-packages, third_paty module, just add to others
+        # import from site-packages, third_party module, just add to others
         for alias_node in node.names:
             if alias_node.asname:
-                self.imports_map[self.file]["other_pacakages"].append(alias_node.asname)
+                self.imports_map[self.file]["other_packages"].append(alias_node.asname)
             else:
                 # from data_loader.modules import *
                 if alias_node.name != "*":
-                    self.imports_map[self.file]["other_pacakages"].append(
+                    self.imports_map[self.file]["other_packages"].append(
                         alias_node.name
                     )
 
