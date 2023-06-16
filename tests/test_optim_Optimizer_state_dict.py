@@ -16,7 +16,13 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.AdaptiveAvgPool1d")
+
+class optimOptimizerStateDictAPIBase(APIBase):
+    def compare(self, name, pytorch_result, paddle_result, check_value=True):
+        return pytorch_result["state"] == paddle_result
+
+
+obj = optimOptimizerStateDictAPIBase("torch.optim.Optimizer.state_dict")
 
 
 def test_case_1():
@@ -24,13 +30,16 @@ def test_case_1():
         """
         import torch
         import torch.nn as nn
-        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
-                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        model = nn.AdaptiveAvgPool1d(5)
-        result = model(x)
+
+        theta = torch.tensor([1.0,1.0], requires_grad=True)
+        optim = torch.optim.Optimizer([theta], defaults={"learning_rate": 1.0})
+        result = optim.state_dict()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+    )
 
 
 def test_case_2():
@@ -38,10 +47,19 @@ def test_case_2():
         """
         import torch
         import torch.nn as nn
-        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
-                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        model = nn.AdaptiveAvgPool1d(output_size=5)
-        result = model(x)
+
+        theta = torch.tensor([1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0], requires_grad=True)
+        l = torch.nn.Linear(10, 1)
+        optim = torch.optim.SGD(l.parameters(), lr = 1.0)
+        z = l(theta)
+        z.backward()
+        optim.step()
+        result = optim.state_dict()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="currently not support optimizer subclass API",
+    )

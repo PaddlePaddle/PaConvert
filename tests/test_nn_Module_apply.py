@@ -16,22 +16,20 @@ import textwrap
 
 from apibase import APIBase
 
-
-class cudaMaxMemoryAllocatedAPI(APIBase):
-    def compare(self, name, pytorch_result, paddle_result, check_value=True):
-        if hasattr(pytorch_result, "__call__"):
-            return True
-        return False
-
-
-obj = cudaMaxMemoryAllocatedAPI("torch.cuda.max_memory_allocated")
+obj = APIBase("torch.nn.Module.apply")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.cuda.max_memory_allocated
+        import torch.nn as nn
+        def init_weights(m):
+            pass
+        net = nn.Sequential(nn.Linear(2, 2,bias=False), nn.Linear(2, 2, bias=False))
+        net.apply(init_weights)
+        a =torch.tensor([0.,0.])
+        result = net(a)
         """
     )
     obj.run(pytorch_code, ["result"])

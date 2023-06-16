@@ -16,15 +16,18 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.max")
+obj = APIBase("torch.meshgrid")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, 2, 3], [3, 4, 6]])
-        result = torch.max(x)
+
+        x = torch.tensor([1, 2, 3])
+        y = torch.tensor([3, 4, 5])
+        grid_x, grid_y = torch.meshgrid(x, y, indexing='ij')
+        result = grid_x
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +37,11 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, 2, 3], [3, 4, 6]])
-        result = torch.max(x, dim=1)
+
+        x = torch.tensor([1, 2, 3])
+        y = torch.tensor([3, 4, 5])
+        grid_x, grid_y = torch.meshgrid(x, y, indexing='ij')
+        result = grid_y
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,8 +51,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, 2, 3], [3, 4, 6]])
-        result = torch.max(x, 1, True)
+        x = torch.tensor([1, 2, 3])
+        y = torch.tensor([3, 4, 5])
+        grid_x, grid_y = torch.meshgrid(x, y, indexing='xy')
+        result = grid_x
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -56,8 +64,10 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, 2, 3], [3, 4, 6]])
-        result = torch.max(x, dim=0, keepdim=True)
+        x = torch.tensor([1, 2, 3])
+        y = torch.tensor([3, 4, 5])
+        grid_x, grid_y = torch.meshgrid(x, y, indexing='xy')
+        result = grid_y
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -67,7 +77,11 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.max(torch.tensor([[1, 2, 3], [3, 4, 6]]))
+
+        x = torch.tensor([1, 2, 3])
+        y = torch.tensor([3, 4, 5])
+        grid_x, grid_y = torch.meshgrid(x, y)
+        result = grid_x
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -77,20 +91,25 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, 2, 1], [3, 4, 6]])
-        out = [torch.tensor(0), torch.tensor(1)]
-        torch.max(x, dim=1, keepdim=False, out=out)
+
+        x = torch.tensor([1, 2, 3])
+        y = torch.tensor([3, 4, 5])
+        grid_x, grid_y = torch.meshgrid(x, y)
+        result = grid_y
         """
     )
-    obj.run(pytorch_code, ["out"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        keepdim = False
-        result = torch.max(torch.tensor([[1, 2, 3], [3, 4, 6]]), 1, keepdim)
+
+        x = torch.tensor([1, 2, 3])
+        y = torch.tensor([3, 4, 5])
+        grid_x, grid_y= torch.meshgrid([x, y], indexing='ij')
+        result = grid_x
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -100,28 +119,12 @@ def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.max(torch.tensor([[1, 2, 3], [3, 4, 6]]), torch.tensor([[1, 0, 3], [3, 4, 3]]))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
 
-
-def test_case_9():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.max(torch.tensor([[1, 2, 3], [3, 4, 6]]), other=torch.tensor([[1, 0, 3], [3, 4, 3]]))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_10():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        y = torch.tensor([[1, 0, 3], [3, 4, 3]])
-        result = torch.max(torch.tensor([[1, 2, 3], [3, 4, 6]]), y)
+        x = torch.tensor([1, 2, 3])
+        y = torch.tensor([3, 4, 5])
+        z = [x, y]
+        grid_x, grid_y= torch.meshgrid(z, indexing='ij')
+        result = grid_x
         """
     )
     obj.run(pytorch_code, ["result"])

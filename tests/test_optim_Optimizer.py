@@ -14,24 +14,29 @@
 
 import textwrap
 
+import paddle
 from apibase import APIBase
 
 
-class cudaMaxMemoryAllocatedAPI(APIBase):
+class optimOptimizerAPIBase(APIBase):
     def compare(self, name, pytorch_result, paddle_result, check_value=True):
-        if hasattr(pytorch_result, "__call__"):
+        if isinstance(paddle_result, paddle.optimizer.optimizer.Optimizer):
             return True
         return False
 
 
-obj = cudaMaxMemoryAllocatedAPI("torch.cuda.max_memory_allocated")
+obj = optimOptimizerAPIBase("torch.optim.Optimizer")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.cuda.max_memory_allocated
+        import torch.nn as nn
+
+        theta = torch.tensor([1.0,1.0], requires_grad=True)
+        optim = torch.optim.Optimizer([theta], defaults={"learning_rate": 1.0})
+        result = type(optim)
         """
     )
     obj.run(pytorch_code, ["result"])
