@@ -3945,6 +3945,55 @@ class UnpoolMatcher(BaseMatcher):
 
 class SoftmaxMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "dim" not in kwargs:
+        if "dim" not in kwargs or "None" in kwargs["dim"]:
             return None
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class FunctionalSoftmaxMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "dim" not in kwargs or "None" in kwargs["dim"]:
+            return None
+
+        if "_stacklevel" in kwargs:
+            kwargs.pop("_stacklevel")
+
+        if "input" in kwargs:
+            kwargs["x"] = kwargs.pop("input").strip("\n")
+        if "dim" in kwargs:
+            kwargs["axis"] = kwargs.pop("dim").strip("\n")
+
+        return "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class FunctionalLinearMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["weight"] = kwargs["weight"].strip("\n") + ".transpose([1, 0])"
+
+        if "input" in kwargs:
+            kwargs["x"] = kwargs.pop("input").strip("\n")
+
+        return "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class FunctionalBilinearMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "bias" in kwargs:
+            kwargs["bias"] = kwargs["bias"].strip("\n") + ".unsqueeze(0)"
+
+        kwargs["x1"] = kwargs.pop("input1").strip("\n")
+        kwargs["x2"] = kwargs.pop("input2").strip("\n")
+
+        return "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class FunctionalOneHotMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "num_classes" not in kwargs:
+            kwargs["num_classes"] = "{}.max().item() + 1".format(kwargs["input"])
+
+        kwargs["x"] = kwargs.pop("input").strip("\n")
+
+        return "{}({}).astype('int64')".format(
+            self.get_paddle_api(), self.kwargs_to_str(kwargs)
+        )
