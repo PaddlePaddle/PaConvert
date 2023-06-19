@@ -52,3 +52,17 @@ def test_case_2():
     )
 
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        w0 = torch.Tensor([[0., 0., 0.],
+                    [1., 1., 1.],
+                    [2., 2., 2.],
+                    [3., 3., 3.]])
+        result = torch.nn.functional.embedding(x,embedding_matrix,padding_idx=0,max_norm=2)
+        """
+    )
+    obj.run(pytorch_code, unsupport=True, reason="paddle unsupport")

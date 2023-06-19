@@ -3659,7 +3659,7 @@
     ]
   },
   "torch.nn.functional.embedding": {
-    "Matcher": "FunctionalEmbeddingDMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.embedding",
     "args_list": [
       "input",
