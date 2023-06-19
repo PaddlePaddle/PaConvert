@@ -20,7 +20,7 @@ DEVELOP_IF="OFF"
 if [[ "$DEVELOP_IF" == "OFF" ]]; then
     cd /workspace/$2/PaConvert/
     PATH=$1
-    echo "Insalling cpu version paddle"
+    echo "Insalling cpu version torch"
     pip install --no-cache-dir  --force-reinstall torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
     python -c "import torch; print('torch version information:' ,torch.__version__)"
     echo "Insalling develop version paddle"
