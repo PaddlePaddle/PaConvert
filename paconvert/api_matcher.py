@@ -3614,23 +3614,3 @@ class DiffMatcher(BaseMatcher):
         if "n" in kwargs and kwargs["n"] != "(1)":
             return None
         return GenericMatcher.generate_code(self, kwargs)
-
-
-# class FunctionalEmbeddingMatcher(BaseMatcher):
-#     def generate_code(self, kwargs):
-#         if "max_norm" in kwargs and kwargs["max_norm"] is not None:
-#             return None
-#         if "norm_type" in kwargs:
-#             return None
-#         if "scale_grad_by_freq" in kwargs:
-#             return None
-
-#         if "kwargs_change" in self.api_mapping:
-#             kwargs_change = self.api_mapping["kwargs_change"]
-#             for key in list(kwargs_change.keys()):
-#                 if key in kwargs:
-#                     kwargs[kwargs_change[key]] = kwargs[key]
-#                     kwargs.pop(key)
-
-#         code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-#         return code
