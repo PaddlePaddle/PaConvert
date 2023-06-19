@@ -3437,6 +3437,51 @@ class FunctionalCrossEntropyMatcher(BaseMatcher):
         return code
 
 
+class FunctionalKLDivMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "size_average" in kwargs:
+            size_average = kwargs.pop("size_average")
+            if "True" in size_average:
+                size_average = True
+            elif "False" in size_average:
+                size_average = False
+            else:
+                size_average = None
+        else:
+            size_average = None
+
+        if "reduce" in kwargs:
+            reduce = kwargs.pop("reduce")
+            if "True" in reduce:
+                reduce = True
+            elif "False" in reduce:
+                reduce = False
+            else:
+                reduce = None
+        else:
+            reduce = None
+
+        if reduce is False:
+            kwargs["reduction"] = '"""none"""'
+        elif size_average or (size_average is None and reduce):
+            kwargs["reduction"] = '"""mean"""'
+        elif size_average is False:
+            kwargs["reduction"] = '"""sum"""'
+
+        if "target" in kwargs:
+            kwargs["label"] = kwargs.pop("target")
+        log_target = kwargs.pop("log_target", False)
+        API_TEMPLATE = "paddle.nn.functional.kl_div(input={}, label={}, reduction={})"
+        code = API_TEMPLATE.format(
+            kwargs.get("input"),
+            kwargs.get("label")
+            if log_target is False
+            else f"paddle.exp({kwargs.get('label')})",
+            kwargs.pop("reduction", '"""mean"""'),
+        )
+        return code
+
+
 class FunctionalSmoothL1LossMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "size_average" in kwargs:
