@@ -908,12 +908,6 @@ class CudaIsAvailableMatcher(BaseMatcher):
         return code
 
 
-class CudaIsBuiltMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        code = "not 'False' in paddle.version.cuda()"
-        return code
-
-
 class CudnnIsAvailableMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         code = "bool({}())".format(self.get_paddle_api().strip("\n"))
@@ -4116,3 +4110,45 @@ class SoftmaxMatcher(BaseMatcher):
             return None
 
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class SpawnMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "start_method" in kwargs:
+            kwargs.pop("start_method")
+
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class DistributedSamplerMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "seed" in kwargs:
+            kwargs.pop("seed")
+
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class ScalarTensorMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["data"] = kwargs.pop("s")
+        if "device" in kwargs:
+            kwargs.pop("device")
+
+        if "layout" in kwargs:
+            kwargs.pop("layout")
+
+        if "requires_grad" in kwargs:
+            kwargs["stop_gradient"] = "not " + kwargs.pop("requires_grad").strip("()")
+
+        pin_memory_v = False
+        if "pin_memory" in kwargs:
+            pin_memory_v = eval(kwargs.pop("pin_memory"))
+
+        if "dtype" not in kwargs:
+            kwargs["dtype"] = "paddle.float32"
+        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+        if pin_memory_v:
+            code += ".pin_memory()"
+
+        return code.strip("\n")
