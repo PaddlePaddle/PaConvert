@@ -1,6 +1,5 @@
 {
   "torch.nn.functional.log_softmax": {
-    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.log_softmax",
     "args_list": [
       "input",
@@ -4002,7 +4001,7 @@
     "paddle_api": "paddle.nn.Tanhshrink"
   },
   "torch.nn.Softmax": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "SoftmaxMatcher",
     "paddle_api": "paddle.nn.Softmax",
     "args_list": [
       "dim"
@@ -4012,7 +4011,7 @@
     }
   },
   "torch.nn.LogSoftmax": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "SoftmaxMatcher",
     "paddle_api": "paddle.nn.LogSoftmax",
     "args_list": [
       "dim"
@@ -4336,7 +4335,7 @@
     }
   },
   "torch.nn.functional.max_unpool1d": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "UnpoolMatcher",
     "paddle_api": "paddle.nn.functional.max_unpool1d",
     "args_list": [
       "input",
@@ -4348,10 +4347,13 @@
     ],
     "kwargs_change": {
       "input": "x"
-    }
+    },
+    "unsupport_args": [
+      "output_size"
+    ]
   },
   "torch.nn.functional.max_unpool2d": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "UnpoolMatcher",
     "paddle_api": "paddle.nn.functional.max_unpool2d",
     "args_list": [
       "input",
@@ -4366,7 +4368,7 @@
     }
   },
   "torch.nn.functional.max_unpool3d": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "UnpoolMatcher",
     "paddle_api": "paddle.nn.functional.max_unpool3d",
     "args_list": [
       "input",
@@ -4480,7 +4482,8 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.relu6",
     "args_list": [
-      "input"
+      "input",
+      "inplace"
     ],
     "kwargs_change": {
       "input": "x"
@@ -4571,7 +4574,7 @@
   },
   "torch.nn.functional.rrelu_": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.rrelu_",
+    "paddle_api": "paddle.nn.functional.rrelu",
     "args_list": [
       "input",
       "lower",
