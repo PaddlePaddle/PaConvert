@@ -392,37 +392,76 @@ class PadMatcher(BaseMatcher):
 
 class MaxMinMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
-        # call maximum usage, convert
-        call_maximinimum = False
-        if len(args) > 1 and isinstance(args[1], (ast.Name, ast.Subscript)):
-            call_maximinimum = True
 
         new_kwargs = self.parse_kwargs(kwargs)
+
+        call_maximinimum = False
+        if len(args) > 1 and not isinstance(args[1], ast.Num):
+            call_maximinimum = True
+
         if "other" in new_kwargs:
             call_maximinimum = True
 
+        # the case of two Tensor
         if call_maximinimum:
             return GenericMatcher(
                 self.transformer, self.torch_api, self.api_mapping, self.logger
             ).get_paddle_nodes(args, kwargs)
 
-        # return (values, indices) and paddle not implement, not convert
-        if len(args) > 1 and isinstance(args[1], ast.Num):
-            return None
-        if "dim" in new_kwargs:
-            return None
+        # the case of one Tensor
+        args_list = ["input", "dim", "keepdim", "out"]
 
-        # only return values, not return indices, convert
-        paddle_api = self.torch_api.replace("torch", "paddle")
-        if len(args) == 1:
-            x_v = astor.to_source(args[0]).strip("\n")
-            return ast.parse("{}(x={})".format(paddle_api, x_v)).body
+        # parse args to kwargs
+        for i in range(len(args)):
+            new_kwargs[args_list[i]] = astor.to_source(args[i]).strip("\n")
+        for node in kwargs:
+            new_kwargs[node.arg] = astor.to_source(node.value).strip("\n")
 
+        # change kwargs' name
         if "input" in new_kwargs:
-            x_v = new_kwargs["input"]
-            return ast.parse("{}(x={})".format(paddle_api, x_v)).body
+            new_kwargs["x"] = new_kwargs.pop("input")
+        if "dim" in new_kwargs:
+            new_kwargs["axis"] = new_kwargs.pop("dim")
 
-        return None
+        paddle_api = self.torch_api.replace("torch", "paddle")
+        paddle_api_arg = "paddle.argmin" if "min" in paddle_api else "paddle.argmax"
+
+        if "axis" in new_kwargs and "out" not in new_kwargs:
+            return ast.parse(
+                "{}({}), {}({})".format(
+                    paddle_api,
+                    self.kwargs_to_str(new_kwargs),
+                    paddle_api_arg,
+                    self.kwargs_to_str(new_kwargs),
+                )
+            ).body
+        elif "axis" not in new_kwargs and "out" not in new_kwargs:
+            return ast.parse(
+                "{}({})".format(paddle_api, self.kwargs_to_str(new_kwargs))
+            ).body
+        elif "axis" in new_kwargs and "out" in new_kwargs:
+            out_v = new_kwargs.pop("out")
+            API_TEMPLATE = textwrap.dedent(
+                """
+                paddle.assign({}({}), {}[0]), paddle.assign({}({}), {}[1])
+                """
+            )
+            code = API_TEMPLATE.format(
+                paddle_api,
+                self.kwargs_to_str(new_kwargs),
+                out_v,
+                paddle_api_arg,
+                self.kwargs_to_str(new_kwargs),
+                out_v,
+            )
+            return ast.parse(code.strip("\n")).body
+        else:
+            out_v = new_kwargs.pop("out")
+            return ast.parse(
+                "paddle.assign({}({}), {})".format(
+                    paddle_api, self.kwargs_to_str(new_kwargs), out_v
+                )
+            ).body
 
 
 class EqualMatcher(BaseMatcher):
@@ -4058,4 +4097,22 @@ class GradMatcher(BaseMatcher):
             return None
         if "is_grads_batched" in kwargs:
             kwargs.pop("is_grads_batched")
+
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class UnpoolMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["indices"] = (
+            "(" + kwargs.pop("indices").strip("\n") + ").astype('int32')"
+        )
+
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class SoftmaxMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "dim" not in kwargs:
+            return None
+
         return GenericMatcher.generate_code(self, kwargs)

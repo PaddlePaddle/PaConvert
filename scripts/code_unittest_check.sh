@@ -26,7 +26,8 @@ if [[ "$DEVELOP_IF" == "OFF" ]]; then
 fi
 
 echo "Checking code unit test by pytest ..."
-/root/anaconda3/envs/converage/bin/pytest /workspace/$2/PaConvert/tests;check_error=$?
+
+pytest /workspace/$2/PaConvert/tests;check_error=$?
 
 echo '************************************************************************************'
 echo "______      _____                          _   "
