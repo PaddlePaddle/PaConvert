@@ -908,12 +908,6 @@ class CudaIsAvailableMatcher(BaseMatcher):
         return code
 
 
-class CudaIsBuiltMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        code = "not 'False' in paddle.version.cuda()"
-        return code
-
-
 class CudnnIsAvailableMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         code = "bool({}())".format(self.get_paddle_api().strip("\n"))
