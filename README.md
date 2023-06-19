@@ -176,9 +176,15 @@ Thank you to use Paddle Code Convert Tool. You can make any suggestions to us.
 ### 依赖项
 在开发本项目之前，请确保已经安装了以下依赖项：
 
-#### 最新的develop版本的paddlepaddle库
+#### 最新版本的paddle库和torch库
 ```bash
+# cpu 版本的paddle
 python -m pip install paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
+```
+
+```bash
+# cpu 版本的torch
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 ```
 
 #### 其它库
