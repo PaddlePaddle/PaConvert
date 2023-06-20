@@ -16,22 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-
-class cudaMaxMemoryAllocatedAPI(APIBase):
-    def compare(self, name, pytorch_result, paddle_result, check_value=True):
-        return pytorch_result == paddle_result
-
-
-obj = cudaMaxMemoryAllocatedAPI("torch.cuda.max_memory_allocated")
+obj = APIBase("torch.nn.cosine_similarity")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            result = torch.cuda.max_memory_allocated()
+        import torch.nn.functional as F
+        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
+        y = torch.tensor([[8., 3., 3.], [2., 3., 4.]])
+        result = F.cosine_similarity(x, y)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -41,10 +36,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated()
+        import torch.nn.functional as F
+        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
+        y = torch.tensor([[8., 3., 3.], [2., 3., 4.]])
+        result = F.cosine_similarity(x, y, 1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -54,10 +49,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated(0)
+        import torch.nn.functional as F
+        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
+        y = torch.tensor([[8., 3., 3.], [2., 3., 4.]])
+        result = F.cosine_similarity(x, y, dim=1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -67,10 +62,23 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated(device=0)
+        import torch.nn.functional as F
+        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
+        y = torch.tensor([[8., 3., 3.], [2., 3., 4.]])
+        result = F.cosine_similarity(x1=x, x2=y, dim=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
+        y = torch.tensor([[8., 3., 3.], [2., 3., 4.]])
+        result = F.cosine_similarity(x, y, dim=1, eps=1e-5)
         """
     )
     obj.run(pytorch_code, ["result"])

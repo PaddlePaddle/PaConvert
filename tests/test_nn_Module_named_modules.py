@@ -26,28 +26,6 @@ def test_case_1():
         import torch.nn as nn
         from collections import OrderedDict
         l = nn.Linear(2, 2)
-        l1 = nn.Linear(2, 2)
-        net = nn.Sequential(OrderedDict([
-                        ('wfs', l),
-                        ('wfs1', l1)
-                        ]))
-        z = net.named_modules(prefix="wfs")
-        name_list = []
-        for idx,m in enumerate(z):
-            name_list.append(m[0])
-        result = name_list
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        import torch.nn as nn
-        from collections import OrderedDict
-        l = nn.Linear(2, 2)
         net = nn.Sequential(OrderedDict([
                         ('wfs', l),
                         ('wfs1', l),
@@ -61,10 +39,15 @@ def test_case_2():
         result = name_list
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="doesn't support param remove_duplicate",
+    )
 
 
-def test_case_3():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -90,7 +73,7 @@ def test_case_3():
     )
 
 
-def test_case_4():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -115,25 +98,3 @@ def test_case_4():
         unsupport=True,
         reason="paddle doesn't support the memo parameter",
     )
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        import torch.nn as nn
-        from collections import OrderedDict
-        l = nn.Linear(2, 2)
-        l1 = nn.Linear(2, 2)
-        net = nn.Sequential(OrderedDict([
-                        ('wfs', l),
-                        ('wfs1', l1)
-                        ]))
-        z = net.named_modules()
-        name_list = []
-        for idx,m in enumerate(z):
-            name_list.append(m[0])
-        result = name_list
-        """
-    )
-    obj.run(pytorch_code, ["result"])

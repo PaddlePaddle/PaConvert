@@ -16,22 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-
-class cudaMaxMemoryAllocatedAPI(APIBase):
-    def compare(self, name, pytorch_result, paddle_result, check_value=True):
-        return pytorch_result == paddle_result
-
-
-obj = cudaMaxMemoryAllocatedAPI("torch.cuda.max_memory_allocated")
+obj = APIBase("torch.nn.functional.one_hot")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            result = torch.cuda.max_memory_allocated()
+        import torch.nn.functional as F
+        x = torch.tensor([1, 2, 0, 3, 5]) % 3
+        result = F.one_hot(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -41,10 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated()
+        import torch.nn.functional as F
+        x = torch.tensor([1, 2, 0, 3, 5]) % 3
+        result = F.one_hot(x, 3)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -54,10 +47,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated(0)
+        import torch.nn.functional as F
+        x = torch.tensor([1, 2, 0, 3, 5]) % 3
+        result = F.one_hot(input=x, num_classes=3)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -67,10 +59,9 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated(device=0)
+        import torch.nn.functional as F
+        x = torch.tensor([1, 2, 0, 3, 5]) % 3
+        result = F.one_hot(input=x, num_classes=5)
         """
     )
     obj.run(pytorch_code, ["result"])
