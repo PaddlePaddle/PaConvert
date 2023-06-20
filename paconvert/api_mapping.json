@@ -8239,6 +8239,17 @@
   "torch.nn.Module.requires_grad_": {},
   "torch.nn.Module.zero_grad": {},
   "torch.nn.Module.share_memory": {},
+  "torch.nn.NLLLoss": {
+    "Matcher": "NLLLossMatcher",
+    "paddle_api": "paddle.nn.NLLLoss",
+    "args_list": [
+      "weight",
+      "size_average",
+      "ignore_index",
+      "reduce",
+      "reduction"
+    ]
+  },
   "torch.nn.CrossEntropyLoss": {
     "Matcher": "CrossEntropyLossMatcher",
     "paddle_api": "paddle.nn.CrossEntropyLoss",
