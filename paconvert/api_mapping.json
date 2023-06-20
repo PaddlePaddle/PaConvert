@@ -4911,13 +4911,15 @@
     }
   },
   "torch.nn.functional.cross_entropy": {
-    "Matcher": "FunctionalCrossEntropyMatcher",
+    "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.functional.cross_entropy",
     "args_list": [
       "input",
       "label",
       "weight",
+      "size_average",
       "ignore_index",
+      "reduce",
       "reduction",
       "label_smoothing"
     ],
@@ -4926,11 +4928,13 @@
     }
   },
   "torch.nn.functional.mse_loss": {
-    "Matcher": "FunctionalMseLossMatcher",
+    "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.functional.mse_loss",
     "args_list": [
       "input",
       "target",
+      "size_average",
+      "reduce",
       "reduction"
     ],
     "kwargs_change": {
@@ -4938,13 +4942,15 @@
     }
   },
   "torch.nn.functional.margin_ranking_loss": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.functional.margin_ranking_loss",
     "args_list": [
       "input1",
       "input2",
       "target",
       "margin",
+      "size_average",
+      "reduce",
       "reduction"
     ],
     "kwargs_change": {
@@ -4954,13 +4960,15 @@
     }
   },
   "torch.nn.functional.nll_loss": {
-    "Matcher": "FunctionalNllLossMatcher",
+    "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.functional.nll_loss",
     "args_list": [
       "input",
       "target",
       "weight",
+      "size_average",
       "ignore_index",
+      "reduce",
       "reduction"
     ],
     "kwargs_change": {
@@ -4973,6 +4981,8 @@
     "args_list": [
       "input",
       "target",
+      "size_average",
+      "reduce",
       "reduction",
       "beta"
     ],
@@ -5016,7 +5026,6 @@
     }
   },
   "torch.nn.functional.pad": {
-    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.pad",
     "args_list": [
       "input",
@@ -5201,9 +5210,6 @@
       "padding_mode",
       "device",
       "dtype"
-    ],
-    "unsupport_args": [
-      "padding_mode"
     ]
   },
   "torch.nn.Conv2d": {
@@ -5221,9 +5227,6 @@
       "padding_mode",
       "device",
       "dtype"
-    ],
-    "unsupport_args": [
-      "padding_mode"
     ]
   },
   "torch.nn.Conv3d": {
@@ -5241,9 +5244,6 @@
       "padding_mode",
       "device",
       "dtype"
-    ],
-    "unsupport_args": [
-      "padding_mode"
     ]
   },
   "torch.nn.ConvTranspose1d": {
@@ -8252,7 +8252,7 @@
   "torch.nn.Module.zero_grad": {},
   "torch.nn.Module.share_memory": {},
   "torch.nn.NLLLoss": {
-    "Matcher": "NLLLossMatcher",
+    "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.NLLLoss",
     "args_list": [
       "weight",
@@ -8263,7 +8263,7 @@
     ]
   },
   "torch.nn.CrossEntropyLoss": {
-    "Matcher": "CrossEntropyLossMatcher",
+    "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.CrossEntropyLoss",
     "args_list": [
       "weight",
@@ -8570,7 +8570,7 @@
     ]
   },
   "torch.nn.functional.l1_loss": {
-    "Matcher": "FunctionalL1LossMatcher",
+    "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.functional.l1_loss",
     "args_list": [
       "input",
@@ -8581,7 +8581,7 @@
     ]
   },
   "torch.nn.functional.binary_cross_entropy_with_logits": {
-    "Matcher": "FunctionalBinaryCrossEntropyWithLogitsMatcher",
+    "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.functional.binary_cross_entropy_with_logits",
     "args_list": [
       "input",
@@ -8660,7 +8660,8 @@
     ]
   },
   "torch.nn.BCEWithLogitsLoss": {
-    "Matcher": "BCEWithLogitsLossMatcher",
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.BCEWithLogitsLoss",
     "args_list": [
       "weight",
       "size_average",
