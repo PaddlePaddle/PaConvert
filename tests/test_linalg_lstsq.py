@@ -14,12 +14,37 @@
 
 import textwrap
 
+import numpy as np
 from apibase import APIBase
 
-obj = APIBase("torch.linalg.lstsq")
+
+class LstsqAPI(APIBase):
+    def compare(self, name, pytorch_result, paddle_result, check_value=True):
+        if isinstance(pytorch_result, (tuple, list)):
+            for i in range(len(pytorch_result)):
+                self.compare(self.pytorch_api, pytorch_result[i], paddle_result[i])
+            return
+
+        pytorch_numpy, paddle_numpy = pytorch_result.numpy(), paddle_result.numpy()
+        assert (
+            pytorch_result.requires_grad != paddle_result.stop_gradient
+        ), "API ({}): requires grad mismatch, torch tensor's requires_grad is {}, paddle tensor's stop_gradient is {}".format(
+            name, pytorch_result.requires_grad, paddle_result.stop_gradient
+        )
+        assert (
+            pytorch_numpy.shape == paddle_numpy.shape
+        ), "API ({}): shape mismatch, torch shape is {}, paddle shape is {}".format(
+            name, pytorch_numpy.shape, paddle_numpy.shape
+        )
+        assert np.allclose(
+            pytorch_numpy, paddle_numpy
+        ), "API ({}): paddle result has diff with pytorch result".format(name)
 
 
-def _test_case_1():
+obj = LstsqAPI("torch.linalg.lstsq")
+
+
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -31,7 +56,7 @@ def _test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch

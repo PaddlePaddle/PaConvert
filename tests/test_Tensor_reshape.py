@@ -27,7 +27,7 @@ def test_case_1():
         result = a.reshape(2, 2)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_2():
@@ -38,7 +38,7 @@ def test_case_2():
         result = a.reshape((2, 2))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_3():
@@ -49,7 +49,7 @@ def test_case_3():
         result = a.reshape([3, 3])
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_4():
@@ -61,7 +61,7 @@ def test_case_4():
         result = a.reshape(shape)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_5():
@@ -73,7 +73,7 @@ def test_case_5():
         result = a.reshape((k, k))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_6():
@@ -85,7 +85,7 @@ def test_case_6():
         result = a.reshape(k)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_7():
@@ -96,7 +96,7 @@ def test_case_7():
         result = a.reshape(-1)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_8():
@@ -107,7 +107,7 @@ def test_case_8():
         result = a.reshape(1)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_9():
@@ -118,7 +118,7 @@ def test_case_9():
         result = a.reshape(shape=(2, 3))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_10():
@@ -129,4 +129,4 @@ def test_case_10():
         result = a.reshape(shape=[2, 3])
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)

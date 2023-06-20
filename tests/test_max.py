@@ -38,12 +38,7 @@ def test_case_2():
         result = torch.max(x, dim=1)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not return index when dim is specified",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -54,12 +49,7 @@ def test_case_3():
         result = torch.max(x, 1, True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not return index when dim is specified",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -70,12 +60,7 @@ def test_case_4():
         result = torch.max(x, dim=0, keepdim=True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not return index when dim is specified",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -97,21 +82,46 @@ def test_case_6():
         torch.max(x, dim=1, keepdim=False, out=out)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["out"],
-        unsupport=True,
-        reason="paddle does not return index when dim is specified",
-    )
+    obj.run(pytorch_code, ["out"])
 
 
-# paddle does not return index when dim is specified
-def _test_case_7():
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        dim, keepdim = 1, False
-        result = torch.max(torch.tensor([[1, 2, 3], [3, 4, 6]]), dim, keepdim)
+        keepdim = False
+        result = torch.max(torch.tensor([[1, 2, 3], [3, 4, 6]]), 1, keepdim)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.max(torch.tensor([[1, 2, 3], [3, 4, 6]]), torch.tensor([[1, 0, 3], [3, 4, 3]]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.max(torch.tensor([[1, 2, 3], [3, 4, 6]]), other=torch.tensor([[1, 0, 3], [3, 4, 3]]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        y = torch.tensor([[1, 0, 3], [3, 4, 3]])
+        result = torch.max(torch.tensor([[1, 2, 3], [3, 4, 6]]), y)
         """
     )
     obj.run(pytorch_code, ["result"])
