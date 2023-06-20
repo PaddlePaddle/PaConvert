@@ -3187,6 +3187,24 @@ class TensorHardShrinkMatcher(BaseMatcher):
         return code
 
 
+class FunctionalKLDivMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        process_reduce_and_size_average(kwargs)
+
+        if "target" in kwargs:
+            kwargs["label"] = kwargs.pop("target")
+        log_target = kwargs.pop("log_target", False)
+        API_TEMPLATE = "paddle.nn.functional.kl_div(input={}, label={}, reduction={})"
+        code = API_TEMPLATE.format(
+            kwargs.get("input"),
+            kwargs.get("label")
+            if log_target is False
+            else f"paddle.exp({kwargs.get('label')})",
+            kwargs.pop("reduction", '"""mean"""'),
+        )
+        return code
+
+
 class FunctionalSmoothL1LossMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         process_reduce_and_size_average(kwargs)
