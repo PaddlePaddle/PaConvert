@@ -31,7 +31,10 @@
     "Matcher": "TensorRequires_GradMatcher",
     "paddle_api": "paddle.Tensor.stop_gradient"
   },
-  "torch.Tensor.is_sparse": {},
+  "torch.Tensor.is_sparse": {
+    "Matcher": "TensorIsSpareMatcher",
+    "paddle_api": "paddle.Tensor.is_sparse"
+  },
   "torch.Tensor.is_cuda": {},
   "torch.Tensor.is_quantized": {},
   "torch.Tensor.is_meta": {},

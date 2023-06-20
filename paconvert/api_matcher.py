@@ -3948,3 +3948,17 @@ class SoftmaxMatcher(BaseMatcher):
         if "dim" not in kwargs:
             return None
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class UtilsCppExtensionMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "name" in kwargs.keys():
+            kwargs.pop("name")
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class TensorIsSpareMatcher(BaseMatcher):
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+        code = "{}()".format(self.paddle_api)
+        return ast.parse(code).body[0].value

@@ -8657,5 +8657,41 @@
     "kwargs_change": {
       "eps": "epsilon"
     }
+  },
+  "torch.nn.Upsample": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Upsample",
+    "args_list": [
+      "size",
+      "scale_factor",
+      "mode",
+      "align_corners"
+    ],
+    "unsupport_args": [
+      "recompute_scale_factor"
+    ]
+  },
+  "torch.utils.data.SequentialSampler": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.io.SequenceSampler",
+    "args_list": [
+      "data_source"
+    ]
+  },
+  "torch.utils.cpp_extension.CUDAExtension": {
+    "Matcher": "UtilsCppExtensionMatcher",
+    "paddle_api": "paddle.utils.cpp_extension.CUDAExtension",
+    "args_list": [
+      "name",
+      "sources"
+    ]
+  },
+  "torch.utils.cpp_extension.CppExtension": {
+    "Matcher": "UtilsCppExtensionMatcher",
+    "paddle_api": "paddle.utils.cpp_extension.CppExtension",
+    "args_list": [
+      "name",
+      "sources"
+    ]
   }
 }
