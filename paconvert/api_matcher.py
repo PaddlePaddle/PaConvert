@@ -1078,7 +1078,7 @@ class RangeMatcher(BaseMatcher):
         out = get_unique_name("out")
         API_TEMPLACE = textwrap.dedent(
             """
-            {} = paddle.arange(start={}, end={}+1 if ({} - {}) % {} == 0 else {}, step={}, dtype={})
+            {} = paddle.arange(start={}, end={}+{} if ({} - {}) % {} == 0 else {}, step={}, dtype={})
             {}.stop_gradient = not {}
             {}
             """
@@ -1087,6 +1087,7 @@ class RangeMatcher(BaseMatcher):
             out,
             start,
             kwargs["end"],
+            step,
             kwargs["end"],
             start,
             step,
@@ -1104,10 +1105,12 @@ class MeshgridMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         new_args = self.parse_args(args)
         new_kwargs = self.parse_kwargs(kwargs)
-        if "indexing" in new_kwargs:
-            if "ij" not in new_kwargs["indexing"]:
-                return None
-        code = "{}({})".format(self.get_paddle_api(), self.args_to_str(new_args))
+        if "indexing" in new_kwargs and "ij" not in new_kwargs["indexing"]:
+            code = "list([i.T for i in {}({})])".format(
+                self.get_paddle_api(), self.args_to_str(new_args)
+            )
+        else:
+            code = "{}({})".format(self.get_paddle_api(), self.args_to_str(new_args))
         return ast.parse(code).body
 
 
@@ -2751,7 +2754,7 @@ class DivMatcher(BaseMatcher):
 
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle.divide({}, {})
+            paddle.divide({}, paddle.to_tensor({}))
             """
         )
         code = API_TEMPLATE.format(kwargs["input"], kwargs["other"])
@@ -3579,6 +3582,14 @@ class SoftmaxMatcher(BaseMatcher):
         if "dim" not in kwargs or "None" in kwargs["dim"]:
             return None
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class OptimOptimizerMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "paddle.optimizer.Optimizer(parameters={}, **{})".format(
+            kwargs.pop("params"), kwargs["defaults"]
+        )
+        return code
 
 
 class FunctionalSoftmaxMatcher(BaseMatcher):
