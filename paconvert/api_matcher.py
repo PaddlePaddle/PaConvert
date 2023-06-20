@@ -3581,7 +3581,7 @@ class FunctionalSoftmaxMatcher(BaseMatcher):
 
 class FunctionalLinearMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs["weight"] = kwargs["weight"].strip("\n") + ".transpose([1, 0])"
+        kwargs["weight"] = kwargs["weight"].strip("\n") + ".T"
 
         if "input" in kwargs:
             kwargs["x"] = kwargs.pop("input").strip("\n")
