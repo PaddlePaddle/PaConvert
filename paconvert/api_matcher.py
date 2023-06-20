@@ -18,7 +18,7 @@ import textwrap
 import astor
 
 from paconvert.base import BaseMatcher
-from paconvert.utils import get_unique_name
+from paconvert.utils import get_unique_name, process_reduce_and_size_average
 
 
 class GenericMatcher(BaseMatcher):
@@ -3189,7 +3189,7 @@ class TensorHardShrinkMatcher(BaseMatcher):
 
 class FunctionalSmoothL1LossMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        self.process_reduce_and_size_average(kwargs)
+        process_reduce_and_size_average(kwargs)
 
         if "target" in kwargs:
             kwargs["label"] = kwargs.pop("target")
@@ -3614,5 +3614,5 @@ class FunctionalOneHotMatcher(BaseMatcher):
 
 class SizeAverageMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        self.process_reduce_and_size_average(kwargs)
+        process_reduce_and_size_average(kwargs)
         return GenericMatcher.generate_code(self, kwargs)
