@@ -4892,7 +4892,7 @@
     }
   },
   "torch.nn.MSELoss": {
-    "Matcher": "MseLossMatcher",
+    "Matcher": "LossMatcher",
     "paddle_api": "paddle.nn.MSELoss",
     "args_list": [
       "size_average",
@@ -8676,7 +8676,6 @@
       "input": "x"
     }
   },
-
   "torch.nn.L1Loss": {
     "Matcher": "LossMatcher",
     "paddle_api": "paddle.nn.L1Loss",
@@ -8718,7 +8717,8 @@
       "dilation": "dilations",
       "padding": "paddings",
       "stride": "strides"
-
+    }
+  },
   "torch.nn.modules.batchnorm._BatchNorm": {
     "Matcher": "Modules_BatchNormBaseMatcher",
     "paddle_api": "paddle.nn.layer.norm._BatchNormBase",
@@ -8733,7 +8733,6 @@
     ],
     "kwargs_change": {
       "eps": "epsilon"
-
     }
   }
 }
