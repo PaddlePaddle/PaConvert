@@ -16,17 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.functional.l1_loss")
+obj = APIBase("torch.fft.irfft2")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn.functional as F
-        input = torch.tensor([ 2.5036,  1.2420, -0.5798])
-        target = torch.tensor([0., 1., 0.])
-        result = F.l1_loss(input, target)
+        t = torch.tensor([[3.+3.j, 2.+2.j, 3.+3.j], [2.+2.j, 2.+2.j, 3.+3.j]])
+        result = torch.fft.irfft2(t)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -36,10 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn.functional as F
-        input = torch.tensor([[ 2.5036,  1.2420, -0.5798],[ 2.5036,  1.2420, -1.5798]])
-        target = torch.tensor([[0., 1., 0.],[0., 1., 0.]])
-        result = F.l1_loss(input, target, reduce=False)
+        t = torch.tensor([[3.+3.j, 2.+2.j, 3.+3.j], [2.+2.j, 2.+2.j, 3.+3.j]])
+        result = torch.fft.irfft2(t, s=(2,3))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -49,10 +45,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn.functional as F
-        input = torch.tensor([[ 2.5036,  1.2420, -0.5798],[ 2.5036,  1.2420, -1.5798]])
-        target = torch.tensor([[0., 1., 0.],[0., 1., 0.]])
-        result = F.l1_loss(input, target, reduce=True)
+        t = torch.tensor([[3.+3.j, 2.+2.j, 3.+3.j], [2.+2.j, 2.+2.j, 3.+3.j]])
+        result = torch.fft.irfft2(t, dim=(0,1))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -62,10 +56,8 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn.functional as F
-        input = torch.tensor([[ 2.5036,  1.2420, -0.5798],[ 2.5036,  1.2420, -1.5798]])
-        target = torch.tensor([[0., 1., 0.],[0., 1., 0.]])
-        result = F.l1_loss(input, target, reduce="none")
+        t = torch.tensor([[3.+3.j, 2.+2.j, 3.+3.j], [2.+2.j, 2.+2.j, 3.+3.j]])
+        result = torch.fft.irfft2(t, norm='ortho')
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -75,10 +67,8 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn.functional as F
-        input = torch.tensor([[ 2.5036,  1.2420, -0.5798],[ 2.5036,  1.2420, -1.5798]])
-        target = torch.tensor([[0., 1., 0.],[0., 1., 0.]])
-        result = F.l1_loss(input, target, reduce="mean")
+        t = torch.tensor([[3.+3.j, 2.+2.j, 3.+3.j], [2.+2.j, 2.+2.j, 3.+3.j]])
+        result = torch.fft.irfft2(t, norm='backward')
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -88,11 +78,8 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn.functional as F
-        input = torch.tensor([[ 2.5036,  1.2420, -0.5798],[ 2.5036,  1.2420, -1.5798]])
-        target = torch.tensor([[0., 1., 0.],[0., 1., 0.]])
-        result = F.l1_loss(input, target, reduce="sum")
-        print(result)
+        t = torch.tensor([[3.+3.j, 2.+2.j, 3.+3.j], [2.+2.j, 2.+2.j, 3.+3.j]])
+        result = torch.fft.irfft2(t, norm='forward')
         """
     )
     obj.run(pytorch_code, ["result"])
