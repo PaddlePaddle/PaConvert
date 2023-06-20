@@ -4754,6 +4754,18 @@
       "momentum"
     ]
   },
+  "torch.nn.functional.kl_div": {
+    "Matcher": "FunctionalKLDivMatcher",
+    "paddle_api": "paddle.nn.functional.kl_div",
+    "args_list": [
+      "input",
+      "target",
+      "size_average",
+      "reduce",
+      "reduction",
+      "log_target"
+    ]
+  },
   "torch.nn.functional.layer_norm": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.layer_norm",
