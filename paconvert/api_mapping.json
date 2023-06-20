@@ -4562,7 +4562,7 @@
   },
   "torch.nn.functional.logsigmoid": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.logsigmoid",
+    "paddle_api": "paddle.nn.functional.log_sigmoid",
     "args_list": [
       "input"
     ],
@@ -4615,17 +4615,14 @@
     }
   },
   "torch.nn.functional.softmax": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "FunctionalSoftmaxMatcher",
     "paddle_api": "paddle.nn.functional.softmax",
     "args_list": [
       "input",
       "dim",
+      "_stacklevel",
       "dtype"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis"
-    }
+    ]
   },
   "torch.nn.functional.softmin": {
     "Matcher": "FSoftMinMatcher",
@@ -4754,7 +4751,8 @@
       "input",
       "p",
       "dim",
-      "eps"
+      "eps",
+      "out"
     ],
     "kwargs_change": {
       "input": "x",
@@ -4763,19 +4761,16 @@
     }
   },
   "torch.nn.functional.linear": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "FunctionalLinearMatcher",
     "paddle_api": "paddle.nn.functional.linear",
     "args_list": [
       "input",
       "weight",
       "bias"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    ]
   },
   "torch.nn.functional.bilinear": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "FunctionalBilinearMatcher",
     "paddle_api": "paddle.nn.functional.bilinear",
     "args_list": [
       "input1",
@@ -4841,7 +4836,7 @@
     }
   },
   "torch.nn.functional.one_hot": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "FunctionalOneHotMatcher",
     "paddle_api": "paddle.nn.functional.one_hot",
     "args_list": [
       "input",
