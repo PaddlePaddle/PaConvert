@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.functional.l1_loss")
+obj = APIBase("torch.nn.functional.upsample")
 
 
 def test_case_1():
@@ -24,9 +24,9 @@ def test_case_1():
         """
         import torch
         import torch.nn.functional as F
-        input = torch.tensor([ 2.5036,  1.2420, -0.5798])
-        target = torch.tensor([0., 1., 0.])
-        result = F.l1_loss(input, target)
+        x = torch.tensor([[[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]]])
+        result = F.upsample(x, size=(4, 20))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -37,9 +37,9 @@ def test_case_2():
         """
         import torch
         import torch.nn.functional as F
-        input = torch.tensor([[ 2.5036,  1.2420, -0.5798],[ 2.5036,  1.2420, -1.5798]])
-        target = torch.tensor([[0., 1., 0.],[0., 1., 0.]])
-        result = F.l1_loss(input, target, reduce=False)
+        x = torch.tensor([[[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]]])
+        result = F.upsample(x, (10, 10))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -50,9 +50,9 @@ def test_case_3():
         """
         import torch
         import torch.nn.functional as F
-        input = torch.tensor([[ 2.5036,  1.2420, -0.5798],[ 2.5036,  1.2420, -1.5798]])
-        target = torch.tensor([[0., 1., 0.],[0., 1., 0.]])
-        result = F.l1_loss(input, target, reduce=True)
+        x = torch.tensor([[[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]]])
+        result = F.upsample(x, scale_factor=2.0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -63,36 +63,23 @@ def test_case_4():
         """
         import torch
         import torch.nn.functional as F
-        input = torch.tensor([[ 2.5036,  1.2420, -0.5798],[ 2.5036,  1.2420, -1.5798]])
-        target = torch.tensor([[0., 1., 0.],[0., 1., 0.]])
-        result = F.l1_loss(input, target, reduce="none")
+        x = torch.tensor([[[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]]])
+        result = F.upsample(x, scale_factor=2.0, mode='nearest')
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_5():
+# When input is 3D or 5D, data_format does not change to `NCW` or `NCWHD` automatically.
+def _test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
         import torch.nn.functional as F
-        input = torch.tensor([[ 2.5036,  1.2420, -0.5798],[ 2.5036,  1.2420, -1.5798]])
-        target = torch.tensor([[0., 1., 0.],[0., 1., 0.]])
-        result = F.l1_loss(input, target, reduce="mean")
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        import torch.nn.functional as F
-        input = torch.tensor([[ 2.5036,  1.2420, -0.5798],[ 2.5036,  1.2420, -1.5798]])
-        target = torch.tensor([[0., 1., 0.],[0., 1., 0.]])
-        result = F.l1_loss(input, target, reduce="sum")
-        print(result)
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        result = F.upsample(x, scale_factor=2.0, mode='linear')
         """
     )
     obj.run(pytorch_code, ["result"])
