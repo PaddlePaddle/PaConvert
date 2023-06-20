@@ -4672,7 +4672,7 @@
     }
   },
   "torch.nn.functional.mse_loss": {
-    "Matcher": "FunctionalMseLossMatcher",
+    "Matcher": "LossMatcher",
     "paddle_api": "paddle.nn.functional.mse_loss",
     "args_list": [
       "input",
@@ -8135,7 +8135,7 @@
     ]
   },
   "torch.nn.functional.binary_cross_entropy": {
-    "Matcher": "FunctionalBinaryCrossEntropyMatcher",
+    "Matcher": "LossMatcher",
     "paddle_api": "paddle.nn.functional.binary_cross_entropy",
     "args_list": [
       "input",
@@ -8226,7 +8226,7 @@
     ]
   },
   "torch.nn.BCELoss": {
-    "Matcher": "BCELossMatcher",
+    "Matcher": "LossMatcher",
     "paddle_api": "paddle.nn.BCELoss",
     "args_list": [
       "weight",
@@ -8265,7 +8265,7 @@
     }
   },
   "torch.nn.L1Loss": {
-    "Matcher": "L1LossMatcher",
+    "Matcher": "LossMatcher",
     "paddle_api": "paddle.nn.L1Loss",
     "args_list": [
       "size_average",
