@@ -3365,43 +3365,20 @@ class UnfoldMatcher(BaseMatcher):
             kwargs_change = self.api_mapping["kwargs_change"]
             for key in list(kwargs_change.keys()):
                 if key in kwargs:
-                    if isinstance(ast.literal_eval(kwargs[key]), tuple):
-                        kwargs[key] = list(ast.literal_eval(kwargs[key]))
+                    if "input" not in key:
+                        if "(" in kwargs[key]:
+                            value = ast.literal_eval(kwargs[key])
+                            if isinstance(value, tuple):
+                                kwargs[key] = list(ast.literal_eval(kwargs[key]))
+                        else:
+                            kwargs[key] = "list({})".format(kwargs[key])
                     kwargs[kwargs_change[key]] = kwargs[key]
                     kwargs.pop(key)
 
         if "paddings" not in kwargs:
             kwargs["paddings"] = 0
 
-        API_TEMPLACE = textwrap.dedent(
-            """
-            paddle.nn.Unfold({})
-            """
-        )
-        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
-
-        return code
-
-
-class FunctionalUnfoldMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "kwargs_change" in self.api_mapping:
-            kwargs_change = self.api_mapping["kwargs_change"]
-            for key in list(kwargs_change.keys()):
-                if key in kwargs:
-                    if "input" not in key:
-                        if isinstance(ast.literal_eval(kwargs[key]), tuple):
-                            kwargs[key] = list(ast.literal_eval(kwargs[key]))
-                    kwargs[kwargs_change[key]] = kwargs[key]
-                    kwargs.pop(key)
-
-        API_TEMPLACE = textwrap.dedent(
-            """
-            paddle.nn.functional.unfold({})
-            """
-        )
-
-        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
+        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
         return code
 

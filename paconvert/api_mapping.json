@@ -8760,7 +8760,7 @@
     }
   },
   "torch.nn.functional.unfold": {
-    "Matcher": "FunctionalUnfoldMatcher",
+    "Matcher": "UnfoldMatcher",
     "paddle_api": "paddle.nn.functional.unfold",
     "args_list": [
       "input",
