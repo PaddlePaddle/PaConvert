@@ -894,7 +894,7 @@ class LayerNormMatcher(BaseMatcher):
             epsilon = kwargs["eps"]
 
         if "elementwise_affine" in kwargs and "False" in kwargs["elementwise_affine"]:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 """
                 paddle.nn.LayerNorm(normalized_shape={},
                                     epsilon={},
@@ -903,7 +903,7 @@ class LayerNormMatcher(BaseMatcher):
                 """
             )
         else:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 """
                 paddle.nn.LayerNorm(normalized_shape={},
                                     epsilon={},
@@ -911,7 +911,7 @@ class LayerNormMatcher(BaseMatcher):
                                     bias_attr=None)
                 """
             )
-        code = API_TEMPLACE.format(kwargs["normalized_shape"], epsilon)
+        code = API_TEMPLATE.format(kwargs["normalized_shape"], epsilon)
         return code
 
 
@@ -923,7 +923,7 @@ class GroupNormMatcher(BaseMatcher):
             epsilon = kwargs["eps"]
 
         if "affine" in kwargs and "False" in kwargs["affine"]:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 """
                 paddle.nn.GroupNorm(num_groups={},
                                     num_channels={},
@@ -933,7 +933,7 @@ class GroupNormMatcher(BaseMatcher):
                 """
             )
         else:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 """
                 paddle.nn.GroupNorm(num_groups={},
                                     num_channels={},
@@ -942,7 +942,7 @@ class GroupNormMatcher(BaseMatcher):
                                     bias_attr=None)
                 """
             )
-        code = API_TEMPLACE.format(
+        code = API_TEMPLATE.format(
             kwargs["num_groups"], kwargs["num_channels"], epsilon
         )
         return code
@@ -966,7 +966,7 @@ class BatchNormMatcher(BaseMatcher):
             momentum = 0.1
 
         if "affine" in kwargs and "False" in kwargs["affine"]:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 """
                 {}(num_features={},
                     momentum=1-{},
@@ -977,7 +977,7 @@ class BatchNormMatcher(BaseMatcher):
                 """
             )
         else:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 """
                 {}(num_features={},
                     momentum=1-{},
@@ -987,7 +987,7 @@ class BatchNormMatcher(BaseMatcher):
                     use_global_stats={})
                 """
             )
-        code = API_TEMPLACE.format(
+        code = API_TEMPLATE.format(
             self.get_paddle_api(),
             kwargs["num_features"],
             momentum,
@@ -1012,12 +1012,12 @@ class MaxPoolMatcher(BaseMatcher):
                     kwargs[kwargs_change[key]] = kwargs[key]
                     kwargs.pop(key)
 
-        API_TEMPLACE = textwrap.dedent(
+        API_TEMPLATE = textwrap.dedent(
             """
             {}({})
             """
         )
-        code = API_TEMPLACE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        code = API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
         return code
 
 
@@ -1029,21 +1029,21 @@ class SplitMatcher(BaseMatcher):
             axis = 0
 
         if "[" in kwargs["split_size_or_sections"]:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 """
                 paddle.split(x={}, num_or_sections={}, axis={})
                 """
             )
-            code = API_TEMPLACE.format(
+            code = API_TEMPLATE.format(
                 kwargs["tensor"], kwargs["split_size_or_sections"], axis
             )
         else:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 """
                 paddle.split(x={}, num_or_sections={}.shape[{}]//{}, axis={})
                 """
             )
-            code = API_TEMPLACE.format(
+            code = API_TEMPLATE.format(
                 kwargs["tensor"],
                 kwargs["tensor"],
                 axis,
@@ -1076,14 +1076,14 @@ class RangeMatcher(BaseMatcher):
             step = 1
 
         out = get_unique_name("out")
-        API_TEMPLACE = textwrap.dedent(
+        API_TEMPLATE = textwrap.dedent(
             """
             {} = paddle.arange(start={}, end={}+{} if ({} - {}) % {} == 0 else {}, step={}, dtype={})
             {}.stop_gradient = not {}
             {}
             """
         )
-        code = API_TEMPLACE.format(
+        code = API_TEMPLATE.format(
             out,
             start,
             kwargs["end"],
@@ -1131,12 +1131,12 @@ class TensorCopyMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
         args = self.parse_args(args)
-        API_TEMPLACE = textwrap.dedent(
+        API_TEMPLATE = textwrap.dedent(
             """
             paddle.assign({}, output={})
             """
         )
-        code = API_TEMPLACE.format(args[0], self.paddleClass)
+        code = API_TEMPLATE.format(args[0], self.paddleClass)
         return ast.parse(code).body
 
 
@@ -1144,12 +1144,12 @@ class TensorMaskedFillMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
         kwargs = self.parse_args_and_kwargs(args, kwargs)
-        API_TEMPLACE = textwrap.dedent(
+        API_TEMPLATE = textwrap.dedent(
             """
             paddle.where({}, {}, {})
             """
         )
-        code = API_TEMPLACE.format(kwargs["mask"], self.paddleClass, kwargs["value"])
+        code = API_TEMPLATE.format(kwargs["mask"], self.paddleClass, kwargs["value"])
         return ast.parse(code).body
 
 
@@ -1171,12 +1171,12 @@ class TensorUniqueMatcher(BaseMatcher):
                     kwargs[kwargs_change[key]] = kwargs[key]
                     kwargs.pop(key)
 
-        API_TEMPLACE = textwrap.dedent(
+        API_TEMPLATE = textwrap.dedent(
             """
             {}.unique({})
             """
         )
-        code = API_TEMPLACE.format(self.paddleClass, self.kwargs_to_str(kwargs))
+        code = API_TEMPLATE.format(self.paddleClass, self.kwargs_to_str(kwargs))
         return ast.parse(code).body
 
 
@@ -1209,12 +1209,12 @@ class TensorSoftmaxMatcher(BaseMatcher):
         else:
             return None
 
-        API_TEMPLACE = textwrap.dedent(
+        API_TEMPLATE = textwrap.dedent(
             """
             paddle.nn.functional.softmax({}, axis={})
             """
         )
-        code = API_TEMPLACE.format(self.paddleClass, axis)
+        code = API_TEMPLATE.format(self.paddleClass, axis)
         return ast.parse(code).body
 
 
@@ -1228,7 +1228,7 @@ class TensorRequiresGradMatcher(BaseMatcher):
         else:
             requires_grad_v = "True"
 
-        API_TEMPLACE = textwrap.dedent(
+        API_TEMPLATE = textwrap.dedent(
             """
             {} = {}
             {}.stop_gradient = not {}
@@ -1236,7 +1236,7 @@ class TensorRequiresGradMatcher(BaseMatcher):
             """
         )
         out = get_unique_name("out")
-        code = API_TEMPLACE.format(out, self.paddleClass, out, requires_grad_v, out)
+        code = API_TEMPLATE.format(out, self.paddleClass, out, requires_grad_v, out)
         return ast.parse(code.strip("\n")).body
 
 
@@ -1255,12 +1255,12 @@ class FunctionalMaxPool2DMatcher(BaseMatcher):
                     kwargs[kwargs_change[key]] = kwargs[key]
                     kwargs.pop(key)
 
-        API_TEMPLACE = textwrap.dedent(
+        API_TEMPLATE = textwrap.dedent(
             """
             paddle.nn.functional.max_pool2d({})
             """
         )
-        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
+        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
         return code
 
 
@@ -1276,12 +1276,12 @@ class LoadMatcher(BaseMatcher):
             if param in kwargs:
                 kwargs.pop(param)
 
-        API_TEMPLACE = textwrap.dedent(
+        API_TEMPLATE = textwrap.dedent(
             """
             paddle.load(path={})
             """
         )
-        code = API_TEMPLACE.format(kwargs["f"])
+        code = API_TEMPLATE.format(kwargs["f"])
         return code
 
 
@@ -1298,12 +1298,12 @@ class SaveMatcher(BaseMatcher):
         else:
             protocol = 4
 
-        API_TEMPLACE = textwrap.dedent(
+        API_TEMPLATE = textwrap.dedent(
             """
             paddle.save(obj={}, path={}, protocol={})
             """
         )
-        code = API_TEMPLACE.format(kwargs["obj"], kwargs["f"], protocol)
+        code = API_TEMPLATE.format(kwargs["obj"], kwargs["f"], protocol)
         return code
 
 
@@ -1739,7 +1739,7 @@ class InstanceNormMatcher(BaseMatcher):
             momentum = 0.1
 
         if "affine" in kwargs and "True" in kwargs["affine"]:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 """
                 {}(num_features={},
                     momentum=1-{},
@@ -1749,7 +1749,7 @@ class InstanceNormMatcher(BaseMatcher):
                 """
             )
         else:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 """
                 {}(num_features={},
                     momentum=1-{},
@@ -1759,7 +1759,7 @@ class InstanceNormMatcher(BaseMatcher):
                 """
             )
 
-        code = API_TEMPLACE.format(
+        code = API_TEMPLATE.format(
             self.get_paddle_api(), kwargs["num_features"], momentum, epsilon
         )
         return code
@@ -3294,7 +3294,7 @@ class RNNCellMatcher(BaseMatcher):
             kwargs.pop("device")
 
         if "bias" in kwargs and "False" in kwargs["bias"]:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 """
                 {}({},
                     bias_ih_attr=False,
@@ -3302,14 +3302,14 @@ class RNNCellMatcher(BaseMatcher):
                 """
             )
         else:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 """
                 {}({})
                 """
             )
         if "bias" in kwargs:
             kwargs.pop("bias")
-        code = API_TEMPLACE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        code = API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
         return code
 
 
@@ -3333,7 +3333,7 @@ class RNNMatcher(BaseMatcher):
             kwargs.pop("bidirectional")
 
         if "bias" in kwargs and "False" in kwargs["bias"]:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 """
                 {}({}, direction={}, time_major= not {},
                     bias_ih_attr=False,
@@ -3341,7 +3341,7 @@ class RNNMatcher(BaseMatcher):
                 """
             )
         else:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 """
                 {}({}, direction={}, time_major= not {})
                 """
@@ -3349,7 +3349,7 @@ class RNNMatcher(BaseMatcher):
 
         if "bias" in kwargs:
             kwargs.pop("bias")
-        code = API_TEMPLACE.format(
+        code = API_TEMPLATE.format(
             self.get_paddle_api(), self.kwargs_to_str(kwargs), direction, batch_first
         )
         return code
@@ -3370,7 +3370,7 @@ class ParameterMatcher(BaseMatcher):
         else:
             requires_grad_v = "True"
 
-        API_TEMPLACE = textwrap.dedent(
+        API_TEMPLATE = textwrap.dedent(
             """
             {} = paddle.create_parameter(shape={}.shape, dtype={}.numpy().dtype, default_initializer=paddle.nn.initializer.Assign({}))
             {}.stop_gradient = not {}
@@ -3378,7 +3378,7 @@ class ParameterMatcher(BaseMatcher):
             """
         )
         out = get_unique_name("out")
-        code = API_TEMPLACE.format(
+        code = API_TEMPLATE.format(
             out,
             kwargs["data"],
             kwargs["data"],
@@ -3408,7 +3408,7 @@ class Modules_BatchNormBaseMatcher(BaseMatcher):
             momentum = 0.1
 
         if "affine" in kwargs and "False" in kwargs["affine"]:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 """
                 {}(num_features={},
                     momentum=1-{},
@@ -3419,7 +3419,7 @@ class Modules_BatchNormBaseMatcher(BaseMatcher):
                 """
             )
         else:
-            API_TEMPLACE = textwrap.dedent(
+            API_TEMPLATE = textwrap.dedent(
                 """
                 {}(num_features={},
                     momentum=1-{},
@@ -3429,7 +3429,7 @@ class Modules_BatchNormBaseMatcher(BaseMatcher):
                     use_global_stats={})
                 """
             )
-        code = API_TEMPLACE.format(
+        code = API_TEMPLATE.format(
             self.get_paddle_api(),
             kwargs["num_features"],
             momentum,

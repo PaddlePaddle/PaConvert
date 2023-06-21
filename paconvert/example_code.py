@@ -430,9 +430,9 @@ from np import array
 np.add(x, y)
 array(1.0).abs().add(y)
 
-# should mark unspport
+# should mark unsupport
 torch.abs(x)
-# should not mark unspport
+# should not mark unsupport
 (array(1.0) + array(2.0)).abs()
 (array(1.0) - array(2.0)).abs()
 (array(1.0) * array(2.0).numpy()).abs()
@@ -516,7 +516,7 @@ x.device
 
 args.device
 
-# some badcase
+# some bad case
 x = x + self.pos_embed.expand(B, -1, -1).detach()
 
 (attn @ v).transpose(-2, -1)

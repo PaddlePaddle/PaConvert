@@ -79,8 +79,8 @@ def main():
 
     if args.run_check:
         cwd = os.path.dirname(__file__)
-        coverter = Converter(args.log_dir, args.log_level, args.show_unsupport)
-        coverter.run(cwd + "/example_code.py", cwd + "/temp_out/example_code.py")
+        converter = Converter(args.log_dir, args.log_level, args.show_unsupport)
+        converter.run(cwd + "/example_code.py", cwd + "/temp_out/example_code.py")
         sys.exit(0)
 
     if args.separate_convert:
@@ -92,13 +92,13 @@ def main():
         in_dir = os.path.abspath(args.in_dir)
         for pytorch_project in os.listdir(in_dir):
             pytorch_project = os.path.join(in_dir, pytorch_project)
-            coverter = Converter(args.log_dir, args.log_level, args.show_unsupport)
-            coverter.run(pytorch_project, args.out_dir, args.exclude_dirs)
-            if coverter.convert_rate == 1.0:
+            converter = Converter(args.log_dir, args.log_level, args.show_unsupport)
+            converter.run(pytorch_project, args.out_dir, args.exclude_dirs)
+            if converter.convert_rate == 1.0:
                 project_num_100 += 1
-            if coverter.convert_rate >= 0.95:
+            if converter.convert_rate >= 0.95:
                 project_num_95 += 1
-            if coverter.convert_rate >= 0.90:
+            if converter.convert_rate >= 0.90:
                 project_num_90 += 1
 
         project_num = len(os.listdir(in_dir))
@@ -120,8 +120,8 @@ def main():
         sys.exit(0)
 
     assert args.in_dir is not None, "User must specify --in_dir "
-    coverter = Converter(args.log_dir, args.log_level, args.show_unsupport)
-    coverter.run(args.in_dir, args.out_dir, args.exclude_dirs)
+    converter = Converter(args.log_dir, args.log_level, args.show_unsupport)
+    converter.run(args.in_dir, args.out_dir, args.exclude_dirs)
 
     print(r"****************************************************************")
     print(r"______      _____                          _   ")
