@@ -28,7 +28,7 @@ def _test_case_1():
                 name='cuda_extension',
                 sources=['extension.cpp'],
                 extra_compile_args=['-g'])
-
+        result = True
         """
     )
-    obj.run(pytorch_code, unsupport=True, reason="Execute Compilation Options")
+    obj.run(pytorch_code, ["result"])

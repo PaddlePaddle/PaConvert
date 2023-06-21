@@ -29,7 +29,7 @@ def _test_case_1():
                 sources=['extension.cpp', 'extension_kernel.cu'],
                 extra_compile_args={'cxx': ['-g'],
                                     'nvcc': ['-O2']})
-
+        result = True
         """
     )
-    obj.run(pytorch_code, unsupport=True, reason="Execute Compilation Options")
+    obj.run(pytorch_code, ["result"])
