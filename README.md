@@ -399,7 +399,7 @@ class Chain_MatmulMatcher(BaseMatcher):
 ```
 class TransposeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        API_TEMPLACE = textwrap.dedent(
+        API_TEMPLATE = textwrap.dedent(
             '''
             {} = list(range(len({}.shape)))
             {}[{}] = {}
@@ -408,7 +408,7 @@ class TransposeMatcher(BaseMatcher):
             '''
         )
         perm = unique_name('perm')
-        code = API_TEMPLACE.format(perm, kwargs['input'],
+        code = API_TEMPLATE.format(perm, kwargs['input'],
                 perm, kwargs['dim0'], kwargs['dim1'],
                 perm, kwargs['dim1'], kwargs['dim0'],
                 kwargs['input'], perm)
@@ -556,15 +556,15 @@ import paddle_aux
 x.reshape(2, 3)
 ```
 
-**开发注意事项**：
+### 开发规范
 
-**1) 代码精简与美观性**。要求尽可能只通过一行代码、一个API来实现（代码越少越好）。如果确实无法实现，才考虑通过多行代码、多个API来辅助实现该功能。
+1) 代码精简与美观性。要求尽可能只通过一行代码、一个API来实现（代码越少越好）。如果确实无法实现，才考虑通过多行代码、多个API来辅助实现该功能。
 
-**2) 维护与负责**。由于单测可能覆盖不全面，导致引入了非常隐蔽的用法bug，开发者需要后续维护自己开发的API转换规则。解决新反馈的用法case问题。
+2) 维护与负责。由于单测可能覆盖不全面，导致引入了非常隐蔽的用法bug，开发者需要后续维护自己开发的API转换规则。解决新反馈的用法case问题。
 
-**3) API功能缺失**。如果是整个API都缺失的，只需在API映射表中标注 **功能缺失** 即可，无需其他开发。如果是API局部功能缺失，则对功能缺失点，在代码中返回None表示不支持，同时在API映射表中说明此功能点 **Paddle暂无转写方式**，同时编写单测但可以注释掉不运行；对其他功能点正常开发即可。
+3) API功能缺失。如果是整个API都缺失的，只需在API映射表中标注 **功能缺失** 即可，无需其他开发。如果是API局部功能缺失，则对功能缺失点，在代码中返回None表示不支持，同时在API映射表中说明此功能点 **Paddle暂无转写方式**，同时编写单测但可以注释掉不运行；对其他功能点正常开发即可。
 
-**开发技巧**
+### 开发技巧
 
 1）可以参考一些写的较为规范的Matcher：
 - 传入参数既可以是可变参数，也可以是列表或元组时，例如 `TensorExpandMatcher`
