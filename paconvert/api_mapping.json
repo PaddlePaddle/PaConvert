@@ -8747,5 +8747,34 @@
     "unsupport_args": [
       "cache_enabled"
     ]
+  },
+  "torch.cuda.amp.GradScaler": {
+    "Matcher": "CudaAmpGradScalerMatcher",
+    "paddle_api": "paddle.amp.GradScaler",
+    "args_list": [
+      "init_scale",
+      "growth_factor",
+      "backoff_factor",
+      "growth_interval",
+      "enabled"
+    ],
+    "kwargs_change": {
+      "init_scale": "init_loss_scaling",
+      "growth_factor": "incr_ratio",
+      "backoff_factor": "decr_ratio",
+      "growth_interval": "incr_every_n_steps",
+      "enabled": "enable"
+    }
+  },
+  "torch.cuda.Stream": {
+    "Matcher": "CudaStreamMatcher",
+    "paddle_api": "paddle.device.cuda.Stream",
+    "args_list": [
+      "device",
+      "priority"
+    ],
+    "kwargs_change": {
+      "device": "device"
+    }
   }
 }

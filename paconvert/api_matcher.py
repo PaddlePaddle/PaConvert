@@ -3672,3 +3672,52 @@ class CudaAmpAutocastMatcher(BaseMatcher):
         code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
 
         return code
+
+
+class CudaAmpGradScalerMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        kwargs_change = {}
+        if "kwargs_change" in self.api_mapping:
+            kwargs_change = self.api_mapping["kwargs_change"]
+        new_kwargs = {}
+
+        if "init_scale" not in list(kwargs.keys()):
+            new_kwargs["init_loss_scaling"] = 65536.0
+
+        if "growth_interval" not in list(kwargs.keys()):
+            new_kwargs["incr_every_n_steps"] = 2000
+
+        for k in list(kwargs.keys()):
+            if k in kwargs_change:
+                if kwargs_change[k]:
+                    # rename/copy in new_kwargs
+                    new_kwargs[kwargs_change[k]] = kwargs.pop(k)
+                else:
+                    # remove in new_kwargs
+                    kwargs.pop(k)
+            else:
+                # copy to new_kwargs
+                new_kwargs[k] = kwargs.pop(k)
+
+        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
+
+        return code
+
+
+class CudaStreamMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if "priority" in list(kwargs.keys()):
+            kwargs["priority"] = 1 if "-1" in kwargs["priority"] else 2
+
+        if "device" in list(kwargs.keys()):
+            if "cuda" in kwargs["device"]:
+                import re
+
+                device_list = re.findall(r"\d+", kwargs["device"])
+                if len(device_list) > 0:
+                    kwargs["device"] = device_list[0]
+                else:
+                    kwargs["device"] = None
+        return GenericMatcher.generate_code(self, kwargs)
