@@ -3651,7 +3651,8 @@ class UtilsCppExtensionMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "name" in kwargs:
             kwargs.pop("name")
-        return GenericMatcher.generate_code(self, kwargs)
+        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        return code
 
 
 class TensorIsSpareMatcher(BaseMatcher):
