@@ -18,7 +18,7 @@ import textwrap
 import astor
 
 from paconvert.base import BaseMatcher
-from paconvert.utils import get_unique_name
+from paconvert.utils import get_unique_name, process_reduce_and_size_average
 
 
 class GenericMatcher(BaseMatcher):
@@ -189,17 +189,19 @@ class TensorAddMatcher(BaseMatcher):
         if "alpha" in kwargs:
             API_TEMPLATE = textwrap.dedent(
                 """
-                paddle.Tensor.add(y={}*{})
+                {}.add(y=paddle.to_tensor({})*{})
                 """
             )
-            code = API_TEMPLATE.format(kwargs["alpha"], kwargs["other"])
+            code = API_TEMPLATE.format(
+                self.paddleClass, kwargs["alpha"], kwargs["other"]
+            )
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
-                paddle.Tensor.add(y={})
+                {}.add(y=paddle.to_tensor({}))
                 """
             )
-            code = API_TEMPLATE.format(kwargs["other"])
+            code = API_TEMPLATE.format(self.paddleClass, kwargs["other"])
         return code
 
 
@@ -854,54 +856,6 @@ class TensorNormal_Matcher(BaseMatcher):
         return code.strip("\n")
 
 
-class CrossEntropyLossMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "size_average" in kwargs:
-            size_average = kwargs.pop("size_average")
-            if "True" in size_average:
-                size_average = True
-            elif "False" in size_average:
-                size_average = False
-            else:
-                size_average = None
-        else:
-            size_average = None
-
-        if "reduce" in kwargs:
-            reduce = kwargs.pop("reduce")
-            if "True" in reduce:
-                reduce = True
-            elif "False" in reduce:
-                reduce = False
-            else:
-                reduce = None
-        else:
-            reduce = None
-
-        if size_average is not None or reduce is not None:
-            if size_average is None:
-                size_average = True
-            if reduce is None:
-                reduce = True
-
-            if size_average and reduce:
-                reduction = '"""mean"""'
-            elif reduce:
-                reduction = '"""sum"""'
-            else:
-                reduction = '"""none"""'
-
-            kwargs["reduction"] = reduction
-
-        API_TEMPLACE = textwrap.dedent(
-            """
-            paddle.nn.CrossEntropyLoss({})
-            """
-        )
-        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
-        return code
-
-
 class CudaIsAvailableMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         code = "{}() >= 1".format(self.get_paddle_api().strip("\n"))
@@ -1130,7 +1084,7 @@ class RangeMatcher(BaseMatcher):
         out = get_unique_name("out")
         API_TEMPLACE = textwrap.dedent(
             """
-            {} = paddle.arange(start={}, end={}+1 if ({} - {}) % {} == 0 else {}, step={}, dtype={})
+            {} = paddle.arange(start={}, end={}+{} if ({} - {}) % {} == 0 else {}, step={}, dtype={})
             {}.stop_gradient = not {}
             {}
             """
@@ -1139,6 +1093,7 @@ class RangeMatcher(BaseMatcher):
             out,
             start,
             kwargs["end"],
+            step,
             kwargs["end"],
             start,
             step,
@@ -1156,10 +1111,12 @@ class MeshgridMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         new_args = self.parse_args(args)
         new_kwargs = self.parse_kwargs(kwargs)
-        if "indexing" in new_kwargs:
-            if "ij" not in new_kwargs["indexing"]:
-                return None
-        code = "{}({})".format(self.get_paddle_api(), self.args_to_str(new_args))
+        if "indexing" in new_kwargs and "ij" not in new_kwargs["indexing"]:
+            code = "list([i.T for i in {}({})])".format(
+                self.get_paddle_api(), self.args_to_str(new_args)
+            )
+        else:
+            code = "{}({})".format(self.get_paddle_api(), self.args_to_str(new_args))
         return ast.parse(code).body
 
 
@@ -1287,111 +1244,6 @@ class TensorRequiresGradMatcher(BaseMatcher):
         out = get_unique_name("out")
         code = API_TEMPLACE.format(out, self.paddleClass, out, requires_grad_v, out)
         return ast.parse(code.strip("\n")).body
-
-
-class FunctionalL1LossMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "size_average" in kwargs:
-            size_average = kwargs.pop("size_average")
-            if "True" in size_average:
-                size_average = True
-            elif "False" in size_average:
-                size_average = False
-            else:
-                size_average = None
-        else:
-            size_average = None
-
-        if "reduce" in kwargs:
-            reduce = kwargs.pop("reduce")
-            if "True" in reduce:
-                reduce = True
-            elif "False" in reduce:
-                reduce = False
-            else:
-                reduce = None
-        else:
-            reduce = None
-
-        if size_average is not None or reduce is not None:
-            if size_average is None:
-                size_average = True
-            if reduce is None:
-                reduce = True
-
-            if size_average and reduce:
-                reduction = '"""mean"""'
-            elif reduce:
-                reduction = '"""sum"""'
-            else:
-                reduction = '"""none"""'
-
-            kwargs["reduction"] = reduction
-
-        if "target" in kwargs:
-            kwargs["label"] = kwargs.pop("target")
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle.nn.functional.l1_loss({})
-            """
-        )
-        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
-        return code
-
-
-class FunctionalBinaryCrossEntropyWithLogitsMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "size_average" in kwargs:
-            size_average = kwargs.pop("size_average")
-            if "True" in size_average:
-                size_average = True
-            elif "False" in size_average:
-                size_average = False
-            else:
-                size_average = None
-        else:
-            size_average = None
-
-        if "reduce" in kwargs:
-            reduce = kwargs.pop("reduce")
-            if "True" in reduce:
-                reduce = True
-            elif "False" in reduce:
-                reduce = False
-            else:
-                reduce = None
-        else:
-            reduce = None
-
-        if size_average is not None or reduce is not None:
-            if size_average is None:
-                size_average = True
-            if reduce is None:
-                reduce = True
-
-            if size_average and reduce:
-                reduction = '"""mean"""'
-            elif reduce:
-                reduction = '"""sum"""'
-            else:
-                reduction = '"""none"""'
-
-            kwargs["reduction"] = reduction
-
-        if "input" in kwargs:
-            kwargs["logit"] = kwargs.pop("input")
-
-        if "target" in kwargs:
-            kwargs["label"] = kwargs.pop("target")
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle.nn.functional.binary_cross_entropy_with_logits({})
-            """
-        )
-        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
-        return code
 
 
 class FunctionalMaxPool2DMatcher(BaseMatcher):
@@ -1916,54 +1768,6 @@ class InstanceNormMatcher(BaseMatcher):
         code = API_TEMPLACE.format(
             self.get_paddle_api(), kwargs["num_features"], momentum, epsilon
         )
-        return code
-
-
-class BCEWithLogitsLossMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "size_average" in kwargs:
-            size_average = kwargs.pop("size_average")
-            if "True" in size_average:
-                size_average = True
-            elif "False" in size_average:
-                size_average = False
-            else:
-                size_average = None
-        else:
-            size_average = None
-
-        if "reduce" in kwargs:
-            reduce = kwargs.pop("reduce")
-            if "True" in reduce:
-                reduce = True
-            elif "False" in reduce:
-                reduce = False
-            else:
-                reduce = None
-        else:
-            reduce = None
-
-        if size_average is not None or reduce is not None:
-            if size_average is None:
-                size_average = True
-            if reduce is None:
-                reduce = True
-
-            if size_average and reduce:
-                reduction = '"""mean"""'
-            elif reduce:
-                reduction = '"""sum"""'
-            else:
-                reduction = '"""none"""'
-
-            kwargs["reduction"] = reduction
-
-        API_TEMPLACE = textwrap.dedent(
-            """
-            paddle.nn.BCEWithLogitsLoss({})
-            """
-        )
-        code = API_TEMPLACE.format(self.kwargs_to_str(kwargs))
         return code
 
 
@@ -2956,7 +2760,7 @@ class DivMatcher(BaseMatcher):
 
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle.divide({}, {})
+            paddle.divide({}, paddle.to_tensor({}))
             """
         )
         code = API_TEMPLATE.format(kwargs["input"], kwargs["other"])
@@ -3392,95 +3196,27 @@ class TensorHardShrinkMatcher(BaseMatcher):
         return code
 
 
-class FunctionalCrossEntropyMatcher(BaseMatcher):
+class FunctionalKLDivMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "size_average" in kwargs:
-            size_average = kwargs.pop("size_average")
-            if "True" in size_average:
-                size_average = True
-            elif "False" in size_average:
-                size_average = False
-            else:
-                size_average = None
-        else:
-            size_average = None
-
-        if "reduce" in kwargs:
-            reduce = kwargs.pop("reduce")
-            if "True" in reduce:
-                reduce = True
-            elif "False" in reduce:
-                reduce = False
-            else:
-                reduce = None
-        else:
-            reduce = None
-
-        if size_average is not None or reduce is not None:
-            if size_average is None:
-                size_average = True
-            if reduce is None:
-                reduce = True
-
-            if size_average and reduce:
-                reduction = '"""mean"""'
-            elif reduce:
-                reduction = '"""sum"""'
-            else:
-                reduction = '"""none"""'
-
-            kwargs["reduction"] = reduction
+        process_reduce_and_size_average(kwargs)
 
         if "target" in kwargs:
             kwargs["label"] = kwargs.pop("target")
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle.nn.functional.cross_entropy({})
-            """
+        log_target = kwargs.pop("log_target", False)
+        API_TEMPLATE = "paddle.nn.functional.kl_div(input={}, label={}, reduction={})"
+        code = API_TEMPLATE.format(
+            kwargs.get("input"),
+            kwargs.get("label")
+            if log_target is False
+            else f"paddle.exp({kwargs.get('label')})",
+            kwargs.pop("reduction", '"""mean"""'),
         )
-        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
         return code
 
 
 class FunctionalSmoothL1LossMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "size_average" in kwargs:
-            size_average = kwargs.pop("size_average")
-            if "True" in size_average:
-                size_average = True
-            elif "False" in size_average:
-                size_average = False
-            else:
-                size_average = None
-        else:
-            size_average = None
-
-        if "reduce" in kwargs:
-            reduce = kwargs.pop("reduce")
-            if "True" in reduce:
-                reduce = True
-            elif "False" in reduce:
-                reduce = False
-            else:
-                reduce = None
-        else:
-            reduce = None
-
-        if size_average is not None or reduce is not None:
-            if size_average is None:
-                size_average = True
-            if reduce is None:
-                reduce = True
-
-            if size_average and reduce:
-                reduction = '"""mean"""'
-            elif reduce:
-                reduction = '"""sum"""'
-            else:
-                reduction = '"""none"""'
-
-            kwargs["reduction"] = reduction
+        process_reduce_and_size_average(kwargs)
 
         if "target" in kwargs:
             kwargs["label"] = kwargs.pop("target")
@@ -3495,108 +3231,6 @@ class FunctionalSmoothL1LossMatcher(BaseMatcher):
 
         code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
 
-        return code
-
-
-class FunctionalNllLossMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "size_average" in kwargs:
-            size_average = kwargs.pop("size_average")
-            if "True" in size_average:
-                size_average = True
-            elif "False" in size_average:
-                size_average = False
-            else:
-                size_average = None
-        else:
-            size_average = None
-
-        if "reduce" in kwargs:
-            reduce = kwargs.pop("reduce")
-            if "True" in reduce:
-                reduce = True
-            elif "False" in reduce:
-                reduce = False
-            else:
-                reduce = None
-        else:
-            reduce = None
-
-        if size_average is not None or reduce is not None:
-            if size_average is None:
-                size_average = True
-            if reduce is None:
-                reduce = True
-
-            if size_average and reduce:
-                reduction = '"""mean"""'
-            elif reduce:
-                reduction = '"""sum"""'
-            else:
-                reduction = '"""none"""'
-
-            kwargs["reduction"] = reduction
-
-        if "target" in kwargs:
-            kwargs["label"] = kwargs.pop("target")
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle.nn.functional.nll_loss({})
-            """
-        )
-        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
-        return code
-
-
-class FunctionalMseLossMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "size_average" in kwargs:
-            size_average = kwargs.pop("size_average")
-            if "True" in size_average:
-                size_average = True
-            elif "False" in size_average:
-                size_average = False
-            else:
-                size_average = None
-        else:
-            size_average = None
-
-        if "reduce" in kwargs:
-            reduce = kwargs.pop("reduce")
-            if "True" in reduce:
-                reduce = True
-            elif "False" in reduce:
-                reduce = False
-            else:
-                reduce = None
-        else:
-            reduce = None
-
-        if size_average is not None or reduce is not None:
-            if size_average is None:
-                size_average = True
-            if reduce is None:
-                reduce = True
-
-            if size_average and reduce:
-                reduction = '"""mean"""'
-            elif reduce:
-                reduction = '"""sum"""'
-            else:
-                reduction = '"""none"""'
-
-            kwargs["reduction"] = reduction
-
-        if "target" in kwargs:
-            kwargs["label"] = kwargs.pop("target")
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle.nn.functional.mse_loss({})
-            """
-        )
-        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
         return code
 
 
@@ -4106,7 +3740,70 @@ class UnpoolMatcher(BaseMatcher):
 
 class SoftmaxMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "dim" not in kwargs:
+        if "dim" not in kwargs or "None" in kwargs["dim"]:
             return None
 
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class OptimOptimizerMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "paddle.optimizer.Optimizer(parameters={}, **{})".format(
+            kwargs.pop("params"), kwargs["defaults"]
+        )
+        return code
+
+
+class FunctionalSoftmaxMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "dim" not in kwargs or "None" in kwargs["dim"]:
+            return None
+
+        if "_stacklevel" in kwargs:
+            kwargs.pop("_stacklevel")
+
+        if "input" in kwargs:
+            kwargs["x"] = kwargs.pop("input").strip("\n")
+        if "dim" in kwargs:
+            kwargs["axis"] = kwargs.pop("dim").strip("\n")
+
+        return "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class FunctionalLinearMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["weight"] = kwargs["weight"].strip("\n") + ".T"
+
+        if "input" in kwargs:
+            kwargs["x"] = kwargs.pop("input").strip("\n")
+
+        return "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class FunctionalBilinearMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "bias" in kwargs:
+            kwargs["bias"] = kwargs["bias"].strip("\n") + ".unsqueeze(0)"
+
+        kwargs["x1"] = kwargs.pop("input1").strip("\n")
+        kwargs["x2"] = kwargs.pop("input2").strip("\n")
+
+        return "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class FunctionalOneHotMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "num_classes" not in kwargs:
+            kwargs["num_classes"] = "{}.max().item() + 1".format(kwargs["input"])
+
+        kwargs["x"] = kwargs.pop("input").strip("\n")
+
+        return "{}({}).astype('int64')".format(
+            self.get_paddle_api(), self.kwargs_to_str(kwargs)
+        )
+
+
+class SizeAverageMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        process_reduce_and_size_average(kwargs)
         return GenericMatcher.generate_code(self, kwargs)
