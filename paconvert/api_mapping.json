@@ -2437,6 +2437,21 @@
       "other": "y"
     }
   },
+  "torch.testing.assert_allclose": {
+    "Matcher": "AllcloseMatcher",
+    "paddle_api": "paddle.allclose",
+    "args_list": [
+      "input",
+      "other",
+      "rtol",
+      "atol",
+      "equal_nan"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "other": "y"
+    }
+  },
   "torch.eq": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.equal",
@@ -8438,7 +8453,7 @@
     ]
   },
   "torch.nn.SyncBatchNorm.convert_sync_batchnorm": {
-    "Matcher": "BatchNormMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.SyncBatchNorm.convert_sync_batchnorm",
     "args_list": [
       "module",

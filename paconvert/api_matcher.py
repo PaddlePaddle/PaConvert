@@ -2791,6 +2791,18 @@ class AllcloseMatcher(BaseMatcher):
         return code
 
 
+class Assert_AllcloseMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["x"], kwargs["y"] = kwargs.pop("actual"), kwargs.pop("expected")
+        msg = "''"
+        if "msg" in kwargs:
+            msg = kwargs.pop("msg")
+        code = "assert paddle.allclose({}).item(), {}".format(
+            self.kwargs_to_str(kwargs), msg
+        )
+        return code
+
+
 class Num2TensorBinaryMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs["x"] = kwargs.pop("input").strip("\n")
@@ -3364,7 +3376,7 @@ class RNNMatcher(BaseMatcher):
 class MultiHeadAttentionMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         for arg in ["batch_first", "add_bias_kv", "add_zero_attn"]:
-            if arg in kwargs and "False" not in kwargs[arg]:
+            if arg in kwargs:
                 return None
 
         if "dtype" in kwargs:
