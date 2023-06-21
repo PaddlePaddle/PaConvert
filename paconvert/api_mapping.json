@@ -8732,5 +8732,20 @@
     "kwargs_change": {
       "eps": "epsilon"
     }
+  },
+  "torch.cuda.amp.autocast": {
+    "Matcher": "CudaAmpAutocastMatcher",
+    "paddle_api": "paddle.amp.auto_cast",
+    "args_list": [
+      "enabled",
+      "dtype",
+      "cache_enabled"
+    ],
+    "kwargs_change": {
+      "enabled": "enable"
+    },
+    "unsupport_args": [
+      "cache_enabled"
+    ]
   }
 }

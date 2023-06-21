@@ -3645,3 +3645,30 @@ class SizeAverageMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         process_reduce_and_size_average(kwargs)
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class CudaAmpAutocastMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        kwargs_change = {}
+        if "kwargs_change" in self.api_mapping:
+            kwargs_change = self.api_mapping["kwargs_change"]
+        new_kwargs = {}
+
+        for k in list(kwargs.keys()):
+            if k in self.api_mapping["unsupport_args"]:
+                return None
+            if k in kwargs_change:
+                if kwargs_change[k]:
+                    # rename/copy in new_kwargs
+                    new_kwargs[kwargs_change[k]] = kwargs.pop(k)
+                else:
+                    # remove in new_kwargs
+                    kwargs.pop(k)
+            else:
+                # copy to new_kwargs
+                new_kwargs[k] = kwargs.pop(k)
+
+        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
+
+        return code
