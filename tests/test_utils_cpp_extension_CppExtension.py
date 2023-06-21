@@ -19,6 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.utils.cpp_extension.CppExtension")
 
 
+# The cpp compile not supports
 def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
