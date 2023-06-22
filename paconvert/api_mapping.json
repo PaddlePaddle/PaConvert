@@ -5611,10 +5611,10 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.broadcast_to",
     "args_list": [
-      "shape"
+      "size"
     ],
     "kwargs_change": {
-      "shape": "size"
+      "size": "shape"
     }
   },
   "torch.Tensor.ceil": {
