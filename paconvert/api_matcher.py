@@ -773,9 +773,10 @@ class TensorNewFullMatcher(BaseMatcher):
         if "requires_grad" in kwargs:
             stop_gradient_v = "not " + kwargs.pop("requires_grad").strip("()")
 
-        pin_memory_v = False
         if "pin_memory" in kwargs:
-            pin_memory_v = eval(kwargs.pop("pin_memory"))
+            if eval(kwargs["pin_memory"]):
+                kwargs["place"] = "paddle.CUDAPinnedPlace()"
+            kwargs.pop("pin_memory")
 
         if "dtype" not in kwargs:
             kwargs["dtype"] = "{}.dtype".format(self.paddleClass)
@@ -794,9 +795,6 @@ class TensorNewFullMatcher(BaseMatcher):
             )
         else:
             code = "paddle.full({})".format(self.kwargs_to_str(kwargs))
-
-        if pin_memory_v:
-            code = code.rstrip("\n") + ".pin_memory()"
 
         return code.strip("\n")
 
@@ -3645,3 +3643,17 @@ class SizeAverageMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         process_reduce_and_size_average(kwargs)
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class TensorToBoolMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "dim" in kwargs:
+            kwargs["axis"] = kwargs.pop("dim").strip("\n")
+
+        paddle_api = self.get_paddle_api()
+        paddle_api_name = paddle_api[paddle_api.rfind(".") :]
+        code = "{}({})".format(
+            self.paddleClass + ".astype('bool')" + paddle_api_name,
+            self.kwargs_to_str(kwargs),
+        )
+        return code

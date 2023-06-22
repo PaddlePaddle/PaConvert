@@ -5437,7 +5437,7 @@
   },
   "torch.Tensor.addmm_": {},
   "torch.Tensor.allclose": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "AllcloseMatcher",
     "paddle_api": "paddle.Tensor.allclose",
     "args_list": [
       "other",
@@ -5534,7 +5534,7 @@
   },
   "torch.Tensor.atan2_": {},
   "torch.Tensor.all": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "TensorToBoolMatcher",
     "paddle_api": "paddle.Tensor.all",
     "args_list": [
       "dim",
@@ -5545,7 +5545,7 @@
     }
   },
   "torch.Tensor.any": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "TensorToBoolMatcher",
     "paddle_api": "paddle.Tensor.any",
     "args_list": [
       "dim",
@@ -5579,7 +5579,7 @@
   },
   "torch.Tensor.bitwise_or": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.bitwise_and",
+    "paddle_api": "paddle.Tensor.bitwise_or",
     "args_list": [
       "other"
     ],
@@ -5589,7 +5589,7 @@
   },
   "torch.Tensor.bitwise_xor": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.bitwise_and",
+    "paddle_api": "paddle.Tensor.bitwise_xor",
     "args_list": [
       "other"
     ],
@@ -5601,10 +5601,10 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.bmm",
     "args_list": [
-      "batch2"
+      "mat2"
     ],
     "kwargs_change": {
-      "batch2": "y"
+      "mat2": "y"
     }
   },
   "torch.Tensor.broadcast_to": {
@@ -5612,7 +5612,10 @@
     "paddle_api": "paddle.Tensor.broadcast_to",
     "args_list": [
       "shape"
-    ]
+    ],
+    "kwargs_change": {
+      "shape": "size"
+    }
   },
   "torch.Tensor.ceil": {
     "Matcher": "TensorUnchangeMatcher"
@@ -5690,7 +5693,7 @@
   },
   "torch.Tensor.arccosh": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.arccosh"
+    "paddle_api": "paddle.Tensor.acosh"
   },
   "torch.Tensor.cross": {
     "Matcher": "GenericMatcher",
