@@ -8746,11 +8746,14 @@
       "return_indices"
     ],
     "unsupport_args": [
-      "dilation"
+      "dilation",
+      "return_indices"
     ],
     "kwargs_change": {
-      "input": "x",
-      "return_indices": "return_mask"
+      "input": "x"
+    },
+    "paddle_default_kwargs": {
+      "return_mask": "False"
     }
   }
 }
