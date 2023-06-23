@@ -8751,6 +8751,9 @@
     "kwargs_change": {
       "input": "x",
       "return_indices": "return_mask"
+    },
+    "paddle_default_kwargs": {
+      "stride": "kernel_size"
     }
   }
 }
