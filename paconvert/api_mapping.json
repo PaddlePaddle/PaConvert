@@ -8767,5 +8767,31 @@
     "unsupport_args": [
       "eps"
     ]
+  },
+  "torch.nn.functional.poisson_nll_loss": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.poisson_nll_loss",
+    "args_list": [
+      "input",
+      "target",
+      "log_input",
+      "full",
+      "size_average",
+      "eps",
+      "reduce",
+      "reduction"
+    ],
+    "kwargs_change": {
+      "target": "label",
+      "tau": "temperature",
+      "dim": "axis"
+    },
+    "unsupport_args": [
+      "size_average",
+      "reduce"
+    ],
+    "paddle_default_kwargs": {
+      "log_input": "True"
+    }
   }
 }
