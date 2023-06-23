@@ -3645,3 +3645,26 @@ class SizeAverageMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         process_reduce_and_size_average(kwargs)
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class RandomSplitMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "lengths" in kwargs:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                lengths = {}
+                if sum(lengths) == 1 and len(lengths) > 1:
+                    lengths = [int(length * {}.__len__()) for length in lengths]
+
+                {}({},lengths=lengths)
+
+                """
+            )
+            lengths_v = kwargs.pop("lengths").strip("\n")
+            code = API_TEMPLATE.format(
+                lengths_v,
+                kwargs["dataset"],
+                self.get_paddle_api(),
+                self.kwargs_to_str(kwargs),
+            )
+        return code.strip("\n")
