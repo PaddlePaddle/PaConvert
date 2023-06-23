@@ -25,15 +25,13 @@ def test_case_1():
         """
         import torch
         a = [[1.3192, 1.9915, 1.9674, 1.7151]]
-        b = [[1.3492, 0.1915, 2.9434, 1.4151]]
-        c = [1, -1]
-        x1 = torch.tensor(a)
-        x2 = torch.tensor(b)
-        y = torch.tensor(c, dtype=torch.int64)
-        torch.nn.functional.hinge_embedding_loss(x1, x2, y)
+        b = [[1, -1, -1, 1]]
+        x = torch.tensor(a)
+        y = torch.tensor(b)
+        result = torch.nn.functional.hinge_embedding_loss(x, y)
         """
     )
-    obj.run(pytorch_code, ["x1", "x2", "result"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -41,15 +39,13 @@ def test_case_2():
         """
         import torch
         a = [[1.3192, 1.9915, 1.9674, 1.7151]]
-        b = [[1.3492, 0.1915, 2.9434, 1.4151]]
-        c = [1, -1]
-        x1 = torch.tensor(a)
-        x2 = torch.tensor(b)
-        y = torch.tensor(c, dtype=torch.int64)
-        torch.nn.functional.hinge_embedding_loss(x1, x2, y, margin=0.5)
+        b = [[1, -1, -1, 1]]
+        x = torch.tensor(a)
+        y = torch.tensor(b)
+        torch.nn.functional.hinge_embedding_loss(x, y, margin=0.5)
         """
     )
-    obj.run(pytorch_code, ["x1", "x2", "result"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -57,15 +53,13 @@ def test_case_3():
         """
         import torch
         a = [[1.3192, 1.9915, 1.9674, 1.7151]]
-        b = [[1.3492, 0.1915, 2.9434, 1.4151]]
-        c = [1, -1]
-        x1 = torch.tensor(a)
-        x2 = torch.tensor(b)
-        y = torch.tensor(c, dtype=torch.int64)
-        torch.nn.functional.hinge_embedding_loss(x1, x2, y, reduction="sum")
+        b = [[1, -1, -1, 1]]
+        x = torch.tensor(a)
+        y = torch.tensor(b)
+        torch.nn.functional.hinge_embedding_loss(x, y, reduction="sum")
         """
     )
-    obj.run(pytorch_code, ["x1", "x2", "result"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -73,12 +67,10 @@ def test_case_4():
         """
         import torch
         a = [[1.3192, 1.9915, 1.9674, 1.7151]]
-        b = [[1.3492, 0.1915, 2.9434, 1.4151]]
-        c = [1, -1]
-        x1 = torch.tensor(a)
-        x2 = torch.tensor(b)
-        y = torch.tensor(c, dtype=torch.int64)
-        torch.nn.functional.hinge_embedding_loss(x1, x2, y, reduction="none")
+        b = [[1, -1, -1, 1]]
+        x = torch.tensor(a)
+        y = torch.tensor(b)
+        torch.nn.functional.hinge_embedding_loss(x, y, reduction="none")
         """
     )
-    obj.run(pytorch_code, ["x1", "x2", "result"])
+    obj.run(pytorch_code, ["result"])
