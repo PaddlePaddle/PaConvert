@@ -8734,7 +8734,7 @@
     }
   },
   "torch.nn.functional.threshold": {
-    "Matcher": "FunctionalThresholdedReluMatcher",
+    "Matcher": "FunctionalThresholdMatcher",
     "paddle_api": "paddle.nn.functional.thresholded_relu",
     "args_list": [
       "input",
