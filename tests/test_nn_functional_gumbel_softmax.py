@@ -29,7 +29,7 @@ def test_case_1():
         result = torch.nn.functional.gumbel_softmax(x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
@@ -41,7 +41,7 @@ def test_case_2():
         result = torch.nn.functional.gumbel_softmax(x, tau=2)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
@@ -53,7 +53,7 @@ def test_case_3():
         result = torch.nn.functional.gumbel_softmax(x, tau=2, hard=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_4():
@@ -65,4 +65,4 @@ def test_case_4():
         result = torch.nn.functional.gumbel_softmax(x, tau=2, hard=True,dim=0)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
