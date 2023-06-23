@@ -52,10 +52,10 @@ def test_case_3():
         """
         import torch
         import torch.nn.functional as F
-        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857],
-            [-1.2533, -0.9829, -1.0981],
-            [ 0.1507, -1.1431, -2.0361]]])
-        result = F.max_pool1d(input , 3, stride=2, padding=2)
+        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857, 0.4586, 0.9876, 0.5487],
+            [-1.2533, -0.9829, -1.0981, 0.7655, 0.8541, 0.9873],
+            [ 0.1507, -1.1431, -2.0361, 0.2344, 0.5675, 0.1546]]])
+        result = F.max_pool1d(input , 5, stride=2, padding=2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -66,10 +66,10 @@ def test_case_4():
         """
         import torch
         import torch.nn.functional as F
-        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857],
-            [-1.2533, -0.9829, -1.0981],
-            [ 0.1507, -1.1431, -2.0361]]])
-        result = F.max_pool1d(input , 3, stride=2, padding=2, ceil_mode=True)
+        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857, 0.4586, 0.9876, 0.5487],
+            [-1.2533, -0.9829, -1.0981, 0.7655, 0.8541, 0.9873],
+            [ 0.1507, -1.1431, -2.0361, 0.2344, 0.5675, 0.1546]]])
+        result = F.max_pool1d(input , 5, stride=2, padding=2, ceil_mode=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -80,10 +80,10 @@ def test_case_5():
         """
         import torch
         import torch.nn.functional as F
-        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857],
-            [-1.2533, -0.9829, -1.0981],
-            [ 0.1507, -1.1431, -2.0361]]])
-        result = F.max_pool1d(input , 3, stride=2, padding=2, ceil_mode=True, return_indices=True)
+        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857, 0.4586, 0.9876, 0.5487],
+            [-1.2533, -0.9829, -1.0981, 0.7655, 0.8541, 0.9873],
+            [ 0.1507, -1.1431, -2.0361, 0.2344, 0.5675, 0.1546]]])
+        result = F.max_pool1d(input , 5, stride=2, padding=2, ceil_mode=True, return_indices=True)
         """
     )
     obj.run(pytorch_code, ["result"])
