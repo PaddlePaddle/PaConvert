@@ -66,7 +66,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = [[1.3192, 1.9915, 1.9674, 0]
+        a = [[1.3192, 1.9915, 1.9674, 0]]
         b = [[1.3492, 0.1915, 2.9434, 1.4151]]
         x1 = torch.tensor(a)
         x2 = torch.tensor(b)
@@ -80,7 +80,7 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = [[1.3192, 1.9915, 1.9674, 0]
+        a = [[1.3192, 1.9915, 1.9674, 0]]
         b = [[1.3492, 0.1915, 2.9434, 1.4151]]
         x1 = torch.tensor(a)
         x2 = torch.tensor(b)
@@ -94,7 +94,7 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = [[1.3192, 1.9915, 1.9674, 0]
+        a = [[1.3192, 1.9915, 1.9674, 0]]
         b = [[1.3492, 0.1915, 2.9434, 1.4151]]
         x1 = torch.tensor(a)
         x2 = torch.tensor(b)
