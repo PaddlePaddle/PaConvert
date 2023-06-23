@@ -30,7 +30,7 @@ def test_case_1():
         x1 = torch.tensor(a)
         x2 = torch.tensor(b)
         y = torch.tensor(c, dtype=torch.int64)
-        torch.nn.functional.cosine_embedding_loss(x1, x2, y)
+        result = torch.nn.functional.cosine_embedding_loss(x1, x2, y)
         """
     )
     obj.run(pytorch_code, ["x1", "x2", "result"])
@@ -46,7 +46,7 @@ def test_case_2():
         x1 = torch.tensor(a)
         x2 = torch.tensor(b)
         y = torch.tensor(c, dtype=torch.int64)
-        torch.nn.functional.cosine_embedding_loss(x1, x2, y, margin=0.5)
+        result = torch.nn.functional.cosine_embedding_loss(x1, x2, y, margin=0.5)
         """
     )
     obj.run(pytorch_code, ["x1", "x2", "result"])
@@ -62,7 +62,7 @@ def test_case_3():
         x1 = torch.tensor(a)
         x2 = torch.tensor(b)
         y = torch.tensor(c, dtype=torch.int64)
-        torch.nn.functional.cosine_embedding_loss(x1, x2, y, reduction="sum")
+        result = torch.nn.functional.cosine_embedding_loss(x1, x2, y, reduction="sum")
         """
     )
     obj.run(pytorch_code, ["x1", "x2", "result"])
@@ -78,7 +78,7 @@ def test_case_4():
         x1 = torch.tensor(a)
         x2 = torch.tensor(b)
         y = torch.tensor(c, dtype=torch.int64)
-        torch.nn.functional.cosine_embedding_loss(x1, x2, y, reduction="none")
+        result = torch.nn.functional.cosine_embedding_loss(x1, x2, y, reduction="none")
         """
     )
     obj.run(pytorch_code, ["x1", "x2", "result"])
