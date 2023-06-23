@@ -8793,5 +8793,25 @@
     "paddle_default_kwargs": {
       "log_input": "True"
     }
+  },
+  "torch.nn.functional.cosine_embedding_loss": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.cosine_embedding_loss",
+    "args_list": [
+      "input1",
+      "input2",
+      "target",
+      "margin",
+      "size_average",
+      "reduce",
+      "reduction"
+    ],
+    "kwargs_change": {
+      "target": "label"
+    },
+    "unsupport_args": [
+      "size_average",
+      "reduce"
+    ]
   }
 }
