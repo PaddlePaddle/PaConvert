@@ -8742,6 +8742,10 @@
       "p",
       "eps",
       "keepdim"
-    ]
+    ],
+    "kwargs_change": {
+      "x1": "x",
+      "x2": "y"
+    }
   }
 }
