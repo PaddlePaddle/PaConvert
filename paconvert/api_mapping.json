@@ -8734,7 +8734,7 @@
     }
   },
   "torch.nn.functional.max_pool1d": {
-    "Matcher": "FunctionalMaxPool1dMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.max_pool1d",
     "args_list": [
       "input",
