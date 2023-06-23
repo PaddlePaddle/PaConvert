@@ -3645,3 +3645,24 @@ class SizeAverageMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         process_reduce_and_size_average(kwargs)
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class FunctionalMaxPool1dMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if kwargs["dilation"] != 1:
+            return None
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                paddle.nn.functional.max_pool1d({}, {}, stride={}, padding={}, return_mask={}, ceil_mode={})
+                """
+            )
+            code = API_TEMPLATE.format(
+                kwargs["input"],
+                kwargs["kernel_size"],
+                kwargs["stride"],
+                kwargs["padding"],
+                kwargs["return_indices"],
+                kwargs["ceil_mode"],
+            )
+            return code

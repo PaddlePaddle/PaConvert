@@ -8732,5 +8732,17 @@
     "kwargs_change": {
       "eps": "epsilon"
     }
+  },
+  "torch.nn.functional.max_pool1d": {
+    "Matcher": "FunctionalMaxPool1dMatcher",
+    "paddle_api": "paddle.nn.functional.max_pool1d",
+    "args_list": [
+      "input",
+      "kernel_size",
+      "padding",
+      "dilation",
+      "ceil_mode",
+      "return_indices"
+    ]
   }
 }
