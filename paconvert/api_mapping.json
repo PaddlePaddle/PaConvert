@@ -8748,5 +8748,24 @@
       "x2": "y",
       "eps": "epsilon"
     }
+  },
+  "torch.nn.functional.gumbel_softmax": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.gumbel_softmax",
+    "args_list": [
+      "logits",
+      "tau",
+      "hard",
+      "eps",
+      "dim"
+    ],
+    "kwargs_change": {
+      "logits": "x",
+      "tau": "temperature",
+      "dim": "axis"
+    },
+    "unsupport_args": [
+      "eps"
+    ]
   }
 }
