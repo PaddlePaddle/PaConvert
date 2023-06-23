@@ -8739,10 +8739,18 @@
     "args_list": [
       "input",
       "kernel_size",
+      "stride",
       "padding",
       "dilation",
       "ceil_mode",
       "return_indices"
-    ]
+    ],
+    "unsupport_args": [
+      "dilation"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "return_indices": "return_mask"
+    }
   }
 }
