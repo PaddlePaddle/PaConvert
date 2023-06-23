@@ -50,7 +50,7 @@ def test_case_3():
         import torch
         a = [[1.3192, 1.9915, 1.9674, 1.7151],[1.3492, 0.1915, 2.9434, 1.4151]]
         x = torch.tensor(a)
-        result = torch.nn.functional.gumbel_softmax(x, tau=2, hard = True)
+        result = torch.nn.functional.gumbel_softmax(x, tau=2, hard=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -62,7 +62,7 @@ def test_case_4():
         import torch
         a = [[1.3192, 1.9915, 1.9674, 1.7151],[1.3492, 0.1915, 2.9434, 1.4151]]
         x = torch.tensor(a)
-        result = torch.nn.functional.gumbel_softmax(x, tau=2, hard = True,dim=0)
+        result = torch.nn.functional.gumbel_softmax(x, tau=2, hard=True,dim=0)
         """
     )
     obj.run(pytorch_code, ["result"])
