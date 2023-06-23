@@ -8732,5 +8732,16 @@
     "kwargs_change": {
       "eps": "epsilon"
     }
+  },
+  "torch.nn.functional.pairwise_distance": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.pairwise_distance",
+    "args_list": [
+      "x1",
+      "x2",
+      "p",
+      "eps",
+      "keepdim"
+    ]
   }
 }
