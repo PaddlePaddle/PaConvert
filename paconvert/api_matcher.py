@@ -3645,3 +3645,28 @@ class SizeAverageMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         process_reduce_and_size_average(kwargs)
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class FunctionalThresholdedReluMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if kwargs["inplace"] is True:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                {} = {}
+                {}[{}<{}]={}
+                {}
+                """
+            )
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                {} = {}.clone()
+                {}[{}<{}]={}
+                {}
+                """
+            )
+        out = get_unique_name("out")
+        code = API_TEMPLATE.format(
+            out, kwargs["input"], out, out, kwargs["threshold"], kwargs["value"], out
+        )
+        return code
