@@ -8745,7 +8745,8 @@
     ],
     "kwargs_change": {
       "x1": "x",
-      "x2": "y"
+      "x2": "y",
+      "eps": "epsilon"
     }
   }
 }
