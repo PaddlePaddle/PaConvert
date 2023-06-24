@@ -8789,10 +8789,7 @@
     "unsupport_args": [
       "size_average",
       "reduce"
-    ],
-    "paddle_default_kwargs": {
-      "log_input": "True"
-    }
+    ]
   },
   "torch.nn.functional.cosine_embedding_loss": {
     "Matcher": "GenericMatcher",

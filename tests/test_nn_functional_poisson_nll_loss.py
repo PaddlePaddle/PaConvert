@@ -70,7 +70,7 @@ def test_case_4():
         b = [[1.3492, 0.1915, 2.9434, 1.4151]]
         x1 = torch.tensor(a)
         x2 = torch.tensor(b)
-        result = torch.nn.functional.poisson_nll_loss(x1, x2, log_input=False, eps=1e-4)
+        result = torch.nn.functional.poisson_nll_loss(x1, x2, eps=1e-4)
         """
     )
     obj.run(pytorch_code, ["x1", "x2", "result"])
