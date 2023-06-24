@@ -8818,8 +8818,7 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.hinge_embedding_loss",
     "args_list": [
-      "input1",
-      "input2",
+      "input",
       "target",
       "margin",
       "size_average",
