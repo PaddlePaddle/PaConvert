@@ -8784,7 +8784,8 @@
     "kwargs_change": {
       "target": "label",
       "tau": "temperature",
-      "dim": "axis"
+      "dim": "axis",
+      "eps": "epsilon"
     },
     "unsupport_args": [
       "size_average",
