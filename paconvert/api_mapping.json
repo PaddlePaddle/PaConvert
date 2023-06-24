@@ -8732,5 +8732,24 @@
     "kwargs_change": {
       "eps": "epsilon"
     }
+  },
+  "torch.nn.functional.multilabel_soft_margin_loss": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.multi_label_soft_margin_loss",
+    "args_list": [
+      "input",
+      "target",
+      "weight",
+      "size_average",
+      "reduce",
+      "reduction"
+    ],
+    "kwargs_change": {
+      "target": "label"
+    },
+    "unsupport_args": [
+      "size_average",
+      "reduce"
+    ]
   }
 }
