@@ -102,7 +102,7 @@ class APIBase(object):
         if isinstance(pytorch_result, (tuple, list)):
             assert isinstance(
                 paddle_result, (tuple, list)
-            ), "paddle result shoule be list/tuple"
+            ), "paddle result should be list/tuple"
             assert len(pytorch_result) == len(
                 paddle_result
             ), "paddle result have different length with pytorch"
@@ -110,10 +110,10 @@ class APIBase(object):
                 self.compare(self.pytorch_api, pytorch_result[i], paddle_result[i])
             return
 
-        if isinstance(pytorch_result, (bool, np.number, int, str)):
+        if isinstance(pytorch_result, (bool, np.number, int, str, type(None))):
             assert isinstance(
-                paddle_result, (bool, np.number, int, str)
-            ), "paddle result shoule be bool/np.number/int/str"
+                paddle_result, (bool, np.number, int, str, type(None))
+            ), "paddle result should be bool/np.number/int/str"
             assert (
                 pytorch_result == paddle_result
             ), "API ({}): pytorch result is {}, but paddle result is {}".format(
@@ -172,8 +172,8 @@ class APIBase(object):
         with open(pytorch_code_path, "w", encoding="UTF-8") as f:
             f.write(pytorch_code)
 
-        coverter = Converter(log_dir="disable")
-        coverter.run(pytorch_code_path, paddle_code_path)
+        converter = Converter(log_dir="disable")
+        converter.run(pytorch_code_path, paddle_code_path)
 
         with open(paddle_code_path, "r", encoding="UTF-8") as f:
             code = f.read()
