@@ -39,11 +39,13 @@ def test_case_1():
         data = Data()
 
         datasets = torch.utils.data.random_split(data, [3,7])
-        result0 = datasets[0].__len__()
-        result1 = datasets[1].__len__()
+
+        results = []
+        for d in datasets:
+            results.append(d.__len__())
         """
     )
-    obj.run(pytorch_code, ["result0", "result1"])
+    obj.run(pytorch_code, ["results"])
 
 
 def test_case_2():
@@ -66,11 +68,13 @@ def test_case_2():
         data = Data()
         lengths = [0.4, 0.4, 0.2]
         datasets = torch.utils.data.random_split(data, lengths)
-        result0 = datasets[0].__len__()
-        result1 = datasets[1].__len__()
+
+        results = []
+        for d in datasets:
+            results.append(d.__len__())
         """
     )
-    obj.run(pytorch_code, ["result0", "result1"])
+    obj.run(pytorch_code, ["results"])
 
 
 def test_case_3():
@@ -79,12 +83,13 @@ def test_case_3():
         import torch
 
         datasets = torch.utils.data.random_split(range(30), [0.4, 0.4, 0.2])
-        result0 = datasets[0].__len__()
-        result1 = datasets[1].__len__()
-        result2 = datasets[2].__len__()
+
+        results = []
+        for d in datasets:
+            results.append(d.__len__())
         """
     )
-    obj.run(pytorch_code, ["result0", "result1", "result2"])
+    obj.run(pytorch_code, ["results"])
 
 
 def test_case_4():
@@ -94,12 +99,13 @@ def test_case_4():
         lengths = [0.4, 0.4, 0.2]
         data = range(30)
         datasets = torch.utils.data.random_split(data, lengths)
-        result0 = datasets[0].__len__()
-        result1 = datasets[1].__len__()
-        result2 = datasets[2].__len__()
+
+        results = []
+        for d in datasets:
+            results.append(d.__len__())
         """
     )
-    obj.run(pytorch_code, ["result0", "result1", "result2"])
+    obj.run(pytorch_code, ["results"])
 
 
 def test_case_5():
@@ -109,9 +115,10 @@ def test_case_5():
         lengths = [0.4, 0.4, 0.2]
         data = range(30)
         datasets = torch.utils.data.random_split(data, lengths,generator=torch.Generator().manual_seed(42))
-        result0 = datasets[0].__len__()
-        result1 = datasets[1].__len__()
-        result2 = datasets[2].__len__()
+
+        results = []
+        for d in datasets:
+            results.append(d.__len__())
         """
     )
-    obj.run(pytorch_code, ["result0", "result1", "result2"])
+    obj.run(pytorch_code, ["results"])
