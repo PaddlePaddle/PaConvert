@@ -2787,8 +2787,10 @@ class AllcloseMatcher(BaseMatcher):
 
 class Num2TensorBinaryMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs["x"] = kwargs.pop("input").strip("\n")
-        kwargs["y"] = "paddle.to_tensor({})".format(kwargs.pop("other").strip("\n"))
+        if "input" in kwargs:
+            kwargs["x"] = kwargs.pop("input").strip("\n")
+        if "other" in kwargs:
+            kwargs["y"] = "paddle.to_tensor({})".format(kwargs.pop("other").strip("\n"))
         if "out" in kwargs and kwargs["out"] is not None:
             out_v = kwargs.pop("out").strip("\n")
             code = "paddle.assign({}({}), output={})".format(
@@ -3645,3 +3647,11 @@ class SizeAverageMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         process_reduce_and_size_average(kwargs)
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class TensorFuncToTorchFunc(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "{}(input={}, {})".format(
+            self.api_mapping["paddle_api"], self.paddleClass, self.kwargs_to_str(kwargs)
+        )
+        return code

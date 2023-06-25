@@ -5733,7 +5733,7 @@
     "paddle_api": "paddle.Tensor.detach"
   },
   "torch.Tensor.diag_embed": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "TensorFuncToTorchFunc",
     "paddle_api": "paddle.nn.functional.diag_embed",
     "args_list": [
       "offset",
@@ -5786,7 +5786,7 @@
     }
   },
   "torch.Tensor.diff": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "DiffMatcher",
     "paddle_api": "paddle.Tensor.diff",
     "args_list": [
       "n",
@@ -5825,10 +5825,10 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.dot",
     "args_list": [
-      "other"
+      "tensor"
     ],
     "kwargs_change": {
-      "other": "y"
+      "tensor": "y"
     }
   },
   "torch.Tensor.element_size": {
@@ -5846,7 +5846,7 @@
     }
   },
   "torch.Tensor.equal": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "EqualMatcher",
     "paddle_api": "paddle.Tensor.equal_all",
     "args_list": [
       "other"
@@ -5940,23 +5940,20 @@
     "paddle_api": "paddle.Tensor.floor_"
   },
   "torch.Tensor.floor_divide": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.Tensor.floor_divide",
     "args_list": [
-      "value"
-    ],
-    "kwargs_change": {
-      "value": "y"
-    }
+      "other"
+    ]
   },
   "torch.Tensor.fmod": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.Tensor.mod",
     "args_list": [
-      "divisor"
+      "other"
     ],
     "kwargs_change": {
-      "divisor": "y"
+      "other": "y"
     }
   },
   "torch.Tensor.frac": {
@@ -5986,17 +5983,14 @@
     }
   },
   "torch.Tensor.ge": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.Tensor.greater_equal",
     "args_list": [
       "other"
-    ],
-    "kwargs_change": {
-      "other": "y"
-    }
+    ]
   },
   "torch.Tensor.greater_equal": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.Tensor.greater_equal",
     "args_list": [
       "other"
