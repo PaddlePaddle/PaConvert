@@ -8732,5 +8732,18 @@
     "kwargs_change": {
       "eps": "epsilon"
     }
+  },
+  "torch.lu": {
+    "Matcher": "LuMatcher",
+    "paddle_api": "paddle.linalg.lu",
+    "args_list": [
+      "A",
+      "pivot",
+      "get_infos",
+      "out"
+    ],
+    "kwargs_change": {
+      "A": "x"
+    }
   }
 }

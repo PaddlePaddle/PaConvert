@@ -3645,3 +3645,47 @@ class SizeAverageMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         process_reduce_and_size_average(kwargs)
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class LuMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        out_v = kwargs.pop("out") if "out" in kwargs else None
+
+        if out_v:
+
+            out_3_var = "get_infos" in kwargs and kwargs["get_infos"] != "(False)"
+            new_kwargs = {}
+            new_kwargs["x"] = kwargs.pop("A")
+            new_kwargs.update(kwargs)
+
+            if out_3_var:
+                API_TEMPLATE = textwrap.dedent(
+                    """
+                    tmp_lu, tmp_p, tmp_info = {}({})
+                    paddle.assign(tmp_lu, {}[0])
+                    paddle.assign(tmp_p, {}[1])
+                    paddle.assign(tmp_info, {}[2])
+                    """
+                )
+                code = API_TEMPLATE.format(
+                    self.get_paddle_api(),
+                    self.kwargs_to_str(new_kwargs),
+                    out_v,
+                    out_v,
+                    out_v,
+                )
+            else:
+                API_TEMPLATE = textwrap.dedent(
+                    """
+                    tmp_lu, tmp_p = {}({})
+                    paddle.assign(tmp_lu, {}[0])
+                    paddle.assign(tmp_p, {}[1])
+                    """
+                )
+                code = API_TEMPLATE.format(
+                    self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out_v, out_v
+                )
+
+            return code
+
+        return GenericMatcher.generate_code(self, kwargs)
