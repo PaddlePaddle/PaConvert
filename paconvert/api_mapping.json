@@ -7977,6 +7977,30 @@
       "dim": "axes"
     }
   },
+  "torch.fft.fftshift": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.fft.fftshift",
+    "args_list": [
+      "input",
+      "dim"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axes"
+    }
+  },
+  "torch.fft.ifftshift": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.fft.ifftshift",
+    "args_list": [
+      "input",
+      "dim"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axes"
+    }
+  },
   "torch.fft.irfftn": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.fft.irfftn",
