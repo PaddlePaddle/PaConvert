@@ -3649,7 +3649,7 @@ class SizeAverageMatcher(BaseMatcher):
 
 class UtilsCppExtensionMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "name" in list(kwargs.leys()):
+        if "name" in list(kwargs.keys()):
             kwargs.pop("name")
         code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
         return code
