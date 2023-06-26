@@ -7980,6 +7980,30 @@
       "dim": "axes"
     }
   },
+  "torch.fft.fftshift": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.fft.fftshift",
+    "args_list": [
+      "input",
+      "dim"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axes"
+    }
+  },
+  "torch.fft.ifftshift": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.fft.ifftshift",
+    "args_list": [
+      "input",
+      "dim"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axes"
+    }
+  },
   "torch.fft.irfftn": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.fft.irfftn",
@@ -8588,6 +8612,35 @@
     "args_list": [
       "data_source"
     ]
+  },
+  "torch.utils.data.random_split": {
+    "Matcher": "RandomSplitMatcher",
+    "paddle_api": "paddle.io.random_split",
+    "args_list": [
+      "dataset",
+      "lengths",
+      "generator"
+    ]
+  },
+  "torch.utils.dlpack.from_dlpack": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.utils.dlpack.from_dlpack",
+    "args_list": [
+      "ext_tensor"
+    ],
+    "kwargs_change": {
+      "ext_tensor": "dlpack"
+    }
+  },
+  "torch.utils.dlpack.to_dlpack": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.utils.dlpack.to_dlpack",
+    "args_list": [
+      "tensor"
+    ],
+    "kwargs_change": {
+      "tensor": "x"
+    }
   },
   "torch.nn.functional.l1_loss": {
     "Matcher": "SizeAverageMatcher",
