@@ -3649,10 +3649,12 @@ class SizeAverageMatcher(BaseMatcher):
 
 class UtilsCppExtensionMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "name" in list(kwargs.keys()):
-            name = kwargs.pop("name")
-        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-        return code
+        new_kwargs = {}
+        for k in kwargs.keys():
+            if "name" in k:
+                continue
+            new_kwargs[k] = kwargs[k]
+        return GenericMatcher.generate_code(self, new_kwargs)
 
 
 class TensorIsSpareMatcher(BaseMatcher):

@@ -32,4 +32,4 @@ def _test_case_1():
         result = True
         """
     )
-    obj.run(pytorch_code, unsupport=True, reason="not support check")
+    obj.run(pytorch_code, ["result"])
