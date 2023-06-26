@@ -147,3 +147,30 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["A_LU", "pivots"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        A = torch.tensor(
+            [
+                [
+                    [0.3591, -0.0479, -0.2174],
+                    [-0.6957, -1.4667, 1.4384],
+                    [0.0735, 0.1147, 0.0513],
+                ],
+                [
+                    [-1.2565, -2.1263, 0.8075],
+                    [-0.3665, -3.3540, -0.9417],
+                    [-0.1299, -0.0689, -0.6207],
+                ],
+            ]
+        )
+        A_LU = torch.empty_like(A)
+        pivots = torch.empty((2, 3), dtype=torch.int32)
+        LU = torch.lu(A, pivot=True, get_infos=False, out=(A_LU, pivots))
+        """
+    )
+    obj.run(pytorch_code, ["A_LU", "pivots", "LU"])

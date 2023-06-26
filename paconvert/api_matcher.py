@@ -3662,9 +3662,7 @@ class LuMatcher(BaseMatcher):
                 API_TEMPLATE = textwrap.dedent(
                     """
                     tmp_lu, tmp_p, tmp_info = {}({})
-                    paddle.assign(tmp_lu, {}[0])
-                    paddle.assign(tmp_p, {}[1])
-                    paddle.assign(tmp_info, {}[2])
+                    paddle.assign(tmp_lu, {}[0]), paddle.assign(tmp_p, {}[1]), paddle.assign(tmp_info, {}[2])
                     """
                 )
                 code = API_TEMPLATE.format(
@@ -3678,8 +3676,7 @@ class LuMatcher(BaseMatcher):
                 API_TEMPLATE = textwrap.dedent(
                     """
                     tmp_lu, tmp_p = {}({})
-                    paddle.assign(tmp_lu, {}[0])
-                    paddle.assign(tmp_p, {}[1])
+                    paddle.assign(tmp_lu, {}[0]), paddle.assign(tmp_p, {}[1])
                     """
                 )
                 code = API_TEMPLATE.format(
