@@ -20,7 +20,7 @@ obj = APIBase("torch.utils.cpp_extension.CUDAExtension")
 
 
 # The cuda compile not supports
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         from torch.utils.cpp_extension import CUDAExtension
