@@ -7856,8 +7856,7 @@
     "paddle_api": "paddle.device.get_cudnn_version"
   },
   "torch.backends.cudnn.is_available": {
-    "Matcher": "CudnnIsAvailableMatcher",
-    "paddle_api": ""
+    "Matcher": "CudnnIsAvailableMatcher"
   },
   "torch.backends.cuda.is_built": {
     "Matcher": "GenericMatcher",
