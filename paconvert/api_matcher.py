@@ -3671,7 +3671,7 @@ class FunctionalThresholdMatcher(BaseMatcher):
         )
         return code
 
-      
+
 class RandomSplitMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
