@@ -183,7 +183,8 @@ class BaseTransformer(ast.NodeTransformer):
         # 4. x[0].transpose(1, 0) -> 'torchClass'
         # 5. (-x).transpose(1, 0) -> 'torchClass'
         elif isinstance(
-            node, (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript)
+            node,
+            (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript, ast.Assert),
         ):
             node_str = astor.to_source(node).strip("\n")
             for item in self.black_list:
