@@ -773,10 +773,10 @@ class TensorNewFullMatcher(BaseMatcher):
         if "requires_grad" in kwargs:
             stop_gradient_v = "not " + kwargs.pop("requires_grad").strip("()")
 
+        pin_memory_v = False
         if "pin_memory" in kwargs:
             if eval(kwargs["pin_memory"]):
-                kwargs["place"] = "paddle.CUDAPinnedPlace()"
-            kwargs.pop("pin_memory")
+                pin_memory_v = eval(kwargs.pop("pin_memory"))
 
         if "dtype" not in kwargs:
             kwargs["dtype"] = "{}.dtype".format(self.paddleClass)
@@ -795,6 +795,9 @@ class TensorNewFullMatcher(BaseMatcher):
             )
         else:
             code = "paddle.full({})".format(self.kwargs_to_str(kwargs))
+
+        if pin_memory_v:
+            code = code.rstrip("\n") + ".pin_memory()"
 
         return code.strip("\n")
 
