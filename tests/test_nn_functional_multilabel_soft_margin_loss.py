@@ -70,3 +70,16 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        target = torch.tensor([[1., 0., 1.],[0., 1., 1.]])
+        result = torch.nn.functional.multilabel_soft_margin_loss(input, target, size_average=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

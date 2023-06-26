@@ -8734,7 +8734,7 @@
     }
   },
   "torch.nn.functional.multilabel_soft_margin_loss": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.functional.multi_label_soft_margin_loss",
     "args_list": [
       "input",
@@ -8748,7 +8748,6 @@
       "target": "label"
     },
     "unsupport_args": [
-      "size_average",
       "reduce"
     ]
   }
