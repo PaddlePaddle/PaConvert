@@ -8551,7 +8551,7 @@
     ]
   },
   "torch.nn.MultiheadAttention": {
-    "Matcher": "GenericAttentionMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.MultiHeadAttention",
     "args_list": [
       "embed_dim",
