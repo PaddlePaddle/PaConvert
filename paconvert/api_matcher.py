@@ -3649,6 +3649,27 @@ class SizeAverageMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class RandomSplitMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            dataset_lengths = {}
+            if sum(dataset_lengths) <= 1:
+                dataset_lengths = [int(length * {}.__len__()) for length in dataset_lengths]
+            {}({})
+            """
+        )
+        lenghts_v = kwargs["lengths"].strip("\n")
+        kwargs["lengths"] = "dataset_lengths"
+        code = API_TEMPLATE.format(
+            lenghts_v,
+            kwargs["dataset"],
+            self.get_paddle_api(),
+            self.kwargs_to_str(kwargs),
+        )
+        return code.strip("\n")
+
+
 class TensorFuncToTorchFunc(BaseMatcher):
     def generate_code(self, kwargs):
         code = "{}(input={}, {})".format(
