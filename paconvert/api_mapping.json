@@ -5527,7 +5527,7 @@
   },
   "torch.Tensor.arctan_": {},
   "torch.Tensor.atan2": {
-    "Matcher": "TensorAtan2Matcher",
+    "Matcher": "TensorFunc2PaddleFunc",
     "args_list": [
       "other"
     ]
@@ -6956,7 +6956,8 @@
     "paddle_api": "paddle.Tensor.transpose"
   },
   "torch.Tensor.pinverse": {
-    "Matcher": "TensorPinverseMatcher"
+    "Matcher": "TensorFunc2PaddleFunc",
+    "paddle_api": "paddle.linalg.pinv"
   },
   "torch.Tensor.polygamma": {},
   "torch.Tensor.polygamma_": {},
@@ -7548,7 +7549,8 @@
   "torch.Tensor.is_shared": {},
   "torch.Tensor.is_signed": {},
   "torch.Tensor.istft": {
-    "Matcher": "TensorIstftMatcher",
+    "Matcher": "TensorFunc2PaddleFunc",
+    "paddle_api": "paddle.signal.istft",
     "args_list": [
       "n_fft",
       "hop_length",
@@ -7576,10 +7578,14 @@
     "paddle_api": "paddle.Tensor.nonzero"
   },
   "torch.Tensor.arctan2": {
-    "Matcher": "TensorAtan2Matcher",
+    "Matcher": "TensorFunc2PaddleFunc",
+    "paddle_api": "paddle.atan2",
     "args_list": [
       "other"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.arctan2_": {},
   "torch.Tensor.diagonal_scatter": {},
