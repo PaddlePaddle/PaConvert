@@ -3629,6 +3629,20 @@ class RandomSplitMatcher(BaseMatcher):
         return code.strip("\n")
 
 
+class TensorToBoolMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "dim" in kwargs:
+            kwargs["axis"] = kwargs.pop("dim").strip("\n")
+
+        paddle_api = self.get_paddle_api()
+        paddle_api_name = paddle_api[paddle_api.rfind(".") :]
+        code = "{}({})".format(
+            self.paddleClass + ".astype('bool')" + paddle_api_name,
+            self.kwargs_to_str(kwargs),
+        )
+        return code
+
+
 class TensorFunc2PaddleFunc(BaseMatcher):
     def generate_code(self, kwargs):
 
