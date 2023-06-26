@@ -775,8 +775,7 @@ class TensorNewFullMatcher(BaseMatcher):
 
         pin_memory_v = False
         if "pin_memory" in kwargs:
-            if eval(kwargs["pin_memory"]):
-                pin_memory_v = eval(kwargs.pop("pin_memory"))
+            pin_memory_v = eval(kwargs.pop("pin_memory"))
 
         if "dtype" not in kwargs:
             kwargs["dtype"] = "{}.dtype".format(self.paddleClass)

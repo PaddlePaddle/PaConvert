@@ -63,3 +63,15 @@ def _test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+# the max param of paddle does not support specifying multiple upper bounds, and by default only the first element is taken.
+def _test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        max = torch.linspace(0, 2, steps=4)
+        result = torch.tensor([-1.7120,  0.1734, -0.0478, -0.0922]).clip_(max=max)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
