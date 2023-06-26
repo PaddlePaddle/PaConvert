@@ -3649,7 +3649,7 @@ class SizeAverageMatcher(BaseMatcher):
 
 class FunctionalThresholdMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if kwargs["inplace"] is True:
+        if "inplace" in kwargs.keys() and kwargs["inplace"] is True:
             API_TEMPLATE = textwrap.dedent(
                 """
                 {} = {}
