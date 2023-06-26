@@ -92,7 +92,7 @@ class Converter:
             log_info(self.logger, "===========================================")
             log_info(
                 self.logger,
-                "These Pytorch APIs are not supported to convert to Paddle now, which will be supppored in future!\n",
+                "These Pytorch APIs are not supported to convert to Paddle now, which will be supported in future!\n",
             )
             for k, v in unsupport_map:
                 log_info(self.logger, "{}: {}".format(k, v))
@@ -192,7 +192,7 @@ class Converter:
 
             self.transfer_node(root, old_path)
             code = astor.to_source(root)
-            code = self.mark_unsport(code)
+            code = self.mark_unsupport(code)
 
             with open(new_path, "w", encoding="UTF-8") as file:
                 file.write(code)
@@ -239,7 +239,7 @@ class Converter:
             self.torch_api_count += api_trans.torch_api_count
             self.success_api_count += api_trans.success_api_count
 
-    def mark_unsport(self, code):
+    def mark_unsupport(self, code):
         lines = code.split("\n")
         mark_next_line = False
         in_str = False
