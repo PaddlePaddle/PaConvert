@@ -3651,9 +3651,8 @@ class RandomSplitMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            import math
             dataset_lengths = {}
-            if math.isclose(sum(dataset_lengths), 1) and sum(dataset_lengths) <= 1:
+            if sum(dataset_lengths) <= 1:
                 dataset_lengths = [int(length * {}.__len__()) for length in dataset_lengths]
             {}({})
             """

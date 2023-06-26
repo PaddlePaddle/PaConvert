@@ -38,7 +38,7 @@ def test_case_1():
 
         data = Data()
 
-        datasets = torch.utils.data.random_split(data, [3,7])
+        datasets = torch.utils.data.random_split(data, [3, 7])
 
         results = []
         for d in datasets:
@@ -49,6 +49,63 @@ def test_case_1():
 
 
 def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        from torch.utils.data import Dataset
+
+        class Data(Dataset):
+            def __init__(self):
+                self.x = [0,1,2,3,4,5,6,7,8,9]
+
+            def __getitem__(self, idx):
+                return self.x[idx]
+
+            def __len__(self):
+                return len(self.x)
+
+
+        data = Data()
+        datasets = torch.utils.data.random_split(data, [3, 3, 4])
+
+        results = []
+        for d in datasets:
+            results.append(d.__len__())
+        """
+    )
+    obj.run(pytorch_code, ["results"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        from torch.utils.data import Dataset
+
+        class Data(Dataset):
+            def __init__(self):
+                self.x = [0,1,2,3,4,5,6,7,8,9]
+
+            def __getitem__(self, idx):
+                return self.x[idx]
+
+            def __len__(self):
+                return len(self.x)
+
+
+        data = Data()
+        lengths = [3, 3, 4]
+        datasets = torch.utils.data.random_split(data, lengths)
+
+        results = []
+        for d in datasets:
+            results.append(d.__len__())
+        """
+    )
+    obj.run(pytorch_code, ["results"])
+
+
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -77,7 +134,7 @@ def test_case_2():
     obj.run(pytorch_code, ["results"])
 
 
-def test_case_3():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -92,7 +149,7 @@ def test_case_3():
     obj.run(pytorch_code, ["results"])
 
 
-def test_case_4():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -108,7 +165,7 @@ def test_case_4():
     obj.run(pytorch_code, ["results"])
 
 
-def test_case_5():
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
