@@ -3670,3 +3670,38 @@ class FunctionalThresholdMatcher(BaseMatcher):
             out, kwargs["input"], out, out, kwargs["threshold"], kwargs["value"], out
         )
         return code
+
+      
+class RandomSplitMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            dataset_lengths = {}
+            if sum(dataset_lengths) <= 1:
+                dataset_lengths = [int(length * {}.__len__()) for length in dataset_lengths]
+            {}({})
+            """
+        )
+        lenghts_v = kwargs["lengths"].strip("\n")
+        kwargs["lengths"] = "dataset_lengths"
+        code = API_TEMPLATE.format(
+            lenghts_v,
+            kwargs["dataset"],
+            self.get_paddle_api(),
+            self.kwargs_to_str(kwargs),
+        )
+        return code.strip("\n")
+
+
+class TensorToBoolMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "dim" in kwargs:
+            kwargs["axis"] = kwargs.pop("dim").strip("\n")
+
+        paddle_api = self.get_paddle_api()
+        paddle_api_name = paddle_api[paddle_api.rfind(".") :]
+        code = "{}({})".format(
+            self.paddleClass + ".astype('bool')" + paddle_api_name,
+            self.kwargs_to_str(kwargs),
+        )
+        return code
