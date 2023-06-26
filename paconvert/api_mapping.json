@@ -8746,9 +8746,6 @@
     ],
     "kwargs_change": {
       "target": "label"
-    },
-    "unsupport_args": [
-      "reduce"
-    ]
+    }
   }
 }
