@@ -3645,3 +3645,15 @@ class SizeAverageMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         process_reduce_and_size_average(kwargs)
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class InitProcessGroupMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        return "{}()".format(self.get_paddle_api())
+
+
+class TransformerDecoderLayerMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "dim_feedforward" not in list(kwargs.keys()):
+            kwargs["dim_feedforward"] = 2048
+        return GenericMatcher.generate_code(self, kwargs)

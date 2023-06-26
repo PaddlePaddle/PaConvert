@@ -8756,5 +8756,79 @@
     "kwargs_change": {
       "eps": "epsilon"
     }
+  },
+  "torch.cuda.current_device": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.framework._current_expected_place"
+  },
+  "torch.distributed.broadcast": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.broadcast",
+    "args_list": [
+      "tensor",
+      "src",
+      "group",
+      "async_op"
+    ],
+    "unsupport_args": [
+      "async_op"
+    ]
+  },
+  "torch.distributed.new_group": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.new_group",
+    "args_list": [
+      "ranks",
+      "timeout",
+      "backend",
+      "pg_options"
+    ],
+    "unsupport_args": [
+      "timeout",
+      "pg_options"
+    ]
+  },
+  "torch.distributed.init_process_group": {
+    "Matcher": "InitProcessGroupMatcher",
+    "paddle_api": "paddle.distributed.init_parallel_env",
+    "args_list": [
+      "backend",
+      "init_method",
+      "timeout",
+      "world_size",
+      "rank",
+      "store",
+      "group_name",
+      "pg_options"
+    ]
+  },
+  "torch.is_grad_enabled": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.is_grad_enabled"
+  },
+  "torch.nn.TransformerDecoderLayer": {
+    "Matcher": "TransformerDecoderLayerMatcher",
+    "paddle_api": "paddle.nn.TransformerDecoderLayer",
+    "args_list": [
+      "d_model",
+      "nhead",
+      "dim_feedforward",
+      "dropout",
+      "activation",
+      "layer_norm_eps",
+      "batch_first",
+      "norm_first",
+      "device",
+      "dtype"
+    ],
+    "kwargs_change": {
+      "norm_first": "normalize_before"
+    },
+    "unsupport_args": [
+      "layer_norm_eps",
+      "batch_first",
+      "device",
+      "dtype"
+    ]
   }
 }
