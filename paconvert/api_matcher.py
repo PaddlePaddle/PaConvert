@@ -3643,6 +3643,6 @@ class TensorFunc2PaddleFunc(BaseMatcher):
                 kwargs[kwargs_changes[k]] = kwargs.pop(k)
 
         code = "{}({}, {})".format(
-            self.api_mapping["paddle_api"], self.paddleClass, self.kwargs_to_str(kwargs)
+            self.get_paddle_api(), self.paddleClass, self.kwargs_to_str(kwargs)
         )
         return code

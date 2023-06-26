@@ -5733,7 +5733,7 @@
     "paddle_api": "paddle.Tensor.detach"
   },
   "torch.Tensor.diag_embed": {
-    "Matcher": "TensorFuncToTorchFunc",
+    "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.nn.functional.diag_embed",
     "args_list": [
       "offset",
