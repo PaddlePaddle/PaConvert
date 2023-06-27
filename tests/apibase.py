@@ -114,11 +114,12 @@ class APIBase(object):
             assert isinstance(
                 paddle_result, (bool, np.number, int, str)
             ), "paddle result should be bool/np.number/int/str"
-            assert (
-                pytorch_result == paddle_result
-            ), "API ({}): pytorch result is {}, but paddle result is {}".format(
-                name, pytorch_result, paddle_result
-            )
+            if check_value:
+                assert (
+                    pytorch_result == paddle_result
+                ), "API ({}): pytorch result is {}, but paddle result is {}".format(
+                    name, pytorch_result, paddle_result
+                )
             return
 
         if pytorch_result.requires_grad:

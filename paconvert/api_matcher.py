@@ -1317,7 +1317,7 @@ class SeedMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle.get_cuda_rng_state()[0].current_seed()
+            paddle.get_rng_state()[0].current_seed()
             """
         )
         return API_TEMPLATE

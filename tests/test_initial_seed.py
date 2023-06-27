@@ -19,12 +19,11 @@ from apibase import APIBase
 obj = APIBase("torch.initial_seed")
 
 
-# Paddle need run on GPUs
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
         result = torch.initial_seed()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
