@@ -16,19 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.cdist")
+obj = APIBase("torch.Tensor.bincount")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x1 = torch.tensor([[ 1.6830,  0.0526],
-            [-0.0696,  0.6366],
-            [-1.0091,  1.3363]])
-        x2 = torch.tensor([[-0.0629,  0.2414],
-            [-0.9701, -0.4455]])
-        result = torch.cdist(x1, x2)
+        input = torch.tensor([4, 3, 6, 3, 4])
+        weights = torch.tensor([ 0.0000,  0.2500,  0.5000,  0.7500,  1.0000])
+        result = input.bincount()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -38,12 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x1 = torch.tensor([[ 1.6830,  0.0526],
-            [-0.0696,  0.6366],
-            [-1.0091,  1.3363]])
-        x2 = torch.tensor([[-0.0629,  0.2414],
-            [-0.9701, -0.4455]])
-        result = torch.cdist(x1=x1, x2=x2, p=1.0, compute_mode='use_mm_for_euclid_dist_if_necessary')
+        input = torch.tensor([4, 3, 6, 3, 4])
+        weights = torch.tensor([ 0.0000,  0.2500,  0.5000,  0.7500,  1.0000])
+        result = input.bincount(weights)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -53,17 +47,21 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x1 = torch.tensor([[[ 1.5518, -1.2166],
-                [ 0.2780, -0.5918],
-                [-0.6906,  1.0884]],
-                [[-0.3519,  0.2204],
-                [-1.0994,  0.1239],
-                [ 0.4219,  0.0442]]])
-        x2 = torch.tensor([[[-0.5764,  0.6476],
-                [-0.5335, -0.7144]],
-                [[ 0.0617,  0.8019],
-                [-0.3107, -0.8516]]])
-        result = torch.cdist(x1, x2)
+        input = torch.tensor([4, 3, 6, 3, 4])
+        weights = torch.tensor([ 0.0000,  0.2500,  0.5000,  0.7500,  1.0000])
+        result = input.bincount(minlength = 6)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([4, 3, 6, 3, 4])
+        weights = torch.tensor([ 0.0000,  0.2500,  0.5000,  0.7500,  1.0000])
+        result = input.bincount(weights=weights)
         """
     )
     obj.run(pytorch_code, ["result"])

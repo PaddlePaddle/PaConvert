@@ -16,15 +16,25 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.initial_seed")
+obj = APIBase("torch.Tensor.angle")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.manual_seed(100)
-        result = torch.initial_seed()
+        result = torch.tensor([-1 + 1j, -2 + 2j, 3 - 3j]).angle()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([-1 + 1j, -2 + 2j, 3 - 3j])
+        result = x.angle() * 180 / 3.14159
         """
     )
     obj.run(pytorch_code, ["result"])

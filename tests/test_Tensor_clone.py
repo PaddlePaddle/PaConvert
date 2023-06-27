@@ -16,15 +16,25 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.initial_seed")
+obj = APIBase("torch.Tensor.clone")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.manual_seed(100)
-        result = torch.initial_seed()
+        x = torch.tensor([1, 2, 3])
+        result = x.clone()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([1, 2, 3]).clone()
         """
     )
     obj.run(pytorch_code, ["result"])

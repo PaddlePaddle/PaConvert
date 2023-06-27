@@ -11,20 +11,31 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.initial_seed")
+obj = APIBase("torch.arccos")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.manual_seed(100)
-        result = torch.initial_seed()
+        a = torch.tensor([[ 0.3348, -0.5889,  0.2005, -0.1584], [ 0.3348, -0.5889,  0.2005, -0.1584]])
+        result = a.arccos()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([[ 0.3348, -0.5889,  0.2005, -0.1584]]).arccos()
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -11,20 +11,31 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.initial_seed")
+obj = APIBase("torch.Tensor.ceil_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.manual_seed(100)
-        result = torch.initial_seed()
+        result = torch.tensor([-0.6341, -1.4208, -1.0900,  0.5826]).ceil_()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([-0.6341, -1.4208, -1.0900,  0.5826])
+        result = input.ceil_()
         """
     )
     obj.run(pytorch_code, ["result"])
