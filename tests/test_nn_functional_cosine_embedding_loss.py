@@ -82,3 +82,35 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["x1", "x2", "result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [[1.3192, 1.9915, 1.9674, 1.7151]]
+        b = [[1.3492, 0.1915, 2.9434, 1.4151]]
+        c = [1, -1]
+        x1 = torch.tensor(a)
+        x2 = torch.tensor(b)
+        y = torch.tensor(c, dtype=torch.int64)
+        result = torch.nn.functional.cosine_embedding_loss(x1, x2, y, size_average=False)
+        """
+    )
+    obj.run(pytorch_code, ["x1", "x2", "result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [[1.3192, 1.9915, 1.9674, 1.7151]]
+        b = [[1.3492, 0.1915, 2.9434, 1.4151]]
+        c = [1, -1]
+        x1 = torch.tensor(a)
+        x2 = torch.tensor(b)
+        y = torch.tensor(c, dtype=torch.int64)
+        result = torch.nn.functional.cosine_embedding_loss(x1, x2, y, reduce=False)
+        """
+    )
+    obj.run(pytorch_code, ["x1", "x2", "result"])

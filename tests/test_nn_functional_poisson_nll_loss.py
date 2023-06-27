@@ -102,3 +102,31 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["x1", "x2", "result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [[1.3192, 1.9915, 1.9674, 0]]
+        b = [[1.3492, 0.1915, 2.9434, 1.4151]]
+        x1 = torch.tensor(a)
+        x2 = torch.tensor(b)
+        result = torch.nn.functional.poisson_nll_loss(x1, x2, size_average=False)
+        """
+    )
+    obj.run(pytorch_code, ["x1", "x2", "result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [[1.3192, 1.9915, 1.9674, 0]]
+        b = [[1.3492, 0.1915, 2.9434, 1.4151]]
+        x1 = torch.tensor(a)
+        x2 = torch.tensor(b)
+        result = torch.nn.functional.poisson_nll_loss(x1, x2, reduce=False)
+        """
+    )
+    obj.run(pytorch_code, ["x1", "x2", "result"])

@@ -74,3 +74,31 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [[1.3192, 1.9915, 1.9674, 1.7151]]
+        b = [[1, -1, -1, 1]]
+        x = torch.tensor(a)
+        y = torch.tensor(b)
+        result = torch.nn.functional.hinge_embedding_loss(x, y, size_average=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [[1.3192, 1.9915, 1.9674, 1.7151]]
+        b = [[1, -1, -1, 1]]
+        x = torch.tensor(a)
+        y = torch.tensor(b)
+        result = torch.nn.functional.hinge_embedding_loss(x, y, reduce=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
