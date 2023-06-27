@@ -25,7 +25,7 @@ def test_case_1():
         import torch
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([[1., 0., 1.],[0., 1., 1.]])
+        target = torch.tensor([1, 0])
         result = torch.nn.functional.multi_margin_loss(input, target)
         """
     )
@@ -38,7 +38,7 @@ def test_case_2():
         import torch
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([[1., 0., 1.],[0., 1., 1.]])
+        target = torch.tensor([1, 0])
         result = torch.nn.functional.multi_margin_loss(input, target, reduction='sum')
         """
     )
@@ -51,7 +51,7 @@ def test_case_3():
         import torch
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([[1., 0., 1.],[0., 1., 1.]])
+        target = torch.tensor([1, 0])
         result = torch.nn.functional.multi_margin_loss(input, target, reduction='none')
         """
     )
@@ -64,7 +64,7 @@ def test_case_4():
         import torch
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([[1., 0., 1.],[0., 1., 1.]])
+        target = torch.tensor([1, 0])
         weight = torch.tensor([0.2, 0.3, 0.5])
         result = torch.nn.functional.multi_margin_loss(input, target, weight=weight)
         """
@@ -78,7 +78,7 @@ def test_case_5():
         import torch
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([[1., 0., 1.],[0., 1., 1.]])
+        target = torch.tensor([1, 0])
         result = torch.nn.functional.multi_margin_loss(input, target, size_average=False)
         """
     )
@@ -91,7 +91,7 @@ def test_case_6():
         import torch
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([[1., 0., 1.],[0., 1., 1.]])
+        target = torch.tensor([1, 0])
         result = torch.nn.functional.multi_margin_loss(input, target, reduce=False)
         """
     )
@@ -104,7 +104,7 @@ def test_case_7():
         import torch
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([[1., 0., 1.],[0., 1., 1.]])
+        target = torch.tensor([1, 0])
         result = torch.nn.functional.multi_margin_loss(input, target, margin=2)
         """
     )
@@ -117,7 +117,7 @@ def test_case_8():
         import torch
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([[1., 0., 1.],[0., 1., 1.]])
+        target = torch.tensor([1, 0])
         result = torch.nn.functional.multi_margin_loss(input, target, p=2)
         """
     )
