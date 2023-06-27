@@ -5528,9 +5528,13 @@
   "torch.Tensor.arctan_": {},
   "torch.Tensor.atan2": {
     "Matcher": "TensorFunc2PaddleFunc",
+    "paddle_api": "paddle.atan2",
     "args_list": [
       "other"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.atan2_": {},
   "torch.Tensor.all": {
