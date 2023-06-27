@@ -8613,6 +8613,30 @@
       "data_source"
     ]
   },
+  "torch.utils.data.TensorDataset": {
+    "Matcher": "TensorDatasetMatcher",
+    "paddle_api": "paddle.io.TensorDataset"
+  },
+  "torch.utils.data.IterableDataset": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.io.IterableDataset",
+    "args_list": []
+  },
+  "torch.utils.data.ChainDataset": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.io.ChainDataset",
+    "args_list": [
+      "datasets"
+    ]
+  },
+  "torch.utils.data.Subset": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.io.Subset",
+    "args_list": [
+      "dataset",
+      "indices"
+    ]
+  },
   "torch.utils.data.random_split": {
     "Matcher": "RandomSplitMatcher",
     "paddle_api": "paddle.io.random_split",
