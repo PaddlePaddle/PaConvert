@@ -2115,15 +2115,6 @@
       "other": "y"
     }
   },
-  "torch.cdist": {
-    "Matcher": "CDistMatcher",
-    "args_list": [
-      "x1",
-      "x2",
-      "p",
-      "compute_mode"
-    ]
-  },
   "torch.logsumexp": {
     "Matcher": "LogsumexpMatcher",
     "paddle_api": "paddle.logsumexp",
