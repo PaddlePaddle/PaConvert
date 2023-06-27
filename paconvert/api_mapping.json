@@ -2115,6 +2115,20 @@
       "other": "y"
     }
   },
+  "torch.cdist": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.cdist",
+    "args_list": [
+      "x1",
+      "x2",
+      "p",
+      "compute_mode"
+    ],
+    "kwargs_change": {
+      "x1": "x",
+      "x2": "y"
+    }
+  },
   "torch.logsumexp": {
     "Matcher": "LogsumexpMatcher",
     "paddle_api": "paddle.logsumexp",
