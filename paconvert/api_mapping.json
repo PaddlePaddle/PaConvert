@@ -8881,6 +8881,16 @@
       "drop_last"
     ]
   },
+  "torch.utils.data.RandomSampler": {
+    "Matcher": "RandomSamplerMatcher",
+    "paddle_api": "paddle.io.RandomSampler",
+    "args_list": [
+      "data_source",
+      "replacement",
+      "num_samples",
+      "generator"
+    ]
+  },
   "torch.Generator": {
     "Matcher": "GeneratorMatcher",
     "args_list": [
