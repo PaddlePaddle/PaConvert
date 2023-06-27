@@ -16,14 +16,30 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.seed")
+obj = APIBase("torch.nn.Moudle.register_buffer")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.seed()
+        x = torch.tensor([1., 2., 3.])
+        module = torch.nn.Module()
+        module.register_buffer('buffer', x)
+        result = module.buffer
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., 3.])
+        module = torch.nn.Module()
+        module.register_buffer(name='buffer', tensor=x, persistent=True)
+        result = module.buffer
+        """
+    )
+    obj.run(pytorch_code, ["result"])

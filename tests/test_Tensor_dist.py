@@ -16,22 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-
-class cudaMaxMemoryAllocatedAPI(APIBase):
-    def compare(self, name, pytorch_result, paddle_result, check_value=True):
-        return pytorch_result == paddle_result
-
-
-obj = cudaMaxMemoryAllocatedAPI("torch.cuda.max_memory_allocated")
+obj = APIBase("torch.Tensor.dist")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            result = torch.cuda.max_memory_allocated()
+        input = torch.tensor([-1.5393, -0.8675,  0.5916,  1.6321])
+        other = torch.tensor([ 0.0967, -1.0511,  0.6295,  0.8360])
+        result = input.dist(other, 2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -41,10 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated()
+        input = torch.tensor([-1.5393, -0.8675,  0.5916,  1.6321])
+        other = torch.tensor([ 0.0967, -1.0511,  0.6295,  0.8360])
+        result = input.dist(other, p=2.5)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -54,10 +47,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated(0)
+        input = torch.tensor([-1.5393, -0.8675,  0.5916,  1.6321])
+        other = torch.tensor([ 0.0967, -1.0511,  0.6295,  0.8360])
+        p = 3
+        result = input.dist(other, p=p)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -67,10 +60,9 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated(device=0)
+        input = torch.tensor([-1.5393, -0.8675,  0.5916,  1.6321])
+        other = torch.tensor([ 0.0967])
+        result = input.dist(other, 2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -80,23 +72,7 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated(torch.device("cuda:0"))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated(device=torch.device("cuda:0"))
+        result = torch.tensor([-1.5393, -0.8675, 0.5916, 1.6321]).dist(other=torch.tensor([ 0.0967]), p=2)
         """
     )
     obj.run(pytorch_code, ["result"])

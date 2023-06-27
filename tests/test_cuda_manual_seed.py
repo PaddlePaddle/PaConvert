@@ -16,14 +16,20 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.seed")
+obj = APIBase("torch.cuda.manual_seed")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.seed()
+        result = None
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed(123)
+            result = torch.initial_seed()
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result"],
+    )
