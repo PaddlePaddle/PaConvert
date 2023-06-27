@@ -390,6 +390,16 @@
       "input": "x"
     }
   },
+  "torch.nn.functional.threshold": {
+    "Matcher": "FunctionalThresholdMatcher",
+    "paddle_api": "paddle.nn.functional.thresholded_relu",
+    "args_list": [
+      "input",
+      "threshold",
+      "value",
+      "inplace"
+    ]
+  },
   "torch.is_nonzero": {
     "Matcher": "IsNonzeroMatcher",
     "args_list": [
@@ -8788,15 +8798,5 @@
     "kwargs_change": {
       "eps": "epsilon"
     }
-  },
-  "torch.nn.functional.threshold": {
-    "Matcher": "FunctionalThresholdMatcher",
-    "paddle_api": "paddle.nn.functional.thresholded_relu",
-    "args_list": [
-      "input",
-      "threshold",
-      "value",
-      "inplace"
-    ]
   }
 }
