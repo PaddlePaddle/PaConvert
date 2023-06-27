@@ -16,13 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-
-class cudaMaxMemoryAllocatedAPI(APIBase):
-    def compare(self, name, pytorch_result, paddle_result, check_value=True):
-        return pytorch_result == paddle_result
-
-
-obj = cudaMaxMemoryAllocatedAPI("torch.cuda.max_memory_allocated")
+obj = APIBase("torch.cuda.get_device_capability")
 
 
 def test_case_1():
@@ -31,7 +25,7 @@ def test_case_1():
         import torch
         result = None
         if torch.cuda.is_available():
-            result = torch.cuda.max_memory_allocated()
+            result = torch.cuda.get_device_capability(0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -43,8 +37,7 @@ def test_case_2():
         import torch
         result = None
         if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated()
+            result = torch.cuda.get_device_capability()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -56,8 +49,7 @@ def test_case_3():
         import torch
         result = None
         if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated(0)
+            result = torch.cuda.get_device_capability(torch.device("cuda:0"))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -70,33 +62,7 @@ def test_case_4():
         result = None
         if torch.cuda.is_available():
             t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated(device=0)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated(torch.device("cuda:0"))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated(device=torch.device("cuda:0"))
+            result = torch.cuda.get_device_capability(device=torch.device("cuda:0"))
         """
     )
     obj.run(pytorch_code, ["result"])

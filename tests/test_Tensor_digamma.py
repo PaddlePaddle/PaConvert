@@ -11,19 +11,31 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.seed")
+obj = APIBase("torch.Tensor.digamma")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.seed()
+        result = torch.tensor([1, 0.5]).digamma()
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1, 0.5])
+        result = a.digamma()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
