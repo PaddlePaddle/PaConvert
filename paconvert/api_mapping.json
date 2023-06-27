@@ -8769,7 +8769,7 @@
     ]
   },
   "torch.nn.functional.poisson_nll_loss": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.functional.poisson_nll_loss",
     "args_list": [
       "input",
@@ -8786,14 +8786,10 @@
       "tau": "temperature",
       "dim": "axis",
       "eps": "epsilon"
-    },
-    "unsupport_args": [
-      "size_average",
-      "reduce"
-    ]
+    }
   },
   "torch.nn.functional.cosine_embedding_loss": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.functional.cosine_embedding_loss",
     "args_list": [
       "input1",
@@ -8806,14 +8802,10 @@
     ],
     "kwargs_change": {
       "target": "label"
-    },
-    "unsupport_args": [
-      "size_average",
-      "reduce"
-    ]
+    }
   },
   "torch.nn.functional.hinge_embedding_loss": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.functional.hinge_embedding_loss",
     "args_list": [
       "input",
@@ -8825,10 +8817,6 @@
     ],
     "kwargs_change": {
       "target": "label"
-    },
-    "unsupport_args": [
-      "size_average",
-      "reduce"
-    ]
+    }
   }
 }
