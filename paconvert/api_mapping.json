@@ -2717,6 +2717,20 @@
       "input": "x"
     }
   },
+  "torch.nn.functional.soft_margin_loss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.functional.soft_margin_loss",
+    "args_list": [
+      "input",
+      "target",
+      "size_average",
+      "reduce",
+      "reduction"
+    ],
+    "kwargs_change": {
+      "target": "label"
+    }
+  },
   "torch.vander": {},
   "torch.cross": {
     "Matcher": "GenericMatcher",
@@ -8731,20 +8745,6 @@
     ],
     "kwargs_change": {
       "eps": "epsilon"
-    }
-  },
-  "torch.nn.functional.soft_margin_loss": {
-    "Matcher": "SizeAverageMatcher",
-    "paddle_api": "paddle.nn.functional.soft_margin_loss",
-    "args_list": [
-      "input",
-      "target",
-      "size_average",
-      "reduce",
-      "reduction"
-    ],
-    "kwargs_change": {
-      "target": "label"
     }
   }
 }
