@@ -110,9 +110,9 @@ class APIBase(object):
                 self.compare(self.pytorch_api, pytorch_result[i], paddle_result[i])
             return
 
-        if isinstance(pytorch_result, (bool, np.number, int, str)):
+        if isinstance(pytorch_result, (bool, np.number, int, str, type(None))):
             assert isinstance(
-                paddle_result, (bool, np.number, int, str)
+                paddle_result, (bool, np.number, int, str, type(None))
             ), "paddle result should be bool/np.number/int/str"
             if check_value:
                 assert (

@@ -16,22 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-
-class cudaMaxMemoryAllocatedAPI(APIBase):
-    def compare(self, name, pytorch_result, paddle_result, check_value=True):
-        return pytorch_result == paddle_result
-
-
-obj = cudaMaxMemoryAllocatedAPI("torch.cuda.max_memory_allocated")
+obj = APIBase("torch.fft.rfftn")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            result = torch.cuda.max_memory_allocated()
+        t = torch.Tensor([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0], [7.0, 8.0]])
+        T = torch.fft.rfftn(t)
+        result = torch.fft.irfftn(T)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -41,10 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated()
+        t = torch.Tensor([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0], [7.0, 8.0]])
+        T = torch.fft.rfftn(t, s=(2,))
+        result = torch.fft.irfftn(T)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -54,10 +47,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated(0)
+        t = torch.Tensor([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0], [7.0, 8.0]])
+        T = torch.fft.rfftn(t, dim=(1,))
+        result = torch.fft.irfftn(T)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -67,10 +59,9 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated(device=0)
+        t = torch.Tensor([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0], [7.0, 8.0]])
+        T = torch.fft.rfftn(t, norm="forward")
+        result = torch.fft.irfftn(T)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -80,10 +71,9 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated(torch.device("cuda:0"))
+        t = torch.Tensor([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0], [7.0, 8.0]])
+        T = torch.fft.rfftn(t, norm="backward")
+        result = torch.fft.irfftn(T)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -93,10 +83,9 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated(device=torch.device("cuda:0"))
+        t = torch.Tensor([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0], [7.0, 8.0]])
+        T = torch.fft.rfftn(t, norm="ortho")
+        result = torch.fft.irfftn(T)
         """
     )
     obj.run(pytorch_code, ["result"])
