@@ -14,15 +14,18 @@
 
 import textwrap
 
+import paddle
 from apibase import APIBase
 
 
-class cudaMaxMemoryAllocatedAPI(APIBase):
+class cudaEventAPI(APIBase):
     def compare(self, name, pytorch_result, paddle_result, check_value=True):
-        return pytorch_result == paddle_result
+        return pytorch_result == paddle_result or isinstance(
+            paddle_result, paddle.fluid.libpaddle.CUDAEvent
+        )
 
 
-obj = cudaMaxMemoryAllocatedAPI("torch.cuda.max_memory_allocated")
+obj = cudaEventAPI("torch.cuda.event")
 
 
 def test_case_1():
@@ -31,7 +34,7 @@ def test_case_1():
         import torch
         result = None
         if torch.cuda.is_available():
-            result = torch.cuda.max_memory_allocated()
+            start = torch.cuda.Event(enable_timing=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -43,8 +46,7 @@ def test_case_2():
         import torch
         result = None
         if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated()
+            start = torch.cuda.Event(True, interprocess=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -56,8 +58,7 @@ def test_case_3():
         import torch
         result = None
         if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated(0)
+            start = torch.cuda.Event(True, False, interprocess=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -69,34 +70,7 @@ def test_case_4():
         import torch
         result = None
         if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated(device=0)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated(torch.device("cuda:0"))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.max_memory_allocated(device=torch.device("cuda:0"))
+            start = torch.cuda.Event(enable_timing=True, blocking=False, interprocess=False)
         """
     )
     obj.run(pytorch_code, ["result"])
