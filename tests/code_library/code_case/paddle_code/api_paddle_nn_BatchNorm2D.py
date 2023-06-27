@@ -1,10 +1,11 @@
 import paddle
 print('#########################case1#########################')
-bn = paddle.nn.BatchNorm2D(num_features=5, momentum=1 - 0.1, epsilon=1e-05,
-    weight_attr=None, bias_attr=None, use_global_stats=True)
+bn = paddle.nn.BatchNorm2D(num_features=5, use_global_stats=True,
+    weight_attr=None, bias_attr=None)
 print('#########################case2#########################')
-bn = paddle.nn.BatchNorm2D(num_features=27, momentum=1 - 0.1, epsilon=1e-05,
-    weight_attr=None, bias_attr=None, use_global_stats=True)
+bn = paddle.nn.BatchNorm2D(num_features=27, use_global_stats=True,
+    weight_attr=None, bias_attr=None)
 print('#########################case3#########################')
-paddle.nn.BatchNorm2D(num_features=10, momentum=1 - 0.1, epsilon=1e-05,
-    weight_attr=False, bias_attr=False, use_global_stats=True)
+paddle.nn.BatchNorm2D(num_features=10, epsilon=1e-05, use_global_stats=True,
+    weight_attr=None if False is None or False else False, bias_attr=None if
+    False is None or False else False)
