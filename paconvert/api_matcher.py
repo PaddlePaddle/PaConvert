@@ -3630,3 +3630,15 @@ class TensorLogicalMatcher(BaseMatcher):
         )
 
         return code
+
+
+class TensorDatasetMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        new_args = self.parse_args(args)
+        code = "[{}".format(new_args[0])
+        for arg in new_args[1:]:
+            code += ", {}".format(arg)
+        code += "]"
+        code = "{}({})".format(self.get_paddle_api(), code)
+        node = ast.parse(code.strip("\n")).body
+        return node
