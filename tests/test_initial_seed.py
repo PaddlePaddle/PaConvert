@@ -23,7 +23,8 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        torch.manual_seed(100)
         result = torch.initial_seed()
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
