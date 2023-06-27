@@ -8929,5 +8929,20 @@
     "unsupport_args": [
       "only_inputs"
     ]
+  },
+  "torch.nn.functional.multilabel_soft_margin_loss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.functional.multi_label_soft_margin_loss",
+    "args_list": [
+      "input",
+      "target",
+      "weight",
+      "size_average",
+      "reduce",
+      "reduction"
+    ],
+    "kwargs_change": {
+      "target": "label"
+    }
   }
 }
