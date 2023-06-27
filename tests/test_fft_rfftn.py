@@ -16,15 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.utils.data.dataloader.default_collate")
+obj = APIBase("torch.fft.rfftn")
 
 
-# Pytorch returns torch.tensor by default, while paddle returns numpy.ndarray by default.
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data.dataloader import default_collate
-        result = default_collate([0, 1, 2, 3])
+        import torch
+        t = torch.Tensor([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0], [7.0, 8.0]])
+        T = torch.fft.rfftn(t)
+        result = torch.fft.irfftn(T)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,8 +34,10 @@ def _test_case_1():
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data.dataloader import default_collate
-        result = default_collate(['a', 'b', 'c'])
+        import torch
+        t = torch.Tensor([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0], [7.0, 8.0]])
+        T = torch.fft.rfftn(t, s=(2,))
+        result = torch.fft.irfftn(T)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +47,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data.dataloader import default_collate
-        result = default_collate([torch.tensor([0, 1, 2, 3])])
+        t = torch.Tensor([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0], [7.0, 8.0]])
+        T = torch.fft.rfftn(t, dim=(1,))
+        result = torch.fft.irfftn(T)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,8 +59,9 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data.dataloader import default_collate
-        result = default_collate((torch.tensor([1, 3, 3]), torch.tensor([3, 1, 1])))
+        t = torch.Tensor([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0], [7.0, 8.0]])
+        T = torch.fft.rfftn(t, norm="forward")
+        result = torch.fft.irfftn(T)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -66,8 +71,21 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data.dataloader import default_collate
-        result = default_collate(batch=(torch.tensor([1, 3, 3]), torch.tensor([3, 1, 1])))
+        t = torch.Tensor([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0], [7.0, 8.0]])
+        T = torch.fft.rfftn(t, norm="backward")
+        result = torch.fft.irfftn(T)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        t = torch.Tensor([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0], [7.0, 8.0]])
+        T = torch.fft.rfftn(t, norm="ortho")
+        result = torch.fft.irfftn(T)
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -51,29 +51,7 @@ def test_case_3():
     obj.run(pytorch_code, ["result"])
 
 
-# Pytorch returns torch.tensor by default, while paddle returns numpy.ndarray by default.
-def _test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate([(0, 1), (2, 3)])
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-# Pytorch returns torch.tensor by default, while paddle returns numpy.ndarray by default.
-def _test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate([[0, 1], [2, 3]])
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_6():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -84,7 +62,7 @@ def test_case_6():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_7():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch

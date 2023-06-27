@@ -16,15 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.utils.data.dataloader.default_collate")
+obj = APIBase("torch.cuda.get_device_capability")
 
 
-# Pytorch returns torch.tensor by default, while paddle returns numpy.ndarray by default.
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data.dataloader import default_collate
-        result = default_collate([0, 1, 2, 3])
+        import torch
+        result = None
+        if torch.cuda.is_available():
+            result = torch.cuda.get_device_capability(0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,8 +34,10 @@ def _test_case_1():
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data.dataloader import default_collate
-        result = default_collate(['a', 'b', 'c'])
+        import torch
+        result = None
+        if torch.cuda.is_available():
+            result = torch.cuda.get_device_capability()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +47,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data.dataloader import default_collate
-        result = default_collate([torch.tensor([0, 1, 2, 3])])
+        result = None
+        if torch.cuda.is_available():
+            result = torch.cuda.get_device_capability(torch.device("cuda:0"))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,19 +59,10 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data.dataloader import default_collate
-        result = default_collate((torch.tensor([1, 3, 3]), torch.tensor([3, 1, 1])))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        from torch.utils.data.dataloader import default_collate
-        result = default_collate(batch=(torch.tensor([1, 3, 3]), torch.tensor([3, 1, 1])))
+        result = None
+        if torch.cuda.is_available():
+            t = torch.tensor([1,2,3]).cuda()
+            result = torch.cuda.get_device_capability(device=torch.device("cuda:0"))
         """
     )
     obj.run(pytorch_code, ["result"])
