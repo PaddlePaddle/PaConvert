@@ -2969,37 +2969,24 @@ class SearchsortedMatcher(BaseMatcher):
     def generate_code(self, kwargs):
 
         if "side" in kwargs and kwargs["side"] is not None:
-            API_TEMPLATE = textwrap.dedent(
-                """
-            paddle.searchsorted({}, {}, out_int32={}, right= {}=='right').squeeze({})
-            """
+            kwargs["right"] = kwargs.pop("side").strip("\n") + "== 'right'"
+
+        if "sorter" in kwargs and kwargs["sorter"] is not None:
+            kwargs[
+                "sorted_sequence"
+            ] += ".take_along_axis(axis=-1, indices = {})".format(
+                kwargs.pop("sorter").strip("\n")
             )
-            code = API_TEMPLATE.format(
-                kwargs["sorted_sequence"],
-                kwargs["values"],
-                kwargs["out_int32"],
-                kwargs["side"],
-            )
-        elif "sorter" in kwargs and kwargs["side"] is not None:
-            API_TEMPLATE = textwrap.dedent(
-                """
-            paddle.searchsorted({}.take_along_axis(axis=-1, indices = {}), {}, out_int32={}, right= {}).squeeze({})
-            """
-            )
-            code = API_TEMPLATE.format(
-                kwargs["sorted_sequence"],
-                kwargs["sorter"],
-                kwargs["values"],
-                kwargs["out_int32"],
-                kwargs["side"],
-            )
-        else:
-            code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+        code = "paddle.searchsorted({})".format(self.kwargs_to_str(kwargs))
 
         if "out" in kwargs and kwargs["out"] is not None:
             out_v = kwargs.pop("out").strip("\n")
-            code = f"paddle.assign({code}, output={out_v})"
-
+            code = "paddle.assign(paddle.searchsorted({}), output={})".format(
+                self.kwargs_to_str(kwargs), out_v
+            )
+        else:
+            code = "paddle.searchsorted({})".format(self.kwargs_to_str(kwargs))
         return code
 
 

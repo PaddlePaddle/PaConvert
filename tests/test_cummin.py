@@ -65,10 +65,14 @@ def test_case_4():
         x = torch.tensor([[1.0, 1.0, 1.0],
                         [2.0, 2.0, 2.0],
                         [3.0, 3.0, 3.0]])
-        out = torch.tensor([[1.0, 1.0, 1.0],
+        values = torch.tensor([[1.0, 1.0, 1.0],
                         [2.0, 2.0, 2.0],
-                        [3.0, 3.0, 3.0]])
-        result = torch.cummin(x, 0, out=out)
+                        [3.0, 3.0, 3.0]]).float()
+        indices = torch.tensor([[1, 1, 1],
+                        [2, 2, 2],
+                        [3, 3, 3]])
+        out = (values, indices)
+        result = torch.cummin(x, 0, out=(values, indices))
         """
     )
     obj.run(pytorch_code, ["result", "out"])
@@ -81,10 +85,14 @@ def test_case_5():
         x = torch.tensor([[1.0, 1.0, 1.0],
                         [2.0, 2.0, 2.0],
                         [3.0, 3.0, 3.0]])
-        out = torch.tensor([[1.0, 1.0, 1.0],
+        values = torch.tensor([[1.0, 1.0, 1.0],
                         [2.0, 2.0, 2.0],
-                        [3.0, 3.0, 3.0]])
-        result = torch.cummin(input = x, 0, out=out)
+                        [3.0, 3.0, 3.0]]).float()
+        indices = torch.tensor([[1, 1, 1],
+                        [2, 2, 2],
+                        [3, 3, 3]])
+        out = (values, indices)
+        result = torch.cummin(x, dim = 0, out=(values, indices))
         """
     )
     obj.run(pytorch_code, ["result", "out"])
@@ -97,10 +105,14 @@ def test_case_6():
         x = torch.tensor([[1.0, 1.0, 1.0],
                         [2.0, 2.0, 2.0],
                         [3.0, 3.0, 3.0]])
-        out = torch.tensor([[1.0, 1.0, 1.0],
+        values = torch.tensor([[1.0, 1.0, 1.0],
                         [2.0, 2.0, 2.0],
-                        [3.0, 3.0, 3.0]])
-        result = torch.cummin(input = x, dim =0, out=out)
+                        [3.0, 3.0, 3.0]]).float()
+        indices = torch.tensor([[1, 1, 1],
+                        [2, 2, 2],
+                        [3, 3, 3]])
+        out = (values, indices)
+        result = torch.cummin(input = x, dim =0, out=(values, indices))
         """
     )
     obj.run(pytorch_code, ["result", "out"])

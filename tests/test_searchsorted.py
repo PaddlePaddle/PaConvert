@@ -41,7 +41,7 @@ def test_case_2():
                           [ 2,  4,  6,  8, 10]])
         values = torch.tensor([[3, 6, 9],
                                [3, 6, 9]])
-        result = torch.searchsorted(sorted_sequence = x, values)
+        result = torch.searchsorted(x, values, out_int32 = True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,7 +55,7 @@ def test_case_3():
                           [ 2,  4,  6,  8, 10]])
         values = torch.tensor([[3, 6, 9],
                                [3, 6, 9]])
-        result = torch.searchsorted(x, values = values)
+        result = torch.searchsorted(x, values, right = True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -69,41 +69,13 @@ def test_case_4():
                           [ 2,  4,  6,  8, 10]])
         values = torch.tensor([[3, 6, 9],
                                [3, 6, 9]])
-        result = torch.searchsorted(x, values, out_int32 = True)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[ 1,  3,  5,  7,  9],
-                          [ 2,  4,  6,  8, 10]])
-        values = torch.tensor([[3, 6, 9],
-                               [3, 6, 9]])
-        result = torch.searchsorted(x, values, right = True)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[ 1,  3,  5,  7,  9],
-                          [ 2,  4,  6,  8, 10]])
-        values = torch.tensor([[3, 6, 9],
-                               [3, 6, 9]])
         result = torch.searchsorted(x, values, side = 'right')
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_7():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -119,7 +91,7 @@ def test_case_7():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_8():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -134,7 +106,7 @@ def test_case_8():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_9():
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -151,7 +123,7 @@ def test_case_9():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_10():
+def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
