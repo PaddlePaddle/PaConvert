@@ -766,6 +766,18 @@
       "index"
     ]
   },
+  "torch.searchsorted": {
+    "Matcher": "SearchsortedMatcher",
+    "args_list": [
+      "sorted_sequence",
+      "values",
+      "out_int32",
+      "right",
+      "side",
+      "out",
+      "sorter"
+    ]
+  },
   "torch.index_select": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.index_select",
@@ -2717,7 +2729,15 @@
       "input": "x"
     }
   },
-  "torch.vander": {},
+  "torch.vander": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vander",
+    "args_list": [
+      "x",
+      "N",
+      "increasing"
+    ]
+  },
   "torch.cross": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.cross",
@@ -2770,6 +2790,19 @@
       "dtype",
       "out"
     ]
+  },
+  "torch.cummin": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.cummin",
+    "args_list": [
+      "input",
+      "dim",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axis"
+    }
   },
   "torch.diag": {
     "Matcher": "GenericMatcher",

@@ -2965,6 +2965,44 @@ class SelectMatcher(BaseMatcher):
         return code
 
 
+class SearchsortedMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if "side" in kwargs and kwargs["side"] is not None:
+            API_TEMPLATE = textwrap.dedent(
+                """
+            paddle.searchsorted({}, {}, out_int32={}, right= {}=='right').squeeze({})
+            """
+            )
+            code = API_TEMPLATE.format(
+                kwargs["sorted_sequence"],
+                kwargs["values"],
+                kwargs["out_int32"],
+                kwargs["side"],
+            )
+        elif "sorter" in kwargs and kwargs["side"] is not None:
+            API_TEMPLATE = textwrap.dedent(
+                """
+            paddle.searchsorted({}.take_along_axis(axis=-1, indices = {}), {}, out_int32={}, right= {}).squeeze({})
+            """
+            )
+            code = API_TEMPLATE.format(
+                kwargs["sorted_sequence"],
+                kwargs["sorter"],
+                kwargs["values"],
+                kwargs["out_int32"],
+                kwargs["side"],
+            )
+        else:
+            code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+        if "out" in kwargs and kwargs["out"] is not None:
+            out_v = kwargs.pop("out").strip("\n")
+            code = f"paddle.assign({code}, output={out_v})"
+
+        return code
+
+
 class SincMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" not in kwargs:
