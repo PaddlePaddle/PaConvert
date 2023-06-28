@@ -17,6 +17,7 @@ import re
 import sys
 import os
 import json
+from typing import Sequence, Mapping, Tuple
 
 def _check_json_file(path):
     lang_type=re.compile(r"\.json$")
@@ -25,21 +26,41 @@ def _check_json_file(path):
 
     return False
 
+def _get_pretty_format(
+    contents: str,
+    indent,
+    ensure_ascii: bool = True,
+    sort_keys: bool = True,
+) -> str:
+    def sort_dict(dictionary):
+        return dict(sorted(dictionary.items()))
+
+    json_data = json.loads(contents)
+
+    if sort_keys and isinstance(json_data, dict):
+        json_data = sort_dict(json_data)
+
+    json_pretty = json.dumps(
+        json_data,
+        indent=indent,
+        ensure_ascii=ensure_ascii
+    )
+
+    return f'{json_pretty}\n'
+
+
 def _format_json_file(path):
     with open(path, 'r') as file:
-        data = json.load(file)
+        contents = file.read()
 
-    with open(path, mode='w') as file:
-        json.dump(data, file, indent=2)
+    new_contents = _get_pretty_format(contents, indent=2)
 
-    # Read the file again and remove the trailing newline character
-    with open(path, 'r') as f:
-        content = f.read()
+    # Remove the trailing newline character
+    new_contents = new_contents.rstrip('\n') + '\n'
 
-    content = content.rstrip('\n') + '\n'
+    with open(path, mode='w', encoding='UTF-8') as file:
+        file.write(new_contents)
 
-    with open(path, 'w') as f:
-        f.write(content)
 
 def main(argv=None):
     parser = argparse.ArgumentParser(
