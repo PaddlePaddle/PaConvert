@@ -6086,10 +6086,10 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.heaviside",
     "args_list": [
-      "values"
+      "data"
     ],
     "kwargs_change": {
-      "values": "y"
+      "data": "y"
     }
   },
   "torch.Tensor.index_select": {

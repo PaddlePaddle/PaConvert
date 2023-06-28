@@ -60,3 +60,14 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([-1.5, 0, 2.0])
+        result = input.heaviside(torch.tensor(data=[0.5, 1.7, 0.8]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
