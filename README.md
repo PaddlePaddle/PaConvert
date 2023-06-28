@@ -298,7 +298,7 @@ torch.permute
       "dims": "perm"
     }
   },
-  "unsupport_args": {},
+  "unsupport_args": [],
   "paddle_default_kwargs": {}
 }
 ```
