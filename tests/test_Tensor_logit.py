@@ -11,20 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.is_complex")
+obj = APIBase("torch.Tensor.logit")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]])
-        result = torch.is_complex(a)
+        input = torch.tensor([0.2796, 0.9331, 0.6486, 0.1523, 0.6516])
+        result = input.logit(eps=1e-6)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,7 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.is_complex(torch.tensor([[4, 9], [23, 2]], dtype=torch.complex64))
+        input = torch.tensor([0.2796, 0.9331, 0.6486, 0.1523, 0.6516])
+        eps = 1e-6
+        result = input.logit(eps)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +47,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]], dtype=torch.complex128)
-        result = torch.is_complex(a)
+        result = torch.tensor([0.2796, 0.9331, 0.6486, 0.1523, 0.6516]).logit(eps=1e-6)
         """
     )
     obj.run(pytorch_code, ["result"])

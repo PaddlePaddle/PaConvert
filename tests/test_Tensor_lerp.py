@@ -11,20 +11,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+#
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.is_complex")
+obj = APIBase("torch.Tensor.lerp")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]])
-        result = torch.is_complex(a)
+        start = torch.tensor([1., 2., 3., 4.])
+        end = torch.tensor([10., 10., 10., 10.])
+        weight = torch.tensor([0.5, 1, 0.3, 0.6])
+        result = start.lerp(end, weight)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,7 +36,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.is_complex(torch.tensor([[4, 9], [23, 2]], dtype=torch.complex64))
+        weight = torch.tensor([0.5, 1, 0.3, 0.6])
+        result = torch.tensor([1., 2., 3., 4.]).lerp(torch.tensor([10., 10., 10., 10.]), weight)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +47,22 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]], dtype=torch.complex128)
-        result = torch.is_complex(a)
+        start = torch.tensor([1., 2., 3., 4.])
+        end = torch.tensor([10., 10., 10., 10.])
+        weight = torch.tensor([0.5, 1, 0.3, 0.6])
+        result = start.lerp(end=end, weight=weight)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        start = torch.tensor([1., 2., 3., 4.])
+        end = torch.tensor([10., 10., 10., 10.])
+        result = start.lerp(end=end, weight=0.5)
         """
     )
     obj.run(pytorch_code, ["result"])

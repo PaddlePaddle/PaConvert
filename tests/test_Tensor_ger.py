@@ -16,15 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.is_complex")
+obj = APIBase("torch.Tensor.ger")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]])
-        result = torch.is_complex(a)
+        x = torch.tensor([1., 2, 3])
+        y = torch.tensor([1., 2, 3, 4])
+        result = x.ger(y)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,7 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.is_complex(torch.tensor([[4, 9], [23, 2]], dtype=torch.complex64))
+        x = torch.tensor([1., 2, 3])
+        y = torch.tensor([1., 2, 3, 4])
+        result = x.ger(vec2=y)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +47,33 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]], dtype=torch.complex128)
-        result = torch.is_complex(a)
+        result = torch.tensor([1., 2, 3]).ger(torch.tensor([1., 2, 3, 4]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# The paddle input does not support integer type
+def _test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 2, 3])
+        y = torch.tensor([1, 2, 3, 4])
+        result = x.ger(y)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# The paddle other does not support integer type
+def _test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., 3.])
+        y = torch.tensor([1, 2, 3, 4])
+        result = x.ger(y)
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -16,15 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.is_complex")
+obj = APIBase("torch.Tensor.index_select")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]])
-        result = torch.is_complex(a)
+        x = torch.eye(2, 4)
+        indices = torch.tensor([0, 1])
+        result = x.index_select(0, indices)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,7 +35,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.is_complex(torch.tensor([[4, 9], [23, 2]], dtype=torch.complex64))
+        indices = torch.tensor([0, 1])
+        result = torch.eye(3, 4).index_select(1, indices)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +46,21 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]], dtype=torch.complex128)
-        result = torch.is_complex(a)
+        indices = torch.tensor([0, 1])
+        dim = 0
+        result = torch.eye(3, 4).index_select(dim, indices)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        indices = torch.tensor([0, 3])
+        dim = 0
+        result = torch.eye(5, 4).index_select(dim=dim, index=indices)
         """
     )
     obj.run(pytorch_code, ["result"])
