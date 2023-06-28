@@ -64,7 +64,7 @@ def test_case_4():
 
 
 # paddle does not integer type
-def test_case_5():
+def _test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
