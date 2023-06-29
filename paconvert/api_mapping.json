@@ -8998,6 +8998,23 @@
       "pos_weight"
     ]
   },
+  "torch.nn.functional.multi_margin_loss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.functional.multi_margin_loss",
+    "args_list": [
+      "input",
+      "target",
+      "p",
+      "margin",
+      "weight",
+      "size_average",
+      "reduce",
+      "reduction"
+    ],
+    "kwargs_change": {
+      "target": "label"
+    }
+  },
   "torch.utils.data.BatchSampler": {
     "Matcher": "TorchUtilDataBatchSampler",
     "args_list": [
