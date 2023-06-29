@@ -3620,3 +3620,13 @@ class TensorFunc2PaddleFunc(BaseMatcher):
             self.get_paddle_api(), self.paddleClass, self.kwargs_to_str(kwargs)
         )
         return code
+
+
+class TensorLogicalMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        code = "{}(y=({}).astype(({}).dtype))".format(
+            self.get_paddle_api(), kwargs["other"], self.paddleClass
+        )
+
+        return code

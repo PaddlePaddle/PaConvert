@@ -16,15 +16,14 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.is_complex")
+obj = APIBase("torch.Tensor.isclose")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]])
-        result = torch.is_complex(a)
+        result = torch.tensor([10000., 1e-07]).isclose(torch.tensor([10000.1, 1e-08]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,7 +33,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.is_complex(torch.tensor([[4, 9], [23, 2]], dtype=torch.complex64))
+        result = torch.tensor([10000., 1e-08]).isclose(torch.tensor([10000.1, 1e-09]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +43,27 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]], dtype=torch.complex128)
-        result = torch.is_complex(a)
+        result = torch.tensor([1.0, float('nan')]).isclose(torch.tensor([1.0, float('nan')]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([1.0, float('inf')]).isclose(torch.tensor([1.0, float('inf')]), equal_nan=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([10000., 1e-07]).isclose(torch.tensor([10000.1, 1e-08]), atol=2.)
         """
     )
     obj.run(pytorch_code, ["result"])

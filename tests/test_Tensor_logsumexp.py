@@ -16,15 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.is_complex")
+obj = APIBase("torch.Tensor.logsumexp")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]])
-        result = torch.is_complex(a)
+        input = torch.tensor([1.4907, 1.0593, 1.5696])
+        result = input.logsumexp(0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,7 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.is_complex(torch.tensor([[4, 9], [23, 2]], dtype=torch.complex64))
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = input.logsumexp(1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +45,31 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]], dtype=torch.complex128)
-        result = torch.is_complex(a)
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = input.logsumexp(1, keepdim=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = input.logsumexp(dim=1, keepdim=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# paddle does not integer type
+def _test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([1, 4, 6])
+        result = input.logsumexp(0)
         """
     )
     obj.run(pytorch_code, ["result"])

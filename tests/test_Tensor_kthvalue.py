@@ -16,15 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.is_complex")
+obj = APIBase("torch.Tensor.kthvalue")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]])
-        result = torch.is_complex(a)
+        x = torch.tensor([1., 2., 3., 4., 5.])
+        result = x.kthvalue(4)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,7 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.is_complex(torch.tensor([[4, 9], [23, 2]], dtype=torch.complex64))
+        x = torch.tensor([[ 1., 2., 3.], [ 4., 5., 6.]])
+        result = x.kthvalue(2, 0, True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +45,19 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]], dtype=torch.complex128)
-        result = torch.is_complex(a)
+        x = torch.tensor([[ 1., 2., 3.], [ 4., 5., 6.]])
+        result = x.kthvalue(k=2, dim=0, keepdim=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 1., 2., 3.], [ 4., 5., 6.]])
+        result = x.kthvalue(k=2, dim=0, keepdim=True)
         """
     )
     obj.run(pytorch_code, ["result"])

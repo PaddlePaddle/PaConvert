@@ -16,15 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.is_complex")
+obj = APIBase("torch.Tensor.is_floating_point")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]])
-        result = torch.is_complex(a)
+        a = torch.tensor([[4, 9], [23, 2]], dtype=torch.int64)
+        result = a.is_floating_point()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,7 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.is_complex(torch.tensor([[4, 9], [23, 2]], dtype=torch.complex64))
+        a = torch.tensor([[4, 9], [23, 2]], dtype=torch.float64)
+        result = a.is_floating_point()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +45,27 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]], dtype=torch.complex128)
-        result = torch.is_complex(a)
+        result = torch.tensor([[4, 9], [23, 2]], dtype=torch.float32).is_floating_point()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([[4, 9], [23, 2]], dtype=torch.float16).is_floating_point()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([[4, 9], [23, 2]], dtype=torch.bfloat16).is_floating_point()
         """
     )
     obj.run(pytorch_code, ["result"])
