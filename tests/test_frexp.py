@@ -11,9 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
-import torch
+import textwrap
 
-src = torch.tensor([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
-result = src.contiguous(memory_format=torch.contiguous_format)
+from apibase import APIBase
+
+obj = APIBase("torch.Tensor.frexp")
+
+
+def test_case_1():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.arange(9.)
+        a,b = x.frexp()
+        """
+    )
+    obj.run(pytorch_code, ["a"])

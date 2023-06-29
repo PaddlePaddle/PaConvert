@@ -3575,3 +3575,17 @@ class TensorFunc2PaddleFunc(BaseMatcher):
             self.get_paddle_api(), self.paddleClass, self.kwargs_to_str(kwargs)
         )
         return code
+
+
+class TensorCoalesceMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "{}({})".format(self.get_paddle_api(), self.paddleClass)
+        return code
+
+
+class TensorDiagflatMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "{}({}, {})".format(
+            self.get_paddle_api(), self.paddleClass, self.kwargs_to_str(kwargs)
+        )
+        return code

@@ -7472,8 +7472,11 @@
     ]
   },
   "torch.Tensor.diagflat": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.diagflat"
+    "Matcher": "TensorDiagflatMatcher",
+    "paddle_api": "paddle.diagflat",
+    "args_list": [
+      "offset"
+    ]
   },
   "torch.Tensor.digamma_": {},
   "torch.Tensor.div": {
@@ -7710,8 +7713,8 @@
   "torch.Tensor.sparse_resize_": {},
   "torch.Tensor.positive": {},
   "torch.Tensor.coalesce": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.coalesce"
+    "Matcher": "TensorCoalesceMatcher",
+    "paddle_api": "paddle.sparse.coalesce"
   },
   "torch.Tensor.take_along_dim": {},
   "torch.Tensor.sparse_resize_and_clear_": {},
