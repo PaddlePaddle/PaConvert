@@ -15,9 +15,9 @@
 import argparse
 import re
 import sys
-import os
 import json
-from typing import Sequence, Mapping, Tuple
+
+NEED_SORT_API_KEYS = ['kwargs_change', 'paddle_default_kwargs']
 
 def _check_json_file(path):
     lang_type=re.compile(r"\.json$")
@@ -31,7 +31,7 @@ def _sort_dict_by_array(dictionary, key_array=None):
 
     # Sort keys present in key_array
     sorted_keys = [key for key in key_array if key in dictionary]
-    sorted_keys.sort(key=lambda x: key_array.index(x))
+    sorted_keys.sort(key=key_array.index)
 
     # Sort remaining keys in dictionary
     remaining_keys = [key for key in dictionary if key not in key_array]
@@ -50,12 +50,11 @@ def _get_pretty_api_format(value):
         return value
 
     new_value = value.copy()
-    SORT_KEYS = ['kwargs_change', 'paddle_default_kwargs']
 
     if 'args_list' in value and isinstance(value['args_list'], list):
-        for sk in SORT_KEYS:
-            if sk in new_value and isinstance(new_value[sk], dict):
-                new_value[sk] = _sort_dict_by_array(new_value[sk], value['args_list'])
+        for k in NEED_SORT_API_KEYS:
+            if k in new_value and isinstance(new_value[k], dict):
+                new_value[k] = _sort_dict_by_array(new_value[k], value['args_list'])
 
     return new_value
 
@@ -81,7 +80,7 @@ def _get_pretty_format(
 
 
 def _format_json_file(path):
-    with open(path, 'r') as file:
+    with open(path, 'r', encoding='UTF-8') as file:
         contents = file.read()
 
     new_contents = _get_pretty_format(contents, indent=2)
@@ -99,7 +98,6 @@ def main(argv=None):
     parser.add_argument('filenames', nargs='*', help='Filenames to check')
     args = parser.parse_args(argv)
 
-    retv = 0
     for path in args.filenames:
         is_json_file = _check_json_file(path)
         if is_json_file is None:
@@ -110,4 +108,4 @@ def main(argv=None):
 
 
 if __name__ == '__main__':
-    exit(main())
+    sys.exit(main())
