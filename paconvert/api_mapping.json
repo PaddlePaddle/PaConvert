@@ -7117,8 +7117,8 @@
     ]
   },
   "torch.Tensor.slogdet": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.slogdet"
+    "Matcher": "TensorSlogdetMatcher",
+    "paddle_api": "paddle.linalg.slogdet"
   },
   "torch.Tensor.sparse_mask": {},
   "torch.Tensor.sparse_dim": {},
@@ -7187,13 +7187,19 @@
   "torch.Tensor.transpose_": {},
   "torch.Tensor.triangular_solve": {},
   "torch.Tensor.tril": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.tril"
+    "Matcher": "TensorTrilMatcher",
+    "paddle_api": "paddle.tril",
+    "args_list": [
+      "diagonal"
+    ]
   },
   "torch.Tensor.tril_": {},
   "torch.Tensor.triu": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.triu"
+    "Matcher": "TensorTriuMatcher",
+    "paddle_api": "paddle.triu",
+    "args_list": [
+      "diagonal"
+    ]
   },
   "torch.Tensor.triu_": {},
   "torch.Tensor.true_divide_": {},

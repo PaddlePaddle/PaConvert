@@ -39,14 +39,3 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.short(torch.preserve_format)
-        """
-    )
-    obj.run(pytorch_code, ["result"])

@@ -11,20 +11,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.float")
+obj = APIBase("torch.Tensor.tril")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.float()
+        a = torch.tensor([[1.3192, 1.9915, 1.9674, 1.7151]])
+        result = a.tril()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +36,19 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.float(memory_format=torch.preserve_format)
+        a = torch.tensor([[1.3192, 1.9915, 1.9674, 1.7151]])
+        result = a.tril(1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1.3192, 1.9915, 1.9674, 1.7151]])
+        result = a.tril(diagonal=1)
         """
     )
     obj.run(pytorch_code, ["result"])

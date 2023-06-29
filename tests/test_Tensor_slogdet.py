@@ -16,26 +16,27 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.float")
+
+class TensorSlogdetAPIBase(APIBase):
+    def compare(self, name, pytorch_result, paddle_result, check_value=True):
+        if (
+            pytorch_result[0].numpy() == paddle_result[0].numpy()
+            and pytorch_result[1].numpy() == paddle_result[1].numpy()
+        ):
+            return True
+
+
+obj = TensorSlogdetAPIBase("torch.Tensor.slogdet")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.float()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.float(memory_format=torch.preserve_format)
+        a = torch.tensor([[ 0.0032, -0.2239, -1.1219],
+                [-0.6690,  0.1161,  0.4053],
+                [-1.6218, -0.9273, -0.0082]])
+        result = a.slogdet()
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.float")
+obj = APIBase("torch.Tensor.type_as")
 
 
 def test_case_1():
@@ -24,18 +24,8 @@ def test_case_1():
         """
         import torch
         src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.float()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.float(memory_format=torch.preserve_format)
+        a = torch.tensor([1])
+        result = src.type_as(a)
         """
     )
     obj.run(pytorch_code, ["result"])

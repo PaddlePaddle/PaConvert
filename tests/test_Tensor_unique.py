@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.bfloat16")
+obj = APIBase("torch.Tensor.bernoulli_")
 
 
 def test_case_1():
@@ -24,7 +24,7 @@ def test_case_1():
         """
         import torch
         src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.bfloat16()
+        result = src.unique()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,17 +35,40 @@ def test_case_2():
         """
         import torch
         src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.bfloat16(memory_format=torch.preserve_format)
+        result = src.unique(dim=0)
         """
     )
     obj.run(pytorch_code, ["result"])
+
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
         src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.bfloat16(torch.preserve_format)
+        result = src.unique(sorted=True, return_inverse=True, return_counts=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([1., 2., 3., 4., 5., 6.])
+        result = src.unique(sorted=True, return_inverse=True, return_counts=True, dim=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([1., 2., 3., 4., 5., 6.])
+        result = src.unique(True, True, dim=0)
         """
     )
     obj.run(pytorch_code, ["result"])
