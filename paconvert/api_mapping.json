@@ -8397,7 +8397,7 @@
     ]
   },
   "torch.nn.LayerNorm": {
-    "Matcher": "LayerNormMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.LayerNorm",
     "args_list": [
       "normalized_shape",
@@ -8405,10 +8405,18 @@
       "elementwise_affine",
       "device",
       "dtype"
-    ]
+    ],
+    "kwargs_change": {
+      "eps": "epsilon",
+      "dtype": "",
+      "elementwise_affine": [
+        "weight_attr",
+        "bias_attr"
+      ]
+    }
   },
   "torch.nn.GroupNorm": {
-    "Matcher": "GroupNormMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.GroupNorm",
     "args_list": [
       "num_groups",
@@ -8417,7 +8425,15 @@
       "affine",
       "device",
       "dtype"
-    ]
+    ],
+    "kwargs_change": {
+      "eps": "epsilon",
+      "dtype": "",
+      "affine": [
+        "weight_attr",
+        "bias_attr"
+      ]
+    }
   },
   "torch.nn.BatchNorm1d": {
     "Matcher": "BatchNormMatcher",
@@ -8430,7 +8446,11 @@
       "track_running_stats",
       "device",
       "dtype"
-    ]
+    ],
+    "kwargs_change": {
+      "eps": "epsilon",
+      "dtype": ""
+    }
   },
   "torch.nn.BatchNorm2d": {
     "Matcher": "BatchNormMatcher",
@@ -8443,7 +8463,11 @@
       "track_running_stats",
       "device",
       "dtype"
-    ]
+    ],
+    "kwargs_change": {
+      "eps": "epsilon",
+      "dtype": ""
+    }
   },
   "torch.nn.BatchNorm3d": {
     "Matcher": "BatchNormMatcher",
@@ -8456,7 +8480,11 @@
       "track_running_stats",
       "device",
       "dtype"
-    ]
+    ],
+    "kwargs_change": {
+      "eps": "epsilon",
+      "dtype": ""
+    }
   },
   "torch.nn.SyncBatchNorm": {
     "Matcher": "BatchNormMatcher",
@@ -8470,7 +8498,11 @@
       "process_group",
       "device",
       "dtype"
-    ]
+    ],
+    "kwargs_change": {
+      "eps": "epsilon",
+      "dtype": ""
+    }
   },
   "torch.nn.SyncBatchNorm.convert_sync_batchnorm": {
     "Matcher": "GenericMatcher",
@@ -8487,7 +8519,7 @@
     ]
   },
   "torch.nn.RNNCell": {
-    "Matcher": "RNNCellMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.SimpleRNNCell",
     "args_list": [
       "input_size",
@@ -8496,10 +8528,19 @@
       "nonlinearity",
       "device",
       "dtype"
-    ]
+    ],
+    "kwargs_change": {
+      "dtype": "",
+      "device": "",
+      "nonlinearity": "activation",
+      "bias": [
+        "bias_ih_attr",
+        "bias_hh_attr"
+      ]
+    }
   },
   "torch.nn.LSTMCell": {
-    "Matcher": "RNNCellMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.LSTMCell",
     "args_list": [
       "input_size",
@@ -8507,10 +8548,18 @@
       "bias",
       "device",
       "dtype"
-    ]
+    ],
+    "kwargs_change": {
+      "dtype": "",
+      "device": "",
+      "bias": [
+        "bias_ih_attr",
+        "bias_hh_attr"
+      ]
+    }
   },
   "torch.nn.GRUCell": {
-    "Matcher": "RNNCellMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.GRUCell",
     "args_list": [
       "input_size",
@@ -8518,7 +8567,16 @@
       "bias",
       "device",
       "dtype"
-    ]
+    ],
+    "kwargs_change": {
+      "dtype": "",
+      "device": "",
+      "nonlinearity": "activation",
+      "bias": [
+        "bias_ih_attr",
+        "bias_hh_attr"
+      ]
+    }
   },
   "torch.nn.RNN": {
     "Matcher": "RNNMatcher",
@@ -8532,6 +8590,16 @@
       "batch_first",
       "dropout",
       "bidirectional"
+    ],
+    "kwargs_change": {
+      "nonlinearity": "activation",
+      "bias": [
+        "bias_ih_attr",
+        "bias_hh_attr"
+      ]
+    },
+    "unsupport_args": [
+      "proj_size"
     ]
   },
   "torch.nn.LSTM": {
@@ -8546,6 +8614,16 @@
       "dropout",
       "bidirectional",
       "proj_size"
+    ],
+    "kwargs_change": {
+      "nonlinearity": "activation",
+      "bias": [
+        "bias_ih_attr",
+        "bias_hh_attr"
+      ]
+    },
+    "unsupport_args": [
+      "proj_size"
     ]
   },
   "torch.nn.GRU": {
@@ -8559,6 +8637,15 @@
       "batch_first",
       "dropout",
       "bidirectional"
+    ],
+    "kwargs_change": {
+      "bias": [
+        "bias_ih_attr",
+        "bias_hh_attr"
+      ]
+    },
+    "unsupport_args": [
+      "proj_size"
     ]
   },
   "torch.nn.MultiheadAttention": {
@@ -8834,7 +8921,15 @@
       "track_running_stats",
       "device",
       "dtype"
-    ]
+    ],
+    "kwargs_change": {
+      "eps": "epsilon",
+      "dtype": "",
+      "affine": [
+        "weight_attr",
+        "bias_attr"
+      ]
+    }
   },
   "torch.nn.InstanceNorm2d": {
     "Matcher": "InstanceNormMatcher",
@@ -8847,7 +8942,15 @@
       "track_running_stats",
       "device",
       "dtype"
-    ]
+    ],
+    "kwargs_change": {
+      "eps": "epsilon",
+      "dtype": "",
+      "affine": [
+        "weight_attr",
+        "bias_attr"
+      ]
+    }
   },
   "torch.nn.InstanceNorm3d": {
     "Matcher": "InstanceNormMatcher",
@@ -8860,7 +8963,15 @@
       "track_running_stats",
       "device",
       "dtype"
-    ]
+    ],
+    "kwargs_change": {
+      "eps": "epsilon",
+      "dtype": "",
+      "affine": [
+        "weight_attr",
+        "bias_attr"
+      ]
+    }
   },
   "torch.nn.BCEWithLogitsLoss": {
     "Matcher": "SizeAverageMatcher",

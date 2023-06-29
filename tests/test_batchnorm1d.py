@@ -16,16 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.GroupNorm")
+obj = APIBase("torch.nn.BatchNorm1d")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
+        import torch.nn as nn
         import torch
-        a = torch.tensor([[[[2.,3.], [3., 5.]], [[5.,3.], [9., 5.]]]])
-        m = torch.nn.GroupNorm(2, 2)
-        result = m(a)
+        m = torch.nn.BatchNorm1d(5, affine=False)
+        input = torch.zeros(2, 5)
+        result = m(input)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,10 +35,11 @@ def test_case_1():
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
+        import torch.nn as nn
         import torch
-        a = torch.tensor([[[[2.,3.], [3., 5.]], [[5.,3.], [9., 5.]]]])
-        m = torch.nn.GroupNorm(2, 2, eps=1e-05, affine=False)
-        result = m(a)
+        m = torch.nn.BatchNorm1d(5, affine=False, eps=1e-5)
+        input = torch.zeros(2, 5)
+        result = m(input)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -46,58 +48,79 @@ def test_case_2():
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
+        import torch.nn as nn
         import torch
-        a = torch.tensor([[[[2.,3.], [3., 5.]], [[5.,3.], [9., 5.]]]])
-        m = torch.nn.GroupNorm(2, 2, eps=1e-05, affine=True)
-        result = m(a)
+        m = torch.nn.BatchNorm1d(5, 1e-5, 0.2, affine=False)
+        input = torch.zeros(2, 5)
+        result = m(input)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_alias_case_1():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
+        import torch.nn as nn
         import torch
-        a = torch.tensor([[[[2.,3.], [3., 5.]], [[5.,3.], [9., 5.]]]])
-        m = torch.nn.modules.GroupNorm(2, 2)
-        result = m(a)
+        m = torch.nn.BatchNorm1d(5, 1e-5, 0.2, affine=True)
+        input = torch.zeros(2, 5)
+        result = m(input)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_alias_case_2():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
+        import torch.nn as nn
         import torch
-        a = torch.tensor([[[[2.,3.], [3., 5.]], [[5.,3.], [9., 5.]]]])
-        m = torch.nn.modules.GroupNorm(2, 2, eps=1e-05, affine=False)
-        result = m(a)
+        m = torch.nn.BatchNorm1d(5, 1e-5, 0.2, affine=True, track_running_stats=True)
+        input = torch.zeros(2, 5)
+        result = m(input)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_alias_case_3():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
+        import torch.nn as nn
         import torch
-        a = torch.tensor([[[[2.,3.], [3., 5.]], [[5.,3.], [9., 5.]]]])
-        m = torch.nn.modules.GroupNorm(2, 2, eps=1e-05, affine=True)
-        result = m(a)
+        a = False
+        m = torch.nn.BatchNorm1d(5, affine=a)
+        input = torch.zeros(2, 5)
+        result = m(input)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_alias_case_4():
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
+        import torch.nn as nn
         import torch
-        a = torch.tensor([[[[2.,3.], [3., 5.]], [[5.,3.], [9., 5.]]]])
-        m = torch.nn.modules.GroupNorm(2, 2, eps=1e-05, affine=True, dtype=torch.float32)
-        result = m(a)
+        a = True
+        m = torch.nn.BatchNorm1d(5, 1e-5, 0.2, affine=a, track_running_stats=True)
+        input = torch.zeros(2, 5)
+        result = m(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        a = True
+        m = torch.nn.BatchNorm1d(5, 1e-5, 0.2, affine=a, track_running_stats=True, dtype=torch.float32)
+        input = torch.zeros(2, 5)
+        result = m(input)
         """
     )
     obj.run(pytorch_code, ["result"])

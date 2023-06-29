@@ -38,7 +38,11 @@ class GenericMatcher(BaseMatcher):
             if k in kwargs_change:
                 if kwargs_change[k]:
                     # rename/copy in new_kwargs
-                    new_kwargs[kwargs_change[k]] = kwargs.pop(k)
+                    if isinstance(kwargs_change[k], list):
+                        for v in kwargs_change[k]:
+                            new_kwargs[v] = kwargs[k]
+                    else:
+                        new_kwargs[kwargs_change[k]] = kwargs[k]
                 else:
                     # remove in new_kwargs
                     kwargs.pop(k)
@@ -892,114 +896,33 @@ class FunctionInterpolateMatcher(BaseMatcher):
         return code.strip("\n")
 
 
-class LayerNormMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "eps" not in kwargs:
-            epsilon = 1e-5
-        else:
-            epsilon = kwargs["eps"]
-
-        if "elementwise_affine" in kwargs and "False" in kwargs["elementwise_affine"]:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.nn.LayerNorm(normalized_shape={},
-                                    epsilon={},
-                                    weight_attr=False,
-                                    bias_attr=False)
-                """
-            )
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.nn.LayerNorm(normalized_shape={},
-                                    epsilon={},
-                                    weight_attr=None,
-                                    bias_attr=None)
-                """
-            )
-        code = API_TEMPLATE.format(kwargs["normalized_shape"], epsilon)
-        return code
-
-
-class GroupNormMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "eps" not in kwargs:
-            epsilon = 1e-5
-        else:
-            epsilon = kwargs["eps"]
-
-        if "affine" in kwargs and "False" in kwargs["affine"]:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.nn.GroupNorm(num_groups={},
-                                    num_channels={},
-                                    epsilon={},
-                                    weight_attr=False,
-                                    bias_attr=False)
-                """
-            )
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.nn.GroupNorm(num_groups={},
-                                    num_channels={},
-                                    epsilon={},
-                                    weight_attr=None,
-                                    bias_attr=None)
-                """
-            )
-        code = API_TEMPLATE.format(
-            kwargs["num_groups"], kwargs["num_channels"], epsilon
-        )
-        return code
-
-
 class BatchNormMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "eps" not in kwargs:
-            epsilon = 1e-5
-        else:
-            epsilon = kwargs["eps"]
-
+        if "dtype" in kwargs:
+            kwargs.pop("dtype")
         if "track_running_stats" in kwargs:
             track_running_stats = kwargs["track_running_stats"]
+            kwargs.pop("track_running_stats")
         else:
             track_running_stats = True
-
+        kwargs["use_global_stats"] = track_running_stats
         if "momentum" in kwargs:
-            momentum = kwargs["momentum"]
+            momentum = f"1 - {kwargs['momentum']}"
         else:
             momentum = 0.1
-
-        if "affine" in kwargs and "False" in kwargs["affine"]:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {}(num_features={},
-                    momentum=1-{},
-                    epsilon={},
-                    weight_attr=False,
-                    bias_attr=False,
-                    use_global_stats={})
-                """
-            )
+        if "affine" not in kwargs:
+            kwargs["weight_attr"] = None
+            kwargs["bias_attr"] = None
         else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {}(num_features={},
-                    momentum=1-{},
-                    epsilon={},
-                    weight_attr=None,
-                    bias_attr=None,
-                    use_global_stats={})
-                """
-            )
-        code = API_TEMPLATE.format(
-            self.get_paddle_api(),
-            kwargs["num_features"],
-            momentum,
-            epsilon,
-            track_running_stats,
-        )
+            kwargs[
+                "weight_attr"
+            ] = f"None if ({kwargs['affine']} is None or {kwargs['affine']}) else False"
+            kwargs[
+                "bias_attr"
+            ] = f"None if ({kwargs['affine']} is None or {kwargs['affine']}) else False"
+            kwargs.pop("affine")
+
+        code = GenericMatcher.generate_code(self, kwargs)
         return code
 
 
@@ -1734,41 +1657,12 @@ class TensorIndexCopyMatcher(BaseMatcher):
 
 class InstanceNormMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "eps" not in kwargs:
-            epsilon = 1e-5
-        else:
-            epsilon = kwargs["eps"]
-
         if "momentum" in kwargs:
             momentum = kwargs["momentum"]
         else:
             momentum = 0.1
-
-        if "affine" in kwargs and "True" in kwargs["affine"]:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {}(num_features={},
-                    momentum=1-{},
-                    epsilon={},
-                    weight_attr=None,
-                    bias_attr=None)
-                """
-            )
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {}(num_features={},
-                    momentum=1-{},
-                    epsilon={},
-                    weight_attr=False,
-                    bias_attr=False)
-                """
-            )
-
-        code = API_TEMPLATE.format(
-            self.get_paddle_api(), kwargs["num_features"], momentum, epsilon
-        )
-        return code
+        kwargs["momentum"] = f"1-{momentum}"
+        return GenericMatcher.generate_code(self, kwargs)
 
 
 class GeneratorMatcher(BaseMatcher):
@@ -3259,77 +3153,21 @@ class RoundMatcher(BaseMatcher):
         return code
 
 
-class RNNCellMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "dtype" in kwargs:
-            return None
-
-        if "nonlinearity" in kwargs:
-            kwargs["activation"] = kwargs.pop("nonlinearity")
-
-        if "device" in kwargs:
-            kwargs.pop("device")
-
-        if "bias" in kwargs and "False" in kwargs["bias"]:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {}({},
-                    bias_ih_attr=False,
-                    bias_hh_attr=False)
-                """
-            )
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {}({})
-                """
-            )
-        if "bias" in kwargs:
-            kwargs.pop("bias")
-        code = API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-        return code
-
-
 class RNNMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "proj_size" in kwargs:
-            return None
-
         if "batch_first" in kwargs:
             batch_first = kwargs.pop("batch_first")
         else:
             batch_first = False
+        kwargs["time_major"] = f"not {batch_first}"
 
-        if "nonlinearity" in kwargs:
-            kwargs["activation"] = kwargs.pop("nonlinearity")
-
-        direction = "'forward'"
+        kwargs["direction"] = "'forward'"
         if "bidirectional" in kwargs:
             if "True" in kwargs["bidirectional"]:
                 direction = "'bidirect'"
             kwargs.pop("bidirectional")
 
-        if "bias" in kwargs and "False" in kwargs["bias"]:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {}({}, direction={}, time_major= not {},
-                    bias_ih_attr=False,
-                    bias_hh_attr=False)
-                """
-            )
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {}({}, direction={}, time_major= not {})
-                """
-            )
-
-        if "bias" in kwargs:
-            kwargs.pop("bias")
-        code = API_TEMPLATE.format(
-            self.get_paddle_api(), self.kwargs_to_str(kwargs), direction, batch_first
-        )
-        return code
+        return GenericMatcher.generate_code(self, kwargs)
 
 
 class DiffMatcher(BaseMatcher):
@@ -3369,52 +3207,30 @@ class ParameterMatcher(BaseMatcher):
 
 class Modules_BatchNormBaseMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "eps" not in kwargs:
-            epsilon = 1e-5
-        else:
-            epsilon = kwargs["eps"]
-
         if "track_running_stats" in kwargs:
             track_running_stats = kwargs["track_running_stats"]
         else:
             track_running_stats = True
+        kwargs["use_global_stats"] = track_running_stats
 
         if "momentum" in kwargs:
             momentum = kwargs["momentum"]
         else:
             momentum = 0.1
+        kwargs["momentum"] = f"1-{momentum}"
 
-        if "affine" in kwargs and "False" in kwargs["affine"]:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {}(num_features={},
-                    momentum=1-{},
-                    epsilon={},
-                    weight_attr=False,
-                    bias_attr=False,
-                    use_global_stats={})
-                """
-            )
+        if "affine" not in kwargs:
+            kwargs["weight_attr"] = None
+            kwargs["bias_attr"] = None
         else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {}(num_features={},
-                    momentum=1-{},
-                    epsilon={},
-                    weight_attr=None,
-                    bias_attr=None,
-                    use_global_stats={})
-                """
-            )
-        code = API_TEMPLATE.format(
-            self.get_paddle_api(),
-            kwargs["num_features"],
-            momentum,
-            epsilon,
-            track_running_stats,
-        )
+            kwargs[
+                "weight_attr"
+            ] = f"None if ({kwargs['affine']} is None or {kwargs['affine']}) else False"
+            kwargs[
+                "bias_attr"
+            ] = f"None if ({kwargs['affine']} is None or {kwargs['affine']}) else False"
 
-        return code
+        return GenericMatcher.generate_code(self, kwargs)
 
 
 class TensorTakeMatcher(BaseMatcher):

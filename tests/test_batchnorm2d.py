@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.InstanceNorm3d")
+obj = APIBase("torch.nn.BatchNorm2d")
 
 
 def test_case_1():
@@ -24,10 +24,9 @@ def test_case_1():
         """
         import torch.nn as nn
         import torch
-        m = nn.InstanceNorm3d(100)
-        input = torch.ones(20, 100, 35, 45, 10)
+        m = torch.nn.BatchNorm2d(5, affine=False)
+        input = torch.zeros(2, 5, 4, 4)
         result = m(input)
-        result.requires_grad = False
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -38,8 +37,8 @@ def test_case_2():
         """
         import torch.nn as nn
         import torch
-        m = nn.InstanceNorm3d(100, affine=True)
-        input = torch.ones(20, 100, 35, 45, 10)
+        m = torch.nn.BatchNorm2d(5, affine=False, eps=1e-5)
+        input = torch.zeros(2, 5, 4, 4)
         result = m(input)
         """
     )
@@ -51,8 +50,8 @@ def test_case_3():
         """
         import torch.nn as nn
         import torch
-        m = nn.InstanceNorm3d(100, affine=False)
-        input = torch.ones(20, 100, 35, 45, 10)
+        m = torch.nn.BatchNorm2d(5, 1e-5, 0.2, affine=False)
+        input = torch.zeros(2, 5, 4, 4)
         result = m(input)
         """
     )
@@ -64,8 +63,8 @@ def test_case_4():
         """
         import torch.nn as nn
         import torch
-        m = nn.InstanceNorm3d(100, affine=True, momentum=0.1)
-        input = torch.ones(20, 100, 35, 45, 10)
+        m = torch.nn.BatchNorm2d(5, 1e-5, 0.2, affine=True)
+        input = torch.zeros(2, 5, 4, 4)
         result = m(input)
         """
     )
@@ -77,8 +76,8 @@ def test_case_5():
         """
         import torch.nn as nn
         import torch
-        m = nn.InstanceNorm3d(100, affine=False, momentum=0.1)
-        input = torch.ones(20, 100, 35, 45, 10)
+        m = torch.nn.BatchNorm2d(5, 1e-5, 0.2, affine=True, track_running_stats=True)
+        input = torch.zeros(2, 5, 4, 4)
         result = m(input)
         """
     )
@@ -90,8 +89,50 @@ def test_case_6():
         """
         import torch.nn as nn
         import torch
-        m = nn.InstanceNorm3d(100, affine=False, momentum=0.1, dtype=torch.float32)
-        input = torch.ones(20, 100, 35, 45, 10)
+        m = torch.nn.BatchNorm2d(5)
+        input = torch.zeros(2, 5, 4, 4)
+        result = m(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        a = False
+        m = torch.nn.BatchNorm2d(5, affine=a)
+        input = torch.zeros(2, 5, 4, 4)
+        result = m(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        a = True
+        m = torch.nn.BatchNorm2d(5, 1e-5, 0.2, affine=a, track_running_stats=True)
+        input = torch.zeros(2, 5, 4, 4)
+        result = m(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        a = True
+        m = torch.nn.BatchNorm2d(5, 1e-5, 0.2, affine=a, track_running_stats=True, dtype=torch.float32)
+        input = torch.zeros(2, 5, 4, 4)
         result = m(input)
         """
     )

@@ -64,7 +64,7 @@ def test_case_3():
             h0 = h0[1]
         """
     )
-    obj.run(pytorch_code, ["h0"], unsupport=True, reason="unsupported dtype parameter")
+    obj.run(pytorch_code, ["h0"])
 
 
 def test_case_4():
@@ -80,7 +80,7 @@ def test_case_4():
             h0 = h0[1]
         """
     )
-    obj.run(pytorch_code, ["h0"], unsupport=True, reason="unsupported dtype parameter")
+    obj.run(pytorch_code, ["h0"])
 
 
 def test_case_5():
@@ -113,3 +113,19 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["h0"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        from torch import nn
+        inp = torch.tensor([[0.,0.],[0.,0.]])
+        rnn = torch.nn.RNNCell(2, 2)
+        h0 = torch.tensor([[0.,0.],[0.,0.]])
+        h0 = rnn(inp, h0)
+        if isinstance(h0, tuple):
+            h0 = h0[1]
+        """
+    )
+    obj.run(pytorch_code, ["h0"], check_value=False)
