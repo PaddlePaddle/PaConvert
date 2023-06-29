@@ -33,7 +33,6 @@ class GenericMatcher(BaseMatcher):
         if "kwargs_change" in self.api_mapping:
             kwargs_change = self.api_mapping["kwargs_change"]
         new_kwargs = {}
-        dtype_v = None
         for k in list(kwargs.keys()):
             if k in kwargs_change:
                 if kwargs_change[k]:
@@ -58,13 +57,16 @@ class GenericMatcher(BaseMatcher):
                     "inplace",
                     "generator",
                     "non_blocking",
+                    "async",
                 ]:
                     new_kwargs.pop(k)
                     continue
-                if k == "dtype":
-                    dtype_v = new_kwargs.pop("dtype")
 
         new_kwargs = self.set_paddle_default_kwargs(new_kwargs)
+
+        dtype_v = None
+        if "dtype" in new_kwargs:
+            dtype_v = new_kwargs.pop("dtype")
 
         pin_memory_v = False
         if "pin_memory" in new_kwargs:
@@ -74,7 +76,9 @@ class GenericMatcher(BaseMatcher):
         if "requires_grad" in new_kwargs:
             stop_gradient_v = "not " + new_kwargs.pop("requires_grad").strip("()")
 
-        out_v = new_kwargs.pop("out") if "out" in new_kwargs else None
+        out_v = None
+        if "out" in new_kwargs:
+            out_v = new_kwargs.pop("out")
 
         res = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
 
