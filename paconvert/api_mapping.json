@@ -9178,7 +9178,6 @@
       "dtype",
       "layout",
       "device",
-      "dtype",
       "requires_grad",
       "memory_format"
     ],
