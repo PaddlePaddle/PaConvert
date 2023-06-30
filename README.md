@@ -312,6 +312,13 @@ unsupport_args:可选，Paddle API不支持的参数功能，通过该字段配�
 paddle_default_kwargs :可选，当 paddle 参数更多 或者 参数默认值不一致 时，可以通过该配置，设置参数默认值。
 ```
 
+**需要注意的是**，如果一个API是别名API(alias API), 比如 `torch.nn.modules.GroupNorm` 和 `torch.nn.GroupNorm` 是同一个API，只是按照模块路径采用了不同的调用方式，那么就无需编写相关 Matcher，只需在 paconvert/api_alias_mapping.json 中增加如下该 API 的配置即可：
+```bash
+{
+  "torch.nn.modules.GroupNorm": "torch.nn.GroupNorm"
+}
+```
+
 对于一个待开发API，首先依据步骤1的映射关系，确定其属于哪种分类情况。
 
 对于以下映射关系的分类，都可以通过框架封装好的通用转换器：`GenericMatcher` 来处理：
