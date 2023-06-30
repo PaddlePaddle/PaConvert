@@ -16,15 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.utils.data._utils.collate.default_collate")
+obj = APIBase("torch.Tensor.lcm")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data._utils.collate import default_collate
-        result = torch.tensor(default_collate([0, 1, 2, 3]))
+        a = torch.tensor([5, 10, 15])
+        b = torch.tensor([3, 4, 5])
+        result = a.lcm(b)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,8 +34,10 @@ def test_case_1():
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate(['a', 'b', 'c'])
+        import torch
+        a = torch.tensor([5, 10, 15])
+        b = torch.tensor([3, 4, 5])
+        result = a.lcm(other=b)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +47,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate([torch.tensor([0, 1, 2, 3])])
+        result = torch.tensor([5, 10, 15]).lcm(torch.tensor([3, 4, 5]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,8 +57,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate((torch.tensor([1, 3, 3]), torch.tensor([3, 1, 1])))
+        result = torch.tensor([5, 10, 15]).lcm(other=torch.tensor([3, 4, 5]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -66,8 +67,9 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate(batch=(torch.tensor([1, 3, 3]), torch.tensor([3, 1, 1])))
+        a = torch.tensor([5, 10, 15])
+        b = torch.tensor([3])
+        result = a.lcm(other=b)
         """
     )
     obj.run(pytorch_code, ["result"])

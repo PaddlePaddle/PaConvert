@@ -19,12 +19,12 @@ from apibase import APIBase
 obj = APIBase("torch.utils.data.dataloader.default_collate")
 
 
-# Pytorch returns torch.tensor by default, while paddle returns numpy.ndarray by default.
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
+        import torch
         from torch.utils.data.dataloader import default_collate
-        result = default_collate([0, 1, 2, 3])
+        result = torch.tensor(default_collate([0, 1, 2, 3]))
         """
     )
     obj.run(pytorch_code, ["result"])

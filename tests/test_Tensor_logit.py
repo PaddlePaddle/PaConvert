@@ -11,20 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.utils.data._utils.collate.default_collate")
+obj = APIBase("torch.Tensor.logit")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data._utils.collate import default_collate
-        result = torch.tensor(default_collate([0, 1, 2, 3]))
+        input = torch.tensor([0.2796, 0.9331, 0.6486, 0.1523, 0.6516])
+        result = input.logit(eps=1e-6)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,8 +34,10 @@ def test_case_1():
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate(['a', 'b', 'c'])
+        import torch
+        input = torch.tensor([0.2796, 0.9331, 0.6486, 0.1523, 0.6516])
+        eps = 1e-6
+        result = input.logit(eps)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,30 +47,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate([torch.tensor([0, 1, 2, 3])])
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate((torch.tensor([1, 3, 3]), torch.tensor([3, 1, 1])))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate(batch=(torch.tensor([1, 3, 3]), torch.tensor([3, 1, 1])))
+        result = torch.tensor([0.2796, 0.9331, 0.6486, 0.1523, 0.6516]).logit(eps=1e-6)
         """
     )
     obj.run(pytorch_code, ["result"])

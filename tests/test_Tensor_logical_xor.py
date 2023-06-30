@@ -11,20 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.utils.data._utils.collate.default_collate")
+obj = APIBase("torch.Tensor.logical_xor")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data._utils.collate import default_collate
-        result = torch.tensor(default_collate([0, 1, 2, 3]))
+        result = torch.tensor([True, False, True]).logical_xor(torch.tensor([True, False, False]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,8 +33,10 @@ def test_case_1():
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate(['a', 'b', 'c'])
+        import torch
+        a = torch.tensor([0, 1, 10, 0], dtype=torch.int8)
+        b = torch.tensor([4, 0, 1, 0], dtype=torch.int8)
+        result = a.logical_xor(b)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +46,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate([torch.tensor([0, 1, 2, 3])])
+        a = torch.tensor([0, 1, 10, 0], dtype=torch.float32)
+        b = torch.tensor([4, 0, 1, 0], dtype=torch.float32)
+        result = a.logical_xor(b)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,8 +58,9 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate((torch.tensor([1, 3, 3]), torch.tensor([3, 1, 1])))
+        a = torch.tensor([0, 1, 10, 0], dtype=torch.float32)
+        b = torch.tensor([4, 0, 1, 0], dtype=torch.float32)
+        result = torch.tensor([0, 1, 10., 0.]).logical_xor(other=torch.tensor([4, 0, 10., 0.]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -66,8 +70,9 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate(batch=(torch.tensor([1, 3, 3]), torch.tensor([3, 1, 1])))
+        a = torch.tensor([0, 1, 10, 0], dtype=torch.float32)
+        b = torch.tensor([4, 0, 1, 0], dtype=torch.int8)
+        result = a.logical_xor(b)
         """
     )
     obj.run(pytorch_code, ["result"])

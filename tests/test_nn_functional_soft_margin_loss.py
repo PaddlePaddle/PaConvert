@@ -16,15 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.utils.data._utils.collate.default_collate")
+obj = APIBase("torch.nn.functional.soft_margin_loss")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data._utils.collate import default_collate
-        result = torch.tensor(default_collate([0, 1, 2, 3]))
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        target = torch.tensor([[1., 0., 1.],[0., 1., 1.]])
+        result = torch.nn.functional.soft_margin_loss(input, target)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,8 +35,11 @@ def test_case_1():
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate(['a', 'b', 'c'])
+        import torch
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        target = torch.tensor([[1., 0., 1.],[0., 1., 1.]])
+        result = torch.nn.functional.soft_margin_loss(input, target, reduction='sum')
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +49,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate([torch.tensor([0, 1, 2, 3])])
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        target = torch.tensor([[1., 0., 1.],[0., 1., 1.]])
+        result = torch.nn.functional.soft_margin_loss(input, target, reduction='none')
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,8 +62,10 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate((torch.tensor([1, 3, 3]), torch.tensor([3, 1, 1])))
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        target = torch.tensor([[1., 0., 1.],[0., 1., 1.]])
+        result = torch.nn.functional.soft_margin_loss(input, target, size_average=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -66,8 +75,10 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate(batch=(torch.tensor([1, 3, 3]), torch.tensor([3, 1, 1])))
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        target = torch.tensor([[1., 0., 1.],[0., 1., 1.]])
+        result = torch.nn.functional.soft_margin_loss(input, target, reduce=False)
         """
     )
     obj.run(pytorch_code, ["result"])

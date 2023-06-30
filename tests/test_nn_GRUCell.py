@@ -64,7 +64,7 @@ def test_case_3():
             h0 = h0[1]
         """
     )
-    obj.run(pytorch_code, ["h0"], unsupport=True, reason="unsupported dtype parameter")
+    obj.run(pytorch_code, ["h0"])
 
 
 def test_case_4():
@@ -80,7 +80,7 @@ def test_case_4():
             h0 = h0[1]
         """
     )
-    obj.run(pytorch_code, ["h0"], unsupport=True, reason="unsupported dtype parameter")
+    obj.run(pytorch_code, ["h0"])
 
 
 def test_case_5():

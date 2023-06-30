@@ -16,15 +16,14 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.utils.data._utils.collate.default_collate")
+obj = APIBase("torch.Tensor.inner")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data._utils.collate import default_collate
-        result = torch.tensor(default_collate([0, 1, 2, 3]))
+        result = torch.tensor([1., 2, 3]).inner(torch.tensor([0., 2, 1]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,8 +32,17 @@ def test_case_1():
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate(['a', 'b', 'c'])
+        import torch
+        x = torch.tensor([[0.8173, 1.0874, 1.1784], [0.3279, 0.1234, 2.7894]])
+        y = torch.tensor([[[-0.4682, -0.7159,  0.1506],
+                        [ 0.4034, -0.3657,  1.0387],
+                        [ 0.9892, -0.6684,  0.1774],
+                        [ 0.9482,  1.3261,  0.3917]],
+                        [[ 0.4537,  0.7493,  1.1724],
+                        [ 0.2291,  0.5749, -0.2267],
+                        [-0.7920,  0.3607, -0.3701],
+                        [ 1.3666, -0.5850, -1.7242]]])
+        result = x.inner(y)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +52,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate([torch.tensor([0, 1, 2, 3])])
+        x = torch.tensor([[0.8173, 1.0874, 1.1784], [0.3279, 0.1234, 2.7894]])
+        result = x.inner(torch.tensor(2.))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,19 +63,18 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate((torch.tensor([1, 3, 3]), torch.tensor([3, 1, 1])))
+        result = torch.tensor([1., 2, 3]).inner(other=torch.tensor([0., 2, 1]))
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_5():
+# The paddle input does not support integer type
+def _test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data._utils.collate import default_collate
-        result = default_collate(batch=(torch.tensor([1, 3, 3]), torch.tensor([3, 1, 1])))
+        result = torch.tensor([1, 2, 3]).inner(torch.tensor([0, 2, 1]))
         """
     )
     obj.run(pytorch_code, ["result"])
