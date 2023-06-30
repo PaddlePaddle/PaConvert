@@ -11,20 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.is_complex")
+obj = APIBase("torch.Tensor.heaviside")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]])
-        result = torch.is_complex(a)
+        input = torch.tensor([-1.5, 0, 2.0])
+        values = torch.tensor([0.5])
+        result = input.heaviside(values)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,7 +34,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.is_complex(torch.tensor([[4, 9], [23, 2]], dtype=torch.complex64))
+        result = torch.tensor([-1.5, 0, 2.0]).heaviside(torch.tensor([0.5]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +44,30 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]], dtype=torch.complex128)
-        result = torch.is_complex(a)
+        input = torch.tensor([-1.5, 0, 2.0])
+        result = input.heaviside(torch.tensor([0.5]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([-1.5, 0, 2.0])
+        result = input.heaviside(torch.tensor([0.5, 1.7, 0.8]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([-1.5, 0, 2.0])
+        result = input.heaviside(torch.tensor(data=[0.5, 1.7, 0.8]))
         """
     )
     obj.run(pytorch_code, ["result"])

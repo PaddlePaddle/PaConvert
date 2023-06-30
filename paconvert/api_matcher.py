@@ -3527,6 +3527,47 @@ class SizeAverageMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class LuMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        out_v = kwargs.pop("out") if "out" in kwargs else None
+
+        if out_v:
+
+            out_3_var = "get_infos" in kwargs and kwargs["get_infos"] != "(False)"
+            new_kwargs = {}
+            new_kwargs["x"] = kwargs.pop("A")
+            new_kwargs.update(kwargs)
+
+            if out_3_var:
+                API_TEMPLATE = textwrap.dedent(
+                    """
+                    tmp_lu, tmp_p, tmp_info = {}({})
+                    paddle.assign(tmp_lu, {}[0]), paddle.assign(tmp_p, {}[1]), paddle.assign(tmp_info, {}[2])
+                    """
+                )
+                code = API_TEMPLATE.format(
+                    self.get_paddle_api(),
+                    self.kwargs_to_str(new_kwargs),
+                    out_v,
+                    out_v,
+                    out_v,
+                )
+            else:
+                API_TEMPLATE = textwrap.dedent(
+                    """
+                    tmp_lu, tmp_p = {}({})
+                    paddle.assign(tmp_lu, {}[0]), paddle.assign(tmp_p, {}[1])
+                    """
+                )
+                code = API_TEMPLATE.format(
+                    self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out_v, out_v
+                )
+
+            return code
+
+        return GenericMatcher.generate_code(self, kwargs)
+
+
 class RandomSplitMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
@@ -3581,39 +3622,11 @@ class TensorFunc2PaddleFunc(BaseMatcher):
         return code
 
 
-class TensorCoalesceMatcher(BaseMatcher):
+class TensorLogicalMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "{}({})".format(self.get_paddle_api(), self.paddleClass)
-        return code
 
-
-class TensorDiagflatMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        code = "{}({}, {})".format(
-            self.get_paddle_api(), self.paddleClass, self.kwargs_to_str(kwargs)
+        code = "{}(y=({}).astype(({}).dtype))".format(
+            self.get_paddle_api(), kwargs["other"], self.paddleClass
         )
-        return code
 
-
-class TensorTriuMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        code = "{}({}, {})".format(
-            self.get_paddle_api(), self.paddleClass, self.kwargs_to_str(kwargs)
-        )
-        return code
-
-
-class TensorTrilMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        code = "{}({}, {})".format(
-            self.get_paddle_api(), self.paddleClass, self.kwargs_to_str(kwargs)
-        )
-        return code
-
-
-class TensorSlogdetMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        code = "{}({}, {})".format(
-            self.get_paddle_api(), self.paddleClass, self.kwargs_to_str(kwargs)
-        )
         return code

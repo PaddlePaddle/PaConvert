@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.is_complex")
+obj = APIBase("torch.Tensor.is_complex")
 
 
 def test_case_1():
@@ -24,7 +24,7 @@ def test_case_1():
         """
         import torch
         a = torch.tensor([[4, 9], [23, 2]])
-        result = torch.is_complex(a)
+        result = a.is_complex()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,7 +34,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.is_complex(torch.tensor([[4, 9], [23, 2]], dtype=torch.complex64))
+        result = torch.tensor([[4, 9], [23, 2]], dtype=torch.complex64).is_complex()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,7 +45,7 @@ def test_case_3():
         """
         import torch
         a = torch.tensor([[4, 9], [23, 2]], dtype=torch.complex128)
-        result = torch.is_complex(a)
+        result = a.is_complex()
         """
     )
     obj.run(pytorch_code, ["result"])
