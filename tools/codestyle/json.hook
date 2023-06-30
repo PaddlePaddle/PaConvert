@@ -15,8 +15,9 @@
 import argparse
 import re
 import sys
-import os
 import json
+
+NEED_SORT_API_KEYS = ['kwargs_change', 'paddle_default_kwargs']
 
 def _check_json_file(path):
     lang_type=re.compile(r"\.json$")
@@ -25,21 +26,71 @@ def _check_json_file(path):
 
     return False
 
+def _sort_dict_by_array(dictionary, key_array=None):
+    sorted_dict = {}
+
+    # Sort keys present in key_array
+    sorted_keys = [key for key in key_array if key in dictionary]
+    sorted_keys.sort(key=key_array.index)
+
+    # Sort remaining keys in dictionary
+    remaining_keys = [key for key in dictionary if key not in key_array]
+    remaining_keys.sort()
+
+    # Create sorted dictionary
+    for key in sorted_keys:
+        sorted_dict[key] = dictionary[key]
+    for key in remaining_keys:
+        sorted_dict[key] = dictionary[key]
+
+    return sorted_dict
+
+def _get_pretty_api_format(value):
+    if not isinstance(value, dict):
+        return value
+
+    new_value = value.copy()
+
+    if 'args_list' in value and isinstance(value['args_list'], list):
+        for k in NEED_SORT_API_KEYS:
+            if k in new_value and isinstance(new_value[k], dict):
+                new_value[k] = _sort_dict_by_array(new_value[k], value['args_list'])
+
+    return new_value
+
+
+def _get_pretty_format(
+    contents: str,
+    indent,
+    ensure_ascii: bool = True,
+    sort_keys: bool = True,
+) -> str:
+    json_data = json.loads(contents)
+
+    if sort_keys and isinstance(json_data, dict):
+        json_data = dict(sorted([(k, _get_pretty_api_format(v)) for (k, v) in json_data.items()]))
+
+    json_pretty = json.dumps(
+        json_data,
+        indent=indent,
+        ensure_ascii=ensure_ascii
+    )
+
+    return f'{json_pretty}\n'
+
+
 def _format_json_file(path):
-    with open(path, 'r') as file:
-        data = json.load(file)
+    with open(path, 'r', encoding='UTF-8') as file:
+        contents = file.read()
 
-    with open(path, mode='w') as file:
-        json.dump(data, file, indent=2)
+    new_contents = _get_pretty_format(contents, indent=2)
 
-    # Read the file again and remove the trailing newline character
-    with open(path, 'r') as f:
-        content = f.read()
+    # Remove the trailing newline character
+    new_contents = new_contents.rstrip('\n') + '\n'
 
-    content = content.rstrip('\n') + '\n'
+    with open(path, mode='w', encoding='UTF-8') as file:
+        file.write(new_contents)
 
-    with open(path, 'w') as f:
-        f.write(content)
 
 def main(argv=None):
     parser = argparse.ArgumentParser(
@@ -47,7 +98,6 @@ def main(argv=None):
     parser.add_argument('filenames', nargs='*', help='Filenames to check')
     args = parser.parse_args(argv)
 
-    retv = 0
     for path in args.filenames:
         is_json_file = _check_json_file(path)
         if is_json_file is None:
@@ -58,4 +108,4 @@ def main(argv=None):
 
 
 if __name__ == '__main__':
-    exit(main())
+    sys.exit(main())
