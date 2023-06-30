@@ -26,4 +26,4 @@ def test_case_1():
         result = torch.seed()
         """
     )
-    obj.run(pytorch_code)
+    obj.run(pytorch_code, ["result"], check_value=False)

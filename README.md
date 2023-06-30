@@ -298,7 +298,7 @@ torch.permute
       "dims": "perm"
     }
   },
-  "unsupport_args": {},
+  "unsupport_args": [],
   "paddle_default_kwargs": {}
 }
 ```
@@ -618,7 +618,7 @@ if x:
 
 **单测写法**：
 
-* **单测位置**：所有的单测文件均放在`tests`目录下，单测文件命名以`test_`为前缀，后面接测试的`API`名称（PyTorch API全称去掉模块名，保留大小写）。例如 `torch.add` 命名为 `test_add.py` ， `torch.Tensor.add` 命名为  `test_Tensor_add.py` 。
+* **单测位置**：所有的单测文件均放在`tests`目录下，单测文件命名以`test_`为前缀，后面接测试的`API`名称（PyTorch API名称即可，保留大小写，无需Module前缀）。例如 `torch.nn.functional.relu` 命名为 `test_relu.py` ， `torch.Tensor.add` 命名为 `test_Tensor_add.py` 。
 
 * **默认检查逻辑**：采用`pytest`作为单测框架。一般情况下，用户只需要在单测文件中调用 `APIBase` 类的 `run()` 方法，传入 `pytorch_code` 和需要判断的 `Tensor` 变量名列表即可，参考 [torch.permute测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_permute.py)。 `run()` 方法会调用`compare()`函数，该方法默认检查逻辑为：转换前后两个`Tensor`的 `计算数值、数据类型、stop_gradient属性、形状` 是否一致。
 
