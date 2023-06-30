@@ -1021,7 +1021,20 @@
       "max"
     ]
   },
-  "torch.Tensor.histogram": {},
+  "torch.Tensor.histogram": {
+    "Matcher": "TensorHistogramMatcher",
+    "paddle_api": "paddle.Tensor.histogram",
+    "args_list": [
+      "bins",
+      "range",
+      "weight",
+      "density"
+    ],
+    "unsupport_args": [
+      "weight",
+      "density"
+    ]
+  },
   "torch.Tensor.hsplit": {},
   "torch.Tensor.hypot": {
     "Matcher": "HypotMatcher",
@@ -3174,6 +3187,19 @@
       "input": "x"
     }
   },
+  "torch.corrcoef": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.corrcoef",
+    "args_list": [
+      "input"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    },
+    "paddle_default_kwargs": {
+      "rowvar": true
+    }
+  },
   "torch.cos": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.cos",
@@ -4089,6 +4115,17 @@
   "torch.frac": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.frac",
+    "args_list": [
+      "input",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+  "torch.frexp": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.frexp",
     "args_list": [
       "input",
       "out"
@@ -7342,6 +7379,17 @@
       "input": "x"
     }
   },
+  "torch.nn.functional.mish": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.mish",
+    "args_list": [
+      "input",
+      "inplace"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.nn.functional.mse_loss": {
     "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.functional.mse_loss",
@@ -8480,6 +8528,19 @@
     ],
     "kwargs_change": {
       "input": "x"
+    }
+  },
+  "torch.special.log_softmax": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.log_softmax",
+    "args_list": [
+      "input",
+      "dim",
+      "dtype"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axis"
     }
   },
   "torch.special.logsumexp": {
