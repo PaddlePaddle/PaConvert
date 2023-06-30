@@ -4634,6 +4634,17 @@
       "input": "x"
     }
   },
+  "torch.linalg.inv": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.inv",
+    "args_list": [
+      "A",
+      "out"
+    ],
+    "kwargs_change": {
+      "A": "x"
+    }
+  },
   "torch.linalg.lstsq": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linalg.lstsq",
@@ -4676,6 +4687,18 @@
       "input": "x",
       "dim": "axis",
       "ord": "p"
+    }
+  },
+  "torch.linalg.qr": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.qr",
+    "args_list": [
+      "input",
+      "mode",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
     }
   },
   "torch.linalg.slogdet": {
