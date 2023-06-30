@@ -1,11 +1,11 @@
 {
   "torch.nn.modules.GroupNorm": "torch.nn.GroupNorm",
-  "torch.nn.parameter.Parameter": "torch.nn.Parameter",
   "torch.nn.modules.activation.ReLU": "torch.nn.ReLU",
   "torch.nn.modules.conv.Conv2d": "torch.nn.Conv2d",
-  "torch.utils.data.sampler.BatchSampler": "torch.utils.data.BatchSampler",
   "torch.nn.modules.module.Module": "torch.nn.Module",
+  "torch.nn.parameter.Parameter": "torch.nn.Parameter",
+  "torch.utils.data.sampler.BatchSampler": "torch.utils.data.BatchSampler",
   "torch.utils.data.sampler.RandomSampler": "torch.utils.data.RandomSampler",
-  "torch.utils.data.sampler.SequentialSampler": "torch.utils.data.SequentialSampler",
-  "torch.utils.data.sampler.Sampler": "torch.utils.data.Sampler"
+  "torch.utils.data.sampler.Sampler": "torch.utils.data.Sampler",
+  "torch.utils.data.sampler.SequentialSampler": "torch.utils.data.SequentialSampler"
 }
