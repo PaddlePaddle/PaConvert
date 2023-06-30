@@ -9040,13 +9040,6 @@
       "data_source"
     ]
   },
-  "torch.utils.data._utils.collate.default_collate": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.io.dataloader.collate.default_collate_fn",
-    "args_list": [
-      "batch"
-    ]
-  },
   "torch.utils.data.dataloader.default_collate": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.io.dataloader.collate.default_collate_fn",
@@ -9178,7 +9171,6 @@
       "dtype",
       "layout",
       "device",
-      "dtype",
       "requires_grad",
       "memory_format"
     ],

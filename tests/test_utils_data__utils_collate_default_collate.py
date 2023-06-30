@@ -71,3 +71,25 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+# Pytorch returns Tensor by default, while paddle returns narray.
+def _test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        from torch.utils.data.dataloader import default_collate
+        result = default_collate(batch=default_collate([{'A': 0, 'B': 1}, {'A': 100, 'B': 100}])))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# Pytorch returns Tensor by default, while paddle returns narray.
+def _test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        from torch.utils.data.dataloader import default_collate
+        result = default_collate([0, 1, 2, 3])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
