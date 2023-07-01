@@ -3640,3 +3640,27 @@ class TensorLogicalMatcher(BaseMatcher):
         )
 
         return code
+
+
+class TensorSLogDetMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        out_v = kwargs.pop("out") if "out" in kwargs else None
+
+        if out_v:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                res = paddle.linalg.slogdet({})
+                paddle.assign(res[0], {}[0]), paddle.assign(res[1], {}[1])
+                """
+            )
+            code = API_TEMPLATE.format(self.paddleClass, out_v, out_v)
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                res = paddle.linalg.slogdet({})
+                res[0], res[1]
+                """
+            )
+            code = API_TEMPLATE.format(self.paddleClass)
+
+        return code
