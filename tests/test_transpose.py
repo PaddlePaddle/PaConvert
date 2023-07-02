@@ -15,6 +15,9 @@
 
 import torch
 
-src = torch.tensor([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
-result = src.bfloat16()
+a = torch.tensor(
+    [[0.0032, -0.2239, -1.1219], [-0.6690, 0.1161, 0.4053], [-1.6218, -0.9273, -0.0082]]
+)
+result = a.slogdet()
+result = result
 print(result)

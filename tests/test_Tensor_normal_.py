@@ -16,25 +16,48 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.rsqrt_")
+obj = APIBase("torch.Tensor.normal_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0.2970,  1.5420, 4]).rsqrt_()
+        result = torch.Tensor([[1.,2.], [3.,4.]])
+        result.normal_()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0.2970,  1.5420, 4])
-        result.rsqrt_()
+        result = torch.Tensor([[1.,2.], [3.,4.]])
+        result.normal_(mean=0)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.Tensor([[1.,2.], [3.,4.]])
+        result.normal_(mean=0, std=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.Tensor([[1.,2.], [3.,4.]])
+        result.normal_(mean=0, std=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

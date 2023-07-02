@@ -16,14 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.rsqrt_")
+obj = APIBase("torch.Tensor.rot90")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0.2970,  1.5420, 4]).rsqrt_()
+        x = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        result = x.rot90()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,8 +34,40 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0.2970,  1.5420, 4])
-        result.rsqrt_()
+        x = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        result = x.rot90(2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[[1, 2, 3], [4, 5, 6], [7, 8, 9]]])
+        result = x.rot90(dims=[1, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        result = x.rot90(k=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([[[1, 2, 3], [4, 5, 6], [7, 8, 9]]]).rot90(dims=[1, 2])
         """
     )
     obj.run(pytorch_code, ["result"])

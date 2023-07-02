@@ -16,48 +16,52 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.normal_")
+obj = APIBase("torch.Tensor.pow")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.normal_()
+        a = torch.tensor([0.4331,  1.2475,  0.6834, -0.2791])
+        result = a.pow(2)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
-def test_case_2():
+# paddle.pow not support type promote and x/y must have same dtype
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.normal_(mean=0)
+        a = torch.tensor([0.4331,  1.2475,  0.6834, -0.2791])
+        b = torch.tensor([1, 2, 3, 4])
+        result = a.pow(b)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.normal_(mean=0, std=1)
+        a = torch.tensor([0.4331])
+        b = torch.tensor([1., 2, 3, 4])
+        result = a.pow(b)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.normal_(mean=0, std=2)
+        a = torch.tensor([2])
+        b = torch.tensor([1, 2, 3, 4])
+        result = a.pow(b)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])

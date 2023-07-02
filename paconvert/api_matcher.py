@@ -2491,6 +2491,8 @@ class UnflattenMatcher(BaseMatcher):
 
 class NumelMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        if "input" not in kwargs:
+            kwargs["input"] = self.paddleClass
         return "{}.size".format(kwargs["input"])
 
 
@@ -2929,6 +2931,9 @@ class SLogDetMatcher(BaseMatcher):
 
         if "input" in kwargs:
             kwargs["A"] = kwargs.pop("input")
+
+        if "A" not in kwargs:
+            kwargs["A"] = self.paddleClass
 
         if out_v:
             API_TEMPLATE = textwrap.dedent(
@@ -3628,29 +3633,5 @@ class TensorLogicalMatcher(BaseMatcher):
         code = "{}(y=({}).astype(({}).dtype))".format(
             self.get_paddle_api(), kwargs["other"], self.paddleClass
         )
-
-        return code
-
-
-class TensorSLogDetMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        out_v = kwargs.pop("out") if "out" in kwargs else None
-
-        if out_v:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                res = paddle.linalg.slogdet({})
-                paddle.assign(res[0], {}[0]), paddle.assign(res[1], {}[1])
-                """
-            )
-            code = API_TEMPLATE.format(self.paddleClass, out_v, out_v)
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                res = paddle.linalg.slogdet({})
-                res[0], res[1]
-                """
-            )
-            code = API_TEMPLATE.format(self.paddleClass)
 
         return code

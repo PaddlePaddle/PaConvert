@@ -16,15 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.squeeze_")
+obj = APIBase("torch.Tensor.prod")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.zeros(2, 1, 2, 1, 2)
-        result.squeeze_()
+        input = torch.tensor([1.4907, 1.0593, 1.5696])
+        result = input.prod()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,7 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.zeros(2, 1, 2, 1, 2).squeeze_()
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = input.prod(1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +45,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.zeros(2, 1, 2, 1, 2)
-        result.squeeze_(1)
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = input.prod(1, keepdim=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,8 +56,19 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.zeros(2, 1, 2, 1, 2)
-        result.squeeze_(dim=1)
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = input.prod(dim=1, keepdim=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = input.prod(dim=1, keepdim=True, dtype=torch.float64)
         """
     )
     obj.run(pytorch_code, ["result"])

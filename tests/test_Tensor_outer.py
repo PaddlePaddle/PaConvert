@@ -16,15 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.squeeze_")
+obj = APIBase("torch.Tensor.outer")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.zeros(2, 1, 2, 1, 2)
-        result.squeeze_()
+        x = torch.tensor([1., 2, 3])
+        y = torch.tensor([1., 2, 3, 4])
+        result = x.outer(y)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,18 +35,22 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.zeros(2, 1, 2, 1, 2).squeeze_()
+        x = torch.tensor([1., 2, 3])
+        y = torch.tensor([1., 2, 3, 4])
+        result = x.outer(vec2=y)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_3():
+# The paddle input does not support integer type
+def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.zeros(2, 1, 2, 1, 2)
-        result.squeeze_(1)
+        x = torch.tensor([1., 2., 3.])
+        y = torch.tensor([1, 2, 3, 4])
+        result = x.outer(y)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,8 +60,20 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.zeros(2, 1, 2, 1, 2)
-        result.squeeze_(dim=1)
+        result = torch.tensor([1., 2, 3]).outer(torch.tensor([1., 2, 3, 4]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# The paddle input does not support integer type
+def _test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 2, 3])
+        y = torch.tensor([1, 2, 3, 4])
+        result = x.outer(y)
         """
     )
     obj.run(pytorch_code, ["result"])

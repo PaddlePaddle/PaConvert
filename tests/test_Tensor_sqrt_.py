@@ -33,8 +33,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([0.2970,  1.5420, 4])
-        result = a.sqrt_()
+        result = torch.tensor([0.2970,  1.5420, 4])
+        result.sqrt_()
         """
     )
     obj.run(pytorch_code, ["result"])

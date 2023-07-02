@@ -16,14 +16,19 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.rsqrt_")
+obj = APIBase("torch.nn.Moudle.register_buffer")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0.2970,  1.5420, 4]).rsqrt_()
+        x = torch.tensor([1., 2., 3.])
+        module1 = torch.nn.Module()
+        module1.register_buffer('buffer', x)
+        module2 = torch.nn.Module()
+        module2.register_module('submodule', module1)
+        result = module2.submodule.buffer
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,8 +38,12 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0.2970,  1.5420, 4])
-        result.rsqrt_()
+        x = torch.tensor([1., 2., 3.])
+        module1 = torch.nn.Module()
+        module1.register_buffer('buffer', x)
+        module2 = torch.nn.Module()
+        module2.register_module(name='submodule', module=module1)
+        result = module2.submodule.buffer
         """
     )
     obj.run(pytorch_code, ["result"])

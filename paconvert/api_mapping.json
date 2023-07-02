@@ -1738,8 +1738,10 @@
   },
   "torch.Tensor.not_equal_": {},
   "torch.Tensor.numel": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.size"
+    "Matcher": "NumelMatcher",
+    "args_list": [
+      "input"
+    ]
   },
   "torch.Tensor.numpy": {
     "Matcher": "GenericMatcher",
@@ -1754,8 +1756,8 @@
   "torch.Tensor.orgqr": {},
   "torch.Tensor.ormqr": {},
   "torch.Tensor.outer": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.outer",
+    "Matcher": "TensorFunc2PaddleFunc",
+    "paddle_api": "paddle.outer",
     "args_list": [
       "vec2"
     ],
@@ -1819,13 +1821,10 @@
     "paddle_api": "paddle.Tensor.flatten"
   },
   "torch.Tensor.reciprocal": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.reciprocal"
+    "Matcher": "TensorFunc2PaddleFunc",
+    "paddle_api": "paddle.reciprocal"
   },
-  "torch.Tensor.reciprocal_": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.reciprocal_"
-  },
+  "torch.Tensor.reciprocal_": {},
   "torch.Tensor.record_stream": {},
   "torch.Tensor.refine_names": {},
   "torch.Tensor.register_hook": {
@@ -1836,8 +1835,8 @@
     ]
   },
   "torch.Tensor.remainder": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.remainder",
+    "Matcher": "TensorFunc2PaddleFunc",
+    "paddle_api": "paddle.remainder",
     "args_list": [
       "divisor"
     ],
@@ -1846,8 +1845,8 @@
     }
   },
   "torch.Tensor.remainder_": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.remainder_",
+    "Matcher": "TensorFunc2PaddleFunc",
+    "paddle_api": "paddle.remainder_",
     "args_list": [
       "divisor"
     ],
@@ -1916,21 +1915,21 @@
     "paddle_api": "paddle.Tensor.roll",
     "args_list": [
       "shifts",
-      "dim"
+      "dims"
     ],
     "kwargs_change": {
-      "dim": "axis"
+      "dims": "axis"
     }
   },
   "torch.Tensor.rot90": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.rot90",
+    "Matcher": "TensorFunc2PaddleFunc",
+    "paddle_api": "paddle.rot90",
     "args_list": [
       "k",
       "dims"
     ],
     "kwargs_change": {
-      "dims": "axis"
+      "dims": "axes"
     }
   },
   "torch.Tensor.round": {
@@ -2007,7 +2006,7 @@
   },
   "torch.Tensor.slice_scatter": {},
   "torch.Tensor.slogdet": {
-    "Matcher": "TensorSLogDetMatcher",
+    "Matcher": "SLogDetMatcher",
     "paddle_api": "paddle.linalg.slogdet",
     "args_list": [
       "out"
@@ -2021,15 +2020,19 @@
     ]
   },
   "torch.Tensor.sort": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.sort",
+    "Matcher": "TensorFunc2PaddleFunc",
+    "paddle_api": "paddle.sort",
     "args_list": [
       "dim",
-      "descending"
+      "descending",
+      "stable"
     ],
     "kwargs_change": {
       "dim": "axis"
-    }
+    },
+    "unsupport_args": [
+      "stable"
+    ]
   },
   "torch.Tensor.sparse_dim": {},
   "torch.Tensor.sparse_mask": {},

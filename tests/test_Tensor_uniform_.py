@@ -23,8 +23,8 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.uniform_()
+        result = torch.Tensor([[1.,2.], [3.,4.]])
+        result.uniform_()
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -34,8 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.uniform_(0, to=1)
+        result = torch.Tensor([[1.,2.], [3.,4.]])
+        result.uniform_(0, to=1)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -45,8 +45,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.uniform_(0,1)
+        result = torch.Tensor([[1.,2.], [3.,4.]])
+        result.uniform_(0,1)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -56,8 +56,8 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.uniform_(0, 2)
+        result = torch.Tensor([[1.,2.], [3.,4.]])
+        result.uniform_(0, 2)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)

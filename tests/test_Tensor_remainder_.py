@@ -16,14 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.sign")
+obj = APIBase("torch.Tensor.remainder_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([ 0.9213,  1.0887, -0.8858, -1.7683]).sing()
+        a = torch.tensor([-3., -2, -1, 1, 2, 3])
+        result = a.remainder_(torch.tensor(2.))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,8 +34,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([ 0.9213,  1.0887, -0.8858, -1.7683])
-        result = a.sign()
+        result = torch.tensor([-3., -2, -1, 1, 2, 3]).remainder_(torch.tensor(2.))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,20 +44,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = [ 0.9213,  1.0887, -0.8858, -1.7683]
-        out = torch.tensor(a)
-        result = torch.tensor(a).sign()
-        """
-    )
-    obj.run(pytorch_code, ["out"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([ 0.9213,  1.0887, -0.8858, -1.7683])
-        result = a.sign()
+        result = torch.tensor([1., 2, 3, 4, 5])
+        b = torch.tensor([1, 0.5, 0.6, 1.2, 2.4])
+        result.remainder_(b)
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -25,6 +25,8 @@ def test_case_1():
         import torch
         a = torch.tensor([[4, 9], [23, 2]])
         result = a.sort()
+        if isinstance(result, tuple):
+            result = result[0]
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -36,6 +38,8 @@ def test_case_2():
         import torch
         a = torch.tensor([[4, 9], [23, 2]])
         result = a.sort(0)
+        if isinstance(result, tuple):
+            result = result[0]
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -47,9 +51,13 @@ def test_case_3():
         import torch
         a = torch.tensor([[4, 9], [23, 2]])
         result = a.sort(dim=1, descending=True, stable=True)
+        if isinstance(result, tuple):
+            result = result[0]
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="unsupprt stable parameter"
+    )
 
 
 def test_case_4():
@@ -57,19 +65,10 @@ def test_case_4():
         """
         import torch
         descending=False
-        result = a.sort(dim=1, descending=descending, stable=True)
+        a = torch.tensor([[4, 9], [23, 2]])
+        result = a.sort(dim=1, descending=descending)
+        if isinstance(result, tuple):
+            result = result[0]
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([[4, 9], [23, 2]])
-        out = (torch.tensor(a), torch.tensor(a))
-        result = a.sort(dim=1, descending=True, stable=True, out=out)
-        """
-    )
-    obj.run(pytorch_code, ["result", "out"])

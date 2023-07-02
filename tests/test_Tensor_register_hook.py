@@ -16,25 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.rsqrt_")
+obj = APIBase("torch.Tensor.register_hook")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0.2970,  1.5420, 4]).rsqrt_()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.tensor([0.2970,  1.5420, 4])
-        result.rsqrt_()
+        v = torch.tensor([0., 0., 0.], requires_grad=True)
+        h = v.register_hook(lambda grad: grad * 2)  # double the gradient
+        v.backward(torch.tensor([1., 2., 3.]))
+        result = torch.tensor(v.grad)
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -16,25 +16,27 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.squeeze_")
+obj = APIBase("torch.Tensor.remainder")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.zeros(2, 1, 2, 1, 2)
-        result.squeeze_()
+        a = torch.tensor([-3., -2, -1, 1, 2, 3])
+        result = a.remainder(torch.tensor(2.))
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_2():
+# The paddle input does not support integer type
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.zeros(2, 1, 2, 1, 2).squeeze_()
+        a = torch.tensor([1, 2, 3, 4, 5])
+        result = a.remainder(torch.tensor(1.5))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +46,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.zeros(2, 1, 2, 1, 2)
-        result.squeeze_(1)
+        result = torch.tensor([-3., -2, -1, 1, 2, 3]).remainder(torch.tensor(2.))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,8 +56,22 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.zeros(2, 1, 2, 1, 2)
-        result.squeeze_(dim=1)
+        a = torch.tensor([1., 2, 3, 4, 5])
+        b = torch.tensor([1, 0.5, 0.6, 1.2, 2.4])
+        result = a.remainder(b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# paddle.remainder not support type promote and x/y must have same dtype
+def _test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1, 2, 3, 4, 5])
+        b = torch.tensor([1, 0.5, 0.6, 1.2, 2.4])
+        result = a.remainder(b)
         """
     )
     obj.run(pytorch_code, ["result"])

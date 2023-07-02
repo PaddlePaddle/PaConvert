@@ -24,8 +24,8 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.zeros(2, 2, 2)
-        result = x.unsqueeze_(0)
+        result = torch.zeros(2, 2, 2)
+        result.unsqueeze_(0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,8 +45,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.zeros(2, 2, 1, 2)
-        result = x.unsqueeze_(dim=-1)
+        result = torch.zeros(2, 2, 1, 2)
+        result.unsqueeze_(dim=-1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -56,8 +56,8 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.zeros(2, 2, 1, 2)
-        result = x.unsqueeze_(dim=1)
+        result = torch.zeros(2, 2, 1, 2)
+        result.unsqueeze_(dim=1)
         """
     )
     obj.run(pytorch_code, ["result"])
