@@ -11,10 +11,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
-import torch
+import textwrap
 
-src = torch.tensor([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
-result = src.bfloat16()
-print(result)
+from apibase import APIBase
+
+obj = APIBase("torch.Tensor.slogdet")
+
+
+def test_case_1():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[ 0.0032, -0.2239, -1.1219],
+                [-0.6690,  0.1161,  0.4053],
+                [-1.6218, -0.9273, -0.0082]])
+        result = a.slogdet()
+        result = result
+        """
+    )
+    obj.run(pytorch_code, ["result"])
