@@ -2870,7 +2870,7 @@ class SelectMatcher(BaseMatcher):
 class SearchsortedMatcher(BaseMatcher):
     def generate_code(self, kwargs):
 
-        if "side" in kwargs and kwargs["side"] is not None:
+        if "side" in kwargs:
             kwargs["right"] = kwargs.pop("side").strip("\n") + "== 'right'"
 
         if "sorter" in kwargs and kwargs["sorter"] is not None:
@@ -2887,8 +2887,7 @@ class SearchsortedMatcher(BaseMatcher):
             code = "paddle.assign(paddle.searchsorted({}), output={})".format(
                 self.kwargs_to_str(kwargs), out_v
             )
-        else:
-            code = "paddle.searchsorted({})".format(self.kwargs_to_str(kwargs))
+
         return code
 
 
