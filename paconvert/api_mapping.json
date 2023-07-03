@@ -1515,7 +1515,7 @@
     "Matcher": "MSortMatcher"
   },
   "torch.Tensor.mul": {
-    "Matcher": "TensorMulMatcher",
+    "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.Tensor.multiply",
     "args_list": [
       "other"
@@ -1525,8 +1525,7 @@
     }
   },
   "torch.Tensor.mul_": {
-    "Matcher": "TensorMulMatcher",
-    "paddle_api": "paddle.Tensor.scale_",
+    "paddle_api": "paddle.Tensor.multiply",
     "args_list": [
       "other"
     ],
@@ -1551,7 +1550,6 @@
     ]
   },
   "torch.Tensor.multiply_": {
-    "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.Tensor.multiply",
     "args_list": [
       "other"
@@ -1647,7 +1645,7 @@
   },
   "torch.Tensor.negative_": {},
   "torch.Tensor.nelement": {
-    "Matcher": "TensorNelementMatcher",
+    "Matcher": "Func2Attribute",
     "paddle_api": "paddle.Tensor.size"
   },
   "torch.Tensor.new_empty": {
@@ -1728,7 +1726,7 @@
   },
   "torch.Tensor.not_equal_": {},
   "torch.Tensor.numel": {
-    "Matcher": "TensorNelementMatcher",
+    "Matcher": "Func2Attribute",
     "paddle_api": "paddle.Tensor.size"
   },
   "torch.Tensor.numpy": {

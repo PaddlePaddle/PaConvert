@@ -3694,15 +3694,7 @@ class TensorMaxMinMatcher(BaseMatcher):
             ).body
 
 
-class TensorMulMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-
-        code = "{} * {}".format(self.paddleClass, kwargs["other"])
-
-        return code
-
-
-class TensorNelementMatcher(BaseMatcher):
+class Func2Attribute(BaseMatcher):
     def generate_code(self, kwargs):
 
         code = "{}".format(self.get_paddle_api())

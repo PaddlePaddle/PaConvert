@@ -29,7 +29,12 @@ def test_case_1():
         result = input.mul_(other)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Paddle does not support inplace operation of API",
+    )
 
 
 def test_case_2():
@@ -41,7 +46,12 @@ def test_case_2():
         result = input.mul_(other)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Paddle does not support inplace operation of API",
+    )
 
 
 def test_case_3():
@@ -52,7 +62,12 @@ def test_case_3():
         result = input.mul_(other=5)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Paddle does not support inplace operation of API",
+    )
 
 
 def test_case_4():
@@ -63,4 +78,9 @@ def test_case_4():
         result = input.mul_(other=5)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result", "input"],
+        unsupport=True,
+        reason="Paddle does not support inplace operation of API",
+    )
