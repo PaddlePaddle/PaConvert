@@ -510,8 +510,8 @@
     ]
   },
   "torch.Tensor.coalesce": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.coalesce"
+    "Matcher": "TensorFunc2PaddleFunc",
+    "paddle_api": "paddle.sparse.coalesce"
   },
   "torch.Tensor.conj": {
     "Matcher": "TensorUnchangeMatcher"
@@ -632,8 +632,11 @@
     ]
   },
   "torch.Tensor.diagflat": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.diagflat"
+    "Matcher": "TensorFunc2PaddleFunc",
+    "paddle_api": "paddle.diagflat",
+    "args_list": [
+      "offset"
+    ]
   },
   "torch.Tensor.diagonal": {
     "Matcher": "GenericMatcher",
@@ -1994,8 +1997,11 @@
   },
   "torch.Tensor.slice_scatter": {},
   "torch.Tensor.slogdet": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.slogdet"
+    "Matcher": "TensorSLogDetMatcher",
+    "paddle_api": "paddle.linalg.slogdet",
+    "args_list": [
+      "out"
+    ]
   },
   "torch.Tensor.smm": {},
   "torch.Tensor.softmax": {
@@ -2202,13 +2208,19 @@
   "torch.Tensor.transpose_": {},
   "torch.Tensor.triangular_solve": {},
   "torch.Tensor.tril": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.tril"
+    "Matcher": "TensorFunc2PaddleFunc",
+    "paddle_api": "paddle.tril",
+    "args_list": [
+      "diagonal"
+    ]
   },
   "torch.Tensor.tril_": {},
   "torch.Tensor.triu": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.triu"
+    "Matcher": "TensorFunc2PaddleFunc",
+    "paddle_api": "paddle.triu",
+    "args_list": [
+      "diagonal"
+    ]
   },
   "torch.Tensor.triu_": {},
   "torch.Tensor.true_divide": {

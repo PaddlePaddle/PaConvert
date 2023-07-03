@@ -11,10 +11,31 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
-import torch
+import textwrap
 
-src = torch.tensor([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
-result = src.bfloat16()
-print(result)
+from apibase import APIBase
+
+obj = APIBase("torch.Tensor.size")
+
+
+def test_case_1():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([ 0.5950,-0.0872, 0, -0.2972])
+        result = a.size()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([ 0.5950,-0.0872, 0, -0.2972])
+        result = a.size(dim=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
