@@ -2699,6 +2699,18 @@ class AllcloseMatcher(BaseMatcher):
         return code
 
 
+class Assert_AllcloseMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["x"], kwargs["y"] = kwargs.pop("actual"), kwargs.pop("expected")
+        msg = "''"
+        if "msg" in kwargs:
+            msg = kwargs.pop("msg")
+        code = "assert paddle.allclose({}).item(), {}".format(
+            self.kwargs_to_str(kwargs), msg
+        )
+        return code
+
+
 class Num2TensorBinaryMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" in kwargs:
@@ -3653,5 +3665,29 @@ class TensorLogicalMatcher(BaseMatcher):
         code = "{}(y=({}).astype(({}).dtype))".format(
             self.get_paddle_api(), kwargs["other"], self.paddleClass
         )
+
+        return code
+
+
+class TensorSLogDetMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        out_v = kwargs.pop("out") if "out" in kwargs else None
+
+        if out_v:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                res = paddle.linalg.slogdet({})
+                paddle.assign(res[0], {}[0]), paddle.assign(res[1], {}[1])
+                """
+            )
+            code = API_TEMPLATE.format(self.paddleClass, out_v, out_v)
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                res = paddle.linalg.slogdet({})
+                res[0], res[1]
+                """
+            )
+            code = API_TEMPLATE.format(self.paddleClass)
 
         return code

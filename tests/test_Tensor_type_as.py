@@ -11,10 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
-import torch
+import textwrap
 
-src = torch.tensor([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
-result = src.bfloat16()
-print(result)
+from apibase import APIBase
+
+obj = APIBase("torch.Tensor.type_as")
+
+
+def test_case_1():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([1., 2., 3., 4., 5., 6.])
+        a = torch.tensor([1])
+        result = src.type_as(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

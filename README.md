@@ -341,7 +341,7 @@ paddle_default_kwargs :可选，当 paddle 参数更多 或者 参数默认值�
 }
 ```
 
-如果不属于上述分类，则需要开发 **自定义的Matcher**，命名标准为：`API名+Matcher` 。例如 `torch.transpose` 可命名为`TransposeMatcher` ，`torch.Tensor.transpose` 可命名为 `TensorTransposeMatcher`。详见下面步骤3。
+如果不属于上述分类，则需要开发 **自定义的Matcher**，命名标准为：`API名+Matcher` 。例如 `torch.transpose` 可命名为`TransposeMatcher` ，`torch.Tensor.transpose` 可命名为 `TensorTransposeMatcher`。详见下面步骤。
 
 ## 步骤4：编写Matcher（转换规则）
 
@@ -563,6 +563,14 @@ x.reshape(2, 3)
 2) 维护与负责。由于单测可能覆盖不全面，导致引入了非常隐蔽的用法bug，开发者需要后续维护自己开发的API转换规则。解决新反馈的用法case问题。
 
 3) API功能缺失。如果是整个API都缺失的，只需在API映射表中标注 **功能缺失** 即可，无需其他开发。如果是API局部功能缺失，则对功能缺失点，在代码中返回None表示不支持，同时在API映射表中说明此功能点 **Paddle暂无转写方式**，同时编写单测但可以注释掉不运行；对其他功能点正常开发即可。
+
+4) 别名实现。如果一个API是别名API(alias API)，例如 `torch.nn.modules.GroupNorm` 是 `torch.nn.GroupNorm` 的别名，那么就无需编写相关 Matcher，只需在 `paconvert/api_alias_mapping.json` 中增加该别名 API 的配置，同时也无需增加相应单测文件，只需在主API的单测文件中增加 `test_alias_case_1/test_alias_case_2...` 即可。
+
+    ```bash
+    {
+      "torch.nn.modules.GroupNorm": "torch.nn.GroupNorm"
+    }
+    ```
 
 ### 开发技巧
 
