@@ -2699,6 +2699,18 @@ class AllcloseMatcher(BaseMatcher):
         return code
 
 
+class Assert_AllcloseMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["x"], kwargs["y"] = kwargs.pop("actual"), kwargs.pop("expected")
+        msg = "''"
+        if "msg" in kwargs:
+            msg = kwargs.pop("msg")
+        code = "assert paddle.allclose({}).item(), {}".format(
+            self.kwargs_to_str(kwargs), msg
+        )
+        return code
+
+
 class Num2TensorBinaryMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" in kwargs:
