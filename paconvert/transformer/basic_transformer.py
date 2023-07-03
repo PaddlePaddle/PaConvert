@@ -461,6 +461,7 @@ class BasicTransformer(BaseTransformer):
                         ast.Subscript,
                         ast.BinOp,
                         ast.Assert,
+                        ast.Tuple,
                     ),
                 ):
                     self.insert_multi_node(node_list[0:-1])

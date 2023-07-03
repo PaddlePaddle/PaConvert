@@ -11,21 +11,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.masked_select")
+obj = APIBase("torch.Tensor.tril")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.eye(2, 4)
-        mask = x > 0
-        result = torch.masked_select(x, mask)
+        a = torch.tensor([[1.3192, 1.9915, 1.9674, 1.7151]])
+        result = a.tril()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,8 +36,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones(2, 4)
-        result = torch.masked_select(x, x>0)
+        a = torch.tensor([[1.3192, 1.9915, 1.9674, 1.7151]])
+        result = a.tril(1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -46,35 +47,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones(2, 4)
-        out = torch.ones(2, 4)
-        result = torch.masked_select(x, mask=x>0, out=out)
-        """
-    )
-    obj.run(pytorch_code, ["result", "out"])
-
-
-# param mask of paddle does not support broadcast
-def _test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.arange(8).reshape(2, 4)
-        mask = torch.tensor([True, False, True, False])
-        result = torch.masked_select(x, mask)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-# param mask of paddle does not support broadcast
-def _test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.arange(4)
-        mask = torch.tensor([[True, False, True, False], [True, False, True, False]])
-        result = torch.masked_select(x, mask)
+        a = torch.tensor([[1.3192, 1.9915, 1.9674, 1.7151]])
+        result = a.tril(diagonal=1)
         """
     )
     obj.run(pytorch_code, ["result"])
