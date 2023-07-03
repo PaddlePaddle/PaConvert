@@ -9052,7 +9052,7 @@
       "data_source"
     ]
   },
-  "torch.utils.data.dataloader.default_collate": {
+  "torch.utils.data.default_collate": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.io.dataloader.collate.default_collate_fn",
     "args_list": [
