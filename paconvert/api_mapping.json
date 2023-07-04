@@ -2144,7 +2144,17 @@
       "index"
     ]
   },
-  "torch.Tensor.take_along_dim": {},
+  "torch.Tensor.take_along_dim": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.take_along_axis",
+    "args_list": [
+      "indices",
+      "dim"
+    ],
+    "kwargs_change": {
+      "dim": "axis"
+    }
+  },
   "torch.Tensor.tan": {
     "Matcher": "TensorUnchangeMatcher"
   },
@@ -4636,6 +4646,17 @@
       "input": "x"
     }
   },
+  "torch.linalg.inv": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.inv",
+    "args_list": [
+      "A",
+      "out"
+    ],
+    "kwargs_change": {
+      "A": "x"
+    }
+  },
   "torch.linalg.lstsq": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linalg.lstsq",
@@ -4663,6 +4684,18 @@
       "other": "y"
     }
   },
+  "torch.linalg.matrix_power": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.matrix_power",
+    "args_list": [
+      "input",
+      "n",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.linalg.norm": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linalg.norm",
@@ -4678,6 +4711,18 @@
       "input": "x",
       "dim": "axis",
       "ord": "p"
+    }
+  },
+  "torch.linalg.qr": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.qr",
+    "args_list": [
+      "input",
+      "mode",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
     }
   },
   "torch.linalg.slogdet": {
@@ -8809,6 +8854,20 @@
     ],
     "kwargs_change": {
       "input": "x"
+    }
+  },
+  "torch.take_along_dim": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.take_along_axis",
+    "args_list": [
+      "input",
+      "indices",
+      "dim",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "arr",
+      "dim": "axis"
     }
   },
   "torch.tan": {
