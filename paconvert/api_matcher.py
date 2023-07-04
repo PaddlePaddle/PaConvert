@@ -3193,26 +3193,23 @@ class DiffMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-class UnfoldMatcher(BaseMatcher):
+class Tuple2ListMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "kwargs_change" in self.api_mapping:
-            kwargs_change = self.api_mapping["kwargs_change"]
-            for key in list(kwargs_change.keys()):
-                if key in kwargs:
-                    if "input" not in key:
-                        if "(" in kwargs[key]:
-                            value = ast.literal_eval(kwargs[key])
-                            if isinstance(value, tuple):
-                                kwargs[key] = list(ast.literal_eval(kwargs[key]))
-                        else:
-                            kwargs[key] = "list({})".format(kwargs[key])
-                    kwargs[kwargs_change[key]] = kwargs[key]
-                    kwargs.pop(key)
+        new_kwargs = {}
+        kwargs_change = self.api_mapping["kwargs_change"]
+        for k in list(kwargs.keys()):
+            if k in kwargs_change:
+                if "(" in kwargs[k] and isinstance(ast.literal_eval(kwargs[k]), tuple):
+                    new_kwargs[kwargs_change[k]] = list(ast.literal_eval(kwargs[k]))
+                else:
+                    new_kwargs[kwargs_change[k]] = kwargs[k]
+            else:
+                if "(" in kwargs[k] and isinstance(ast.literal_eval(kwargs[k]), tuple):
+                    new_kwargs[k] = list(ast.literal_eval(kwargs[k]))
+                else:
+                    new_kwargs[k] = kwargs[k]
 
-        if "paddings" not in kwargs:
-            kwargs["paddings"] = 0
-
-        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
 
         return code
 

@@ -6666,7 +6666,7 @@
     }
   },
   "torch.nn.Unfold": {
-    "Matcher": "UnfoldMatcher",
+    "Matcher": "Tuple2ListMatcher",
     "paddle_api": "paddle.nn.Unfold",
     "args_list": [
       "kernel_size",
@@ -7779,7 +7779,7 @@
     ]
   },
   "torch.nn.functional.unfold": {
-    "Matcher": "UnfoldMatcher",
+    "Matcher": "Tuple2ListMatcher",
     "paddle_api": "paddle.nn.functional.unfold",
     "args_list": [
       "input",
