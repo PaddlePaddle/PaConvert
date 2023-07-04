@@ -124,4 +124,6 @@ def test_case_6():
         result = m(input)
         """
     )
-    obj.run(pytorch_code, unsupport=True, reason="paddle unsupport")
+    obj.run(
+        pytorch_code, unsupport=True, reason="paddle unsupport recompute_scale_factor "
+    )

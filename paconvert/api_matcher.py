@@ -3539,7 +3539,7 @@ class SizeAverageMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-class TensorIsSpareMatcher(BaseMatcher):
+class Attribute2Func(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
         code = "{}()".format(self.paddle_api)
