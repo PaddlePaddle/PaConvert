@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nanmedian")
+obj = APIBase("torch.Tensor.nanmedian")
 
 
 def test_case_1():
@@ -24,7 +24,7 @@ def test_case_1():
         """
         import torch
         input = torch.tensor([1.4907, float('nan'), 1.0593, 1.5696])
-        result = torch.nanmedian(input)
+        result = input.nanmedian()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,7 +35,7 @@ def test_case_2():
         """
         import torch
         input = torch.tensor([[1.4907, float('nan'), 1.0593, 1.5696], [1.4907, float('nan'), 1.0593, 1.5696]])
-        result = torch.nanmedian(input, 1)
+        result = input.nanmedian(1)
         """
     )
     obj.run(
@@ -51,7 +51,7 @@ def test_case_3():
         """
         import torch
         input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
-        result = torch.nanmedian(input, 1, keepdim=True)
+        result = input.nanmedian(1, keepdim=True)
         """
     )
     obj.run(
@@ -67,7 +67,7 @@ def test_case_4():
         """
         import torch
         input = torch.tensor([[1.4907, float('nan'), 1.0593, 1.5696], [1.4907, float('nan'), 1.0593, 1.5696]])
-        result = torch.nanmedian(input, dim=1, keepdim=True)
+        result = input.nanmedian(dim=1, keepdim=True)
         """
     )
     obj.run(
@@ -82,25 +82,8 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
-        out = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
-        result = torch.nanmedian(input, dim=1, keepdim=True, out=out)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not return index when dim is specified",
-    )
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
         input = torch.tensor([1, 4, 6])
-        result = torch.nanmedian(input, 0)
+        result = input.nanmedian(0)
         """
     )
     obj.run(

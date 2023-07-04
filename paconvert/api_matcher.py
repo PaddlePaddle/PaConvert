@@ -3628,6 +3628,9 @@ class TensorFunc2PaddleFunc(BaseMatcher):
             if k in kwargs:
                 kwargs[kwargs_changes[k]] = kwargs.pop(k)
 
+        if "generator" in kwargs:
+            kwargs.pop("generator")
+
         code = "{}({}, {})".format(
             self.get_paddle_api(), self.paddleClass, self.kwargs_to_str(kwargs)
         )
@@ -3640,6 +3643,73 @@ class TensorLogicalMatcher(BaseMatcher):
         code = "{}(y=({}).astype(({}).dtype))".format(
             self.get_paddle_api(), kwargs["other"], self.paddleClass
         )
+
+        return code
+
+
+class TensorMaxMinMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+
+        self.parse_func(func)
+
+        new_kwargs = self.parse_kwargs(kwargs)
+
+        call_maximinimum = False
+        if len(args) > 0 and not isinstance(args[0], ast.Num):
+            call_maximinimum = True
+
+        if "other" in new_kwargs:
+            call_maximinimum = True
+
+        # the case of two Tensor
+        if call_maximinimum:
+            return GenericMatcher(
+                self.transformer, self.torch_api, self.api_mapping, self.logger
+            ).get_paddle_class_nodes(func, args, kwargs)
+
+        # the case of one Tensor
+        args_list = ["dim", "keepdim"]
+
+        # parse args to kwargs
+        for i in range(len(args)):
+            new_kwargs[args_list[i]] = astor.to_source(args[i]).strip("\n")
+        for node in kwargs:
+            new_kwargs[node.arg] = astor.to_source(node.value).strip("\n")
+
+        # change kwargs' name
+        if "dim" in new_kwargs:
+            new_kwargs["axis"] = new_kwargs.pop("dim")
+
+        if "min" in self.torch_api:
+            paddle_api, paddle_api_arg = (
+                self.paddleClass + ".min",
+                self.paddleClass + ".argmin",
+            )
+        else:
+            paddle_api, paddle_api_arg = (
+                self.paddleClass + ".max",
+                self.paddleClass + ".argmax",
+            )
+
+        if "axis" in new_kwargs:
+            return ast.parse(
+                "{}({}), {}({})".format(
+                    paddle_api,
+                    self.kwargs_to_str(new_kwargs),
+                    paddle_api_arg,
+                    self.kwargs_to_str(new_kwargs),
+                )
+            ).body
+        else:
+            return ast.parse(
+                "{}({})".format(paddle_api, self.kwargs_to_str(new_kwargs))
+            ).body
+
+
+class Func2Attribute(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        code = "{}".format(self.get_paddle_api())
 
         return code
 
