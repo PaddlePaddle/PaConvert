@@ -89,3 +89,15 @@ def test_alias_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_alias_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[[[2.,3.], [3., 5.]], [[5.,3.], [9., 5.]]]])
+        m = torch.nn.modules.GroupNorm(2, 2, eps=1e-05, affine=True, dtype=torch.float32)
+        result = m(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

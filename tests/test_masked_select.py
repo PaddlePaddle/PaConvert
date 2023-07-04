@@ -59,8 +59,21 @@ def _test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.eye(2, 4)
-        mask = torch.tensor([True, True, True, True])
+        x = torch.arange(8).reshape(2, 4)
+        mask = torch.tensor([True, False, True, False])
+        result = torch.masked_select(x, mask)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# param mask of paddle does not support broadcast
+def _test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.arange(4)
+        mask = torch.tensor([[True, False, True, False], [True, False, True, False]])
         result = torch.masked_select(x, mask)
         """
     )
