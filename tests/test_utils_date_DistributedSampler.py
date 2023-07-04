@@ -16,26 +16,27 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.int")
+obj = APIBase("torch.utils.data.DistributedSampler")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
-        import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int()
+        from torch.utils.data import Dataset, DistributedSampler
+        class RandomDataset(Dataset):
+            def __init__(self, num_samples):
+                self.num_samples = num_samples
+
+            def __getitem__(self, idx):
+                image = np.random.random([784]).astype('float32')
+                label = np.random.randint(0, 9, (1, )).astype('int64')
+                return image, label
+
+            def __len__(self):
+                return self.num_samples
+
+        dataset = RandomDataset(100)
+        dataset = DistributedSampler(dataset, num_replicas=None, rank=None, shuffle=True, seed=0, drop_last=False)
         """
     )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int(memory_format=torch.preserve_format)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code)

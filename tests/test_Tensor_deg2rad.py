@@ -16,26 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.int")
+obj = APIBase("torch.Tensor.deg2rad")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int(memory_format=torch.preserve_format)
+        x = torch.tensor([[1.0, 1.0, 1.0],
+                        [2.0, 2.0, 2.0],
+                        [3.0, 3.0, 3.0]])
+        result = x.deg2rad()
         """
     )
     obj.run(pytorch_code, ["result"])

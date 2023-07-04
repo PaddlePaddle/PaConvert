@@ -11,20 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+#
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.int")
+obj = APIBase("torch.Tensor.multiply")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int()
+        input = torch.tensor([0.2015, -0.4255, 2.6087])
+        other = torch.tensor([0.2015, -0.4255, 2.6087])
+        result = input.multiply(other)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +35,31 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int(memory_format=torch.preserve_format)
+        input = torch.tensor([0.2015, -0.4255,  2.6087])
+        result = input.multiply(other=5.0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.2015, -0.4255,  2.6087])
+        result = input.multiply(torch.tensor([2., 6., 4.]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# paddle.multiply not support type promote and x/y must have same dtype
+def _test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([3, 6, 9])
+        result = input.multiply(other = torch.tensor([0.2015, -0.4255, 2.6087]))
         """
     )
     obj.run(pytorch_code, ["result"])

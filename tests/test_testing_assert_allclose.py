@@ -11,31 +11,43 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.int")
+obj = APIBase("torch.Tensor.histc")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int()
+        x = torch.tensor([1., 2., 3.])
+        torch.testing.assert_allclose(x, x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int(memory_format=torch.preserve_format)
+        x = torch.tensor([1., 2., 3.])
+        y = x + 1
+        torch.testing.assert_allclose(actual=x, expected=y)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code)
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., float('nan')])
+        y = x
+        torch.testing.assert_allclose(x, y, equal_nan=True)
+        """
+    )
+    obj.run(pytorch_code)

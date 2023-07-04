@@ -16,26 +16,40 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.int")
+obj = APIBase("torch.multiprocessing.spawn")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int()
+        def train():
+            return torch.tensor([1])
+        torch.multiprocessing.spawn(train)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int(memory_format=torch.preserve_format)
+        def train():
+            return torch.tensor([1])
+        torch.multiprocessing.spawn(fn=train, args=(True,), nprocs=2, join=True, daemon=False, start_method='spawn')
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code)
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        def train():
+            return torch.tensor([1])
+        torch.multiprocessing.spawn(train, args=(True,), nprocs=2, join=True, daemon=False, start_method='spawn')
+        """
+    )
+    obj.run(pytorch_code)

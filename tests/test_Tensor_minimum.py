@@ -16,15 +16,14 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.int")
+obj = APIBase("torch.Tensor.minimum")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int()
+        result = torch.tensor([[1, 2], [3, 4]]).minimum(torch.tensor([[1, 1], [4, 4]]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +33,33 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int(memory_format=torch.preserve_format)
+        input = torch.tensor([[1, 2], [3, 4]])
+        other = torch.tensor([[1, 1], [4, 4]])
+        result = input.minimum(other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1, 2], [3, 4]])
+        other = torch.tensor([[1, 2], [3, 4]])
+        result = input.minimum(other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1, 2], [3, 4]])
+        other = torch.tensor([1, 2])
+        result = input.minimum(other=other)
         """
     )
     obj.run(pytorch_code, ["result"])

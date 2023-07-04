@@ -21,6 +21,10 @@ if [[ "$DEVELOP_IF" == "OFF" ]]; then
     cd /workspace/$2/PaConvert/
     PATH=$1
     echo "Insalling cpu version torch"
+    ln -s /root/anaconda3/lib/libssl.so.1.1 /lib/libssl.so.1.1
+    ln -s /root/anaconda3/lib/libssl.so.1.1 /usr/lib/libssl.so.1.1
+    ln -s /root/anaconda3/lib/libcrypto.so.1.1 /lib/libcrypto.so.1.1 
+    ln -s /root/anaconda3/lib/libcrypto.so.1.1 /usr/lib/libcrypto.so.1.1
     pip install --no-cache-dir  --force-reinstall torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
     python -c "import torch; print('torch version information:' ,torch.__version__)"
     echo "Insalling develop version paddle"

@@ -11,65 +11,68 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+#
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.greater_equal")
+obj = APIBase("torch.Tensor.multinomial")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([[1, 2], [3, 4]]).greater_equal(torch.tensor([[1, 1], [4, 4]]))
+        torch.manual_seed(100)
+        weights = torch.tensor([0, 10, 3, 0], dtype=torch.float)
+        result = weights.multinomial(2)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[1, 2], [3, 4]])
-        other = torch.tensor([[1, 1], [4, 4]])
-        result = input.greater_equal(other)
+        torch.manual_seed(100)
+        weights = torch.tensor([0, 10, 3, 0], dtype=torch.float)
+        result = weights.multinomial(4, replacement=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[1, 2], [3, 4]])
-        other = torch.tensor([[1, 2], [3, 4]])
-        result = input.greater_equal(other)
+        torch.manual_seed(100)
+        result = torch.tensor([1., 10., 3., 2.]).multinomial(4, replacement=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[1, 2], [3, 4]])
-        other = torch.tensor([1, 2])
-        result = input.greater_equal(other)
+        torch.manual_seed(100)
+        weight = torch.tensor([[2., 4.], [4., 9.]])
+        result = weight.multinomial(4, replacement=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([[1, 2], [3, 4]]).greater_equal(2)
+        torch.manual_seed(100)
+        weight = torch.tensor([[2., 4.], [4., 9.]])
+        result = weight.multinomial(4, replacement=True, generator=None)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)

@@ -2701,6 +2701,18 @@ class AllcloseMatcher(BaseMatcher):
         return code
 
 
+class Assert_AllcloseMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["x"], kwargs["y"] = kwargs.pop("actual"), kwargs.pop("expected")
+        msg = "''"
+        if "msg" in kwargs:
+            msg = kwargs.pop("msg")
+        code = "assert paddle.allclose({}).item(), {}".format(
+            self.kwargs_to_str(kwargs), msg
+        )
+        return code
+
+
 class Num2TensorBinaryMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" in kwargs:
@@ -2930,10 +2942,13 @@ class SLogDetMatcher(BaseMatcher):
         out_v = kwargs.pop("out") if "out" in kwargs else None
 
         if "input" in kwargs:
-            kwargs["A"] = kwargs.pop("input")
+            x_v = kwargs.pop("input")
 
-        if "A" not in kwargs:
-            kwargs["A"] = self.paddleClass
+        elif "A" in kwargs:
+            x_v = kwargs.pop("A")
+
+        else:
+            x_v = self.paddleClass
 
         if out_v:
             API_TEMPLATE = textwrap.dedent(
@@ -2942,7 +2957,7 @@ class SLogDetMatcher(BaseMatcher):
                 paddle.assign(res[0], {}[0]), paddle.assign(res[1], {}[1])
                 """
             )
-            code = API_TEMPLATE.format(kwargs["A"], out_v, out_v)
+            code = API_TEMPLATE.format(x_v, out_v, out_v)
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
@@ -2950,7 +2965,7 @@ class SLogDetMatcher(BaseMatcher):
                 res[0], res[1]
                 """
             )
-            code = API_TEMPLATE.format(kwargs["A"])
+            code = API_TEMPLATE.format(x_v)
 
         return code
 
@@ -3621,6 +3636,9 @@ class TensorFunc2PaddleFunc(BaseMatcher):
             if k in kwargs:
                 kwargs[kwargs_changes[k]] = kwargs.pop(k)
 
+        if "generator" in kwargs:
+            kwargs.pop("generator")
+
         code = "{}({}, {})".format(
             self.get_paddle_api(), self.paddleClass, self.kwargs_to_str(kwargs)
         )
@@ -3633,5 +3651,72 @@ class TensorLogicalMatcher(BaseMatcher):
         code = "{}(y=({}).astype(({}).dtype))".format(
             self.get_paddle_api(), kwargs["other"], self.paddleClass
         )
+
+        return code
+
+
+class TensorMaxMinMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+
+        self.parse_func(func)
+
+        new_kwargs = self.parse_kwargs(kwargs)
+
+        call_maximinimum = False
+        if len(args) > 0 and not isinstance(args[0], ast.Num):
+            call_maximinimum = True
+
+        if "other" in new_kwargs:
+            call_maximinimum = True
+
+        # the case of two Tensor
+        if call_maximinimum:
+            return GenericMatcher(
+                self.transformer, self.torch_api, self.api_mapping, self.logger
+            ).get_paddle_class_nodes(func, args, kwargs)
+
+        # the case of one Tensor
+        args_list = ["dim", "keepdim"]
+
+        # parse args to kwargs
+        for i in range(len(args)):
+            new_kwargs[args_list[i]] = astor.to_source(args[i]).strip("\n")
+        for node in kwargs:
+            new_kwargs[node.arg] = astor.to_source(node.value).strip("\n")
+
+        # change kwargs' name
+        if "dim" in new_kwargs:
+            new_kwargs["axis"] = new_kwargs.pop("dim")
+
+        if "min" in self.torch_api:
+            paddle_api, paddle_api_arg = (
+                self.paddleClass + ".min",
+                self.paddleClass + ".argmin",
+            )
+        else:
+            paddle_api, paddle_api_arg = (
+                self.paddleClass + ".max",
+                self.paddleClass + ".argmax",
+            )
+
+        if "axis" in new_kwargs:
+            return ast.parse(
+                "{}({}), {}({})".format(
+                    paddle_api,
+                    self.kwargs_to_str(new_kwargs),
+                    paddle_api_arg,
+                    self.kwargs_to_str(new_kwargs),
+                )
+            ).body
+        else:
+            return ast.parse(
+                "{}({})".format(paddle_api, self.kwargs_to_str(new_kwargs))
+            ).body
+
+
+class Func2Attribute(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        code = "{}".format(self.get_paddle_api())
 
         return code

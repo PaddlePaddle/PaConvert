@@ -16,15 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.int")
+obj = APIBase("torch.take_along_dim")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int()
+        x = torch.tensor([[1, 2, 3], [3, 4, 6]])
+        idx = torch.tensor([[0]])
+        result = torch.take_along_dim(x, idx, 1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +35,22 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int(memory_format=torch.preserve_format)
+        x = torch.tensor([[1, 2, 3], [3, 4, 6]])
+        idx = torch.tensor([[0]])
+        result = torch.take_along_dim(input=x, indices=idx, dim=0)
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2, 3], [3, 4, 6]], dtype=torch.float32)
+        idx = torch.tensor([[0]])
+        out = torch.tensor([])
+        result = torch.take_along_dim(x, indices=idx, dim=1, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

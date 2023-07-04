@@ -16,15 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.int")
+obj = APIBase("torch.Tensor.movedim")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int()
+        x = torch.arange(24)
+        x = torch.reshape(x, (1, 4, 6))
+        result = x.movedim(1, 0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +35,35 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int(memory_format=torch.preserve_format)
+        x = torch.arange(24)
+        x = torch.reshape(x, (1, 4, 6))
+        result = x.movedim((1, 0), (0, 1))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.arange(24)
+        x = torch.reshape(x, (1, 4, 6))
+        a, b = 0, 1
+        result = x.movedim((a, b), (b, a))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.arange(24)
+        x = torch.reshape(x, (1, 4, 6))
+        a, b = [0, 1], [1, 0]
+        result = x.movedim(a, b)
         """
     )
     obj.run(pytorch_code, ["result"])

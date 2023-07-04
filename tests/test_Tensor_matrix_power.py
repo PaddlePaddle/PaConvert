@@ -16,14 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.reciprocal_")
+obj = APIBase("torch.Tensor.matrix_power")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298]).reciprocal_()
+        x = torch.tensor([[4., 5., 6.], [1., 2., 3.], [4., 9., 10.]])
+        result = x.matrix_power(2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,8 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298])
-        result = a.reciprocal_()
+        x = torch.tensor([[4., 5., 6.], [1., 2., 3.], [4., 9., 10.]])
+        result = x.matrix_power(-2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +45,30 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[-0.4595, -2.1219, -1.4314,  0.7298], [-0.4595, -2.1219, -1.4314,  0.7298]])
-        result = a.reciprocal_()
+        result = torch.tensor([[4., 5., 6.], [1., 2., 3.], [4., 9., 10.]]).matrix_power(2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[4., 5., 6.], [1., 2., 3.], [4., 9., 10.]])
+        result = x.matrix_power(n=-2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# The paddle input does not support integer type
+def _test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[4, 5, 6], [1, 2, 3], [4, 9, 10]])
+        result = x.matrix_power(2)
         """
     )
     obj.run(pytorch_code, ["result"])

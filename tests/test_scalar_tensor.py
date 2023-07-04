@@ -16,14 +16,14 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.reciprocal_")
+obj = APIBase("torch.scalar_tensor")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298]).reciprocal_()
+        result = y = torch.scalar_tensor(False, dtype=torch.int32)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,8 +33,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298])
-        result = a.reciprocal_()
+        result = y = torch.scalar_tensor(1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +43,37 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[-0.4595, -2.1219, -1.4314,  0.7298], [-0.4595, -2.1219, -1.4314,  0.7298]])
-        result = a.reciprocal_()
+        result = y = torch.scalar_tensor(s=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = y = torch.scalar_tensor(s=1, dtype=torch.bool)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = y = torch.scalar_tensor(s=1, dtype=torch.bool, pin_memory=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = y = torch.scalar_tensor(s=1, dtype=torch.float32, pin_memory=False, requires_grad=True)
         """
     )
     obj.run(pytorch_code, ["result"])

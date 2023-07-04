@@ -16,15 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.int")
+obj = APIBase("torch.Tensor.mm")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int()
+        a = torch.tensor([[1., 2.], [4., 5.]])
+        b = torch.tensor([[1., 3.], [3., 6.]])
+        result = a.mm(b)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +35,22 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int(memory_format=torch.preserve_format)
+        a = torch.tensor([[1., 2.], [4., 5.]])
+        b = torch.tensor([[1., 3.], [3., 6.]])
+        result = a.mm(mat2=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# The paddle input does not support integer type
+def _test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1, 2], [4, 5]])
+        b = torch.tensor([[1, 3], [3, 6]])
+        result = a.mm(b)
         """
     )
     obj.run(pytorch_code, ["result"])

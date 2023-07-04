@@ -16,15 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.int")
+obj = APIBase("torch.linalg.inv")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int()
+        x = torch.tensor([[0.02773777, 0.93004224, 0.06911496],
+                [0.24831591, 0.45733623, 0.07717843],
+                [0.48016702, 0.14235102, 0.42620817]])
+        result = torch.linalg.inv(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +36,24 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int(memory_format=torch.preserve_format)
+        x = torch.tensor([[0.02773777, 0.93004224, 0.06911496],
+                [0.24831591, 0.45733623, 0.07717843],
+                [0.48016702, 0.14235102, 0.42620817]])
+        result = torch.linalg.inv(A=x)
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0.02773777, 0.93004224, 0.06911496],
+                [0.24831591, 0.45733623, 0.07717843],
+                [0.48016702, 0.14235102, 0.42620817]])
+        out = torch.tensor([])
+        result = torch.linalg.inv(x, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

@@ -16,26 +16,43 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.int")
+obj = APIBase("torch.linalg.qr")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int()
+        x = torch.tensor([[12., -51, 4], [6, 167, -68], [-4, 24, -41]])
+        Q, R = torch.linalg.qr(x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["Q", "R"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.int(memory_format=torch.preserve_format)
+        x = torch.tensor([[12., -51, 4], [6, 167, -68], [-4, 24, -41]])
+        out = torch.linalg.qr(x, mode='r')
+        if len(out) == 2:
+            result = out[1]
+        else:
+            result = out
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[12., -51, 4], [6, 167, -68], [-4, 24, -41]])
+        out = (torch.tensor([]), torch.tensor([]))
+        torch.linalg.qr(x, out=out)
+        result = torch.flatten(torch.cat(out))
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -16,14 +16,30 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.reciprocal_")
+
+class torchTensorget_deviceAPIBase(APIBase):
+    def compare(self, name, pytorch_result, paddle_result, check_value=True):
+        if paddle_result == "cpu" and pytorch_result == "-1":
+            return True
+        if paddle_result == "gpu:0" and pytorch_result == "0":
+            return True
+        return False
+
+
+obj = torchTensorget_deviceAPIBase("torch.Tensor.get_device")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298]).reciprocal_()
+        result = None
+        if torch.cuda.is_available():
+            x = torch.tensor([[1.0, 1.0, 1.0],
+                            [2.0, 2.0, 2.0],
+                            [3.0, 3.0, 3.0]]).cuda()
+            result = x.get_device()
+
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,8 +49,13 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298])
-        result = a.reciprocal_()
+        result = None
+        if torch.cuda.is_available():
+            x = torch.tensor([[1.0, 1.0, 1.0],
+                            [2.0, 2.0, 2.0],
+                            [3.0, 3.0, 3.0]]).cuda()
+            result = x.cpu().get_device()
+
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +65,11 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[-0.4595, -2.1219, -1.4314,  0.7298], [-0.4595, -2.1219, -1.4314,  0.7298]])
-        result = a.reciprocal_()
+        result = None
+        x = torch.tensor([[1.0, 1.0, 1.0],
+                        [2.0, 2.0, 2.0],
+                        [3.0, 3.0, 3.0]])
+        result = x.get_device()
         """
     )
     obj.run(pytorch_code, ["result"])

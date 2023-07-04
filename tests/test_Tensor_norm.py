@@ -47,7 +47,8 @@ def test_case_2():
     )
     obj.run(
         pytorch_code,
-        [],
+        ["result"],
+        unsupport=True,
         reason="the param p of paddle only support fro, does not support nuc",
     )
 
@@ -85,7 +86,7 @@ def test_case_5():
         input = torch.tensor([[-12., -11., -10., -9. ],
                     [-8. , -7. , -6. , -5. ],
                     [-4. , -3. , -2. , -1. ]])
-        result = input.norm(p=2, dim=1, keepdim=True)
+        result = input.norm( p=2, dim=1, keepdim=True)
         """
     )
     obj.run(pytorch_code, ["result"])
