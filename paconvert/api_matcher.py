@@ -3199,13 +3199,13 @@ class Tuple2ListMatcher(BaseMatcher):
         kwargs_change = self.api_mapping["kwargs_change"]
         for k in list(kwargs.keys()):
             if k in kwargs_change:
-                if "(" in kwargs[k] and isinstance(ast.literal_eval(kwargs[k]), tuple):
-                    new_kwargs[kwargs_change[k]] = list(ast.literal_eval(kwargs[k]))
+                if "," in kwargs[k]:
+                    new_kwargs[kwargs_change[k]] = "list({})".format(kwargs[k])
                 else:
                     new_kwargs[kwargs_change[k]] = kwargs[k]
             else:
-                if "(" in kwargs[k] and isinstance(ast.literal_eval(kwargs[k]), tuple):
-                    new_kwargs[k] = list(ast.literal_eval(kwargs[k]))
+                if "," in kwargs[k]:
+                    new_kwargs[k] = "list({})".format(kwargs[k])
                 else:
                     new_kwargs[k] = kwargs[k]
 

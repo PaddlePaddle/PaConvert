@@ -9322,7 +9322,11 @@
     "paddle_api": "paddle.zeros_like",
     "args_list": [
       "input",
-      "index"
+      "dtype",
+      "layout",
+      "device",
+      "requires_grad",
+      "memory_format"
     ],
     "kwargs_change": {
       "input": "x"

@@ -232,7 +232,11 @@ def _test_case_7():
 
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        unsupport=True,
+        reason="Unable to determine whether the variable is an tuple or a list",
+    )
 
 
 def test_case_8():
