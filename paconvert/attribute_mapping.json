@@ -1,4 +1,8 @@
 {
+  "torch.Tensor.H": {},
+  "torch.Tensor.T": {
+    "Matcher": "TensorUnchangeMatcher"
+  },
   "torch.Tensor.device": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.place"
@@ -9,37 +13,33 @@
   "torch.Tensor.grad": {
     "Matcher": "TensorUnchangeMatcher"
   },
-  "torch.Tensor.ndim": {
-    "Matcher": "TensorUnchangeMatcher"
-  },
-  "torch.Tensor.T": {
-    "Matcher": "TensorUnchangeMatcher"
-  },
-  "torch.Tensor.real": {
-    "Matcher": "TensorUnchangeMatcher"
-  },
   "torch.Tensor.imag": {
     "Matcher": "TensorUnchangeMatcher"
   },
+  "torch.Tensor.is_cuda": {},
   "torch.Tensor.is_leaf": {
     "Matcher": "TensorUnchangeMatcher"
   },
-  "torch.Tensor.shape": {
+  "torch.Tensor.is_meta": {},
+  "torch.Tensor.is_quantized": {},
+  "torch.Tensor.is_sparse": {
+    "Matcher": "TensorIsSpareMatcher",
+    "paddle_api": "paddle.Tensor.is_sparse"
+  },
+  "torch.Tensor.mH": {},
+  "torch.Tensor.mT": {},
+  "torch.Tensor.names": {},
+  "torch.Tensor.ndim": {
+    "Matcher": "TensorUnchangeMatcher"
+  },
+  "torch.Tensor.real": {
     "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.requires_grad": {
     "Matcher": "TensorRequires_GradMatcher",
     "paddle_api": "paddle.Tensor.stop_gradient"
   },
-  "torch.Tensor.is_sparse": {
-    "Matcher": "TensorIsSpareMatcher",
-    "paddle_api": "paddle.Tensor.is_sparse"
-  },
-  "torch.Tensor.is_cuda": {},
-  "torch.Tensor.is_quantized": {},
-  "torch.Tensor.is_meta": {},
-  "torch.Tensor.H": {},
-  "torch.Tensor.mT": {},
-  "torch.Tensor.mH": {},
-  "torch.Tensor.names": {}
+  "torch.Tensor.shape": {
+    "Matcher": "TensorUnchangeMatcher"
+  }
 }
