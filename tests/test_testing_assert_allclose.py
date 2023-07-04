@@ -11,41 +11,43 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.reciprocal_")
+obj = APIBase("torch.Tensor.histc")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298]).reciprocal_()
+        x = torch.tensor([1., 2., 3.])
+        torch.testing.assert_allclose(x, x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298])
-        result = a.reciprocal_()
+        x = torch.tensor([1., 2., 3.])
+        y = x + 1
+        torch.testing.assert_allclose(actual=x, expected=y)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code)
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[-0.4595, -2.1219, -1.4314,  0.7298], [-0.4595, -2.1219, -1.4314,  0.7298]])
-        result = a.reciprocal_()
+        x = torch.tensor([1., 2., float('nan')])
+        y = x
+        torch.testing.assert_allclose(x, y, equal_nan=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code)

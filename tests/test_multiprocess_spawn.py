@@ -16,36 +16,40 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.reciprocal_")
+obj = APIBase("torch.multiprocessing.spawn")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298]).reciprocal_()
+        def train():
+            return torch.tensor([1])
+        torch.multiprocessing.spawn(train)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298])
-        result = a.reciprocal_()
+        def train():
+            return torch.tensor([1])
+        torch.multiprocessing.spawn(fn=train, args=(True,), nprocs=2, join=True, daemon=False, start_method='spawn')
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code)
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[-0.4595, -2.1219, -1.4314,  0.7298], [-0.4595, -2.1219, -1.4314,  0.7298]])
-        result = a.reciprocal_()
+        def train():
+            return torch.tensor([1])
+        torch.multiprocessing.spawn(train, args=(True,), nprocs=2, join=True, daemon=False, start_method='spawn')
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code)

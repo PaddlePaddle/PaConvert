@@ -16,14 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.reciprocal_")
+obj = APIBase("torch.Tensor.masked_select")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298]).reciprocal_()
+        x = torch.eye(2, 4)
+        mask = x > 0
+        result = x.masked_select(mask)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,19 +35,21 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298])
-        result = a.reciprocal_()
+        x = torch.ones(2, 4)
+        result = x.masked_select(x>0)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_3():
+# param mask of paddle does not support broadcast
+def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[-0.4595, -2.1219, -1.4314,  0.7298], [-0.4595, -2.1219, -1.4314,  0.7298]])
-        result = a.reciprocal_()
+        x = torch.eye(2, 4)
+        mask = torch.tensor([True, True, True, True])
+        result = x.masked_select(mask)
         """
     )
     obj.run(pytorch_code, ["result"])

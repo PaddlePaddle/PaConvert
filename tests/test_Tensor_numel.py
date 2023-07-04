@@ -24,7 +24,7 @@ def test_case_1():
         """
         import torch
         a = torch.randn(1, 2, 3, 4, 5)
-        result = torch.tensor(a.numel())
+        result = a.numel()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,7 +35,7 @@ def test_case_2():
         """
         import torch
         a = torch.zeros(4,4)
-        result = torch.tensor(a.numel())
+        result = a.numel()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,7 +45,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor(torch.zeros(4,4).numel())
+        result = torch.zeros(4,4).numel()
         """
     )
     obj.run(pytorch_code, ["result"])

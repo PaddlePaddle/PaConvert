@@ -16,14 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.reciprocal_")
+obj = APIBase("torch.Tensor.nelement")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298]).reciprocal_()
+        a = torch.tensor([[1., 2.], [4., 5.]])
+        result = a.nelement()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,19 +34,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298])
-        result = a.reciprocal_()
+        result = torch.tensor([[1., 2.], [4., 5.]]).nelement()
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([[-0.4595, -2.1219, -1.4314,  0.7298], [-0.4595, -2.1219, -1.4314,  0.7298]])
-        result = a.reciprocal_()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+test_case_1()

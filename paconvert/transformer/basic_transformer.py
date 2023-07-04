@@ -68,7 +68,8 @@ class BasicTransformer(BaseTransformer):
         # 4. (-x).transpose(1, 0)
         # 5. x[0].transpose(1, 0)
         if isinstance(
-            node.value, (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript)
+            node.value,
+            (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript, ast.Assert),
         ):
             super(BasicTransformer, self).generic_visit(node)
 
@@ -320,6 +321,7 @@ class BasicTransformer(BaseTransformer):
                                 ast.BinOp,
                                 ast.UnaryOp,
                                 ast.Tuple,
+                                ast.Assert,
                             ),
                         ):
                             self.insert_multi_node(node_list[0:-1])
@@ -458,6 +460,7 @@ class BasicTransformer(BaseTransformer):
                         ast.Attribute,
                         ast.Subscript,
                         ast.BinOp,
+                        ast.Assert,
                         ast.Tuple,
                     ),
                 ):

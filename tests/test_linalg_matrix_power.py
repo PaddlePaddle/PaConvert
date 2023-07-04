@@ -16,14 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.reciprocal_")
+obj = APIBase("torch.linalg.matrix_power")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298]).reciprocal_()
+        x = torch.tensor([[0.02773777, 0.93004224, 0.06911496],
+                [0.24831591, 0.45733623, 0.07717843],
+                [0.48016702, 0.14235102, 0.42620817]])
+        result = torch.linalg.matrix_power(x, 0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,8 +36,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298])
-        result = a.reciprocal_()
+        x = torch.tensor([[0.02773777, 0.93004224, 0.06911496],
+                [0.24831591, 0.45733623, 0.07717843],
+                [0.48016702, 0.14235102, 0.42620817]])
+        result = torch.linalg.matrix_power(input=x, n=3)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +49,12 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[-0.4595, -2.1219, -1.4314,  0.7298], [-0.4595, -2.1219, -1.4314,  0.7298]])
-        result = a.reciprocal_()
+        import torch
+        x = torch.tensor([[0.02773777, 0.93004224, 0.06911496],
+                [0.24831591, 0.45733623, 0.07717843],
+                [0.48016702, 0.14235102, 0.42620817]])
+        out = torch.tensor([])
+        result = torch.linalg.matrix_power(x, 0, out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])

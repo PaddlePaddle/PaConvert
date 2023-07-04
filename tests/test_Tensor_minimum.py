@@ -16,14 +16,14 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.reciprocal_")
+obj = APIBase("torch.Tensor.minimum")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298]).reciprocal_()
+        result = torch.tensor([[1, 2], [3, 4]]).minimum(torch.tensor([[1, 1], [4, 4]]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,8 +33,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298])
-        result = a.reciprocal_()
+        input = torch.tensor([[1, 2], [3, 4]])
+        other = torch.tensor([[1, 1], [4, 4]])
+        result = input.minimum(other)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +45,21 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[-0.4595, -2.1219, -1.4314,  0.7298], [-0.4595, -2.1219, -1.4314,  0.7298]])
-        result = a.reciprocal_()
+        input = torch.tensor([[1, 2], [3, 4]])
+        other = torch.tensor([[1, 2], [3, 4]])
+        result = input.minimum(other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1, 2], [3, 4]])
+        other = torch.tensor([1, 2])
+        result = input.minimum(other=other)
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -16,14 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.reciprocal_")
+obj = APIBase("torch.take_along_dim")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298]).reciprocal_()
+        x = torch.tensor([[1, 2, 3], [3, 4, 6]])
+        idx = torch.tensor([[0]])
+        result = torch.take_along_dim(x, idx, 1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,8 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298])
-        result = a.reciprocal_()
+        x = torch.tensor([[1, 2, 3], [3, 4, 6]])
+        idx = torch.tensor([[0]])
+        result = torch.take_along_dim(input=x, indices=idx, dim=0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +47,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[-0.4595, -2.1219, -1.4314,  0.7298], [-0.4595, -2.1219, -1.4314,  0.7298]])
-        result = a.reciprocal_()
+        x = torch.tensor([[1, 2, 3], [3, 4, 6]], dtype=torch.float32)
+        idx = torch.tensor([[0]])
+        out = torch.tensor([])
+        result = torch.take_along_dim(x, indices=idx, dim=1, out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])

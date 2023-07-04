@@ -16,36 +16,27 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.reciprocal_")
+obj = APIBase("torch.utils.data.DistributedSampler")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
-        import torch
-        result = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298]).reciprocal_()
+        from torch.utils.data import Dataset, DistributedSampler
+        class RandomDataset(Dataset):
+            def __init__(self, num_samples):
+                self.num_samples = num_samples
+
+            def __getitem__(self, idx):
+                image = np.random.random([784]).astype('float32')
+                label = np.random.randint(0, 9, (1, )).astype('int64')
+                return image, label
+
+            def __len__(self):
+                return self.num_samples
+
+        dataset = RandomDataset(100)
+        dataset = DistributedSampler(dataset, num_replicas=None, rank=None, shuffle=True, seed=0, drop_last=False)
         """
     )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298])
-        result = a.reciprocal_()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([[-0.4595, -2.1219, -1.4314,  0.7298], [-0.4595, -2.1219, -1.4314,  0.7298]])
-        result = a.reciprocal_()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code)

@@ -16,51 +16,61 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.outer")
+obj = APIBase("torch.Tensor.mode")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        y = torch.tensor([1., 2, 3, 4])
-        result = x.outer(y)
+        input = torch.tensor([[[1,2,2],[2,3,3]],[[0,5,5],[9,9,0]]])
+        result, index = input.mode()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "index"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        y = torch.tensor([1., 2, 3, 4])
-        result =x.outer(vec2=y)
+        input = torch.tensor([[[1,2,2],[2,3,3]],[[0,5,5],[9,9,0]]])
+        result = input.mode()
+        result, index = result[0], result[1]
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "index"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1., 2, 3]).outer(torch.tensor([1., 2, 3, 4]))
+        input = torch.tensor([[[1,2,2],[2,3,3]],[[0,5,5],[9,9,0]]])
+        result, index = input.mode(1)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "index"])
 
 
-# The paddle input does not support integer type
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3])
-        y = torch.tensor([1, 2, 3, 4])
-        result = x.outer(y)
+        input = torch.tensor([[[1,2,2],[2,3,3]],[[0,5,5],[9,9,0]]])
+        result, index = input.mode(1, keepdim=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "index"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[[1,2,2],[2,3,3]],[[0,5,5],[9,9,0]]])
+        keepdim = True
+        result, index = input.mode(dim=1, keepdim=keepdim)
+        """
+    )
+    obj.run(pytorch_code, ["result", "index"])
