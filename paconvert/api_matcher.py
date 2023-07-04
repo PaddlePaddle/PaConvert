@@ -2978,6 +2978,15 @@ class HistcMatcher(BaseMatcher):
         return code
 
 
+class TensorHistogramMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "range" in kwargs:
+            kwargs["min"] = "int({}[0])".format(kwargs["range"])
+            kwargs["max"] = "int({}[1])".format(kwargs["range"])
+            del kwargs["range"]
+        return GenericMatcher.generate_code(self, kwargs)
+
+
 class SpecialNdtriMatcher(BaseMatcher):
     def generate_code(self, kwargs):
 
