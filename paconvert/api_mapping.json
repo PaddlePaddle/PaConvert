@@ -3699,12 +3699,15 @@
     }
   },
   "torch.exp": {
-    "Matcher": "ExpMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.exp",
     "args_list": [
       "input",
       "out"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
   },
   "torch.exp2": {
     "Matcher": "Exp2Matcher",
@@ -3714,7 +3717,7 @@
     ]
   },
   "torch.expm1": {
-    "Matcher": "ExpMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.expm1",
     "args_list": [
       "input",
@@ -4744,6 +4747,17 @@
     ],
     "kwargs_change": {
       "input": "x"
+    }
+  },
+  "torch.linalg.multi_dot": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.multi_dot",
+    "args_list": [
+      "tensors",
+      "out"
+    ],
+    "kwargs_change": {
+      "tensors": "x"
     }
   },
   "torch.linalg.norm": {
@@ -8652,6 +8666,17 @@
   "torch.special.erf": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.erf",
+    "args_list": [
+      "input",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+  "torch.special.expm1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.expm1",
     "args_list": [
       "input",
       "out"
