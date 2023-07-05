@@ -3572,6 +3572,13 @@ class SizeAverageMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class Attribute2Func(BaseMatcher):
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+        code = "{}()".format(self.paddle_api)
+        return ast.parse(code).body[0].value
+
+
 class LuMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         out_v = kwargs.pop("out") if "out" in kwargs else None
