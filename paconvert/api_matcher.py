@@ -3687,6 +3687,18 @@ class TensorLogicalMatcher(BaseMatcher):
         return code
 
 
+class TensorDatasetMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        new_args = self.parse_args(args)
+        tensors_v = "[{}".format(new_args[0])
+        for arg in new_args[1:]:
+            tensors_v += ", {}".format(arg)
+        tensors_v += "]"
+        code = "{}({})".format(self.get_paddle_api(), tensors_v)
+        node = ast.parse(code.strip("\n")).body
+        return node
+
+
 class TensorMaxMinMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
 

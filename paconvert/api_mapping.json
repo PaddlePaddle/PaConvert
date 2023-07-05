@@ -9194,6 +9194,13 @@
       "drop_last"
     ]
   },
+  "torch.utils.data.ChainDataset": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.io.ChainDataset",
+    "args_list": [
+      "datasets"
+    ]
+  },
   "torch.utils.data.Dataset": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.io.Dataset"
@@ -9244,6 +9251,18 @@
     "args_list": [
       "data_source"
     ]
+  },
+  "torch.utils.data.Subset": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.io.Subset",
+    "args_list": [
+      "dataset",
+      "indices"
+    ]
+  },
+  "torch.utils.data.TensorDataset": {
+    "Matcher": "TensorDatasetMatcher",
+    "paddle_api": "paddle.io.TensorDataset"
   },
   "torch.utils.data.default_collate": {
     "Matcher": "GenericMatcher",
