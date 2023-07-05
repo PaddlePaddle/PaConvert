@@ -2419,22 +2419,6 @@ class MSortMatcher(BaseMatcher):
         return code
 
 
-class ExpMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "input" in kwargs:
-            kwargs["x"] = "(" + kwargs.pop("input").strip("\n") + ").astype('float32')"
-
-        if "out" in kwargs and kwargs["out"] is not None:
-            out_v = kwargs.pop("out").strip("\n")
-            code = "paddle.assign({}({}), output={})".format(
-                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v
-            )
-        else:
-            code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-
-        return code
-
-
 class TensorSVDMatcher(BaseMatcher):
     def generate_code(self, kwargs):
 
