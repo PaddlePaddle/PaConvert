@@ -3210,6 +3210,27 @@ class DiffMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class Tuple2ListMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        new_kwargs = {}
+        kwargs_change = self.api_mapping["kwargs_change"]
+        for k in list(kwargs.keys()):
+            if k in kwargs_change:
+                if "," in kwargs[k]:
+                    new_kwargs[kwargs_change[k]] = "list({})".format(kwargs[k])
+                else:
+                    new_kwargs[kwargs_change[k]] = kwargs[k]
+            else:
+                if "," in kwargs[k]:
+                    new_kwargs[k] = "list({})".format(kwargs[k])
+                else:
+                    new_kwargs[k] = kwargs[k]
+
+        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
+
+        return code
+
+
 class ParameterMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         kwargs = self.parse_args_and_kwargs(args, kwargs)

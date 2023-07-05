@@ -5504,6 +5504,16 @@
       "divisor_override"
     ]
   },
+  "torch.nn.BCELoss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.BCELoss",
+    "args_list": [
+      "weight",
+      "size_average",
+      "reduce",
+      "reduction"
+    ]
+  },
   "torch.nn.BCEWithLogitsLoss": {
     "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.BCEWithLogitsLoss",
@@ -6010,6 +6020,15 @@
       "dtype": ""
     }
   },
+  "torch.nn.L1Loss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.L1Loss",
+    "args_list": [
+      "size_average",
+      "reduce",
+      "reduction"
+    ]
+  },
   "torch.nn.LSTM": {
     "Matcher": "RNNMatcher",
     "paddle_api": "paddle.nn.LSTM",
@@ -6114,6 +6133,15 @@
     "kwargs_change": {
       "dim": "axis"
     }
+  },
+  "torch.nn.MSELoss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.MSELoss",
+    "args_list": [
+      "size_average",
+      "reduce",
+      "reduction"
+    ]
   },
   "torch.nn.MaxPool1d": {
     "Matcher": "MaxPoolMatcher",
@@ -6746,6 +6774,22 @@
       "unflattened_size": "shape"
     }
   },
+  "torch.nn.Unfold": {
+    "Matcher": "Tuple2ListMatcher",
+    "paddle_api": "paddle.nn.Unfold",
+    "args_list": [
+      "kernel_size",
+      "dilation",
+      "padding",
+      "stride"
+    ],
+    "kwargs_change": {
+      "kernel_size": "kernel_sizes",
+      "dilation": "dilations",
+      "padding": "paddings",
+      "stride": "strides"
+    }
+  },
   "torch.nn.Upsample": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Upsample",
@@ -6949,6 +6993,21 @@
     "kwargs_change": {
       "input1": "x1",
       "input2": "x2"
+    }
+  },
+  "torch.nn.functional.binary_cross_entropy": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.functional.binary_cross_entropy",
+    "args_list": [
+      "input",
+      "target",
+      "weight",
+      "size_average",
+      "reduce",
+      "reduction"
+    ],
+    "kwargs_change": {
+      "target": "label"
     }
   },
   "torch.nn.functional.binary_cross_entropy_with_logits": {
@@ -7851,6 +7910,24 @@
       "swap",
       "reduction"
     ]
+  },
+  "torch.nn.functional.unfold": {
+    "Matcher": "Tuple2ListMatcher",
+    "paddle_api": "paddle.nn.functional.unfold",
+    "args_list": [
+      "input",
+      "kernel_size",
+      "dilation",
+      "padding",
+      "stride"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "kernel_size": "kernel_sizes",
+      "dilation": "dilations",
+      "padding": "paddings",
+      "stride": "strides"
+    }
   },
   "torch.nn.functional.upsample": {
     "Matcher": "GenericMatcher",
