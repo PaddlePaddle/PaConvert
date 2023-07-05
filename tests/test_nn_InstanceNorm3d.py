@@ -27,6 +27,7 @@ def test_case_1():
         m = nn.InstanceNorm3d(100)
         input = torch.ones(20, 100, 35, 45, 10)
         result = m(input)
+        result.requires_grad = False
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -77,6 +78,19 @@ def test_case_5():
         import torch.nn as nn
         import torch
         m = nn.InstanceNorm3d(100, affine=False, momentum=0.1)
+        input = torch.ones(20, 100, 35, 45, 10)
+        result = m(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        m = nn.InstanceNorm3d(100, affine=False, momentum=0.1, dtype=torch.float32)
         input = torch.ones(20, 100, 35, 45, 10)
         result = m(input)
         """

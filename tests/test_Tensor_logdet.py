@@ -15,7 +15,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tenosor.logdet")
+obj = APIBase("torch.Tensor.logdet")
 
 
 def test_case_1():

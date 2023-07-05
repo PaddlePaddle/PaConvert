@@ -67,9 +67,7 @@ def test_case_3():
             result = result2[0]
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="unsupported dtype parameter"
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -86,9 +84,7 @@ def test_case_4():
             result = result2[0]
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="unsupported dtype parameter"
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -105,6 +101,4 @@ def test_case_5():
             result = result2[0]
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="unsupported dtype parameter"
-    )
+    obj.run(pytorch_code, ["result"])
