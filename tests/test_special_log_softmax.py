@@ -16,15 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.vander")
+obj = APIBase("torch.special.log_softmax")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3, 5])
-        result = torch.vander(x)
+        input = torch.tensor([1.4907, 1.0593, 1.5696])
+        result = torch.special.log_softmax(input, 0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3, 5])
-        result = torch.vander(x, 3)
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = torch.special.log_softmax(input, dim=1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,41 +45,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.vander(x=torch.tensor([1, 2, 3, 5]), N=3)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1, 2, 3, 5])
-        result = torch.vander(x, 5, increasing=True)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1, 2, 3, 5])
-        increasing = True
-        result = torch.vander(x, 5, increasing)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1, 2, 3, 5])
-        result = torch.vander(x = x, N = 5, increasing=True)
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = torch.special.log_softmax(input, 1, dtype=torch.float32)
         """
     )
     obj.run(pytorch_code, ["result"])

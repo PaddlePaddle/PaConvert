@@ -22,7 +22,10 @@
   },
   "torch.Tensor.is_meta": {},
   "torch.Tensor.is_quantized": {},
-  "torch.Tensor.is_sparse": {},
+  "torch.Tensor.is_sparse": {
+    "Matcher": "Attribute2Func",
+    "paddle_api": "paddle.Tensor.is_sparse"
+  },
   "torch.Tensor.mH": {},
   "torch.Tensor.mT": {},
   "torch.Tensor.names": {},

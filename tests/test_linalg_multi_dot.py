@@ -11,20 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.vander")
+obj = APIBase("torch.linalg.multi_dot")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3, 5])
-        result = torch.vander(x)
+        input = [torch.tensor([1, 2], dtype=torch.float32), torch.tensor([2, 3], dtype=torch.float32)]
+        result = torch.linalg.multi_dot(input)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +35,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3, 5])
-        result = torch.vander(x, 3)
+        input = [torch.tensor([1, 2], dtype=torch.float32), torch.tensor([2, 3], dtype=torch.float32)]
+        result = torch.linalg.multi_dot(tensors=input)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,41 +46,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.vander(x=torch.tensor([1, 2, 3, 5]), N=3)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1, 2, 3, 5])
-        result = torch.vander(x, 5, increasing=True)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1, 2, 3, 5])
-        increasing = True
-        result = torch.vander(x, 5, increasing)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1, 2, 3, 5])
-        result = torch.vander(x = x, N = 5, increasing=True)
+        input = [torch.tensor([1, 2], dtype=torch.float32), torch.tensor([2, 3], dtype=torch.float32)]
+        out = torch.tensor([])
+        result = torch.linalg.multi_dot(input, out=out)
         """
     )
     obj.run(pytorch_code, ["result"])

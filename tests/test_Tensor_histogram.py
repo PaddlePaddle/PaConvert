@@ -16,15 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.vander")
+obj = APIBase("torch.Tensor.histogram")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3, 5])
-        result = torch.vander(x)
+        result = torch.tensor([[1., 2, 1]]).histogram(bins=4, range=(0., 3.))
+        if hasattr(result, "hist"):
+            result = result.hist
+        result = result.to(torch.float32)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +36,11 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3, 5])
-        result = torch.vander(x, 3)
+        input = torch.tensor([[1, 2], [3, 4]], dtype=torch.float32)
+        result = input.histogram(bins=4, range=(0., 3.))
+        if hasattr(result, "hist"):
+            result = result.hist
+        result = result.to(torch.float32)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,41 +50,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.vander(x=torch.tensor([1, 2, 3, 5]), N=3)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1, 2, 3, 5])
-        result = torch.vander(x, 5, increasing=True)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1, 2, 3, 5])
-        increasing = True
-        result = torch.vander(x, 5, increasing)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1, 2, 3, 5])
-        result = torch.vander(x = x, N = 5, increasing=True)
+        result = torch.tensor([[1., 2, 1]]).histogram()
+        if hasattr(result, "hist"):
+            result = result.hist
+        result = result.to(torch.float32)
         """
     )
     obj.run(pytorch_code, ["result"])

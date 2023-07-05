@@ -11,20 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.vander")
+obj = APIBase("torch.special.expm1")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3, 5])
-        result = torch.vander(x)
+        result = torch.special.expm1(torch.tensor([0., -2., 3.]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3, 5])
-        result = torch.vander(x, 3)
+        a = torch.tensor([-1., -2., 3.])
+        result = torch.special.expm1(a)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,41 +45,20 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.vander(x=torch.tensor([1, 2, 3, 5]), N=3)
+        a = [-1, -2, 3]
+        out = torch.tensor(a, dtype=torch.float32)
+        result = torch.special.expm1(torch.tensor(a), out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["out"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3, 5])
-        result = torch.vander(x, 5, increasing=True)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1, 2, 3, 5])
-        increasing = True
-        result = torch.vander(x, 5, increasing)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1, 2, 3, 5])
-        result = torch.vander(x = x, N = 5, increasing=True)
+        a = torch.tensor([-1, -2, 3])
+        result = torch.special.expm1(input=a)
         """
     )
     obj.run(pytorch_code, ["result"])
