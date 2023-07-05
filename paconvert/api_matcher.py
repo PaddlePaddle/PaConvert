@@ -2475,6 +2475,8 @@ class UnflattenMatcher(BaseMatcher):
 
 class NumelMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        if "input" not in kwargs:
+            kwargs["input"] = self.paddleClass
         return "{}.size".format(kwargs["input"])
 
 
@@ -2948,7 +2950,13 @@ class SLogDetMatcher(BaseMatcher):
         out_v = kwargs.pop("out") if "out" in kwargs else None
 
         if "input" in kwargs:
-            kwargs["A"] = kwargs.pop("input")
+            x_v = kwargs.pop("input")
+
+        elif "A" in kwargs:
+            x_v = kwargs.pop("A")
+
+        else:
+            x_v = self.paddleClass
 
         if out_v:
             API_TEMPLATE = textwrap.dedent(
@@ -2957,7 +2965,7 @@ class SLogDetMatcher(BaseMatcher):
                 paddle.assign(res[0], {}[0]), paddle.assign(res[1], {}[1])
                 """
             )
-            code = API_TEMPLATE.format(kwargs["A"], out_v, out_v)
+            code = API_TEMPLATE.format(x_v, out_v, out_v)
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
@@ -2965,7 +2973,7 @@ class SLogDetMatcher(BaseMatcher):
                 res[0], res[1]
                 """
             )
-            code = API_TEMPLATE.format(kwargs["A"])
+            code = API_TEMPLATE.format(x_v)
 
         return code
 
@@ -3767,29 +3775,5 @@ class Func2Attribute(BaseMatcher):
     def generate_code(self, kwargs):
 
         code = "{}".format(self.get_paddle_api())
-
-        return code
-
-
-class TensorSLogDetMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        out_v = kwargs.pop("out") if "out" in kwargs else None
-
-        if out_v:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                res = paddle.linalg.slogdet({})
-                paddle.assign(res[0], {}[0]), paddle.assign(res[1], {}[1])
-                """
-            )
-            code = API_TEMPLATE.format(self.paddleClass, out_v, out_v)
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                res = paddle.linalg.slogdet({})
-                res[0], res[1]
-                """
-            )
-            code = API_TEMPLATE.format(self.paddleClass)
 
         return code

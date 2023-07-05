@@ -11,43 +11,53 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.logdet")
+obj = APIBase("torch.Tensor.uniformal_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[[ 0.9254, -0.6213],
-            [-0.5787,  1.6843]],
-
-            [[ 0.3242, -0.9665],
-            [ 0.4539, -0.0887]],
-
-            [[ 1.1336, -0.4025],
-            [-0.7089,  0.9032]]])
-        result = a.logdet()
+        result = torch.Tensor([[1.,2.], [3.,4.]])
+        result.uniform_()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([[[ 0.9254, -0.6213],
-            [-0.5787,  1.6843]],
-
-            [[ 0.3242, -0.9665],
-            [ 0.4539, -0.0887]],
-
-            [[ 1.1336, -0.4025],
-            [-0.7089,  0.9032]]]).logdet()
+        result = torch.Tensor([[1.,2.], [3.,4.]])
+        result.uniform_(0, to=1)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.Tensor([[1.,2.], [3.,4.]])
+        result.uniform_(0,1)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.Tensor([[1.,2.], [3.,4.]])
+        result.uniform_(0, 2)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

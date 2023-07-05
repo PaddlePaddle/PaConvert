@@ -16,18 +16,25 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.slogdet")
+obj = APIBase("torch.Tensor.sqrt")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[ 0.7308,  1.0060,  0.5270,  1.4516],
-                        [-0.1383,  1.5706,  0.4724,  0.4141],
-                        [ 0.1193,  0.2829,  0.9037,  0.3957],
-                        [-0.8202, -0.6474, -0.1631, -0.6543]])
-        result1, result2 = x.slogdet()
+        result = torch.tensor([0.2970,  1.5420, 4]).sqrt()
         """
     )
-    obj.run(pytorch_code, ["result1", "result2"])
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0.2970,  1.5420, 4])
+        result = a.sqrt()
+        """
+    )
+    obj.run(pytorch_code, ["result"])

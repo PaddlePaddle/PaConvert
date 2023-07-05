@@ -11,26 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.logdet")
+obj = APIBase("torch.Tensor.softmax")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[[ 0.9254, -0.6213],
-            [-0.5787,  1.6843]],
-
-            [[ 0.3242, -0.9665],
-            [ 0.4539, -0.0887]],
-
-            [[ 1.1336, -0.4025],
-            [-0.7089,  0.9032]]])
-        result = a.logdet()
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        result = input.softmax(dim=0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -40,14 +35,33 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([[[ 0.9254, -0.6213],
-            [-0.5787,  1.6843]],
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        result = input.softmax(dim=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
 
-            [[ 0.3242, -0.9665],
-            [ 0.4539, -0.0887]],
 
-            [[ 1.1336, -0.4025],
-            [-0.7089,  0.9032]]]).logdet()
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        result = input.softmax(dim=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        result = input.softmax(dim=1, dtype=torch.float32)
         """
     )
     obj.run(pytorch_code, ["result"])

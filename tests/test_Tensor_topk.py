@@ -11,26 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.select")
+obj = APIBase("torch.Tensor.topk")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[[ 0.9254, -0.6213],
-            [-0.5787,  1.6843]],
-
-            [[ 0.3242, -0.9665],
-            [ 0.4539, -0.0887]],
-
-            [[ 1.1336, -0.4025],
-            [-0.7089,  0.9032]]])
-        result = a.select(0, 1)
+        a = torch.Tensor([[1.,2.], [3.,4.]])
+        result = a.topk(2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -40,14 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([[[ 0.9254, -0.6213],
-            [-0.5787,  1.6843]],
-
-            [[ 0.3242, -0.9665],
-            [ 0.4539, -0.0887]],
-
-            [[ 1.1336, -0.4025],
-            [-0.7089,  0.9032]]]).select(1, 1)
+        a = torch.Tensor([[1.,2.], [3.,4.]])
+        result = a.topk(2, dim=0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -57,15 +45,30 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[[ 0.9254, -0.6213],
-            [-0.5787,  1.6843]],
+        a = torch.Tensor([[1.,2.], [3.,4.]])
+        result = a.topk(2, dim=0, largest=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
 
-            [[ 0.3242, -0.9665],
-            [ 0.4539, -0.0887]],
 
-            [[ 1.1336, -0.4025],
-            [-0.7089,  0.9032]]])
-        result = a.select(dim=0, index=2)
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.Tensor([[1.,2.], [3.,4.]])
+        result = a.topk(2, dim=0, largest=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.Tensor([[1.,2.], [3.,4.]])
+        result = a.topk(2, dim=0, largest=False, sorted=True)
         """
     )
     obj.run(pytorch_code, ["result"])

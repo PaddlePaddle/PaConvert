@@ -11,63 +11,64 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.round")
+obj = APIBase("torch.Tensor.sigmoid")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9254, -0.6213]])
-        result = a.round()
+        x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
+        result = torch.unique_consecutive(x)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 102003.9254, -12021.6213]])
-        result = a.round(decimals=1)
+        x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
+        result, inverse_indices = torch.unique_consecutive(x, return_inverse=True)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result", "inverse_indices"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 102003.9254, -12021.6213]])
-        result = a.round(decimals=-1)
+        x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
+        result, counts = torch.unique_consecutive(x, return_counts=True)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result", "counts"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 102003.9254, -12021.6213]])
-        result = a.round(decimals=3)
+        x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
+        result, inverse_indices, counts = torch.unique_consecutive(x, return_counts=True, return_inverse=True)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result", "counts", "inverse_indices"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 102003.9254, -12021.6213]])
-        result = a.round(decimals=-3)
+        x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
+        result = torch.unique_consecutive(x, dim=0)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])

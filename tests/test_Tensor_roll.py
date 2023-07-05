@@ -11,26 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.logdet")
+obj = APIBase("torch.Tensor.roll")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[[ 0.9254, -0.6213],
-            [-0.5787,  1.6843]],
-
-            [[ 0.3242, -0.9665],
-            [ 0.4539, -0.0887]],
-
-            [[ 1.1336, -0.4025],
-            [-0.7089,  0.9032]]])
-        result = a.logdet()
+        x = torch.tensor([[1, 2], [3, 4], [5, 6], [7, 8]])
+        result = x.roll(1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -40,14 +34,30 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([[[ 0.9254, -0.6213],
-            [-0.5787,  1.6843]],
+        x = torch.tensor([[1, 2], [3, 4], [5, 6], [7, 8]])
+        result = x.roll(1, 0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
 
-            [[ 0.3242, -0.9665],
-            [ 0.4539, -0.0887]],
 
-            [[ 1.1336, -0.4025],
-            [-0.7089,  0.9032]]]).logdet()
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2], [3, 4], [5, 6], [7, 8]])
+        result = x.roll(shifts=-1, dims=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2], [3, 4], [5, 6], [7, 8]])
+        result = x.roll(shifts=(2, 1), dims=(0, 1))
         """
     )
     obj.run(pytorch_code, ["result"])

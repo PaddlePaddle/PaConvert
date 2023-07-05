@@ -11,63 +11,76 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.round")
+obj = APIBase("torch.Tensor.sum")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.9254, -0.6213]])
-        result = a.round()
+        input = torch.tensor([1.4907, 1.0593, 1.5696])
+        result = input.sum()
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 102003.9254, -12021.6213]])
-        result = a.round(decimals=1)
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = input.sum(1)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 102003.9254, -12021.6213]])
-        result = a.round(decimals=-1)
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = input.sum(1, keepdim=True)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 102003.9254, -12021.6213]])
-        result = a.round(decimals=3)
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = input.sum(dim=1, keepdim=True)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 102003.9254, -12021.6213]])
-        result = a.round(decimals=-3)
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        out = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = input.sum(dim=1, keepdim=True)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([1, 2, 3])
+        result = input.sum()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
