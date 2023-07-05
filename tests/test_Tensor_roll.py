@@ -12,77 +12,52 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.add_")
+obj = APIBase("torch.Tensor.roll")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3])
-        x.add_(torch.tensor([1, 4, 6]))
+        x = torch.tensor([[1, 2], [3, 4], [5, 6], [7, 8]])
+        result = x.roll(1)
         """
     )
-    obj.run(pytorch_code, ["x"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3])
-        x.add_(20)
+        x = torch.tensor([[1, 2], [3, 4], [5, 6], [7, 8]])
+        result = x.roll(1, 0)
         """
     )
-    obj.run(pytorch_code, ["x"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        x.add_(torch.tensor([1., 4, 6]), alpha=0.8)
+        x = torch.tensor([[1, 2], [3, 4], [5, 6], [7, 8]])
+        result = x.roll(shifts=-1, dims=0)
         """
     )
-    obj.run(pytorch_code, ["x"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        x.add_(other=torch.tensor([1., 4, 6]), alpha=0.8)
+        x = torch.tensor([[1, 2], [3, 4], [5, 6], [7, 8]])
+        result = x.roll(shifts=(2, 1), dims=(0, 1))
         """
     )
-    obj.run(pytorch_code, ["x"])
-
-
-# paddle.Tensor.add not support type promote and x/y must have same dtype
-def _test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.ones((10, 4))
-        x.add_(4)
-        """
-    )
-    obj.run(pytorch_code, ["x"])
-
-
-# paddle.Tensor.add not support type promote and x/y must have same dtype
-def _test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.ones((10, 4))
-        x.add_(4, alpha=5)
-        """
-    )
-    obj.run(pytorch_code, ["x"])
+    obj.run(pytorch_code, ["result"])

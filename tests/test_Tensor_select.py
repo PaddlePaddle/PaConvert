@@ -15,7 +15,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tenosor.select")
+obj = APIBase("torch.Tensor.select")
 
 
 def test_case_1():

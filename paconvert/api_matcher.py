@@ -197,19 +197,19 @@ class TensorAddMatcher(BaseMatcher):
         if "alpha" in kwargs:
             API_TEMPLATE = textwrap.dedent(
                 """
-                {}.add(y=paddle.to_tensor({})*{})
+                {}(y=paddle.to_tensor({})*{})
                 """
             )
             code = API_TEMPLATE.format(
-                self.paddleClass, kwargs["alpha"], kwargs["other"]
+                self.get_paddle_api(), kwargs["alpha"], kwargs["other"]
             )
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
-                {}.add(y=paddle.to_tensor({}))
+                {}(y=paddle.to_tensor({}))
                 """
             )
-            code = API_TEMPLATE.format(self.paddleClass, kwargs["other"])
+            code = API_TEMPLATE.format(self.get_paddle_api(), kwargs["other"])
         return code
 
 
@@ -1218,40 +1218,20 @@ class LoadMatcher(BaseMatcher):
         return code
 
 
-class TensorAdd_Matcher(BaseMatcher):
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        func = self.parse_func(func)
-        new_args = self.parse_args(args)
-        new_kwargs = self.parse_kwargs(kwargs)
-        other = new_kwargs["other"] if "other" in new_kwargs else new_args[0]
-        alpha = new_kwargs.get("alpha", 1)
-        if alpha == 1:
-            code = f"{func}(paddle.to_tensor({other}, dtype={self.paddleClass}.dtype))"
-        else:
-            code = f"{func}(paddle.to_tensor({other}, dtype={self.paddleClass}.dtype)*paddle.to_tensor({alpha}))"
-
-        return ast.parse(code).body
-
-
 class TensorTypeMatcher(BaseMatcher):
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        func = self.parse_func(func)
-        new_args = self.parse_args(args)
-        new_kwargs = self.parse_kwargs(kwargs)
-        if len(new_args) == 0 and "dtype" not in new_kwargs:
+    def generate_code(self, kwargs):
+        if len(kwargs) == 0:
             return None
-        dtype = new_kwargs["dtype"] if "dtype" in new_kwargs else new_args[0]
-
+        dtype = kwargs["dtype"]
         code = f"{self.paddleClass}.astype({dtype})"
-
-        return ast.parse(code).body
+        return code
 
 
 class TensorIsCudaMatcher(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
         code = "'gpu' in str({}.place)".format(self.paddleClass)
-        return ast.parse(code).body[0].value
+        return ast.parse(code).body
 
 
 class SaveMatcher(BaseMatcher):
@@ -2511,6 +2491,8 @@ class UnflattenMatcher(BaseMatcher):
 
 class NumelMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        if "input" not in kwargs:
+            kwargs["input"] = self.paddleClass
         return "{}.size".format(kwargs["input"])
 
 
@@ -2984,7 +2966,13 @@ class SLogDetMatcher(BaseMatcher):
         out_v = kwargs.pop("out") if "out" in kwargs else None
 
         if "input" in kwargs:
-            kwargs["A"] = kwargs.pop("input")
+            x_v = kwargs.pop("input")
+
+        elif "A" in kwargs:
+            x_v = kwargs.pop("A")
+
+        else:
+            x_v = self.paddleClass
 
         if out_v:
             API_TEMPLATE = textwrap.dedent(
@@ -2993,7 +2981,7 @@ class SLogDetMatcher(BaseMatcher):
                 paddle.assign(res[0], {}[0]), paddle.assign(res[1], {}[1])
                 """
             )
-            code = API_TEMPLATE.format(kwargs["A"], out_v, out_v)
+            code = API_TEMPLATE.format(x_v, out_v, out_v)
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
@@ -3001,7 +2989,7 @@ class SLogDetMatcher(BaseMatcher):
                 res[0], res[1]
                 """
             )
-            code = API_TEMPLATE.format(kwargs["A"])
+            code = API_TEMPLATE.format(x_v)
 
         return code
 
@@ -3244,6 +3232,27 @@ class DiffMatcher(BaseMatcher):
         if "n" in kwargs and kwargs["n"] != "(1)":
             return None
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class Tuple2ListMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        new_kwargs = {}
+        kwargs_change = self.api_mapping["kwargs_change"]
+        for k in list(kwargs.keys()):
+            if k in kwargs_change:
+                if "," in kwargs[k]:
+                    new_kwargs[kwargs_change[k]] = "list({})".format(kwargs[k])
+                else:
+                    new_kwargs[kwargs_change[k]] = kwargs[k]
+            else:
+                if "," in kwargs[k]:
+                    new_kwargs[k] = "list({})".format(kwargs[k])
+                else:
+                    new_kwargs[k] = kwargs[k]
+
+        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
+
+        return code
 
 
 class ParameterMatcher(BaseMatcher):
@@ -3782,29 +3791,5 @@ class Func2Attribute(BaseMatcher):
     def generate_code(self, kwargs):
 
         code = "{}".format(self.get_paddle_api())
-
-        return code
-
-
-class TensorSLogDetMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        out_v = kwargs.pop("out") if "out" in kwargs else None
-
-        if out_v:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                res = paddle.linalg.slogdet({})
-                paddle.assign(res[0], {}[0]), paddle.assign(res[1], {}[1])
-                """
-            )
-            code = API_TEMPLATE.format(self.paddleClass, out_v, out_v)
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                res = paddle.linalg.slogdet({})
-                res[0], res[1]
-                """
-            )
-            code = API_TEMPLATE.format(self.paddleClass)
 
         return code

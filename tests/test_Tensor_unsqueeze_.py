@@ -17,72 +17,47 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.add_")
+obj = APIBase("torch.Tensor.unsqueeze_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3])
-        x.add_(torch.tensor([1, 4, 6]))
+        result = torch.zeros(2, 2, 2)
+        result.unsqueeze_(0)
         """
     )
-    obj.run(pytorch_code, ["x"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3])
-        x.add_(20)
+        result = torch.zeros(2, 2, 1, 2).unsqueeze_(3)
         """
     )
-    obj.run(pytorch_code, ["x"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        x.add_(torch.tensor([1., 4, 6]), alpha=0.8)
+        result = torch.zeros(2, 2, 1, 2)
+        result.unsqueeze_(dim=-1)
         """
     )
-    obj.run(pytorch_code, ["x"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        x.add_(other=torch.tensor([1., 4, 6]), alpha=0.8)
+        result = torch.zeros(2, 2, 1, 2)
+        result.unsqueeze_(dim=1)
         """
     )
-    obj.run(pytorch_code, ["x"])
-
-
-# paddle.Tensor.add not support type promote and x/y must have same dtype
-def _test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.ones((10, 4))
-        x.add_(4)
-        """
-    )
-    obj.run(pytorch_code, ["x"])
-
-
-# paddle.Tensor.add not support type promote and x/y must have same dtype
-def _test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.ones((10, 4))
-        x.add_(4, alpha=5)
-        """
-    )
-    obj.run(pytorch_code, ["x"])
+    obj.run(pytorch_code, ["result"])

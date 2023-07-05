@@ -17,8 +17,7 @@
     "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.is_cuda": {
-    "Matcher": "TensorIsCudaMatcher",
-    "paddle_api": "paddle.Tensor.place"
+    "Matcher": "TensorIsCudaMatcher"
   },
   "torch.Tensor.is_leaf": {
     "Matcher": "TensorUnchangeMatcher"
