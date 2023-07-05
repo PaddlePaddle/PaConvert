@@ -1218,6 +1218,42 @@ class LoadMatcher(BaseMatcher):
         return code
 
 
+class TensorAdd_Matcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        func = self.parse_func(func)
+        new_args = self.parse_args(args)
+        new_kwargs = self.parse_kwargs(kwargs)
+        other = new_kwargs["other"] if "other" in new_kwargs else new_args[0]
+        alpha = new_kwargs.get("alpha", 1)
+        if alpha == 1:
+            code = f"{func}(paddle.to_tensor({other}, dtype={self.paddleClass}.dtype))"
+        else:
+            code = f"{func}(paddle.to_tensor({other}, dtype={self.paddleClass}.dtype)*paddle.to_tensor({alpha}))"
+
+        return ast.parse(code).body
+
+
+class TensorTypeMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        func = self.parse_func(func)
+        new_args = self.parse_args(args)
+        new_kwargs = self.parse_kwargs(kwargs)
+        if len(new_args) == 0 and "dtype" not in new_kwargs:
+            return None
+        dtype = new_kwargs["dtype"] if "dtype" in new_kwargs else new_args[0]
+
+        code = f"{self.paddleClass}.astype({dtype})"
+
+        return ast.parse(code).body
+
+
+class TensorIsCudaMatcher(BaseMatcher):
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+        code = "'gpu' in str({}.place)".format(self.paddleClass)
+        return ast.parse(code).body[0].value
+
+
 class SaveMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "pickle_module" in kwargs:
