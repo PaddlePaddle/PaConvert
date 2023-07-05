@@ -2867,6 +2867,30 @@ class SelectMatcher(BaseMatcher):
         return code
 
 
+class SearchsortedMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if "side" in kwargs:
+            kwargs["right"] = kwargs.pop("side").strip("\n") + "== 'right'"
+
+        if "sorter" in kwargs and kwargs["sorter"] is not None:
+            kwargs[
+                "sorted_sequence"
+            ] += ".take_along_axis(axis=-1, indices = {})".format(
+                kwargs.pop("sorter").strip("\n")
+            )
+
+        code = "paddle.searchsorted({})".format(self.kwargs_to_str(kwargs))
+
+        if "out" in kwargs and kwargs["out"] is not None:
+            out_v = kwargs.pop("out").strip("\n")
+            code = "paddle.assign(paddle.searchsorted({}), output={})".format(
+                self.kwargs_to_str(kwargs), out_v
+            )
+
+        return code
+
+
 class SincMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" not in kwargs:
@@ -2976,6 +3000,15 @@ class HistcMatcher(BaseMatcher):
             )
 
         return code
+
+
+class TensorHistogramMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "range" in kwargs:
+            kwargs["min"] = "int({}[0])".format(kwargs["range"])
+            kwargs["max"] = "int({}[1])".format(kwargs["range"])
+            del kwargs["range"]
+        return GenericMatcher.generate_code(self, kwargs)
 
 
 class SpecialNdtriMatcher(BaseMatcher):
@@ -3537,6 +3570,13 @@ class SizeAverageMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         process_reduce_and_size_average(kwargs)
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class Attribute2Func(BaseMatcher):
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+        code = "{}()".format(self.paddle_api)
+        return ast.parse(code).body[0].value
 
 
 class LuMatcher(BaseMatcher):
