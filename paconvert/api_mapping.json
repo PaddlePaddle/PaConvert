@@ -3398,6 +3398,19 @@
       "device"
     ]
   },
+  "torch.cummin": {
+    "Matcher": "TupleAssignMatcher",
+    "paddle_api": "paddle.cummin",
+    "args_list": [
+      "input",
+      "dim",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axis"
+    }
+  },
   "torch.cumprod": {
     "Matcher": "CumprodMatcher",
     "paddle_api": "paddle.cumprod",
@@ -8418,6 +8431,18 @@
       "dtype": "paddle.float32"
     }
   },
+  "torch.searchsorted": {
+    "Matcher": "SearchsortedMatcher",
+    "args_list": [
+      "sorted_sequence",
+      "values",
+      "out_int32",
+      "right",
+      "side",
+      "out",
+      "sorter"
+    ]
+  },
   "torch.seed": {
     "Matcher": "SeedMatcher"
   },
@@ -9214,7 +9239,18 @@
       "tensor": "x"
     }
   },
-  "torch.vander": {},
+  "torch.vander": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vander",
+    "args_list": [
+      "x",
+      "N",
+      "increasing"
+    ],
+    "kwargs_change": {
+      "N": "n"
+    }
+  },
   "torch.var": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.var",

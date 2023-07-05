@@ -2867,6 +2867,30 @@ class SelectMatcher(BaseMatcher):
         return code
 
 
+class SearchsortedMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if "side" in kwargs:
+            kwargs["right"] = kwargs.pop("side").strip("\n") + "== 'right'"
+
+        if "sorter" in kwargs and kwargs["sorter"] is not None:
+            kwargs[
+                "sorted_sequence"
+            ] += ".take_along_axis(axis=-1, indices = {})".format(
+                kwargs.pop("sorter").strip("\n")
+            )
+
+        code = "paddle.searchsorted({})".format(self.kwargs_to_str(kwargs))
+
+        if "out" in kwargs and kwargs["out"] is not None:
+            out_v = kwargs.pop("out").strip("\n")
+            code = "paddle.assign(paddle.searchsorted({}), output={})".format(
+                self.kwargs_to_str(kwargs), out_v
+            )
+
+        return code
+
+
 class SincMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" not in kwargs:
