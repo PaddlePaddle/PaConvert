@@ -125,3 +125,22 @@ def test_case_10():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2, 1], [3, 4, 6]])
+        out = [torch.tensor(0), torch.tensor(1)]
+        args = (x, 1)
+        kwargs = {"keepdim": False, "out": out}
+        torch.max(*args, **kwargs)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["out"],
+        unsupport=True,
+        reason="not support *args and **kwargs now",
+    )

@@ -126,18 +126,16 @@ class GenericMatcher(BaseMatcher):
 
 
 class DeleteMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        return "delete"
-
     def get_paddle_api(self):
         return "delete"
 
-
-class TensorDeleteMatcher(BaseMatcher):
-    def get_paddle_class_nodes(self, func, args, kwargs):
+    def get_paddle_class_attribute_nodes(self, node):
         return "delete"
 
-    def get_paddle_class_attribute_nodes(self, node):
+    def get_paddle_nodes(self, args, kwargs):
+        return "delete"
+
+    def get_paddle_class_nodes(self, func, args, kwargs):
         return "delete"
 
 
