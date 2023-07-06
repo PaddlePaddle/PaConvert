@@ -16,36 +16,50 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.cpu")
+obj = APIBase("torch.backends.cudnn.deterministic")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1,2,3])
-        result = a.cpu()
+        torch.backends.cudnn.deterministic = True
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="Now can only delete ast.Expr"
+    )
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1,2,3])
-        result = a.T.cpu()
+        torch.backends.cudnn.deterministic = False
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="Now can only delete ast.Expr"
+    )
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1,2,3]).T.cpu()
+        print(torch.backends.cudnn.deterministic)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="Now can only delete ast.Expr"
+    )
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.backends.cudnn.deterministic
+        """
+    )
+    obj.run(pytorch_code, expect_paddle_code="import paddle")

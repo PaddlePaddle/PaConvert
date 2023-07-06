@@ -31,7 +31,8 @@ def test_case_1():
                 self.fc2 = nn.Linear(2, 2)
 
             def forward(self, x):
-                x = torch.relu(self.fc1(x))
+                self.x = torch.relu(self.fc1(x))
+                self.x.abs_()
                 x = self.fc2(x)
                 return x
 
