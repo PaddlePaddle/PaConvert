@@ -19,7 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.cuda.current_device")
 
 
-def test_case_1():
+def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -27,4 +27,9 @@ def test_case_1():
         result = True
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle return a class,torch return int",
+    )

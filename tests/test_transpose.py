@@ -11,8 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
-# import torch
+import torch
 
-# b = torch.tensor([1, 2, 3]).requires_grad_(True)
-# print(b)
+src = torch.tensor([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
+result = src.bfloat16()
+print(result)

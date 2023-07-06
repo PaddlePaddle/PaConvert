@@ -27,12 +27,7 @@ def test_case_1():
         result = torch.nanmedian(input)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="the return's shape of torch is (), while paddle is (1,)",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():

@@ -32,7 +32,7 @@ def _test_case_1():
         pytorch_code,
         ["result"],
         unsupport=True,
-        reason="paddle unsupport  process group initialized ",
+        reason="paddle need init_parallel_env() paconvert currently not supported for transcription ",
     )
 
 
@@ -49,7 +49,7 @@ def _test_case_2():
         pytorch_code,
         ["result"],
         unsupport=True,
-        reason="paddle unsupport  process group initialized",
+        reason="paddle need init_parallel_env() paconvert currently not supported for transcription",
     )
 
 
@@ -62,4 +62,6 @@ def test_case_3():
         result=True
         """
     )
-    obj.run(pytorch_code, ["result"], unsupport=True, reason="paddle unsupport")
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="paddle unsupport async_op"
+    )
