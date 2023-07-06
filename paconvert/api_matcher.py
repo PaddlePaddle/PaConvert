@@ -120,8 +120,9 @@ class GenericMatcher(BaseMatcher):
         return code
 
     def get_paddle_class_attribute_nodes(self, node):
-        node.attr = ast.parse(self.get_paddle_api()).body[0].value.attr
-        return node
+        self.parse_func(node)
+        code = "{}".format(self.paddle_api)
+        return ast.parse(code).body
 
 
 class DeleteMatcher(BaseMatcher):
@@ -1794,7 +1795,7 @@ class TensorRequires_GradMatcher(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
         code = "not {}.stop_gradient".format(self.paddleClass)
-        return ast.parse(code).body[0].value
+        return ast.parse(code).body
 
 
 class AllMatcher(BaseMatcher):
@@ -3589,7 +3590,7 @@ class Attribute2Func(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
         code = "{}()".format(self.paddle_api)
-        return ast.parse(code).body[0].value
+        return ast.parse(code).body
 
 
 class LuMatcher(BaseMatcher):

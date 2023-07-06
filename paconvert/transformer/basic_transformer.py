@@ -185,16 +185,34 @@ class BasicTransformer(BaseTransformer):
                         )
                         return node
                     elif new_node:
-                        self.success_api_count += 1
-                        log_debug(
-                            self.logger,
-                            "[Success]convert Tensor Attribute: {} to Paddle".format(
-                                torch_api
+                        new_node = new_node[-1]
+                        if isinstance(new_node, ast.Expr):
+                            new_node = new_node.value
+
+                        if isinstance(
+                            new_node,
+                            (
+                                ast.Call,
+                                ast.Attribute,
+                                ast.Name,
+                                ast.Constant,
+                                ast.Compare,
+                                ast.BinOp,
+                                ast.UnaryOp,
+                                ast.Tuple,
+                                ast.Assert,
                             ),
-                            self.file_name,
-                            node.lineno,
-                        )
-                        return new_node
+                        ):
+                            self.success_api_count += 1
+                            log_debug(
+                                self.logger,
+                                "[Success]convert Tensor Attribute: {} to Paddle".format(
+                                    torch_api
+                                ),
+                                self.file_name,
+                                node.lineno,
+                            )
+                            return new_node
 
         annotate_node = ast.parse(
             "'Tensor Attribute: {}, not convert, please check whether it is torch.Tensor.* and convert manually'".format(
