@@ -74,3 +74,29 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = None
+        if torch.cuda.is_available():
+            t = torch.tensor([1,2,3]).cuda()
+            result = torch.cuda.max_memory_allocated(torch.device("cuda:0"))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = None
+        if torch.cuda.is_available():
+            t = torch.tensor([1,2,3]).cuda()
+            result = torch.cuda.max_memory_allocated(device=torch.device("cuda:0"))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
