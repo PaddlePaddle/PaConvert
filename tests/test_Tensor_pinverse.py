@@ -15,7 +15,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tenosor.pinverse")
+obj = APIBase("torch.Tensor.pinverse")
 
 
 def test_case_1():
