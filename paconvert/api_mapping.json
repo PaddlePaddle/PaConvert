@@ -2572,92 +2572,6 @@
       "dim": "axis"
     }
   },
-  "torch.nn.functional.pairwise_distance": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.pairwise_distance",
-    "args_list": [
-      "x1",
-      "x2",
-      "p",
-      "eps",
-      "keepdim"
-    ],
-    "kwargs_change": {
-      "x1": "x",
-      "x2": "y",
-      "eps": "epsilon"
-    }
-  },
-  "torch.nn.functional.gumbel_softmax": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.gumbel_softmax",
-    "args_list": [
-      "logits",
-      "tau",
-      "hard",
-      "eps",
-      "dim"
-    ],
-    "kwargs_change": {
-      "logits": "x",
-      "tau": "temperature",
-      "dim": "axis"
-    },
-    "unsupport_args": [
-      "eps"
-    ]
-  },
-  "torch.nn.functional.poisson_nll_loss": {
-    "Matcher": "SizeAverageMatcher",
-    "paddle_api": "paddle.nn.functional.poisson_nll_loss",
-    "args_list": [
-      "input",
-      "target",
-      "log_input",
-      "full",
-      "size_average",
-      "eps",
-      "reduce",
-      "reduction"
-    ],
-    "kwargs_change": {
-      "target": "label",
-      "tau": "temperature",
-      "dim": "axis",
-      "eps": "epsilon"
-    }
-  },
-  "torch.nn.functional.cosine_embedding_loss": {
-    "Matcher": "SizeAverageMatcher",
-    "paddle_api": "paddle.nn.functional.cosine_embedding_loss",
-    "args_list": [
-      "input1",
-      "input2",
-      "target",
-      "margin",
-      "size_average",
-      "reduce",
-      "reduction"
-    ],
-    "kwargs_change": {
-      "target": "label"
-    }
-  },
-  "torch.nn.functional.hinge_embedding_loss": {
-    "Matcher": "SizeAverageMatcher",
-    "paddle_api": "paddle.nn.functional.hinge_embedding_loss",
-    "args_list": [
-      "input",
-      "target",
-      "margin",
-      "size_average",
-      "reduce",
-      "reduction"
-    ],
-    "kwargs_change": {
-      "target": "label"
-    }
-  },
   "torch.amin": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.amin",
@@ -7227,6 +7141,22 @@
       "input": "x"
     }
   },
+  "torch.nn.functional.cosine_embedding_loss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.functional.cosine_embedding_loss",
+    "args_list": [
+      "input1",
+      "input2",
+      "target",
+      "margin",
+      "size_average",
+      "reduce",
+      "reduction"
+    ],
+    "kwargs_change": {
+      "target": "label"
+    }
+  },
   "torch.nn.functional.cosine_similarity": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.cosine_similarity",
@@ -7394,6 +7324,25 @@
       "input": "x"
     }
   },
+  "torch.nn.functional.gumbel_softmax": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.gumbel_softmax",
+    "args_list": [
+      "logits",
+      "tau",
+      "hard",
+      "eps",
+      "dim"
+    ],
+    "kwargs_change": {
+      "logits": "x",
+      "tau": "temperature",
+      "dim": "axis"
+    },
+    "unsupport_args": [
+      "eps"
+    ]
+  },
   "torch.nn.functional.hardshrink": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.hardshrink",
@@ -7441,6 +7390,21 @@
       "input": "x",
       "min_val": "min",
       "max_val": "max"
+    }
+  },
+  "torch.nn.functional.hinge_embedding_loss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.functional.hinge_embedding_loss",
+    "args_list": [
+      "input",
+      "target",
+      "margin",
+      "size_average",
+      "reduce",
+      "reduction"
+    ],
+    "kwargs_change": {
+      "target": "label"
     }
   },
   "torch.nn.functional.instance_norm": {
@@ -7765,6 +7729,22 @@
       "input": "x"
     }
   },
+  "torch.nn.functional.pairwise_distance": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.pairwise_distance",
+    "args_list": [
+      "x1",
+      "x2",
+      "p",
+      "eps",
+      "keepdim"
+    ],
+    "kwargs_change": {
+      "x1": "x",
+      "x2": "y",
+      "eps": "epsilon"
+    }
+  },
   "torch.nn.functional.pixel_shuffle": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.pixel_shuffle",
@@ -7785,6 +7765,26 @@
     ],
     "kwargs_change": {
       "input": "x"
+    }
+  },
+  "torch.nn.functional.poisson_nll_loss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.functional.poisson_nll_loss",
+    "args_list": [
+      "input",
+      "target",
+      "log_input",
+      "full",
+      "size_average",
+      "eps",
+      "reduce",
+      "reduction"
+    ],
+    "kwargs_change": {
+      "target": "label",
+      "eps": "epsilon",
+      "dim": "axis",
+      "tau": "temperature"
     }
   },
   "torch.nn.functional.prelu": {
