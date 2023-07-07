@@ -7905,6 +7905,19 @@
       "input": "x"
     }
   },
+  "torch.nn.functional.threshold": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.thresholded_relu",
+    "args_list": [
+      "input",
+      "threshold",
+      "value",
+      "inplace"
+    ],
+    "unsupport_args": {
+      "input": "inplace"
+    }
+  },
   "torch.nn.functional.triplet_margin_with_distance_loss": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.triplet_margin_with_distance_loss",
