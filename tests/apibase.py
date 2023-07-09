@@ -37,6 +37,7 @@ class APIBase(object):
         compared_tensor_names=None,
         expect_paddle_code=None,
         check_value=True,
+        check_dtype=True,
         unsupport=False,
         reason=None,
         is_aux_api=False,
@@ -81,7 +82,11 @@ class APIBase(object):
             paddle_result = [loc[name] for name in compared_tensor_names]
             for i in range(len(compared_tensor_names)):
                 self.compare(
-                    self.pytorch_api, pytorch_result[i], paddle_result[i], check_value
+                    self.pytorch_api,
+                    pytorch_result[i],
+                    paddle_result[i],
+                    check_value,
+                    check_dtype,
                 )
 
         if expect_paddle_code:
@@ -90,7 +95,9 @@ class APIBase(object):
                 convert_paddle_code == expect_paddle_code
             ), "[{}]: get unexpected code".format(self.pytorch_api)
 
-    def compare(self, name, pytorch_result, paddle_result, check_value=True):
+    def compare(
+        self, name, pytorch_result, paddle_result, check_value=True, check_dtype=True
+    ):
         """
         compare tensors' data, shape, requires_grad, dtype
         args:
@@ -147,11 +154,12 @@ class APIBase(object):
         ), "API ({}): shape mismatch, torch shape is {}, paddle shape is {}".format(
             name, pytorch_numpy.shape, paddle_numpy.shape
         )
-        assert (
-            pytorch_numpy.dtype == paddle_numpy.dtype
-        ), "API ({}): dtype mismatch, torch dtype is {}, paddle dtype is {}".format(
-            name, pytorch_numpy.dtype, paddle_numpy.dtype
-        )
+        if check_dtype:
+            assert (
+                pytorch_numpy.dtype == paddle_numpy.dtype
+            ), "API ({}): dtype mismatch, torch dtype is {}, paddle dtype is {}".format(
+                name, pytorch_numpy.dtype, paddle_numpy.dtype
+            )
         if check_value:
             assert np.allclose(
                 pytorch_numpy, paddle_numpy

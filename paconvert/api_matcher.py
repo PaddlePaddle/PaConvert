@@ -3633,6 +3633,34 @@ class LuMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class QrMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        some_v = kwargs.pop("some") if "some" in kwargs else None
+        out_v = kwargs.pop("out") if "out" in kwargs else None
+
+        new_kwargs = kwargs
+
+        if some_v:
+            new_kwargs = {}
+            new_kwargs["mode"] = "'complete'" if some_v != "(False)" else "'reduced'"
+            new_kwargs.update(kwargs)
+
+        if out_v:
+            new_kwargs["x"] = new_kwargs.pop("input")
+            API_TEMPLATE = textwrap.dedent(
+                """
+                tmp_q, tmp_r = {}({})
+                paddle.assign(tmp_q, {}[0]), paddle.assign(tmp_r, {}[1])
+                """
+            )
+            code = API_TEMPLATE.format(
+                self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out_v, out_v
+            )
+            return code
+
+        return GenericMatcher.generate_code(self, new_kwargs)
+
+
 class RandomSplitMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
