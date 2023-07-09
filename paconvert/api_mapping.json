@@ -8953,6 +8953,19 @@
       "dim": "axis"
     }
   },
+  "torch.svd": {
+    "Matcher": "SvdMatcher",
+    "paddle_api": "paddle.linalg.svd",
+    "args_list": [
+      "input",
+      "some",
+      "compute_uv",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.swapaxes": {
     "Matcher": "SwapAxesMatcher",
     "args_list": [

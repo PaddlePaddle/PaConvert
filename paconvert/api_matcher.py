@@ -3654,6 +3654,45 @@ class RandomSplitMatcher(BaseMatcher):
         return code.strip("\n")
 
 
+class SvdMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if "compute_uv" in kwargs:
+            kwargs.pop("compute_uv")
+
+        out_v = kwargs.pop("out") if "out" in kwargs else None
+        some_v = kwargs.pop("some") if "some" in kwargs else None
+
+        if some_v:
+            kwargs["full_matrices"] = "not " + some_v.strip("()")
+        else:
+            kwargs["full_matrices"] = "False"
+
+        if out_v:
+
+            new_kwargs = {}
+            new_kwargs["x"] = kwargs.pop("input")
+            new_kwargs.update(kwargs)
+
+            API_TEMPLATE = textwrap.dedent(
+                """
+                tmp_u, tmp_s, tmp_v = {}({})
+                paddle.assign(tmp_u, {}[0]), paddle.assign(tmp_s, {}[1]), paddle.assign(tmp_v, {}[2])
+                """
+            )
+            code = API_TEMPLATE.format(
+                self.get_paddle_api(),
+                self.kwargs_to_str(new_kwargs),
+                out_v,
+                out_v,
+                out_v,
+            )
+
+            return code
+
+        return GenericMatcher.generate_code(self, kwargs)
+
+
 class TensorToBoolMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "dim" in kwargs:
