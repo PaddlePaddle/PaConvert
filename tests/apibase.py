@@ -48,6 +48,7 @@ class APIBase(object):
             compared_tensor_names: the list of variant name to be compared
             expect_paddle_code: the string of expect paddle code
             check_value: If false, the value will not be checked
+            check_dtype: If false, the dtype will not be checked
             unsupport: If true, conversion is not supported
             reason: the reason why it is not supported
             is_aux_api: the bool value for api that need Auxiliary code
@@ -105,6 +106,7 @@ class APIBase(object):
             pytorch_result: pytorch Tensor
             paddle_result: paddle Tensor
             check_value: If false, the value will not be checked
+            check_dtype: If false, the dtype will not be checked
         """
         if isinstance(pytorch_result, (tuple, list)):
             assert isinstance(
