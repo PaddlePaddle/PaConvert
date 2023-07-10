@@ -2419,22 +2419,6 @@ class MSortMatcher(BaseMatcher):
         return code
 
 
-class ExpMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "input" in kwargs:
-            kwargs["x"] = "(" + kwargs.pop("input").strip("\n") + ").astype('float32')"
-
-        if "out" in kwargs and kwargs["out"] is not None:
-            out_v = kwargs.pop("out").strip("\n")
-            code = "paddle.assign({}({}), output={})".format(
-                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v
-            )
-        else:
-            code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-
-        return code
-
-
 class TensorSVDMatcher(BaseMatcher):
     def generate_code(self, kwargs):
 
@@ -2869,6 +2853,30 @@ class SelectMatcher(BaseMatcher):
         return code
 
 
+class SearchsortedMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if "side" in kwargs:
+            kwargs["right"] = kwargs.pop("side").strip("\n") + "== 'right'"
+
+        if "sorter" in kwargs and kwargs["sorter"] is not None:
+            kwargs[
+                "sorted_sequence"
+            ] += ".take_along_axis(axis=-1, indices = {})".format(
+                kwargs.pop("sorter").strip("\n")
+            )
+
+        code = "paddle.searchsorted({})".format(self.kwargs_to_str(kwargs))
+
+        if "out" in kwargs and kwargs["out"] is not None:
+            out_v = kwargs.pop("out").strip("\n")
+            code = "paddle.assign(paddle.searchsorted({}), output={})".format(
+                self.kwargs_to_str(kwargs), out_v
+            )
+
+        return code
+
+
 class SincMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" not in kwargs:
@@ -2984,6 +2992,15 @@ class HistcMatcher(BaseMatcher):
             )
 
         return code
+
+
+class TensorHistogramMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "range" in kwargs:
+            kwargs["min"] = "int({}[0])".format(kwargs["range"])
+            kwargs["max"] = "int({}[1])".format(kwargs["range"])
+            del kwargs["range"]
+        return GenericMatcher.generate_code(self, kwargs)
 
 
 class SpecialNdtriMatcher(BaseMatcher):
@@ -3199,6 +3216,27 @@ class DiffMatcher(BaseMatcher):
         if "n" in kwargs and kwargs["n"] != "(1)":
             return None
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class Tuple2ListMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        new_kwargs = {}
+        kwargs_change = self.api_mapping["kwargs_change"]
+        for k in list(kwargs.keys()):
+            if k in kwargs_change:
+                if "," in kwargs[k]:
+                    new_kwargs[kwargs_change[k]] = "list({})".format(kwargs[k])
+                else:
+                    new_kwargs[kwargs_change[k]] = kwargs[k]
+            else:
+                if "," in kwargs[k]:
+                    new_kwargs[k] = "list({})".format(kwargs[k])
+                else:
+                    new_kwargs[k] = kwargs[k]
+
+        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
+
+        return code
 
 
 class ParameterMatcher(BaseMatcher):
@@ -3547,6 +3585,13 @@ class SizeAverageMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class Attribute2Func(BaseMatcher):
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+        code = "{}()".format(self.paddle_api)
+        return ast.parse(code).body[0].value
+
+
 class LuMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         out_v = kwargs.pop("out") if "out" in kwargs else None
@@ -3653,6 +3698,18 @@ class TensorLogicalMatcher(BaseMatcher):
         )
 
         return code
+
+
+class TensorDatasetMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        new_args = self.parse_args(args)
+        tensors_v = "[{}".format(new_args[0])
+        for arg in new_args[1:]:
+            tensors_v += ", {}".format(arg)
+        tensors_v += "]"
+        code = "{}({})".format(self.get_paddle_api(), tensors_v)
+        node = ast.parse(code.strip("\n")).body
+        return node
 
 
 class TensorMaxMinMatcher(BaseMatcher):

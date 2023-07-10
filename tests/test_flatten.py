@@ -11,20 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.fft.ifftshift")
+obj = APIBase("torch.flatten")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.ifftshift(t)
+        t = torch.tensor([[[1, 2],[3, 4]],[[5, 6],[7, 8]]])
+        result = torch.flatten(t)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +35,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.ifftshift(t, dim=(0,))
+        t = torch.tensor([[[1, 2],[3, 4]],[[5, 6],[7, 8]]])
+        result = torch.flatten(t, start_dim=1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,8 +46,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.fftshift(t, (0,))
+        t = torch.tensor([[[1, 2],[3, 4]],[[5, 6],[7, 8]]])
+        result = torch.flatten(t, start_dim=0, end_dim=1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -56,8 +57,8 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.ifftshift(input=t, dim=(0,))
+        t = torch.tensor([[[1, 2],[3, 4]],[[5, 6],[7, 8]]])
+        result = torch.flatten(t, 0, 1)
         """
     )
     obj.run(pytorch_code, ["result"])

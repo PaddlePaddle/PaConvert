@@ -16,15 +16,19 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.fft.ifftshift")
+obj = APIBase("torch.nn.MaxUnpool1d")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.ifftshift(t)
+        import torch.nn as nn
+        pool = nn.MaxPool1d(2, stride=2, return_indices=True)
+        unpool = nn.MaxUnpool1d(2, 2)
+        input = torch.tensor([[[1., 2, 3, 4, 5, 6, 7, 8]]])
+        output, indices = pool(input)
+        result = unpool(output, indices)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +38,12 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.ifftshift(t, dim=(0,))
+        import torch.nn as nn
+        pool = nn.MaxPool1d(2, stride=1, return_indices=True)
+        unpool = nn.MaxUnpool1d(2, stride=1)
+        input = torch.tensor([[[1., 2, 3, 4, 5, 6, 7, 8]]])
+        output, indices = pool(input)
+        result = unpool(output, indices)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,8 +53,12 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.fftshift(t, (0,))
+        import torch.nn as nn
+        pool = nn.MaxPool1d(2, stride=2, return_indices=True)
+        unpool = nn.MaxUnpool1d(2, stride=2, padding=0)
+        input = torch.tensor([[[1., 2, 3, 4, 5, 6, 7, 8]]])
+        output, indices = pool(input)
+        result = unpool(output, indices)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -56,8 +68,12 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.ifftshift(input=t, dim=(0,))
+        import torch.nn as nn
+        pool = nn.MaxPool1d(2, stride=2, return_indices=True)
+        unpool = nn.MaxUnpool1d(2, stride=2)
+        input = torch.tensor([[[1., 2, 3, 4, 5, 6, 7, 8]]])
+        output, indices = pool(input)
+        result = unpool(output, indices)
         """
     )
     obj.run(pytorch_code, ["result"])

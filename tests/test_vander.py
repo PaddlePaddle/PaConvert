@@ -27,12 +27,7 @@ def test_case_1():
         result = torch.vander(x)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle has no corresponding api tentatively",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -43,27 +38,17 @@ def test_case_2():
         result = torch.vander(x, 3)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle has no corresponding api tentatively",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.vander(input=torch.tensor([1, 2, 3, 5]), N=3)
+        result = torch.vander(x=torch.tensor([1, 2, 3, 5]), N=3)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle has no corresponding api tentatively",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -74,12 +59,7 @@ def test_case_4():
         result = torch.vander(x, 5, increasing=True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle has no corresponding api tentatively",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -91,9 +71,15 @@ def test_case_5():
         result = torch.vander(x, 5, increasing)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle has no corresponding api tentatively",
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 2, 3, 5])
+        result = torch.vander(x = x, N = 5, increasing=True)
+        """
     )
+    obj.run(pytorch_code, ["result"])

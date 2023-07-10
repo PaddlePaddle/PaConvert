@@ -16,15 +16,18 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.unique")
+obj = APIBase("torch.nn.MaxUnpool3d")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.unique()
+        import torch.nn as nn
+        pool = nn.MaxPool3d(3, stride=2, return_indices=True)
+        unpool = nn.MaxUnpool3d(3, stride=2)
+        output, indices = pool(torch.ones(2, 16, 51, 33, 15))
+        result = unpool(output, indices)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +37,11 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.unique(dim=0)
+        import torch.nn as nn
+        pool = nn.MaxPool3d(3, stride=2, return_indices=True)
+        unpool = nn.MaxUnpool3d(3, 2)
+        output, indices = pool(torch.ones(2, 16, 51, 33, 15))
+        result = unpool(output, indices)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,8 +51,11 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.unique(sorted=True, return_inverse=True, return_counts=True)
+        import torch.nn as nn
+        pool = nn.MaxPool3d(3, stride=2, return_indices=True)
+        unpool = nn.MaxUnpool3d(3, stride=2, padding=0)
+        output, indices = pool(torch.ones(2, 16, 51, 33, 15))
+        result = unpool(output, indices)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -56,8 +65,11 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.unique(sorted=True, return_inverse=True, return_counts=True, dim=0)
+        import torch.nn as nn
+        pool = nn.MaxPool3d(3, stride=2, return_indices=True)
+        unpool = nn.MaxUnpool3d(3, 2, padding=0)
+        output, indices = pool(torch.ones(2, 16, 51, 33, 15))
+        result = unpool(output, indices)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -67,8 +79,11 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.unique(True, True, dim=0)
+        import torch.nn as nn
+        pool = nn.MaxPool3d(3, stride=2, return_indices=True)
+        unpool = nn.MaxUnpool3d(3, 2, 0)
+        output, indices = pool(torch.ones(2, 16, 51, 33, 15))
+        result = unpool(output, indices)
         """
     )
     obj.run(pytorch_code, ["result"])

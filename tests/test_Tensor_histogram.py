@@ -16,15 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.fft.ifftshift")
+obj = APIBase("torch.Tensor.histogram")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.ifftshift(t)
+        result = torch.tensor([[1., 2, 1]]).histogram(bins=4, range=(0., 3.))
+        if hasattr(result, "hist"):
+            result = result.hist
+        result = result.to(torch.float32)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +36,11 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.ifftshift(t, dim=(0,))
+        input = torch.tensor([[1, 2], [3, 4]], dtype=torch.float32)
+        result = input.histogram(bins=4, range=(0., 3.))
+        if hasattr(result, "hist"):
+            result = result.hist
+        result = result.to(torch.float32)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,19 +50,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.fftshift(t, (0,))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.ifftshift(input=t, dim=(0,))
+        result = torch.tensor([[1., 2, 1]]).histogram()
+        if hasattr(result, "hist"):
+            result = result.hist
+        result = result.to(torch.float32)
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -11,53 +11,62 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.fft.ifftshift")
+obj = APIBase("torch.dsplit")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.ifftshift(t)
+        a = torch.arange(16.0).reshape(2, 2, 4)
+        result = torch.dsplit(a, 2)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support this function temporarily",
+    )
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.ifftshift(t, dim=(0,))
+        a = torch.arange(16.0).reshape(2, 2, 4)
+        result = torch.dsplit(a, [2,2])
+        if len(result) > 2:
+            result = (result[0], result[2])
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support this function temporarily",
+    )
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.fftshift(t, (0,))
+        a = torch.arange(12).reshape(3, 2, 2)
+        result = torch.dsplit(a, indices=[1,1])
+        if len(result) > 2:
+            result = (result[0], result[2])
         """
     )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.ifftshift(input=t, dim=(0,))
-        """
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support this function temporarily",
     )
-    obj.run(pytorch_code, ["result"])

@@ -16,15 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.fft.ifftshift")
+obj = APIBase("torch.double")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.ifftshift(t)
+        src = torch.tensor([1., 2., 3., 4., 5., 6.])
+        result = src.to(torch.double)
+
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,30 +35,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.ifftshift(t, dim=(0,))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.fftshift(t, (0,))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.ifftshift(input=t, dim=(0,))
+        result = torch.tensor([1., 2., 3., 4., 5., 6.]).to(torch.double)
         """
     )
     obj.run(pytorch_code, ["result"])
