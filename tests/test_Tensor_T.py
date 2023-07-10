@@ -11,20 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.cpu")
+obj = APIBase("torch.Tensor.T")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1,2,3])
-        result = a.cpu()
+        x = torch.arange(16).reshape(4, 4)
+        result = x.T
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,18 +35,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1,2,3])
-        result = a.T.cpu()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.tensor([1,2,3]).T.cpu()
+        result = torch.arange(16).reshape(4, 4).T
         """
     )
     obj.run(pytorch_code, ["result"])
