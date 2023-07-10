@@ -16,15 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.fft.ifftshift")
+obj = APIBase("torch.Tensor.nanmean")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.ifftshift(t)
+        input = torch.tensor([[1, 2], [3., float("nan")]])
+        result = input.nanmean()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.ifftshift(t, dim=(0,))
+        input = torch.tensor([[1, 2], [3., float("nan")]])
+        result = input.nanmean(0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,8 +45,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.fftshift(t, (0,))
+        input = torch.tensor([[1, 2], [3., float("nan")]])
+        result = input.nanmean(dim=1, keepdim=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -56,8 +56,20 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.ifftshift(input=t, dim=(0,))
+        input = torch.tensor([[1, 2], [3., float("nan")]])
+        result = input.nanmean(1, dtype=torch.float64)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1, 2], [3., float("nan")]])
+        dim, keepdim = 1, False
+        result = input.nanmean(dim, keepdim=keepdim)
         """
     )
     obj.run(pytorch_code, ["result"])

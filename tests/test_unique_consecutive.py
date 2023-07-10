@@ -16,15 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.fft.ifftshift")
+obj = APIBase("torch.Tensor.unique_consecutive")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.ifftshift(t)
+        x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
+        result = torch.unique_consecutive(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,30 +34,41 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.ifftshift(t, dim=(0,))
+        x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
+        result, inverse_indices = torch.unique_consecutive(x, return_inverse=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "inverse_indices"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.fftshift(t, (0,))
+        x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
+        result, counts = torch.unique_consecutive(x, return_counts=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "counts"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.ifftshift(input=t, dim=(0,))
+        x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
+        result, inverse_indices, counts = torch.unique_consecutive(x, return_counts=True, return_inverse=True)
+        """
+    )
+    obj.run(pytorch_code, ["result", "counts", "inverse_indices"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
+        result = torch.unique_consecutive(x, dim=0)
         """
     )
     obj.run(pytorch_code, ["result"])
