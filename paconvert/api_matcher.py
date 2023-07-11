@@ -3665,8 +3665,6 @@ class SvdMatcher(BaseMatcher):
 
         if some_v:
             kwargs["full_matrices"] = "not " + some_v.strip("()")
-        else:
-            kwargs["full_matrices"] = "False"
 
         if out_v:
             new_kwargs = {}
