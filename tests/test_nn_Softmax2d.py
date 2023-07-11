@@ -16,15 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.cpu")
+obj = APIBase("torch.nn.Softmax")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1,2,3])
-        result = a.cpu()
+        import torch.nn as nn
+        x = torch.arange(0, 100, dtype=torch.float32).reshape((2,2,5,5)) / 80
+        model = nn.Softmax2d()
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,18 +36,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1,2,3])
-        result = a.T.cpu()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.tensor([1,2,3]).T.cpu()
+        import torch.nn as nn
+        x = torch.arange(0, 100, dtype=torch.float32).reshape((4,5,5)) / 50
+        model = nn.Softmax2d()
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])

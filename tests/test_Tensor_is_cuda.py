@@ -16,36 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.cpu")
+obj = APIBase("torch.Tensor.is_cuda")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1,2,3])
-        result = a.cpu()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([1,2,3])
-        result = a.T.cpu()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.tensor([1,2,3]).T.cpu()
+        x = torch.zeros(5, 3).cpu()
+        result = x.is_cuda
         """
     )
     obj.run(pytorch_code, ["result"])
