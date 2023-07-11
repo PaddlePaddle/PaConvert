@@ -28,12 +28,7 @@ def _test_case_1():
         result=True
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle need init_parallel_env() paconvert currently not supported for transcription ",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def _test_case_2():
@@ -45,12 +40,7 @@ def _test_case_2():
         result=True
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle need init_parallel_env() paconvert currently not supported for transcription",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -62,6 +52,4 @@ def test_case_3():
         result=True
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="paddle unsupport async_op"
-    )
+    obj.run(pytorch_code, ["result"])

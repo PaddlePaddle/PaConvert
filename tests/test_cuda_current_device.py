@@ -27,9 +27,4 @@ def _test_case_1():
         result = True
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle return a class,torch return int",
-    )
+    obj.run(pytorch_code, ["result"])

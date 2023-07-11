@@ -3638,6 +3638,8 @@ class LuMatcher(BaseMatcher):
 
             return code
 
+        return GenericMatcher.generate_code(self, kwargs)
+
 
 class RandomSplitMatcher(BaseMatcher):
     def generate_code(self, kwargs):
