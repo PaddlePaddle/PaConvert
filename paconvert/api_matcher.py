@@ -3669,7 +3669,6 @@ class SvdMatcher(BaseMatcher):
             kwargs["full_matrices"] = "False"
 
         if out_v:
-
             new_kwargs = {}
             new_kwargs["x"] = kwargs.pop("input")
             new_kwargs.update(kwargs)
