@@ -196,19 +196,19 @@ class TensorAddMatcher(BaseMatcher):
         if "alpha" in kwargs:
             API_TEMPLATE = textwrap.dedent(
                 """
-                {}.add(y=paddle.to_tensor({})*{})
+                {}(y=paddle.to_tensor({})*{})
                 """
             )
             code = API_TEMPLATE.format(
-                self.paddleClass, kwargs["alpha"], kwargs["other"]
+                self.get_paddle_api(), kwargs["alpha"], kwargs["other"]
             )
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
-                {}.add(y=paddle.to_tensor({}))
+                {}(y=paddle.to_tensor({}))
                 """
             )
-            code = API_TEMPLATE.format(self.paddleClass, kwargs["other"])
+            code = API_TEMPLATE.format(self.get_paddle_api(), kwargs["other"])
         return code
 
 
@@ -1215,6 +1215,22 @@ class LoadMatcher(BaseMatcher):
         )
         code = API_TEMPLATE.format(kwargs["f"])
         return code
+
+
+class TensorTypeMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if len(kwargs) == 0:
+            return None
+        dtype = kwargs["dtype"]
+        code = f"{self.paddleClass}.astype({dtype})"
+        return code
+
+
+class TensorIsCudaMatcher(BaseMatcher):
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+        code = "'gpu' in str({}.place)".format(self.paddleClass)
+        return ast.parse(code).body
 
 
 class SaveMatcher(BaseMatcher):
