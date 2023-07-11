@@ -66,3 +66,15 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [[1.3192, 1.9915, 1.9674, 1.7151],[1.3492, 0.1915, 2.9434, 1.4151]]
+        x = torch.tensor(a)
+        result = torch.nn.functional.gumbel_softmax(x, tau=2, hard=True, dim=0, eps=0.0001)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False, unsupport=True)
