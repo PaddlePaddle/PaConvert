@@ -16,34 +16,39 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Moudle.register_buffer")
+obj = APIBase("torch.geqrf")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3.])
-        module1 = torch.nn.Module()
-        module1.register_buffer('buffer', x)
-        module2 = torch.nn.Module()
-        module2.register_module('submodule', module1)
-        result = module2.submodule.buffer
+        A = torch.tensor([[12., -51, 4], [6, 167, -68], [-4, 24, -41]])
+        result = torch.geqrf(A)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle has no corresponding api tentatively",
+    )
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3.])
-        module1 = torch.nn.Module()
-        module1.register_buffer('buffer', x)
-        module2 = torch.nn.Module()
-        module2.register_module(name='submodule', module=module1)
-        result = module2.submodule.buffer
+        A = torch.tensor([[12., -51, 4], [6, 167, -68], [-4, 24, -41]])
+        a = torch.empty_like(A)
+        tau = torch.rand(A.shape[0],1)
+        out = (a, tau)
+        result = torch.geqrf(A, out = (a, tau))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result", "out"],
+        unsupport=True,
+        reason="paddle has no corresponding api tentatively",
+    )

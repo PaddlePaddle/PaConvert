@@ -11,75 +11,78 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.absolute")
+obj = APIBase("torch.Tensor.add_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[-4, 9], [-23, 2]])
-        result = a.absolute()
+        x = torch.tensor([1, 2, 3])
+        x.add_(torch.tensor([1, 4, 6]))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([[-4, 9], [-23, 2]]).absolute()
+        x = torch.tensor([1, 2, 3])
+        x.add_(20)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        try:
-            a = torch.tensor([[-4, 9], [-23, 2]])
-            assert 0, "Raise AssertionError"
-        except Exception as e:
-            error_msg = str(e)
+        x = torch.tensor([1., 2, 3])
+        x.add_(torch.tensor([1., 4, 6]), alpha=0.8)
         """
     )
-    obj.run(pytorch_code, ["error_msg"])
+    obj.run(pytorch_code, ["x"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        try:
-            a = torch.tensor([[-4, 9], [-23, 2]])
-            assert 0, "Raise AssertionError"
-        except Exception as e:
-            error_msg = str(e)
-        finally:
-            pass
+        x = torch.tensor([1., 2, 3])
+        x.add_(other=torch.tensor([1., 4, 6]), alpha=0.8)
         """
     )
-    obj.run(pytorch_code, ["error_msg"])
+    obj.run(pytorch_code, ["x"])
 
 
-def test_case_5():
+# paddle.Tensor.add not support type promote and x/y must have same dtype
+def _test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        i = 0
-        result = []
-        while i < 5:
-            result.append(torch.tensor(i).absolute())
-            i += 1
+        x = torch.ones((10, 4))
+        x.add_(4)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x"])
+
+
+# paddle.Tensor.add not support type promote and x/y must have same dtype
+def _test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones((10, 4))
+        x.add_(4, alpha=5)
+        """
+    )
+    obj.run(pytorch_code, ["x"])
