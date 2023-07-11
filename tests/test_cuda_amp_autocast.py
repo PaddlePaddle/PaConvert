@@ -76,4 +76,4 @@ def _test_case_4():
 
         """
     )
-    obj.run(pytorch_code, unsupport=True, reason="paddle unspported cache_enabled ")
+    obj.run(pytorch_code, ["result"])
