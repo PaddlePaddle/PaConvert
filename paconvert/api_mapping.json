@@ -7914,9 +7914,13 @@
       "value",
       "inplace"
     ],
-    "unsupport_args": {
-      "input": "inplace"
-    }
+    "kwargs_change": {
+      "input": "x"
+    },
+    "unsupport_args": [
+      "value",
+      "inplace"
+    ]
   },
   "torch.nn.functional.triplet_margin_with_distance_loss": {
     "Matcher": "GenericMatcher",
