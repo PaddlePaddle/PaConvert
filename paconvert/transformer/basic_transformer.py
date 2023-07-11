@@ -185,16 +185,34 @@ class BasicTransformer(BaseTransformer):
                         )
                         return node
                     elif new_node:
-                        self.success_api_count += 1
-                        log_debug(
-                            self.logger,
-                            "[Success]convert Tensor Attribute: {} to Paddle".format(
-                                torch_api
+                        new_node = new_node[-1]
+                        if isinstance(new_node, ast.Expr):
+                            new_node = new_node.value
+
+                        if isinstance(
+                            new_node,
+                            (
+                                ast.Call,
+                                ast.Attribute,
+                                ast.Name,
+                                ast.Constant,
+                                ast.Compare,
+                                ast.BinOp,
+                                ast.UnaryOp,
+                                ast.Tuple,
+                                ast.Assert,
                             ),
-                            self.file_name,
-                            node.lineno,
-                        )
-                        return new_node
+                        ):
+                            self.success_api_count += 1
+                            log_debug(
+                                self.logger,
+                                "[Success]convert Tensor Attribute: {} to Paddle".format(
+                                    torch_api
+                                ),
+                                self.file_name,
+                                node.lineno,
+                            )
+                            return new_node
 
         annotate_node = ast.parse(
             "'Tensor Attribute: {}, not convert, please check whether it is torch.Tensor.* and convert manually'".format(
@@ -348,16 +366,29 @@ class BasicTransformer(BaseTransformer):
         # Torch Class call
         #   such as : x.add(y) / x.abs().add / sgd.step() / model.to(torch.device('cuda'))
         if "NonTorchClass" not in full_attr:
-            attr_list = full_attr.split(".")
+            is_tensor_api = False
+            is_module_api = False
+            is_optim_api = False
             #  x.reshape
             #  self.weight.reshape
             #  x.T.reshape
             # when > 2, need to more strict
-            if (
-                (len(attr_list) == 2 and "self" not in full_attr)
-                or (len(attr_list) > 2 and "self" in full_attr)
-                or ".T." in full_attr
-            ):
+            attr_list = full_attr.split(".")
+            if len(attr_list) > 2:
+                if "self." in full_attr:
+                    is_tensor_api = True
+                if ".T." in full_attr:
+                    is_tensor_api = True
+            elif len(attr_list) == 2:
+                if "self." in full_attr:
+                    is_module_api = True
+                    is_optim_api = True
+                else:
+                    is_tensor_api = True
+                    is_module_api = True
+                    is_optim_api = True
+
+            if is_tensor_api:
                 torch_api = ".".join(["torch.Tensor", attr_list[-1]])
                 if torch_api in API_MAPPING:
                     self.torch_api_count += 1
@@ -371,6 +402,7 @@ class BasicTransformer(BaseTransformer):
                     )
                     return self.trans_class_method(node, torch_api)
 
+            if is_module_api:
                 torch_api = ".".join(["torch.nn.Module", attr_list[-1]])
                 if torch_api in API_MAPPING:
                     self.torch_api_count += 1
@@ -384,6 +416,7 @@ class BasicTransformer(BaseTransformer):
                     )
                     return self.trans_class_method(node, torch_api)
 
+            if is_optim_api:
                 torch_api = ".".join(["torch.optim.Optimizer", attr_list[-1]])
                 if torch_api in API_MAPPING:
                     self.torch_api_count += 1

@@ -11,21 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.absolute")
+obj = APIBase("torch.Tensor.std")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[-4, 9], [-23, 2]])
-        result = a.absolute()
+        input = torch.tensor([1.4907, 1.0593, 1.5696])
+        result = input.std(unbiased=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,7 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([[-4, 9], [-23, 2]]).absolute()
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = input.std(unbiased=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,41 +45,42 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        try:
-            a = torch.tensor([[-4, 9], [-23, 2]])
-            assert 0, "Raise AssertionError"
-        except Exception as e:
-            error_msg = str(e)
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = input.std(1, unbiased=False, keepdim=True)
         """
     )
-    obj.run(pytorch_code, ["error_msg"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        try:
-            a = torch.tensor([[-4, 9], [-23, 2]])
-            assert 0, "Raise AssertionError"
-        except Exception as e:
-            error_msg = str(e)
-        finally:
-            pass
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = input.std(dim=1, unbiased=False, keepdim=True)
         """
     )
-    obj.run(pytorch_code, ["error_msg"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        i = 0
-        result = []
-        while i < 5:
-            result.append(torch.tensor(i).absolute())
-            i += 1
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        out = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = input.std(dim=1, unbiased=False, keepdim=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = input.std(dim=1, unbiased=True, keepdim=True)
         """
     )
     obj.run(pytorch_code, ["result"])

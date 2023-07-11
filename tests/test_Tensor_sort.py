@@ -11,21 +11,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.absolute")
+obj = APIBase("torch.Tensor.sort")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[-4, 9], [-23, 2]])
-        result = a.absolute()
+        a = torch.tensor([[4, 9], [23, 2]])
+        result = a.sort()
+        if isinstance(result, tuple):
+            result = result[0]
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,7 +36,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([[-4, 9], [-23, 2]]).absolute()
+        a = torch.tensor([[4, 9], [23, 2]])
+        result = a.sort(0)
+        if isinstance(result, tuple):
+            result = result[0]
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,41 +49,26 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        try:
-            a = torch.tensor([[-4, 9], [-23, 2]])
-            assert 0, "Raise AssertionError"
-        except Exception as e:
-            error_msg = str(e)
+        a = torch.tensor([[4, 9], [23, 2]])
+        result = a.sort(dim=1, descending=True, stable=True)
+        if isinstance(result, tuple):
+            result = result[0]
         """
     )
-    obj.run(pytorch_code, ["error_msg"])
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="unsupprt stable parameter"
+    )
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        try:
-            a = torch.tensor([[-4, 9], [-23, 2]])
-            assert 0, "Raise AssertionError"
-        except Exception as e:
-            error_msg = str(e)
-        finally:
-            pass
-        """
-    )
-    obj.run(pytorch_code, ["error_msg"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        i = 0
-        result = []
-        while i < 5:
-            result.append(torch.tensor(i).absolute())
-            i += 1
+        descending=False
+        a = torch.tensor([[4, 9], [23, 2]])
+        result = a.sort(dim=1, descending=descending)
+        if isinstance(result, tuple):
+            result = result[0]
         """
     )
     obj.run(pytorch_code, ["result"])

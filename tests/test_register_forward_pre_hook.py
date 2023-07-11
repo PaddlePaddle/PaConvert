@@ -16,18 +16,30 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.slogdet")
+obj = APIBase("torch.Tensor.register_forward_pre_hook")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[ 0.7308,  1.0060,  0.5270,  1.4516],
-                        [-0.1383,  1.5706,  0.4724,  0.4141],
-                        [ 0.1193,  0.2829,  0.9037,  0.3957],
-                        [-0.8202, -0.6474, -0.1631, -0.6543]])
-        result1, result2 = x.slogdet()
+        import torch.nn as nn
+        result = []
+        class TestForHook(nn.Module):
+            def __init__(self):
+                super().__init__()
+
+                self.linear_1 = nn.Linear(in_features=2, out_features=2)
+            def forward(self, x):
+                x1 = self.linear_1(x)
+                return x, x1
+        def hook(module, fea_in):
+            result.append(1)
+
+        net = TestForHook()
+        net.register_forward_pre_hook(hook)
+        a = torch.tensor([0.,0.])
+        net(a)
         """
     )
-    obj.run(pytorch_code, ["result1", "result2"])
+    obj.run(pytorch_code, ["result"])

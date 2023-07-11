@@ -11,43 +11,45 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.logdet")
+obj = APIBase("torch.Tensor.masked_fill")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[[ 0.9254, -0.6213],
-            [-0.5787,  1.6843]],
-
-            [[ 0.3242, -0.9665],
-            [ 0.4539, -0.0887]],
-
-            [[ 1.1336, -0.4025],
-            [-0.7089,  0.9032]]])
-        result = a.logdet()
+        a = torch.Tensor([[1.0,0.2], [0.3,0.4]])
+        b = torch.Tensor([[1,0], [1,1]])
+        result = a.masked_fill(b==1, a)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, [], reason="torch and paddle where api diff")
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([[[ 0.9254, -0.6213],
-            [-0.5787,  1.6843]],
-
-            [[ 0.3242, -0.9665],
-            [ 0.4539, -0.0887]],
-
-            [[ 1.1336, -0.4025],
-            [-0.7089,  0.9032]]]).logdet()
+        a = torch.Tensor([[1.0,0.2], [0.3,0.4]])
+        b = torch.Tensor([[1,0], [1,1]])
+        result = a.masked_fill(b==1, 1.0)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, [], reason="torch and paddle where api diff")
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.Tensor([[1.0,0.2], [0.3,0.4]])
+        b = torch.Tensor([[1,0], [1,1]])
+        result = a.masked_fill(b==1, 0.1)
+        """
+    )
+    obj.run(pytorch_code, [], reason="torch and paddle where api diff")
