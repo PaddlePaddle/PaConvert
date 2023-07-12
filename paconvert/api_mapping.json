@@ -3592,6 +3592,18 @@
       "q"
     ]
   },
+  "torch.distributions.kl.register_kl": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.kl.register_kl",
+    "args_list": [
+      "type_p",
+      "type_q"
+    ],
+    "kwargs_change": {
+      "type_p": "cls_p",
+      "type_q": "cls_q"
+    }
+  },
   "torch.div": {
     "Matcher": "DivMatcher",
     "args_list": [
