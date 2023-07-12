@@ -96,7 +96,9 @@ def test_case_4():
         s = torch.svd(A, some=False, compute_uv=False)[1]
         """
     )
-    obj.run(pytorch_code, ["s"])
+    obj.run(
+        pytorch_code, ["s"], unsupport=True, reason="compute_uv=False is not supported"
+    )
 
 
 def test_case_5():
@@ -116,7 +118,7 @@ def test_case_5():
         u = torch.empty((5, 5), dtype=torch.float32)
         s = torch.empty((3,), dtype=torch.float32)
         v = torch.empty((3, 3), dtype=torch.float32)
-        torch.svd(A, some=False, compute_uv=False, out=(u, s, v))[1]
+        torch.svd(A, some=False, compute_uv=True, out=(u, s, v))[1]
         """
     )
     obj.run(pytorch_code, ["s"])
@@ -139,7 +141,7 @@ def test_case_6():
         u = torch.empty((5, 5), dtype=torch.float32)
         s = torch.empty((3,), dtype=torch.float32)
         v = torch.empty((3, 3), dtype=torch.float32)
-        result = torch.svd(A, some=False, compute_uv=False, out=(u, s, v))[1]
+        result = torch.svd(A, some=False, out=(u, s, v))[1]
         """
     )
     obj.run(pytorch_code, ["s"])

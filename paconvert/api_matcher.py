@@ -3658,6 +3658,8 @@ class SvdMatcher(BaseMatcher):
     def generate_code(self, kwargs):
 
         if "compute_uv" in kwargs:
+            if kwargs["compute_uv"] == "(False)":
+                return None
             kwargs.pop("compute_uv")
 
         out_v = kwargs.pop("out") if "out" in kwargs else None
