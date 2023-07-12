@@ -8899,6 +8899,18 @@
       "dim": "axis"
     }
   },
+  "torch.special.logit": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.logit",
+    "args_list": [
+      "input",
+      "eps",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.special.logsumexp": {
     "Matcher": "LogsumexpMatcher",
     "paddle_api": "paddle.logsumexp",

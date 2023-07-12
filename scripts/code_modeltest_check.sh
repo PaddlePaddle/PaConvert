@@ -15,7 +15,7 @@
 set +x
 
 export FLAGS_set_to_1d=0
-DEVELOP_IF="OFF"
+DEVELOP_IF="ON"
 
 if [[ "$DEVELOP_IF" == "OFF" ]]; then
     cd /workspace/$2/PaConvert/

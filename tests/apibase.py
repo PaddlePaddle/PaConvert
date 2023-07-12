@@ -133,9 +133,10 @@ class APIBase(object):
                 paddle_result.numpy(False),
             )
         else:
-            pytorch_numpy, paddle_numpy = pytorch_result.numpy(), paddle_result.numpy(
-                False
-            )
+            (
+                pytorch_numpy,
+                paddle_numpy,
+            ) = pytorch_result.cpu().numpy(), paddle_result.numpy(False)
 
         assert (
             pytorch_result.requires_grad != paddle_result.stop_gradient

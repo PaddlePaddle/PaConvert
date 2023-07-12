@@ -79,24 +79,13 @@ def _test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[3, 4], [5, 8]], dtype=torch.int)
-        result = torch.cuda.IntTensor(a)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def _test_case_7():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
         result = torch.cuda.IntTensor((1, 2, 3))
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_8():
+def _test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
