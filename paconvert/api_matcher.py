@@ -3649,6 +3649,7 @@ class QrMatcher(BaseMatcher):
                 paddle.assign(tmp_q, {}[0]), paddle.assign(tmp_r, {}[1])
                 """
             )
+
             code = API_TEMPLATE.format(
                 self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v, out_v
             )
