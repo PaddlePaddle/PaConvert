@@ -5430,6 +5430,19 @@
       "input": "x"
     }
   },
+  "torch.nextafter": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nextafter",
+    "args_list": [
+      "input",
+      "other",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "other": "y"
+    }
+  },
   "torch.nn.AdaptiveAvgPool1d": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.AdaptiveAvgPool1D",
@@ -8292,6 +8305,18 @@
       "out"
     ]
   },
+  "torch.polygamma": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.polygamma",
+    "args_list": [
+      "n",
+      "input",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.pow": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.pow",
@@ -8319,6 +8344,25 @@
       "input": "x",
       "dim": "axis"
     }
+  },
+  "torch.quantile": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.quantile",
+    "args_list": [
+      "input",
+      "q",
+      "dim",
+      "keepdim",
+      "interpolation",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axis"
+    },
+    "unsupport_args": [
+      "interpolation "
+    ]
   },
   "torch.rad2deg": {
     "Matcher": "GenericMatcher",
@@ -8847,6 +8891,17 @@
       "input": "x"
     }
   },
+  "torch.special.i0": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.i0",
+    "args_list": [
+      "input",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.special.log1p": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.log1p",
@@ -8998,6 +9053,25 @@
       "keepdim",
       "out"
     ]
+  },
+  "torch.stft": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.signal.stft",
+    "args_list": [
+      "input",
+      "n_fft",
+      "hop_length",
+      "win_length",
+      "window",
+      "center",
+      "pad_mode",
+      "normalized",
+      "onesided",
+      "return_complex"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
   },
   "torch.sub": {
     "Matcher": "SubMatcher",
