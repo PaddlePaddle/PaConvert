@@ -6891,9 +6891,7 @@
     },
     "unsupport_args": [
       "layer_norm_eps",
-      "batch_first",
-      "device",
-      "dtype"
+      "batch_first"
     ]
   },
   "torch.nn.TripletMarginLoss": {
