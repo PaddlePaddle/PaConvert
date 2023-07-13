@@ -14,31 +14,21 @@
 
 import textwrap
 
-import paddle
 from apibase import APIBase
 
-
-class optimOptimizerAPIBase(APIBase):
-    def compare(
-        self, name, pytorch_result, paddle_result, check_value=True, check_dtype=True
-    ):
-        if isinstance(paddle_result, paddle.optimizer.optimizer.Optimizer):
-            return True
-        return False
-
-
-obj = optimOptimizerAPIBase("torch.optim.Optimizer")
+obj = APIBase("torch.distribution.kl.register_kl")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
 
-        theta = torch.tensor([1.0,1.0], requires_grad=True)
-        optim = torch.optim.Optimizer([theta], defaults={"learning_rate": 1.0})
-        result = type(optim)
+        @torch.distributions.kl.register_kl(torch.distributions.beta.Beta, torch.distributions.beta.Beta)
+        def kl(p,q):
+            return p, q
+
+        result = kl(torch.tensor([0.3, 0.3, 0.3]), torch.tensor([0.4, 0.4, 0.2]))
         """
     )
     obj.run(pytorch_code, ["result"])
