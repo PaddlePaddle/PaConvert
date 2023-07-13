@@ -4784,6 +4784,25 @@
       "input": "x"
     }
   },
+  "torch.linalg.matrix_rank": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.matrix_rank",
+    "args_list": [
+      "A",
+      "tol",
+      "atol",
+      "rtol",
+      "hermitian",
+      "out"
+    ],
+    "kwargs_change": {
+      "A": "x"
+    },
+    "unsupport_args": [
+      "atol",
+      "rtol"
+    ]
+  },
   "torch.linalg.multi_dot": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linalg.multi_dot",
@@ -8330,6 +8349,18 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axis"
+    }
+  },
+  "torch.qr": {
+    "Matcher": "QrMatcher",
+    "paddle_api": "paddle.linalg.qr",
+    "args_list": [
+      "input",
+      "some",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
     }
   },
   "torch.rad2deg": {
