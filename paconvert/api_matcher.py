@@ -3602,7 +3602,7 @@ class SizeAverageMatcher(BaseMatcher):
 
 class TransformerDecoderLayerMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "dim_feedforward" not in list(kwargs.keys()):
+        if "dim_feedforward" not in kwargs:
             kwargs["dim_feedforward"] = 2048
 
         return GenericMatcher.generate_code(self, kwargs)
