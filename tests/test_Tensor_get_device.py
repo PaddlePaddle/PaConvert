@@ -18,7 +18,9 @@ from apibase import APIBase
 
 
 class torchTensorget_deviceAPIBase(APIBase):
-    def compare(self, name, pytorch_result, paddle_result, check_value=True):
+    def compare(
+        self, name, pytorch_result, paddle_result, check_value=True, check_dtype=True
+    ):
         if paddle_result == "cpu" and pytorch_result == "-1":
             return True
         if paddle_result == "gpu:0" and pytorch_result == "0":

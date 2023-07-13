@@ -14,73 +14,83 @@
 
 import textwrap
 
-import paddle
 from apibase import APIBase
 
-
-class GeneratorAPIBase(APIBase):
-    def compare(
-        self, name, pytorch_result, paddle_result, check_value=True, check_dtype=True
-    ):
-        if isinstance(paddle_result, paddle.fluid.libpaddle.Generator):
-            return True
-        return False
+obj = APIBase("torch.cuda.Stream")
 
 
-obj = GeneratorAPIBase("torch.Generator")
-
-
-def test_case_1():
+def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Generator(device='cpu')
+        stream = torch.cuda.Stream()
+        result = stream.query()
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_2():
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Generator()
+        stream = torch.cuda.Stream(priority=0)
+        result = stream.query()
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_3():
+def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Generator('cpu')
+        stream = torch.cuda.Stream(priority=-1)
+        result = stream.query()
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_4():
+def _test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if torch.cuda.is_available():
-            result = torch.Generator('cuda')
-        else:
-            result = torch.Generator('cpu')
+        stream = torch.cuda.Stream(device=1)
+        result = stream.query()
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_5():
+def _test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if torch.cuda.is_available():
-            result = torch.Generator(device='cuda')
-        else:
-            result = torch.Generator(device='cpu')
+        stream = torch.cuda.Stream(device=1,priority=-1)
+        result = stream.query()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def _test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        stream = torch.cuda.Stream(device='cuda:1',priority=-1)
+        result = stream.query()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def _test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        stream = torch.cuda.Stream(device='cuda',priority=-1)
+        result = stream.query()
         """
     )
     obj.run(pytorch_code, ["result"])

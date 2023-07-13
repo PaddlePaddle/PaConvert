@@ -47,7 +47,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        print(torch.backends.cudnn.deterministic)
+        print(torch.backends.cudnn.benchmark)
         """
     )
     obj.run(
@@ -59,7 +59,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.backends.cudnn.deterministic
+        torch.backends.cudnn.benchmark
         """
     )
     obj.run(pytorch_code, expect_paddle_code="import paddle\n")

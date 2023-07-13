@@ -19,7 +19,9 @@ from apibase import APIBase
 
 
 class SyncBatchnormAPIBase(APIBase):
-    def compare(self, name, pytorch_result, paddle_result, check_value=True):
+    def compare(
+        self, name, pytorch_result, paddle_result, check_value=True, check_dtyp=True
+    ):
         return isinstance(paddle_result, paddle.nn.Layer)
 
 

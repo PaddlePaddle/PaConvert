@@ -39,7 +39,7 @@ def test_case_1():
         w2.requires_grad = True
         o = optim.Adam([w1])
         o.add_param_group({'params': w2})
-        result0 = o.param_groups[1]["params"]
+        result0 = o.param_groups[0]["params"]
         result1 = o.param_groups[1]["params"]
         """
     )
