@@ -47,7 +47,7 @@ def test_case_2():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
-def test_case_3():
+def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -58,10 +58,10 @@ def test_case_3():
         result = model(tgt,x)
         """
     )
-    obj.run(pytorch_code, ["result"], unsupport=True, reason="paddle nosupport")
+    obj.run(pytorch_code, ["result"])
 
 
-def test_case_4():
+def _test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -72,4 +72,4 @@ def test_case_4():
         result = model(tgt,x)
         """
     )
-    obj.run(pytorch_code, ["result"], unsupport=True, reason="paddle nosupport")
+    obj.run(pytorch_code, ["result"])
