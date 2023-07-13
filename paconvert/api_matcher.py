@@ -3598,12 +3598,14 @@ class SizeAverageMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         process_reduce_and_size_average(kwargs)
         return GenericMatcher.generate_code(self, kwargs)
-      
+
+
 class TransformerDecoderLayerMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "dim_feedforward" not in kwargs:
             kwargs["dim_feedforward"] = 2048
         return GenericMatcher.generate_code(self, kwargs)
+
 
 class CudaStreamMatcher(BaseMatcher):
     def generate_code(self, kwargs):

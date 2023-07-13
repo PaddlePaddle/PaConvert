@@ -3315,11 +3315,6 @@
       "interprocess"
     ]
   },
-  "torch.cuda.current_device": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.framework._current_expected_place"
-  
-  },
   "torch.cuda.Stream": {
     "Matcher": "CudaStreamMatcher",
     "paddle_api": "paddle.device.cuda.Stream",
@@ -3367,6 +3362,10 @@
     "unsupport_args": [
       "cache_enabled"
     ]
+  },
+  "torch.cuda.current_device": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.framework._current_expected_place"
   },
   "torch.cuda.current_stream": {
     "Matcher": "GenericMatcher",
