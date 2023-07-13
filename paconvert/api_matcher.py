@@ -3585,23 +3585,11 @@ class SizeAverageMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-class CudaAmpGradScalerMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-
-        if "init_scale" not in kwargs:
-            kwargs["init_loss_scaling"] = 65536.0
-
-        if "growth_interval" not in kwargs.keys():
-            kwargs["incr_every_n_steps"] = 2000
-
-        return GenericMatcher.generate_code(self, kwargs)
-
-
 class CudaStreamMatcher(BaseMatcher):
     def generate_code(self, kwargs):
 
         if "priority" in kwargs:
-            kwargs["priority"] = 1 if "-1" in kwargs["priority"] else 2
+            kwargs["priority"] = "{}+2".format(kwargs["priority"])
 
         if "device" in kwargs:
             if "cuda" in kwargs["device"]:

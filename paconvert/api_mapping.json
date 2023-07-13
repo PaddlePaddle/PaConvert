@@ -3311,7 +3311,7 @@
     }
   },
   "torch.cuda.amp.GradScaler": {
-    "Matcher": "CudaAmpGradScalerMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.amp.GradScaler",
     "args_list": [
       "init_scale",
@@ -3326,6 +3326,10 @@
       "backoff_factor": "decr_ratio",
       "growth_interval": "incr_every_n_steps",
       "enabled": "enable"
+    },
+    "paddle_default_kwargs": {
+      "incr_every_n_steps": 2000,
+      "init_loss_scaling": 65536.0
     }
   },
   "torch.cuda.amp.autocast": {
