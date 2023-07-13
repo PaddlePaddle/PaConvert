@@ -8424,6 +8424,18 @@
       "dim": "axis"
     }
   },
+  "torch.qr": {
+    "Matcher": "QrMatcher",
+    "paddle_api": "paddle.linalg.qr",
+    "args_list": [
+      "input",
+      "some",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.quantile": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.quantile",
@@ -8442,18 +8454,6 @@
     "unsupport_args": [
       "interpolation "
     ]
-  },
-  "torch.qr": {
-    "Matcher": "QrMatcher",
-    "paddle_api": "paddle.linalg.qr",
-    "args_list": [
-      "input",
-      "some",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
   },
   "torch.rad2deg": {
     "Matcher": "GenericMatcher",
