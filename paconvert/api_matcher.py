@@ -120,23 +120,22 @@ class GenericMatcher(BaseMatcher):
         return code
 
     def get_paddle_class_attribute_nodes(self, node):
-        node.attr = ast.parse(self.get_paddle_api()).body[0].value.attr
-        return node
+        self.parse_func(node)
+        code = "{}".format(self.paddle_api)
+        return ast.parse(code).body
 
 
 class DeleteMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        return "delete"
-
     def get_paddle_api(self):
         return "delete"
 
-
-class TensorDeleteMatcher(BaseMatcher):
-    def get_paddle_class_nodes(self, func, args, kwargs):
+    def get_paddle_class_attribute_nodes(self, node):
         return "delete"
 
-    def get_paddle_class_attribute_nodes(self, node):
+    def get_paddle_nodes(self, args, kwargs):
+        return "delete"
+
+    def get_paddle_class_nodes(self, func, args, kwargs):
         return "delete"
 
 
@@ -197,19 +196,19 @@ class TensorAddMatcher(BaseMatcher):
         if "alpha" in kwargs:
             API_TEMPLATE = textwrap.dedent(
                 """
-                {}.add(y=paddle.to_tensor({})*{})
+                {}(y=paddle.to_tensor({})*{})
                 """
             )
             code = API_TEMPLATE.format(
-                self.paddleClass, kwargs["alpha"], kwargs["other"]
+                self.get_paddle_api(), kwargs["alpha"], kwargs["other"]
             )
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
-                {}.add(y=paddle.to_tensor({}))
+                {}(y=paddle.to_tensor({}))
                 """
             )
-            code = API_TEMPLATE.format(self.paddleClass, kwargs["other"])
+            code = API_TEMPLATE.format(self.get_paddle_api(), kwargs["other"])
         return code
 
 
@@ -1218,6 +1217,22 @@ class LoadMatcher(BaseMatcher):
         return code
 
 
+class TensorTypeMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if len(kwargs) == 0:
+            return None
+        dtype = kwargs["dtype"]
+        code = f"{self.paddleClass}.astype({dtype})"
+        return code
+
+
+class TensorIsCudaMatcher(BaseMatcher):
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+        code = "'gpu' in str({}.place)".format(self.paddleClass)
+        return ast.parse(code).body
+
+
 class SaveMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "pickle_module" in kwargs:
@@ -1794,7 +1809,7 @@ class TensorRequires_GradMatcher(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
         code = "not {}.stop_gradient".format(self.paddleClass)
-        return ast.parse(code).body[0].value
+        return ast.parse(code).body
 
 
 class AllMatcher(BaseMatcher):
@@ -3589,7 +3604,7 @@ class Attribute2Func(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
         code = "{}()".format(self.paddle_api)
-        return ast.parse(code).body[0].value
+        return ast.parse(code).body
 
 
 class LuMatcher(BaseMatcher):

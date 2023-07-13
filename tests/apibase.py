@@ -83,7 +83,6 @@ class APIBase(object):
                 self.compare(
                     self.pytorch_api, pytorch_result[i], paddle_result[i], check_value
                 )
-
         if expect_paddle_code:
             convert_paddle_code = self.convert(pytorch_code)
             assert (

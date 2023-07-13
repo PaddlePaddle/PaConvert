@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.cosine_similarity")
+obj = APIBase("torch.nn.functional.cosine_similarity")
 
 
 def test_case_1():

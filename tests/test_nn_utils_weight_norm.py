@@ -16,14 +16,30 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.backends.cudnn.deterministic")
+obj = APIBase("torch.nn.utils.weight_norm")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.backends.cudnn.deterministic
+        import torch.nn as nn
+        m = torch.nn.utils.weight_norm(nn.Linear(20, 40), name='weight')
+        a = torch.ones(20)
+        result = m(a)
         """
     )
-    obj.run(pytorch_code, ["result"], unsupport=True, reason="doesn't support the api")
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        m = torch.nn.utils.weight_norm(nn.Linear(20, 40), name='weight', dim=0)
+        a = torch.ones(20)
+        result = m(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

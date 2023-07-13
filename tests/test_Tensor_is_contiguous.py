@@ -45,7 +45,7 @@ def test_case_3():
         """
         import torch
         a = torch.tensor([[4, 9], [23, 2]], dtype=torch.complex128)
-        result = a.is_complex()
+        result = a.is_contiguous()
         """
     )
     obj.run(pytorch_code, ["result"])

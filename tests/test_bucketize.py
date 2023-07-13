@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.sgn")
+obj = APIBase("torch.bucketize")
 
 
 def test_case_1():

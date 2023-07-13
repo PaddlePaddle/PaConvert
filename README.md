@@ -341,7 +341,9 @@ paddle_default_kwargs :可选，当 paddle 参数更多 或者 参数默认值�
 }
 ```
 
-如果不属于上述分类，则需要开发 **自定义的Matcher**，命名标准为：`API名+Matcher` 。例如 `torch.transpose` 可命名为`TransposeMatcher` ，`torch.Tensor.transpose` 可命名为 `TensorTransposeMatcher`。详见下面步骤。
+如果不属于上述情形，则需要 **新增Matcher**，当前已经有100+种其他`Matcher`，建议尽可能复用已有`Matcher`，提升代码的可复用性。如果已有的100+种 `Matcher` 无法满足要求，才需要新增开发 `Matcher`。
+
+新增Matcher的命名标准为：`API名+Matcher` 。例如 `torch.transpose` 可命名为`TransposeMatcher` ，`torch.Tensor.transpose` 可命名为 `TensorTransposeMatcher`。详见下面步骤。
 
 ## 步骤4：编写Matcher（转换规则）
 

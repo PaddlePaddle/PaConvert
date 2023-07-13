@@ -33,8 +33,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        shape = [2, 3]
-        result = torch.tensor(shape)
+        data = [2, 3]
+        result = torch.tensor(data)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +44,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        shape = [2, 3]
-        result = torch.tensor(shape, dtype=torch.float)
+        data = [2, 3]
+        result = torch.tensor(data, dtype=torch.float)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,8 +55,8 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        shape = [2, 3]
-        result = torch.tensor(shape, dtype=torch.float, device=None)
+        data = [2, 3]
+        result = torch.tensor(data, dtype=torch.float, device=None)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -66,8 +66,32 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        shape = [2, 3]
-        result = torch.tensor(shape, dtype=torch.float, device=None, requires_grad = False)
+        data = [2, 3]
+        result = torch.tensor(data, dtype=torch.float, device=None, requires_grad = False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        data = [2, 3]
+        result = None
+        if torch.cuda.is_available():
+            result = torch.tensor(data, requires_grad = False, pin_memory=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        data = [2, 3]
+        result = torch.tensor(data, requires_grad = False, pin_memory=False)
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -23,7 +23,43 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.backends.cudnn.benchmark
+        torch.backends.cudnn.benchmark = True
         """
     )
-    obj.run(pytorch_code, ["result"], unsupport=True, reason="doesn't support the api")
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="Now can only delete ast.Expr"
+    )
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.backends.cudnn.benchmark = False
+        """
+    )
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="Now can only delete ast.Expr"
+    )
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        print(torch.backends.cudnn.deterministic)
+        """
+    )
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="Now can only delete ast.Expr"
+    )
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.backends.cudnn.deterministic
+        """
+    )
+    obj.run(pytorch_code, expect_paddle_code="import paddle\n")

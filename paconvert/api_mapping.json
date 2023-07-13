@@ -47,12 +47,20 @@
   "torch.Tensor.acosh_": {},
   "torch.Tensor.add": {
     "Matcher": "TensorAddMatcher",
+    "paddle_api": "paddle.Tensor.add",
     "args_list": [
       "other",
       "alpha"
     ]
   },
-  "torch.Tensor.add_": {},
+  "torch.Tensor.add_": {
+    "Matcher": "TensorAddMatcher",
+    "paddle_api": "paddle.Tensor.add_",
+    "args_list": [
+      "other",
+      "alpha"
+    ]
+  },
   "torch.Tensor.addbmm": {
     "Matcher": "AddBmmMatcher",
     "args_list": [
@@ -1866,7 +1874,7 @@
     "args_list": [
       "p",
       "dim",
-      "max_norm",
+      "maxnorm",
       "out"
     ],
     "kwargs_change": {
@@ -2267,7 +2275,15 @@
     "Matcher": "TensorUnchangeMatcher"
   },
   "torch.Tensor.trunc_": {},
-  "torch.Tensor.type": {},
+  "torch.Tensor.type": {
+    "Matcher": "TensorTypeMatcher",
+    "paddle_api": "paddle.Tensor.astype",
+    "args_list": [
+      "dtype",
+      "non_blocking",
+      "async"
+    ]
+  },
   "torch.Tensor.type_as": {
     "Matcher": "TensorTypeAsMatcher",
     "args_list": [
@@ -5749,6 +5765,16 @@
       "padding_mode"
     ]
   },
+  "torch.nn.CosineEmbeddingLoss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.CosineEmbeddingLoss",
+    "args_list": [
+      "margin",
+      "size_average",
+      "reduce",
+      "reduction"
+    ]
+  },
   "torch.nn.CosineSimilarity": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.CosineSimilarity",
@@ -5961,6 +5987,16 @@
       "max_val": "max"
     }
   },
+  "torch.nn.HingeEmbeddingLoss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.HingeEmbeddingLoss",
+    "args_list": [
+      "margin",
+      "size_average",
+      "reduce",
+      "reduction"
+    ]
+  },
   "torch.nn.Identity": {
     "Matcher": "IdentityMatcher",
     "paddle_api": "paddle.nn.Identity"
@@ -6146,6 +6182,16 @@
     "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.MSELoss",
     "args_list": [
+      "size_average",
+      "reduce",
+      "reduction"
+    ]
+  },
+  "torch.nn.MarginRankingLoss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.MarginRankingLoss",
+    "args_list": [
+      "margin",
       "size_average",
       "reduce",
       "reduction"
@@ -6680,6 +6726,15 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Sigmoid"
   },
+  "torch.nn.SoftMarginLoss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.SoftMarginLoss",
+    "args_list": [
+      "size_average",
+      "reduce",
+      "reduction"
+    ]
+  },
   "torch.nn.Softmax": {
     "Matcher": "SoftmaxMatcher",
     "paddle_api": "paddle.nn.Softmax",
@@ -6688,6 +6743,13 @@
     ],
     "kwargs_change": {
       "dim": "axis"
+    }
+  },
+  "torch.nn.Softmax2d": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Softmax",
+    "paddle_default_kwargs": {
+      "axis": -3
     }
   },
   "torch.nn.Softplus": {
@@ -6760,6 +6822,22 @@
       "num_layers",
       "norm"
     ]
+  },
+  "torch.nn.TripletMarginLoss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.TripletMarginLoss",
+    "args_list": [
+      "margin",
+      "p",
+      "eps",
+      "swap",
+      "size_average",
+      "reduce",
+      "reduction"
+    ],
+    "kwargs_change": {
+      "eps": "epsilon"
+    }
   },
   "torch.nn.TripletMarginWithDistanceLoss": {
     "Matcher": "GenericMatcher",
@@ -7029,7 +7107,11 @@
       "reduce",
       "reduction",
       "pos_weight"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "logit",
+      "target": "label"
+    }
   },
   "torch.nn.functional.celu": {
     "Matcher": "GenericMatcher",
@@ -7409,7 +7491,10 @@
       "size_average",
       "reduce",
       "reduction"
-    ]
+    ],
+    "kwargs_change": {
+      "target": "label"
+    }
   },
   "torch.nn.functional.layer_norm": {
     "Matcher": "GenericMatcher",
@@ -7917,7 +8002,10 @@
       "margin",
       "swap",
       "reduction"
-    ]
+    ],
+    "kwargs_change": {
+      "anchor": "input"
+    }
   },
   "torch.nn.functional.unfold": {
     "Matcher": "Tuple2ListMatcher",
@@ -8014,7 +8102,7 @@
       "name"
     ],
     "kwargs_change": {
-      "module": "Layer"
+      "module": "layer"
     }
   },
   "torch.nn.utils.spectral_norm": {
@@ -8027,7 +8115,7 @@
       "eps"
     ],
     "kwargs_change": {
-      "module": "Layer"
+      "module": "layer"
     }
   },
   "torch.nn.utils.vector_to_parameters": {
@@ -8047,7 +8135,7 @@
       "dim"
     ],
     "kwargs_change": {
-      "module": "Layer"
+      "module": "layer"
     }
   },
   "torch.no_grad": {
@@ -9373,6 +9461,15 @@
   "torch.utils.data.TensorDataset": {
     "Matcher": "TensorDatasetMatcher",
     "paddle_api": "paddle.io.TensorDataset"
+  },
+  "torch.utils.data.WeightedRandomSampler": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.io.WeightedRandomSampler",
+    "args_list": [
+      "weights",
+      "num_samples",
+      "replacement"
+    ]
   },
   "torch.utils.data.default_collate": {
     "Matcher": "GenericMatcher",
