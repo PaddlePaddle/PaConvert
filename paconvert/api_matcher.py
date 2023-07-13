@@ -3600,6 +3600,24 @@ class SizeAverageMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class CudaStreamMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if "priority" in kwargs:
+            kwargs["priority"] = "{}+2".format(kwargs["priority"])
+
+        if "device" in kwargs:
+            if "cuda" in kwargs["device"]:
+                import re
+
+                device_list = re.findall(r"\d+", kwargs["device"])
+                if len(device_list) > 0:
+                    kwargs["device"] = device_list[0]
+                else:
+                    kwargs["device"] = None
+        return GenericMatcher.generate_code(self, kwargs)
+
+
 class Attribute2Func(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)

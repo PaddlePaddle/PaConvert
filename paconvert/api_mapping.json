@@ -3315,6 +3315,54 @@
       "interprocess"
     ]
   },
+  "torch.cuda.Stream": {
+    "Matcher": "CudaStreamMatcher",
+    "paddle_api": "paddle.device.cuda.Stream",
+    "args_list": [
+      "device",
+      "priority"
+    ],
+    "kwargs_change": {
+      "device": "device"
+    }
+  },
+  "torch.cuda.amp.GradScaler": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.amp.GradScaler",
+    "args_list": [
+      "init_scale",
+      "growth_factor",
+      "backoff_factor",
+      "growth_interval",
+      "enabled"
+    ],
+    "kwargs_change": {
+      "init_scale": "init_loss_scaling",
+      "growth_factor": "incr_ratio",
+      "backoff_factor": "decr_ratio",
+      "growth_interval": "incr_every_n_steps",
+      "enabled": "enable"
+    },
+    "paddle_default_kwargs": {
+      "incr_every_n_steps": 2000,
+      "init_loss_scaling": 65536.0
+    }
+  },
+  "torch.cuda.amp.autocast": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.amp.auto_cast",
+    "args_list": [
+      "enabled",
+      "dtype",
+      "cache_enabled"
+    ],
+    "kwargs_change": {
+      "enabled": "enable"
+    },
+    "unsupport_args": [
+      "cache_enabled"
+    ]
+  },
   "torch.cuda.current_stream": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.current_stream",
