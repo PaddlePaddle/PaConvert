@@ -3637,6 +3637,24 @@ class SizeAverageMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class CudaStreamMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if "priority" in kwargs:
+            kwargs["priority"] = "{}+2".format(kwargs["priority"])
+
+        if "device" in kwargs:
+            if "cuda" in kwargs["device"]:
+                import re
+
+                device_list = re.findall(r"\d+", kwargs["device"])
+                if len(device_list) > 0:
+                    kwargs["device"] = device_list[0]
+                else:
+                    kwargs["device"] = None
+        return GenericMatcher.generate_code(self, kwargs)
+
+
 class Attribute2Func(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
@@ -3680,6 +3698,31 @@ class LuMatcher(BaseMatcher):
                     self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out_v, out_v
                 )
 
+            return code
+
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class QrMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        some_v = kwargs.pop("some") if "some" in kwargs else None
+        out_v = kwargs.pop("out") if "out" in kwargs else None
+
+        if some_v:
+            kwargs["mode"] = "'complete'" if some_v != "(False)" else "'reduced'"
+
+        if out_v:
+            kwargs["x"] = kwargs.pop("input")
+            API_TEMPLATE = textwrap.dedent(
+                """
+                tmp_q, tmp_r = {}({})
+                paddle.assign(tmp_q, {}[0]), paddle.assign(tmp_r, {}[1])
+                """
+            )
+
+            code = API_TEMPLATE.format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v, out_v
+            )
             return code
 
         return GenericMatcher.generate_code(self, kwargs)

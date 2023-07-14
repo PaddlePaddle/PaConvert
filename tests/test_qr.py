@@ -14,73 +14,54 @@
 
 import textwrap
 
-import paddle
 from apibase import APIBase
 
-
-class GeneratorAPIBase(APIBase):
-    def compare(
-        self, name, pytorch_result, paddle_result, check_value=True, check_dtype=True
-    ):
-        if isinstance(paddle_result, paddle.fluid.libpaddle.Generator):
-            return True
-        return False
-
-
-obj = GeneratorAPIBase("torch.Generator")
+obj = APIBase("torch.qr")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Generator(device='cpu')
+        a = torch.tensor([[12., -51, 4], [6, 167, -68], [-4, 24, -41]])
+        q, r = torch.qr(a)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["q", "r"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Generator()
+        a = torch.tensor([[12., -51, 4], [6, 167, -68], [-4, 24, -41]])
+        q, r = torch.qr(a, some=False)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["q", "r"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Generator('cpu')
+        a = torch.tensor([[12., -51, 4], [6, 167, -68], [-4, 24, -41]])
+        q = torch.empty((3, 3), dtype=torch.float32)
+        r = torch.empty((3, 3), dtype=torch.float32)
+        torch.qr(a, some=False, out=(q, r))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["q", "r"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if torch.cuda.is_available():
-            result = torch.Generator('cuda')
-        else:
-            result = torch.Generator('cpu')
+        a = torch.tensor([[12., -51, 4], [6, 167, -68], [-4, 24, -41]])
+        q = torch.empty((3, 3), dtype=torch.float32)
+        r = torch.empty((3, 3), dtype=torch.float32)
+        result = torch.qr(a, some=False, out=(q, r))
         """
     )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        if torch.cuda.is_available():
-            result = torch.Generator(device='cuda')
-        else:
-            result = torch.Generator(device='cpu')
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "q", "r"])
