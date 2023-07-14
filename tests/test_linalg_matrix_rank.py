@@ -25,11 +25,11 @@ def test_case_1():
         import torch
         A = torch.eye(10)
         A[0, 0] = 0
-        result = torch.linalg.matrix_rank(A).int()
+        result = torch.linalg.matrix_rank(A)
         """
     )
     # NOTE: torch dtype is int64, paddle dtype is int32
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_dtype=False)
 
 
 def test_case_2():
@@ -60,10 +60,10 @@ def test_case_2():
          [[-0.5989, -0.4732,  1.3252],
           [-0.7614,  1.0493,  0.8488],
           [-0.1300,  0.1287,  0.6234]]]])
-        result = torch.linalg.matrix_rank(A, hermitian=True).int()
+        result = torch.linalg.matrix_rank(A, hermitian=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_dtype=False)
 
 
 def test_case_3():
@@ -133,8 +133,8 @@ def test_case_4():
          [[-0.5989, -0.4732,  1.3252],
           [-0.7614,  1.0493,  0.8488],
           [-0.1300,  0.1287,  0.6234]]]])
-        result = torch.empty((2, 4), dtype=torch.int64).int()
+        result = torch.empty((2, 4), dtype=torch.int64)
         torch.linalg.matrix_rank(A, hermitian=True, out=result)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_dtype=False)

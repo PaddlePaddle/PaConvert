@@ -3835,11 +3835,3 @@ class Func2Attribute(BaseMatcher):
         code = "{}".format(self.get_paddle_api())
 
         return code
-
-
-class A(BaseMatcher):
-    def generate_code(self, kwargs):
-
-        code = "{}".format(self.get_paddle_api())
-
-        return code

@@ -975,7 +975,7 @@
   },
   "torch.Tensor.get_device": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.device.get_device"
+    "paddle_api": "paddle.Tensor.place.gpu_device_id"
   },
   "torch.Tensor.greater": {
     "Matcher": "Num2TensorBinaryMatcher",
@@ -6563,7 +6563,6 @@
     }
   },
   "torch.nn.MultiheadAttention": {
-    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.MultiHeadAttention",
     "args_list": [
       "embed_dim",
