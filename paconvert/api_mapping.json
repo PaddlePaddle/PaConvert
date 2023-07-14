@@ -975,7 +975,7 @@
   },
   "torch.Tensor.get_device": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.device.get_device"
+    "paddle_api": "paddle.Tensor.place.gpu_device_id"
   },
   "torch.Tensor.greater": {
     "Matcher": "Num2TensorBinaryMatcher",
@@ -1869,8 +1869,8 @@
   "torch.Tensor.rename": {},
   "torch.Tensor.rename_": {},
   "torch.Tensor.renorm": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.renorm",
+    "Matcher": "TensorFunc2PaddleFunc",
+    "paddle_api": "paddle.renorm",
     "args_list": [
       "p",
       "dim",
@@ -1878,7 +1878,8 @@
       "out"
     ],
     "kwargs_change": {
-      "dim": "axis"
+      "dim": "axis",
+      "maxnorm": "max_norm"
     }
   },
   "torch.Tensor.renorm_": {},
@@ -6575,7 +6576,6 @@
     }
   },
   "torch.nn.MultiheadAttention": {
-    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.MultiHeadAttention",
     "args_list": [
       "embed_dim",
@@ -7198,7 +7198,11 @@
       "reduce",
       "reduction",
       "pos_weight"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "logit",
+      "target": "label"
+    }
   },
   "torch.nn.functional.celu": {
     "Matcher": "GenericMatcher",
@@ -7578,7 +7582,10 @@
       "size_average",
       "reduce",
       "reduction"
-    ]
+    ],
+    "kwargs_change": {
+      "target": "label"
+    }
   },
   "torch.nn.functional.layer_norm": {
     "Matcher": "GenericMatcher",
@@ -8086,7 +8093,10 @@
       "margin",
       "swap",
       "reduction"
-    ]
+    ],
+    "kwargs_change": {
+      "anchor": "input"
+    }
   },
   "torch.nn.functional.unfold": {
     "Matcher": "Tuple2ListMatcher",
@@ -8183,7 +8193,7 @@
       "name"
     ],
     "kwargs_change": {
-      "module": "Layer"
+      "module": "layer"
     }
   },
   "torch.nn.utils.spectral_norm": {
@@ -8196,7 +8206,7 @@
       "eps"
     ],
     "kwargs_change": {
-      "module": "Layer"
+      "module": "layer"
     }
   },
   "torch.nn.utils.vector_to_parameters": {
@@ -8216,7 +8226,7 @@
       "dim"
     ],
     "kwargs_change": {
-      "module": "Layer"
+      "module": "layer"
     }
   },
   "torch.no_grad": {

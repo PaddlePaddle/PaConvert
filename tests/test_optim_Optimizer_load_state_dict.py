@@ -24,7 +24,7 @@ class optimOptimizerLoadStateDictAPIBase(APIBase):
         return pytorch_result["state"] == paddle_result
 
 
-obj = optimOptimizerLoadStateDictAPIBase("torch.optim.Optimizer.state_dict")
+obj = optimOptimizerLoadStateDictAPIBase("torch.optim.Optimizer.load_state_dict")
 
 
 def test_case_1():
