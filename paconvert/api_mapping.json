@@ -5509,19 +5509,6 @@
       "input": "x"
     }
   },
-  "torch.nextafter": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nextafter",
-    "args_list": [
-      "input",
-      "other",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "other": "y"
-    }
-  },
   "torch.nn.AdaptiveAvgPool1d": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.AdaptiveAvgPool1D",
@@ -8384,18 +8371,6 @@
       "out"
     ]
   },
-  "torch.polygamma": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.polygamma",
-    "args_list": [
-      "n",
-      "input",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
-  },
   "torch.pow": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.pow",
@@ -8435,25 +8410,6 @@
     "kwargs_change": {
       "input": "x"
     }
-  },
-  "torch.quantile": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.quantile",
-    "args_list": [
-      "input",
-      "q",
-      "dim",
-      "keepdim",
-      "interpolation",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis"
-    },
-    "unsupport_args": [
-      "interpolation "
-    ]
   },
   "torch.rad2deg": {
     "Matcher": "GenericMatcher",
@@ -8974,17 +8930,6 @@
   "torch.special.expm1": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.expm1",
-    "args_list": [
-      "input",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
-  },
-  "torch.special.i0": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.i0",
     "args_list": [
       "input",
       "out"

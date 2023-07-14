@@ -35,7 +35,7 @@ def test_case_1():
         import torch
         x = torch.randn((1, 32), requires_grad=True)
         n_fft = 16
-        result = torch.stft(x, n_fft=n_fft, return_complex=False)
+        result = torch.stft(x, n_fft=n_fft)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -48,7 +48,7 @@ def test_case_2():
         x = torch.randn((1, 32), requires_grad=True)
         n_fft = 16
         hop_length = 4
-        result = torch.stft(x, n_fft=n_fft, hop_length=hop_length, return_complex=False)
+        result = torch.stft(x, n_fft=n_fft, hop_length=hop_length)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -61,7 +61,7 @@ def test_case_3():
         x = torch.randn((1, 32), requires_grad=True)
         n_fft = 16
         win_length = 16
-        result = torch.stft(x, n_fft=n_fft, win_length=win_length, return_complex=False)
+        result = torch.stft(x, n_fft=n_fft, win_length=win_length)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -74,7 +74,7 @@ def test_case_4():
         x = torch.randn((1, 32), requires_grad=True)
         n_fft = 16
         window = torch.hann_window(16)
-        result = torch.stft(x, n_fft=n_fft, window=window, return_complex=False)
+        result = torch.stft(x, n_fft=n_fft, window=window)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -86,7 +86,7 @@ def test_case_5():
         import torch
         x = torch.randn((1, 32), requires_grad=True)
         n_fft = 16
-        result = torch.stft(x, n_fft=n_fft, center=False, return_complex=False)
+        result = torch.stft(x, n_fft=n_fft, center=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -98,7 +98,7 @@ def test_case_6():
         import torch
         x = torch.randn((1, 32), requires_grad=True)
         n_fft = 16
-        result = torch.stft(x, n_fft=n_fft, center=False, normalized=True, return_complex=False)
+        result = torch.stft(x, n_fft=n_fft, center=False, normalized=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -110,7 +110,7 @@ def test_case_7():
         import torch
         x = torch.randn((1, 32), requires_grad=True)
         n_fft = 16
-        result = torch.stft(x, n_fft=n_fft, center=False, onesided=False, return_complex=False)
+        result = torch.stft(x, n_fft=n_fft, center=False, onesided=False)
         """
     )
     obj.run(pytorch_code, ["result"])
