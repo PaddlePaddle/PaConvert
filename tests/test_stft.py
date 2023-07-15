@@ -33,7 +33,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.randn((1, 32), requires_grad=True)
+        x = torch.randn((1, 32))
         n_fft = 16
         result = torch.stft(x, n_fft=n_fft, return_complex=True)
         """
@@ -45,7 +45,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.randn((1, 32), requires_grad=True)
+        x = torch.randn((1, 32))
         n_fft = 16
         hop_length = 4
         result = torch.stft(x, n_fft=n_fft, hop_length=hop_length, return_complex=True)
@@ -58,7 +58,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.randn((1, 32), requires_grad=True)
+        x = torch.randn((1, 32))
         n_fft = 16
         win_length = 16
         result = torch.stft(x, n_fft=n_fft, win_length=win_length, return_complex=True)
@@ -71,7 +71,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.randn((1, 32), requires_grad=True)
+        x = torch.randn((1, 32))
         n_fft = 16
         window = torch.hann_window(16)
         result = torch.stft(x, n_fft=n_fft, window=window, return_complex=True)
@@ -84,7 +84,7 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.randn((1, 32), requires_grad=True)
+        x = torch.randn((1, 32))
         n_fft = 16
         result = torch.stft(x, n_fft=n_fft, center=False, return_complex=True)
         """
@@ -96,7 +96,7 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.randn((1, 32), requires_grad=True)
+        x = torch.randn((1, 32))
         n_fft = 16
         result = torch.stft(x, n_fft=n_fft, center=False, normalized=True, return_complex=True)
         """
@@ -108,7 +108,7 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.randn((1, 32), requires_grad=True)
+        x = torch.randn((1, 32))
         n_fft = 16
         result = torch.stft(x, n_fft=n_fft, center=False, onesided=False, return_complex=True)
         """
