@@ -3094,7 +3094,7 @@ class StftMatcher(BaseMatcher):
         if "out" in kwargs and kwargs["out"] is not None:
             API_TEMPLATE = textwrap.dedent(
                 """
-                paddle.assign((paddle.as_real(paddle.signal.stft(x={}, n_fft={}, hop_length={}, win_length={}, window={}, center={}, pad_mode={}, normalized={}, onesided={}))), output={})
+                paddle.assign((paddle.as_complex(paddle.signal.stft(x={}, n_fft={}, hop_length={}, win_length={}, window={}, center={}, pad_mode={}, normalized={}, onesided={}))), output={})
                 """
             )
             code = API_TEMPLATE.format(
@@ -3112,7 +3112,7 @@ class StftMatcher(BaseMatcher):
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
-                paddle.as_real(paddle.signal.stft(x={}, n_fft={}, hop_length={}, win_length={}, window={}, center={}, pad_mode={}, normalized={}, onesided={}))
+                paddle.as_complex(paddle.signal.stft(x={}, n_fft={}, hop_length={}, win_length={}, window={}, center={}, pad_mode={}, normalized={}, onesided={}))
                 """
             )
             code = API_TEMPLATE.format(
