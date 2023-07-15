@@ -9091,7 +9091,7 @@
     ]
   },
   "torch.stft": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "StftMatcher",
     "paddle_api": "paddle.signal.stft",
     "args_list": [
       "input",
@@ -9107,10 +9107,7 @@
     ],
     "kwargs_change": {
       "input": "x"
-    },
-    "unsupport_args": [
-      "return_complex"
-    ]
+    }
   },
   "torch.sub": {
     "Matcher": "SubMatcher",
