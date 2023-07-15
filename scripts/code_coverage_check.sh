@@ -31,6 +31,7 @@ fi
 # use Coverage diff-cover
 echo "Insalling coverage and diff-cover for incremental code inspection"
 pip install diff-cover coverage
+pip install pytest-timeout
 
 if [[ "$DEVELOP_IF" == "ON" ]]; then
     pip install coverage diff-cover
