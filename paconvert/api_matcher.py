@@ -3082,7 +3082,7 @@ class StftMatcher(BaseMatcher):
         if "center" not in kwargs:
             kwargs["center"] = True
         if "pad_mode" not in kwargs:
-            kwargs["pad_mode"] = "reflect"
+            kwargs["pad_mode"] = "'reflect'"
         if "normalized" not in kwargs:
             kwargs["normalized"] = False
         if "onesided" not in kwargs:
