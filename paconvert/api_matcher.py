@@ -120,23 +120,22 @@ class GenericMatcher(BaseMatcher):
         return code
 
     def get_paddle_class_attribute_nodes(self, node):
-        node.attr = ast.parse(self.get_paddle_api()).body[0].value.attr
-        return node
+        self.parse_func(node)
+        code = "{}".format(self.paddle_api)
+        return ast.parse(code).body
 
 
 class DeleteMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        return "delete"
-
     def get_paddle_api(self):
         return "delete"
 
-
-class TensorDeleteMatcher(BaseMatcher):
-    def get_paddle_class_nodes(self, func, args, kwargs):
+    def get_paddle_class_attribute_nodes(self, node):
         return "delete"
 
-    def get_paddle_class_attribute_nodes(self, node):
+    def get_paddle_nodes(self, args, kwargs):
+        return "delete"
+
+    def get_paddle_class_nodes(self, func, args, kwargs):
         return "delete"
 
 
@@ -197,19 +196,19 @@ class TensorAddMatcher(BaseMatcher):
         if "alpha" in kwargs:
             API_TEMPLATE = textwrap.dedent(
                 """
-                {}.add(y=paddle.to_tensor({})*{})
+                {}(y=paddle.to_tensor({})*{})
                 """
             )
             code = API_TEMPLATE.format(
-                self.paddleClass, kwargs["alpha"], kwargs["other"]
+                self.get_paddle_api(), kwargs["alpha"], kwargs["other"]
             )
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
-                {}.add(y=paddle.to_tensor({}))
+                {}(y=paddle.to_tensor({}))
                 """
             )
-            code = API_TEMPLATE.format(self.paddleClass, kwargs["other"])
+            code = API_TEMPLATE.format(self.get_paddle_api(), kwargs["other"])
         return code
 
 
@@ -1218,6 +1217,22 @@ class LoadMatcher(BaseMatcher):
         return code
 
 
+class TensorTypeMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if len(kwargs) == 0:
+            return None
+        dtype = kwargs["dtype"]
+        code = f"{self.paddleClass}.astype({dtype})"
+        return code
+
+
+class TensorIsCudaMatcher(BaseMatcher):
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+        code = "'gpu' in str({}.place)".format(self.paddleClass)
+        return ast.parse(code).body
+
+
 class SaveMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "pickle_module" in kwargs:
@@ -1794,7 +1809,7 @@ class TensorRequires_GradMatcher(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
         code = "not {}.stop_gradient".format(self.paddleClass)
-        return ast.parse(code).body[0].value
+        return ast.parse(code).body
 
 
 class AllMatcher(BaseMatcher):
@@ -3585,11 +3600,29 @@ class SizeAverageMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class CudaStreamMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if "priority" in kwargs:
+            kwargs["priority"] = "{}+2".format(kwargs["priority"])
+
+        if "device" in kwargs:
+            if "cuda" in kwargs["device"]:
+                import re
+
+                device_list = re.findall(r"\d+", kwargs["device"])
+                if len(device_list) > 0:
+                    kwargs["device"] = device_list[0]
+                else:
+                    kwargs["device"] = None
+        return GenericMatcher.generate_code(self, kwargs)
+
+
 class Attribute2Func(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
         code = "{}()".format(self.paddle_api)
-        return ast.parse(code).body[0].value
+        return ast.parse(code).body
 
 
 class LuMatcher(BaseMatcher):
@@ -3628,6 +3661,31 @@ class LuMatcher(BaseMatcher):
                     self.get_paddle_api(), self.kwargs_to_str(new_kwargs), out_v, out_v
                 )
 
+            return code
+
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class QrMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        some_v = kwargs.pop("some") if "some" in kwargs else None
+        out_v = kwargs.pop("out") if "out" in kwargs else None
+
+        if some_v:
+            kwargs["mode"] = "'complete'" if some_v != "(False)" else "'reduced'"
+
+        if out_v:
+            kwargs["x"] = kwargs.pop("input")
+            API_TEMPLATE = textwrap.dedent(
+                """
+                tmp_q, tmp_r = {}({})
+                paddle.assign(tmp_q, {}[0]), paddle.assign(tmp_r, {}[1])
+                """
+            )
+
+            code = API_TEMPLATE.format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v, out_v
+            )
             return code
 
         return GenericMatcher.generate_code(self, kwargs)

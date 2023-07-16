@@ -11,4 +11,53 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+
+import textwrap
+
+from apibase import APIBase
+
+obj = APIBase("torch.Tensor.sign")
+
+
+def test_case_1():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([ 0.9213,  1.0887, -0.8858, -1.7683]).sign()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([ 0.9213,  1.0887, -0.8858, -1.7683])
+        result = a.sign()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [ 0.9213,  1.0887, -0.8858, -1.7683]
+        out = torch.tensor(a)
+        result = torch.tensor(a).sign()
+        """
+    )
+    obj.run(pytorch_code, ["out"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([ 0.9213,  1.0887, -0.8858, -1.7683])
+        result = a.sign()
+        """
+    )
+    obj.run(pytorch_code, ["result"])

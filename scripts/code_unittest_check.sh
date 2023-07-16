@@ -20,6 +20,7 @@ DEVELOP_IF="OFF"
 if [[ "$DEVELOP_IF" == "OFF" ]]; then
     cd /workspace/$2/PaConvert/
     PATH=$1
+    export LD_LIBRARY_PATH=/root/anaconda3/lib:$LD_LIBRARY_PATH
     echo "Insalling cpu version torch"
     pip install --no-cache-dir  --force-reinstall torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
     python -c "import torch; print('torch version information:' ,torch.__version__)"
@@ -29,6 +30,7 @@ if [[ "$DEVELOP_IF" == "OFF" ]]; then
 fi
 
 echo "Checking code unit test by pytest ..."
+pip install pytest-timeout
 
 pytest /workspace/$2/PaConvert/tests;check_error=$?
 

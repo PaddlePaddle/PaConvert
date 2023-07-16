@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Module.children")
+obj = APIBase("torch.nn.Module.buffers")
 
 
 def test_case_1():
@@ -51,9 +51,9 @@ def test_case_2():
         class SubModel(torch.nn.Module):
             def __init__(self):
                 super(SubModel, self).__init__()
-                self.register_buffer('buf1', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf4', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf5', torch.tensor([1.,2.,4.,5.]))
+                self.register_buffer('buf1', torch.tensor([1.,2.,4.,5.]), persistent=True)
+                self.register_buffer('buf4', persistent=True, tensor=torch.tensor([1.,2.,4.,5.]))
+                self.register_buffer('buf5', torch.tensor([1.,2.,4.,5.]), True)
 
             def forward(self, x):
                 pass
@@ -62,17 +62,19 @@ def test_case_2():
             def __init__(self):
                 super(Model, self).__init__()
                 self.submodule = SubModel()
-                self.register_buffer('buf1', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf2', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf3', torch.tensor([1.,2.,4.,5.]))
+                self.register_buffer('buf1', torch.tensor([1.,2.,4.,5.]), persistent=False)
+                self.register_buffer('buf2', persistent=False, tensor=torch.tensor([1.,2.,4.,5.]))
+                self.register_buffer('buf3', torch.tensor([1.,2.,4.,5.]), False)
 
             def forward(self, x):
                 pass
 
         model = Model()
-        result = []
-        for buf in model.buffers(recurse=True):
-            result.append(buf)
+        names = []
+        buffers = []
+        for name, buf in model.named_buffers(recurse=True):
+            names.append(name)
+            buffers.append(buf)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["names", "buffers"])

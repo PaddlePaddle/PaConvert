@@ -19,7 +19,9 @@ from apibase import APIBase
 
 
 class GeneratorAPIBase(APIBase):
-    def compare(self, name, pytorch_result, paddle_result, check_value=True):
+    def compare(
+        self, name, pytorch_result, paddle_result, check_value=True, check_dtype=True
+    ):
         if isinstance(paddle_result, paddle.fluid.libpaddle.Generator):
             return True
         return False
