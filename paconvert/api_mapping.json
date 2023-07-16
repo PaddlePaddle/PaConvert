@@ -975,7 +975,7 @@
   },
   "torch.Tensor.get_device": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.device.get_device"
+    "paddle_api": "paddle.Tensor.place.gpu_device_id"
   },
   "torch.Tensor.greater": {
     "Matcher": "Num2TensorBinaryMatcher",
@@ -1869,8 +1869,8 @@
   "torch.Tensor.rename": {},
   "torch.Tensor.rename_": {},
   "torch.Tensor.renorm": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.renorm",
+    "Matcher": "TensorFunc2PaddleFunc",
+    "paddle_api": "paddle.renorm",
     "args_list": [
       "p",
       "dim",
@@ -1878,7 +1878,8 @@
       "out"
     ],
     "kwargs_change": {
-      "dim": "axis"
+      "dim": "axis",
+      "maxnorm": "max_norm"
     }
   },
   "torch.Tensor.renorm_": {},
@@ -3416,6 +3417,54 @@
       "interprocess"
     ]
   },
+  "torch.cuda.Stream": {
+    "Matcher": "CudaStreamMatcher",
+    "paddle_api": "paddle.device.cuda.Stream",
+    "args_list": [
+      "device",
+      "priority"
+    ],
+    "kwargs_change": {
+      "device": "device"
+    }
+  },
+  "torch.cuda.amp.GradScaler": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.amp.GradScaler",
+    "args_list": [
+      "init_scale",
+      "growth_factor",
+      "backoff_factor",
+      "growth_interval",
+      "enabled"
+    ],
+    "kwargs_change": {
+      "init_scale": "init_loss_scaling",
+      "growth_factor": "incr_ratio",
+      "backoff_factor": "decr_ratio",
+      "growth_interval": "incr_every_n_steps",
+      "enabled": "enable"
+    },
+    "paddle_default_kwargs": {
+      "incr_every_n_steps": 2000,
+      "init_loss_scaling": 65536.0
+    }
+  },
+  "torch.cuda.amp.autocast": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.amp.auto_cast",
+    "args_list": [
+      "enabled",
+      "dtype",
+      "cache_enabled"
+    ],
+    "kwargs_change": {
+      "enabled": "enable"
+    },
+    "unsupport_args": [
+      "cache_enabled"
+    ]
+  },
   "torch.cuda.current_stream": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.current_stream",
@@ -3692,6 +3741,18 @@
       "p",
       "q"
     ]
+  },
+  "torch.distributions.kl.register_kl": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.kl.register_kl",
+    "args_list": [
+      "type_p",
+      "type_q"
+    ],
+    "kwargs_change": {
+      "type_p": "cls_p",
+      "type_q": "cls_q"
+    }
   },
   "torch.div": {
     "Matcher": "DivMatcher",
@@ -4873,6 +4934,25 @@
       "input": "x"
     }
   },
+  "torch.linalg.matrix_rank": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.matrix_rank",
+    "args_list": [
+      "A",
+      "tol",
+      "atol",
+      "rtol",
+      "hermitian",
+      "out"
+    ],
+    "kwargs_change": {
+      "A": "x"
+    },
+    "unsupport_args": [
+      "atol",
+      "rtol"
+    ]
+  },
   "torch.linalg.multi_dot": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linalg.multi_dot",
@@ -5529,6 +5609,19 @@
     ],
     "kwargs_change": {
       "input": "x"
+    }
+  },
+  "torch.nextafter": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nextafter",
+    "args_list": [
+      "input",
+      "other",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "other": "y"
     }
   },
   "torch.nn.AdaptiveAvgPool1d": {
@@ -6584,7 +6677,6 @@
     }
   },
   "torch.nn.MultiheadAttention": {
-    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.MultiHeadAttention",
     "args_list": [
       "embed_dim",
@@ -7207,7 +7299,11 @@
       "reduce",
       "reduction",
       "pos_weight"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "logit",
+      "target": "label"
+    }
   },
   "torch.nn.functional.celu": {
     "Matcher": "GenericMatcher",
@@ -7587,7 +7683,10 @@
       "size_average",
       "reduce",
       "reduction"
-    ]
+    ],
+    "kwargs_change": {
+      "target": "label"
+    }
   },
   "torch.nn.functional.layer_norm": {
     "Matcher": "GenericMatcher",
@@ -8095,7 +8194,10 @@
       "margin",
       "swap",
       "reduction"
-    ]
+    ],
+    "kwargs_change": {
+      "anchor": "input"
+    }
   },
   "torch.nn.functional.unfold": {
     "Matcher": "Tuple2ListMatcher",
@@ -8192,7 +8294,7 @@
       "name"
     ],
     "kwargs_change": {
-      "module": "Layer"
+      "module": "layer"
     }
   },
   "torch.nn.utils.spectral_norm": {
@@ -8205,7 +8307,7 @@
       "eps"
     ],
     "kwargs_change": {
-      "module": "Layer"
+      "module": "layer"
     }
   },
   "torch.nn.utils.vector_to_parameters": {
@@ -8225,7 +8327,7 @@
       "dim"
     ],
     "kwargs_change": {
-      "module": "Layer"
+      "module": "layer"
     }
   },
   "torch.no_grad": {
@@ -8393,6 +8495,18 @@
       "out"
     ]
   },
+  "torch.polygamma": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.polygamma",
+    "args_list": [
+      "n",
+      "input",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.pow": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.pow",
@@ -8420,6 +8534,37 @@
       "input": "x",
       "dim": "axis"
     }
+  },
+  "torch.qr": {
+    "Matcher": "QrMatcher",
+    "paddle_api": "paddle.linalg.qr",
+    "args_list": [
+      "input",
+      "some",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+  "torch.quantile": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.quantile",
+    "args_list": [
+      "input",
+      "q",
+      "dim",
+      "keepdim",
+      "interpolation",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axis"
+    },
+    "unsupport_args": [
+      "interpolation "
+    ]
   },
   "torch.rad2deg": {
     "Matcher": "GenericMatcher",
@@ -8940,6 +9085,17 @@
   "torch.special.expm1": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.expm1",
+    "args_list": [
+      "input",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+  "torch.special.i0": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.i0",
     "args_list": [
       "input",
       "out"

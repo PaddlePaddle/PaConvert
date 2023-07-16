@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Moudle.register_forward_pre_hook")
+obj = APIBase("torch.nn.Module.register_forward_pre_hook")
 
 
 def test_case_1():

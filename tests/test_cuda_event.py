@@ -19,13 +19,15 @@ from apibase import APIBase
 
 
 class cudaEventAPI(APIBase):
-    def compare(self, name, pytorch_result, paddle_result, check_value=True):
+    def compare(
+        self, name, pytorch_result, paddle_result, check_value=True, check_dtype=True
+    ):
         return pytorch_result == paddle_result or isinstance(
             paddle_result, paddle.fluid.libpaddle.CUDAEvent
         )
 
 
-obj = cudaEventAPI("torch.cuda.event")
+obj = cudaEventAPI("torch.cuda.Event")
 
 
 def test_case_1():

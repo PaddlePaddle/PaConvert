@@ -18,7 +18,9 @@ from apibase import APIBase
 
 
 class optimOptimizerStateDictAPIBase(APIBase):
-    def compare(self, name, pytorch_result, paddle_result, check_value=True):
+    def compare(
+        self, name, pytorch_result, paddle_result, check_value=True, check_dtype=True
+    ):
         return pytorch_result["state"] == paddle_result
 
 
