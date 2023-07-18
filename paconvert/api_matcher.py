@@ -3073,23 +3073,15 @@ class SpecialXLog1pYMatcher(BaseMatcher):
 
 class StftMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "hop_length" not in kwargs:
-            kwargs["hop_length"] = None
-        if "win_length" not in kwargs:
-            kwargs["win_length"] = None
-        if "window" not in kwargs:
-            kwargs["window"] = None
-        if "center" not in kwargs:
-            kwargs["center"] = True
-        if "pad_mode" not in kwargs:
-            kwargs["pad_mode"] = "'reflect'"
-        if "normalized" not in kwargs:
-            kwargs["normalized"] = False
-        if "onesided" not in kwargs:
-            kwargs["onesided"] = None
 
-        if "return_complex" in kwargs:
-            kwargs.pop("return_complex")
+        return_complex_temp = (
+            kwargs.pop("return_complex") if "return_complex" in kwargs else None
+        )
+
+        if return_complex_temp:
+            kwargs["onesided"] = (
+                "'True'" if return_complex_temp != "(False)" else "'True'"
+            )
 
         if "out" in kwargs and kwargs["out"] is not None:
             API_TEMPLATE = textwrap.dedent(
