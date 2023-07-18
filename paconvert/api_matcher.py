@@ -3074,7 +3074,7 @@ class SpecialXLog1pYMatcher(BaseMatcher):
 class StftMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "n_fft" in kwargs:
-            temp = kwargs["n_fft"]
+            temp = int(kwargs["n_fft"])
             hop_length = temp / 4
             win_length = temp
 
@@ -3087,7 +3087,7 @@ class StftMatcher(BaseMatcher):
 
         if return_complex_temp:
             kwargs["onesided"] = (
-                "'True'" if return_complex_temp != "(False)" else "'True'"
+                "'True'" if return_complex_temp != "'False'" else "'True'"
             )
 
         if "out" in kwargs and kwargs["out"] is not None:
