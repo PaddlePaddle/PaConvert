@@ -540,7 +540,10 @@
   },
   "torch.Tensor.copysign": {},
   "torch.Tensor.copysign_": {},
-  "torch.Tensor.corrcoef": {},
+  "torch.Tensor.corrcoef": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.corrcoef"
+  },
   "torch.Tensor.cos": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.cos"
@@ -3532,6 +3535,19 @@
       "dtype",
       "out"
     ]
+  },
+  "torch.cumulative_trapezoid": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.cumulative_trapezoid",
+    "args_list": [
+      "y",
+      "x",
+      "dx",
+      "dim"
+    ],
+    "kwargs_change": {
+      "dim": "axis"
+    }
   },
   "torch.deg2rad": {
     "Matcher": "GenericMatcher",
@@ -9104,6 +9120,28 @@
   "torch.special.i0": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.i0",
+    "args_list": [
+      "input",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+  "torch.special.i1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.i1",
+    "args_list": [
+      "input",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+  "torch.special.i1e": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.i1e",
     "args_list": [
       "input",
       "out"
