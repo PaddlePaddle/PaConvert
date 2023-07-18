@@ -27,7 +27,7 @@ class cudaEventAPI(APIBase):
         )
 
 
-obj = cudaEventAPI("torch.cuda.event")
+obj = cudaEventAPI("torch.cuda.Event")
 
 
 def test_case_1():
