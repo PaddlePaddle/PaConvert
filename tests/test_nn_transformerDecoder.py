@@ -26,17 +26,12 @@ def test_case_1():
         import torch.nn as nn
         decoder_layer = nn.TransformerDecoderLayer(d_model=512, nhead=8)
         transformer_decoder = nn.TransformerDecoder(decoder_layer, num_layers=6)
-        memory = torch.rand(10, 32, 512)
+        memory = torch.rand(20, 32, 512)
         tgt = torch.rand(20, 32, 512)
         result = transformer_decoder(tgt, memory)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="doesn't support torch.nn.TransformerDecoderLayer api",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
@@ -46,17 +41,12 @@ def test_case_2():
         import torch.nn as nn
         decoder_layer = nn.TransformerDecoderLayer(d_model=512, nhead=8)
         transformer_decoder = nn.TransformerDecoder(decoder_layer, 6)
-        memory = torch.rand(10, 32, 512)
+        memory = torch.rand(20, 32, 512)
         tgt = torch.rand(20, 32, 512)
         result = transformer_decoder(tgt, memory)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="doesn't support torch.nn.TransformerDecoderLayer api",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
@@ -66,14 +56,9 @@ def test_case_3():
         import torch.nn as nn
         decoder_layer = nn.TransformerDecoderLayer(d_model=512, nhead=8)
         transformer_decoder = nn.TransformerDecoder(decoder_layer=decoder_layer, num_layers=6)
-        memory = torch.rand(10, 32, 512)
+        memory = torch.rand(20, 32, 512)
         tgt = torch.rand(20, 32, 512)
         result = transformer_decoder(tgt, memory)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="doesn't support torch.nn.TransformerDecoderLayer api",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
