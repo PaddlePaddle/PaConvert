@@ -2856,6 +2856,9 @@ class SelectMatcher(BaseMatcher):
         if "input" not in kwargs:
             kwargs["input"] = self.paddleClass
 
+        if len(kwargs) != 3:
+            return "NonTorchClass"
+
         API_TEMPLATE = textwrap.dedent(
             """
             paddle.index_select({}, index=paddle.to_tensor([{}]), axis={}).squeeze({})
