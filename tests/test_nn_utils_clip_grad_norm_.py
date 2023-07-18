@@ -82,6 +82,7 @@ def test_case_5():
         x.grad = torch.tensor([[[[-0.6, 12.343], [-10.4, -0.5669]]]])
 
         result = nn.utils.clip_grad_norm_(x, max_norm=3.0, norm_type=2.0, error_if_nonfinite=True)
+        output=x.grad
         """
     )
     obj.run(pytorch_code, ["result", "output"])
