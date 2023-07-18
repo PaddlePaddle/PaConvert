@@ -3074,7 +3074,7 @@ class SpecialXLog1pYMatcher(BaseMatcher):
 class StftMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "n_fft" in kwargs:
-            temp = int(float(kwargs["n_fft"]))
+            temp = int(float(kwargs["n_fft"].strip()))
             hop_length = temp / 4
             win_length = temp
 
