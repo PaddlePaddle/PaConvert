@@ -2097,11 +2097,12 @@
     "paddle_api": "paddle.Tensor.std",
     "args_list": [
       "dim",
-      "unbiased",
+      "correction",
       "keepdim"
     ],
     "kwargs_change": {
-      "dim": "axis"
+      "dim": "axis",
+      "correction": "unbiased"
     }
   },
   "torch.Tensor.stft": {},
@@ -9139,13 +9140,14 @@
     "args_list": [
       "input",
       "dim",
-      "unbiased",
+      "correction",
       "keepdim",
       "out"
     ],
     "kwargs_change": {
       "input": "x",
-      "dim": "axis"
+      "dim": "axis",
+      "correction": "unbiased"
     }
   },
   "torch.std_mean": {
