@@ -3669,9 +3669,7 @@ class SvdMatcher(BaseMatcher):
             kwargs["full_matrices"] = "not " + some_v.strip("()")
 
         if out_v:
-            new_kwargs = {}
-            new_kwargs["x"] = kwargs.pop("input")
-            new_kwargs.update(kwargs)
+            kwargs["x"] = kwargs.pop("input")
 
             API_TEMPLATE = textwrap.dedent(
                 """
@@ -3681,7 +3679,7 @@ class SvdMatcher(BaseMatcher):
             )
             code = API_TEMPLATE.format(
                 self.get_paddle_api(),
-                self.kwargs_to_str(new_kwargs),
+                self.kwargs_to_str(kwargs),
                 out_v,
                 out_v,
                 out_v,
