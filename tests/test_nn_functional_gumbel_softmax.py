@@ -77,4 +77,10 @@ def test_case_5():
         result = torch.nn.functional.gumbel_softmax(x, tau=2, hard=True, dim=0, eps=0.0001)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False, unsupport=True)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle does not enhance the eps parameter",
+    )
