@@ -8,7 +8,6 @@
     "args_list": [
       "device"
     ]
-    
   },
   "torch.IntTensor": {
     "Matcher": "TensorMatcher",
