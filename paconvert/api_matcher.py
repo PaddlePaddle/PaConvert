@@ -3074,9 +3074,13 @@ class SpecialXLog1pYMatcher(BaseMatcher):
 class StftMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "n_fft" in kwargs:
-            hop_length = kwargs["n_fft"] / 4
-            win_length = kwargs["n_fft"]
-            window = kwargs["window"]
+            temp = kwargs["n_fft"]
+            hop_length = temp / 4
+            win_length = temp
+
+        if "window" not in kwargs:
+            kwargs["window"] = None
+
         return_complex_temp = (
             kwargs.pop("return_complex") if "return_complex" in kwargs else None
         )
@@ -3097,7 +3101,7 @@ class StftMatcher(BaseMatcher):
                 kwargs["n_fft"],
                 hop_length,
                 win_length,
-                window,
+                kwargs["window"],
                 kwargs["center"],
                 kwargs["pad_mode"],
                 kwargs["normalized"],
@@ -3116,7 +3120,7 @@ class StftMatcher(BaseMatcher):
                 kwargs["n_fft"],
                 hop_length,
                 win_length,
-                window,
+                kwargs["window"],
                 kwargs["center"],
                 kwargs["pad_mode"],
                 kwargs["normalized"],
