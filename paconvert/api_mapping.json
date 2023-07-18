@@ -8336,10 +8336,7 @@
   },
   "torch.optim.Optimizer.step": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.optimizer.Optimizer.step",
-    "unsupport_args": [
-      "closure"
-    ]
+    "paddle_api": "paddle.optimizer.Optimizer.step"
   },
   "torch.optim.Optimizer.zero_grad": {},
   "torch.outer": {
