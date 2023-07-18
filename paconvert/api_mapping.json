@@ -1963,9 +1963,39 @@
     "paddle_api": "paddle.Tensor.rsqrt_"
   },
   "torch.Tensor.scatter": {},
-  "torch.Tensor.scatter_": {},
+  "torch.Tensor.scatter_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.put_along_axis_",
+    "args_list": [
+      "dim",
+      "index",
+      "src",
+      "reduce"
+    ],
+    "kwargs_change": {
+      "dim": "axis",
+      "index": "indices",
+      "src": "values"
+    }
+  },
   "torch.Tensor.scatter_add": {},
-  "torch.Tensor.scatter_add_": {},
+  "torch.Tensor.scatter_add_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.put_along_axis_",
+    "args_list": [
+      "dim",
+      "index",
+      "src"
+    ],
+    "kwargs_change": {
+      "dim": "axis",
+      "index": "indices",
+      "src": "values"
+    },
+    "paddle_default_kwargs": {
+      "reduce": "'add'"
+    }
+  },
   "torch.Tensor.scatter_reduce": {},
   "torch.Tensor.scatter_reduce_": {},
   "torch.Tensor.select": {
@@ -8763,6 +8793,25 @@
     },
     "paddle_default_kwargs": {
       "dtype": "paddle.float32"
+    }
+  },
+  "torch.scatter_add": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.put_along_axis",
+    "args_list": [
+      "input",
+      "dim",
+      "index",
+      "src"
+    ],
+    "kwargs_change": {
+      "input": "arr",
+      "dim": "axis",
+      "index": "indices",
+      "src": "values"
+    },
+    "paddle_default_kwargs": {
+      "reduce": "'add'"
     }
   },
   "torch.searchsorted": {
