@@ -3073,9 +3073,10 @@ class SpecialXLog1pYMatcher(BaseMatcher):
 
 class StftMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "window" not in kwargs:
-            kwargs["window"] = 1
-
+        if "n_fft" in kwargs:
+            hop_length = kwargs["n_fft"] / 4
+            win_length = kwargs["n_fft"]
+            window = kwargs["window"]
         return_complex_temp = (
             kwargs.pop("return_complex") if "return_complex" in kwargs else None
         )
@@ -3091,13 +3092,12 @@ class StftMatcher(BaseMatcher):
                 paddle.assign((paddle.signal.stft(x={}, n_fft={}, hop_length={}, win_length={}, window={}, center={}, pad_mode={}, normalized={}, onesided={})), output={})
                 """
             )
-            n_fft = get_unique_name("n_fft")
             code = API_TEMPLATE.format(
                 kwargs["input"],
                 kwargs["n_fft"],
-                n_fft / 4,
-                n_fft,
-                kwargs["window"],
+                hop_length,
+                win_length,
+                window,
                 kwargs["center"],
                 kwargs["pad_mode"],
                 kwargs["normalized"],
@@ -3114,9 +3114,9 @@ class StftMatcher(BaseMatcher):
             code = API_TEMPLATE.format(
                 kwargs["input"],
                 kwargs["n_fft"],
-                n_fft / 4,
-                n_fft,
-                kwargs["window"],
+                hop_length,
+                win_length,
+                window,
                 kwargs["center"],
                 kwargs["pad_mode"],
                 kwargs["normalized"],
