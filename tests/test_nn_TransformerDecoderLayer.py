@@ -47,7 +47,7 @@ def test_case_2():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -58,10 +58,15 @@ def _test_case_3():
         result = model(tgt,x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle unsupport batch_first args",
+    )
 
 
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -72,4 +77,9 @@ def _test_case_4():
         result = model(tgt,x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle not support astype args",
+    )

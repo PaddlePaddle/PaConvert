@@ -6994,7 +6994,7 @@
     ]
   },
   "torch.nn.TransformerDecoderLayer": {
-    "Matcher": "TransformerDecoderLayerMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.TransformerDecoderLayer",
     "args_list": [
       "d_model",
@@ -7013,8 +7013,12 @@
     },
     "unsupport_args": [
       "layer_norm_eps",
-      "batch_first"
-    ]
+      "batch_first",
+      "dtype"
+    ],
+    "paddle_default_kwargs": {
+      "dim_feedforward": 2048
+    }
   },
   "torch.nn.TripletMarginLoss": {
     "Matcher": "SizeAverageMatcher",
