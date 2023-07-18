@@ -542,12 +542,7 @@
   "torch.Tensor.copysign_": {},
   "torch.Tensor.corrcoef": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.corrcoef",
-    "args_list": [],
-    "kwargs_change": {},
-    "paddle_default_kwargs": {
-      "rowvar": true
-    }
+    "paddle_api": "paddle.Tensor.corrcoef"
   },
   "torch.Tensor.cos": {
     "Matcher": "GenericMatcher",
