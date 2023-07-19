@@ -86,3 +86,21 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result", "output"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.tensor([[[[-0.4106,  0.1677], [-0.6648, -0.5669]]]])
+        linear = nn.Linear(in_features=2, out_features=5)
+        output = linear(x)
+        loss = torch.mean(output)
+        loss.backward()
+
+        result = nn.utils.clip_grad_norm_(linear.parameters(), max_norm=3.0, norm_type=2.0, error_if_nonfinite=True)
+        output=list(linear.parameters())[0].grad
+        """
+    )
+    obj.run(pytorch_code, ["result", "output"])
