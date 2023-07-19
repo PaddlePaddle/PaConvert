@@ -4248,7 +4248,7 @@
   },
   "torch.from_dlpack": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.to_tensor",
+    "paddle_api": "paddle.utils.dlpack.from_dlpack",
     "args_list": [
       "ext_tensor"
     ],
