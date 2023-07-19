@@ -535,7 +535,7 @@ class TensorMatcher(BaseMatcher):
                 elif ("torch.BoolTensor" == self.torch_api) or (
                     "torch.cuda.BoolTensor" == self.torch_api
                 ):
-                    code = "paddle.to_tensor(data={}).astype('bool')".format(data)
+                    code = "paddle.to_tensor(data={}, dtype='bool')".format(data)
 
                 else:
                     if not isinstance(args[0], ast.Name):

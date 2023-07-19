@@ -51,27 +51,7 @@ def test_case_3():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
-def _test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        def fun(x: torch.BoolTensor):
-            return x * 2
-
-        a = torch.BoolTensor(3, 4)
-        result = fun(a)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="paddle does not support BoolTensor types and int multiplication",
-    )
-
-
-def test_case_5():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -81,7 +61,7 @@ def test_case_5():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_6():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -91,7 +71,7 @@ def test_case_6():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_7():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
