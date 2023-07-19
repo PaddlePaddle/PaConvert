@@ -550,7 +550,7 @@ class TensorMatcher(BaseMatcher):
             "torch.IntTensor" == self.torch_api
             or "torch.cuda.IntTensor" == self.torch_api
         ):
-            code = "paddle.zeros(shape={}, dtype='int32')".format(shape)
+            code = "paddle.empty(shape={}, dtype='int32')".format(shape)
         elif (
             "torch.LongTensor" == self.torch_api
             or "torch.cuda.LongTensor" == self.torch_api
