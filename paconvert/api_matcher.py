@@ -3080,9 +3080,11 @@ class StftMatcher(BaseMatcher):
         if "window" not in kwargs:
             kwargs["window"] = None
         if "center" not in kwargs:
-            kwargs["center"] = None
+            kwargs["center"] = True
         if "pad_mode" not in kwargs:
-            kwargs["pad_mode"] = None
+            kwargs["pad_mode"] = "'reflect'"
+        if "normalized" not in kwargs:
+            kwargs["normalized"] = False
 
         return_complex_temp = (
             kwargs.pop("return_complex") if "return_complex" in kwargs else None

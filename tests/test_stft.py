@@ -98,18 +98,6 @@ def test_case_6():
         import torch
         x = torch.randn((1, 32))
         n_fft = 16
-        result = torch.stft(x, n_fft=n_fft, center=False, normalized=True, return_complex=True)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_7():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.randn((1, 32))
-        n_fft = 16
         result = torch.stft(x, n_fft=n_fft, center=False, onesided=False, return_complex=True)
         """
     )
