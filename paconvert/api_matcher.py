@@ -3079,6 +3079,10 @@ class StftMatcher(BaseMatcher):
             kwargs["win_length"] = None
         if "window" not in kwargs:
             kwargs["window"] = None
+        if "center" not in kwargs:
+            kwargs["center"] = None
+        if "pad_mode" not in kwargs:
+            kwargs["pad_mode"] = None
 
         return_complex_temp = (
             kwargs.pop("return_complex") if "return_complex" in kwargs else None
