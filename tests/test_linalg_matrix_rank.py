@@ -100,7 +100,6 @@ def test_case_3():
     obj.run(
         pytorch_code,
         ["result"],
-        check_dtype=False,
         unsupport=True,
         reason="paddle does not support `atol` and `rtol`",
     )

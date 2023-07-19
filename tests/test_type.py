@@ -49,23 +49,12 @@ def test_case_3():
     obj.run(pytorch_code, ["result"])
 
 
-# numpy not supports bfloat, but paddle and pytorch support and they are equal
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1, 0, 3], dtype=torch.bfloat16)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-# torch has no attribute uint16
-def _test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.tensor([1, 0, 3], dtype=torch.uint16)
+        x = torch.tensor([1, 0, 3], dtype=torch.bfloat16)
+        result = x.to(torch.float32)
         """
     )
     obj.run(pytorch_code, ["result"])

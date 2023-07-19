@@ -89,7 +89,6 @@ class APIBase(object):
                     check_value,
                     check_dtype,
                 )
-
         if expect_paddle_code:
             convert_paddle_code = self.convert(pytorch_code)
             assert (

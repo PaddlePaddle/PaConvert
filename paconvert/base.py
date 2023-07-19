@@ -51,6 +51,10 @@ TORCH_PACKAGE_LIST = [
     "sentencepiece",
     "NLTK",
     "scikit-learn",
+    "fairscale",
+    "transformers",
+    "datasets",
+    "torch_xla",
 ]
 
 
