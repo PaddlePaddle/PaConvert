@@ -33,8 +33,11 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, 2, 3], [3, 4, 6]])
-        n_fft = 16
+        x = torch.tensor([[ 1.3398,  0.2663, -0.2686,  0.2450],
+                            [-0.7401, -0.8805, -0.3402, -1.1936],
+                            [ 0.4907, -1.3948, -1.0691, -0.3132],
+                            [-1.6092,  0.5419, -0.2993,  0.3195]])
+        n_fft = 6
         result = torch.stft(x, n_fft=n_fft, return_complex=True)
         """
     )
@@ -45,8 +48,11 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, 2, 3], [3, 4, 6]])
-        n_fft = 16
+        torch.tensor([[ 1.3398,  0.2663, -0.2686,  0.2450],
+                            [-0.7401, -0.8805, -0.3402, -1.1936],
+                            [ 0.4907, -1.3948, -1.0691, -0.3132],
+                            [-1.6092,  0.5419, -0.2993,  0.3195]])
+        n_fft = 6
         hop_length = 4
         result = torch.stft(x, n_fft=n_fft, hop_length=hop_length, return_complex=True)
         """
@@ -58,9 +64,12 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, 2, 3], [3, 4, 6]])
-        n_fft = 16
-        win_length = 16
+        torch.tensor([[ 1.3398,  0.2663, -0.2686,  0.2450],
+                            [-0.7401, -0.8805, -0.3402, -1.1936],
+                            [ 0.4907, -1.3948, -1.0691, -0.3132],
+                            [-1.6092,  0.5419, -0.2993,  0.3195]])
+        n_fft = 6
+        win_length = 4
         result = torch.stft(x, n_fft=n_fft, win_length=win_length, return_complex=True)
         """
     )
@@ -71,8 +80,11 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, 2, 3], [3, 4, 6]])
-        n_fft = 16
+        torch.tensor([[ 1.3398,  0.2663, -0.2686,  0.2450],
+                            [-0.7401, -0.8805, -0.3402, -1.1936],
+                            [ 0.4907, -1.3948, -1.0691, -0.3132],
+                            [-1.6092,  0.5419, -0.2993,  0.3195]])
+        n_fft = 6
         result = torch.stft(x, n_fft=n_fft, center=False, return_complex=True)
         """
     )
@@ -83,8 +95,11 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, 2, 3], [3, 4, 6]])
-        n_fft = 16
+        torch.tensor([[ 1.3398,  0.2663, -0.2686,  0.2450],
+                            [-0.7401, -0.8805, -0.3402, -1.1936],
+                            [ 0.4907, -1.3948, -1.0691, -0.3132],
+                            [-1.6092,  0.5419, -0.2993,  0.3195]])
+        n_fft = 6
         result = torch.stft(x, n_fft=n_fft, center=False, onesided=False, return_complex=True)
         """
     )
