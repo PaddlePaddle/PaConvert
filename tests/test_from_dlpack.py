@@ -23,9 +23,10 @@ obj = APIBase("torch.from_dlpack")
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
-        import torch
+        import torch.utils.dlpack
         a = torch.arange(4)
-        result = torch.from_dlpack(a)
+        capsule = torch.utils.dlpack.to_dlpack(a)
+        result = torch.from_dlpack(capsule)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +35,10 @@ def test_case_1():
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
-        import torch
-        result = torch.from_dlpack(torch.tensor([0.2, 0.3, 0.5, 0.9]))
+        import torch.utils.dlpack
+        a = torch.tensor([0.2, 0.3, 0.5, 0.9])
+        capsule = torch.utils.dlpack.to_dlpack(a)
+        result = torch.from_dlpack(capsule)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +47,10 @@ def test_case_2():
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
-        import torch
-        result = torch.from_dlpack(torch.tensor([[0.2, 0.3, 0.5, 0.9], [0.1, 0.2, 0.6, 0.7]]))
+        import torch.utils.dlpack
+        a = torch.tensor([[0.2, 0.3, 0.5, 0.9], [0.1, 0.2, 0.6, 0.7]]))
+        capsule = torch.utils.dlpack.to_dlpack(a)
+        result = torch.from_dlpack(capsule)
         """
     )
     obj.run(pytorch_code, ["result"])
