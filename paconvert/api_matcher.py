@@ -3073,13 +3073,10 @@ class SpecialXLog1pYMatcher(BaseMatcher):
 
 class StftMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "n_fft" in kwargs:
-            temp = kwargs["n_fft"]
-            temp.replace("(", "").replace(")", "")
-            temp = int(float(temp))
-            hop_length = temp / 4
-            win_length = temp
-
+        if "hop_length" not in kwargs:
+            kwargs["hop_length"] = None
+        if "win_length" not in kwargs:
+            kwargs["win_length"] = None
         if "window" not in kwargs:
             kwargs["window"] = None
 
@@ -3101,8 +3098,8 @@ class StftMatcher(BaseMatcher):
             code = API_TEMPLATE.format(
                 kwargs["input"],
                 kwargs["n_fft"],
-                hop_length,
-                win_length,
+                kwargs["hop_length"],
+                kwargs["win_length"],
                 kwargs["window"],
                 kwargs["center"],
                 kwargs["pad_mode"],
@@ -3120,8 +3117,8 @@ class StftMatcher(BaseMatcher):
             code = API_TEMPLATE.format(
                 kwargs["input"],
                 kwargs["n_fft"],
-                hop_length,
-                win_length,
+                kwargs["hop_length"],
+                kwargs["win_length"],
                 kwargs["window"],
                 kwargs["center"],
                 kwargs["pad_mode"],
