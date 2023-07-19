@@ -540,7 +540,10 @@
   },
   "torch.Tensor.copysign": {},
   "torch.Tensor.copysign_": {},
-  "torch.Tensor.corrcoef": {},
+  "torch.Tensor.corrcoef": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.corrcoef"
+  },
   "torch.Tensor.cos": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.cos"
@@ -1963,9 +1966,39 @@
     "paddle_api": "paddle.Tensor.rsqrt_"
   },
   "torch.Tensor.scatter": {},
-  "torch.Tensor.scatter_": {},
+  "torch.Tensor.scatter_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.put_along_axis_",
+    "args_list": [
+      "dim",
+      "index",
+      "src",
+      "reduce"
+    ],
+    "kwargs_change": {
+      "dim": "axis",
+      "index": "indices",
+      "src": "values"
+    }
+  },
   "torch.Tensor.scatter_add": {},
-  "torch.Tensor.scatter_add_": {},
+  "torch.Tensor.scatter_add_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.put_along_axis_",
+    "args_list": [
+      "dim",
+      "index",
+      "src"
+    ],
+    "kwargs_change": {
+      "dim": "axis",
+      "index": "indices",
+      "src": "values"
+    },
+    "paddle_default_kwargs": {
+      "reduce": "'add'"
+    }
+  },
   "torch.Tensor.scatter_reduce": {},
   "torch.Tensor.scatter_reduce_": {},
   "torch.Tensor.select": {
@@ -3604,6 +3637,19 @@
       "out"
     ]
   },
+  "torch.cumulative_trapezoid": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.cumulative_trapezoid",
+    "args_list": [
+      "y",
+      "x",
+      "dx",
+      "dim"
+    ],
+    "kwargs_change": {
+      "dim": "axis"
+    }
+  },
   "torch.deg2rad": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.deg2rad",
@@ -4017,6 +4063,36 @@
       "dim": "axis"
     }
   },
+  "torch.fft.hfft2": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.fft.hfft2",
+    "args_list": [
+      "input",
+      "s",
+      "dim",
+      "norm",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axes"
+    }
+  },
+  "torch.fft.hfftn": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.fft.hfftn",
+    "args_list": [
+      "input",
+      "s",
+      "dim",
+      "norm",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axes"
+    }
+  },
   "torch.fft.ifft": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.fft.ifft",
@@ -4087,6 +4163,36 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axis"
+    }
+  },
+  "torch.fft.ihfft2": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.fft.ihfft2",
+    "args_list": [
+      "input",
+      "s",
+      "dim",
+      "norm",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axes"
+    }
+  },
+  "torch.fft.ihfftn": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.fft.ihfftn",
+    "args_list": [
+      "input",
+      "s",
+      "dim",
+      "norm",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axes"
     }
   },
   "torch.fft.irfft": {
@@ -8866,6 +8972,25 @@
       "dtype": "paddle.float32"
     }
   },
+  "torch.scatter_add": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.put_along_axis",
+    "args_list": [
+      "input",
+      "dim",
+      "index",
+      "src"
+    ],
+    "kwargs_change": {
+      "input": "arr",
+      "dim": "axis",
+      "index": "indices",
+      "src": "values"
+    },
+    "paddle_default_kwargs": {
+      "reduce": "'add'"
+    }
+  },
   "torch.searchsorted": {
     "Matcher": "SearchsortedMatcher",
     "args_list": [
@@ -9096,6 +9221,28 @@
   "torch.special.i0": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.i0",
+    "args_list": [
+      "input",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+  "torch.special.i1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.i1",
+    "args_list": [
+      "input",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+  "torch.special.i1e": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.i1e",
     "args_list": [
       "input",
       "out"
