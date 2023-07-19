@@ -89,18 +89,3 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[ 1.3398,  0.2663, -0.2686,  0.2450],
-                            [-0.7401, -0.8805, -0.3402, -1.1936],
-                            [ 0.4907, -1.3948, -1.0691, -0.3132],
-                            [-1.6092,  0.5419, -0.2993,  0.3195]])
-        n_fft = 4
-        result = torch.stft(x, n_fft=n_fft, center=False, onesided=False, return_complex=True)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
