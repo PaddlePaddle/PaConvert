@@ -48,7 +48,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch.utils.dlpack
-        a = torch.tensor([[0.2, 0.3, 0.5, 0.9], [0.1, 0.2, 0.6, 0.7]]))
+        a = torch.tensor(([[0.2, 0.3, 0.5, 0.9], [0.1, 0.2, 0.6, 0.7]]))
         capsule = torch.utils.dlpack.to_dlpack(a)
         result = torch.from_dlpack(capsule)
         """
