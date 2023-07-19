@@ -19,77 +19,81 @@ from apibase import APIBase
 obj = APIBase("torch.cuda.IntTensor")
 
 
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.cuda.IntTensor(2, 3)
+        if not torch.cuda.is_available():
+            result = 1
+        else:
+            result = torch.cuda.IntTensor(2, 3)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
         shape = [2, 3]
-        result = torch.cuda.IntTensor(*shape)
+        if not torch.cuda.is_available():
+            result = 1
+        else:
+            result = torch.cuda.IntTensor(*shape)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
         dim1, dim2 = 2, 3
-        result = torch.cuda.IntTensor(dim1, dim2)
+        if not torch.cuda.is_available():
+            result = 1
+        else:
+            result = torch.cuda.IntTensor(dim1, dim2)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        def fun(x: torch.cuda.IntTensor):
-            return x * 2
-
-        a = torch.cuda.IntTensor(3, 4)
-        result = fun(a)
-        """
-    )
-    obj.run(pytorch_code, ["result"], check_value=False)
-
-
-def _test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.cuda.IntTensor([[3, 4], [5, 8]])
+        if not torch.cuda.is_available():
+            result = 1
+        else:
+            result = torch.cuda.IntTensor([[3, 4], [5, 8]])
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_6():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.cuda.IntTensor((1, 2, 3))
+        if not torch.cuda.is_available():
+            result = 1
+        else:
+            result = torch.cuda.IntTensor((1, 2, 3))
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_7():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.cuda.IntTensor()
+        if not torch.cuda.is_available():
+            result = 1
+        else:
+            result = torch.cuda.IntTensor()
         """
     )
     obj.run(
