@@ -3679,7 +3679,17 @@
       "store",
       "group_name",
       "pg_options"
-    ]
+    ],
+    "kwargs_change": {
+      "backend": "",
+      "init_method": "",
+      "timeout": "",
+      "world_size": "",
+      "rank": "",
+      "store": "",
+      "group_name": "",
+      "pg_options": ""
+    }
   },
   "torch.distributed.new_group": {
     "Matcher": "GenericMatcher",
@@ -7009,12 +7019,12 @@
       "dtype"
     ],
     "kwargs_change": {
-      "norm_first": "normalize_before"
+      "norm_first": "normalize_before",
+      "dtype": ""
     },
     "unsupport_args": [
       "layer_norm_eps",
-      "batch_first",
-      "dtype"
+      "batch_first"
     ],
     "paddle_default_kwargs": {
       "dim_feedforward": 2048

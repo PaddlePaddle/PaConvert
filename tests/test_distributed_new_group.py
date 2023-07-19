@@ -23,7 +23,13 @@ def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.distributed.new_group(ranks=[0,1,2,3])
+        torch.distributed.init_process_group(
+            "nccl",
+            init_method="tcp://127.0.0.1:23456",
+            rank=0,
+            world_size=1
+        )
+        torch.distributed.new_group(list(range(1)))
         result=True
         """
     )
@@ -34,18 +40,13 @@ def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.distributed.new_group(ranks=[0,1,2,3],timeout=1200)
-        result=True
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def _test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        torch.distributed.new_group(ranks=[0,1,2,3],pg_options=None)
+        torch.distributed.init_process_group(
+            "nccl",
+            init_method="tcp://127.0.0.1:23456",
+            rank=0,
+            world_size=1
+        )
+        torch.distributed.new_group(list(range(1)),pg_options=None)
         result=True
         """
     )

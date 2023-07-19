@@ -23,7 +23,7 @@ def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        data = torch.tensor([[1, 2, 3, 4],[5,6,7,8]])
+        data = torch.tensor([[1, 2, 3, 4],[5,6,7,8]]).cuda()
         torch.distributed.broadcast(data, src=0)
         result=True
         """

@@ -54,16 +54,11 @@ def test_case_3():
         import torch.nn as nn
         x = torch.ones(10, 32,512)
         tgt = torch.ones(10, 32, 512)
-        model = nn.TransformerDecoderLayer(d_model=512, nhead=8,batch_first=True)
+        model = nn.TransformerDecoderLayer(d_model=512, nhead=8,dtype=torch.float32)
         result = model(tgt,x)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle unsupport batch_first args",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_4():
@@ -73,7 +68,7 @@ def test_case_4():
         import torch.nn as nn
         x = torch.ones(10, 32,512)
         tgt = torch.ones(10, 32, 512)
-        model = nn.TransformerDecoderLayer(d_model=512, nhead=8,dtype=torch.float32)
+        model = nn.TransformerDecoderLayer(d_model=512, nhead=8,batch_first=True)
         result = model(tgt,x)
         """
     )
@@ -81,5 +76,5 @@ def test_case_4():
         pytorch_code,
         ["result"],
         unsupport=True,
-        reason="paddle not support astype args",
+        reason="paddle unsupport batch_first args",
     )
