@@ -68,3 +68,41 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        def func(x):
+            return torch.sum(x)
+
+        x = torch.tensor([1.0, 2.0])
+        h = torch.autograd.functional.hessian(func, x, create_graph=True)
+        result = h[:]
+        result.requires_grad = False
+        result = torch.flatten(result)
+        """
+    )
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="paddle unsupport create_graph"
+    )
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        def func(x):
+            return torch.sum(x)
+
+        x = torch.tensor([1.0, 2.0])
+        h = torch.autograd.functional.hessian(func, x, strict=False)
+        result = h[:]
+        result.requires_grad = False
+        result = torch.flatten(result)
+        """
+    )
+    obj.run(pytorch_code, ["result"], unsupport=True, reason="paddle unsupport strict")
