@@ -1,4 +1,12 @@
 {
+  "torch.BoolTensor": {
+    "Matcher": "TensorMatcher",
+    "paddle_api": "paddle.Tensor"
+  },
+  "torch.ByteTensor": {
+    "Matcher": "TensorMatcher",
+    "paddle_api": "paddle.Tensor"
+  },
   "torch.FloatTensor": {
     "Matcher": "TensorMatcher",
     "paddle_api": "paddle.Tensor"
@@ -3340,6 +3348,14 @@
       "dim": "axis"
     }
   },
+  "torch.cuda.BoolTensor": {
+    "Matcher": "TensorMatcher",
+    "paddle_api": "paddle.Tensor"
+  },
+  "torch.cuda.ByteTensor": {
+    "Matcher": "TensorMatcher",
+    "paddle_api": "paddle.Tensor"
+  },
   "torch.cuda.Event": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.Event",
@@ -3348,6 +3364,18 @@
       "blocking",
       "interprocess"
     ]
+  },
+  "torch.cuda.FloatTensor": {
+    "Matcher": "TensorMatcher",
+    "paddle_api": "paddle.Tensor"
+  },
+  "torch.cuda.IntTensor": {
+    "Matcher": "TensorMatcher",
+    "paddle_api": "paddle.Tensor"
+  },
+  "torch.cuda.LongTensor": {
+    "Matcher": "TensorMatcher",
+    "paddle_api": "paddle.Tensor"
   },
   "torch.cuda.Stream": {
     "Matcher": "CudaStreamMatcher",
@@ -9258,6 +9286,18 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axis"
+    }
+  },
+  "torch.special.logit": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.logit",
+    "args_list": [
+      "input",
+      "eps",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
     }
   },
   "torch.special.logsumexp": {
