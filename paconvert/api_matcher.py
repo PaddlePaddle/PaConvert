@@ -3091,9 +3091,7 @@ class StftMatcher(BaseMatcher):
         )
 
         if return_complex_temp:
-            kwargs["onesided"] = (
-                "'True'" if return_complex_temp != "(False)" else "'True'"
-            )
+            kwargs["onesided"] = "True" if return_complex_temp != "(False)" else "True"
 
         if "out" in kwargs and kwargs["out"] is not None:
             API_TEMPLATE = textwrap.dedent(
