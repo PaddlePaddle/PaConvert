@@ -3075,8 +3075,8 @@ class StftMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "n_fft" in kwargs:
             temp = kwargs["n_fft"]
-            print("temp:", temp)
-            temp = temp.replace("(", "").replace(")", "")
+            temp.replace("(", "").replace(")", "")
+            temp = int(float(temp))
             hop_length = temp / 4
             win_length = temp
 
