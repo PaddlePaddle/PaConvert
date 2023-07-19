@@ -3086,8 +3086,9 @@ class StftMatcher(BaseMatcher):
         if "normalized" not in kwargs:
             kwargs["normalized"] = "False"
 
-        if "return_complex" in kwargs:
-            return_complex_temp = kwargs.pop("return_complex")
+        return_complex_temp = (
+            kwargs.pop("return_complex") if "return_complex" in kwargs else None
+        )
 
         if return_complex_temp:
             kwargs["onesided"] = "True" if return_complex_temp != "(False)" else "False"
