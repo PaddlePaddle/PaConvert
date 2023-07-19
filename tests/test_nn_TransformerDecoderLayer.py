@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.TransformerDecoder")
+obj = APIBase("torch.nn.TransformerDecoderLayer")
 
 
 def test_case_1():
@@ -24,11 +24,10 @@ def test_case_1():
         """
         import torch
         import torch.nn as nn
-        decoder_layer = nn.TransformerDecoderLayer(d_model=512, nhead=8)
-        transformer_decoder = nn.TransformerDecoder(decoder_layer, num_layers=6)
-        memory = torch.rand(20, 32, 512)
-        tgt = torch.rand(20, 32, 512)
-        result = transformer_decoder(tgt, memory)
+        x = torch.ones(10, 32,512)
+        tgt = torch.ones(10, 32, 512)
+        model = nn.TransformerDecoderLayer(d_model=512, nhead=8)
+        result = model(tgt,x)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -39,11 +38,10 @@ def test_case_2():
         """
         import torch
         import torch.nn as nn
-        decoder_layer = nn.TransformerDecoderLayer(d_model=512, nhead=8)
-        transformer_decoder = nn.TransformerDecoder(decoder_layer, 6)
-        memory = torch.rand(20, 32, 512)
-        tgt = torch.rand(20, 32, 512)
-        result = transformer_decoder(tgt, memory)
+        x = torch.ones(10, 32,512)
+        tgt = torch.ones(10, 32, 512)
+        model = nn.TransformerDecoderLayer(d_model=512, nhead=8,norm_first=True)
+        result = model(tgt,x)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -54,11 +52,29 @@ def test_case_3():
         """
         import torch
         import torch.nn as nn
-        decoder_layer = nn.TransformerDecoderLayer(d_model=512, nhead=8)
-        transformer_decoder = nn.TransformerDecoder(decoder_layer=decoder_layer, num_layers=6)
-        memory = torch.rand(20, 32, 512)
-        tgt = torch.rand(20, 32, 512)
-        result = transformer_decoder(tgt, memory)
+        x = torch.ones(10, 32,512)
+        tgt = torch.ones(10, 32, 512)
+        model = nn.TransformerDecoderLayer(d_model=512, nhead=8,dtype=torch.float32)
+        result = model(tgt,x)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.ones(10, 32,512)
+        tgt = torch.ones(10, 32, 512)
+        model = nn.TransformerDecoderLayer(d_model=512, nhead=8,batch_first=True)
+        result = model(tgt,x)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle unsupport batch_first args",
+    )

@@ -3397,6 +3397,10 @@
       "cache_enabled"
     ]
   },
+  "torch.cuda.current_device": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.framework._current_expected_place"
+  },
   "torch.cuda.current_stream": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.current_stream",
@@ -3665,6 +3669,57 @@
       "input": "x",
       "other": "y"
     }
+  },
+  "torch.distributed.broadcast": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.broadcast",
+    "args_list": [
+      "tensor",
+      "src",
+      "group",
+      "async_op"
+    ],
+    "unsupport_args": [
+      "async_op"
+    ]
+  },
+  "torch.distributed.init_process_group": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.init_parallel_env",
+    "args_list": [
+      "backend",
+      "init_method",
+      "timeout",
+      "world_size",
+      "rank",
+      "store",
+      "group_name",
+      "pg_options"
+    ],
+    "kwargs_change": {
+      "backend": "",
+      "init_method": "",
+      "timeout": "",
+      "world_size": "",
+      "rank": "",
+      "store": "",
+      "group_name": "",
+      "pg_options": ""
+    }
+  },
+  "torch.distributed.new_group": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.new_group",
+    "args_list": [
+      "ranks",
+      "timeout",
+      "backend",
+      "pg_options"
+    ],
+    "unsupport_args": [
+      "timeout",
+      "pg_options"
+    ]
   },
   "torch.distributions.beta.Beta": {
     "Matcher": "GenericMatcher",
@@ -4625,6 +4680,10 @@
     "kwargs_change": {
       "input": "x"
     }
+  },
+  "torch.is_grad_enabled": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.is_grad_enabled"
   },
   "torch.is_nonzero": {
     "Matcher": "IsNonzeroMatcher",
@@ -7019,6 +7078,33 @@
       "num_layers",
       "norm"
     ]
+  },
+  "torch.nn.TransformerDecoderLayer": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.TransformerDecoderLayer",
+    "args_list": [
+      "d_model",
+      "nhead",
+      "dim_feedforward",
+      "dropout",
+      "activation",
+      "layer_norm_eps",
+      "batch_first",
+      "norm_first",
+      "device",
+      "dtype"
+    ],
+    "kwargs_change": {
+      "norm_first": "normalize_before",
+      "dtype": ""
+    },
+    "unsupport_args": [
+      "layer_norm_eps",
+      "batch_first"
+    ],
+    "paddle_default_kwargs": {
+      "dim_feedforward": 2048
+    }
   },
   "torch.nn.TripletMarginLoss": {
     "Matcher": "SizeAverageMatcher",

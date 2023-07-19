@@ -3618,6 +3618,7 @@ class CudaStreamMatcher(BaseMatcher):
                     kwargs["device"] = device_list[0]
                 else:
                     kwargs["device"] = None
+
         return GenericMatcher.generate_code(self, kwargs)
 
 
