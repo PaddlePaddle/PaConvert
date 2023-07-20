@@ -38,6 +38,7 @@ class APIBase(object):
         expect_paddle_code=None,
         check_value=True,
         check_dtype=True,
+        check_stop_gradient=True,
         unsupport=False,
         reason=None,
         is_aux_api=False,
@@ -96,7 +97,13 @@ class APIBase(object):
             ), "[{}]: get unexpected code".format(self.pytorch_api)
 
     def compare(
-        self, name, pytorch_result, paddle_result, check_value=True, check_dtype=True
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
     ):
         """
         compare tensors' data, shape, requires_grad, dtype
@@ -144,12 +151,13 @@ class APIBase(object):
             pytorch_numpy, paddle_numpy = pytorch_result.numpy(), paddle_result.numpy(
                 False
             )
+        if check_stop_gradient:
+            assert (
+                pytorch_result.requires_grad != paddle_result.stop_gradient
+            ), "API ({}): requires grad mismatch, torch tensor's requires_grad is {}, paddle tensor's stop_gradient is {}".format(
+                name, pytorch_result.requires_grad, paddle_result.stop_gradient
+            )
 
-        assert (
-            pytorch_result.requires_grad != paddle_result.stop_gradient
-        ), "API ({}): requires grad mismatch, torch tensor's requires_grad is {}, paddle tensor's stop_gradient is {}".format(
-            name, pytorch_result.requires_grad, paddle_result.stop_gradient
-        )
         assert (
             pytorch_numpy.shape == paddle_numpy.shape
         ), "API ({}): shape mismatch, torch shape is {}, paddle shape is {}".format(

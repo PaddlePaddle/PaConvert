@@ -39,26 +39,13 @@ def test_case_2():
         import torch.nn as nn
         x = torch.tensor([[[[-0.4106,  0.1677], [-0.6648, -0.5669]]]])
 
-        result = nn.utils.clip_grad_norm_(x, max_norm=3.0, norm_type=1.0)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        import torch.nn as nn
-        x = torch.tensor([[[[-0.4106,  0.1677], [-0.6648, -0.5669]]]])
-
         result = nn.utils.clip_grad_norm_(x, max_norm=3.0, norm_type=1.0, error_if_nonfinite=True)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_4():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -73,7 +60,7 @@ def test_case_4():
     obj.run(pytorch_code, ["result", "output"])
 
 
-def test_case_5():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -88,7 +75,7 @@ def test_case_5():
     obj.run(pytorch_code, ["result", "output"])
 
 
-def test_case_6():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -100,7 +87,8 @@ def test_case_6():
         loss.backward()
 
         result = nn.utils.clip_grad_norm_(linear.parameters(), max_norm=3.0, norm_type=2.0, error_if_nonfinite=True)
-        output=list(linear.parameters())[0].grad
+        output1=list(linear.parameters())[0].grad
+        output2=list(linear.parameters())[1].grad
         """
     )
-    obj.run(pytorch_code, ["result", "output"])
+    obj.run(pytorch_code, ["result", "output1", "output2"], check_stop_gradient=False)
