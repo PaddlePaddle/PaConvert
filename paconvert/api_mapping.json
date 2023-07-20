@@ -2892,6 +2892,107 @@
       "input": "x"
     }
   },
+  "torch.autograd.backward": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.autograd.backward",
+    "args_list": [
+      "tensors",
+      "grad_tensors",
+      "retain_graph",
+      "create_graph",
+      "grad_variables",
+      "inputs"
+    ],
+    "unsupport_args": [
+      "create_graph",
+      "grad_variables",
+      "inputs"
+    ]
+  },
+  "torch.autograd.functional.hessian": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.incubate.autograd.Hessian",
+    "args_list": [
+      "func",
+      "inputs",
+      "create_graph",
+      "strict",
+      "vectorize",
+      "outer_jacobian_strategy"
+    ],
+    "unsupport_args": [
+      "create_graph",
+      "strict",
+      "vectorize",
+      "outer_jacobian_strategy"
+    ],
+    "kwargs_change": {
+      "inputs": "xs"
+    },
+    "paddle_default_kwargs": {
+      "is_batched": false
+    }
+  },
+  "torch.autograd.functional.jacobian": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.incubate.autograd.Jacobian",
+    "args_list": [
+      "func",
+      "inputs",
+      "create_graph",
+      "strict",
+      "vectorize",
+      "strategy"
+    ],
+    "unsupport_args": [
+      "create_graph",
+      "strict",
+      "vectorize",
+      "strategy"
+    ],
+    "kwargs_change": {
+      "inputs": "xs"
+    },
+    "paddle_default_kwargs": {
+      "is_batched": false
+    }
+  },
+  "torch.autograd.functional.jvp": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.incubate.autograd.jvp",
+    "args_list": [
+      "func",
+      "inputs",
+      "v",
+      "create_graph",
+      "strict"
+    ],
+    "unsupport_args": [
+      "create_graph",
+      "strict"
+    ],
+    "kwargs_change": {
+      "inputs": "xs"
+    }
+  },
+  "torch.autograd.functional.vjp": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.incubate.autograd.vjp",
+    "args_list": [
+      "func",
+      "inputs",
+      "v",
+      "create_graph",
+      "strict"
+    ],
+    "unsupport_args": [
+      "create_graph",
+      "strict"
+    ],
+    "kwargs_change": {
+      "inputs": "xs"
+    }
+  },
   "torch.autograd.grad": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.grad",
