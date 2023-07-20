@@ -3883,6 +3883,40 @@
       "type_q": "cls_q"
     }
   },
+  "torch.distributions.transforms.SoftmaxTransform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.SoftmaxTransform",
+    "args_list": [
+      "cache_size"
+    ],
+    "kwargs_change": {
+      "cache_size": ""
+    }
+  },
+  "torch.distributions.transforms.StackTransform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.StackTransform",
+    "args_list": [
+      "tseq",
+      "dim",
+      "cache_size"
+    ],
+    "kwargs_change": {
+      "tseq": "transforms",
+      "dim": "axis",
+      "cache_size": ""
+    }
+  },
+  "torch.distributions.transforms.StickBreakingTransform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.StickBreakingTransform",
+    "args_list": [
+      "cache_size"
+    ],
+    "kwargs_change": {
+      "cache_size": ""
+    }
+  },
   "torch.div": {
     "Matcher": "DivMatcher",
     "args_list": [
