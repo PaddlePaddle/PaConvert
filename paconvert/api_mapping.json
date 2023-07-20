@@ -1598,7 +1598,15 @@
   },
   "torch.Tensor.mvlgamma": {},
   "torch.Tensor.mvlgamma_": {},
-  "torch.Tensor.nan_to_num": {},
+  "torch.Tensor.nan_to_num": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.nan_to_num",
+    "args_list": [
+      "nan",
+      "posinf",
+      "neginf"
+    ]
+  },
   "torch.Tensor.nan_to_num_": {},
   "torch.Tensor.nanmean": {
     "Matcher": "GenericMatcher",
@@ -1726,7 +1734,16 @@
       "size"
     ]
   },
-  "torch.Tensor.nextafter": {},
+  "torch.Tensor.nextafter": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.nextafter",
+    "args_list": [
+      "other"
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
+  },
   "torch.Tensor.nextafter_": {},
   "torch.Tensor.nonzero": {
     "Matcher": "TensorUnchangeMatcher"
