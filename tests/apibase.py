@@ -89,6 +89,7 @@ class APIBase(object):
                     paddle_result[i],
                     check_value,
                     check_dtype,
+                    check_stop_gradient,
                 )
         if expect_paddle_code:
             convert_paddle_code = self.convert(pytorch_code)
