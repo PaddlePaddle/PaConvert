@@ -26,7 +26,7 @@ def test_case_1():
         import torch.distributed as dist
         gather_objects = ["foo", 12, {1: 2}]
         output = [None for _ in gather_objects]
-        result = torch.distributed.all_gather_object(output, gather_objects[dist.get_rank()])
+        result = dist.all_gather_object(output, gather_objects[dist.get_rank()])
         """
     )
     obj.run(pytorch_code, ["result"])
