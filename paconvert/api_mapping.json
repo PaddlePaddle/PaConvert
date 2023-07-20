@@ -3698,6 +3698,15 @@
       "other": "y"
     }
   },
+  "torch.distributed.all_gather_object": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.all_gather_object",
+    "args_list": [
+      "object_list",
+      "obj",
+      "group"
+    ]
+  },
   "torch.distributed.broadcast": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.broadcast",
