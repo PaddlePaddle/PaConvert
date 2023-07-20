@@ -3086,14 +3086,12 @@ class StftMatcher(BaseMatcher):
         if "normalized" not in kwargs:
             kwargs["normalized"] = "False"
 
-        if "return_complex" in kwargs:
-            return_complex_temp = kwargs.pop("return_complex")
-            if return_complex_temp is not None:
-                kwargs["onesided"] = return_complex_temp
-            elif return_complex_temp is True:
-                kwargs["onesided"] = True
-            else:
-                kwargs["onesided"] = False
+        return_complex_temp = (
+            kwargs.pop("return_complex") if "return_complex" in kwargs else None
+        )
+
+        if return_complex_temp:
+            kwargs["onesided"] = "True" if return_complex_temp != "(False)" else "False"
 
         if "out" in kwargs and kwargs["out"] is not None:
             API_TEMPLATE = textwrap.dedent(
