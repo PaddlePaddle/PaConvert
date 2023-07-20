@@ -512,12 +512,31 @@ class TensorMatcher(BaseMatcher):
                 shape = astor.to_source(args[0].value).strip("\n")
             else:
                 data = self.parse_args(args)[0]
-                if "torch.IntTensor" == self.torch_api:
+                if (
+                    "torch.IntTensor" == self.torch_api
+                    or "torch.cuda.IntTensor" == self.torch_api
+                ):
                     code = "paddle.to_tensor(data={}, dtype='int32')".format(data)
-                elif "torch.LongTensor" == self.torch_api:
+                elif (
+                    "torch.LongTensor" == self.torch_api
+                    or "torch.cuda.LongTensor" == self.torch_api
+                ):
                     code = "paddle.to_tensor(data={}, dtype='int64')".format(data)
-                elif "torch.FloatTensor" == self.torch_api:
+                elif (
+                    "torch.FloatTensor" == self.torch_api
+                    or "torch.cuda.FloatTensor" == self.torch_api
+                ):
                     code = "paddle.to_tensor(data={}, dtype='float32')".format(data)
+                elif (
+                    "torch.ByteTensor" == self.torch_api
+                    or "torch.cuda.ByteTensor" == self.torch_api
+                ):
+                    code = "paddle.to_tensor(data={}, dtype='uint8')".format(data)
+                elif ("torch.BoolTensor" == self.torch_api) or (
+                    "torch.cuda.BoolTensor" == self.torch_api
+                ):
+                    code = "paddle.to_tensor(data={}, dtype='bool')".format(data)
+
                 else:
                     if not isinstance(args[0], ast.Name):
                         code = "paddle.to_tensor(data={}, dtype='float32')".format(data)
@@ -527,12 +546,30 @@ class TensorMatcher(BaseMatcher):
                 return node
             shape = str(shape).replace("'", "")
 
-        if "torch.IntTensor" == self.torch_api:
+        if (
+            "torch.IntTensor" == self.torch_api
+            or "torch.cuda.IntTensor" == self.torch_api
+        ):
             code = "paddle.empty(shape={}, dtype='int32')".format(shape)
-        elif "torch.LongTensor" == self.torch_api:
+        elif (
+            "torch.LongTensor" == self.torch_api
+            or "torch.cuda.LongTensor" == self.torch_api
+        ):
             code = "paddle.empty(shape={}, dtype='int64')".format(shape)
-        elif "torch.FloatTensor" == self.torch_api:
+        elif (
+            "torch.FloatTensor" == self.torch_api
+            or "torch.cuda.FloatTensor" == self.torch_api
+        ):
             code = "paddle.empty(shape={}, dtype='float32')".format(shape)
+        elif (
+            "torch.ByteTensor" == self.torch_api
+            or "torch.cuda.ByteTensor" == self.torch_api
+        ):
+            code = "paddle.zeros(shape={}, dtype='uint8')".format(shape)
+        elif ("torch.BoolTensor" == self.torch_api) or (
+            "torch.cuda.BoolTensor" == self.torch_api
+        ):
+            code = "paddle.randint(0, 2, shape={}).astype('bool')".format(shape)
         else:
             code = "paddle.empty(shape={})".format(shape)
 
@@ -2856,6 +2893,9 @@ class SelectMatcher(BaseMatcher):
         if "input" not in kwargs:
             kwargs["input"] = self.paddleClass
 
+        if len(kwargs) != 3:
+            return "NonTorchClass"
+
         API_TEMPLATE = textwrap.dedent(
             """
             paddle.index_select({}, index=paddle.to_tensor([{}]), axis={}).squeeze({})
@@ -3615,6 +3655,7 @@ class CudaStreamMatcher(BaseMatcher):
                     kwargs["device"] = device_list[0]
                 else:
                     kwargs["device"] = None
+
         return GenericMatcher.generate_code(self, kwargs)
 
 

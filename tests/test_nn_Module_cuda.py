@@ -16,36 +16,58 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.expm1")
+obj = APIBase("torch.nn.Module.cuda")
 
 
-def test_case_1():
+def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        result = a.expm1()
+        x = torch.tensor([1., 2., 3.])
+        module1 = torch.nn.Module()
+        module1.register_buffer('buffer', x)
+        if torch.cuda.is_available():
+            module1.cuda()
+        result = None
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+    )
 
 
-def test_case_2():
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1., 2., -3., -4., 5.], [1., 2., -3., -4., 5.]])
-        result = 2 * a.expm1()
+        x = torch.tensor([1., 2., 3.])
+        module1 = torch.nn.Module()
+        module1.register_buffer('buffer', x)
+        if torch.cuda.is_available():
+            module1.cuda(device=0)
+        result = None
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+    )
 
 
-def test_case_3():
+def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1., 2., -3., -4., 5.]).expm1()
+        x = torch.tensor([1., 2., 3.])
+        module1 = torch.nn.Module()
+        module1.register_buffer('buffer', x)
+        if torch.cuda.is_available():
+            module1.cuda(device=None)
+        result = None
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+    )

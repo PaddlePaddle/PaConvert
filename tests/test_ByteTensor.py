@@ -16,65 +16,85 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.masked_select")
+obj = APIBase("torch.ByteTensor")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.eye(2, 4)
-        mask = x > 0
-        result = torch.masked_select(x, mask)
+        result = torch.ByteTensor(2, 3)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones(2, 4)
-        result = torch.masked_select(x, x>0)
+        shape = [2, 3]
+        result = torch.ByteTensor(*shape)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones(2, 4)
-        out = torch.ones(2, 4)
-        result = torch.masked_select(x, mask=x>0, out=out)
+        dim1, dim2 = 2, 3
+        result = torch.ByteTensor(dim1, dim2)
         """
     )
-    obj.run(pytorch_code, ["result", "out"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
-# param mask of paddle does not support broadcast
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.arange(8).reshape(2, 4)
-        mask = torch.tensor([True, False, True, False])
-        result = torch.masked_select(x, mask)
+        def fun(x: torch.ByteTensor):
+            return x * 2
+
+        a = torch.ByteTensor(3, 4)
+        result = fun(a)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
-# param mask of paddle does not support broadcast
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.arange(4)
-        mask = torch.tensor([[True, False, True, False], [True, False, True, False]])
-        result = torch.masked_select(x, mask)
+        result = torch.ByteTensor([[3, 4], [5, 8]])
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.ByteTensor((1, 2, 3))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.ByteTensor()
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support 0-Size Tensor",
+    )

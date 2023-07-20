@@ -16,15 +16,14 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.expm1")
+obj = APIBase("torch.cumulative_trapezoid")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        result = a.expm1()
+        result = torch.cumulative_trapezoid(torch.tensor([1.0, 1, 1, 0, 1]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +33,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1., 2., -3., -4., 5.], [1., 2., -3., -4., 5.]])
-        result = 2 * a.expm1()
+        y = torch.tensor([1, 1, 1, 0, 1]).type(torch.float32)
+        x = torch.tensor([1, 2, 3, 0, 1]).type(torch.float32)
+        result = torch.cumulative_trapezoid(y, x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,7 +45,30 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1., 2., -3., -4., 5.]).expm1()
+        y = torch.tensor([[0.6, 0.0, 0.0, 0.0]])
+        result = torch.cumulative_trapezoid(y, dx=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        y = torch.arange(9).reshape(3, 3).type(torch.float32)
+        result = torch.cumulative_trapezoid(y, dim=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        y = torch.arange(9).reshape(3, 3).type(torch.float32)
+        result = torch.cumulative_trapezoid(y, dim=1)
         """
     )
     obj.run(pytorch_code, ["result"])

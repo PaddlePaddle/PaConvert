@@ -16,36 +16,38 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.expm1")
+obj = APIBase("torch.distributed.new_group")
 
 
-def test_case_1():
+def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        result = a.expm1()
+        torch.distributed.init_process_group(
+            "nccl",
+            init_method="tcp://127.0.0.1:23456",
+            rank=0,
+            world_size=1
+        )
+        torch.distributed.new_group(list(range(1)))
+        result=True
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_2():
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1., 2., -3., -4., 5.], [1., 2., -3., -4., 5.]])
-        result = 2 * a.expm1()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.tensor([1., 2., -3., -4., 5.]).expm1()
+        torch.distributed.init_process_group(
+            "nccl",
+            init_method="tcp://127.0.0.1:23456",
+            rank=0,
+            world_size=1
+        )
+        torch.distributed.new_group(list(range(1)),pg_options=None)
+        result=True
         """
     )
     obj.run(pytorch_code, ["result"])

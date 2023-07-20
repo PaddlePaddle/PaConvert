@@ -16,19 +16,14 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.TransformerDecoder")
+obj = APIBase("torch.BoolTensor")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
-        decoder_layer = nn.TransformerDecoderLayer(d_model=512, nhead=8)
-        transformer_decoder = nn.TransformerDecoder(decoder_layer, num_layers=6)
-        memory = torch.rand(20, 32, 512)
-        tgt = torch.rand(20, 32, 512)
-        result = transformer_decoder(tgt, memory)
+        result = torch.BoolTensor(2, 3)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -38,12 +33,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
-        decoder_layer = nn.TransformerDecoderLayer(d_model=512, nhead=8)
-        transformer_decoder = nn.TransformerDecoder(decoder_layer, 6)
-        memory = torch.rand(20, 32, 512)
-        tgt = torch.rand(20, 32, 512)
-        result = transformer_decoder(tgt, memory)
+        shape = [2, 3]
+        result = torch.BoolTensor(*shape)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -53,12 +44,43 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
-        decoder_layer = nn.TransformerDecoderLayer(d_model=512, nhead=8)
-        transformer_decoder = nn.TransformerDecoder(decoder_layer=decoder_layer, num_layers=6)
-        memory = torch.rand(20, 32, 512)
-        tgt = torch.rand(20, 32, 512)
-        result = transformer_decoder(tgt, memory)
+        dim1, dim2 = 2, 3
+        result = torch.BoolTensor(dim1, dim2)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.BoolTensor([[3, 4], [5, 8]])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.BoolTensor((1, 2, 3))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.BoolTensor()
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support 0-Size Tensor",
+    )

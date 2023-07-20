@@ -11,20 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.expm1")
+obj = APIBase("torch.special.i1e")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., -3., -4., 5.])
-        result = a.expm1()
+        result = torch.special.i1e(torch.tensor([1.0, 2.0, 3.0]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1., 2., -3., -4., 5.], [1., 2., -3., -4., 5.]])
-        result = 2 * a.expm1()
+        x = torch.tensor([1.0, 2.0, 3.0])
+        result = torch.special.i1e(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,7 +45,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1., 2., -3., -4., 5.]).expm1()
+        x = [1.0, 2.0, 3.0]
+        out = torch.tensor([])
+        result = torch.special.i1e(torch.tensor(x), out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])
