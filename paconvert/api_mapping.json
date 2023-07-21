@@ -6383,6 +6383,14 @@
       "reduction"
     ]
   },
+  "torch.nn.HuberLoss": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.SmoothL1Loss",
+    "args_list": [
+      "reduction",
+      "delta"
+    ]
+  },
   "torch.nn.Identity": {
     "Matcher": "IdentityMatcher",
     "paddle_api": "paddle.nn.Identity"
@@ -9313,6 +9321,17 @@
   "torch.special.erf": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.erf",
+    "args_list": [
+      "input",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+  "torch.special.erfinv": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.erfinv",
     "args_list": [
       "input",
       "out"
