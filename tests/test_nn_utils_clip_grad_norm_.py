@@ -104,7 +104,7 @@ def test_case_6():
         loss = torch.mean(output)
         loss.backward()
 
-        result = nn.utils.clip_grad_value_(linear.parameters(), max_norm=0.5, norm_type=3.0, error_if_nonfinite=True)
+        result = nn.utils.clip_grad_norm_(linear.parameters(), max_norm=0.5, norm_type=3.0, error_if_nonfinite=True)
         output = list(linear.parameters())[1].grad
         """
     )
