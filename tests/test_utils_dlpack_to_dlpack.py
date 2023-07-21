@@ -19,7 +19,13 @@ from apibase import APIBase
 
 class DLPackAPIBase(APIBase):
     def compare(
-        self, name, pytorch_result, paddle_result, check_value=True, check_dtype=True
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
     ):
         if type(paddle_result).__name__ == "PyCapsule":
             return True

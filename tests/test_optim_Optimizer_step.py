@@ -19,7 +19,13 @@ from apibase import APIBase
 
 class optimOptimizerAPIBase(APIBase):
     def compare(
-        self, name, pytorch_result, paddle_result, check_value=True, check_dtype=True
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
     ):
         if paddle_result == pytorch_result:
             return True

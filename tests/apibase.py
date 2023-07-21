@@ -38,6 +38,7 @@ class APIBase(object):
         expect_paddle_code=None,
         check_value=True,
         check_dtype=True,
+        check_stop_gradient=True,
         unsupport=False,
         reason=None,
         is_aux_api=False,
@@ -49,6 +50,7 @@ class APIBase(object):
             expect_paddle_code: the string of expect paddle code
             check_value: If false, the value will not be checked
             check_dtype: If false, the dtype will not be checked
+            check_stop_gradient: If false, the stop gradient will not be checked
             unsupport: If true, conversion is not supported
             reason: the reason why it is not supported
             is_aux_api: the bool value for api that need Auxiliary code
@@ -88,6 +90,7 @@ class APIBase(object):
                     paddle_result[i],
                     check_value,
                     check_dtype,
+                    check_stop_gradient,
                 )
         if expect_paddle_code:
             convert_paddle_code = self.convert(pytorch_code)
@@ -96,7 +99,13 @@ class APIBase(object):
             ), "[{}]: get unexpected code".format(self.pytorch_api)
 
     def compare(
-        self, name, pytorch_result, paddle_result, check_value=True, check_dtype=True
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
     ):
         """
         compare tensors' data, shape, requires_grad, dtype
@@ -106,6 +115,7 @@ class APIBase(object):
             paddle_result: paddle Tensor
             check_value: If false, the value will not be checked
             check_dtype: If false, the dtype will not be checked
+            check_stop_gradient: If false, the stop gradient will not be checked
         """
         if isinstance(pytorch_result, (tuple, list)):
             assert isinstance(
@@ -146,11 +156,13 @@ class APIBase(object):
                 paddle_numpy,
             ) = pytorch_result.cpu().numpy(), paddle_result.numpy(False)
 
-        assert (
-            pytorch_result.requires_grad != paddle_result.stop_gradient
-        ), "API ({}): requires grad mismatch, torch tensor's requires_grad is {}, paddle tensor's stop_gradient is {}".format(
-            name, pytorch_result.requires_grad, paddle_result.stop_gradient
-        )
+        if check_stop_gradient:
+            assert (
+                pytorch_result.requires_grad != paddle_result.stop_gradient
+            ), "API ({}): requires grad mismatch, torch tensor's requires_grad is {}, paddle tensor's stop_gradient is {}".format(
+                name, pytorch_result.requires_grad, paddle_result.stop_gradient
+            )
+
         assert (
             pytorch_numpy.shape == paddle_numpy.shape
         ), "API ({}): shape mismatch, torch shape is {}, paddle shape is {}".format(
