@@ -92,4 +92,4 @@ def test_case_5():
         result=list(linear.parameters())[1].grad
         """
     )
-    obj.run(pytorch_code, ["result1", "result2"])
+    obj.run(pytorch_code, ["result"])
