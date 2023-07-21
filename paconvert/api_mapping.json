@@ -7860,6 +7860,19 @@
       "max_val": "max"
     }
   },
+  "torch.nn.functional.huber_loss": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.smooth_l1_loss",
+    "args_list": [
+      "input",
+      "target",
+      "reduction",
+      "delta"
+    ],
+    "kwargs_change": {
+      "target": "label"
+    }
+  },
   "torch.nn.functional.instance_norm": {
     "Matcher": "FInstanceNormMatcher",
     "paddle_api": "paddle.nn.functional.instance_norm",
