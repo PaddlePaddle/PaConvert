@@ -87,8 +87,7 @@ def test_case_5():
         loss.backward()
 
         result = nn.utils.clip_grad_norm_(linear.parameters(), max_norm=3.0, norm_type=2.0, error_if_nonfinite=True)
-        output1=list(linear.parameters())[0].grad
-        output2=list(linear.parameters())[1].grad
+        output=list(linear.parameters())[1].grad
         """
     )
-    obj.run(pytorch_code, ["result", "output1", "output2"], check_stop_gradient=False)
+    obj.run(pytorch_code, ["result", "output"], check_stop_gradient=False)

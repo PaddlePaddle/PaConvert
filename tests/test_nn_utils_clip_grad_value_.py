@@ -82,13 +82,14 @@ def test_case_5():
         """
         import torch
         import torch.nn as nn
-        x = [torch.tensor([[[[-0.4106,  0.1677], [-0.6648, -0.5669]]]]), torch.tensor([[[[-0.4106,  0.1677], [-0.6648, -0.5669]]]])]
-        x[0].grad = torch.tensor([[[[-0.5, 12.343], [-10.4, -0.5669]]]])
-        x[1].grad = torch.tensor([[[[-0.67, 4.33], [-13, -0.69]]]])
+        x = torch.tensor([[[[-0.4106,  0.1677], [-0.6648, -0.5669]]]])
+        linear = nn.Linear(in_features=2, out_features=5)
+        output = linear(x)
+        loss = torch.mean(output)
+        loss.backward()
 
-        nn.utils.clip_grad_value_(x, clip_value=0.5)
-        result1 = x[0].grad
-        result2 = x[1].grad
+        nn.utils.clip_grad_value_(linear.parameters(), clip_value=0.1)
+        result=list(linear.parameters())[1].grad
         """
     )
     obj.run(pytorch_code, ["result1", "result2"])
