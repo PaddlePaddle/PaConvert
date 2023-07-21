@@ -23,7 +23,8 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.cuda.nvtx.range_pop()
+        if torch.cuda.is_available():
+            torch.cuda.nvtx.range_pop()
         result = None
         """
     )

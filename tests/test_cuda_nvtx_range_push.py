@@ -23,7 +23,8 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.cuda.nvtx.range_push("msg")
+        if torch.cuda.is_available():
+            torch.cuda.nvtx.range_push("msg")
         result = None
         """
     )
@@ -34,7 +35,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.cuda.nvtx.range_push(msg="msg")
+        if torch.cuda.is_available():
+            torch.cuda.nvtx.range_push(msg="msg")
         result = None
         """
     )
