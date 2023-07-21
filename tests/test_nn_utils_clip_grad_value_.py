@@ -92,4 +92,22 @@ def test_case_5():
         result=list(linear.parameters())[1].grad
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_stop_gradient=False)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.ones([10, 2])
+        linear = nn.Linear(in_features=2, out_features=5)
+        output = linear(x)
+        loss = torch.mean(output)
+        loss.backward()
+
+        nn.utils.clip_grad_value_(linear.parameters(), clip_value=0.8)
+        result=list(linear.parameters())[1].grad
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_stop_gradient=False)

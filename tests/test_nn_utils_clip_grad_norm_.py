@@ -87,7 +87,25 @@ def test_case_5():
         loss.backward()
 
         result = nn.utils.clip_grad_norm_(linear.parameters(), max_norm=3.0, norm_type=2.0, error_if_nonfinite=True)
-        output=list(linear.parameters())[1].grad
+        output = list(linear.parameters())[1].grad
+        """
+    )
+    obj.run(pytorch_code, ["result", "output"], check_stop_gradient=False)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.ones([10, 2])
+        linear = nn.Linear(in_features=2, out_features=5)
+        output = linear(x)
+        loss = torch.mean(output)
+        loss.backward()
+
+        result = nn.utils.clip_grad_value_(linear.parameters(), max_norm=0.5, norm_type=3.0, error_if_nonfinite=True)
+        output = list(linear.parameters())[1].grad
         """
     )
     obj.run(pytorch_code, ["result", "output"], check_stop_gradient=False)
