@@ -5193,6 +5193,20 @@
       "A"
     ]
   },
+  "torch.linalg.vander": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vander",
+    "args_list": [
+      "x",
+      "N"
+    ],
+    "kwargs_change": {
+      "N": "n"
+    },
+    "paddle_default_kwargs": {
+      "increasing": "True"
+    }
+  },
   "torch.linspace": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linspace",
