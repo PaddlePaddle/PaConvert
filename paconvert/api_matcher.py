@@ -3634,6 +3634,32 @@ class FunctionalOneHotMatcher(BaseMatcher):
         )
 
 
+class NnModuleTypeMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        kwargs = self.parse_kwargs(kwargs)
+        if "torch.nn.Module.float" == self.torch_api:
+            code = "paddle.nn.Layer.to(dtype='float32')"
+        elif "torch.nn.Module.double" == self.torch_api:
+            code = "paddle.nn.Layer.to(dtype='float64')"
+        elif "torch.nn.Module.half" == self.torch_api:
+            code = "paddle.nn.Layer.to(dtype='float16')"
+        elif "torch.nn.Module.bfloat16" == self.torch_api:
+            code = "paddle.nn.Layer.to(dtype='bfloat16')"
+        else:
+            code = "paddle.nn.Layer.to(dtype={})".format(kwargs["dst_type"])
+        node = ast.parse(code.strip("\n")).body
+        return node
+
+
+class NnModuleToMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs = self.parse_kwargs(kwargs)
+        if "non_blocking" in kwargs:
+            kwargs["blocking"] = not kwargs["non_blocking"]
+            del kwargs["non_blocking"]
+        return GenericMatcher.generate_code(self, kwargs)
+
+
 class SizeAverageMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         process_reduce_and_size_average(kwargs)

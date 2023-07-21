@@ -6673,7 +6673,10 @@
   "torch.nn.Module.apply": {
     "Matcher": "TensorUnchangeMatcher"
   },
-  "torch.nn.Module.bfloat16": {},
+  "torch.nn.Module.bfloat16": {
+    "Matcher": "NnModuleTypeMatcher",
+    "paddle_api": "paddle.nn.Layer.to"
+  },
   "torch.nn.Module.buffers": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Layer.buffers",
@@ -6690,16 +6693,25 @@
   },
   "torch.nn.Module.cpu": {},
   "torch.nn.Module.cuda": {},
-  "torch.nn.Module.double": {},
+  "torch.nn.Module.double": {
+    "Matcher": "NnModuleTypeMatcher",
+    "paddle_api": "paddle.nn.Layer.to"
+  },
   "torch.nn.Module.eval": {
     "Matcher": "TensorUnchangeMatcher"
   },
-  "torch.nn.Module.float": {},
+  "torch.nn.Module.float": {
+    "Matcher": "NnModuleTypeMatcher",
+    "paddle_api": "paddle.nn.Layer.to"
+  },
   "torch.nn.Module.get_buffer": {},
   "torch.nn.Module.get_extra_state": {},
   "torch.nn.Module.get_parameter": {},
   "torch.nn.Module.get_submodule": {},
-  "torch.nn.Module.half": {},
+  "torch.nn.Module.half": {
+    "Matcher": "NnModuleTypeMatcher",
+    "paddle_api": "paddle.nn.Layer.to"
+  },
   "torch.nn.Module.ipu": {},
   "torch.nn.Module.load_state_dict": {
     "Matcher": "GenericMatcher",
@@ -6840,13 +6852,24 @@
       "keep_vars"
     ]
   },
-  "torch.nn.Module.to": {},
+  "torch.nn.Module.to": {
+    "Matcher": "NnModuleToMatcher",
+    "paddle_api": "paddle.nn.Layer.to",
+    "args_list": [
+      "device",
+      "dtype",
+      "non_blocking"
+    ]
+  },
   "torch.nn.Module.to_empty": {},
   "torch.nn.Module.train": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Layer.train"
   },
-  "torch.nn.Module.type": {},
+  "torch.nn.Module.type": {
+    "Matcher": "NnModuleTypeMatcher",
+    "paddle_api": "paddle.nn.Layer.to"
+  },
   "torch.nn.Module.xpu": {},
   "torch.nn.Module.zero_grad": {},
   "torch.nn.ModuleDict": {
