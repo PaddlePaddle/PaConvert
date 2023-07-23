@@ -3568,6 +3568,10 @@
       "device": "device"
     }
   },
+  "torch.cuda.get_rng_state_all": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.get_cuda_rng_state"
+  },
   "torch.cuda.is_available": {
     "Matcher": "CudaIsAvailableMatcher",
     "paddle_api": "paddle.device.cuda.device_count"
@@ -3627,6 +3631,16 @@
     ],
     "kwargs_change": {
       "device": "device"
+    }
+  },
+  "torch.cuda.set_rng_state_all": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.set_cuda_rng_state",
+    "args_list": [
+      "new_states"
+    ],
+    "kwargs_change": {
+      "new_states": "state_list"
     }
   },
   "torch.cuda.synchronize": {
