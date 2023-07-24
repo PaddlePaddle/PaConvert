@@ -27,7 +27,6 @@ def test_case_1():
             [ 0.9112, -1.7526, -0.4061]])
         target = torch.tensor([[1., 2., 1.], [1., 2., 3.]])
         result = torch.nn.functional.huber_loss(input, target)
-        result = result.reshape([1])
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -41,7 +40,6 @@ def test_case_2():
             [ 0.9112, -1.7526, -0.4061]])
         target = torch.tensor([[1., 2., 1.],[1., 2., 3.]])
         result = torch.nn.functional.huber_loss(input, target, reduction='mean')
-        result = result.reshape([1])
         """
     )
     obj.run(pytorch_code, ["result"])
