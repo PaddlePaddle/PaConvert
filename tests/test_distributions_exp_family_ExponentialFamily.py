@@ -14,17 +14,33 @@
 
 import textwrap
 
+import paddle
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.exp_family.ExponentialFamily")
+
+class ExponentialFamilyAPIBase(APIBase):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+    ):
+        if isinstance(paddle_result, paddle.distribution.ExponentialFamily):
+            return True
+        return False
+
+
+obj = ExponentialFamilyAPIBase("torch.distributions.exp_family.ExponentialFamily")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.exp_family.ExponentialFamily()
-        result = None
+        result = torch.distributions.exp_family.ExponentialFamily()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +50,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.exp_family.ExponentialFamily(batch_shape=torch.Size([1]), event_shape=torch.Size([2]))
-        result = None
+        result = torch.distributions.exp_family.ExponentialFamily(batch_shape=torch.Size([1]), event_shape=torch.Size([2]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,8 +60,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.exp_family.ExponentialFamily(batch_shape=torch.Size([1]), event_shape=torch.Size([2]), validate_args=False)
-        result = None
+        result = torch.distributions.exp_family.ExponentialFamily(batch_shape=torch.Size([1]), event_shape=torch.Size([2]), validate_args=False)
         """
     )
     obj.run(pytorch_code, ["result"])
