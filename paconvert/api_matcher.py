@@ -3293,6 +3293,31 @@ class RNNMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class RNNBaseMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "batch_first" in kwargs:
+            batch_first = kwargs.pop("batch_first")
+        else:
+            batch_first = False
+        kwargs["time_major"] = f"not {batch_first}"
+
+        if "mode" in kwargs:
+            # RNN is not supported, because RNN need activation
+            if "LSTM" in kwargs["mode"] or "GRU" in kwargs["mode"]:
+                pass
+            else:
+                return None
+
+        direction = "'forward'"
+        if "bidirectional" in kwargs:
+            if "True" in kwargs["bidirectional"]:
+                direction = "'bidirect'"
+            kwargs.pop("bidirectional")
+        kwargs["direction"] = direction
+
+        return GenericMatcher.generate_code(self, kwargs)
+
+
 class DiffMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "n" in kwargs and kwargs["n"] != "(1)":
