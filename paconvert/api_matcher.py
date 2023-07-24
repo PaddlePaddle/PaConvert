@@ -517,16 +517,28 @@ class TensorMatcher(BaseMatcher):
                     or "torch.cuda.IntTensor" == self.torch_api
                 ):
                     code = "paddle.to_tensor(data={}, dtype='int32')".format(data)
+                elif ("torch.ShortTensor" == self.torch_api) or (
+                    "torch.cuda.ShortTensor" == self.torch_api
+                ):
+                    code = "paddle.to_tensor(data={}, dtype='int16')".format(data)
                 elif (
                     "torch.LongTensor" == self.torch_api
                     or "torch.cuda.LongTensor" == self.torch_api
                 ):
                     code = "paddle.to_tensor(data={}, dtype='int64')".format(data)
+                elif ("torch.HalfTensor" == self.torch_api) or (
+                    "torch.cuda.HalfTensor" == self.torch_api
+                ):
+                    code = "paddle.to_tensor(data={}, dtype='float16')".format(data)
                 elif (
                     "torch.FloatTensor" == self.torch_api
                     or "torch.cuda.FloatTensor" == self.torch_api
                 ):
                     code = "paddle.to_tensor(data={}, dtype='float32')".format(data)
+                elif ("torch.DoubleTensor" == self.torch_api) or (
+                    "torch.cuda.DoubleTensor" == self.torch_api
+                ):
+                    code = "paddle.to_tensor(data={}, dtype='float64')".format(data)
                 elif (
                     "torch.ByteTensor" == self.torch_api
                     or "torch.cuda.ByteTensor" == self.torch_api
@@ -552,15 +564,30 @@ class TensorMatcher(BaseMatcher):
         ):
             code = "paddle.empty(shape={}, dtype='int32')".format(shape)
         elif (
+            "torch.ShortTensor" == self.torch_api
+            or "torch.cuda.ShortTensor" == self.torch_api
+        ):
+            code = "paddle.empty(shape={}, dtype='int16')".format(shape)
+        elif (
             "torch.LongTensor" == self.torch_api
             or "torch.cuda.LongTensor" == self.torch_api
         ):
             code = "paddle.empty(shape={}, dtype='int64')".format(shape)
         elif (
+            "torch.HalfTensor" == self.torch_api
+            or "torch.cuda.HalfTensor" == self.torch_api
+        ):
+            code = "paddle.empty(shape={}, dtype='float16')".format(shape)
+        elif (
             "torch.FloatTensor" == self.torch_api
             or "torch.cuda.FloatTensor" == self.torch_api
         ):
             code = "paddle.empty(shape={}, dtype='float32')".format(shape)
+        elif (
+            "torch.DoubleTensor" == self.torch_api
+            or "torch.cuda.DoubleTensor" == self.torch_api
+        ):
+            code = "paddle.empty(shape={}, dtype='float64')".format(shape)
         elif (
             "torch.ByteTensor" == self.torch_api
             or "torch.cuda.ByteTensor" == self.torch_api
