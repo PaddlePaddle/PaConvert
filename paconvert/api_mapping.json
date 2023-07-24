@@ -3902,6 +3902,21 @@
       "pg_options"
     ]
   },
+  "torch.distributions.bernoulli.Bernoulli": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Bernoulli",
+    "args_list": [
+      "probs",
+      "logits",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    },
+    "unsupport_args": [
+      "logits"
+    ]
+  },
   "torch.distributions.beta.Beta": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Beta",
@@ -3913,6 +3928,97 @@
     "kwargs_change": {
       "concentration1": "alpha",
       "concentration0": "beta"
+    }
+  },
+  "torch.distributions.categorical.Categorical": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Categorical",
+    "args_list": [
+      "probs",
+      "logits",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    },
+    "unsupport_args": [
+      "probs"
+    ]
+  },
+  "torch.distributions.cauchy.Cauchy": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Cauchy",
+    "args_list": [
+      "loc",
+      "scale",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.dirichlet.Dirichlet": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Dirichlet",
+    "args_list": [
+      "concentration",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.exp_family.ExponentialFamily": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.ExponentialFamily",
+    "args_list": [
+      "batch_shape",
+      "event_shape",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.geometric.Geometric": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Geometric",
+    "args_list": [
+      "probs",
+      "logits",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    },
+    "unsupport_args": [
+      "logits"
+    ]
+  },
+  "torch.distributions.gumbel.Gumbel": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Gumbel",
+    "args_list": [
+      "loc",
+      "scale",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.independent.Independent": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Independent",
+    "args_list": [
+      "base_distribution",
+      "reinterpreted_batch_ndims",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "base_distribution": "base",
+      "reinterpreted_batch_ndims": "reinterpreted_batch_rank",
+      "validate_args": ""
     }
   },
   "torch.distributions.kl.kl_divergence": {
@@ -3933,6 +4039,58 @@
     "kwargs_change": {
       "type_p": "cls_p",
       "type_q": "cls_q"
+    }
+  },
+  "torch.distributions.laplace.Laplace": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Laplace",
+    "args_list": [
+      "loc",
+      "scale",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.log_normal.LogNormal": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.LogNormal",
+    "args_list": [
+      "loc",
+      "scale",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.multinomial.Multinomial": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Multinomial",
+    "args_list": [
+      "total_count",
+      "probs",
+      "logits",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    },
+    "unsupport_args": [
+      "logits"
+    ]
+  },
+  "torch.distributions.normal.Normal": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Normal",
+    "args_list": [
+      "loc",
+      "scale",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
     }
   },
   "torch.distributions.transforms.SoftmaxTransform": {
