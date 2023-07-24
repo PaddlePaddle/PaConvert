@@ -3570,7 +3570,7 @@
   },
   "torch.cuda.get_rng_state_all": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.get_cuda_rng_state"
+    "paddle_api": "paddle.get_rng_state"
   },
   "torch.cuda.is_available": {
     "Matcher": "CudaIsAvailableMatcher",
@@ -3635,7 +3635,7 @@
   },
   "torch.cuda.set_rng_state_all": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.set_cuda_rng_state",
+    "paddle_api": "paddle.set_rng_state",
     "args_list": [
       "new_states"
     ],

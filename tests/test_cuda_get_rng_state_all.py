@@ -13,17 +13,33 @@
 # limitations under the License.
 import textwrap
 
+import paddle
 from apibase import APIBase
 
-obj = APIBase("torch.cuda.get_rng_state_all")
+
+class GetRngStateAllAPIBase(APIBase):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+    ):
+        if isinstance(paddle_result, paddle.fluid.libpaddle.GeneratorState):
+            return True
+        return False
+
+
+obj = GetRngStateAllAPIBase("torch.cuda.get_rng_state_all")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.cuda.get_rng_state_all()
-        result = None
+        result = torch.cuda.get_rng_state_all()
         """
     )
     obj.run(pytorch_code, ["result"])
