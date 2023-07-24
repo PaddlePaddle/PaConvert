@@ -3659,6 +3659,12 @@ class CudaStreamMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class CudaNvtxRangePushMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "{}({})".format(self.get_paddle_api(), kwargs["msg"])
+        return code
+
+
 class Attribute2Func(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
