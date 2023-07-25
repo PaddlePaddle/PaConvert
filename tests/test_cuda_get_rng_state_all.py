@@ -27,7 +27,11 @@ class GetRngStateAllAPIBase(APIBase):
         check_dtype=True,
         check_stop_gradient=True,
     ):
-        if isinstance(paddle_result, paddle.fluid.libpaddle.GeneratorState):
+        if len(paddle_result) == 0:
+            return True
+
+        assert isinstance(paddle_result[0], paddle.fluid.libpaddle.GeneratorState)
+        if isinstance(paddle_result[0], paddle.fluid.libpaddle.GeneratorState):
             return True
         return False
 
