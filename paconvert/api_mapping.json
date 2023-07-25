@@ -4093,6 +4093,41 @@
       "validate_args": ""
     }
   },
+  "torch.distributions.transformed_distribution.TransformedDistribution": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.TransformedDistribution",
+    "args_list": [
+      "base_distribution",
+      "transforms",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "base_distribution": "base",
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.transforms.ComposeTransform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.ChainTransform",
+    "args_list": [
+      "parts",
+      "cache_size"
+    ],
+    "kwargs_change": {
+      "parts": "transforms",
+      "cache_size": ""
+    }
+  },
+  "torch.distributions.transforms.SigmoidTransform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.SigmoidTransform",
+    "args_list": [
+      "cache_size"
+    ],
+    "kwargs_change": {
+      "cache_size": ""
+    }
+  },
   "torch.distributions.transforms.SoftmaxTransform": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.SoftmaxTransform",
@@ -4125,6 +4160,28 @@
     ],
     "kwargs_change": {
       "cache_size": ""
+    }
+  },
+  "torch.distributions.transforms.Transform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Transform",
+    "args_list": [
+      "cache_size"
+    ],
+    "kwargs_change": {
+      "cache_size": ""
+    }
+  },
+  "torch.distributions.uniform.Uniform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Uniform",
+    "args_list": [
+      "low",
+      "high",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
     }
   },
   "torch.div": {
