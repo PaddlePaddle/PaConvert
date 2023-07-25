@@ -8651,6 +8651,66 @@
       "input": "x"
     }
   },
+  "torch.optim.Adadelta": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.optimizer.Adadelta",
+    "args_list": [
+      "params",
+      "rho",
+      "eps",
+      "lr",
+      "weight_decay",
+      "maximize"
+    ],
+    "unsupport_args": [
+      "maximize"
+    ],
+    "kwargs_change": {
+      "params": "parameters",
+      "eps": "epsilon",
+      "lr": "learning_rate"
+    },
+    "paddle_default_kwargs": {
+      "rho": 0.9,
+      "weight_decay": 0,
+      "learning_rate": 1.0
+    }
+  },
+  "torch.optim.Adadelta.step": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.optimizer.Adadelta.step"
+  },
+  "torch.optim.Adagrad": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.optimizer.Adagrad",
+    "args_list": [
+      "params",
+      "lr",
+      "weight_decay",
+      "initial_accumulator_value",
+      "eps",
+      "lr_decay",
+      "maximize"
+    ],
+    "unsupport_args": [
+      "lr_decay",
+      "maximize"
+    ],
+    "kwargs_change": {
+      "params": "parameters",
+      "lr": "learning_rate",
+      "eps": "epsilon"
+    },
+    "paddle_default_kwargs": {
+      "weight_decay": 0,
+      "epsilon": 1e-10,
+      "learning_rate": 0.01
+    }
+  },
+  "torch.optim.Adagrad.step": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.optimizer.Adagrad.step"
+  },
   "torch.optim.Optimizer": {
     "Matcher": "OptimOptimizerMatcher",
     "args_list": [
