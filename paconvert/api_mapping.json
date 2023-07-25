@@ -1635,7 +1635,18 @@
       "dim"
     ]
   },
-  "torch.Tensor.nanquantile": {},
+  "torch.Tensor.nanquantile": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.nanquantile",
+    "args_list": [
+      "q",
+      "dim",
+      "keepdim"
+    ],
+    "kwargs_change": {
+      "dim": "axis"
+    }
+  },
   "torch.Tensor.nansum": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.nansum",
@@ -1814,7 +1825,13 @@
     "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.linalg.pinv"
   },
-  "torch.Tensor.polygamma": {},
+  "torch.Tensor.polygamma": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.polygamma",
+    "args_list": [
+      "n"
+    ]
+  },
   "torch.Tensor.polygamma_": {},
   "torch.Tensor.positive": {},
   "torch.Tensor.pow": {
@@ -1846,7 +1863,13 @@
   "torch.Tensor.q_per_channel_zero_points": {},
   "torch.Tensor.q_scale": {},
   "torch.Tensor.q_zero_point": {},
-  "torch.Tensor.qr": {},
+  "torch.Tensor.qr": {
+    "Matcher": "QrMatcher",
+    "paddle_api": "paddle.Tensor.qr",
+    "args_list": [
+      "some"
+    ]
+  },
   "torch.Tensor.qscheme": {},
   "torch.Tensor.quantile": {},
   "torch.Tensor.rad2deg": {
