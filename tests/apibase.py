@@ -176,7 +176,10 @@ class APIBase(object):
             )
         if check_value:
             assert np.allclose(
-                pytorch_numpy.mean(), paddle_numpy.mean(), atol=0.0, rtol=1.0e-6
+                np.abs(pytorch_numpy).mean(),
+                np.abs(paddle_numpy).mean(),
+                atol=0.0,
+                rtol=1.0e-6,
             ), "API ({}): paddle result has diff with pytorch result".format(name)
 
     def convert(self, pytorch_code):
