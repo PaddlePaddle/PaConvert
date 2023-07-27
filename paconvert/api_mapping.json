@@ -9745,6 +9745,18 @@
       "out"
     ]
   },
+  "torch.special.polygamma": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.polygamma",
+    "args_list": [
+      "n",
+      "input",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.special.psi": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.digamma",
