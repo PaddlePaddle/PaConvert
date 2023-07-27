@@ -51,18 +51,7 @@ def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.sparse_coo_tensor(torch.empty([1, 0]), [], [1])
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def _test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.sparse_coo_tensor(torch.empty([1, 0]), torch.empty([0, 2]), [1, 2])
-        result = result.to_dense()
+        result = torch.sparse_coo_tensor(torch.empty([2, 0]), [], [1])
         """
     )
     obj.run(pytorch_code, ["result"])

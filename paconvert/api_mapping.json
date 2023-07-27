@@ -585,12 +585,16 @@
     }
   },
   "torch.Tensor.cov": {
-    "Matcher": "CovMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.cov",
     "args_list": [
       "correction",
-      "fweight",
-      "aweight"
-    ]
+      "fweights",
+      "aweights"
+    ],
+    "kwargs_change": {
+      "correction": "ddof"
+    }
   },
   "torch.Tensor.cpu": {
     "Matcher": "GenericMatcher",
@@ -1050,6 +1054,7 @@
     }
   },
   "torch.Tensor.histc": {
+    "paddle_api": "paddle.Tensor.histogram",
     "Matcher": "TensorHistcMatcher",
     "args_list": [
       "bins",
@@ -1058,7 +1063,6 @@
     ]
   },
   "torch.Tensor.histogram": {
-    "Matcher": "TensorHistogramMatcher",
     "paddle_api": "paddle.Tensor.histogram",
     "args_list": [
       "bins",
@@ -2617,7 +2621,7 @@
     ]
   },
   "torch.all": {
-    "Matcher": "AllMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.all",
     "args_list": [
       "input",
@@ -2694,7 +2698,7 @@
     }
   },
   "torch.any": {
-    "Matcher": "AllMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.any",
     "args_list": [
       "input",
@@ -3455,13 +3459,18 @@
     }
   },
   "torch.cov": {
-    "Matcher": "CovMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.cov",
     "args_list": [
       "input",
       "correction",
-      "fweight",
-      "aweight"
-    ]
+      "fweights",
+      "aweights"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "correction": "ddof"
+    }
   },
   "torch.cross": {
     "Matcher": "GenericMatcher",
@@ -9582,7 +9591,8 @@
       "requires_grad"
     ],
     "kwargs_change": {
-      "size": "shape"
+      "size": "shape",
+      "device": "place"
     }
   },
   "torch.special.digamma": {

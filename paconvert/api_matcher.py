@@ -69,8 +69,8 @@ class GenericMatcher(BaseMatcher):
             dtype_v = new_kwargs.pop("dtype")
 
         pin_memory_v = False
-        if "pin_memory" in new_kwargs:
-            pin_memory_v = eval(new_kwargs.pop("pin_memory"))
+        if "pin_memory" in new_kwargs and new_kwargs.pop("pin_memory") == "(True)":
+            pin_memory_v = True
 
         stop_gradient_v = None
         if "requires_grad" in new_kwargs:
@@ -297,8 +297,8 @@ class CreateMatcher(BaseMatcher):
                 kwargs.pop(k)
 
         pin_memory_v = False
-        if "pin_memory" in kwargs:
-            pin_memory_v = eval(kwargs.pop("pin_memory"))
+        if "pin_memory" in kwargs and kwargs.pop("pin_memory") == "(True)":
+            pin_memory_v = True
 
         stop_gradient_v = None
         if "requires_grad" in kwargs:
@@ -340,7 +340,6 @@ class CreateMatcher(BaseMatcher):
             code = API_TEMPLATE.format(res, out_v)
         else:
             code = "{}".format(res)
-
         return ast.parse(code).body
 
 
@@ -679,6 +678,9 @@ class TensorRepeatMatcher(BaseMatcher):
         self.parse_func(func)
         kwargs = self.parse_kwargs(kwargs)
 
+        if len(args) == 0 and len(kwargs) == 0:
+            return "NonTorchClass"
+
         if "axis" in kwargs:
             return "NonTorchClass"
 
@@ -801,8 +803,8 @@ class TensorNew_Matcher(BaseMatcher):
             stop_gradient_v = "not " + kwargs.pop("requires_grad").strip("()")
 
         pin_memory_v = False
-        if "pin_memory" in kwargs:
-            pin_memory_v = eval(kwargs.pop("pin_memory"))
+        if "pin_memory" in kwargs and kwargs.pop("pin_memory") == "(True)":
+            pin_memory_v = True
 
         if "dtype" not in kwargs:
             kwargs["dtype"] = "{}.dtype".format(self.paddleClass)
@@ -845,8 +847,8 @@ class TensorNewFullMatcher(BaseMatcher):
             stop_gradient_v = "not " + kwargs.pop("requires_grad").strip("()")
 
         pin_memory_v = False
-        if "pin_memory" in kwargs:
-            pin_memory_v = eval(kwargs.pop("pin_memory"))
+        if "pin_memory" in kwargs and kwargs.pop("pin_memory") == "(True)":
+            pin_memory_v = True
 
         if "dtype" not in kwargs:
             kwargs["dtype"] = "{}.dtype".format(self.paddleClass)
@@ -883,10 +885,8 @@ class TensorNewTensorMatcher(BaseMatcher):
         if "requires_grad" in kwargs:
             kwargs["stop_gradient"] = "not " + kwargs.pop("requires_grad").strip("()")
 
-        if "pin_memory" in kwargs:
-            if eval(kwargs["pin_memory"]):
-                kwargs["place"] = "paddle.CUDAPinnedPlace()"
-            kwargs.pop("pin_memory")
+        if "pin_memory" in kwargs and kwargs.pop("pin_memory") == "(True)":
+            kwargs["place"] = "paddle.CUDAPinnedPlace()"
 
         if "dtype" not in kwargs:
             kwargs["dtype"] = "{}.dtype".format(self.paddleClass)
@@ -904,10 +904,8 @@ class TorchTensorMatcher(BaseMatcher):
         if "requires_grad" in kwargs:
             kwargs["stop_gradient"] = "not " + kwargs.pop("requires_grad").strip("()")
 
-        if "pin_memory" in kwargs:
-            if eval(kwargs["pin_memory"]):
-                kwargs["place"] = "paddle.CUDAPinnedPlace()"
-            kwargs.pop("pin_memory")
+        if "pin_memory" in kwargs and kwargs.pop("pin_memory") == "(True)":
+            kwargs["place"] = "paddle.CUDAPinnedPlace()"
 
         code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
@@ -1876,13 +1874,6 @@ class TensorRequires_GradMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
-class AllMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        kwargs["input"] = kwargs["input"] + ".astype(dtype='bool')"
-        code = GenericMatcher.generate_code(self, kwargs)
-        return code
-
-
 class ArangeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "end" not in kwargs:
@@ -2848,31 +2839,6 @@ class HypotMatcher(BaseMatcher):
         return code
 
 
-class TensorHistcMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "bins" not in kwargs:
-            kwargs["bins"] = 100
-        if "min" not in kwargs:
-            kwargs["min"] = 0
-        if "max" not in kwargs:
-            kwargs["max"] = 0
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {}.histogram(bins={}, min={}, max={}).astype({}.dtype)
-            """
-        )
-        code = API_TEMPLATE.format(
-            self.paddleClass,
-            kwargs["bins"],
-            kwargs["min"],
-            kwargs["max"],
-            self.paddleClass,
-        )
-
-        return code
-
-
 class TensorReshapeMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -3062,16 +3028,34 @@ class SLogDetMatcher(BaseMatcher):
 
 class HistcMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-
-        if "out" in kwargs and kwargs["out"] is not None:
+        if "out" in kwargs:
             out_v = kwargs.pop("out").strip("\n")
-            code = "paddle.assign({}({}).astype('float32'), output={})".format(
-                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v
+            code = "paddle.assign({}({}).astype({}.dtype), output={})".format(
+                self.get_paddle_api(),
+                self.kwargs_to_str(kwargs),
+                kwargs["input"],
+                out_v,
             )
         else:
-            code = "{}({}).astype('float32')".format(
-                self.get_paddle_api(), self.kwargs_to_str(kwargs)
+            code = "{}({}).astype({}.dtype)".format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs), kwargs["input"]
             )
+
+        return code
+
+
+class TensorHistcMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}({}).astype({}.dtype)
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.get_paddle_api(),
+            self.kwargs_to_str(kwargs),
+            self.paddleClass,
+        )
 
         return code
 
@@ -3087,7 +3071,6 @@ class TensorHistogramMatcher(BaseMatcher):
 
 class SpecialNdtriMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-
         API_TEMPLATE = textwrap.dedent(
             """
             2 ** (1/2) * paddle.erfinv(2*{}-1)
@@ -3102,7 +3085,6 @@ class SpecialNdtriMatcher(BaseMatcher):
 
 class AdjointMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-
         if "input" not in kwargs:
             kwargs["input"] = self.paddleClass
 
@@ -3134,39 +3116,6 @@ class SpecialXLog1pYMatcher(BaseMatcher):
         )
         if "out" in kwargs and kwargs["out"] is not None:
             code = "paddle.assign({}, output={})".format(code, kwargs["out"])
-
-        return code
-
-
-class CovMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "input" not in kwargs:
-            kwargs["input"] = self.paddleClass
-
-        if "correction" in kwargs:
-            if kwargs["correction"].strip("()") == "1":
-                kwargs["ddof"] = True
-            elif kwargs["correction"].strip("()") == "0":
-                kwargs["ddof"] = False
-            else:
-                return None
-        else:
-            kwargs["ddof"] = True
-
-        if "fweights" not in kwargs:
-            kwargs["fweights"] = None
-
-        if "aweights" not in kwargs:
-            kwargs["aweights"] = None
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle.linalg.cov({}, ddof={}, fweights={}, aweights={})
-            """
-        )
-        code = API_TEMPLATE.format(
-            kwargs["input"], kwargs["ddof"], kwargs["fweights"], kwargs["aweights"]
-        )
 
         return code
 
