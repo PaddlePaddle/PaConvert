@@ -16,16 +16,40 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.beta.Beta")
+obj = APIBase("torch.distributions.StickBreakingTransform")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.beta.Beta(torch.tensor([0.5]), torch.tensor([0.5]))
-        n = torch.distributions.beta.Beta(torch.tensor([0.3]), torch.tensor([0.7]))
-        result = torch.distributions.kl.kl_divergence(m, n)
+        x = torch.ones((2,3))
+        t = torch.distributions.StickBreakingTransform()
+        result = t(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones((2,3))
+        t = torch.distributions.StickBreakingTransform(cache_size=0)
+        result = t(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones((2,3))
+        t = torch.distributions.transforms.StickBreakingTransform(cache_size=0)
+        result = t(x)
         """
     )
     obj.run(pytorch_code, ["result"])

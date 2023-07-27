@@ -16,37 +16,52 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.normal.Normal")
+obj = APIBase("torch.distributions.OneHotCategorical")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.normal.Normal(torch.tensor([0.0]), torch.tensor([1.0]))
-        result = m.sample([1])
+        m = torch.distributions.OneHotCategorical(torch.tensor([ 0.25, 0.25, 0.25, 0.25 ]))
+        result = m.sample()
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support this function temporarily",
+    )
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.normal.Normal(loc=torch.tensor([0.0]), scale=torch.tensor([1.0]))
-        result = m.sample([1])
+        m = torch.distributions.OneHotCategorical(probs=torch.tensor([ 0.25, 0.25, 0.25, 0.25 ]), logits=None, validate_args=False)
+        result = m.sample()
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support this function temporarily",
+    )
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.normal.Normal(loc=torch.tensor([0.0]), scale=torch.tensor([1.0]), validate_args=False)
-        result = m.sample([1])
+        m = torch.distributions.one_hot_categorical.OneHotCategorical(torch.tensor([ 0.25, 0.25, 0.25, 0.25 ]), validate_args=False)
+        result = m.sample()
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support this function temporarily",
+    )

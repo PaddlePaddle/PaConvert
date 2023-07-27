@@ -16,55 +16,40 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.exponential.Exponential")
+obj = APIBase("torch.distributions.SigmoidTransform")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.exponential.Exponential(torch.tensor([1.0]))
-        result = m.sample([100])
+        x = torch.ones((2,3))
+        t = torch.distributions.SigmoidTransform()
+        result = t(x)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.exponential.Exponential(rate=torch.tensor([1.0]))
-        result = m.sample([100])
+        x = torch.ones((2,3))
+        t = torch.distributions.SigmoidTransform(cache_size=0)
+        result = t(x)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.exponential.Exponential(torch.tensor([1.0]), validate_args=False)
-        result = m.sample([100])
+        x = torch.ones((2,3))
+        t = torch.distributions.transforms.SigmoidTransform(cache_size=0)
+        result = t(x)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])

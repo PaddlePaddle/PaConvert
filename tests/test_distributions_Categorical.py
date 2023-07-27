@@ -16,15 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.uniform.Uniform")
+obj = APIBase("torch.distributions.Categorical")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.uniform.Uniform(torch.tensor([0.0]), torch.tensor([5.0]))
-        result = m.sample([10])
+        m = torch.distributions.Categorical(logits=torch.tensor([0.25, 0.25, 0.25, 0.25]))
+        result = m.sample([1])
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -34,19 +34,36 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.uniform.Uniform(low=torch.tensor([0.0]), high=torch.tensor([5.0]))
-        result = m.sample([10])
+        m = torch.distributions.Categorical(probs=None, logits=torch.tensor([0.25, 0.25, 0.25, 0.25]))
+        result = m.sample([1])
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle does not support probs temporarily",
+    )
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.uniform.Uniform(low=torch.tensor([0.0]), high=torch.tensor([5.0]), validate_args=None)
-        result = m.sample([10])
+        m = torch.distributions.Categorical(logits=torch.tensor([0.25, 0.25, 0.25, 0.25]), validate_args=False)
+        result = m.sample([1])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.categorical.Categorical(logits=torch.tensor([0.25, 0.25, 0.25, 0.25]), validate_args=False)
+        result = m.sample([1])
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)

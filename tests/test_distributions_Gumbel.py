@@ -16,14 +16,14 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.bernoulli.Bernoulli")
+obj = APIBase("torch.distributions.Gumbel")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.bernoulli.Bernoulli(torch.tensor([0.3]))
+        m = torch.distributions.Gumbel(torch.tensor([1.0]), torch.tensor([2.0]))
         result = m.sample([100])
         """
     )
@@ -34,24 +34,18 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.bernoulli.Bernoulli(probs=torch.tensor([0.3]), logits=None)
+        m = torch.distributions.Gumbel(loc=torch.tensor([1.0]), scale=torch.tensor([2.0]), validate_args=False)
         result = m.sample([100])
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="paddle does not support logits temporarily",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.bernoulli.Bernoulli(0.3, validate_args=False)
+        m = torch.distributions.gumbel.Gumbel(loc=torch.tensor([1.0]), scale=torch.tensor([2.0]), validate_args=False)
         result = m.sample([100])
         """
     )

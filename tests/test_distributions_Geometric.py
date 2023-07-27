@@ -16,14 +16,14 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.geometric.Geometric")
+obj = APIBase("torch.distributions.Geometric")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.geometric.Geometric(torch.tensor([0.3]))
+        m = torch.distributions.Geometric(torch.tensor([0.3]))
         result = m.sample([100])
         """
     )
@@ -34,7 +34,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.geometric.Geometric(probs=torch.tensor([0.3]), logits=None)
+        m = torch.distributions.Geometric(probs=torch.tensor([0.3]), logits=None)
         result = m.sample([100])
         """
     )
@@ -48,6 +48,17 @@ def test_case_2():
 
 
 def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Geometric(0.3, validate_args=False)
+        result = m.sample([100])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch

@@ -16,14 +16,14 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.binomial.Binomial")
+obj = APIBase("torch.distributions.Binomial")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.binomial.Binomial(100, torch.tensor([0, .2, .8, 1]))
+        m = torch.distributions.Binomial(100, torch.tensor([0, .2, .8, 1]))
         result = m.sample()
         """
     )
@@ -39,7 +39,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.binomial.Binomial(1, probs=torch.tensor([0.3]), logits=None)
+        m = torch.distributions.Binomial(1, probs=torch.tensor([0.3]), logits=None)
         result = m.sample()
         """
     )
@@ -52,6 +52,22 @@ def test_case_2():
 
 
 def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Binomial(1, 0.3, validate_args=False)
+        result = m.sample()
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support this function temporarily",
+    )
+
+
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch

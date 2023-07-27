@@ -14,31 +14,18 @@
 
 import textwrap
 
-import paddle
 from apibase import APIBase
 
-
-class TransformAPIBase(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-    ):
-        assert isinstance(paddle_result, paddle.distribution.transform.Transform)
-
-
-obj = TransformAPIBase("torch.distributions.transforms.Transform")
+obj = APIBase("torch.distributions.Beta")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.distributions.transforms.Transform()
+        m = torch.distributions.Beta(torch.tensor([0.5]), torch.tensor([0.5]))
+        n = torch.distributions.Beta(torch.tensor([0.3]), torch.tensor([0.7]))
+        result = torch.distributions.kl.kl_divergence(m, n)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -48,7 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.distributions.transforms.Transform(cache_size=0)
+        m = torch.distributions.beta.Beta(torch.tensor([0.5]), torch.tensor([0.5]))
+        n = torch.distributions.beta.Beta(torch.tensor([0.3]), torch.tensor([0.7]))
+        result = torch.distributions.kl.kl_divergence(m, n)
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -16,15 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.categorical.Categorical")
+obj = APIBase("torch.distributions.TransformedDistribution")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.categorical.Categorical(logits=torch.tensor([0.25, 0.25, 0.25, 0.25]))
-        result = m.sample([1])
+        base_distribution = torch.distributions.Normal(torch.tensor([0.0]), torch.tensor([1.0]))
+        transforms = [torch.distributions.SigmoidTransform()]
+        m = torch.distributions.TransformedDistribution(base_distribution, transforms)
+        result = m.sample([10])
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -34,25 +36,23 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.categorical.Categorical(probs=None, logits=torch.tensor([0.25, 0.25, 0.25, 0.25]))
-        result = m.sample([1])
+        base_distribution = torch.distributions.Normal(torch.tensor([0.0]), torch.tensor([1.0]))
+        transforms = [torch.distributions.SigmoidTransform()]
+        m = torch.distributions.TransformedDistribution(base_distribution, transforms=transforms, validate_args=None)
+        result = m.sample([10])
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="paddle does not support probs temporarily",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.categorical.Categorical(logits=torch.tensor([0.25, 0.25, 0.25, 0.25]), validate_args=False)
-        result = m.sample([1])
+        base_distribution = torch.distributions.Normal(torch.tensor([0.0]), torch.tensor([1.0]))
+        transforms = [torch.distributions.SigmoidTransform()]
+        m = torch.distributions.transformed_distribution.TransformedDistribution(base_distribution, transforms=transforms, validate_args=None)
+        result = m.sample([10])
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
