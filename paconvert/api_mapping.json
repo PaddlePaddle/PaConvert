@@ -9996,6 +9996,32 @@
       "acltual": "x"
     }
   },
+  "torch.testing.assert_close": {
+    "Matcher": "Assert_AllcloseMatcher",
+    "paddle_api": "paddle.allclose",
+    "args_list": [
+      "actual",
+      "expected",
+      "rtol",
+      "atol",
+      "equal_nan",
+      "msg",
+      "allow_subclasses",
+      "check_device",
+      "check_dtype",
+      "check_layout",
+      "check_stride"
+    ],
+    "kwargs_change": {
+      "actual": "x",
+      "expected": "y",
+      "allow_subclasses": "",
+      "check_device": "",
+      "check_dtype": "",
+      "check_layout": "",
+      "check_stride": ""
+    }
+  },
   "torch.tile": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.tile",
