@@ -29,8 +29,12 @@
     "Matcher": "Attribute2Func",
     "paddle_api": "paddle.Tensor.is_sparse"
   },
-  "torch.Tensor.mH": {},
-  "torch.Tensor.mT": {},
+  "torch.Tensor.mH": {
+    "Matcher": "TensorMhMatcher"
+  },
+  "torch.Tensor.mT": {
+    "Matcher": "TensorMtMatcher"
+  },
   "torch.Tensor.names": {},
   "torch.Tensor.ndim": {
     "Matcher": "TensorUnchangeMatcher"

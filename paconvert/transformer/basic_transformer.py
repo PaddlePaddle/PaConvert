@@ -185,7 +185,8 @@ class BasicTransformer(BaseTransformer):
                         )
                         return node
                     elif new_node:
-                        new_node = new_node[-1]
+                        node_list = new_node
+                        new_node = node_list[-1]
                         if isinstance(new_node, ast.Expr):
                             new_node = new_node.value
 
@@ -203,6 +204,7 @@ class BasicTransformer(BaseTransformer):
                                 ast.Assert,
                             ),
                         ):
+                            self.insert_multi_node(node_list[0:-1])
                             self.success_api_count += 1
                             log_debug(
                                 self.logger,
