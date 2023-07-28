@@ -8794,6 +8794,14 @@
       "scale_factor"
     ]
   },
+  "torch.nn.init.calculate_gain": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.initializer.calculate_gain",
+    "args_list": [
+      "nonlinearity",
+      "param"
+    ]
+  },
   "torch.nn.modules.batchnorm._BatchNorm": {
     "Matcher": "Modules_BatchNormBaseMatcher",
     "paddle_api": "paddle.nn.layer.norm._BatchNormBase",
