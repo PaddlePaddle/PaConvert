@@ -99,15 +99,23 @@ class BaseTransformer(ast.NodeTransformer):
                     if node == self.node_stack[i + 1]:
                         return scope_node, "body", index
 
+                # else in (if scope)
                 if getattr(scope_node, "orelse", None):
                     for index, node in enumerate(scope_node.orelse):
                         if node == self.node_stack[i + 1]:
                             return scope_node, "orelse", index
 
+                # decorator in (function scope)
                 if getattr(scope_node, "decorator_list", None):
                     for index, node in enumerate(scope_node.decorator_list):
                         if node == self.node_stack[i + 1]:
                             return scope_node, "decorator_list", index
+
+                # finnally in (try scope)
+                if getattr(scope_node, "finalbody", None):
+                    for index, node in enumerate(scope_node.finalbody):
+                        if node == self.node_stack[i + 1]:
+                            return scope_node, "finalbody", index
 
         return self.scope_body_index(-2)
 
@@ -167,8 +175,11 @@ class BaseTransformer(ast.NodeTransformer):
             else:
                 other_nodes.append(node)
 
-        self.record_scope((self.root, "body", 0), import_nodes)
-        self.record_scope(self.scope_body_index(), other_nodes)
+        if len(import_nodes) > 0:
+            self.record_scope((self.root, "body", 0), import_nodes)
+
+        if len(other_nodes) > 0:
+            self.record_scope(self.scope_body_index(), other_nodes)
 
     def get_full_attr(self, node):
         # torch.nn.functional.relu
