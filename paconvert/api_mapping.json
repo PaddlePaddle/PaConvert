@@ -5307,6 +5307,19 @@
       "A": "x"
     }
   },
+  "torch.linalg.cond": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.cond",
+    "args_list": [
+      "A",
+      "input",
+      "p"
+    ],
+    "kwargs_change": {
+      "A": "x",
+      "input": "x"
+    }
+  },
   "torch.linalg.cross": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.cross",
