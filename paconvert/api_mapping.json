@@ -2891,6 +2891,22 @@
       "device": "place"
     }
   },
+  "torch.asarray": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.to_tensor",
+    "args_list": [
+      "obj",
+      "dtype",
+      "device",
+      "requires_grad",
+      "copy"
+    ],
+    "kwargs_change": {
+      "obj": "data",
+      "device": "place",
+      "copy": ""
+    }
+  },
   "torch.asin": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.asin",
