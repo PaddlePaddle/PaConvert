@@ -9766,6 +9766,14 @@
       "input": "x"
     }
   },
+  "torch.special.round": {
+    "Matcher": "RoundMatcher",
+    "args_list": [
+      "input",
+      "decimals",
+      "out"
+    ]
+  },
   "torch.special.sinc": {
     "Matcher": "SincMatcher",
     "args_list": [
