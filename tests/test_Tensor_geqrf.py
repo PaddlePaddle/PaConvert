@@ -24,7 +24,7 @@ def test_case_1():
         """
         import torch
         x = torch.tensor([1])
-        result = torch.geqrf(x)
+        result = x.geqrf()
         """
     )
     obj.run(
@@ -40,7 +40,7 @@ def test_case_2():
         """
         import torch
         x = torch.tensor([[1, 2, 3], [3, 4, 6]])
-        result = torch.geqrf(x)
+        result = x.geqrf()
         """
     )
     obj.run(
@@ -56,7 +56,7 @@ def test_case_3():
         """
         import torch
         x = torch.randn(3, 4, 5)
-        result = torch.geqrf(x)
+        result = x.geqrf()
         """
     )
     obj.run(
