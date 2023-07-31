@@ -9272,6 +9272,9 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.get_cuda_rng_state"
   },
+  "torch.random.initial_seed": {
+    "Matcher": "SeedMatcher"
+  },
   "torch.random.manual_seed": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.seed",
