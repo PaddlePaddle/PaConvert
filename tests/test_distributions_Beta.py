@@ -16,43 +16,28 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.geometric.Geometric")
+obj = APIBase("torch.distributions.Beta")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.geometric.Geometric(torch.tensor([0.3]))
-        result = m.sample([100])
+        m = torch.distributions.Beta(torch.tensor([0.5]), torch.tensor([0.5]))
+        n = torch.distributions.Beta(torch.tensor([0.3]), torch.tensor([0.7]))
+        result = torch.distributions.kl.kl_divergence(m, n)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.geometric.Geometric(probs=torch.tensor([0.3]), logits=None)
-        result = m.sample([100])
+        m = torch.distributions.beta.Beta(torch.tensor([0.5]), torch.tensor([0.5]))
+        n = torch.distributions.beta.Beta(torch.tensor([0.3]), torch.tensor([0.7]))
+        result = torch.distributions.kl.kl_divergence(m, n)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="paddle does not support logits temporarily",
-    )
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        m = torch.distributions.geometric.Geometric(0.3, validate_args=False)
-        result = m.sample([100])
-        """
-    )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])

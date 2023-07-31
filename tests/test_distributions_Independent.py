@@ -16,15 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.independent.Independent")
+obj = APIBase("torch.distributions.Independent")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        beta = torch.distributions.beta.Beta(torch.tensor([0.5, 0.5]), torch.tensor([0.5, 0.5]))
-        reinterpreted_beta = torch.distributions.independent.Independent(beta, 1)
+        beta = torch.distributions.Beta(torch.tensor([0.5, 0.5]), torch.tensor([0.5, 0.5]))
+        reinterpreted_beta = torch.distributions.Independent(beta, 1)
         result = reinterpreted_beta.log_prob(torch.tensor([0.2,  0.2]))
         """
     )
@@ -35,8 +35,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        beta = torch.distributions.beta.Beta(torch.tensor([0.5, 0.5]), torch.tensor([0.5, 0.5]))
-        reinterpreted_beta = torch.distributions.independent.Independent(base_distribution=beta, reinterpreted_batch_ndims=1)
+        beta = torch.distributions.Beta(torch.tensor([0.5, 0.5]), torch.tensor([0.5, 0.5]))
+        reinterpreted_beta = torch.distributions.Independent(base_distribution=beta, reinterpreted_batch_ndims=1)
         result = reinterpreted_beta.log_prob(torch.tensor([0.2,  0.2]))
         """
     )
@@ -47,7 +47,19 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        beta = torch.distributions.beta.Beta(torch.tensor([0.5, 0.5]), torch.tensor([0.5, 0.5]))
+        beta = torch.distributions.Beta(torch.tensor([0.5, 0.5]), torch.tensor([0.5, 0.5]))
+        reinterpreted_beta = torch.distributions.Independent(beta, 1, validate_args=False)
+        result = reinterpreted_beta.log_prob(torch.tensor([0.2,  0.2]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        beta = torch.distributions.Beta(torch.tensor([0.5, 0.5]), torch.tensor([0.5, 0.5]))
         reinterpreted_beta = torch.distributions.independent.Independent(beta, 1, validate_args=False)
         result = reinterpreted_beta.log_prob(torch.tensor([0.2,  0.2]))
         """

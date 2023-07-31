@@ -16,15 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.transforms.StickBreakingTransform")
+obj = APIBase("torch.distributions.StackTransform")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones((2,3))
-        t = torch.distributions.transforms.StickBreakingTransform()
+        x = torch.ones((1, 2))
+        tseq = [torch.distributions.SoftmaxTransform()]
+        t = torch.distributions.StackTransform(tseq)
         result = t(x)
         """
     )
@@ -35,8 +36,35 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones((2,3))
-        t = torch.distributions.transforms.StickBreakingTransform(cache_size=0)
+        x = torch.ones((1, 2))
+        tseq = [torch.distributions.SoftmaxTransform()]
+        t = torch.distributions.StackTransform(tseq, cache_size=0)
+        result = t(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones((2, 1))
+        tseq = [torch.distributions.SoftmaxTransform()]
+        t = torch.distributions.StackTransform(tseq, dim=1)
+        result = t(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones((2, 1))
+        tseq = [torch.distributions.SoftmaxTransform()]
+        t = torch.distributions.transforms.StackTransform(tseq, dim=1)
         result = t(x)
         """
     )

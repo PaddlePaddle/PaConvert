@@ -3948,7 +3948,7 @@
       "pg_options"
     ]
   },
-  "torch.distributions.bernoulli.Bernoulli": {
+  "torch.distributions.Bernoulli": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Bernoulli",
     "args_list": [
@@ -3963,7 +3963,7 @@
       "logits"
     ]
   },
-  "torch.distributions.beta.Beta": {
+  "torch.distributions.Beta": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Beta",
     "args_list": [
@@ -3976,7 +3976,7 @@
       "concentration0": "beta"
     }
   },
-  "torch.distributions.categorical.Categorical": {
+  "torch.distributions.Categorical": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Categorical",
     "args_list": [
@@ -3991,7 +3991,7 @@
       "probs"
     ]
   },
-  "torch.distributions.cauchy.Cauchy": {
+  "torch.distributions.Cauchy": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Cauchy",
     "args_list": [
@@ -4003,7 +4003,19 @@
       "validate_args": ""
     }
   },
-  "torch.distributions.dirichlet.Dirichlet": {
+  "torch.distributions.ComposeTransform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.ChainTransform",
+    "args_list": [
+      "parts",
+      "cache_size"
+    ],
+    "kwargs_change": {
+      "parts": "transforms",
+      "cache_size": ""
+    }
+  },
+  "torch.distributions.Dirichlet": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Dirichlet",
     "args_list": [
@@ -4014,7 +4026,7 @@
       "validate_args": ""
     }
   },
-  "torch.distributions.exp_family.ExponentialFamily": {
+  "torch.distributions.ExponentialFamily": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.ExponentialFamily",
     "args_list": [
@@ -4026,7 +4038,7 @@
       "validate_args": ""
     }
   },
-  "torch.distributions.geometric.Geometric": {
+  "torch.distributions.Geometric": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Geometric",
     "args_list": [
@@ -4041,7 +4053,7 @@
       "logits"
     ]
   },
-  "torch.distributions.gumbel.Gumbel": {
+  "torch.distributions.Gumbel": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Gumbel",
     "args_list": [
@@ -4053,7 +4065,7 @@
       "validate_args": ""
     }
   },
-  "torch.distributions.independent.Independent": {
+  "torch.distributions.Independent": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Independent",
     "args_list": [
@@ -4064,6 +4076,137 @@
     "kwargs_change": {
       "base_distribution": "base",
       "reinterpreted_batch_ndims": "reinterpreted_batch_rank",
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.Laplace": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Laplace",
+    "args_list": [
+      "loc",
+      "scale",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.LogNormal": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.LogNormal",
+    "args_list": [
+      "loc",
+      "scale",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.Multinomial": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Multinomial",
+    "args_list": [
+      "total_count",
+      "probs",
+      "logits",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    },
+    "unsupport_args": [
+      "logits"
+    ]
+  },
+  "torch.distributions.Normal": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Normal",
+    "args_list": [
+      "loc",
+      "scale",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.SigmoidTransform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.SigmoidTransform",
+    "args_list": [
+      "cache_size"
+    ],
+    "kwargs_change": {
+      "cache_size": ""
+    }
+  },
+  "torch.distributions.SoftmaxTransform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.SoftmaxTransform",
+    "args_list": [
+      "cache_size"
+    ],
+    "kwargs_change": {
+      "cache_size": ""
+    }
+  },
+  "torch.distributions.StackTransform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.StackTransform",
+    "args_list": [
+      "tseq",
+      "dim",
+      "cache_size"
+    ],
+    "kwargs_change": {
+      "tseq": "transforms",
+      "dim": "axis",
+      "cache_size": ""
+    }
+  },
+  "torch.distributions.StickBreakingTransform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.StickBreakingTransform",
+    "args_list": [
+      "cache_size"
+    ],
+    "kwargs_change": {
+      "cache_size": ""
+    }
+  },
+  "torch.distributions.Transform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Transform",
+    "args_list": [
+      "cache_size"
+    ],
+    "kwargs_change": {
+      "cache_size": ""
+    }
+  },
+  "torch.distributions.TransformedDistribution": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.TransformedDistribution",
+    "args_list": [
+      "base_distribution",
+      "transforms",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "base_distribution": "base",
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.Uniform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Uniform",
+    "args_list": [
+      "low",
+      "high",
+      "validate_args"
+    ],
+    "kwargs_change": {
       "validate_args": ""
     }
   },
@@ -4085,92 +4228,6 @@
     "kwargs_change": {
       "type_p": "cls_p",
       "type_q": "cls_q"
-    }
-  },
-  "torch.distributions.laplace.Laplace": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.distribution.Laplace",
-    "args_list": [
-      "loc",
-      "scale",
-      "validate_args"
-    ],
-    "kwargs_change": {
-      "validate_args": ""
-    }
-  },
-  "torch.distributions.log_normal.LogNormal": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.distribution.LogNormal",
-    "args_list": [
-      "loc",
-      "scale",
-      "validate_args"
-    ],
-    "kwargs_change": {
-      "validate_args": ""
-    }
-  },
-  "torch.distributions.multinomial.Multinomial": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.distribution.Multinomial",
-    "args_list": [
-      "total_count",
-      "probs",
-      "logits",
-      "validate_args"
-    ],
-    "kwargs_change": {
-      "validate_args": ""
-    },
-    "unsupport_args": [
-      "logits"
-    ]
-  },
-  "torch.distributions.normal.Normal": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.distribution.Normal",
-    "args_list": [
-      "loc",
-      "scale",
-      "validate_args"
-    ],
-    "kwargs_change": {
-      "validate_args": ""
-    }
-  },
-  "torch.distributions.transforms.SoftmaxTransform": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.distribution.SoftmaxTransform",
-    "args_list": [
-      "cache_size"
-    ],
-    "kwargs_change": {
-      "cache_size": ""
-    }
-  },
-  "torch.distributions.transforms.StackTransform": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.distribution.StackTransform",
-    "args_list": [
-      "tseq",
-      "dim",
-      "cache_size"
-    ],
-    "kwargs_change": {
-      "tseq": "transforms",
-      "dim": "axis",
-      "cache_size": ""
-    }
-  },
-  "torch.distributions.transforms.StickBreakingTransform": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.distribution.StickBreakingTransform",
-    "args_list": [
-      "cache_size"
-    ],
-    "kwargs_change": {
-      "cache_size": ""
     }
   },
   "torch.div": {

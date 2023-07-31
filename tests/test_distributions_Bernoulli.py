@@ -14,53 +14,56 @@
 
 import textwrap
 
-import paddle
 from apibase import APIBase
 
-
-class ExponentialFamilyAPIBase(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-    ):
-        if isinstance(paddle_result, paddle.distribution.ExponentialFamily):
-            return True
-        return False
-
-
-obj = ExponentialFamilyAPIBase("torch.distributions.exp_family.ExponentialFamily")
+obj = APIBase("torch.distributions.Bernoulli")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.distributions.exp_family.ExponentialFamily()
+        m = torch.distributions.Bernoulli(torch.tensor([0.3]))
+        result = m.sample([100])
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.distributions.exp_family.ExponentialFamily(batch_shape=torch.Size([1]), event_shape=torch.Size([2]))
+        m = torch.distributions.Bernoulli(probs=torch.tensor([0.3]), logits=None)
+        result = m.sample([100])
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle does not support logits temporarily",
+    )
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.distributions.exp_family.ExponentialFamily(batch_shape=torch.Size([1]), event_shape=torch.Size([2]), validate_args=False)
+        m = torch.distributions.Bernoulli(0.3, validate_args=False)
+        result = m.sample([100])
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.bernoulli.Bernoulli(0.3, validate_args=False)
+        result = m.sample([100])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

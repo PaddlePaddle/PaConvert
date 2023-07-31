@@ -16,20 +16,21 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.one_hot_categorical.OneHotCategorical")
+obj = APIBase("torch.distributions.Exponential")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.one_hot_categorical.OneHotCategorical(torch.tensor([ 0.25, 0.25, 0.25, 0.25 ]))
-        result = m.sample()
+        m = torch.distributions.Exponential(torch.tensor([1.0]))
+        result = m.sample([100])
         """
     )
     obj.run(
         pytorch_code,
         ["result"],
+        check_value=False,
         unsupport=True,
         reason="paddle does not support this function temporarily",
     )
@@ -39,13 +40,14 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.one_hot_categorical.OneHotCategorical(probs=torch.tensor([ 0.25, 0.25, 0.25, 0.25 ]), logits=None)
-        result = m.sample()
+        m = torch.distributions.Exponential(rate=torch.tensor([1.0]))
+        result = m.sample([100])
         """
     )
     obj.run(
         pytorch_code,
         ["result"],
+        check_value=False,
         unsupport=True,
         reason="paddle does not support this function temporarily",
     )
@@ -55,13 +57,31 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.one_hot_categorical.OneHotCategorical(torch.tensor([ 0.25, 0.25, 0.25, 0.25 ]), validate_args=False)
-        result = m.sample()
+        m = torch.distributions.Exponential(torch.tensor([1.0]), validate_args=False)
+        result = m.sample([100])
         """
     )
     obj.run(
         pytorch_code,
         ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle does not support this function temporarily",
+    )
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.exponential.Exponential(torch.tensor([1.0]), validate_args=False)
+        result = m.sample([100])
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
         unsupport=True,
         reason="paddle does not support this function temporarily",
     )

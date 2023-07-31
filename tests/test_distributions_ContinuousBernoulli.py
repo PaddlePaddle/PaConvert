@@ -16,14 +16,14 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.continuous_bernoulli.ContinuousBernoulli")
+obj = APIBase("torch.distributions.ContinuousBernoulli")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.continuous_bernoulli.ContinuousBernoulli(torch.tensor([0.3]))
+        m = torch.distributions.ContinuousBernoulli(torch.tensor([0.3]))
         result = m.sample([100])
         """
     )
@@ -40,7 +40,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.continuous_bernoulli.ContinuousBernoulli(probs=torch.tensor([0.3]), logits=None)
+        m = torch.distributions.ContinuousBernoulli(probs=torch.tensor([0.3]), logits=None)
         result = m.sample([100])
         """
     )
@@ -54,6 +54,23 @@ def test_case_2():
 
 
 def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.ContinuousBernoulli(0.3, validate_args=False)
+        result = m.sample([100])
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle does not support this function temporarily",
+    )
+
+
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch

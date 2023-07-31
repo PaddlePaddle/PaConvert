@@ -14,39 +14,51 @@
 
 import textwrap
 
+import paddle
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.laplace.Laplace")
+
+class TransformAPIBase(APIBase):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+    ):
+        assert isinstance(paddle_result, paddle.distribution.transform.Transform)
+
+
+obj = TransformAPIBase("torch.distributions.Transform")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.laplace.Laplace(torch.tensor([0.0]), torch.tensor([1.0]))
-        result = m.sample([1])
+        result = torch.distributions.Transform()
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.laplace.Laplace(loc=torch.tensor([0.0]), scale=torch.tensor([1.0]))
-        result = m.sample([1])
+        result = torch.distributions.Transform(cache_size=0)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.laplace.Laplace(loc=torch.tensor([0.0]), scale=torch.tensor([1.0]), validate_args=False)
-        result = m.sample([1])
+        result = torch.distributions.transforms.Transform(cache_size=0)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])

@@ -16,28 +16,37 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.transforms.SoftmaxTransform")
+obj = APIBase("torch.distributions.Cauchy")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones((2,3))
-        t = torch.distributions.transforms.SoftmaxTransform()
-        result = t(x)
+        m = torch.distributions.Cauchy(torch.tensor([0.0]), torch.tensor([1.0]))
+        result = m.sample([1])
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones((2,3))
-        t = torch.distributions.transforms.SoftmaxTransform(cache_size=0)
-        result = t(x)
+        m = torch.distributions.Cauchy(loc=torch.tensor([0.0]), scale=torch.tensor([1.0]), validate_args=False)
+        result = m.sample([1])
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.cauchy.Cauchy(loc=torch.tensor([0.0]), scale=torch.tensor([1.0]), validate_args=False)
+        result = m.sample([1])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

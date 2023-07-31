@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.transforms.StackTransform")
+obj = APIBase("torch.distributions.ComposeTransform")
 
 
 def test_case_1():
@@ -24,9 +24,9 @@ def test_case_1():
         """
         import torch
         x = torch.ones((1, 2))
-        tseq = [torch.distributions.transforms.SoftmaxTransform()]
-        t = torch.distributions.transforms.StackTransform(tseq)
-        result = t(x)
+        tseq = [torch.distributions.SoftmaxTransform()]
+        t = torch.distributions.ComposeTransform(tseq)
+        result = t.forward_shape([1,2])
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -37,9 +37,9 @@ def test_case_2():
         """
         import torch
         x = torch.ones((1, 2))
-        tseq = [torch.distributions.transforms.SoftmaxTransform()]
-        t = torch.distributions.transforms.StackTransform(tseq, cache_size=0)
-        result = t(x)
+        tseq = [torch.distributions.SoftmaxTransform()]
+        t = torch.distributions.ComposeTransform(tseq, cache_size=0)
+        result = t.forward_shape([1,2])
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -50,9 +50,22 @@ def test_case_3():
         """
         import torch
         x = torch.ones((2, 1))
-        tseq = [torch.distributions.transforms.SoftmaxTransform()]
-        t = torch.distributions.transforms.StackTransform(tseq, dim=1)
-        result = t(x)
+        tseq = [torch.distributions.SoftmaxTransform()]
+        t = torch.distributions.ComposeTransform(parts=tseq)
+        result = t.forward_shape([1,2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones((2, 1))
+        tseq = [torch.distributions.SoftmaxTransform()]
+        t = torch.distributions.transforms.ComposeTransform(parts=tseq)
+        result = t.forward_shape([1,2])
         """
     )
     obj.run(pytorch_code, ["result"])

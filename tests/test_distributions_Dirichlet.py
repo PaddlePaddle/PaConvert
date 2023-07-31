@@ -16,14 +16,14 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.dirichlet.Dirichlet")
+obj = APIBase("torch.distributions.Dirichlet")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.dirichlet.Dirichlet(torch.tensor([0.3]))
+        m = torch.distributions.Dirichlet(torch.tensor([0.3]))
         result = m.sample([100])
         """
     )
@@ -34,7 +34,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.dirichlet.Dirichlet(concentration=torch.tensor([0.3]))
+        m = torch.distributions.Dirichlet(concentration=torch.tensor([0.3]), validate_args=False)
         result = m.sample([100])
         """
     )

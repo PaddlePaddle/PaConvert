@@ -16,55 +16,37 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.exponential.Exponential")
+obj = APIBase("torch.distributions.LogNormal")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.exponential.Exponential(torch.tensor([1.0]))
-        result = m.sample([100])
+        m = torch.distributions.LogNormal(torch.tensor([0.0]), torch.tensor([1.0]))
+        result = m.sample([1])
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.exponential.Exponential(rate=torch.tensor([1.0]))
-        result = m.sample([100])
+        m = torch.distributions.LogNormal(loc=torch.tensor([0.0]), scale=torch.tensor([1.0]), validate_args=False)
+        result = m.sample([1])
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.exponential.Exponential(torch.tensor([1.0]), validate_args=False)
-        result = m.sample([100])
+        m = torch.distributions.log_normal.LogNormal(loc=torch.tensor([0.0]), scale=torch.tensor([1.0]), validate_args=False)
+        result = m.sample([1])
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)

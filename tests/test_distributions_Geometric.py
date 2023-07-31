@@ -16,38 +16,34 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.binomial.Binomial")
+obj = APIBase("torch.distributions.Geometric")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.binomial.Binomial(100, torch.tensor([0, .2, .8, 1]))
-        result = m.sample()
+        m = torch.distributions.Geometric(torch.tensor([0.3]))
+        result = m.sample([100])
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.binomial.Binomial(1, probs=torch.tensor([0.3]), logits=None)
-        result = m.sample()
+        m = torch.distributions.Geometric(probs=torch.tensor([0.3]), logits=None)
+        result = m.sample([100])
         """
     )
     obj.run(
         pytorch_code,
         ["result"],
+        check_value=False,
         unsupport=True,
-        reason="paddle does not support this function temporarily",
+        reason="paddle does not support logits temporarily",
     )
 
 
@@ -55,13 +51,19 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.binomial.Binomial(1, 0.3, validate_args=False)
-        result = m.sample()
+        m = torch.distributions.Geometric(0.3, validate_args=False)
+        result = m.sample([100])
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.geometric.Geometric(0.3, validate_args=False)
+        result = m.sample([100])
+        """
     )
+    obj.run(pytorch_code, ["result"], check_value=False)

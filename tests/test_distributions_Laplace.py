@@ -16,15 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.multinomial.Multinomial")
+obj = APIBase("torch.distributions.Laplace")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.multinomial.Multinomial(1, torch.tensor([0.3]))
-        result = m.sample([100])
+        m = torch.distributions.Laplace(torch.tensor([0.0]), torch.tensor([1.0]))
+        result = m.sample([1])
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -34,25 +34,19 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.multinomial.Multinomial(total_count=1, probs=torch.tensor([0.3]), logits=None)
-        result = m.sample([100])
+        m = torch.distributions.Laplace(loc=torch.tensor([0.0]), scale=torch.tensor([1.0]), validate_args=False)
+        result = m.sample([1])
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="paddle does not support logits temporarily",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.multinomial.Multinomial(1, torch.tensor([0.3]), validate_args=False)
-        result = m.sample([100])
+        m = torch.distributions.laplace.Laplace(loc=torch.tensor([0.0]), scale=torch.tensor([1.0]), validate_args=False)
+        result = m.sample([1])
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)

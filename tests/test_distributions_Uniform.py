@@ -16,15 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.cauchy.Cauchy")
+obj = APIBase("torch.distributions.Uniform")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.cauchy.Cauchy(torch.tensor([0.0]), torch.tensor([1.0]))
-        result = m.sample([1])
+        m = torch.distributions.Uniform(torch.tensor([0.0]), torch.tensor([5.0]))
+        result = m.sample([10])
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -34,8 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.cauchy.Cauchy(loc=torch.tensor([0.0]), scale=torch.tensor([1.0]))
-        result = m.sample([1])
+        m = torch.distributions.Uniform(low=torch.tensor([0.0]), high=torch.tensor([5.0]), validate_args=None)
+        result = m.sample([10])
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -45,8 +45,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.cauchy.Cauchy(loc=torch.tensor([0.0]), scale=torch.tensor([1.0]), validate_args=False)
-        result = m.sample([1])
+        m = torch.distributions.uniform.Uniform(low=torch.tensor([0.0]), high=torch.tensor([5.0]), validate_args=None)
+        result = m.sample([10])
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
