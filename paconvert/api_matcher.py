@@ -895,23 +895,6 @@ class TensorNewTensorMatcher(BaseMatcher):
         return code.strip("\n")
 
 
-class TorchTensorMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-
-        if "device" in kwargs:
-            kwargs["place"] = kwargs.pop("device")
-
-        if "requires_grad" in kwargs:
-            kwargs["stop_gradient"] = "not " + kwargs.pop("requires_grad").strip("()")
-
-        if "pin_memory" in kwargs and kwargs.pop("pin_memory") == "(True)":
-            kwargs["place"] = "paddle.CUDAPinnedPlace()"
-
-        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-
-        return code.strip("\n")
-
-
 class TensorNormal_Matcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs["shape"] = "x.shape"

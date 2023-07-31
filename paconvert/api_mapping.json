@@ -10085,7 +10085,7 @@
     }
   },
   "torch.tensor": {
-    "Matcher": "TorchTensorMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.to_tensor",
     "args_list": [
       "data",
@@ -10093,7 +10093,10 @@
       "device",
       "requires_grad",
       "pin_memory"
-    ]
+    ],
+    "kwargs_change": {
+      "device": "place"
+    }
   },
   "torch.tensordot": {
     "Matcher": "GenericMatcher",
