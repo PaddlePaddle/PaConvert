@@ -26,9 +26,9 @@ def test_case_1():
         import torch.distributed as dist
         result = None
         if torch.cuda.is_available():
-            gather_objects = ["foo", 12, {1: 2}].cuda()
-            output = [None for _ in gather_objects].cuda()
-            result = dist.all_gather_object(output, gather_objects[dist.get_rank()]).cuda()
+            gather_objects = ["foo", 12, {1: 2}]
+            output = [None for _ in gather_objects]
+            result = (dist.all_gather_object(output, gather_objects[dist.get_rank()])).cuda()
         """
     )
     obj.run(pytorch_code, ["result"])
