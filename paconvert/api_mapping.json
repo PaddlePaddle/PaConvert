@@ -1177,8 +1177,7 @@
   "torch.Tensor.is_set_to": {},
   "torch.Tensor.is_shared": {},
   "torch.Tensor.is_signed": {
-    "Matcher": "TensorIsSignedMatcher",
-    "paddle_api": "paddle.Tensor.dtype"
+    "Matcher": "TensorIsSignedMatcher"
   },
   "torch.Tensor.isclose": {
     "Matcher": "GenericMatcher",

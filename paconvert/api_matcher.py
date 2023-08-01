@@ -3790,9 +3790,8 @@ class TensorIsSignedMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
         paddle_class = self.paddleClass
-        code = "({}.dtype not in [paddle.uint8])".format(paddle_class)
-        node = ast.parse(code.strip("\n")).body
-        return node
+        code = "{}.dtype not in [paddle.uint8]".format(paddle_class)
+        return ast.parse(code.strip("\n")).body
 
 
 class TensorToBoolMatcher(BaseMatcher):
