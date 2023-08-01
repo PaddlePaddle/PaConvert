@@ -20,7 +20,13 @@ from apibase import APIBase
 
 class LstsqAPI(APIBase):
     def compare(
-        self, name, pytorch_result, paddle_result, check_value=True, check_dtype=True
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
     ):
         if isinstance(pytorch_result, (tuple, list)):
             for i in range(len(pytorch_result)):

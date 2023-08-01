@@ -19,7 +19,13 @@ from apibase import APIBase
 
 class cudaMaxMemoryAllocatedAPI(APIBase):
     def compare(
-        self, name, pytorch_result, paddle_result, check_value=True, check_dtype=True
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
     ):
         return pytorch_result == paddle_result
 

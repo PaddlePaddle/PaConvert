@@ -281,13 +281,12 @@ class BasicTransformer(BaseTransformer):
          - torch api: [args]ast.Call
          - tensor api: [func]ast.Attribute([value]ast.Call)
         """
-        full_attr = self.get_full_attr(node.func)
-
         # Use Postorder traversal
         super(BasicTransformer, self).generic_visit(node)
 
         # Torch Package Call, include torch third_party
         #   such as : torch.add(x, y) / torch.add(torch.abs(x), y)
+        full_attr = self.get_full_attr(node.func)
         for torch_package in TORCH_PACKAGE_LIST:
             if full_attr.startswith("%s." % torch_package):
                 torch_api = full_attr
@@ -376,7 +375,10 @@ class BasicTransformer(BaseTransformer):
             attr_list = full_attr.split(".")
             if len(attr_list) > 2:
                 if "self." in full_attr:
+                    # self.weight.add
                     is_tensor_api = True
+                    # self.optimizer.load_state_dict
+                    is_optim_api = True
                 if ".T." in full_attr:
                     is_tensor_api = True
             elif len(attr_list) == 2:
@@ -582,6 +584,12 @@ class BasicTransformer(BaseTransformer):
         return node
 
     def visit_With(self, node):
+        self.scope_stack.append(node)
+        super(BasicTransformer, self).generic_visit(node)
+        self.scope_stack.pop()
+        return node
+
+    def visit_ExceptHandler(self, node):
         self.scope_stack.append(node)
         super(BasicTransformer, self).generic_visit(node)
         self.scope_stack.pop()

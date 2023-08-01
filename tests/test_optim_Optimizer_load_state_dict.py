@@ -19,12 +19,18 @@ from apibase import APIBase
 
 class optimOptimizerLoadStateDictAPIBase(APIBase):
     def compare(
-        self, name, pytorch_result, paddle_result, check_value=True, check_dtype=True
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
     ):
         return pytorch_result["state"] == paddle_result
 
 
-obj = optimOptimizerLoadStateDictAPIBase("torch.optim.Optimizer.state_dict")
+obj = optimOptimizerLoadStateDictAPIBase("torch.optim.Optimizer.load_state_dict")
 
 
 def test_case_1():

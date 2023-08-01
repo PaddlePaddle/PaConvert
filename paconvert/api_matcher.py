@@ -69,8 +69,8 @@ class GenericMatcher(BaseMatcher):
             dtype_v = new_kwargs.pop("dtype")
 
         pin_memory_v = False
-        if "pin_memory" in new_kwargs:
-            pin_memory_v = eval(new_kwargs.pop("pin_memory"))
+        if "pin_memory" in new_kwargs and new_kwargs.pop("pin_memory") == "(True)":
+            pin_memory_v = True
 
         stop_gradient_v = None
         if "requires_grad" in new_kwargs:
@@ -297,8 +297,8 @@ class CreateMatcher(BaseMatcher):
                 kwargs.pop(k)
 
         pin_memory_v = False
-        if "pin_memory" in kwargs:
-            pin_memory_v = eval(kwargs.pop("pin_memory"))
+        if "pin_memory" in kwargs and kwargs.pop("pin_memory") == "(True)":
+            pin_memory_v = True
 
         stop_gradient_v = None
         if "requires_grad" in kwargs:
@@ -340,7 +340,6 @@ class CreateMatcher(BaseMatcher):
             code = API_TEMPLATE.format(res, out_v)
         else:
             code = "{}".format(res)
-
         return ast.parse(code).body
 
 
@@ -512,12 +511,43 @@ class TensorMatcher(BaseMatcher):
                 shape = astor.to_source(args[0].value).strip("\n")
             else:
                 data = self.parse_args(args)[0]
-                if "torch.IntTensor" == self.torch_api:
+                if (
+                    "torch.IntTensor" == self.torch_api
+                    or "torch.cuda.IntTensor" == self.torch_api
+                ):
                     code = "paddle.to_tensor(data={}, dtype='int32')".format(data)
-                elif "torch.LongTensor" == self.torch_api:
+                elif ("torch.ShortTensor" == self.torch_api) or (
+                    "torch.cuda.ShortTensor" == self.torch_api
+                ):
+                    code = "paddle.to_tensor(data={}, dtype='int16')".format(data)
+                elif (
+                    "torch.LongTensor" == self.torch_api
+                    or "torch.cuda.LongTensor" == self.torch_api
+                ):
                     code = "paddle.to_tensor(data={}, dtype='int64')".format(data)
-                elif "torch.FloatTensor" == self.torch_api:
+                elif ("torch.HalfTensor" == self.torch_api) or (
+                    "torch.cuda.HalfTensor" == self.torch_api
+                ):
+                    code = "paddle.to_tensor(data={}, dtype='float16')".format(data)
+                elif (
+                    "torch.FloatTensor" == self.torch_api
+                    or "torch.cuda.FloatTensor" == self.torch_api
+                ):
                     code = "paddle.to_tensor(data={}, dtype='float32')".format(data)
+                elif ("torch.DoubleTensor" == self.torch_api) or (
+                    "torch.cuda.DoubleTensor" == self.torch_api
+                ):
+                    code = "paddle.to_tensor(data={}, dtype='float64')".format(data)
+                elif (
+                    "torch.ByteTensor" == self.torch_api
+                    or "torch.cuda.ByteTensor" == self.torch_api
+                ):
+                    code = "paddle.to_tensor(data={}, dtype='uint8')".format(data)
+                elif ("torch.BoolTensor" == self.torch_api) or (
+                    "torch.cuda.BoolTensor" == self.torch_api
+                ):
+                    code = "paddle.to_tensor(data={}, dtype='bool')".format(data)
+
                 else:
                     if not isinstance(args[0], ast.Name):
                         code = "paddle.to_tensor(data={}, dtype='float32')".format(data)
@@ -527,12 +557,45 @@ class TensorMatcher(BaseMatcher):
                 return node
             shape = str(shape).replace("'", "")
 
-        if "torch.IntTensor" == self.torch_api:
+        if (
+            "torch.IntTensor" == self.torch_api
+            or "torch.cuda.IntTensor" == self.torch_api
+        ):
             code = "paddle.empty(shape={}, dtype='int32')".format(shape)
-        elif "torch.LongTensor" == self.torch_api:
+        elif (
+            "torch.ShortTensor" == self.torch_api
+            or "torch.cuda.ShortTensor" == self.torch_api
+        ):
+            code = "paddle.empty(shape={}, dtype='int16')".format(shape)
+        elif (
+            "torch.LongTensor" == self.torch_api
+            or "torch.cuda.LongTensor" == self.torch_api
+        ):
             code = "paddle.empty(shape={}, dtype='int64')".format(shape)
-        elif "torch.FloatTensor" == self.torch_api:
+        elif (
+            "torch.HalfTensor" == self.torch_api
+            or "torch.cuda.HalfTensor" == self.torch_api
+        ):
+            code = "paddle.empty(shape={}, dtype='float16')".format(shape)
+        elif (
+            "torch.FloatTensor" == self.torch_api
+            or "torch.cuda.FloatTensor" == self.torch_api
+        ):
             code = "paddle.empty(shape={}, dtype='float32')".format(shape)
+        elif (
+            "torch.DoubleTensor" == self.torch_api
+            or "torch.cuda.DoubleTensor" == self.torch_api
+        ):
+            code = "paddle.empty(shape={}, dtype='float64')".format(shape)
+        elif (
+            "torch.ByteTensor" == self.torch_api
+            or "torch.cuda.ByteTensor" == self.torch_api
+        ):
+            code = "paddle.zeros(shape={}, dtype='uint8')".format(shape)
+        elif ("torch.BoolTensor" == self.torch_api) or (
+            "torch.cuda.BoolTensor" == self.torch_api
+        ):
+            code = "paddle.randint(0, 2, shape={}).astype('bool')".format(shape)
         else:
             code = "paddle.empty(shape={})".format(shape)
 
@@ -614,6 +677,9 @@ class TensorRepeatMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
         kwargs = self.parse_kwargs(kwargs)
+
+        if len(args) == 0 and len(kwargs) == 0:
+            return "NonTorchClass"
 
         if "axis" in kwargs:
             return "NonTorchClass"
@@ -737,8 +803,8 @@ class TensorNew_Matcher(BaseMatcher):
             stop_gradient_v = "not " + kwargs.pop("requires_grad").strip("()")
 
         pin_memory_v = False
-        if "pin_memory" in kwargs:
-            pin_memory_v = eval(kwargs.pop("pin_memory"))
+        if "pin_memory" in kwargs and kwargs.pop("pin_memory") == "(True)":
+            pin_memory_v = True
 
         if "dtype" not in kwargs:
             kwargs["dtype"] = "{}.dtype".format(self.paddleClass)
@@ -781,8 +847,8 @@ class TensorNewFullMatcher(BaseMatcher):
             stop_gradient_v = "not " + kwargs.pop("requires_grad").strip("()")
 
         pin_memory_v = False
-        if "pin_memory" in kwargs:
-            pin_memory_v = eval(kwargs.pop("pin_memory"))
+        if "pin_memory" in kwargs and kwargs.pop("pin_memory") == "(True)":
+            pin_memory_v = True
 
         if "dtype" not in kwargs:
             kwargs["dtype"] = "{}.dtype".format(self.paddleClass)
@@ -819,10 +885,8 @@ class TensorNewTensorMatcher(BaseMatcher):
         if "requires_grad" in kwargs:
             kwargs["stop_gradient"] = "not " + kwargs.pop("requires_grad").strip("()")
 
-        if "pin_memory" in kwargs:
-            if eval(kwargs["pin_memory"]):
-                kwargs["place"] = "paddle.CUDAPinnedPlace()"
-            kwargs.pop("pin_memory")
+        if "pin_memory" in kwargs and kwargs.pop("pin_memory") == "(True)":
+            kwargs["place"] = "paddle.CUDAPinnedPlace()"
 
         if "dtype" not in kwargs:
             kwargs["dtype"] = "{}.dtype".format(self.paddleClass)
@@ -840,10 +904,8 @@ class TorchTensorMatcher(BaseMatcher):
         if "requires_grad" in kwargs:
             kwargs["stop_gradient"] = "not " + kwargs.pop("requires_grad").strip("()")
 
-        if "pin_memory" in kwargs:
-            if eval(kwargs["pin_memory"]):
-                kwargs["place"] = "paddle.CUDAPinnedPlace()"
-            kwargs.pop("pin_memory")
+        if "pin_memory" in kwargs and kwargs.pop("pin_memory") == "(True)":
+            kwargs["place"] = "paddle.CUDAPinnedPlace()"
 
         code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
@@ -1812,13 +1874,6 @@ class TensorRequires_GradMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
-class AllMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        kwargs["input"] = kwargs["input"] + ".astype(dtype='bool')"
-        code = GenericMatcher.generate_code(self, kwargs)
-        return code
-
-
 class ArangeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "end" not in kwargs:
@@ -2784,31 +2839,6 @@ class HypotMatcher(BaseMatcher):
         return code
 
 
-class TensorHistcMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "bins" not in kwargs:
-            kwargs["bins"] = 100
-        if "min" not in kwargs:
-            kwargs["min"] = 0
-        if "max" not in kwargs:
-            kwargs["max"] = 0
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {}.histogram(bins={}, min={}, max={}).astype({}.dtype)
-            """
-        )
-        code = API_TEMPLATE.format(
-            self.paddleClass,
-            kwargs["bins"],
-            kwargs["min"],
-            kwargs["max"],
-            self.paddleClass,
-        )
-
-        return code
-
-
 class TensorReshapeMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -2855,6 +2885,9 @@ class SelectMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" not in kwargs:
             kwargs["input"] = self.paddleClass
+
+        if len(kwargs) != 3:
+            return "NonTorchClass"
 
         API_TEMPLATE = textwrap.dedent(
             """
@@ -2995,16 +3028,34 @@ class SLogDetMatcher(BaseMatcher):
 
 class HistcMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-
-        if "out" in kwargs and kwargs["out"] is not None:
+        if "out" in kwargs:
             out_v = kwargs.pop("out").strip("\n")
-            code = "paddle.assign({}({}).astype('float32'), output={})".format(
-                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v
+            code = "paddle.assign({}({}).astype({}.dtype), output={})".format(
+                self.get_paddle_api(),
+                self.kwargs_to_str(kwargs),
+                kwargs["input"],
+                out_v,
             )
         else:
-            code = "{}({}).astype('float32')".format(
-                self.get_paddle_api(), self.kwargs_to_str(kwargs)
+            code = "{}({}).astype({}.dtype)".format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs), kwargs["input"]
             )
+
+        return code
+
+
+class TensorHistcMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}({}).astype({}.dtype)
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.get_paddle_api(),
+            self.kwargs_to_str(kwargs),
+            self.paddleClass,
+        )
 
         return code
 
@@ -3020,7 +3071,6 @@ class TensorHistogramMatcher(BaseMatcher):
 
 class SpecialNdtriMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-
         API_TEMPLATE = textwrap.dedent(
             """
             2 ** (1/2) * paddle.erfinv(2*{}-1)
@@ -3035,7 +3085,6 @@ class SpecialNdtriMatcher(BaseMatcher):
 
 class AdjointMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-
         if "input" not in kwargs:
             kwargs["input"] = self.paddleClass
 
@@ -3676,7 +3725,14 @@ class CudaStreamMatcher(BaseMatcher):
                     kwargs["device"] = device_list[0]
                 else:
                     kwargs["device"] = None
+
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class CudaNvtxRangePushMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "{}({})".format(self.get_paddle_api(), kwargs["msg"])
+        return code
 
 
 class Attribute2Func(BaseMatcher):

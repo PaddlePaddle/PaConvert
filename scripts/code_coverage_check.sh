@@ -21,16 +21,19 @@ if [[ "$DEVELOP_IF" == "OFF" ]]; then
     cd /workspace/$2/PaConvert/
     PATH=$1
     echo "Insalling cpu version torch"
-    pip install --no-cache-dir  --force-reinstall torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+    pip uninstall -y torch 
+    pip uninstall -y paddlepaddle
+    pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
     python -c "import torch; print('torch version information:' ,torch.__version__)"
     echo "Insalling cpu develop version paddle"
-    python -m pip install --no-cache-dir  --force-reinstall paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
+    python -m pip install --no-cache-dir paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
     python -c "import paddle; print('paddle version information:' ,paddle.__version__); print('paddle commit information:' ,paddle.__git_commit__)"
 fi
 
 # use Coverage diff-cover
 echo "Insalling coverage and diff-cover for incremental code inspection"
 pip install diff-cover coverage
+pip install pytest-timeout
 
 if [[ "$DEVELOP_IF" == "ON" ]]; then
     pip install coverage diff-cover

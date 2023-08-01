@@ -18,7 +18,15 @@ from apibase import APIBase
 
 
 class DeviceAPIBase(APIBase):
-    def compare(self, name, pytorch_result, paddle_result, value, dtype):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+    ):
         return str(pytorch_result) == str(paddle_result)
 
 
