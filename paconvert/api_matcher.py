@@ -3120,39 +3120,6 @@ class SpecialXLog1pYMatcher(BaseMatcher):
         return code
 
 
-class CovMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "input" not in kwargs:
-            kwargs["input"] = self.paddleClass
-
-        if "correction" in kwargs:
-            if kwargs["correction"].strip("()") == "1":
-                kwargs["ddof"] = True
-            elif kwargs["correction"].strip("()") == "0":
-                kwargs["ddof"] = False
-            else:
-                return None
-        else:
-            kwargs["ddof"] = True
-
-        if "fweights" not in kwargs:
-            kwargs["fweights"] = None
-
-        if "aweights" not in kwargs:
-            kwargs["aweights"] = None
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle.linalg.cov({}, ddof={}, fweights={}, aweights={})
-            """
-        )
-        code = API_TEMPLATE.format(
-            kwargs["input"], kwargs["ddof"], kwargs["fweights"], kwargs["aweights"]
-        )
-
-        return code
-
-
 class TensorHardShrinkMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "lambd" not in kwargs:
