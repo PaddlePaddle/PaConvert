@@ -8367,12 +8367,13 @@
     }
   },
   "torch.nn.functional.log_softmax": {
+    "Matcher": "FunctionalSoftmaxMatcher",
     "paddle_api": "paddle.nn.functional.log_softmax",
     "args_list": [
       "input",
       "dim",
-      "dtype",
-      "_stacklevel"
+      "_stacklevel",
+      "dtype"
     ],
     "kwargs_change": {
       "input": "x",
@@ -8746,7 +8747,12 @@
       "dim",
       "_stacklevel",
       "dtype"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axis",
+      "_stacklevel": ""
+    }
   },
   "torch.nn.functional.softmin": {
     "Matcher": "FSoftMinMatcher",

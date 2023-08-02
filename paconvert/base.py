@@ -54,7 +54,7 @@ TORCH_PACKAGE_LIST = [
     "scikit-learn",
     "fairscale",
     "transformers",
-    "datasets",
+    # "datasets",
     "torch_xla",
 ]
 
