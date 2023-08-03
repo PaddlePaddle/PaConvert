@@ -5410,6 +5410,18 @@
       "A": "x"
     }
   },
+  "torch.linalg.cond": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.cond",
+    "args_list": [
+      "input",
+      "p",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.linalg.cross": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.cross",
@@ -8935,6 +8947,14 @@
       "input",
       "size",
       "scale_factor"
+    ]
+  },
+  "torch.nn.init.calculate_gain": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.initializer.calculate_gain",
+    "args_list": [
+      "nonlinearity",
+      "param"
     ]
   },
   "torch.nn.modules.batchnorm._BatchNorm": {
