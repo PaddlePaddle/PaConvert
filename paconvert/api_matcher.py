@@ -3103,6 +3103,51 @@ class AdjointMatcher(BaseMatcher):
         return code
 
 
+class TensorHMatcher(BaseMatcher):
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+        code = "{}.transpose(perm=[1, 0]).conj()".format(self.paddleClass)
+        return ast.parse(code).body
+
+
+class TensorMtMatcher(BaseMatcher):
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+        paddle_class = self.paddleClass
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {} = list(range({}.ndim))
+            {}[-1], {}[-2] = {}[-2], {}[-1]
+            {}.transpose(perm={})
+            """
+        )
+        perm = get_unique_name("perm")
+        code = API_TEMPLATE.format(
+            perm, paddle_class, perm, perm, perm, perm, paddle_class, perm
+        )
+        return ast.parse(code).body
+
+
+class TensorMhMatcher(BaseMatcher):
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+        paddle_class = self.paddleClass
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {} = list(range({}.ndim))
+            {}[-1], {}[-2] = {}[-2], {}[-1]
+            {}.transpose(perm={}).conj()
+            """
+        )
+        perm = get_unique_name("perm")
+        code = API_TEMPLATE.format(
+            perm, paddle_class, perm, perm, perm, perm, paddle_class, perm
+        )
+        return ast.parse(code).body
+
+
 class SpecialXLog1pYMatcher(BaseMatcher):
     def generate_code(self, kwargs):
 
