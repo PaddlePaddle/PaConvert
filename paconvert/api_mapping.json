@@ -9101,13 +9101,11 @@
       "eps",
       "weight_decay",
       "foreach",
-      "*",
       "maximize",
       "differentiable"
     ],
     "unsupport_args": [
       "foreach",
-      "*",
       "maximize",
       "differentiable"
     ],
@@ -9133,14 +9131,12 @@
       "initial_accumulator_value",
       "eps",
       "foreach",
-      "*",
       "maximize",
       "differentiable"
     ],
     "unsupport_args": [
       "lr_decay",
       "foreach",
-      "*",
       "maximize",
       "differentiable"
     ],
