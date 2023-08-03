@@ -46,6 +46,4 @@ def test_case_1():
     obj.run(
         pytorch_code,
         ["result0", "result1"],
-        unsupport=True,
-        reason="doesn't support the api optim.Adam",
     )
