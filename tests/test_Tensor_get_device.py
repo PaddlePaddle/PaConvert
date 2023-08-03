@@ -32,30 +32,11 @@ def test_case_1():
 
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        reason="the api paddle.Tensor.place.gpu_device_id return 0 when device is cpu or gpu:0",
-    )
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = None
-        if torch.cuda.is_available():
-            x = torch.tensor([[1.0, 1.0, 1.0],
-                            [2.0, 2.0, 2.0],
-                            [3.0, 3.0, 3.0]]).cuda()
-            result = x.cpu().get_device()
-
-        """
-    )
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_3():
+# for CPU Tensor, paddle.Tensor.place.gpu_device_id return 0, while torch return -1
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch

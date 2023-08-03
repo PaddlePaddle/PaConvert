@@ -16,16 +16,37 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.beta.Beta")
+obj = APIBase("torch.Tensor.nan_to_num")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.beta.Beta(torch.tensor([0.5]), torch.tensor([0.5]))
-        n = torch.distributions.beta.Beta(torch.tensor([0.3]), torch.tensor([0.7]))
-        result = torch.distributions.kl.kl_divergence(m, n)
+        input = torch.tensor([[1, 2], [3., float("nan")]])
+        result = input.nan_to_num()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([float('nan'), float('inf'), -float('inf'), 3.14])
+        result = input.nan_to_num(0., 1., -1.)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([float('nan'), float('inf'), -float('inf'), 3.14])
+        result = input.nan_to_num(nan=0., posinf=1., neginf=-1.)
         """
     )
     obj.run(pytorch_code, ["result"])
