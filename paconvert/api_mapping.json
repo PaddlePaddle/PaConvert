@@ -3984,9 +3984,6 @@
       "world_size",
       "rpc_backend_options"
     ],
-    "kwargs_change": {
-      "func": "fn"
-    },
     "unsupport_args": [
       "rpc_backend_options"
     ]
