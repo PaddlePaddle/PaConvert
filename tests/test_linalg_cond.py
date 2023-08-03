@@ -35,7 +35,7 @@ def test_case_2():
         """
         import torch
         x = torch.tensor([[1., 0, -1], [0, 1, 0], [1, 0, 1]])
-        result = torch.linalg.cond(x, p='fro')
+        result = torch.linalg.cond(input=x, p='fro')
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -46,7 +46,7 @@ def test_case_3():
         """
         import torch
         x = torch.tensor([[1., 0, -1], [0, 1, 0], [1, 0, 1]])
-        result = torch.linalg.cond(input=x, p=1)
+        result = torch.linalg.cond(p=1, input=x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -57,10 +57,11 @@ def test_case_4():
         """
         import torch
         x = torch.tensor([[1., 0, -1], [0, 1, 0], [1, 0, 1]])
-        result = torch.linalg.cond(x, p=float('inf'))
+        out = torch.tensor([])
+        result = torch.linalg.cond(x, float('inf'), out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])
 
 
 def test_case_5():
@@ -69,7 +70,7 @@ def test_case_5():
         import torch
         x = torch.tensor([[1., 0, -1], [0, 1, 0], [1, 0, 1]])
         out = torch.tensor([])
-        result = torch.linalg.cond(x, p=float('inf'), out=out)
+        result = torch.linalg.cond(input=x, p=float('inf'), out=out)
         """
     )
     obj.run(pytorch_code, ["result", "out"])

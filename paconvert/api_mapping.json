@@ -5311,12 +5311,11 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linalg.cond",
     "args_list": [
-      "A",
       "input",
-      "p"
+      "p",
+      "out"
     ],
     "kwargs_change": {
-      "A": "x",
       "input": "x"
     }
   },
