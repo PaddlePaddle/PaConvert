@@ -9122,6 +9122,10 @@
       "learning_rate": 1.0
     }
   },
+  "torch.optim.Adadelta.step": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.optimizer.Adadelta.step"
+  },
   "torch.optim.Adagrad": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.optimizer.Adagrad",
