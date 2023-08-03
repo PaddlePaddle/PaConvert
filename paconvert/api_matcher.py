@@ -3566,15 +3566,7 @@ class FunctionalSoftmaxMatcher(BaseMatcher):
         if "dim" not in kwargs or "None" in kwargs["dim"]:
             return None
 
-        if "_stacklevel" in kwargs:
-            kwargs.pop("_stacklevel")
-
-        if "input" in kwargs:
-            kwargs["x"] = kwargs.pop("input").strip("\n")
-        if "dim" in kwargs:
-            kwargs["axis"] = kwargs.pop("dim").strip("\n")
-
-        return "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        return GenericMatcher.generate_code(self, kwargs)
 
 
 class FunctionalLinearMatcher(BaseMatcher):
