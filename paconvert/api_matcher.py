@@ -3668,13 +3668,13 @@ class SvdMatcher(BaseMatcher):
         if some_v:
             kwargs["full_matrices"] = "not " + some_v.strip("()")
 
+        kwargs["x"] = kwargs.pop("input")
         if out_v:
-            kwargs["x"] = kwargs.pop("input")
 
             API_TEMPLATE = textwrap.dedent(
                 """
                 tmp_u, tmp_s, tmp_v = {}({})
-                paddle.assign(tmp_u, {}[0]), paddle.assign(tmp_s, {}[1]), paddle.assign(tmp_v, {}[2])
+                paddle.assign(tmp_u, {}[0]), paddle.assign(tmp_s, {}[1]), paddle.assign(tmp_v.conj(), {}[2])
                 """
             )
             code = API_TEMPLATE.format(
@@ -3687,7 +3687,21 @@ class SvdMatcher(BaseMatcher):
 
             return code
 
-        return GenericMatcher.generate_code(self, kwargs)
+        API_TEMPLATE = textwrap.dedent(
+            """
+            tmp_u, tmp_s, tmp_v = {}({})
+            tmp_u, tmp_s, tmp_v.conj()
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.get_paddle_api(),
+            self.kwargs_to_str(kwargs),
+            out_v,
+            out_v,
+            out_v,
+        )
+
+        return code
 
 
 class TensorToBoolMatcher(BaseMatcher):
