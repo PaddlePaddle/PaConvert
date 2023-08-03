@@ -123,7 +123,7 @@ def test_case_5():
 
         theta = torch.tensor([1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0], requires_grad=True)
         l = torch.nn.Linear(10, 1)
-        optim = torch.optim.Adagrad(l.parameters(), lr = 1.0, betas=(0.7, 0.9))
+        optim = torch.optim.Adam(l.parameters(), lr = 1.0, betas=(0.7, 0.9))
         z = l(theta)
         z.backward()
         optim.step()
