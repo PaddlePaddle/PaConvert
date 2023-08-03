@@ -3752,6 +3752,14 @@ class RandomSplitMatcher(BaseMatcher):
         return code.strip("\n")
 
 
+class TensorIsSignedMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        paddle_class = self.paddleClass
+        code = "{}.dtype not in [paddle.uint8]".format(paddle_class)
+        return ast.parse(code.strip("\n")).body
+
+
 class TensorToBoolMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "dim" in kwargs:

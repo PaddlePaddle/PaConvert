@@ -497,6 +497,7 @@ class BasicTransformer(BaseTransformer):
                         ast.BinOp,
                         ast.Assert,
                         ast.Tuple,
+                        ast.Compare,
                     ),
                 ):
                     self.insert_multi_node(node_list[0:-1])

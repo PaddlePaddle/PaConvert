@@ -1180,7 +1180,9 @@
   "torch.Tensor.is_quantized": {},
   "torch.Tensor.is_set_to": {},
   "torch.Tensor.is_shared": {},
-  "torch.Tensor.is_signed": {},
+  "torch.Tensor.is_signed": {
+    "Matcher": "TensorIsSignedMatcher"
+  },
   "torch.Tensor.isclose": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.isclose",
