@@ -33,6 +33,7 @@ class optimOptimizerAPIBase(APIBase):
 
 
 obj = optimOptimizerAPIBase("torch.optim.Optimizer.step")
+obj_Adadelta = optimOptimizerAPIBase("torch.optim.Adadelta.step")
 
 
 def test_case_1():
@@ -90,7 +91,7 @@ def test_case_3():
         result = type(optim.step)
         """
     )
-    obj.run(
+    obj_Adadelta.run(
         pytorch_code,
         ["result"],
     )
