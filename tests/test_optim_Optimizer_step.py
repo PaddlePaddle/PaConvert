@@ -73,3 +73,24 @@ def test_case_2():
         unsupport=True,
         reason="currently not support optimizer subclass API",
     )
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        theta = torch.tensor([1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0], requires_grad=True)
+        l = torch.nn.Linear(10, 1)
+        optim = torch.optim.Adadelta(l.parameters(), lr = 1.0)
+        z = l(theta)
+        z.backward()
+        optim.step()
+        result = type(optim.step)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+    )
