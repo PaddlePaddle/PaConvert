@@ -1,5 +1,7 @@
 {
-  "torch.Tensor.H": {},
+  "torch.Tensor.H": {
+    "Matcher": "TensorHMatcher"
+  },
   "torch.Tensor.T": {
     "Matcher": "TensorUnchangeMatcher"
   },

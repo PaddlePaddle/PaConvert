@@ -3121,6 +3121,13 @@ class AdjointMatcher(BaseMatcher):
         return code
 
 
+class TensorHMatcher(BaseMatcher):
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+        code = "{}.transpose(perm=[1, 0]).conj()".format(self.paddleClass)
+        return ast.parse(code).body
+
+
 class TensorMtMatcher(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
@@ -3130,7 +3137,7 @@ class TensorMtMatcher(BaseMatcher):
             """
             {} = list(range({}.ndim))
             {}[-1], {}[-2] = {}[-2], {}[-1]
-            paddle.transpose({}, perm={})
+            {}.transpose(perm={})
             """
         )
         perm = get_unique_name("perm")
@@ -3149,7 +3156,7 @@ class TensorMhMatcher(BaseMatcher):
             """
             {} = list(range({}.ndim))
             {}[-1], {}[-2] = {}[-2], {}[-1]
-            paddle.conj(paddle.transpose({}, perm={}))
+            {}.transpose(perm={}).conj()
             """
         )
         perm = get_unique_name("perm")
