@@ -9118,13 +9118,9 @@
     },
     "paddle_default_kwargs": {
       "rho": 0.9,
-      "weight_decay": 0,
+      "weight_decay": 0.0,
       "learning_rate": 1.0
     }
-  },
-  "torch.optim.Adadelta.step": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.optimizer.Adadelta.step"
   },
   "torch.optim.Adagrad": {
     "Matcher": "GenericMatcher",
@@ -9154,7 +9150,7 @@
       "eps": "epsilon"
     },
     "paddle_default_kwargs": {
-      "weight_decay": 0,
+      "weight_decay": 0.0,
       "epsilon": 1e-10,
       "learning_rate": 0.01
     }
