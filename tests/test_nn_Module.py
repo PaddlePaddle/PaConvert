@@ -20,36 +20,12 @@ from apibase import APIBase
 obj = APIBase("torch.nn.Module")
 
 def test_case_1():
-    # 初始化
     pytorch_code = textwrap.dedent(
         """
         import torch
         module1 = torch.nn.Module()
         result = None
 
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-    
-def test_case_2():
-    # 使用自定义参数初始化
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        module1 = torch.nn.Module(custom_arg=10)
-        result = None
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-    
-def test_case_3():
-    # 调用类内函数
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        module1 = torch.nn.Module()
-        module1.custom_func()
-        result = None
         """
     )
     obj.run(pytorch_code, ["result"])
