@@ -218,7 +218,7 @@ pre-commit run --file [file_name]
 | PR-CI-CodeStyle   | scripts/code_style_check.sh |
 | PR-CI-UnitTest   | scripts/code_unittest_check.sh |
 | PR-CI-Coverage   | scripts/code_modeltest_check.sh |
-| PR-CI-Pipeline   | scripts/code_pipeline_check.sh |
+| PR-CI-Pipeline   | scripts/code_install_check.sh |
 | PR-CI-PRTemplate   | scripts/code_PRtemplate_check.sh |
 ```
 
@@ -231,7 +231,7 @@ bash scripts/code_consistency_check.sh
 bash scripts/code_style_check.sh
 bash scripts/code_unittest_check.sh
 bash scripts/code_modeltest_check.sh
-bash scripts/code_pipeline_check.sh
+bash scripts/code_install_check.sh
 bash scripts/code_PRtemplate_check.sh
 
 本地全部CI测试方法
@@ -642,7 +642,7 @@ if x:
 
 **单测要求**：
 
-需要考虑该torch api所有可能的用法case，可以从模型验证集中搜索并抽取尽可能多的用法case，涉及到多个API参数的，应包含各种参数使用的情况（指定关键字、不指定关键字、改变关键字顺序、默认参数全部指定、默认参数全部不指定 五种情况必须考虑），不能只考虑最简单常见的用法，要求至少列举5种完全不同的使用case（越多越好）。
+需要考虑该torch api所有可能的用法case，涉及到多个API参数的，应包含各种参数用法（ `全部指定关键字、全部不指定关键字、改变关键字顺序、默认参数全部指定、默认参数全部不指定` 五种情况必须考虑），不能只考虑最简单常见的用法，要求至少列举5种完全不同的使用case（越多越好）。
 
 对任意torch API的用法case只允许有两种结果：a)正常转换且对比结果一致；b)不支持转换，此时返回None。不允许出现其他的错误情况，包括但不限于 **报错异常退出、错误转换** 等各种其他问题。
 
