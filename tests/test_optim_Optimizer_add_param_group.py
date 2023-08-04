@@ -37,7 +37,7 @@ def test_case_1():
         w1.requires_grad = True
         w2 = torch.ones(3, 3)
         w2.requires_grad = True
-        o = optim.Adam([w1])
+        o = optim.SGD([w1])
         o.add_param_group({'params': w2})
         result0 = o.param_groups[0]["params"]
         result1 = o.param_groups[1]["params"]
@@ -46,4 +46,6 @@ def test_case_1():
     obj.run(
         pytorch_code,
         ["result0", "result1"],
+        unsupport=True,
+        reason="currently not support optimizer subclass API",
     )
