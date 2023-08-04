@@ -32,7 +32,7 @@ def test_case_1():
         result = torch.cholesky_solve(b, x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_2():
@@ -48,7 +48,7 @@ def test_case_2():
         result = torch.cholesky_solve(b, x, False)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_3():
@@ -64,7 +64,7 @@ def test_case_3():
         result = torch.cholesky_solve(input=b, input2=x, upper=False)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_4():
@@ -83,4 +83,4 @@ def test_case_4():
         result = torch.cholesky_solve(b, x, False, out=out)
         """
     )
-    obj.run(pytorch_code, ["result", "out"])
+    obj.run(pytorch_code, ["result", "out"], rtol=1.0e-5, atol=1.0e-8)

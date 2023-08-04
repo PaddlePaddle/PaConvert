@@ -162,8 +162,8 @@ class BasicTransformer(BaseTransformer):
                     self, torch_api, attribute_mapping, self.logger
                 )
                 if matcher:
-                    new_node = matcher.get_paddle_class_attribute_nodes(node)
-                    if new_node == "delete":
+                    node_list = matcher.get_paddle_class_attribute_nodes(node)
+                    if node_list == "delete":
                         if isinstance(self.parent_node, ast.Expr):
                             self.success_api_count += 1
                             log_debug(
@@ -173,7 +173,7 @@ class BasicTransformer(BaseTransformer):
                                 node.lineno,
                             )
                             return None
-                    elif new_node == "unchange":
+                    elif node_list == "unchange":
                         self.success_api_count += 1
                         log_debug(
                             self.logger,
@@ -184,8 +184,8 @@ class BasicTransformer(BaseTransformer):
                             node.lineno,
                         )
                         return node
-                    elif new_node:
-                        new_node = new_node[-1]
+                    elif node_list:
+                        new_node = node_list[-1]
                         if isinstance(new_node, ast.Expr):
                             new_node = new_node.value
 
@@ -203,6 +203,7 @@ class BasicTransformer(BaseTransformer):
                                 ast.Assert,
                             ),
                         ):
+                            self.insert_multi_node(node_list[0:-1])
                             self.success_api_count += 1
                             log_debug(
                                 self.logger,

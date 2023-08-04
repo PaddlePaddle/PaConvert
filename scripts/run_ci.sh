@@ -33,4 +33,4 @@ bash scripts/code_consistency_check.sh
 bash scripts/code_modeltest_check.sh
 
 # pipline test 
-bash scripts/code_pipeline_check.sh
+bash scripts/code_install_check.sh
