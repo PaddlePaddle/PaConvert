@@ -29,7 +29,7 @@ def test_case_1():
         result = torch.cholesky_inverse(a)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_2():
@@ -42,7 +42,7 @@ def test_case_2():
         result = torch.cholesky_inverse(a, upper=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_3():
@@ -58,7 +58,7 @@ def test_case_3():
         result = torch.cholesky_inverse(a, out=out)
         """
     )
-    obj.run(pytorch_code, ["out"])
+    obj.run(pytorch_code, ["out"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_4():
@@ -71,4 +71,4 @@ def test_case_4():
         result = torch.cholesky_inverse(input=a, upper=False)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)

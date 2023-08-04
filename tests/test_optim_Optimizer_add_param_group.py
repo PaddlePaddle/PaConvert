@@ -19,7 +19,17 @@ from apibase import APIBase
 
 
 class optimOptimizerAPIBase(APIBase):
-    def compare(self, name, pytorch_result, paddle_result, check_value=True):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
+    ):
         if isinstance(paddle_result, paddle.optimizer.optimizer.Optimizer):
             return True
         return False

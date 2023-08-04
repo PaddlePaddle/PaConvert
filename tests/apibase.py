@@ -39,6 +39,8 @@ class APIBase(object):
         check_value=True,
         check_dtype=True,
         check_stop_gradient=True,
+        atol=0.0,
+        rtol=1.0e-6,
         unsupport=False,
         reason=None,
         is_aux_api=False,
@@ -91,6 +93,8 @@ class APIBase(object):
                     check_value,
                     check_dtype,
                     check_stop_gradient,
+                    rtol,
+                    atol,
                 )
         if expect_paddle_code:
             convert_paddle_code = self.convert(pytorch_code)
@@ -106,6 +110,8 @@ class APIBase(object):
         check_value=True,
         check_dtype=True,
         check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
     ):
         """
         compare tensors' data, shape, requires_grad, dtype
@@ -125,7 +131,16 @@ class APIBase(object):
                 paddle_result
             ), "paddle result have different length with pytorch"
             for i in range(len(pytorch_result)):
-                self.compare(self.pytorch_api, pytorch_result[i], paddle_result[i])
+                self.compare(
+                    self.pytorch_api,
+                    pytorch_result[i],
+                    paddle_result[i],
+                    check_value,
+                    check_dtype,
+                    check_stop_gradient,
+                    rtol,
+                    atol,
+                )
             return
 
         if isinstance(pytorch_result, (bool, np.number, int, str, type(None))):
@@ -176,7 +191,7 @@ class APIBase(object):
             )
         if check_value:
             assert np.allclose(
-                pytorch_numpy, paddle_numpy
+                pytorch_numpy, paddle_numpy, atol=atol, rtol=rtol
             ), "API ({}): paddle result has diff with pytorch result".format(name)
 
     def convert(self, pytorch_code):
