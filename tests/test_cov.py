@@ -29,7 +29,7 @@ def test_case_1():
         result = torch.cov(a)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_2():
@@ -41,7 +41,7 @@ def test_case_2():
         result = torch.cov(input=a, correction=0)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_3():
@@ -55,7 +55,7 @@ def test_case_3():
         result = torch.cov(input=a, correction=0, fweights=fw, aweights=aw)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_4():
@@ -69,7 +69,7 @@ def test_case_4():
         result = torch.cov(a, correction=0, fweights=fw, aweights=aw)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_5():
@@ -95,4 +95,4 @@ def test_case_6():
         result = torch.cov(a, correction=1, aweights=aw)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)

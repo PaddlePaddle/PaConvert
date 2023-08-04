@@ -26,6 +26,8 @@ class optimOptimizerAPIBase(APIBase):
         check_value=True,
         check_dtype=True,
         check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
     ):
         if paddle_result == pytorch_result:
             return True

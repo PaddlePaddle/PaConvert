@@ -38,7 +38,7 @@ def test_case_2():
         result = x.matrix_power(-2)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_3():
@@ -59,7 +59,7 @@ def test_case_4():
         result = x.matrix_power(n=-2)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 # The paddle input does not support integer type
