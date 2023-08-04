@@ -3815,7 +3815,7 @@ class SvdMatcher(BaseMatcher):
             API_TEMPLATE = textwrap.dedent(
                 """
                 tmp_u, tmp_s, tmp_v = {}({})
-                paddle.assign(tmp_u, {}[0]), paddle.assign(tmp_s, {}[1]), paddle.assign(tmp_v.conj(), {}[2])
+                paddle.assign(tmp_u, {}[0]), paddle.assign(tmp_s, {}[1]), paddle.assign(tmp_v.conj().t(), {}[2])
                 """
             )
             code = API_TEMPLATE.format(
@@ -3831,7 +3831,7 @@ class SvdMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             tmp_u, tmp_s, tmp_v = {}({})
-            tmp_u, tmp_s, tmp_v.conj()
+            tmp_u, tmp_s, tmp_v.conj().t()
             """
         )
         code = API_TEMPLATE.format(
