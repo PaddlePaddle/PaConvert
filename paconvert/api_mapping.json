@@ -2966,6 +2966,10 @@
       "input": "x"
     }
   },
+  "torch.autograd.Function": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.autograd.PyLayer"
+  },
   "torch.autograd.backward": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.autograd.backward",
@@ -3085,6 +3089,14 @@
     },
     "unsupport_args": [
       "only_inputs"
+    ]
+  },
+  "torch.autograd.graph.saved_tensors_hooks": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.autograd.saved_tensors_hooks",
+    "args_list": [
+      "pack_hook",
+      "unpack_hook"
     ]
   },
   "torch.backends.cuda.is_built": {
@@ -3744,6 +3756,13 @@
     "kwargs_change": {
       "new_states": "state_list"
     }
+  },
+  "torch.cuda.set_stream": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.device.set_stream",
+    "args_list": [
+      "stream"
+    ]
   },
   "torch.cuda.synchronize": {
     "Matcher": "GenericMatcher",
@@ -5567,6 +5586,19 @@
     "args_list": [
       "A"
     ]
+  },
+  "torch.linalg.svdvals": {
+    "Matcher": "LinalgSvdvalsMatcher",
+    "paddle_api": "paddle.linalg.svd",
+    "args_list": [
+      "A",
+      "driver",
+      "out"
+    ],
+    "kwargs_change": {
+      "A": "x",
+      "driver": ""
+    }
   },
   "torch.linalg.vander": {
     "Matcher": "GenericMatcher",
@@ -8966,6 +8998,20 @@
       "parameters"
     ]
   },
+  "torch.nn.utils.parametrizations.spectral_norm": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.utils.spectral_norm",
+    "args_list": [
+      "module",
+      "name",
+      "n_power_iterations",
+      "eps",
+      "dim"
+    ],
+    "kwargs_change": {
+      "module": "layer"
+    }
+  },
   "torch.nn.utils.remove_weight_norm": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.utils.remove_weight_norm",
@@ -9785,6 +9831,16 @@
       "input": "x"
     }
   },
+  "torch.special.erfc": {
+    "Matcher": "ErfCMatcher",
+    "args_list": [
+      "input",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.special.erfinv": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.erfinv",
@@ -9796,9 +9852,34 @@
       "input": "x"
     }
   },
+  "torch.special.exp2": {
+    "Matcher": "Exp2Matcher",
+    "args_list": [
+      "input",
+      "out"
+    ]
+  },
+  "torch.special.expit": {
+    "Matcher": "ExpitMatcher",
+    "args_list": [
+      "input",
+      "out"
+    ]
+  },
   "torch.special.expm1": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.expm1",
+    "args_list": [
+      "input",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+  "torch.special.gammaln": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.lgamma",
     "args_list": [
       "input",
       "out"

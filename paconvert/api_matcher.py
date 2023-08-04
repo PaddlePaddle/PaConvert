@@ -1927,6 +1927,31 @@ class Exp2Matcher(BaseMatcher):
         return code
 
 
+class ExpitMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        exp_v = get_unique_name("exp_v")
+        if "out" in kwargs and kwargs["out"] is not None:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                {} = paddle.exp({})
+                paddle.assign({} / (1 + {}), output={})
+                """
+            )
+            code = API_TEMPLATE.format(
+                exp_v, kwargs["input"], exp_v, exp_v, kwargs["out"]
+            )
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                {} = paddle.exp({})
+                {} / (1 + {})
+                """
+            )
+            code = API_TEMPLATE.format(exp_v, kwargs["input"], exp_v, exp_v)
+
+        return code
+
+
 class FModMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "out" in kwargs and kwargs["out"] is not None:
@@ -3265,6 +3290,30 @@ class RNNBaseMatcher(BaseMatcher):
         kwargs["direction"] = direction
 
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class LinalgSvdvalsMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "out" in kwargs:
+            out_v = kwargs.pop("out")
+            API_TEMPLATE = textwrap.dedent(
+                """
+                paddle.assign({}[1], output={})
+                """
+            )
+            code = API_TEMPLATE.format(
+                GenericMatcher.generate_code(self, kwargs), out_v
+            )
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                _, {}, _ = {}
+                {}
+                """
+            )
+            s = get_unique_name("s")
+            code = API_TEMPLATE.format(s, GenericMatcher.generate_code(self, kwargs), s)
+        return code
 
 
 class DiffMatcher(BaseMatcher):
