@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.bernoulli_")
+obj = APIBase("torch.Tensor.unique")
 
 
 def test_case_1():

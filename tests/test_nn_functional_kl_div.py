@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.functional.hardtanh")
+obj = APIBase("torch.nn.functional.kl_div")
 
 
 def test_case_1():

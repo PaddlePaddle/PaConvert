@@ -26,7 +26,7 @@ def test_case_1():
         result = torch.erfc(a)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_2():
@@ -37,7 +37,7 @@ def test_case_2():
         result = torch.erfc(input=a)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_3():
@@ -49,7 +49,7 @@ def test_case_3():
         result = torch.erfc(a, out=out)
         """
     )
-    obj.run(pytorch_code, ["out"])
+    obj.run(pytorch_code, ["out"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_4():
@@ -59,4 +59,4 @@ def test_case_4():
         result = torch.erfc(input=torch.tensor([1., 2., -3., -4., 5.]))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)

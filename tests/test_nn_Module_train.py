@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Module.eval")
+obj = APIBase("torch.nn.Module.train")
 
 
 def test_case_1():
