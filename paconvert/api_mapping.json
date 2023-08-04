@@ -7084,6 +7084,13 @@
       "padding"
     ]
   },
+  "torch.nn.Mish": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Mish",
+    "args_list": [
+      "inplace"
+    ]
+  },
   "torch.nn.Module": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Layer"
