@@ -11,14 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
-import paddle
 from apibase import APIBase
 
 
-class RpcAPIBase(APIBase):
+class DownloadAPIBase(APIBase):
     def compare(
         self,
         name,
@@ -28,41 +28,38 @@ class RpcAPIBase(APIBase):
         check_dtype=True,
         check_stop_gradient=True,
     ):
-        assert isinstance(paddle_result, paddle.fluid.libpaddle.WorkerInfo)
+        assert isinstance(paddle_result, str)
 
 
-obj = RpcAPIBase("torch.distributed.rpc.shutdown")
+obj = DownloadAPIBase("torch.hub.download_url_to_file")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
-        import os
         import torch
-        import socket
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        start = 25000
-        end = 30000
-        for port in range(start, end):
-            try:
-                s.bind(('localhost', port))
-                s.close()
-                break
-            except socket.error:
-                continue
-        print("port: " + str(port))
+        result = torch.hub.download_url_to_file('https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth', '/tmp/temporary_file')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
 
-        from torch.distributed import rpc
-        os.environ['MASTER_ADDR'] = 'localhost'
-        os.environ['MASTER_PORT'] = str(port)
-        os.environ['PADDLE_MASTER_ENDPOINT'] = 'localhost:' + str(port)
-        rpc.init_rpc(
-            "worker1",
-            rank=0,
-            world_size=1
-        )
-        result = rpc.get_worker_info("worker1")
-        rpc.shutdown()
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.hub.download_url_to_file(url='https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth', dst='/tmp/temporary_file')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.hub.download_url_to_file(url='https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth', dst='/tmp/temporary_file',
+                hash_prefix="5c106cde386e87d4033832f2996f5493238eda96ccf559d1d62760c4de0613f8")
         """
     )
     obj.run(pytorch_code, ["result"])
