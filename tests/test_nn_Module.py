@@ -17,26 +17,47 @@ import textwrap
 
 from apibase import APIBase
 
-
-class ModuleAPI(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-    ):
-        assert (
-            pytorch_result.__class__.__name__ == paddle_result.__class__.__name__
-        ), "API ({}): paddle result has diff with pytorch result".format(name)
-
-
-obj = ModuleAPI("torch.Tensor.Module")
+obj = APIBase("torch.nn.Module")
 
 
 def test_case_1():
+    pytorch_code = textwrap.dedent(
+        """
+import torch
+import torch.nn as nn
+
+class MLP(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super(MLP, self).__init__()
+
+        self.fc1 = nn.Linear(input_size, hidden_size)
+        self.relu = nn.ReLU()
+        self.fc2 = nn.Linear(hidden_size, output_size)
+
+        with torch.no_grad():
+            self.fc1.weight.fill_(1.0)
+            self.fc1.bias.fill_(0.1)
+            self.fc2.weight.fill_(1.0)
+            self.fc2.bias.fill_(0.1)
+
+    def forward(self, x):
+        x = self.fc1(x)
+        x = self.relu(x)
+        x = self.fc2(x)
+        return x
+
+model = MLP(784, 256, 10)
+
+pytorch_module = MLP(784, 256, 10)
+
+inputs = torch.ones([64, 784])
+result = model(inputs)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
 import torch
@@ -57,7 +78,7 @@ class MLP(nn.Module):
         return x
 
 model = MLP(784, 256, 10)
-result = model
+result = model.__class__.__name__
         """
     )
     obj.run(pytorch_code, ["result"])
