@@ -28,10 +28,6 @@ class ModuleAPI(APIBase):
         check_dtype=True,
         check_stop_gradient=True,
     ):
-        if isinstance(pytorch_result, (tuple, list)):
-            for i in range(len(pytorch_result)):
-                self.compare(self.pytorch_api, pytorch_result[i], paddle_result[i])
-            return
         assert (
             pytorch_result.__class__.__name__ == paddle_result.__class__.__name__
         ), "API ({}): paddle result has diff with pytorch result".format(name)
