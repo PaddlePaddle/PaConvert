@@ -10288,6 +10288,19 @@
       "dim1"
     ]
   },
+  "torch.trapezoid": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.trapezoid",
+    "args_list": [
+      "y",
+      "x",
+      "dx",
+      "dim"
+    ],
+    "kwargs_change": {
+      "dim": "axis"
+    }
+  },
   "torch.triangular_solve": {
     "Matcher": "TriangularSolveMatcher",
     "paddle_api": "paddle.linalg.triangular_solve",
