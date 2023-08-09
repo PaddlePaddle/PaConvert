@@ -1180,7 +1180,9 @@
   "torch.Tensor.is_quantized": {},
   "torch.Tensor.is_set_to": {},
   "torch.Tensor.is_shared": {},
-  "torch.Tensor.is_signed": {},
+  "torch.Tensor.is_signed": {
+    "Matcher": "TensorIsSignedMatcher"
+  },
   "torch.Tensor.isclose": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.isclose",
@@ -3964,6 +3966,34 @@
       "pg_options"
     ]
   },
+  "torch.distributed.rpc.get_worker_info": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.rpc.get_worker_info",
+    "args_list": [
+      "worker_name"
+    ],
+    "kwargs_change": {
+      "worker_name": "name"
+    }
+  },
+  "torch.distributed.rpc.init_rpc": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.rpc.init_rpc",
+    "args_list": [
+      "name",
+      "backend",
+      "rank",
+      "world_size",
+      "rpc_backend_options"
+    ],
+    "unsupport_args": [
+      "rpc_backend_options"
+    ]
+  },
+  "torch.distributed.rpc.shutdown": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.rpc.shutdown"
+  },
   "torch.distributions.Bernoulli": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Bernoulli",
@@ -5378,6 +5408,18 @@
     ],
     "kwargs_change": {
       "A": "x"
+    }
+  },
+  "torch.linalg.cond": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.cond",
+    "args_list": [
+      "input",
+      "p",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
     }
   },
   "torch.linalg.cross": {
@@ -8907,6 +8949,14 @@
       "scale_factor"
     ]
   },
+  "torch.nn.init.calculate_gain": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.initializer.calculate_gain",
+    "args_list": [
+      "nonlinearity",
+      "param"
+    ]
+  },
   "torch.nn.modules.batchnorm._BatchNorm": {
     "Matcher": "Modules_BatchNormBaseMatcher",
     "paddle_api": "paddle.nn.layer.norm._BatchNormBase",
@@ -10074,6 +10124,14 @@
     "kwargs_change": {
       "input": "x"
     }
+  },
+  "torch.special.round": {
+    "Matcher": "RoundMatcher",
+    "args_list": [
+      "input",
+      "decimals",
+      "out"
+    ]
   },
   "torch.special.sinc": {
     "Matcher": "SincMatcher",

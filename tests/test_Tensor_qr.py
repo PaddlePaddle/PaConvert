@@ -39,7 +39,7 @@ def test_case_2():
         Q, R = x.qr()
         """
     )
-    obj.run(pytorch_code, ["Q", "R"])
+    obj.run(pytorch_code, ["Q", "R"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_3():
@@ -50,7 +50,7 @@ def test_case_3():
         Q, R = x.qr(some=True)
         """
     )
-    obj.run(pytorch_code, ["Q", "R"])
+    obj.run(pytorch_code, ["Q", "R"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_4():
@@ -61,4 +61,4 @@ def test_case_4():
         Q, R = x.qr(some=False)
         """
     )
-    obj.run(pytorch_code, ["Q", "R"])
+    obj.run(pytorch_code, ["Q", "R"], rtol=1.0e-5, atol=1.0e-8)

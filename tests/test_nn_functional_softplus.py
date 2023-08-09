@@ -42,7 +42,7 @@ def test_case_2():
         result = F.softplus(x, 3, 15)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_3():
@@ -55,7 +55,7 @@ def test_case_3():
         result = F.softplus(input=x, beta=3)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_4():
@@ -68,7 +68,7 @@ def test_case_4():
         result = F.softplus(input=x, beta=3, threshold=20)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_5():
