@@ -37,7 +37,9 @@ def test_case_2():
         result = torch.hub.load_state_dict_from_url('https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth',model_dir="./tests")
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="paddle not support this arg"
+    )
 
 
 def _test_alias_case_1():
@@ -49,3 +51,16 @@ def _test_alias_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_alias_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        state_dict = torch.utils.model_zoo.load_url('https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth',model_dir="./tests")
+        result = True
+        """
+    )
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="paddle not support this arg"
+    )
