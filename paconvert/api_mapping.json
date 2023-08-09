@@ -5102,6 +5102,25 @@
       "out"
     ]
   },
+  "torch.hub.load_state_dict_from_url": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.utils.download.get_weights_path_from_url",
+    "args_list": [
+      "url",
+      "model_dir",
+      "map_location",
+      "progress",
+      "check_hash",
+      "file_name"
+    ],
+    "unsupport_args": [
+      "model_dir",
+      "map_location",
+      "progress",
+      "check_hash",
+      "file_name"
+    ]
+  },
   "torch.hypot": {
     "Matcher": "HypotMatcher",
     "args_list": [
