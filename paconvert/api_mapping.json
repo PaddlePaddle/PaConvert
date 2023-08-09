@@ -9181,9 +9181,68 @@
       "eps": "epsilon"
     },
     "paddle_default_kwargs": {
+      "weight_decay": 0.0
+    }
+  },
+  "torch.optim.AdamW": {
+    "Matcher": "OptimAdamMatcher",
+    "paddle_api": "paddle.optimizer.AdamW",
+    "args_list": [
+      "params",
+      "lr",
+      "betas",
+      "eps",
+      "weight_decay",
+      "amsgrad",
+      "maximize",
+      "foreach",
+      "capturable",
+      "differentiable",
+      "fused"
+    ],
+    "unsupport_args": [
+      "amsgrad",
+      "maximize",
+      "foreach",
+      "capturable",
+      "differentiable",
+      "fused"
+    ],
+    "kwargs_change": {
+      "params": "parameters",
+      "lr": "learning_rate",
+      "eps": "epsilon"
+    },
+    "paddle_default_kwargs": {
+      "weight_decay": 0.0
+    }
+  },
+  "torch.optim.Adamax": {
+    "Matcher": "OptimAdamMatcher",
+    "paddle_api": "paddle.optimizer.Adamax",
+    "args_list": [
+      "params",
+      "lr",
+      "betas",
+      "eps",
+      "weight_decay",
+      "foreach",
+      "maximize",
+      "differentiable"
+    ],
+    "unsupport_args": [
+      "foreach",
+      "maximize",
+      "differentiable"
+    ],
+    "kwargs_change": {
+      "params": "parameters",
+      "lr": "learning_rate",
+      "eps": "epsilon"
+    },
+    "paddle_default_kwargs": {
       "weight_decay": 0.0,
-      "epsilon": 1e-08,
-      "learning_rate": 0.001
+      "learning_rate": 0.002
     }
   },
   "torch.optim.Optimizer": {
