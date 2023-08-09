@@ -28,7 +28,7 @@ class optimAdamaxAPIBase(APIBase):
         check_dtype=True,
         check_stop_gradient=True,
     ):
-        if isinstance(paddle_result, paddle.optimizer.adam.Adam):
+        if isinstance(paddle_result, paddle.optimizer.adamax.Adamax):
             return True
         return False
 

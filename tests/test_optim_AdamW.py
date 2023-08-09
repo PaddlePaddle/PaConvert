@@ -28,7 +28,7 @@ class optimAdamWAPIBase(APIBase):
         check_dtype=True,
         check_stop_gradient=True,
     ):
-        if isinstance(paddle_result, paddle.optimizer.adam.Adam):
+        if isinstance(paddle_result, paddle.optimizer.adamw.AdamW):
             return True
         return False
 
