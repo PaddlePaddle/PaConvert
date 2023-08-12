@@ -76,3 +76,20 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = None
+        if torch.cuda.is_available():
+            s = torch.cuda.Stream()
+            context = torch.cuda.stream(s)
+            data1 = torch.ones(size=[20])
+            data2 = torch.ones(size=[20])
+            with context:
+                result = data1 + data2
+        """
+    )
+    obj.run(pytorch_code, ["result"])
