@@ -3633,10 +3633,6 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.device_count"
   },
-  "torch.cuda.stream": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.device.cuda.stream_guard"
-  },
   "torch.cuda.empty_cache": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.empty_cache"
@@ -3746,6 +3742,13 @@
     "kwargs_change": {
       "new_states": "state_list"
     }
+  },
+  "torch.cuda.stream": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.device.cuda.stream_guard",
+    "args_list": [
+      "stream"
+    ]
   },
   "torch.cuda.synchronize": {
     "Matcher": "GenericMatcher",
