@@ -9340,7 +9340,7 @@
   },
   "torch.optim.Optimizer.zero_grad": {},
   "torch.optim.lr_scheduler.LambdaLR": {
-    "Matcher": "OptimlrSchedulerMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.optimizer.lr.LambdaDecay",
     "args_list": [
       "optimizer",
