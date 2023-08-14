@@ -3639,6 +3639,9 @@ class OptimAdamMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+#class OptimlrSchedulerMatcher(BaseMatcher):
+
+
 class FunctionalSoftmaxMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "dim" not in kwargs or "None" in kwargs["dim"]:
