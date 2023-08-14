@@ -188,17 +188,16 @@ def test_case_8():
         import torch
         import torch.nn as nn
 
-        l = torch.nn.Linear(10, 1)
+        l = torch.nn.Linear(3, 2)
         optim = torch.optim.LBFGS(l.parameters(), lr = 0.5)
-        mse_loss = torch.nn.functional.mse_loss(outputs, targets)
 
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([[1.,2.,3.],[4.,5.,6.]])
+        target = torch.tensor([[1.,2.],[4.,5.]])
 
         def closure():
             output = l(input)
-            loss = mse_loss(output, target)
+            loss = torch.nn.functional.mse_loss(output, target)
             loss.backward()
             return loss
 
