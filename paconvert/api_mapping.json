@@ -9289,7 +9289,8 @@
       "params": "parameters",
       "lr": "learning_rate",
       "eps": "epsilon"
-    },
+    }
+  },
   "torch.optim.LBFGS": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.optimizer.LBFGS",
