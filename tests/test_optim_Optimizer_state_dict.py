@@ -188,7 +188,7 @@ def test_case_8():
 
         l = torch.nn.Linear(10, 1)
         optim = torch.optim.LBFGS(l.parameters(), lr = 0.5)
-        mse_loss = paddle.nn.functional.mse_loss(outputs, targets)
+        mse_loss = torch.nn.functional.mse_loss(outputs, targets)
 
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
