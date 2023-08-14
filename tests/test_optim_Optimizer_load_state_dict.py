@@ -200,12 +200,21 @@ def test_case_8():
         import torch
         import torch.nn as nn
 
-        theta = torch.tensor([1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0], requires_grad=True)
         l = torch.nn.Linear(10, 1)
         optim = torch.optim.LBFGS(l.parameters(), lr = 0.5)
-        z = l(theta)
-        z.backward()
-        optim.step()
+        mse_loss = paddle.nn.functional.mse_loss(outputs, targets)
+
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        target = torch.tensor([[1.,2.,3.],[4.,5.,6.]])
+
+        def closure():
+            output = l(input)
+            loss = mse_loss(output, target)
+            loss.backward()
+            return loss
+
+        optim.step(closure)
         result = optim.state_dict()
         optim.load_state_dict(result)
         result = optim.state_dict()
