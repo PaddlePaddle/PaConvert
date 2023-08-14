@@ -9290,9 +9290,22 @@
       "lr": "learning_rate",
       "eps": "epsilon"
     },
-    "paddle_default_kwargs": {
-      "weight_decay": 0.0,
-      "learning_rate": 0.002
+  "torch.optim.LBFGS": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.optimizer.LBFGS",
+    "args_list": [
+      "params",
+      "lr",
+      "max_iter",
+      "max_eval",
+      "tolerance_grad",
+      "tolerance_change",
+      "history_size",
+      "line_search_fn"
+    ],
+    "kwargs_change": {
+      "params": "parameters",
+      "lr": "learning_rate"
     }
   },
   "torch.optim.Optimizer": {

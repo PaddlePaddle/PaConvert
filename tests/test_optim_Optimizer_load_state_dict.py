@@ -192,3 +192,26 @@ def test_case_7():
         pytorch_code,
         ["result"],
     )
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        theta = torch.tensor([1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0], requires_grad=True)
+        l = torch.nn.Linear(10, 1)
+        optim = torch.optim.LBFGS(l.parameters(), lr = 0.5)
+        z = l(theta)
+        z.backward()
+        optim.step()
+        result = optim.state_dict()
+        optim.load_state_dict(result)
+        result = optim.state_dict()
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+    )
