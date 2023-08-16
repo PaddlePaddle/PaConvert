@@ -9664,6 +9664,22 @@
       "dtype": "paddle.float32"
     }
   },
+  "torch.scatter": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.put_along_axis",
+    "args_list": [
+      "input",
+      "dim",
+      "index",
+      "src"
+    ],
+    "kwargs_change": {
+      "input": "arr",
+      "dim": "axis",
+      "index": "indices",
+      "src": "values"
+    }
+  },
   "torch.scatter_add": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.put_along_axis",
