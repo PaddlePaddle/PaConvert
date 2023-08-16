@@ -3686,6 +3686,13 @@
       "seed"
     ]
   },
+  "torch.cuda.manual_seed_all": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.seed",
+    "args_list": [
+      "seed"
+    ]
+  },
   "torch.cuda.max_memory_allocated": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.max_memory_allocated",
