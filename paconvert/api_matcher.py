@@ -3352,12 +3352,10 @@ class LinalgSvdvalsMatcher(BaseMatcher):
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
-                _, {}, _ = {}
-                {}
+                {}[1]
                 """
             )
-            s = get_unique_name("s")
-            code = API_TEMPLATE.format(s, GenericMatcher.generate_code(self, kwargs), s)
+            code = API_TEMPLATE.format(GenericMatcher.generate_code(self, kwargs))
         return code
 
 
