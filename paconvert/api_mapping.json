@@ -2031,7 +2031,21 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.rsqrt_"
   },
-  "torch.Tensor.scatter": {},
+  "torch.Tensor.scatter": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.put_along_axis",
+    "args_list": [
+      "dim",
+      "index",
+      "src",
+      "reduce"
+    ],
+    "kwargs_change": {
+      "dim": "axis",
+      "index": "indices",
+      "src": "values"
+    }
+  },
   "torch.Tensor.scatter_": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.put_along_axis_",
