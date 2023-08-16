@@ -24,6 +24,7 @@
   "torch.distributions.transforms.StickBreakingTransform": "torch.distributions.StickBreakingTransform",
   "torch.distributions.transforms.Transform": "torch.distributions.Transform",
   "torch.distributions.uniform.Uniform": "torch.distributions.Uniform",
+  "torch.nn.modules.BatchNorm2d": "torch.nn.BatchNorm2d",
   "torch.nn.modules.GroupNorm": "torch.nn.GroupNorm",
   "torch.nn.modules.activation.ReLU": "torch.nn.ReLU",
   "torch.nn.modules.conv.Conv2d": "torch.nn.Conv2d",
