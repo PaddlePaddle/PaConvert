@@ -23,35 +23,35 @@ obj = APIBase("torch.nn.Module")
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
-import torch
-import torch.nn as nn
+        import torch
+        import torch.nn as nn
 
-class MLP(nn.Module):
-    def __init__(self, input_size, hidden_size, output_size):
-        super(MLP, self).__init__()
+        class MLP(nn.Module):
+            def __init__(self, input_size, hidden_size, output_size):
+                super(MLP, self).__init__()
 
-        self.fc1 = nn.Linear(input_size, hidden_size)
-        self.relu = nn.ReLU()
-        self.fc2 = nn.Linear(hidden_size, output_size)
+                self.fc1 = nn.Linear(input_size, hidden_size)
+                self.relu = nn.ReLU()
+                self.fc2 = nn.Linear(hidden_size, output_size)
 
-        with torch.no_grad():
-            self.fc1.weight.fill_(1.0)
-            self.fc1.bias.fill_(0.1)
-            self.fc2.weight.fill_(1.0)
-            self.fc2.bias.fill_(0.1)
+                with torch.no_grad():
+                    self.fc1.weight.fill_(1.0)
+                    self.fc1.bias.fill_(0.1)
+                    self.fc2.weight.fill_(1.0)
+                    self.fc2.bias.fill_(0.1)
 
-    def forward(self, x):
-        x = self.fc1(x)
-        x = self.relu(x)
-        x = self.fc2(x)
-        return x
+            def forward(self, x):
+                x = self.fc1(x)
+                x = self.relu(x)
+                x = self.fc2(x)
+                return x
 
-model = MLP(784, 256, 10)
+        model = MLP(784, 256, 10)
 
-pytorch_module = MLP(784, 256, 10)
+        pytorch_module = MLP(784, 256, 10)
 
-inputs = torch.ones([64, 784])
-result = model(inputs)
+        inputs = torch.ones([64, 784])
+        result = model(inputs)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -60,25 +60,25 @@ result = model(inputs)
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
-import torch
-import torch.nn as nn
+        import torch
+        import torch.nn as nn
 
-class MLP(nn.Module):
-    def __init__(self, input_size, hidden_size, output_size):
-        super(MLP, self).__init__()
+        class MLP(nn.Module):
+            def __init__(self, input_size, hidden_size, output_size):
+                super(MLP, self).__init__()
 
-        self.fc1 = nn.Linear(input_size, hidden_size)
-        self.relu = nn.ReLU()
-        self.fc2 = nn.Linear(hidden_size, output_size)
+                self.fc1 = nn.Linear(input_size, hidden_size)
+                self.relu = nn.ReLU()
+                self.fc2 = nn.Linear(hidden_size, output_size)
 
-    def forward(self, x):
-        x = self.fc1(x)
-        x = self.relu(x)
-        x = self.fc2(x)
-        return x
+            def forward(self, x):
+                x = self.fc1(x)
+                x = self.relu(x)
+                x = self.fc2(x)
+                return x
 
-model = MLP(784, 256, 10)
-result = model.__class__.__name__
+        model = MLP(784, 256, 10)
+        result = model.__class__.__name__
         """
     )
     obj.run(pytorch_code, ["result"])
