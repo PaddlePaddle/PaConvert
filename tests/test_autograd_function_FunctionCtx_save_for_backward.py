@@ -11,42 +11,43 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributed.rpc.shutdown")
+obj = APIBase("torch.autograd.function.FunctionCtx.save_for_backward")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
-        import os
         import torch
-        import socket
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        start = 25000
-        end = 30000
-        for port in range(start, end):
-            try:
-                s.bind(('localhost', port))
-                s.close()
-                break
-            except socket.error:
-                continue
-        print("port: " + str(port))
+        from torch.autograd import Function
 
-        from torch.distributed import rpc
-        os.environ['MASTER_ADDR'] = 'localhost'
-        os.environ['MASTER_PORT'] = str(port)
-        os.environ['PADDLE_MASTER_ENDPOINT'] = 'localhost:' + str(port)
-        rpc.init_rpc(
-            "worker1",
-            rank=0,
-            world_size=1
-        )
-        result = rpc.shutdown()
+        # Inherit from Function
+        class cus_tanh(Function):
+            @staticmethod
+            def forward(ctx, x):
+                # ctx is a context object that store some objects for backward.
+                y = torch.tanh(x)
+                # Pass tensors to backward.
+                ctx.save_for_backward(y)
+                return y
+
+            @staticmethod
+            def backward(ctx, dy):
+                grad = dy + 1
+                return grad
+
+        data = torch.ones([2, 3], dtype=torch.float64)
+        data.requires_grad = True
+        z = cus_tanh.apply(data)
+        z.sum().backward()
+
+        result = data.grad
+        result.requires_grad = False
         """
     )
     obj.run(pytorch_code, ["result"])

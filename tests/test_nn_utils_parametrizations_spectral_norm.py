@@ -18,7 +18,7 @@ import paddle
 from apibase import APIBase
 
 
-class RpcAPIBase(APIBase):
+class SpectralNormAPIBase(APIBase):
     def compare(
         self,
         name,
@@ -27,44 +27,46 @@ class RpcAPIBase(APIBase):
         check_value=True,
         check_dtype=True,
         check_stop_gradient=True,
-        rtol=1.0e-6,
         atol=0.0,
+        rtol=1.0e-6,
     ):
-        assert isinstance(paddle_result, paddle.fluid.libpaddle.WorkerInfo)
+        assert isinstance(paddle_result, paddle.nn.Linear)
 
 
-obj = RpcAPIBase("torch.distributed.rpc.shutdown")
+obj = SpectralNormAPIBase("torch.nn.utils.parametrizations.spectral_norm")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
-        import os
         import torch
-        import socket
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        start = 25000
-        end = 30000
-        for port in range(start, end):
-            try:
-                s.bind(('localhost', port))
-                s.close()
-                break
-            except socket.error:
-                continue
-        print("port: " + str(port))
+        import torch.nn as nn
+        model = nn.Linear(10, 20)
+        result = torch.nn.utils.parametrizations.spectral_norm(model)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
 
-        from torch.distributed import rpc
-        os.environ['MASTER_ADDR'] = 'localhost'
-        os.environ['MASTER_PORT'] = str(port)
-        os.environ['PADDLE_MASTER_ENDPOINT'] = 'localhost:' + str(port)
-        rpc.init_rpc(
-            "worker1",
-            rank=0,
-            world_size=1
-        )
-        result = rpc.get_worker_info("worker1")
-        rpc.shutdown()
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        model = nn.Linear(10, 20)
+        result = torch.nn.utils.parametrizations.spectral_norm(model, name="weight")
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        model = nn.Linear(10, 20)
+        result = torch.nn.utils.parametrizations.spectral_norm(model, name="weight", n_power_iterations=1)
         """
     )
     obj.run(pytorch_code, ["result"])

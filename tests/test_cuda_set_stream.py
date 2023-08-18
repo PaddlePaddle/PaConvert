@@ -16,37 +16,42 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributed.rpc.shutdown")
+obj = APIBase("torch.cuda.set_stream")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
-        import os
         import torch
-        import socket
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        start = 25000
-        end = 30000
-        for port in range(start, end):
-            try:
-                s.bind(('localhost', port))
-                s.close()
-                break
-            except socket.error:
-                continue
-        print("port: " + str(port))
+        result = None
+        if torch.cuda.is_available():
+            result = torch.cuda.set_stream()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
 
-        from torch.distributed import rpc
-        os.environ['MASTER_ADDR'] = 'localhost'
-        os.environ['MASTER_PORT'] = str(port)
-        os.environ['PADDLE_MASTER_ENDPOINT'] = 'localhost:' + str(port)
-        rpc.init_rpc(
-            "worker1",
-            rank=0,
-            world_size=1
-        )
-        result = rpc.shutdown()
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = None
+        if torch.cuda.is_available():
+            stream = torch.cuda.Stream(0)
+            result = torch.cuda.set_stream(stream=stream)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = None
+        if torch.cuda.is_available():
+            stream = torch.cuda.Stream(torch.device("cuda:0"))
+            result = torch.cuda.set_stream(stream)
         """
     )
     obj.run(pytorch_code, ["result"])

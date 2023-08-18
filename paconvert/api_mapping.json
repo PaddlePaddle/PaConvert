@@ -2966,6 +2966,10 @@
       "input": "x"
     }
   },
+  "torch.autograd.Function": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.autograd.PyLayer"
+  },
   "torch.autograd.backward": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.autograd.backward",
@@ -3085,6 +3089,14 @@
     },
     "unsupport_args": [
       "only_inputs"
+    ]
+  },
+  "torch.autograd.graph.saved_tensors_hooks": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.autograd.saved_tensors_hooks",
+    "args_list": [
+      "pack_hook",
+      "unpack_hook"
     ]
   },
   "torch.backends.cuda.is_built": {
@@ -3744,6 +3756,13 @@
     "kwargs_change": {
       "new_states": "state_list"
     }
+  },
+  "torch.cuda.set_stream": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.device.set_stream",
+    "args_list": [
+      "stream"
+    ]
   },
   "torch.cuda.synchronize": {
     "Matcher": "GenericMatcher",
@@ -5102,6 +5121,71 @@
       "out"
     ]
   },
+  "torch.hub.download_url_to_file": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.utils.download.get_weights_path_from_url",
+    "args_list": [
+      "url",
+      "dst",
+      "hash_prefix",
+      "progress"
+    ],
+    "kwargs_change": {
+      "dst": "",
+      "hash_prefix": "",
+      "progress": ""
+    }
+  },
+  "torch.hub.help": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.hub.help",
+    "args_list": [
+      "github",
+      "model",
+      "force_reload",
+      "skip_validation",
+      "trust_repo"
+    ],
+    "kwargs_change": {
+      "github": "repo_dir",
+      "skip_validation": "",
+      "trust_repo": ""
+    }
+  },
+  "torch.hub.list": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.hub.list",
+    "args_list": [
+      "github",
+      "force_reload",
+      "skip_validation",
+      "trust_repo"
+    ],
+    "kwargs_change": {
+      "github": "repo_dir",
+      "skip_validation": "",
+      "trust_repo": ""
+    }
+  },
+  "torch.hub.load": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.hub.load",
+    "args_list": [
+      "repo_or_dir",
+      "model",
+      "source",
+      "trust_repo",
+      "force_reload",
+      "verbose",
+      "skip_validation"
+    ],
+    "kwargs_change": {
+      "repo_or_dir": "repo_dir",
+      "trust_repo": "",
+      "verbose": "",
+      "skip_validation": ""
+    }
+  },
   "torch.hypot": {
     "Matcher": "HypotMatcher",
     "args_list": [
@@ -5607,6 +5691,19 @@
     "args_list": [
       "A"
     ]
+  },
+  "torch.linalg.svdvals": {
+    "Matcher": "LinalgSvdvalsMatcher",
+    "paddle_api": "paddle.linalg.svd",
+    "args_list": [
+      "A",
+      "driver",
+      "out"
+    ],
+    "kwargs_change": {
+      "A": "x",
+      "driver": ""
+    }
   },
   "torch.linalg.vander": {
     "Matcher": "GenericMatcher",
@@ -6887,6 +6984,19 @@
       "dtype": ""
     }
   },
+  "torch.nn.KLDivLoss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.KLDivLoss",
+    "args_list": [
+      "size_average",
+      "reduce",
+      "reduction",
+      "log_target"
+    ],
+    "unsupport_args": [
+      "log_target"
+    ]
+  },
   "torch.nn.L1Loss": {
     "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.L1Loss",
@@ -7090,6 +7200,13 @@
       "kernel_size",
       "stride",
       "padding"
+    ]
+  },
+  "torch.nn.Mish": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Mish",
+    "args_list": [
+      "inplace"
     ]
   },
   "torch.nn.Module": {
@@ -9014,6 +9131,20 @@
       "parameters"
     ]
   },
+  "torch.nn.utils.parametrizations.spectral_norm": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.utils.spectral_norm",
+    "args_list": [
+      "module",
+      "name",
+      "n_power_iterations",
+      "eps",
+      "dim"
+    ],
+    "kwargs_change": {
+      "module": "layer"
+    }
+  },
   "torch.nn.utils.remove_weight_norm": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.utils.remove_weight_norm",
@@ -10014,6 +10145,16 @@
       "input": "x"
     }
   },
+  "torch.special.erfc": {
+    "Matcher": "ErfCMatcher",
+    "args_list": [
+      "input",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.special.erfinv": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.erfinv",
@@ -10025,9 +10166,34 @@
       "input": "x"
     }
   },
+  "torch.special.exp2": {
+    "Matcher": "Exp2Matcher",
+    "args_list": [
+      "input",
+      "out"
+    ]
+  },
+  "torch.special.expit": {
+    "Matcher": "ExpitMatcher",
+    "args_list": [
+      "input",
+      "out"
+    ]
+  },
   "torch.special.expm1": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.expm1",
+    "args_list": [
+      "input",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+  "torch.special.gammaln": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.lgamma",
     "args_list": [
       "input",
       "out"
@@ -10468,6 +10634,19 @@
       "dim0",
       "dim1"
     ]
+  },
+  "torch.trapezoid": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.trapezoid",
+    "args_list": [
+      "y",
+      "x",
+      "dx",
+      "dim"
+    ],
+    "kwargs_change": {
+      "dim": "axis"
+    }
   },
   "torch.triangular_solve": {
     "Matcher": "TriangularSolveMatcher",

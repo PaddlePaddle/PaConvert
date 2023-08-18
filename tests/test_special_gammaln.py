@@ -11,42 +11,43 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributed.rpc.shutdown")
+obj = APIBase("torch.special.gammaln")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
-        import os
         import torch
-        import socket
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        start = 25000
-        end = 30000
-        for port in range(start, end):
-            try:
-                s.bind(('localhost', port))
-                s.close()
-                break
-            except socket.error:
-                continue
-        print("port: " + str(port))
-
-        from torch.distributed import rpc
-        os.environ['MASTER_ADDR'] = 'localhost'
-        os.environ['MASTER_PORT'] = str(port)
-        os.environ['PADDLE_MASTER_ENDPOINT'] = 'localhost:' + str(port)
-        rpc.init_rpc(
-            "worker1",
-            rank=0,
-            world_size=1
-        )
-        result = rpc.shutdown()
+        result = torch.special.gammaln(torch.tensor([0.34, 1.5, 0.73]))
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.34, 1.5, 0.73])
+        result = torch.special.gammaln(input=input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.34, 1.5, 0.73])
+        out = torch.tensor([0.34, 1.5, 0.73])
+        result = torch.special.gammaln(input, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
