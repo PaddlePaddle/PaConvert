@@ -10110,12 +10110,14 @@
     "args_list": [
       "input",
       "some",
-      "compute_uv",
       "out"
     ],
     "kwargs_change": {
       "input": "x"
-    }
+    },
+    "unsupport_args": [
+      "compute_uv"
+    ]
   },
   "torch.swapaxes": {
     "Matcher": "SwapAxesMatcher",
