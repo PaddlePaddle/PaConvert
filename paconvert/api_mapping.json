@@ -9333,7 +9333,7 @@
     }
   },
   "torch.optim.Adam": {
-    "Matcher": "OptimAdamMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.optimizer.Adam",
     "args_list": [
       "params",
@@ -9359,6 +9359,10 @@
     "kwargs_change": {
       "params": "parameters",
       "lr": "learning_rate",
+      "betas": [
+        "beta1",
+        "beta2"
+      ],
       "eps": "epsilon"
     },
     "paddle_default_kwargs": {
@@ -9366,7 +9370,7 @@
     }
   },
   "torch.optim.AdamW": {
-    "Matcher": "OptimAdamMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.optimizer.AdamW",
     "args_list": [
       "params",
@@ -9392,6 +9396,10 @@
     "kwargs_change": {
       "params": "parameters",
       "lr": "learning_rate",
+      "betas": [
+        "beta1",
+        "beta2"
+      ],
       "eps": "epsilon"
     },
     "paddle_default_kwargs": {
@@ -9399,7 +9407,7 @@
     }
   },
   "torch.optim.Adamax": {
-    "Matcher": "OptimAdamMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.optimizer.Adamax",
     "args_list": [
       "params",
@@ -9419,6 +9427,10 @@
     "kwargs_change": {
       "params": "parameters",
       "lr": "learning_rate",
+      "betas": [
+        "beta1",
+        "beta2"
+      ],
       "eps": "epsilon"
     }
   },

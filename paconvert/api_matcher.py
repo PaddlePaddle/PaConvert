@@ -3678,14 +3678,6 @@ class OptimOptimizerMatcher(BaseMatcher):
         return code
 
 
-class OptimAdamMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "betas" in kwargs:
-            kwargs["beta1"] = kwargs["betas"].strip("\n").strip("()").split(",")[0]
-            kwargs["beta2"] = kwargs.pop("betas").strip("\n").strip("()").split(",")[1]
-        return GenericMatcher.generate_code(self, kwargs)
-
-
 class OptimlrSchedulerMatcher(BaseMatcher):
     pass
 
