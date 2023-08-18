@@ -28,6 +28,8 @@ class LoadAPIBase(APIBase):
         check_value=True,
         check_dtype=True,
         check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
     ):
         assert isinstance(paddle_result, paddle.nn.Layer)
 

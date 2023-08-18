@@ -29,7 +29,7 @@ class cudaMaxMemoryAllocatedAPI(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        return pytorch_result == paddle_result
+        assert pytorch_result == paddle_result
 
 
 obj = cudaMaxMemoryAllocatedAPI("torch.cuda.max_memory_allocated")
