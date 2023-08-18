@@ -5121,6 +5121,71 @@
       "out"
     ]
   },
+  "torch.hub.download_url_to_file": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.utils.download.get_weights_path_from_url",
+    "args_list": [
+      "url",
+      "dst",
+      "hash_prefix",
+      "progress"
+    ],
+    "kwargs_change": {
+      "dst": "",
+      "hash_prefix": "",
+      "progress": ""
+    }
+  },
+  "torch.hub.help": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.hub.help",
+    "args_list": [
+      "github",
+      "model",
+      "force_reload",
+      "skip_validation",
+      "trust_repo"
+    ],
+    "kwargs_change": {
+      "github": "repo_dir",
+      "skip_validation": "",
+      "trust_repo": ""
+    }
+  },
+  "torch.hub.list": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.hub.list",
+    "args_list": [
+      "github",
+      "force_reload",
+      "skip_validation",
+      "trust_repo"
+    ],
+    "kwargs_change": {
+      "github": "repo_dir",
+      "skip_validation": "",
+      "trust_repo": ""
+    }
+  },
+  "torch.hub.load": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.hub.load",
+    "args_list": [
+      "repo_or_dir",
+      "model",
+      "source",
+      "trust_repo",
+      "force_reload",
+      "verbose",
+      "skip_validation"
+    ],
+    "kwargs_change": {
+      "repo_or_dir": "repo_dir",
+      "trust_repo": "",
+      "verbose": "",
+      "skip_validation": ""
+    }
+  },
   "torch.hypot": {
     "Matcher": "HypotMatcher",
     "args_list": [
