@@ -3728,11 +3728,11 @@
   },
   "torch.cuda.nvtx.range_pop": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.fluid.core.nvprof_nvtx_pop"
+    "paddle_api": "paddle.framework.core.nvprof_nvtx_pop"
   },
   "torch.cuda.nvtx.range_push": {
     "Matcher": "CudaNvtxRangePushMatcher",
-    "paddle_api": "paddle.fluid.core.nvprof_nvtx_push",
+    "paddle_api": "paddle.framework.core.nvprof_nvtx_push",
     "args_list": [
       "msg"
     ]
