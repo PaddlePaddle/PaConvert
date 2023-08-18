@@ -6919,6 +6919,19 @@
       "dtype": ""
     }
   },
+  "torch.nn.KLDivLoss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.KLDivLoss",
+    "args_list": [
+      "size_average",
+      "reduce",
+      "reduction",
+      "log_target"
+    ],
+    "unsupport_args": [
+      "log_target"
+    ]
+  },
   "torch.nn.L1Loss": {
     "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.L1Loss",

@@ -242,3 +242,48 @@ def test_case_15():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_alias_case_1():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        input = torch.arange(0, 15, dtype=torch.float32, requires_grad=True).reshape((3, 5))
+        target = torch.tensor([1, 0, 4])
+        m = nn.LogSoftmax(dim=1)
+        loss = nn.NLLLoss2d(size_average=True, reduce=True, reduction="none")
+        result = loss(m(input), target)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_alias_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        input = torch.arange(0, 15, dtype=torch.float32, requires_grad=True).reshape((3, 5))
+        target = torch.tensor([1, 0, 4])
+        m = nn.LogSoftmax(dim=1)
+        loss = nn.NLLLoss2d(size_average=True, reduce=False, reduction="none")
+        result = loss(m(input), target)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_alias_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        input = torch.arange(0, 15, dtype=torch.float32, requires_grad=True).reshape((3, 5))
+        target = torch.tensor([1, 0, 4])
+        m = nn.LogSoftmax(dim=1)
+        loss = nn.NLLLoss2d(size_average=True, reduce=False, reduction="sum")
+        result = loss(m(input), target)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
