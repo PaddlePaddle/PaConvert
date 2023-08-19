@@ -7919,8 +7919,7 @@
       "inplace": ""
     },
     "unsupport_args": [
-      "value",
-      "inplace"
+      "value"
     ]
   },
   "torch.nn.functional.triplet_margin_with_distance_loss": {
