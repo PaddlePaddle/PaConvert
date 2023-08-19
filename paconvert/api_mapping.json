@@ -1,9 +1,9 @@
 {
-  "torch.BoolTensor": {
+  "torch.ByteTensor": {
     "Matcher": "TensorMatcher",
     "paddle_api": "paddle.Tensor"
   },
-  "torch.ByteTensor": {
+  "torch.BoolTensor": {
     "Matcher": "TensorMatcher",
     "paddle_api": "paddle.Tensor"
   },
