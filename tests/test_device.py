@@ -18,8 +18,18 @@ from apibase import APIBase
 
 
 class DeviceAPIBase(APIBase):
-    def compare(self, name, pytorch_result, paddle_result, value):
-        return str(pytorch_result) == str(paddle_result)
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
+    ):
+        assert str(pytorch_result).replace("cuda", "gpu") == str(paddle_result)
 
 
 obj = DeviceAPIBase("torch.device")

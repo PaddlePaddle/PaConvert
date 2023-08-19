@@ -24,12 +24,14 @@ def test_case_1():
         """
         import torch
         result = torch.tensor([[1., 2, 1]]).histogram(bins=4, range=(0., 3.))
-        if hasattr(result, "hist"):
-            result = result.hist
-        result = result.to(torch.float32)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle.histogram only return one tensor while torch return two",
+    )
 
 
 def test_case_2():
@@ -38,12 +40,14 @@ def test_case_2():
         import torch
         input = torch.tensor([[1, 2], [3, 4]], dtype=torch.float32)
         result = input.histogram(bins=4, range=(0., 3.))
-        if hasattr(result, "hist"):
-            result = result.hist
-        result = result.to(torch.float32)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle.histogram only return one tensor while torch return two",
+    )
 
 
 def test_case_3():
@@ -51,9 +55,11 @@ def test_case_3():
         """
         import torch
         result = torch.tensor([[1., 2, 1]]).histogram()
-        if hasattr(result, "hist"):
-            result = result.hist
-        result = result.to(torch.float32)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle.histogram only return one tensor while torch return two",
+    )

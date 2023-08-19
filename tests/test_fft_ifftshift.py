@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.fft.fftshift")
+obj = APIBase("torch.fft.ifftshift")
 
 
 def test_case_1():

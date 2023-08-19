@@ -162,8 +162,8 @@ class BasicTransformer(BaseTransformer):
                     self, torch_api, attribute_mapping, self.logger
                 )
                 if matcher:
-                    new_node = matcher.get_paddle_class_attribute_nodes(node)
-                    if new_node == "delete":
+                    node_list = matcher.get_paddle_class_attribute_nodes(node)
+                    if node_list == "delete":
                         if isinstance(self.parent_node, ast.Expr):
                             self.success_api_count += 1
                             log_debug(
@@ -173,7 +173,7 @@ class BasicTransformer(BaseTransformer):
                                 node.lineno,
                             )
                             return None
-                    elif new_node == "unchange":
+                    elif node_list == "unchange":
                         self.success_api_count += 1
                         log_debug(
                             self.logger,
@@ -184,17 +184,36 @@ class BasicTransformer(BaseTransformer):
                             node.lineno,
                         )
                         return node
-                    elif new_node:
-                        self.success_api_count += 1
-                        log_debug(
-                            self.logger,
-                            "[Success]convert Tensor Attribute: {} to Paddle".format(
-                                torch_api
+                    elif node_list:
+                        new_node = node_list[-1]
+                        if isinstance(new_node, ast.Expr):
+                            new_node = new_node.value
+
+                        if isinstance(
+                            new_node,
+                            (
+                                ast.Call,
+                                ast.Attribute,
+                                ast.Name,
+                                ast.Constant,
+                                ast.Compare,
+                                ast.BinOp,
+                                ast.UnaryOp,
+                                ast.Tuple,
+                                ast.Assert,
                             ),
-                            self.file_name,
-                            node.lineno,
-                        )
-                        return new_node
+                        ):
+                            self.insert_multi_node(node_list[0:-1])
+                            self.success_api_count += 1
+                            log_debug(
+                                self.logger,
+                                "[Success]convert Tensor Attribute: {} to Paddle".format(
+                                    torch_api
+                                ),
+                                self.file_name,
+                                node.lineno,
+                            )
+                            return new_node
 
         annotate_node = ast.parse(
             "'Tensor Attribute: {}, not convert, please check whether it is torch.Tensor.* and convert manually'".format(
@@ -263,13 +282,12 @@ class BasicTransformer(BaseTransformer):
          - torch api: [args]ast.Call
          - tensor api: [func]ast.Attribute([value]ast.Call)
         """
-        full_attr = self.get_full_attr(node.func)
-
         # Use Postorder traversal
         super(BasicTransformer, self).generic_visit(node)
 
         # Torch Package Call, include torch third_party
         #   such as : torch.add(x, y) / torch.add(torch.abs(x), y)
+        full_attr = self.get_full_attr(node.func)
         for torch_package in TORCH_PACKAGE_LIST:
             if full_attr.startswith("%s." % torch_package):
                 torch_api = full_attr
@@ -322,6 +340,7 @@ class BasicTransformer(BaseTransformer):
                                 ast.UnaryOp,
                                 ast.Tuple,
                                 ast.Assert,
+                                ast.Subscript,
                             ),
                         ):
                             self.insert_multi_node(node_list[0:-1])
@@ -348,16 +367,32 @@ class BasicTransformer(BaseTransformer):
         # Torch Class call
         #   such as : x.add(y) / x.abs().add / sgd.step() / model.to(torch.device('cuda'))
         if "NonTorchClass" not in full_attr:
-            attr_list = full_attr.split(".")
+            is_tensor_api = False
+            is_module_api = False
+            is_optim_api = False
             #  x.reshape
             #  self.weight.reshape
             #  x.T.reshape
             # when > 2, need to more strict
-            if (
-                (len(attr_list) == 2 and "self" not in full_attr)
-                or (len(attr_list) > 2 and "self" in full_attr)
-                or ".T." in full_attr
-            ):
+            attr_list = full_attr.split(".")
+            if len(attr_list) > 2:
+                if "self." in full_attr:
+                    # self.weight.add
+                    is_tensor_api = True
+                    # self.optimizer.load_state_dict
+                    is_optim_api = True
+                if ".T." in full_attr:
+                    is_tensor_api = True
+            elif len(attr_list) == 2:
+                if "self." in full_attr:
+                    is_module_api = True
+                    is_optim_api = True
+                else:
+                    is_tensor_api = True
+                    is_module_api = True
+                    is_optim_api = True
+
+            if is_tensor_api:
                 torch_api = ".".join(["torch.Tensor", attr_list[-1]])
                 if torch_api in API_MAPPING:
                     self.torch_api_count += 1
@@ -371,6 +406,7 @@ class BasicTransformer(BaseTransformer):
                     )
                     return self.trans_class_method(node, torch_api)
 
+            if is_module_api:
                 torch_api = ".".join(["torch.nn.Module", attr_list[-1]])
                 if torch_api in API_MAPPING:
                     self.torch_api_count += 1
@@ -384,6 +420,7 @@ class BasicTransformer(BaseTransformer):
                     )
                     return self.trans_class_method(node, torch_api)
 
+            if is_optim_api:
                 torch_api = ".".join(["torch.optim.Optimizer", attr_list[-1]])
                 if torch_api in API_MAPPING:
                     self.torch_api_count += 1
@@ -462,6 +499,7 @@ class BasicTransformer(BaseTransformer):
                         ast.BinOp,
                         ast.Assert,
                         ast.Tuple,
+                        ast.Compare,
                     ),
                 ):
                     self.insert_multi_node(node_list[0:-1])
@@ -549,6 +587,12 @@ class BasicTransformer(BaseTransformer):
         return node
 
     def visit_With(self, node):
+        self.scope_stack.append(node)
+        super(BasicTransformer, self).generic_visit(node)
+        self.scope_stack.pop()
+        return node
+
+    def visit_ExceptHandler(self, node):
         self.scope_stack.append(node)
         super(BasicTransformer, self).generic_visit(node)
         self.scope_stack.pop()

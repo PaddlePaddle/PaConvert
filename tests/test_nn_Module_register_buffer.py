@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Moudle.register_buffer")
+obj = APIBase("torch.nn.Module.register_buffer")
 
 
 def test_case_1():

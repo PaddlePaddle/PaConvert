@@ -39,10 +39,11 @@ TORCH_PACKAGE_LIST = [
     "torch",
     "mmseg",
     "mmcv",
-    "detectron",
-    "timm",
     "mmdet",
     "mmdet3d",
+    "mmengine",
+    "detectron",
+    "timm",
     "torchvision",
     "kornia",
     "fasttext",
@@ -51,6 +52,10 @@ TORCH_PACKAGE_LIST = [
     "sentencepiece",
     "NLTK",
     "scikit-learn",
+    "fairscale",
+    "transformers",
+    # "datasets",
+    "torch_xla",
 ]
 
 
@@ -94,15 +99,23 @@ class BaseTransformer(ast.NodeTransformer):
                     if node == self.node_stack[i + 1]:
                         return scope_node, "body", index
 
+                # else in (if scope)
                 if getattr(scope_node, "orelse", None):
                     for index, node in enumerate(scope_node.orelse):
                         if node == self.node_stack[i + 1]:
                             return scope_node, "orelse", index
 
+                # decorator in (function scope)
                 if getattr(scope_node, "decorator_list", None):
                     for index, node in enumerate(scope_node.decorator_list):
                         if node == self.node_stack[i + 1]:
                             return scope_node, "decorator_list", index
+
+                # finnally in (try scope)
+                if getattr(scope_node, "finalbody", None):
+                    for index, node in enumerate(scope_node.finalbody):
+                        if node == self.node_stack[i + 1]:
+                            return scope_node, "finalbody", index
 
         return self.scope_body_index(-2)
 
@@ -162,8 +175,11 @@ class BaseTransformer(ast.NodeTransformer):
             else:
                 other_nodes.append(node)
 
-        self.record_scope((self.root, "body", 0), import_nodes)
-        self.record_scope(self.scope_body_index(), other_nodes)
+        if len(import_nodes) > 0:
+            self.record_scope((self.root, "body", 0), import_nodes)
+
+        if len(other_nodes) > 0:
+            self.record_scope(self.scope_body_index(), other_nodes)
 
     def get_full_attr(self, node):
         # torch.nn.functional.relu
@@ -172,7 +188,7 @@ class BaseTransformer(ast.NodeTransformer):
         # x.abs() -> 'x'
         elif isinstance(node, ast.Name):
             # array(1.) ...
-            node_str = astor.to_source(node).strip("\n")
+            node_str = astor.to_source(node).replace("\n", "")
             for item in self.black_list:
                 if item == node_str:
                     return "NonTorchClass"
@@ -186,7 +202,7 @@ class BaseTransformer(ast.NodeTransformer):
             node,
             (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript, ast.Assert),
         ):
-            node_str = astor.to_source(node).strip("\n")
+            node_str = astor.to_source(node).replace("\n", "")
             for item in self.black_list:
                 # (array(1.) + array(2.)).abs() ...
                 if re.match(".*[^A-Za-z_]{1}%s\(" % item, node_str):
@@ -254,7 +270,7 @@ class BaseMatcher(object):
             # not support some API args
             if k in unsupport_args:
                 return None
-            v = astor.to_source(node).strip("\n")
+            v = astor.to_source(node).replace("\n", "")
             # have comma indicates a tuple
             new_kwargs[k] = v
 
@@ -269,7 +285,7 @@ class BaseMatcher(object):
             # TODO: will open after all args have been add in args_list
             # if k not in args_list:
             #    return 'NonTorchClass'
-            v = astor.to_source(node.value).strip("\n")
+            v = astor.to_source(node.value).replace("\n", "")
             new_kwargs[k] = v
 
         return new_kwargs
@@ -277,7 +293,7 @@ class BaseMatcher(object):
     def parse_args(self, args):
         new_args = []
         for node in args:
-            ele = astor.to_source(node).strip("\n")
+            ele = astor.to_source(node).replace("\n", "")
             new_args.append(ele)
 
         return new_args
@@ -290,13 +306,13 @@ class BaseMatcher(object):
             k = node.arg
             if k in unsupport_args:
                 return None
-            v = astor.to_source(node.value).strip("\n")
+            v = astor.to_source(node.value).replace("\n", "")
             new_kwargs[k] = v
 
         return new_kwargs
 
     def parse_func(self, func):
-        new_func = astor.to_source(func).strip("\n")
+        new_func = astor.to_source(func).replace("\n", "")
         self.paddleClass = new_func[0 : new_func.rfind(".")]
         if self.get_paddle_api():
             new_paddle_api = re.sub(

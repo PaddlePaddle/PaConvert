@@ -87,6 +87,10 @@ class Converter:
             unsupport_map = sorted(
                 self.unsupport_map.items(), key=lambda x: x[1], reverse=True
             )
+            import pandas
+
+            df = pandas.DataFrame.from_dict(dict(unsupport_map), orient="index")
+            df.to_excel("unsupport_map.xlsx")
             log_info(self.logger, "\n===========================================")
             log_info(self.logger, "Not Support API List:")
             log_info(self.logger, "===========================================")
