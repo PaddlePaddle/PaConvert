@@ -7782,9 +7782,7 @@
     ],
     "kwargs_change": {
       "target": "label",
-      "eps": "epsilon",
-      "dim": "axis",
-      "tau": "temperature"
+      "eps": "epsilon"
     }
   },
   "torch.nn.functional.prelu": {
