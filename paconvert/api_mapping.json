@@ -7915,7 +7915,8 @@
       "inplace"
     ],
     "kwargs_change": {
-      "input": "x"
+      "input": "x",
+      "inplace": ""
     },
     "unsupport_args": [
       "value",
