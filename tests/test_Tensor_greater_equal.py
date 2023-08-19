@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.greater_equal")
+obj = APIBase("torch.Tensor.greater_equal")
 
 
 def test_case_1():

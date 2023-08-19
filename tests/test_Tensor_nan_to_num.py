@@ -16,19 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Moudle.register_buffer")
+obj = APIBase("torch.Tensor.nan_to_num")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3.])
-        module1 = torch.nn.Module()
-        module1.register_buffer('buffer', x)
-        module2 = torch.nn.Module()
-        module2.register_module('submodule', module1)
-        result = module2.submodule.buffer
+        input = torch.tensor([[1, 2], [3., float("nan")]])
+        result = input.nan_to_num()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -38,12 +34,19 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3.])
-        module1 = torch.nn.Module()
-        module1.register_buffer('buffer', x)
-        module2 = torch.nn.Module()
-        module2.register_module(name='submodule', module=module1)
-        result = module2.submodule.buffer
+        input = torch.tensor([float('nan'), float('inf'), -float('inf'), 3.14])
+        result = input.nan_to_num(0., 1., -1.)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([float('nan'), float('inf'), -float('inf'), 3.14])
+        result = input.nan_to_num(nan=0., posinf=1., neginf=-1.)
         """
     )
     obj.run(pytorch_code, ["result"])

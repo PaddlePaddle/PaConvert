@@ -131,8 +131,3 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-test_case_1()
-test_case_2()
-test_case_3()

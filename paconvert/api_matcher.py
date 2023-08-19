@@ -69,8 +69,8 @@ class GenericMatcher(BaseMatcher):
             dtype_v = new_kwargs.pop("dtype")
 
         pin_memory_v = False
-        if "pin_memory" in new_kwargs:
-            pin_memory_v = eval(new_kwargs.pop("pin_memory"))
+        if "pin_memory" in new_kwargs and new_kwargs.pop("pin_memory") == "(True)":
+            pin_memory_v = True
 
         stop_gradient_v = None
         if "requires_grad" in new_kwargs:
@@ -120,23 +120,22 @@ class GenericMatcher(BaseMatcher):
         return code
 
     def get_paddle_class_attribute_nodes(self, node):
-        node.attr = ast.parse(self.get_paddle_api()).body[0].value.attr
-        return node
+        self.parse_func(node)
+        code = "{}".format(self.paddle_api)
+        return ast.parse(code).body
 
 
 class DeleteMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        return "delete"
-
     def get_paddle_api(self):
         return "delete"
 
-
-class TensorDeleteMatcher(BaseMatcher):
-    def get_paddle_class_nodes(self, func, args, kwargs):
+    def get_paddle_class_attribute_nodes(self, node):
         return "delete"
 
-    def get_paddle_class_attribute_nodes(self, node):
+    def get_paddle_nodes(self, args, kwargs):
+        return "delete"
+
+    def get_paddle_class_nodes(self, func, args, kwargs):
         return "delete"
 
 
@@ -197,19 +196,19 @@ class TensorAddMatcher(BaseMatcher):
         if "alpha" in kwargs:
             API_TEMPLATE = textwrap.dedent(
                 """
-                {}.add(y=paddle.to_tensor({})*{})
+                {}(y=paddle.to_tensor({})*{})
                 """
             )
             code = API_TEMPLATE.format(
-                self.paddleClass, kwargs["alpha"], kwargs["other"]
+                self.get_paddle_api(), kwargs["alpha"], kwargs["other"]
             )
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
-                {}.add(y=paddle.to_tensor({}))
+                {}(y=paddle.to_tensor({}))
                 """
             )
-            code = API_TEMPLATE.format(self.paddleClass, kwargs["other"])
+            code = API_TEMPLATE.format(self.get_paddle_api(), kwargs["other"])
         return code
 
 
@@ -298,8 +297,8 @@ class CreateMatcher(BaseMatcher):
                 kwargs.pop(k)
 
         pin_memory_v = False
-        if "pin_memory" in kwargs:
-            pin_memory_v = eval(kwargs.pop("pin_memory"))
+        if "pin_memory" in kwargs and kwargs.pop("pin_memory") == "(True)":
+            pin_memory_v = True
 
         stop_gradient_v = None
         if "requires_grad" in kwargs:
@@ -341,7 +340,6 @@ class CreateMatcher(BaseMatcher):
             code = API_TEMPLATE.format(res, out_v)
         else:
             code = "{}".format(res)
-
         return ast.parse(code).body
 
 
@@ -351,7 +349,7 @@ class DeviceMatcher(BaseMatcher):
             code = f'str({kwargs["type"]}).replace("cuda", "gpu")'
 
         if len(kwargs) == 2:
-            code = f'":".join([{kwargs["type"]}.replace("cuda", "gpu"),str({kwargs["index"]})])'
+            code = f'":".join([{kwargs["type"]}.replace("cuda", "gpu"), str({kwargs["index"]})])'
         return code
 
 
@@ -513,12 +511,43 @@ class TensorMatcher(BaseMatcher):
                 shape = astor.to_source(args[0].value).strip("\n")
             else:
                 data = self.parse_args(args)[0]
-                if "torch.IntTensor" == self.torch_api:
+                if (
+                    "torch.IntTensor" == self.torch_api
+                    or "torch.cuda.IntTensor" == self.torch_api
+                ):
                     code = "paddle.to_tensor(data={}, dtype='int32')".format(data)
-                elif "torch.LongTensor" == self.torch_api:
+                elif ("torch.ShortTensor" == self.torch_api) or (
+                    "torch.cuda.ShortTensor" == self.torch_api
+                ):
+                    code = "paddle.to_tensor(data={}, dtype='int16')".format(data)
+                elif (
+                    "torch.LongTensor" == self.torch_api
+                    or "torch.cuda.LongTensor" == self.torch_api
+                ):
                     code = "paddle.to_tensor(data={}, dtype='int64')".format(data)
-                elif "torch.FloatTensor" == self.torch_api:
+                elif ("torch.HalfTensor" == self.torch_api) or (
+                    "torch.cuda.HalfTensor" == self.torch_api
+                ):
+                    code = "paddle.to_tensor(data={}, dtype='float16')".format(data)
+                elif (
+                    "torch.FloatTensor" == self.torch_api
+                    or "torch.cuda.FloatTensor" == self.torch_api
+                ):
                     code = "paddle.to_tensor(data={}, dtype='float32')".format(data)
+                elif ("torch.DoubleTensor" == self.torch_api) or (
+                    "torch.cuda.DoubleTensor" == self.torch_api
+                ):
+                    code = "paddle.to_tensor(data={}, dtype='float64')".format(data)
+                elif (
+                    "torch.ByteTensor" == self.torch_api
+                    or "torch.cuda.ByteTensor" == self.torch_api
+                ):
+                    code = "paddle.to_tensor(data={}, dtype='uint8')".format(data)
+                elif ("torch.BoolTensor" == self.torch_api) or (
+                    "torch.cuda.BoolTensor" == self.torch_api
+                ):
+                    code = "paddle.to_tensor(data={}, dtype='bool')".format(data)
+
                 else:
                     if not isinstance(args[0], ast.Name):
                         code = "paddle.to_tensor(data={}, dtype='float32')".format(data)
@@ -528,12 +557,45 @@ class TensorMatcher(BaseMatcher):
                 return node
             shape = str(shape).replace("'", "")
 
-        if "torch.IntTensor" == self.torch_api:
+        if (
+            "torch.IntTensor" == self.torch_api
+            or "torch.cuda.IntTensor" == self.torch_api
+        ):
             code = "paddle.empty(shape={}, dtype='int32')".format(shape)
-        elif "torch.LongTensor" == self.torch_api:
+        elif (
+            "torch.ShortTensor" == self.torch_api
+            or "torch.cuda.ShortTensor" == self.torch_api
+        ):
+            code = "paddle.empty(shape={}, dtype='int16')".format(shape)
+        elif (
+            "torch.LongTensor" == self.torch_api
+            or "torch.cuda.LongTensor" == self.torch_api
+        ):
             code = "paddle.empty(shape={}, dtype='int64')".format(shape)
-        elif "torch.FloatTensor" == self.torch_api:
+        elif (
+            "torch.HalfTensor" == self.torch_api
+            or "torch.cuda.HalfTensor" == self.torch_api
+        ):
+            code = "paddle.empty(shape={}, dtype='float16')".format(shape)
+        elif (
+            "torch.FloatTensor" == self.torch_api
+            or "torch.cuda.FloatTensor" == self.torch_api
+        ):
             code = "paddle.empty(shape={}, dtype='float32')".format(shape)
+        elif (
+            "torch.DoubleTensor" == self.torch_api
+            or "torch.cuda.DoubleTensor" == self.torch_api
+        ):
+            code = "paddle.empty(shape={}, dtype='float64')".format(shape)
+        elif (
+            "torch.ByteTensor" == self.torch_api
+            or "torch.cuda.ByteTensor" == self.torch_api
+        ):
+            code = "paddle.zeros(shape={}, dtype='uint8')".format(shape)
+        elif ("torch.BoolTensor" == self.torch_api) or (
+            "torch.cuda.BoolTensor" == self.torch_api
+        ):
+            code = "paddle.randint(0, 2, shape={}).astype('bool')".format(shape)
         else:
             code = "paddle.empty(shape={})".format(shape)
 
@@ -615,6 +677,9 @@ class TensorRepeatMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
         kwargs = self.parse_kwargs(kwargs)
+
+        if len(args) == 0 and len(kwargs) == 0:
+            return "NonTorchClass"
 
         if "axis" in kwargs:
             return "NonTorchClass"
@@ -738,8 +803,8 @@ class TensorNew_Matcher(BaseMatcher):
             stop_gradient_v = "not " + kwargs.pop("requires_grad").strip("()")
 
         pin_memory_v = False
-        if "pin_memory" in kwargs:
-            pin_memory_v = eval(kwargs.pop("pin_memory"))
+        if "pin_memory" in kwargs and kwargs.pop("pin_memory") == "(True)":
+            pin_memory_v = True
 
         if "dtype" not in kwargs:
             kwargs["dtype"] = "{}.dtype".format(self.paddleClass)
@@ -782,8 +847,8 @@ class TensorNewFullMatcher(BaseMatcher):
             stop_gradient_v = "not " + kwargs.pop("requires_grad").strip("()")
 
         pin_memory_v = False
-        if "pin_memory" in kwargs:
-            pin_memory_v = eval(kwargs.pop("pin_memory"))
+        if "pin_memory" in kwargs and kwargs.pop("pin_memory") == "(True)":
+            pin_memory_v = True
 
         if "dtype" not in kwargs:
             kwargs["dtype"] = "{}.dtype".format(self.paddleClass)
@@ -820,10 +885,8 @@ class TensorNewTensorMatcher(BaseMatcher):
         if "requires_grad" in kwargs:
             kwargs["stop_gradient"] = "not " + kwargs.pop("requires_grad").strip("()")
 
-        if "pin_memory" in kwargs:
-            if eval(kwargs["pin_memory"]):
-                kwargs["place"] = "paddle.CUDAPinnedPlace()"
-            kwargs.pop("pin_memory")
+        if "pin_memory" in kwargs and kwargs.pop("pin_memory") == "(True)":
+            kwargs["place"] = "paddle.CUDAPinnedPlace()"
 
         if "dtype" not in kwargs:
             kwargs["dtype"] = "{}.dtype".format(self.paddleClass)
@@ -841,10 +904,8 @@ class TorchTensorMatcher(BaseMatcher):
         if "requires_grad" in kwargs:
             kwargs["stop_gradient"] = "not " + kwargs.pop("requires_grad").strip("()")
 
-        if "pin_memory" in kwargs:
-            if eval(kwargs["pin_memory"]):
-                kwargs["place"] = "paddle.CUDAPinnedPlace()"
-            kwargs.pop("pin_memory")
+        if "pin_memory" in kwargs and kwargs.pop("pin_memory") == "(True)":
+            kwargs["place"] = "paddle.CUDAPinnedPlace()"
 
         code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
@@ -1216,6 +1277,22 @@ class LoadMatcher(BaseMatcher):
         )
         code = API_TEMPLATE.format(kwargs["f"])
         return code
+
+
+class TensorTypeMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if len(kwargs) == 0:
+            return None
+        dtype = kwargs["dtype"]
+        code = f"{self.paddleClass}.astype({dtype})"
+        return code
+
+
+class TensorIsCudaMatcher(BaseMatcher):
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+        code = "'gpu' in str({}.place)".format(self.paddleClass)
+        return ast.parse(code).body
 
 
 class SaveMatcher(BaseMatcher):
@@ -1673,13 +1750,13 @@ class GeneratorMatcher(BaseMatcher):
     def generate_code(self, kwargs):
 
         if not kwargs:
-            code = "paddle.fluid.core.default_cpu_generator()"
+            code = "paddle.framework.core.default_cpu_generator()"
         elif "device" in kwargs:
             if kwargs["device"] == '"""cuda"""':
                 code = textwrap.dedent(
                     """
                     device = paddle.device.get_device()
-                    paddle.fluid.core.default_cuda_generator(int(device[-1]))
+                    paddle.framework.core.default_cuda_generator(int(device[-1]))
                     """
                 )
             elif kwargs["device"] == '"""mps"""':
@@ -1687,7 +1764,7 @@ class GeneratorMatcher(BaseMatcher):
                 return None
 
             else:
-                code = "paddle.fluid.core.default_cpu_generator()"
+                code = "paddle.framework.core.default_cpu_generator()"
 
         return code
 
@@ -1794,14 +1871,7 @@ class TensorRequires_GradMatcher(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
         code = "not {}.stop_gradient".format(self.paddleClass)
-        return ast.parse(code).body[0].value
-
-
-class AllMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        kwargs["input"] = kwargs["input"] + ".astype(dtype='bool')"
-        code = GenericMatcher.generate_code(self, kwargs)
-        return code
+        return ast.parse(code).body
 
 
 class ArangeMatcher(BaseMatcher):
@@ -1853,6 +1923,31 @@ class Exp2Matcher(BaseMatcher):
                 """
             )
             code = API_TEMPLATE.format(kwargs["input"])
+
+        return code
+
+
+class ExpitMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        exp_v = get_unique_name("exp_v")
+        if "out" in kwargs and kwargs["out"] is not None:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                {} = paddle.exp({})
+                paddle.assign({} / (1 + {}), output={})
+                """
+            )
+            code = API_TEMPLATE.format(
+                exp_v, kwargs["input"], exp_v, exp_v, kwargs["out"]
+            )
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                {} = paddle.exp({})
+                {} / (1 + {})
+                """
+            )
+            code = API_TEMPLATE.format(exp_v, kwargs["input"], exp_v, exp_v)
 
         return code
 
@@ -2769,31 +2864,6 @@ class HypotMatcher(BaseMatcher):
         return code
 
 
-class TensorHistcMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "bins" not in kwargs:
-            kwargs["bins"] = 100
-        if "min" not in kwargs:
-            kwargs["min"] = 0
-        if "max" not in kwargs:
-            kwargs["max"] = 0
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {}.histogram(bins={}, min={}, max={}).astype({}.dtype)
-            """
-        )
-        code = API_TEMPLATE.format(
-            self.paddleClass,
-            kwargs["bins"],
-            kwargs["min"],
-            kwargs["max"],
-            self.paddleClass,
-        )
-
-        return code
-
-
 class TensorReshapeMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -2840,6 +2910,9 @@ class SelectMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" not in kwargs:
             kwargs["input"] = self.paddleClass
+
+        if len(kwargs) != 3:
+            return "NonTorchClass"
 
         API_TEMPLATE = textwrap.dedent(
             """
@@ -2980,16 +3053,34 @@ class SLogDetMatcher(BaseMatcher):
 
 class HistcMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-
-        if "out" in kwargs and kwargs["out"] is not None:
+        if "out" in kwargs:
             out_v = kwargs.pop("out").strip("\n")
-            code = "paddle.assign({}({}).astype('float32'), output={})".format(
-                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v
+            code = "paddle.assign({}({}).astype({}.dtype), output={})".format(
+                self.get_paddle_api(),
+                self.kwargs_to_str(kwargs),
+                kwargs["input"],
+                out_v,
             )
         else:
-            code = "{}({}).astype('float32')".format(
-                self.get_paddle_api(), self.kwargs_to_str(kwargs)
+            code = "{}({}).astype({}.dtype)".format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs), kwargs["input"]
             )
+
+        return code
+
+
+class TensorHistcMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}({}).astype({}.dtype)
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.get_paddle_api(),
+            self.kwargs_to_str(kwargs),
+            self.paddleClass,
+        )
 
         return code
 
@@ -3005,7 +3096,6 @@ class TensorHistogramMatcher(BaseMatcher):
 
 class SpecialNdtriMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-
         API_TEMPLATE = textwrap.dedent(
             """
             2 ** (1/2) * paddle.erfinv(2*{}-1)
@@ -3020,7 +3110,6 @@ class SpecialNdtriMatcher(BaseMatcher):
 
 class AdjointMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-
         if "input" not in kwargs:
             kwargs["input"] = self.paddleClass
 
@@ -3039,6 +3128,51 @@ class AdjointMatcher(BaseMatcher):
         return code
 
 
+class TensorHMatcher(BaseMatcher):
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+        code = "{}.transpose(perm=[1, 0]).conj()".format(self.paddleClass)
+        return ast.parse(code).body
+
+
+class TensorMtMatcher(BaseMatcher):
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+        paddle_class = self.paddleClass
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {} = list(range({}.ndim))
+            {}[-1], {}[-2] = {}[-2], {}[-1]
+            {}.transpose(perm={})
+            """
+        )
+        perm = get_unique_name("perm")
+        code = API_TEMPLATE.format(
+            perm, paddle_class, perm, perm, perm, perm, paddle_class, perm
+        )
+        return ast.parse(code).body
+
+
+class TensorMhMatcher(BaseMatcher):
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+        paddle_class = self.paddleClass
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {} = list(range({}.ndim))
+            {}[-1], {}[-2] = {}[-2], {}[-1]
+            {}.transpose(perm={}).conj()
+            """
+        )
+        perm = get_unique_name("perm")
+        code = API_TEMPLATE.format(
+            perm, paddle_class, perm, perm, perm, perm, paddle_class, perm
+        )
+        return ast.parse(code).body
+
+
 class SpecialXLog1pYMatcher(BaseMatcher):
     def generate_code(self, kwargs):
 
@@ -3052,39 +3186,6 @@ class SpecialXLog1pYMatcher(BaseMatcher):
         )
         if "out" in kwargs and kwargs["out"] is not None:
             code = "paddle.assign({}, output={})".format(code, kwargs["out"])
-
-        return code
-
-
-class CovMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "input" not in kwargs:
-            kwargs["input"] = self.paddleClass
-
-        if "correction" in kwargs:
-            if kwargs["correction"].strip("()") == "1":
-                kwargs["ddof"] = True
-            elif kwargs["correction"].strip("()") == "0":
-                kwargs["ddof"] = False
-            else:
-                return None
-        else:
-            kwargs["ddof"] = True
-
-        if "fweights" not in kwargs:
-            kwargs["fweights"] = None
-
-        if "aweights" not in kwargs:
-            kwargs["aweights"] = None
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle.linalg.cov({}, ddof={}, fweights={}, aweights={})
-            """
-        )
-        code = API_TEMPLATE.format(
-            kwargs["input"], kwargs["ddof"], kwargs["fweights"], kwargs["aweights"]
-        )
 
         return code
 
@@ -3209,6 +3310,53 @@ class RNNMatcher(BaseMatcher):
             kwargs.pop("bidirectional")
 
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class RNNBaseMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "batch_first" in kwargs:
+            batch_first = kwargs.pop("batch_first")
+        else:
+            batch_first = False
+        kwargs["time_major"] = f"not {batch_first}"
+
+        if "mode" in kwargs:
+            # RNN is not supported, because RNN need activation
+            if "LSTM" in kwargs["mode"] or "GRU" in kwargs["mode"]:
+                pass
+            else:
+                return None
+
+        direction = "'forward'"
+        if "bidirectional" in kwargs:
+            if "True" in kwargs["bidirectional"]:
+                direction = "'bidirect'"
+            kwargs.pop("bidirectional")
+        kwargs["direction"] = direction
+
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class LinalgSvdvalsMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "out" in kwargs:
+            out_v = kwargs.pop("out")
+            API_TEMPLATE = textwrap.dedent(
+                """
+                paddle.assign({}[1], output={})
+                """
+            )
+            code = API_TEMPLATE.format(
+                GenericMatcher.generate_code(self, kwargs), out_v
+            )
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                {}[1]
+                """
+            )
+            code = API_TEMPLATE.format(GenericMatcher.generate_code(self, kwargs))
+        return code
 
 
 class DiffMatcher(BaseMatcher):
@@ -3535,15 +3683,7 @@ class FunctionalSoftmaxMatcher(BaseMatcher):
         if "dim" not in kwargs or "None" in kwargs["dim"]:
             return None
 
-        if "_stacklevel" in kwargs:
-            kwargs.pop("_stacklevel")
-
-        if "input" in kwargs:
-            kwargs["x"] = kwargs.pop("input").strip("\n")
-        if "dim" in kwargs:
-            kwargs["axis"] = kwargs.pop("dim").strip("\n")
-
-        return "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        return GenericMatcher.generate_code(self, kwargs)
 
 
 class FunctionalLinearMatcher(BaseMatcher):
@@ -3585,11 +3725,36 @@ class SizeAverageMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class CudaStreamMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if "priority" in kwargs:
+            kwargs["priority"] = "{}+2".format(kwargs["priority"])
+
+        if "device" in kwargs:
+            if "cuda" in kwargs["device"]:
+                import re
+
+                device_list = re.findall(r"\d+", kwargs["device"])
+                if len(device_list) > 0:
+                    kwargs["device"] = device_list[0]
+                else:
+                    kwargs["device"] = None
+
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class CudaNvtxRangePushMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "{}({})".format(self.get_paddle_api(), kwargs["msg"])
+        return code
+
+
 class Attribute2Func(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
         code = "{}()".format(self.paddle_api)
-        return ast.parse(code).body[0].value
+        return ast.parse(code).body
 
 
 class LuMatcher(BaseMatcher):
@@ -3633,6 +3798,31 @@ class LuMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class QrMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        some_v = kwargs.pop("some") if "some" in kwargs else None
+        out_v = kwargs.pop("out") if "out" in kwargs else None
+
+        if some_v:
+            kwargs["mode"] = "'complete'" if some_v != "(False)" else "'reduced'"
+
+        if out_v:
+            kwargs["x"] = kwargs.pop("input")
+            API_TEMPLATE = textwrap.dedent(
+                """
+                tmp_q, tmp_r = {}({})
+                paddle.assign(tmp_q, {}[0]), paddle.assign(tmp_r, {}[1])
+                """
+            )
+
+            code = API_TEMPLATE.format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v, out_v
+            )
+            return code
+
+        return GenericMatcher.generate_code(self, kwargs)
+
+
 class RandomSplitMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
@@ -3652,6 +3842,14 @@ class RandomSplitMatcher(BaseMatcher):
             self.kwargs_to_str(kwargs),
         )
         return code.strip("\n")
+
+
+class TensorIsSignedMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        paddle_class = self.paddleClass
+        code = "{}.dtype not in [paddle.uint8]".format(paddle_class)
+        return ast.parse(code.strip("\n")).body
 
 
 class TensorToBoolMatcher(BaseMatcher):
