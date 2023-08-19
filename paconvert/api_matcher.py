@@ -1907,6 +1907,46 @@ class ErfCMatcher(BaseMatcher):
         return code
 
 
+class SpecialErfcxMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "out" in kwargs and kwargs["out"] is not None:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                paddle.assign(paddle.exp({} ** 2) * (1.0 - paddle.erf({})), output={})
+                """
+            )
+            code = API_TEMPLATE.format(kwargs["input"], kwargs["input"], kwargs["out"])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                paddle.exp({} ** 2) * (1.0 - paddle.erf({}))
+                """
+            )
+            code = API_TEMPLATE.format(kwargs["input"], kwargs["input"])
+
+        return code
+
+
+class SpecialXlogyMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "out" in kwargs and kwargs["out"] is not None:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                paddle.assign({} * paddle.log({}), output={})
+                """
+            )
+            code = API_TEMPLATE.format(kwargs["input"], kwargs["other"], kwargs["out"])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                {} * paddle.log({})
+                """
+            )
+            code = API_TEMPLATE.format(kwargs["input"], kwargs["other"])
+
+        return code
+
+
 class Exp2Matcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "out" in kwargs and kwargs["out"] is not None:

@@ -9974,6 +9974,13 @@
       "input": "x"
     }
   },
+  "torch.special.erfcx": {
+    "Matcher": "SpecialErfcxMatcher",
+    "args_list": [
+      "input",
+      "out"
+    ]
+  },
   "torch.special.erfinv": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.erfinv",
@@ -10151,6 +10158,14 @@
   },
   "torch.special.xlog1py": {
     "Matcher": "SpecialXLog1pYMatcher",
+    "args_list": [
+      "input",
+      "other",
+      "out"
+    ]
+  },
+  "torch.special.xlogy": {
+    "Matcher": "SpecialXlogyMatcher",
     "args_list": [
       "input",
       "other",
