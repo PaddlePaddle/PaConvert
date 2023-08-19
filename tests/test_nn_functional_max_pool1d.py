@@ -19,7 +19,6 @@ from apibase import APIBase
 obj = APIBase("torch.nn.functional.max_pool1d")
 
 
-
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
