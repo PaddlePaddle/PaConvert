@@ -16,60 +16,58 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor")
+obj = APIBase("torch.tensor")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Tensor(2, 3)
+        result = torch.tensor([2, 3])
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        shape = [2, 3]
-        result = torch.Tensor(*shape)
+        data = [2, 3]
+        result = torch.tensor(data)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        dim1, dim2 = 2, 3
-        result = torch.Tensor(dim1, dim2)
+        data = [2, 3]
+        result = torch.tensor(data, dtype=torch.float)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        def fun(x: torch.Tensor):
-            return x * 2
-
-        a = torch.Tensor(3, 4)
-        result = fun(a)
+        data = [2, 3]
+        result = torch.tensor(data, dtype=torch.float, device=None)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Tensor([[3, 4], [5, 8]])
+        data = [2, 3]
+        result = torch.tensor(data, dtype=torch.float, device=None, requires_grad = False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -79,8 +77,10 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[3, 4], [5, 8]])
-        result = torch.Tensor(a)
+        data = [2, 3]
+        result = None
+        if torch.cuda.is_available():
+            result = torch.tensor(data, requires_grad = False, pin_memory=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -90,22 +90,8 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Tensor((1, 2, 3))
+        data = [2, 3]
+        result = torch.tensor(data, requires_grad = False, pin_memory=False)
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-def test_case_8():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.Tensor()
-        """
-    )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support 0-Size Tensor",
-    )
