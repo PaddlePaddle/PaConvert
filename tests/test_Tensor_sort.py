@@ -56,7 +56,7 @@ def test_case_3():
         """
     )
     obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="unsupprt stable parameter"
+        pytorch_code, ["result"], unsupport=True, reason="unsupport stable parameter"
     )
 
 

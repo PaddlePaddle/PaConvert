@@ -19,7 +19,6 @@ import sys
 sys.path.append(os.path.dirname(__file__) + "/..")
 
 from paconvert.converter import Converter
-from paconvert.transformer.basic_transformer import change_torch_package_list
 
 
 def main():
@@ -84,29 +83,34 @@ def main():
         sys.exit(0)
 
     if args.separate_convert:
-        change_torch_package_list()
+        # change_torch_package_list()
         project_num_100 = 0
         project_num_95 = 0
         project_num_90 = 0
+        convert_rate_map = {}
 
         in_dir = os.path.abspath(args.in_dir)
-        for pytorch_project in os.listdir(in_dir):
-            pytorch_project = os.path.join(in_dir, pytorch_project)
+        for project_name in os.listdir(in_dir):
+            project_dir = os.path.join(in_dir, project_name)
             converter = Converter(args.log_dir, args.log_level, args.show_unsupport)
-            converter.run(pytorch_project, args.out_dir, args.exclude_dirs)
+            converter.run(project_dir, args.out_dir, args.exclude_dirs)
             if converter.convert_rate == 1.0:
                 project_num_100 += 1
             if converter.convert_rate >= 0.95:
                 project_num_95 += 1
             if converter.convert_rate >= 0.90:
                 project_num_90 += 1
+            convert_rate_map[project_name] = converter.convert_rate
 
         project_num = len(os.listdir(in_dir))
         print("\n**************************************************************")
         print("Model Convert Summary:")
         print("\n**************************************************************")
+        print("Convert rate of each project is:\n")
+        for k, v in convert_rate_map.items():
+            print("  {}: {:.2%}".format(k, v))
         print(
-            "There are {} Pytorch Projects:\n : {}({:.2%}) Project's Convert-Rate is 100%\n "
+            "\nIn Total, there are {} Pytorch Projects:\n : {}({:.2%}) Project's Convert-Rate is 100%\n "
             ": {}({:.2%}) Project's Convert-Rate >=95%\n : {}({:.2%}) Project's Convert-Rate >=90%".format(
                 project_num,
                 project_num_100,
@@ -117,6 +121,10 @@ def main():
                 project_num_90 / project_num,
             )
         )
+        import pandas
+
+        df = pandas.DataFrame.from_dict(dict(convert_rate_map), orient="index")
+        df.to_excel("convert_rate_map.xlsx")
         sys.exit(0)
 
     assert args.in_dir is not None, "User must specify --in_dir "

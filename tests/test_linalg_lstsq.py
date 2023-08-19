@@ -19,7 +19,17 @@ from apibase import APIBase
 
 
 class LstsqAPI(APIBase):
-    def compare(self, name, pytorch_result, paddle_result, check_value=True):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
+    ):
         if isinstance(pytorch_result, (tuple, list)):
             for i in range(len(pytorch_result)):
                 self.compare(self.pytorch_api, pytorch_result[i], paddle_result[i])

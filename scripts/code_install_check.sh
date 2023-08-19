@@ -20,15 +20,20 @@ DEVELOP_IF="OFF"
 if [[ "$DEVELOP_IF" == "OFF" ]]; then
     cd /workspace/$2/PaConvert/
     PATH=$1
+
     echo "Insalling develop version paddle"
-    python -m pip install --no-cache-dir  --force-reinstall paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
-    python -c "import paddle; print('paddle version information:' ,paddle.__version__); print('paddle commit information:' ,paddle.__git_commit__)"
+    pip uninstall -y paddlepaddle
+    pip install --no-cache-dir paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
+    python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 fi
 
 echo "start pipline testing..."
 echo '*******************start generating source and wheel distribution*******************'
 
 python setup.py sdist bdist_wheel;check_error=$?
+if [ ${check_error} == 0 ];then
+    pip install dist/*.whl;check_error=$?
+fi
 
 echo '************************************************************************************'
 echo "______      _____                          _   "
@@ -39,9 +44,9 @@ echo "| | | (_| | |___| (_) | | | \\ V /  __/ |  | |_ "
 echo "\\_|  \\__,_|\\_____\\___/|_| |_|\\_/ \\___|_|   \\__|"
 echo -e '\n************************************************************************************'
 if [ ${check_error} != 0 ];then
-    echo "Your PR code pipeline test check failed." 
+    echo "Your PR code install check failed." 
 else
-    echo "Your PR code pipeline test check passed."
+    echo "Your PR code install check passed."
 fi
 echo '************************************************************************************'
 

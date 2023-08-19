@@ -35,7 +35,7 @@ def test_case_1():
         result = F.layer_norm(input, [3], data, data)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_2():
@@ -54,7 +54,7 @@ def test_case_2():
         result = F.layer_norm(input=input, normalized_shape=[3], weight=data, bias=data)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_3():

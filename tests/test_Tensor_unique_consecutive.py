@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.sigmoid")
+obj = APIBase("torch.Tensor.unique_consecutive")
 
 
 def test_case_1():
@@ -24,7 +24,7 @@ def test_case_1():
         """
         import torch
         x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
-        result = torch.unique_consecutive(x)
+        result = x.unique_consecutive()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,7 +35,7 @@ def test_case_2():
         """
         import torch
         x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
-        result, inverse_indices = torch.unique_consecutive(x, return_inverse=True)
+        result, inverse_indices = x.unique_consecutive(return_inverse=True)
         """
     )
     obj.run(pytorch_code, ["result", "inverse_indices"])
@@ -46,7 +46,7 @@ def test_case_3():
         """
         import torch
         x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
-        result, counts = torch.unique_consecutive(x, return_counts=True)
+        result, counts = x.unique_consecutive(return_counts=True)
         """
     )
     obj.run(pytorch_code, ["result", "counts"])
@@ -57,7 +57,7 @@ def test_case_4():
         """
         import torch
         x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
-        result, inverse_indices, counts = torch.unique_consecutive(x, return_counts=True, return_inverse=True)
+        result, inverse_indices, counts = x.unique_consecutive(return_counts=True, return_inverse=True)
         """
     )
     obj.run(pytorch_code, ["result", "counts", "inverse_indices"])
@@ -68,7 +68,7 @@ def test_case_5():
         """
         import torch
         x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
-        result = torch.unique_consecutive(x, dim=0)
+        result = x.unique_consecutive(dim=0)
         """
     )
     obj.run(pytorch_code, ["result"])
