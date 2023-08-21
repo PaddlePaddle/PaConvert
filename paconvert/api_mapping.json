@@ -3099,6 +3099,16 @@
       "unpack_hook"
     ]
   },
+  "torch.autograd.profiler.profile.export_chrome_trace": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.profiler.export_chrome_tracing",
+    "args_list": [
+      "path"
+    ],
+    "kwargs_change": {
+      "path": "dir_name"
+    }
+  },
   "torch.backends.cuda.is_built": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.is_compiled_with_cuda"
@@ -8349,6 +8359,23 @@
       "dilation": "dilations"
     }
   },
+  "torch.nn.functional.gaussian_nll_loss": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.gaussian_nll_loss",
+    "args_list": [
+      "input",
+      "target",
+      "var",
+      "full",
+      "eps",
+      "reduction"
+    ],
+    "kwargs_change": {
+      "target": "label",
+      "var": "variance",
+      "eps": "epsilon"
+    }
+  },
   "torch.nn.functional.gelu": {
     "Matcher": "GeluMatcher",
     "paddle_api": "paddle.nn.functional.gelu",
@@ -10024,6 +10051,17 @@
   "torch.special.i0": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.i0",
+    "args_list": [
+      "input",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+  "torch.special.i0e": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.i0e",
     "args_list": [
       "input",
       "out"
