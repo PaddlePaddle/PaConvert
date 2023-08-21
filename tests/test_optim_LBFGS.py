@@ -50,11 +50,17 @@ def test_case_1():
         bias = torch.tensor([0.0])
         conv.weight = torch.nn.Parameter(weight)
         conv.bias = torch.nn.Parameter(bias)
-        out = conv(inp)
-        loss = torch.mean(out)
         LBFGS = torch.optim.LBFGS(conv.parameters(), max_iter=30)
-        loss.backward()
-        LBFGS.step()
+        mse_loss = paddle.nn.functional.mse_loss(outputs, targets)
+        target = torch.tensor([[[[1, 2, 3],
+                  [4, 5, 6],
+                  [7, 8, 9]]]])
+        def closure():
+            output = l(input)
+            loss = mse_loss(output, target)
+            loss.backward()
+            return loss
+        LBFGS.step(closure)
         result = conv.weight.mean()
         """
     )
@@ -91,12 +97,17 @@ def test_case_2():
                   [-0.3153,  0.0752, -0.2045]]]])
         bias = torch.tensor([0.0])
         conv.weight = torch.nn.Parameter(weight)
-        conv.bias = torch.nn.Parameter(bias)
-        out = conv(inp)
-        loss = torch.mean(out)
         LBFGS = torch.optim.LBFGS(conv.parameters(), max_iter=30)
-        loss.backward()
-        LBFGS.step()
+        mse_loss = paddle.nn.functional.mse_loss(outputs, targets)
+        target = torch.tensor([[[[1, 2, 3],
+                  [4, 5, 6],
+                  [7, 8, 9]]]])
+        def closure():
+            output = l(input)
+            loss = mse_loss(output, target)
+            loss.backward()
+            return loss
+        LBFGS.step(closure)
         result = conv.weight.mean()
         """
     )
@@ -134,11 +145,17 @@ def test_case_3():
         bias = torch.tensor([0.0])
         conv.weight = torch.nn.Parameter(weight)
         conv.bias = torch.nn.Parameter(bias)
-        out = conv(inp)
-        loss = torch.mean(out)
         LBFGS = torch.optim.LBFGS(conv.parameters(), max_iter=30)
-        loss.backward()
-        LBFGS.step()
+        mse_loss = paddle.nn.functional.mse_loss(outputs, targets)
+        target = torch.tensor([[[[1, 2, 3],
+                  [4, 5, 6],
+                  [7, 8, 9]]]])
+        def closure():
+            output = l(input)
+            loss = mse_loss(output, target)
+            loss.backward()
+            return loss
+        LBFGS.step(closure)
         result = conv.weight.mean()
         """
     )
