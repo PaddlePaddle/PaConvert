@@ -9470,16 +9470,6 @@
     "paddle_api": "paddle.optimizer.Optimizer.step"
   },
   "torch.optim.Optimizer.zero_grad": {},
-  "torch.optim.lr_scheduler.LambdaLR": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.optimizer.lr.LambdaDecay",
-    "args_list": [
-      "optimizer",
-      "lr_lambda",
-      "last_epoch",
-      "verbose"
-    ]
-  },
   "torch.outer": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.outer",
