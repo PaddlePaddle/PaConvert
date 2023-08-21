@@ -30,3 +30,17 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        index = torch.tensor([[0, 1, 2, 0]])
+        input = torch.zeros(3, 5)
+        result = torch.scatter(input,1, index, 1.0)
+        """
+    )
+    obj.run(
+        pytorch_code, ["result"], check_value=False
+    )  # The behavior of Pytorch and Paddle is inconsistent

@@ -2037,8 +2037,7 @@
     "args_list": [
       "dim",
       "index",
-      "src",
-      "reduce"
+      "src"
     ],
     "kwargs_change": {
       "dim": "axis",
