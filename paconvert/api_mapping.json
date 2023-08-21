@@ -2037,7 +2037,8 @@
     "args_list": [
       "dim",
       "index",
-      "src"
+      "src",
+      "reduce"
     ],
     "kwargs_change": {
       "dim": "axis",
@@ -9670,7 +9671,8 @@
       "input",
       "dim",
       "index",
-      "src"
+      "src",
+      "reduce"
     ],
     "kwargs_change": {
       "input": "arr",
