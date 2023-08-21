@@ -30,8 +30,8 @@ class cudaEventAPI(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        return pytorch_result == paddle_result or isinstance(
-            paddle_result, paddle.fluid.libpaddle.CUDAEvent
+        assert pytorch_result == paddle_result or isinstance(
+            paddle_result, paddle.framework.core.CUDAEvent
         )
 
 

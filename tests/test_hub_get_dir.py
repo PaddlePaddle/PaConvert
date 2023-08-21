@@ -11,36 +11,25 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+
 import textwrap
 
-import paddle
 from apibase import APIBase
 
-
-class GetRngStateAllAPIBase(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        for res in paddle_result:
-            assert isinstance(res, paddle.framework.core.GeneratorState)
-
-
-obj = GetRngStateAllAPIBase("torch.cuda.get_rng_state_all")
+obj = APIBase("torch.hub.get_dir")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.cuda.get_rng_state_all()
+        result = torch.hub.get_dir()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support this function temporarily",
+    )

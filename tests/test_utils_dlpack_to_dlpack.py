@@ -29,9 +29,7 @@ class DLPackAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        if type(paddle_result).__name__ == "PyCapsule":
-            return True
-        return False
+        assert type(paddle_result).__name__ == "PyCapsule"
 
 
 obj = DLPackAPIBase("torch.utils.dlpack.to_dlpack")
