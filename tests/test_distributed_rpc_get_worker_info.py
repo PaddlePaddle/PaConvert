@@ -30,7 +30,7 @@ class RpcAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        assert isinstance(paddle_result, paddle.fluid.libpaddle.WorkerInfo)
+        assert isinstance(paddle_result, paddle.framework.core.WorkerInfo)
 
 
 obj = RpcAPIBase("torch.distributed.rpc.shutdown")

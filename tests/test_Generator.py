@@ -30,9 +30,7 @@ class GeneratorAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        if isinstance(paddle_result, paddle.fluid.libpaddle.Generator):
-            return True
-        return False
+        assert isinstance(paddle_result, paddle.framework.core.Generator)
 
 
 obj = GeneratorAPIBase("torch.Generator")

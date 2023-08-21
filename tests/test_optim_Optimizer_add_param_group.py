@@ -30,9 +30,7 @@ class optimOptimizerAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        if isinstance(paddle_result, paddle.optimizer.optimizer.Optimizer):
-            return True
-        return False
+        assert isinstance(paddle_result, paddle.optimizer.optimizer.Optimizer)
 
 
 obj = optimOptimizerAPIBase("torch.optim.Optimizer.add_param_group")

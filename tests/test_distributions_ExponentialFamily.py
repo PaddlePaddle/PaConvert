@@ -30,9 +30,7 @@ class ExponentialFamilyAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        if isinstance(paddle_result, paddle.distribution.ExponentialFamily):
-            return True
-        return False
+        assert isinstance(paddle_result, paddle.distribution.ExponentialFamily)
 
 
 obj = ExponentialFamilyAPIBase("torch.distributions.ExponentialFamily")

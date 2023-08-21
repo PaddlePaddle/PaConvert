@@ -30,9 +30,7 @@ class optimOptimizerAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        if isinstance(paddle_result, paddle.optimizer.optimizer.Optimizer):
-            return True
-        return False
+        assert isinstance(paddle_result, paddle.optimizer.Optimizer)
 
 
 obj = optimOptimizerAPIBase("torch.optim.Optimizer")
@@ -45,8 +43,7 @@ def test_case_1():
         import torch.nn as nn
 
         theta = torch.tensor([1.0,1.0], requires_grad=True)
-        optim = torch.optim.Optimizer([theta], defaults={"learning_rate": 1.0})
-        result = type(optim)
+        result = torch.optim.Optimizer([theta], defaults={"learning_rate": 1.0})
         """
     )
     obj.run(pytorch_code, ["result"])
