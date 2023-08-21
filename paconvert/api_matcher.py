@@ -3683,6 +3683,7 @@ class OptimAdamMatcher(BaseMatcher):
         if "betas" in kwargs:
             kwargs["beta1"] = "{}[0]".format(kwargs["betas"])
             kwargs["beta2"] = "{}[1]".format(kwargs["betas"])
+            kwargs.pop("betas")
         return GenericMatcher.generate_code(self, kwargs)
 
 

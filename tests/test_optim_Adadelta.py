@@ -58,7 +58,7 @@ def test_case_1():
         result = conv.weight.mean()
         """
     )
-    obj.run(pytorch_code, ["result"], rtol=1.0e-2)
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5)
 
 
 def test_case_2():
@@ -100,7 +100,7 @@ def test_case_2():
         result = conv.weight.mean()
         """
     )
-    obj.run(pytorch_code, ["result"], rtol=1.0e-2)
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5)
 
 
 def test_case_3():
@@ -142,4 +142,4 @@ def test_case_3():
         result = conv.weight.mean()
         """
     )
-    obj.run(pytorch_code, ["result"], rtol=1.0e-2)
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5)
