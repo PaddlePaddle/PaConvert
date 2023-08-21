@@ -349,7 +349,7 @@ class DeviceMatcher(BaseMatcher):
             code = f'str({kwargs["type"]}).replace("cuda", "gpu")'
 
         if len(kwargs) == 2:
-            code = f'":".join([{kwargs["type"]}.replace("cuda", "gpu"),str({kwargs["index"]})])'
+            code = f'":".join([{kwargs["type"]}.replace("cuda", "gpu"), str({kwargs["index"]})])'
         return code
 
 
@@ -1750,13 +1750,13 @@ class GeneratorMatcher(BaseMatcher):
     def generate_code(self, kwargs):
 
         if not kwargs:
-            code = "paddle.fluid.core.default_cpu_generator()"
+            code = "paddle.framework.core.default_cpu_generator()"
         elif "device" in kwargs:
             if kwargs["device"] == '"""cuda"""':
                 code = textwrap.dedent(
                     """
                     device = paddle.device.get_device()
-                    paddle.fluid.core.default_cuda_generator(int(device[-1]))
+                    paddle.framework.core.default_cuda_generator(int(device[-1]))
                     """
                 )
             elif kwargs["device"] == '"""mps"""':
@@ -1764,7 +1764,7 @@ class GeneratorMatcher(BaseMatcher):
                 return None
 
             else:
-                code = "paddle.fluid.core.default_cpu_generator()"
+                code = "paddle.framework.core.default_cpu_generator()"
 
         return code
 
@@ -3352,12 +3352,10 @@ class LinalgSvdvalsMatcher(BaseMatcher):
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
-                _, {}, _ = {}
-                {}
+                {}[1]
                 """
             )
-            s = get_unique_name("s")
-            code = API_TEMPLATE.format(s, GenericMatcher.generate_code(self, kwargs), s)
+            code = API_TEMPLATE.format(GenericMatcher.generate_code(self, kwargs))
         return code
 
 

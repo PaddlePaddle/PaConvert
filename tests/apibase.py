@@ -39,8 +39,8 @@ class APIBase(object):
         check_value=True,
         check_dtype=True,
         check_stop_gradient=True,
-        atol=0.0,
         rtol=1.0e-6,
+        atol=0.0,
         unsupport=False,
         reason=None,
         is_aux_api=False,
@@ -191,7 +191,7 @@ class APIBase(object):
             )
         if check_value:
             assert np.allclose(
-                pytorch_numpy, paddle_numpy, atol=atol, rtol=rtol
+                pytorch_numpy, paddle_numpy, rtol=rtol, atol=atol
             ), "API ({}): paddle result has diff with pytorch result".format(name)
 
     def convert(self, pytorch_code):

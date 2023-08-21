@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
@@ -18,7 +19,7 @@ import paddle
 from apibase import APIBase
 
 
-class GeneratorAPIBase(APIBase):
+class LoadAPIBase(APIBase):
     def compare(
         self,
         name,
@@ -30,17 +31,17 @@ class GeneratorAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        assert isinstance(paddle_result, paddle.framework.core.Generator)
+        assert isinstance(paddle_result, paddle.nn.Layer)
 
 
-obj = GeneratorAPIBase("torch.Generator")
+obj = LoadAPIBase("torch.hub.load")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Generator(device='cpu')
+        result = torch.hub.load('lyuwenyu/paddlehub_demo:main', 'MM')
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -50,7 +51,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Generator()
+        result = torch.hub.load('lyuwenyu/paddlehub_demo:main', model='MM', source='github', skip_validation=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -60,33 +61,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Generator('cpu')
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        if torch.cuda.is_available():
-            result = torch.Generator('cuda')
-        else:
-            result = torch.Generator('cpu')
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        if torch.cuda.is_available():
-            result = torch.Generator(device='cuda')
-        else:
-            result = torch.Generator(device='cpu')
+        result = torch.hub.load(repo_or_dir='lyuwenyu/paddlehub_demo:main', model='MM', force_reload=False, trust_repo=None, verbose=True, skip_validation=False)
         """
     )
     obj.run(pytorch_code, ["result"])
