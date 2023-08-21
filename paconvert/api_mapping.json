@@ -9326,6 +9326,33 @@
     "paddle_api": "paddle.optimizer.Optimizer.step"
   },
   "torch.optim.Optimizer.zero_grad": {},
+  "torch.optim.RMSprop": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.optimizer.RMSProp",
+    "args_list": [
+      "params",
+      "lr",
+      "alpha",
+      "eps",
+      "weight_decay",
+      "momentum",
+      "centered",
+      "maximize",
+      "differentiable"
+    ],
+    "kwargs_change": {
+      "params": "parameters",
+      "lr": "learning_rate",
+      "alpha": "rho",
+      "eps": "epsilon"
+    },
+    "paddle_default_kwargs": {
+      "weight_decay": 0.0,
+      "epsilon": 1e-08,
+      "learning_rate": 0.01,
+      "rho": 0.99
+    }
+  },
   "torch.outer": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.outer",
