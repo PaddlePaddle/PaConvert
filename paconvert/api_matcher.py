@@ -3844,6 +3844,54 @@ class RandomSplitMatcher(BaseMatcher):
         return code.strip("\n")
 
 
+class SvdMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if "compute_uv" in kwargs:
+            return None
+
+        out_v = kwargs.pop("out") if "out" in kwargs else None
+        some_v = kwargs.pop("some") if "some" in kwargs else None
+
+        if some_v:
+            kwargs["full_matrices"] = "not " + some_v.strip("()")
+
+        kwargs["x"] = kwargs.pop("input")
+        if out_v:
+
+            API_TEMPLATE = textwrap.dedent(
+                """
+                tmp_u, tmp_s, tmp_v = {}({})
+                paddle.assign(tmp_u, {}[0]), paddle.assign(tmp_s, {}[1]), paddle.assign(tmp_v.conj().t(), {}[2])
+                """
+            )
+            code = API_TEMPLATE.format(
+                self.get_paddle_api(),
+                self.kwargs_to_str(kwargs),
+                out_v,
+                out_v,
+                out_v,
+            )
+
+            return code
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            tmp_u, tmp_s, tmp_v = {}({})
+            tmp_u, tmp_s, tmp_v.conj().t()
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.get_paddle_api(),
+            self.kwargs_to_str(kwargs),
+            out_v,
+            out_v,
+            out_v,
+        )
+
+        return code
+
+
 class TensorIsSignedMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
