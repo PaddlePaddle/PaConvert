@@ -55,7 +55,7 @@ def test_case_1():
                   [4, 5, 6],
                   [7, 8, 9]]]])
         def closure():
-            output = LBFGS(input)
+            output = conv(input)
             loss = torch.nn.functional.mse_loss(output, target)
             loss.backward()
             return loss
@@ -101,7 +101,7 @@ def test_case_2():
                   [4, 5, 6],
                   [7, 8, 9]]]])
         def closure():
-            output = LBFGS(input)
+            output = conv(input)
             loss = torch.nn.functional.mse_loss(output, target)
             loss.backward()
             return loss
@@ -148,7 +148,7 @@ def test_case_3():
                   [4, 5, 6],
                   [7, 8, 9]]]])
         def closure():
-            output = LBFGS(input)
+            output = conv(input)
             loss = torch.nn.functional.mse_loss(output, target)
             loss.backward()
             return loss
