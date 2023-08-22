@@ -546,7 +546,10 @@
   "torch.Tensor.conj": {
     "Matcher": "TensorUnchangeMatcher"
   },
-  "torch.Tensor.conj_physical": {},
+  "torch.Tensor.conj_physical": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.conj"
+  },
   "torch.Tensor.conj_physical_": {},
   "torch.Tensor.contiguous": {
     "Matcher": "TensorSkipMatcher"
