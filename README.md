@@ -473,13 +473,13 @@ class TransposeMatcher(BaseMatcher):
 
 **1）不需要辅助代码**
 
-判断标准：**代码保持完全不变，即可直接正常运行**。此时直接在json中配置已封装好的 `TensorUnchangeMatcher` 即可，无需编写新的Matcher。
+判断标准：**代码保持完全不变，即可直接正常运行**。此时直接在json中配置已封装好的 `UnchangeMatcher` 即可，无需编写新的Matcher。
 
 以 `torch.Tensor.tan` 为例：
 
 ```
 "torch.Tensor.tan": {
-    "Matcher": "TensorUnchangeMatcher"
+    "Matcher": "UnchangeMatcher"
 }
 ```
 

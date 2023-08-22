@@ -139,7 +139,7 @@ class DeleteMatcher(BaseMatcher):
         return "delete"
 
 
-class TensorUnchangeMatcher(BaseMatcher):
+class UnchangeMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         return "unchange"
 

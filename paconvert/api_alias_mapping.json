@@ -1,6 +1,5 @@
 {
   "torch.autograd.function.Function": "torch.autograd.Function",
-  "torch.autograd.function.FunctionCtx": "torch.autograd.FunctionCtx",
   "torch.distributions.bernoulli.Bernoulli": "torch.distributions.Bernoulli",
   "torch.distributions.beta.Beta": "torch.distributions.Beta",
   "torch.distributions.binomial.Binomial": "torch.distributions.Binomial",
