@@ -9157,6 +9157,37 @@
       "n": 2
     }
   },
+  "torch.nn.parallel.DistributedDataParallel": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.DataParallel",
+    "args_list": [
+      "module",
+      "device_ids",
+      "output_device",
+      "dim",
+      "broadcast_buffers",
+      "process_group",
+      "bucket_cap_mb",
+      "find_unused_parameters",
+      "check_reduction",
+      "gradient_as_bucket_view",
+      "static_graph"
+    ],
+    "kwargs_change": {
+      "module": "layers",
+      "device_ids": "",
+      "bucket_cap_mb": "comm_buffer_size",
+      "check_reduction": ""
+    },
+    "unsupport_args": [
+      "output_device",
+      "dim",
+      "broadcast_buffers",
+      "process_group",
+      "gradient_as_bucket_view",
+      "static_graph"
+    ]
+  },
   "torch.nn.utils.clip_grad_norm_": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.utils.clip_grad_norm_",
