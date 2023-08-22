@@ -26,7 +26,7 @@ def test_case_1():
         result = None
         if torch.cuda.is_available():
             torch.cuda.manual_seed_all(123)
-            result = torch.initial_seed()
+            result = torch.cuda.initial_seed()
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])

@@ -3699,6 +3699,9 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.get_rng_state"
   },
+  "torch.cuda.initial_seed": {
+    "Matcher": "CudaSeedMatcher"
+  },
   "torch.cuda.is_available": {
     "Matcher": "CudaIsAvailableMatcher",
     "paddle_api": "paddle.device.cuda.device_count"
