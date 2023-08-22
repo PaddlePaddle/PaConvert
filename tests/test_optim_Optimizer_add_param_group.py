@@ -51,9 +51,4 @@ def test_case_1():
         result1 = o.param_groups[1]["params"]
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result0", "result1"],
-        unsupport=True,
-        reason="currently not support optimizer subclass API",
-    )
+    obj.run(pytorch_code, ["result0", "result1"])
