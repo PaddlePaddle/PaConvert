@@ -8293,6 +8293,19 @@
       "input": "x"
     }
   },
+  "torch.nn.functional.dropout1d": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.dropout",
+    "args_list": [
+      "input",
+      "p",
+      "training",
+      "inplace"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.nn.functional.dropout2d": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.dropout2d",
