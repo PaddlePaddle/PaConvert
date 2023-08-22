@@ -27,7 +27,6 @@ def test_case_1():
         m = nn.LazyInstanceNorm3d()
         input = torch.ones(20, 100, 35, 45, 10)
         result = m(input)
-        result.requires_grad = False
         """
     )
     obj.run(

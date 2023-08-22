@@ -50,7 +50,6 @@ def test_case_1():
           [0.5224, 0.9840, 0.0497],
           [0.8938, 0.5135, 0.5939]]]])
         result = m(input)
-        result.requires_grad = False
         """
     )
     obj.run(
