@@ -9470,6 +9470,34 @@
     "paddle_api": "paddle.optimizer.Optimizer.step"
   },
   "torch.optim.Optimizer.zero_grad": {},
+  "torch.optim.SGD": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.optimizer.SGD",
+    "args_list": [
+      "params",
+      "lr",
+      "momentum",
+      "dampening",
+      "weight_decay",
+      "nesterov",
+      "maximize",
+      "differentiable"
+    ],
+    "unsupport_args": [
+      "momentum",
+      "dampening",
+      "nesterov",
+      "maximize",
+      "differentiable"
+    ],
+    "kwargs_change": {
+      "params": "parameters",
+      "lr": "learning_rate"
+    },
+    "paddle_default_kwargs": {
+      "weight_decay": 0.0
+    }
+  },
   "torch.outer": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.outer",

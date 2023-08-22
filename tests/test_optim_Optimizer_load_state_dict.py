@@ -71,9 +71,4 @@ def test_case_2():
         result = optim.state_dict()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="currently not support optimizer subclass API",
-    )
+    obj.run(pytorch_code, ["result"])
