@@ -2970,6 +2970,14 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.autograd.PyLayer"
   },
+  "torch.autograd.Function.backward": {},
+  "torch.autograd.Function.forward": {},
+  "torch.autograd.FunctionCtx.mark_dirty": {},
+  "torch.autograd.FunctionCtx.mark_non_differentiable": {},
+  "torch.autograd.FunctionCtx.mark_shared_storage": {},
+  "torch.autograd.FunctionCtx.save_for_backward": {},
+  "torch.autograd.FunctionCtx.save_for_forward": {},
+  "torch.autograd.FunctionCtx.set_materialize_grads": {},
   "torch.autograd.backward": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.autograd.backward",
@@ -3099,6 +3107,13 @@
       "unpack_hook"
     ]
   },
+  "torch.autograd.profiler.config": {},
+  "torch.autograd.profiler.export_chrome_trace": {},
+  "torch.autograd.profiler.export_stacks": {},
+  "torch.autograd.profiler.key_averages": {},
+  "torch.autograd.profiler.self_cpu_time_total": {},
+  "torch.autograd.profiler.table": {},
+  "torch.autograd.profiler.total_average": {},
   "torch.backends.cuda.is_built": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.is_compiled_with_cuda"
@@ -4091,6 +4106,28 @@
       "validate_args": ""
     }
   },
+  "torch.distributions.Distribution.batch_shape": {},
+  "torch.distributions.Distribution.cdf": {},
+  "torch.distributions.Distribution.concentration0\u200b\u200b": {},
+  "torch.distributions.Distribution.concentration1": {},
+  "torch.distributions.Distribution.entropy": {},
+  "torch.distributions.Distribution.enumerate_support\u200b\u200b": {},
+  "torch.distributions.Distribution.event_shape": {},
+  "torch.distributions.Distribution.expand": {},
+  "torch.distributions.Distribution.icdf": {},
+  "torch.distributions.Distribution.log_prob": {},
+  "torch.distributions.Distribution.logits": {},
+  "torch.distributions.Distribution.mean": {},
+  "torch.distributions.Distribution.mode": {},
+  "torch.distributions.Distribution.param_shape": {},
+  "torch.distributions.Distribution.perplexity": {},
+  "torch.distributions.Distribution.probs": {},
+  "torch.distributions.Distribution.rsample": {},
+  "torch.distributions.Distribution.sample": {},
+  "torch.distributions.Distribution.sample_n": {},
+  "torch.distributions.Distribution.set_default_validate_args": {},
+  "torch.distributions.Distribution.stddev": {},
+  "torch.distributions.Distribution.variance": {},
   "torch.distributions.ExponentialFamily": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.ExponentialFamily",
@@ -9280,7 +9317,6 @@
     ]
   },
   "torch.optim.Optimizer.add_param_group": {
-    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.optimizer.Optimizer._add_param_group"
   },
   "torch.optim.Optimizer.load_state_dict": {
@@ -9394,6 +9430,9 @@
       "dim": "axis"
     }
   },
+  "torch.profiler.profile.start": {},
+  "torch.profiler.profile.step": {},
+  "torch.profiler.profile.stop": {},
   "torch.qr": {
     "Matcher": "QrMatcher",
     "paddle_api": "paddle.linalg.qr",
@@ -9496,33 +9535,6 @@
       "requires_grad",
       "memory_format"
     ]
-  },
-  "torch.random.get_rng_state": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.get_cuda_rng_state"
-  },
-  "torch.random.initial_seed": {
-    "Matcher": "SeedMatcher"
-  },
-  "torch.random.manual_seed": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.seed",
-    "args_list": [
-      "seed"
-    ]
-  },
-  "torch.random.seed": {
-    "Matcher": "SeedMatcher"
-  },
-  "torch.random.set_rng_state": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.set_cuda_rng_state",
-    "args_list": [
-      "new_state"
-    ],
-    "kwargs_change": {
-      "new_state": "state_list"
-    }
   },
   "torch.randperm": {
     "Matcher": "GenericMatcher",

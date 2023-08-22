@@ -1,4 +1,6 @@
 {
+  "torch.autograd.function.Function": "torch.autograd.Function",
+  "torch.autograd.function.FunctionCtx": "torch.autograd.FunctionCtx",
   "torch.distributions.bernoulli.Bernoulli": "torch.distributions.Bernoulli",
   "torch.distributions.beta.Beta": "torch.distributions.Beta",
   "torch.distributions.binomial.Binomial": "torch.distributions.Binomial",
@@ -30,6 +32,11 @@
   "torch.nn.modules.conv.Conv2d": "torch.nn.Conv2d",
   "torch.nn.modules.module.Module": "torch.nn.Module",
   "torch.nn.parameter.Parameter": "torch.nn.Parameter",
+  "torch.random.get_rng_state": "torch.get_rng_state",
+  "torch.random.initial_seed": "torch.initial_seed",
+  "torch.random.manual_seed": "torch.manual_seed",
+  "torch.random.seed": "torch.seed",
+  "torch.random.set_rng_state": "torch.set_rng_state",
   "torch.utils.data._utils.collate.default_collate": "torch.utils.data.default_collate",
   "torch.utils.data.dataloader.default_collate": "torch.utils.data.default_collate",
   "torch.utils.data.sampler.BatchSampler": "torch.utils.data.BatchSampler",
