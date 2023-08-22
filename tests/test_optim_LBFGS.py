@@ -53,6 +53,11 @@ def test_case_1():
         LBFGS = torch.optim.LBFGS(conv.parameters(), max_iter=30)
         target = torch.tensor([[[[1, 2, 3, 4, 5, 6, 7, 8],
                   [1, 2, 3, 4, 5, 6, 7, 8],
+                  [1, 2, 3, 4, 5, 6, 7, 8],
+                  [1, 2, 3, 4, 5, 6, 7, 8],
+                  [1, 2, 3, 4, 5, 6, 7, 8],
+                  [1, 2, 3, 4, 5, 6, 7, 8],
+                  [1, 2, 3, 4, 5, 6, 7, 8],
                   [1, 2, 3, 4, 5, 6, 7, 8]]]])
         def closure():
             output = conv(inp)
@@ -98,6 +103,11 @@ def test_case_2():
         conv.weight = torch.nn.Parameter(weight)
         LBFGS = torch.optim.LBFGS(conv.parameters(), max_iter=30)
         target = torch.tensor([[[[1, 2, 3, 4, 5, 6, 7, 8],
+                  [1, 2, 3, 4, 5, 6, 7, 8],
+                  [1, 2, 3, 4, 5, 6, 7, 8],
+                  [1, 2, 3, 4, 5, 6, 7, 8],
+                  [1, 2, 3, 4, 5, 6, 7, 8],
+                  [1, 2, 3, 4, 5, 6, 7, 8],
                   [1, 2, 3, 4, 5, 6, 7, 8],
                   [1, 2, 3, 4, 5, 6, 7, 8]]]])
         def closure():
@@ -145,6 +155,11 @@ def test_case_3():
         conv.bias = torch.nn.Parameter(bias)
         LBFGS = torch.optim.LBFGS(conv.parameters(), max_iter=30)
         target = torch.tensor([[[[1, 2, 3, 4, 5, 6, 7, 8],
+                  [1, 2, 3, 4, 5, 6, 7, 8],
+                  [1, 2, 3, 4, 5, 6, 7, 8],
+                  [1, 2, 3, 4, 5, 6, 7, 8],
+                  [1, 2, 3, 4, 5, 6, 7, 8],
+                  [1, 2, 3, 4, 5, 6, 7, 8],
                   [1, 2, 3, 4, 5, 6, 7, 8],
                   [1, 2, 3, 4, 5, 6, 7, 8]]]])
         def closure():
