@@ -137,3 +137,17 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_alias_case_1():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        a = True
+        m = torch.nn.modules.BatchNorm2d(5, 1e-5, 0.2, affine=a, track_running_stats=True, dtype=torch.float32)
+        input = torch.zeros(2, 5, 4, 4)
+        result = m(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
