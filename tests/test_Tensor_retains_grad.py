@@ -24,7 +24,7 @@ def test_case_1():
         """
         import torch
         y = torch.Tensor([[1.,2.], [3.,4.]])
-        result = y.retains_grad
+        result = y.retains_grad()
         """
     )
     obj.run(
