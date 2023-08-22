@@ -46,7 +46,7 @@ def test_case_1():
         w2 = torch.ones(3, 3)
         w2.requires_grad = True
         o = optim.Optimizer([w1])
-        o.add_param_group({'params': w2})
+        o.add_param_group({'params': w2}, defaults={"learning_rate": 1.0})
         result0 = o.param_groups[0]["params"]
         result1 = o.param_groups[1]["params"]
         """
