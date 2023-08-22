@@ -3699,11 +3699,21 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.get_rng_state"
   },
+  "torch.cuda.initial_seed": {
+    "Matcher": "CudaSeedMatcher"
+  },
   "torch.cuda.is_available": {
     "Matcher": "CudaIsAvailableMatcher",
     "paddle_api": "paddle.device.cuda.device_count"
   },
   "torch.cuda.manual_seed": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.seed",
+    "args_list": [
+      "seed"
+    ]
+  },
+  "torch.cuda.manual_seed_all": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.seed",
     "args_list": [

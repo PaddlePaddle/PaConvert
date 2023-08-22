@@ -1327,6 +1327,16 @@ class SeedMatcher(BaseMatcher):
         return API_TEMPLATE
 
 
+class CudaSeedMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.get_cuda_rng_state()[0].current_seed()
+            """
+        )
+        return API_TEMPLATE
+
+
 class SetPrintOptionsMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "profile" in kwargs and kwargs["profile"] is not None:
