@@ -51,9 +51,9 @@ def test_case_1():
         conv.weight = torch.nn.Parameter(weight)
         conv.bias = torch.nn.Parameter(bias)
         LBFGS = torch.optim.LBFGS(conv.parameters(), max_iter=30)
-        target = torch.tensor([[[[1, 2, 3],
-                  [4, 5, 6],
-                  [7, 8, 9]]]])
+        target = torch.tensor([[[[1, 2, 3, 4, 5, 6, 7, 8],
+                  [1, 2, 3, 4, 5, 6, 7, 8],
+                  [1, 2, 3, 4, 5, 6, 7, 8]]]])
         def closure():
             output = conv(inp)
             loss = torch.nn.functional.mse_loss(output, target)
@@ -97,9 +97,9 @@ def test_case_2():
         bias = torch.tensor([0.0])
         conv.weight = torch.nn.Parameter(weight)
         LBFGS = torch.optim.LBFGS(conv.parameters(), max_iter=30)
-        target = torch.tensor([[[[1, 2, 3],
-                  [4, 5, 6],
-                  [7, 8, 9]]]])
+        target = torch.tensor([[[[1, 2, 3, 4, 5, 6, 7, 8],
+                  [1, 2, 3, 4, 5, 6, 7, 8],
+                  [1, 2, 3, 4, 5, 6, 7, 8]]]])
         def closure():
             output = conv(inp)
             loss = torch.nn.functional.mse_loss(output, target)
@@ -144,9 +144,9 @@ def test_case_3():
         conv.weight = torch.nn.Parameter(weight)
         conv.bias = torch.nn.Parameter(bias)
         LBFGS = torch.optim.LBFGS(conv.parameters(), max_iter=30)
-        target = torch.tensor([[[[1, 2, 3],
-                  [4, 5, 6],
-                  [7, 8, 9]]]])
+        target = torch.tensor([[[[1, 2, 3, 4, 5, 6, 7, 8],
+                  [1, 2, 3, 4, 5, 6, 7, 8],
+                  [1, 2, 3, 4, 5, 6, 7, 8]]]])
         def closure():
             output = conv(inp)
             loss = torch.nn.functional.mse_loss(output, target)
