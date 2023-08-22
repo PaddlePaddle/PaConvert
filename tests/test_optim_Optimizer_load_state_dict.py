@@ -29,7 +29,7 @@ class optimOptimizerLoadStateDictAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        return pytorch_result["state"] == paddle_result
+        assert pytorch_result["state"] == paddle_result
 
 
 obj = optimOptimizerLoadStateDictAPIBase("torch.optim.Optimizer.load_state_dict")

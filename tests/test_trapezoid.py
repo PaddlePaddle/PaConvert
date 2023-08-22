@@ -14,33 +14,17 @@
 
 import textwrap
 
-import paddle
 from apibase import APIBase
 
-
-class GeneratorAPIBase(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        assert isinstance(paddle_result, paddle.framework.core.Generator)
-
-
-obj = GeneratorAPIBase("torch.Generator")
+obj = APIBase("torch.trapezoid")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Generator(device='cpu')
+        y = torch.tensor([1.0, 1, 1, 0, 1])
+        result = torch.trapezoid(y)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -50,7 +34,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Generator()
+        y = torch.tensor([1, 1, 1, 0, 1]).type(torch.float32)
+        x = torch.tensor([1, 2, 3, 0, 1]).type(torch.float32)
+        result = torch.trapezoid(y=y, x=x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -60,7 +46,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Generator('cpu')
+        y = torch.tensor([1, 1, 1, 0, 1]).type(torch.float32)
+        x = torch.tensor([1, 2, 3, 0, 1]).type(torch.float32)
+        result = torch.trapezoid(y=y, dim=-1, dx=2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -70,10 +58,9 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if torch.cuda.is_available():
-            result = torch.Generator('cuda')
-        else:
-            result = torch.Generator('cpu')
+        y = torch.tensor([1, 1, 1, 0, 1]).type(torch.float32)
+        x = torch.tensor([1, 2, 3, 0, 1]).type(torch.float32)
+        result = torch.trapezoid(y, dx=2, dim=-1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -83,10 +70,9 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if torch.cuda.is_available():
-            result = torch.Generator(device='cuda')
-        else:
-            result = torch.Generator(device='cpu')
+        y = torch.tensor([1, 1, 1, 0, 1]).type(torch.float32)
+        x = torch.tensor([1, 2, 3, 0, 1]).type(torch.float32)
+        result = torch.trapezoid(y=y, x=x, dim=-1)
         """
     )
     obj.run(pytorch_code, ["result"])

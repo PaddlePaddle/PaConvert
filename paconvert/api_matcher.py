@@ -349,7 +349,7 @@ class DeviceMatcher(BaseMatcher):
             code = f'str({kwargs["type"]}).replace("cuda", "gpu")'
 
         if len(kwargs) == 2:
-            code = f'":".join([{kwargs["type"]}.replace("cuda", "gpu"),str({kwargs["index"]})])'
+            code = f'":".join([{kwargs["type"]}.replace("cuda", "gpu"), str({kwargs["index"]})])'
         return code
 
 
@@ -1750,13 +1750,13 @@ class GeneratorMatcher(BaseMatcher):
     def generate_code(self, kwargs):
 
         if not kwargs:
-            code = "paddle.fluid.core.default_cpu_generator()"
+            code = "paddle.framework.core.default_cpu_generator()"
         elif "device" in kwargs:
             if kwargs["device"] == '"""cuda"""':
                 code = textwrap.dedent(
                     """
                     device = paddle.device.get_device()
-                    paddle.fluid.core.default_cuda_generator(int(device[-1]))
+                    paddle.framework.core.default_cuda_generator(int(device[-1]))
                     """
                 )
             elif kwargs["device"] == '"""mps"""':
@@ -1764,7 +1764,7 @@ class GeneratorMatcher(BaseMatcher):
                 return None
 
             else:
-                code = "paddle.fluid.core.default_cpu_generator()"
+                code = "paddle.framework.core.default_cpu_generator()"
 
         return code
 
@@ -1903,6 +1903,46 @@ class ErfCMatcher(BaseMatcher):
                 """
             )
             code = API_TEMPLATE.format(kwargs["input"])
+
+        return code
+
+
+class SpecialErfcxMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "out" in kwargs and kwargs["out"] is not None:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                paddle.assign(paddle.exp({} ** 2) * (1.0 - paddle.erf({})), output={})
+                """
+            )
+            code = API_TEMPLATE.format(kwargs["input"], kwargs["input"], kwargs["out"])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                paddle.exp({} ** 2) * (1.0 - paddle.erf({}))
+                """
+            )
+            code = API_TEMPLATE.format(kwargs["input"], kwargs["input"])
+
+        return code
+
+
+class SpecialXlogyMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "out" in kwargs and kwargs["out"] is not None:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                paddle.assign({} * paddle.log({}), output={})
+                """
+            )
+            code = API_TEMPLATE.format(kwargs["input"], kwargs["other"], kwargs["out"])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                {} * paddle.log({})
+                """
+            )
+            code = API_TEMPLATE.format(kwargs["input"], kwargs["other"])
 
         return code
 
@@ -3352,12 +3392,10 @@ class LinalgSvdvalsMatcher(BaseMatcher):
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
-                _, {}, _ = {}
-                {}
+                {}[1]
                 """
             )
-            s = get_unique_name("s")
-            code = API_TEMPLATE.format(s, GenericMatcher.generate_code(self, kwargs), s)
+            code = API_TEMPLATE.format(GenericMatcher.generate_code(self, kwargs))
         return code
 
 
@@ -3844,6 +3882,54 @@ class RandomSplitMatcher(BaseMatcher):
             self.kwargs_to_str(kwargs),
         )
         return code.strip("\n")
+
+
+class SvdMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if "compute_uv" in kwargs:
+            return None
+
+        out_v = kwargs.pop("out") if "out" in kwargs else None
+        some_v = kwargs.pop("some") if "some" in kwargs else None
+
+        if some_v:
+            kwargs["full_matrices"] = "not " + some_v.strip("()")
+
+        kwargs["x"] = kwargs.pop("input")
+        if out_v:
+
+            API_TEMPLATE = textwrap.dedent(
+                """
+                tmp_u, tmp_s, tmp_v = {}({})
+                paddle.assign(tmp_u, {}[0]), paddle.assign(tmp_s, {}[1]), paddle.assign(tmp_v.conj().t(), {}[2])
+                """
+            )
+            code = API_TEMPLATE.format(
+                self.get_paddle_api(),
+                self.kwargs_to_str(kwargs),
+                out_v,
+                out_v,
+                out_v,
+            )
+
+            return code
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            tmp_u, tmp_s, tmp_v = {}({})
+            tmp_u, tmp_s, tmp_v.conj().t()
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.get_paddle_api(),
+            self.kwargs_to_str(kwargs),
+            out_v,
+            out_v,
+            out_v,
+        )
+
+        return code
 
 
 class TensorIsSignedMatcher(BaseMatcher):

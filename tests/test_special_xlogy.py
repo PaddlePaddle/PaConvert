@@ -11,36 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import textwrap
 
-import paddle
 from apibase import APIBase
 
-
-class GeneratorAPIBase(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        assert isinstance(paddle_result, paddle.framework.core.Generator)
-
-
-obj = GeneratorAPIBase("torch.Generator")
+obj = APIBase("torch.special.xlogy")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Generator(device='cpu')
+        a = torch.tensor([-0.4, -0.2, 0.1, 0.3, 0.5])
+        other = torch.tensor([1., 2., 3., 4., 5])
+        result = torch.special.xlogy(a, other)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -50,7 +34,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Generator()
+        a = torch.tensor([[-0.4, -0.2, 0.1, 0.3, 0.5], [-0.4, -0.2, 0.1, 0.3, 0.5]])
+        other = torch.tensor([1., 2., 3., 4., 5])
+        result = torch.special.xlogy(input=a, other=other)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -60,33 +46,36 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Generator('cpu')
+        a = torch.tensor([-0.4, -0.2, 0.1, 0.3, 0.5])
+        other = torch.tensor([1., 2., 3., 4., 5])
+        out = torch.tensor([-0.4, -0.2, 0.1, 0.3, 0.5])
+        result = torch.special.xlogy(out=out, input=a, other=other)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["out"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if torch.cuda.is_available():
-            result = torch.Generator('cuda')
-        else:
-            result = torch.Generator('cpu')
+        a = torch.tensor([-0.4, -0.2, 0.1, 0.3, 0.5])
+        other = torch.tensor([1., 2., 3., 4., 5])
+        out = torch.tensor([-0.4, -0.2, 0.1, 0.3, 0.5])
+        result = torch.special.xlogy(a, other, out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["out"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if torch.cuda.is_available():
-            result = torch.Generator(device='cuda')
-        else:
-            result = torch.Generator(device='cpu')
+        a = torch.tensor([-0.4, -0.2, 0.1, 0.3, 0.5])
+        other = torch.tensor([1., 2., 3., 4., 5])
+        out = torch.tensor([-0.4, -0.2, 0.1, 0.3, 0.5])
+        result = torch.special.xlogy(input=a, other=other, out=out)
         """
     )
     obj.run(pytorch_code, ["result"])

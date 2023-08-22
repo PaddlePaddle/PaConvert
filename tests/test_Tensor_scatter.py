@@ -11,36 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
-import paddle
 from apibase import APIBase
 
-
-class ExponentialFamilyAPIBase(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        assert isinstance(paddle_result, paddle.distribution.ExponentialFamily)
-
-
-obj = ExponentialFamilyAPIBase("torch.distributions.ExponentialFamily")
+obj = APIBase("torch.Tensor.scatter")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.distributions.ExponentialFamily()
+        index = torch.tensor([[0],[1],[2]])
+        result = torch.zeros(3, 5).scatter(1, index, 1.0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -50,7 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.distributions.ExponentialFamily(batch_shape=torch.Size([1]), event_shape=torch.Size([2]))
+        index = torch.tensor([[0],[1],[2]])
+        result = torch.ones(3, 5).scatter(1, index, 1.0,reduce='multiply')
+
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -60,17 +47,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.distributions.ExponentialFamily(batch_shape=torch.Size([1]), event_shape=torch.Size([2]), validate_args=False)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+        index = torch.tensor([[0],[1],[2]])
+        result = torch.ones(3, 5).scatter(1, index, 1.0,reduce='add')
 
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.distributions.exp_family.ExponentialFamily(batch_shape=torch.Size([1]), event_shape=torch.Size([2]), validate_args=False)
         """
     )
     obj.run(pytorch_code, ["result"])

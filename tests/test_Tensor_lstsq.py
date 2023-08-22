@@ -16,39 +16,23 @@ import textwrap
 
 from apibase import APIBase
 
-
-class optimOptimizerStateDictAPIBase(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        assert pytorch_result["state"] == paddle_result
-
-
-obj = optimOptimizerStateDictAPIBase("torch.optim.Optimizer.state_dict")
+obj = APIBase("torch.Tensor.lstsq")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
-
-        theta = torch.tensor([1.0,1.0], requires_grad=True)
-        optim = torch.optim.Optimizer([theta], defaults={"learning_rate": 1.0})
-        result = optim.state_dict()
+        x = torch.tensor([[1, 3, 1], [3, 2, 3], [5, 6., 10]])
+        y = torch.tensor([[3, 4, 6], [5, 3, 4], [1, 2, 1.]])
+        result = y.lstsq(x)
         """
     )
     obj.run(
         pytorch_code,
         ["result"],
+        unsupport=True,
+        reason="paddle does not support this function temporarily",
     )
 
 
@@ -56,20 +40,14 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
-
-        theta = torch.tensor([1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0], requires_grad=True)
-        l = torch.nn.Linear(10, 1)
-        optim = torch.optim.SGD(l.parameters(), lr = 1.0)
-        z = l(theta)
-        z.backward()
-        optim.step()
-        result = optim.state_dict()
+        x = torch.tensor([[10, 2, 3], [3, 10, 5], [5, 6, 12.]])
+        y = torch.tensor([[4, 2, 9], [2, 0, 3], [2, 5, 3.]])
+        result = y.lstsq(x)
         """
     )
     obj.run(
         pytorch_code,
         ["result"],
         unsupport=True,
-        reason="currently not support optimizer subclass API",
+        reason="paddle does not support this function temporarily",
     )

@@ -11,14 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
-import paddle
 from apibase import APIBase
 
 
-class GeneratorAPIBase(APIBase):
+class DownloadAPIBase(APIBase):
     def compare(
         self,
         name,
@@ -30,17 +30,17 @@ class GeneratorAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        assert isinstance(paddle_result, paddle.framework.core.Generator)
+        assert isinstance(paddle_result, str)
 
 
-obj = GeneratorAPIBase("torch.Generator")
+obj = DownloadAPIBase("torch.hub.download_url_to_file")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Generator(device='cpu')
+        result = torch.hub.download_url_to_file('https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth', '/tmp/temporary_file')
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -50,7 +50,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Generator()
+        result = torch.hub.download_url_to_file(url='https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth', dst='/tmp/temporary_file')
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -60,33 +60,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Generator('cpu')
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        if torch.cuda.is_available():
-            result = torch.Generator('cuda')
-        else:
-            result = torch.Generator('cpu')
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        if torch.cuda.is_available():
-            result = torch.Generator(device='cuda')
-        else:
-            result = torch.Generator(device='cpu')
+        result = torch.hub.download_url_to_file(url='https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth', dst='/tmp/temporary_file',
+                hash_prefix="5c106cde386e87d4033832f2996f5493238eda96ccf559d1d62760c4de0613f8")
         """
     )
     obj.run(pytorch_code, ["result"])
