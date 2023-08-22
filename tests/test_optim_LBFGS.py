@@ -50,7 +50,7 @@ def test_case_1():
         bias = torch.tensor([0.0])
         conv.weight = torch.nn.Parameter(weight)
         conv.bias = torch.nn.Parameter(bias)
-        LBFGS = torch.optim.LBFGS(conv.parameters(), max_iter=30)
+        LBFGS = torch.optim.LBFGS(conv.parameters(), max_iter=20)
         target = torch.tensor([[[[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0],
                   [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0],
                   [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0],
@@ -101,7 +101,8 @@ def test_case_2():
                   [-0.3153,  0.0752, -0.2045]]]])
         bias = torch.tensor([0.0])
         conv.weight = torch.nn.Parameter(weight)
-        LBFGS = torch.optim.LBFGS(conv.parameters(), max_iter=30)
+        conv.bias = torch.nn.Parameter(bias)
+        LBFGS = torch.optim.LBFGS(conv.parameters(), max_iter=40, lr=0.5)
         target = torch.tensor([[[[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0],
                   [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0],
                   [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0],
