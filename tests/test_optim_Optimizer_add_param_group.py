@@ -36,8 +36,7 @@ class optimOptimizerAPIBase(APIBase):
 obj = optimOptimizerAPIBase("torch.optim.Optimizer.add_param_group")
 
 
-# Currently this api matcher is not correct
-def _test_case_1():
+def __test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
