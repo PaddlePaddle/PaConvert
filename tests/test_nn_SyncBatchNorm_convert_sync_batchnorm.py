@@ -20,9 +20,17 @@ from apibase import APIBase
 
 class SyncBatchnormAPIBase(APIBase):
     def compare(
-        self, name, pytorch_result, paddle_result, check_value=True, check_dtyp=True
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
     ):
-        return isinstance(paddle_result, paddle.nn.Layer)
+        assert isinstance(paddle_result, paddle.nn.Layer)
 
 
 obj = SyncBatchnormAPIBase("torch.nn.SyncBatchNorm.convert_sync_batchnorm")

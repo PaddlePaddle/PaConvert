@@ -162,8 +162,8 @@ class BasicTransformer(BaseTransformer):
                     self, torch_api, attribute_mapping, self.logger
                 )
                 if matcher:
-                    new_node = matcher.get_paddle_class_attribute_nodes(node)
-                    if new_node == "delete":
+                    node_list = matcher.get_paddle_class_attribute_nodes(node)
+                    if node_list == "delete":
                         if isinstance(self.parent_node, ast.Expr):
                             self.success_api_count += 1
                             log_debug(
@@ -173,7 +173,7 @@ class BasicTransformer(BaseTransformer):
                                 node.lineno,
                             )
                             return None
-                    elif new_node == "unchange":
+                    elif node_list == "unchange":
                         self.success_api_count += 1
                         log_debug(
                             self.logger,
@@ -184,8 +184,8 @@ class BasicTransformer(BaseTransformer):
                             node.lineno,
                         )
                         return node
-                    elif new_node:
-                        new_node = new_node[-1]
+                    elif node_list:
+                        new_node = node_list[-1]
                         if isinstance(new_node, ast.Expr):
                             new_node = new_node.value
 
@@ -203,6 +203,7 @@ class BasicTransformer(BaseTransformer):
                                 ast.Assert,
                             ),
                         ):
+                            self.insert_multi_node(node_list[0:-1])
                             self.success_api_count += 1
                             log_debug(
                                 self.logger,
@@ -281,13 +282,12 @@ class BasicTransformer(BaseTransformer):
          - torch api: [args]ast.Call
          - tensor api: [func]ast.Attribute([value]ast.Call)
         """
-        full_attr = self.get_full_attr(node.func)
-
         # Use Postorder traversal
         super(BasicTransformer, self).generic_visit(node)
 
         # Torch Package Call, include torch third_party
         #   such as : torch.add(x, y) / torch.add(torch.abs(x), y)
+        full_attr = self.get_full_attr(node.func)
         for torch_package in TORCH_PACKAGE_LIST:
             if full_attr.startswith("%s." % torch_package):
                 torch_api = full_attr
@@ -340,6 +340,7 @@ class BasicTransformer(BaseTransformer):
                                 ast.UnaryOp,
                                 ast.Tuple,
                                 ast.Assert,
+                                ast.Subscript,
                             ),
                         ):
                             self.insert_multi_node(node_list[0:-1])
@@ -376,7 +377,10 @@ class BasicTransformer(BaseTransformer):
             attr_list = full_attr.split(".")
             if len(attr_list) > 2:
                 if "self." in full_attr:
+                    # self.weight.add
                     is_tensor_api = True
+                    # self.optimizer.load_state_dict
+                    is_optim_api = True
                 if ".T." in full_attr:
                     is_tensor_api = True
             elif len(attr_list) == 2:
@@ -495,6 +499,7 @@ class BasicTransformer(BaseTransformer):
                         ast.BinOp,
                         ast.Assert,
                         ast.Tuple,
+                        ast.Compare,
                     ),
                 ):
                     self.insert_multi_node(node_list[0:-1])
@@ -582,6 +587,12 @@ class BasicTransformer(BaseTransformer):
         return node
 
     def visit_With(self, node):
+        self.scope_stack.append(node)
+        super(BasicTransformer, self).generic_visit(node)
+        self.scope_stack.pop()
+        return node
+
+    def visit_ExceptHandler(self, node):
         self.scope_stack.append(node)
         super(BasicTransformer, self).generic_visit(node)
         self.scope_stack.pop()

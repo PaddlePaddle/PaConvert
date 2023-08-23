@@ -20,10 +20,18 @@ from apibase import APIBase
 
 class cudaGetDeviceProperitesAPI(APIBase):
     def compare(
-        self, name, pytorch_result, paddle_result, check_value=True, check_dtype=True
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
     ):
-        return pytorch_result == paddle_result or isinstance(
-            paddle_result, paddle.fluid.libpaddle._gpuDeviceProperties
+        assert pytorch_result == paddle_result or isinstance(
+            paddle_result, paddle.framework.core._gpuDeviceProperties
         )
 
 

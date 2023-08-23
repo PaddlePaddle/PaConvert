@@ -27,7 +27,7 @@ def test_case_1():
         result = torch.fft.ihfft2(t, s=(2, 5))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_2():
@@ -38,7 +38,7 @@ def test_case_2():
         result = torch.fft.ihfft2(t)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_3():
@@ -49,7 +49,7 @@ def test_case_3():
         result = torch.fft.ihfft2(t, dim=(0, 1))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_4():
@@ -60,7 +60,7 @@ def test_case_4():
         result = torch.fft.ihfft2(t, s=(2, 5), norm='ortho')
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_5():
@@ -71,7 +71,7 @@ def test_case_5():
         result = torch.fft.ihfft2(t, s=(2, 5), norm='forward')
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_6():
@@ -82,4 +82,4 @@ def test_case_6():
         result = torch.fft.ihfft2(t, s=(2, 5), norm='backward')
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)

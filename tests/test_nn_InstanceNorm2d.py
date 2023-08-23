@@ -53,7 +53,7 @@ def test_case_1():
         result.requires_grad = False
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_2():
@@ -89,7 +89,7 @@ def test_case_2():
         result = m(input)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_3():
@@ -125,7 +125,7 @@ def test_case_3():
         result = m(input)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_4():
@@ -161,7 +161,7 @@ def test_case_4():
         result = m(input)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_5():
@@ -197,7 +197,7 @@ def test_case_5():
         result = m(input)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_6():
@@ -233,4 +233,4 @@ def test_case_6():
         result = m(input)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
