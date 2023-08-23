@@ -33,7 +33,7 @@ class ImportTransformer(BaseTransformer):
         """
         1. remove import torch.nn
         2. remove import torch.nn as nn
-        3. record which paddle
+        3. record whether to import paddle
         """
         new_node_names = []
         for alias_node in node.names:

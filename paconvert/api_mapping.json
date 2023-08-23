@@ -6583,6 +6583,7 @@
     ],
     "kwargs_change": {
       "eps": "epsilon",
+      "device": "",
       "dtype": ""
     }
   },
@@ -6600,6 +6601,7 @@
     ],
     "kwargs_change": {
       "eps": "epsilon",
+      "device": "",
       "dtype": ""
     }
   },
@@ -6617,6 +6619,7 @@
     ],
     "kwargs_change": {
       "eps": "epsilon",
+      "device": "",
       "dtype": ""
     }
   },
@@ -6630,7 +6633,11 @@
       "bias",
       "device",
       "dtype"
-    ]
+    ],
+    "kwargs_change": {
+      "device": "",
+      "dtype": ""
+    }
   },
   "torch.nn.CELU": {
     "Matcher": "GenericMatcher",
@@ -6967,6 +6974,7 @@
         "weight_attr",
         "bias_attr"
       ],
+      "device": "",
       "dtype": ""
     }
   },
@@ -7047,6 +7055,7 @@
         "weight_attr",
         "bias_attr"
       ],
+      "device": "",
       "dtype": ""
     }
   },
@@ -7068,6 +7077,7 @@
         "weight_attr",
         "bias_attr"
       ],
+      "device": "",
       "dtype": ""
     }
   },
@@ -7089,6 +7099,7 @@
         "weight_attr",
         "bias_attr"
       ],
+      "device": "",
       "dtype": ""
     }
   },
@@ -7173,6 +7184,7 @@
         "weight_attr",
         "bias_attr"
       ],
+      "device": "",
       "dtype": ""
     }
   },
@@ -7577,6 +7589,7 @@
       "dtype"
     ],
     "kwargs_change": {
+      "device": "",
       "dtype": ""
     }
   },
@@ -7862,6 +7875,8 @@
     ],
     "kwargs_change": {
       "eps": "epsilon",
+      "process_group": "",
+      "device": "",
       "dtype": ""
     }
   },
@@ -7913,6 +7928,7 @@
     ],
     "kwargs_change": {
       "norm_first": "normalize_before",
+      "device": "",
       "dtype": ""
     },
     "unsupport_args": [

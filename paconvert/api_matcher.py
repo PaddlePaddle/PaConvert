@@ -963,29 +963,15 @@ class FunctionInterpolateMatcher(BaseMatcher):
 
 class BatchNormMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "dtype" in kwargs:
-            kwargs.pop("dtype")
-        if "track_running_stats" in kwargs:
-            track_running_stats = kwargs["track_running_stats"]
-            kwargs.pop("track_running_stats")
-        else:
-            track_running_stats = True
-        kwargs["use_global_stats"] = track_running_stats
         if "momentum" in kwargs:
-            momentum = f"1 - {kwargs['momentum']}"
-        else:
-            momentum = 0.1
-        if "affine" not in kwargs:
-            kwargs["weight_attr"] = None
-            kwargs["bias_attr"] = None
-        else:
-            kwargs[
-                "weight_attr"
-            ] = f"None if ({kwargs['affine']} is None or {kwargs['affine']}) else False"
-            kwargs[
-                "bias_attr"
-            ] = f"None if ({kwargs['affine']} is None or {kwargs['affine']}) else False"
-            kwargs.pop("affine")
+            kwargs["momentum"] = f"1 - {kwargs.pop('momentum')}"
+
+        if "affine" in kwargs:
+            kwargs["weight_attr"] = f"None if {kwargs['affine']} else False"
+            kwargs["bias_attr"] = f"None if {kwargs.pop('affine')} else False"
+
+        if "track_running_stats" in kwargs:
+            kwargs["use_global_stats"] = f"not {kwargs.pop('track_running_stats')}"
 
         code = GenericMatcher.generate_code(self, kwargs)
         return code
