@@ -10263,7 +10263,7 @@
     ]
   },
   "torch.special.softmax": {
-    "Matcher": "FunctionalSoftmaxMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.softmax",
     "args_list": [
       "input",

@@ -61,15 +61,10 @@ def test_case_3():
                         [[1.0, 2.0, 3.0, 4.0],
                         [5.0, 6.0, 7.0, 8.0],
                         [6.0, 7.0, 8.0, 9.0]]])
-        result = torch.special.softmax(x)
+        result = torch.special.softmax(x, 1)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="When dim is None, paddle and pytorch generate different results due to the way to calculate dimensions",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
