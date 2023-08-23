@@ -27,7 +27,13 @@ def test_case_1():
         dist.init_process_group("nccl", init_method='tcp://127.0.0.1:23456', rank=1, world_size=3)
         gather_objects = ["foo", 12, {1: 2}] # any picklable object
         output = [None for _ in gather_objects]
-        result = dist.all_gather_object(output, gather_objects[dist.get_rank()])
+        dist.all_gather_object(output, gather_objects[dist.get_rank()])
+        result=True
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support this function temporarily",
+    )
