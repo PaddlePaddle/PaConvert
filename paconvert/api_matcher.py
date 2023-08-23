@@ -139,7 +139,7 @@ class DeleteMatcher(BaseMatcher):
         return "delete"
 
 
-class TensorUnchangeMatcher(BaseMatcher):
+class UnchangeMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         return "unchange"
 
@@ -3903,12 +3903,11 @@ class SvdMatcher(BaseMatcher):
         out_v = kwargs.pop("out") if "out" in kwargs else None
         some_v = kwargs.pop("some") if "some" in kwargs else None
 
+        kwargs["x"] = kwargs.pop("input")
         if some_v:
             kwargs["full_matrices"] = "not " + some_v.strip("()")
 
-        kwargs["x"] = kwargs.pop("input")
         if out_v:
-
             API_TEMPLATE = textwrap.dedent(
                 """
                 tmp_u, tmp_s, tmp_v = {}({})
@@ -3922,22 +3921,17 @@ class SvdMatcher(BaseMatcher):
                 out_v,
                 out_v,
             )
-
-            return code
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            tmp_u, tmp_s, tmp_v = {}({})
-            tmp_u, tmp_s, tmp_v.conj().t()
-            """
-        )
-        code = API_TEMPLATE.format(
-            self.get_paddle_api(),
-            self.kwargs_to_str(kwargs),
-            out_v,
-            out_v,
-            out_v,
-        )
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                tmp_u, tmp_s, tmp_v = {}({})
+                tmp_u, tmp_s, tmp_v.conj().t()
+                """
+            )
+            code = API_TEMPLATE.format(
+                self.get_paddle_api(),
+                self.kwargs_to_str(kwargs),
+            )
 
         return code
 
