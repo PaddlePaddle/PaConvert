@@ -9413,6 +9413,174 @@
       "input": "x"
     }
   },
+  "torch.optim.Adadelta": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.optimizer.Adadelta",
+    "args_list": [
+      "params",
+      "lr",
+      "rho",
+      "eps",
+      "weight_decay",
+      "foreach",
+      "maximize",
+      "differentiable"
+    ],
+    "unsupport_args": [
+      "foreach",
+      "maximize",
+      "differentiable"
+    ],
+    "kwargs_change": {
+      "params": "parameters",
+      "lr": "learning_rate",
+      "eps": "epsilon"
+    },
+    "paddle_default_kwargs": {
+      "rho": 0.9,
+      "weight_decay": 0.0,
+      "learning_rate": 1.0
+    }
+  },
+  "torch.optim.Adagrad": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.optimizer.Adagrad",
+    "args_list": [
+      "params",
+      "lr",
+      "lr_decay",
+      "weight_decay",
+      "initial_accumulator_value",
+      "eps",
+      "foreach",
+      "maximize",
+      "differentiable"
+    ],
+    "unsupport_args": [
+      "lr_decay",
+      "foreach",
+      "maximize",
+      "differentiable"
+    ],
+    "kwargs_change": {
+      "params": "parameters",
+      "lr": "learning_rate",
+      "eps": "epsilon"
+    },
+    "paddle_default_kwargs": {
+      "weight_decay": 0.0,
+      "epsilon": 1e-10,
+      "learning_rate": 0.01
+    }
+  },
+  "torch.optim.Adam": {
+    "Matcher": "OptimAdamMatcher",
+    "paddle_api": "paddle.optimizer.Adam",
+    "args_list": [
+      "params",
+      "lr",
+      "betas",
+      "eps",
+      "weight_decay",
+      "amsgrad",
+      "foreach",
+      "maximize",
+      "capturable",
+      "differentiable",
+      "fused"
+    ],
+    "unsupport_args": [
+      "amsgrad",
+      "foreach",
+      "maximize",
+      "capturable",
+      "differentiable",
+      "fused"
+    ],
+    "kwargs_change": {
+      "params": "parameters",
+      "lr": "learning_rate",
+      "eps": "epsilon"
+    },
+    "paddle_default_kwargs": {
+      "weight_decay": 0.0
+    }
+  },
+  "torch.optim.AdamW": {
+    "Matcher": "OptimAdamMatcher",
+    "paddle_api": "paddle.optimizer.AdamW",
+    "args_list": [
+      "params",
+      "lr",
+      "betas",
+      "eps",
+      "weight_decay",
+      "amsgrad",
+      "maximize",
+      "foreach",
+      "capturable",
+      "differentiable",
+      "fused"
+    ],
+    "unsupport_args": [
+      "amsgrad",
+      "maximize",
+      "foreach",
+      "capturable",
+      "differentiable",
+      "fused"
+    ],
+    "kwargs_change": {
+      "params": "parameters",
+      "lr": "learning_rate",
+      "eps": "epsilon"
+    },
+    "paddle_default_kwargs": {
+      "weight_decay": 0.0
+    }
+  },
+  "torch.optim.Adamax": {
+    "Matcher": "OptimAdamMatcher",
+    "paddle_api": "paddle.optimizer.Adamax",
+    "args_list": [
+      "params",
+      "lr",
+      "betas",
+      "eps",
+      "weight_decay",
+      "foreach",
+      "maximize",
+      "differentiable"
+    ],
+    "unsupport_args": [
+      "foreach",
+      "maximize",
+      "differentiable"
+    ],
+    "kwargs_change": {
+      "params": "parameters",
+      "lr": "learning_rate",
+      "eps": "epsilon"
+    }
+  },
+  "torch.optim.LBFGS": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.optimizer.LBFGS",
+    "args_list": [
+      "params",
+      "lr",
+      "max_iter",
+      "max_eval",
+      "tolerance_grad",
+      "tolerance_change",
+      "history_size",
+      "line_search_fn"
+    ],
+    "kwargs_change": {
+      "params": "parameters",
+      "lr": "learning_rate"
+    }
+  },
   "torch.optim.Optimizer": {
     "Matcher": "OptimOptimizerMatcher",
     "args_list": [
@@ -9464,6 +9632,34 @@
       "epsilon": 1e-08,
       "learning_rate": 0.01,
       "rho": 0.99
+    }
+  },
+  "torch.optim.SGD": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.optimizer.SGD",
+    "args_list": [
+      "params",
+      "lr",
+      "momentum",
+      "dampening",
+      "weight_decay",
+      "nesterov",
+      "maximize",
+      "differentiable"
+    ],
+    "unsupport_args": [
+      "momentum",
+      "dampening",
+      "nesterov",
+      "maximize",
+      "differentiable"
+    ],
+    "kwargs_change": {
+      "params": "parameters",
+      "lr": "learning_rate"
+    },
+    "paddle_default_kwargs": {
+      "weight_decay": 0.0
     }
   },
   "torch.outer": {

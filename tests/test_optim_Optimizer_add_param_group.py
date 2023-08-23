@@ -45,15 +45,10 @@ def _test_case_1():
         w1.requires_grad = True
         w2 = torch.ones(3, 3)
         w2.requires_grad = True
-        o = optim.Adam([w1])
+        o = optim.Optimizer([w1], defaults={"learning_rate": 1.0})
         o.add_param_group({'params': w2})
         result0 = o.param_groups[0]["params"]
         result1 = o.param_groups[1]["params"]
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result0", "result1"],
-        unsupport=True,
-        reason="doesn't support the api optim.Adam",
-    )
+    obj.run(pytorch_code, ["result0", "result1"])
