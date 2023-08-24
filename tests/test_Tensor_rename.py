@@ -16,44 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.backends.cudnn.benchmark")
+obj = APIBase("torch.Tensor.rename")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.backends.cudnn.benchmark = True
+        x.rename(columns={'iids': iids})
         """
     )
-    obj.run(pytorch_code)
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        torch.backends.cudnn.benchmark = False
-        """
+    obj.run(
+        pytorch_code,
+        expect_paddle_code="import paddle\nx.rename(columns={'iids': iids})\n",
     )
-    obj.run(pytorch_code)
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        print(torch.backends.cudnn.benchmark)
-        """
-    )
-    obj.run(pytorch_code)
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        torch.backends.cudnn.benchmark
-        """
-    )
-    obj.run(pytorch_code)

@@ -173,15 +173,38 @@ class ImportTransformer(BaseTransformer):
 
     def visit_Name(self, node):
         """
-        change torch api to full api according to import info.
+        change torch api name to full api according to import info.
         eg.
-            Module -> torch.nn.Module
+            from torch.nn import Module
+            from torch import Tensor
+            from torch import float32
+
+            1. class A(Module):
+            2. def func() -> Tensor:
+            3. def func(x: Tensor):
+            4. def func(dtype=float32):
+            5. Tensor(2, 3)
+            6. isinstance(x, Tensor)
+            7. setattr(Tensor, 'add', func)
         """
-        torch_api = self.get_full_api_from_node(node)
-        if torch_api:
-            if torch_api in ALIAS_MAPPING:
-                torch_api = ALIAS_MAPPING[torch_api]
-            return ast.parse(torch_api).body[0].value
+        is_torch = False
+        if isinstance(
+            self.parent_node,
+            (ast.Call, ast.ClassDef, ast.FunctionDef, ast.arg, ast.arguments),
+        ):
+            is_torch = True
+        elif isinstance(self.parent_node, ast.Call) and isinstance(
+            self.parent_node.func, ast.Name
+        ):
+            if self.parent_node.func.id in ["isinstance", "setattr"]:
+                is_torch = True
+
+        if is_torch:
+            torch_api = self.get_full_api_from_node(node)
+            if torch_api:
+                if torch_api in ALIAS_MAPPING:
+                    torch_api = ALIAS_MAPPING[torch_api]
+                return ast.parse(torch_api).body[0].value
         return node
 
     def visit_Module(self, node):

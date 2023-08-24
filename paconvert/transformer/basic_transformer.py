@@ -91,8 +91,9 @@ class BasicTransformer(BaseTransformer):
         #   such as torch.Tensor/torch.nn.Module/torch.add...
         for torch_package in TORCH_PACKAGE_LIST:
             if full_attr.startswith("%s." % torch_package):
-                torch_api = full_attr
                 self.torch_api_count += 1
+
+                torch_api = full_attr
                 log_debug(
                     self.logger,
                     "Start convert {} to Paddle --> ".format(torch_api),
@@ -119,6 +120,29 @@ class BasicTransformer(BaseTransformer):
                             self.logger,
                             "[Success] convert {} to Paddle Successfully".format(
                                 torch_api
+                            ),
+                            self.file_name,
+                            node.lineno,
+                        )
+                        return new_node
+
+                attr_list = full_attr.split(".")
+                if len(attr_list) >= 3:
+                    # def add_module(self, module):
+                    #     ...
+                    # torch.nn.Module.add = add_module
+                    torch_api = ".".join(attr_list[:-1])
+                    matcher = self.get_api_mather(torch_api)
+                    if matcher:
+                        paddle_api = matcher.get_paddle_api()
+                        new_node = (
+                            ast.parse(paddle_api + "." + attr_list[-1]).body[0].value
+                        )
+                        self.success_api_count += 1
+                        log_debug(
+                            self.logger,
+                            "[Success] convert setattr({}, '{}') to Paddle Successfully".format(
+                                torch_api, attr_list[-1]
                             ),
                             self.file_name,
                             node.lineno,
@@ -519,8 +543,17 @@ class BasicTransformer(BaseTransformer):
     def trans_class_method(self, node, torch_api):
         matcher = self.get_api_mather(torch_api)
         if matcher:
+            node_args = node.args
+            # static method call
+            # PT_Optimizer.load_state_dict(self, swa_state_dict)
+            self_in_args = False
+            if len(node_args) >= 1:
+                if isinstance(node_args[0], ast.Name) and node_args[0].id == "self":
+                    self_in_args = True
+                    node_args = node_args[1:]
+
             node_list = matcher.get_paddle_class_nodes(
-                node.func, node.args, node.keywords
+                node.func, node_args, node.keywords
             )
             if node_list == "delete":
                 if isinstance(self.parent_node, ast.Expr):
@@ -565,6 +598,10 @@ class BasicTransformer(BaseTransformer):
                 #   'float32'
                 #   x.shape
                 #   x.shape[2]
+                #   x * 2
+                #   assert x=1.
+                #   (x, y)
+                #   x > 1
                 if isinstance(
                     new_node,
                     (
@@ -579,6 +616,9 @@ class BasicTransformer(BaseTransformer):
                         ast.Compare,
                     ),
                 ):
+                    if self_in_args:
+                        if isinstance(new_node, ast.Call):
+                            new_node.args.insert(0, node.args[0])
                     self.insert_multi_node(node_list[0:-1])
                     self.success_api_count += 1
                     log_debug(
