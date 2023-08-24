@@ -10283,6 +10283,33 @@
       "stable": ""
     }
   },
+  "torch.sparse.addmm": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.sparse.addmm",
+    "args_list": [
+      "input",
+      "mat1",
+      "mat2",
+      "alpha",
+      "beta"
+    ],
+    "kwargs_change": {
+      "mat1": "x",
+      "mat2": "y"
+    }
+  },
+  "torch.sparse.mm": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.sparse.matmul",
+    "args_list": [
+      "sparse",
+      "dense"
+    ],
+    "kwargs_change": {
+      "sparse": "x",
+      "dense": "y"
+    }
+  },
   "torch.sparse.sum": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.sparse.sum",
