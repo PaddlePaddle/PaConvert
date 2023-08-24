@@ -26,9 +26,7 @@ def test_case_1():
         torch.backends.cudnn.deterministic = True
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="Now can only delete ast.Expr"
-    )
+    obj.run(pytorch_code)
 
 
 def test_case_2():
@@ -38,9 +36,7 @@ def test_case_2():
         torch.backends.cudnn.deterministic = False
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="Now can only delete ast.Expr"
-    )
+    obj.run(pytorch_code)
 
 
 def test_case_3():
@@ -50,9 +46,7 @@ def test_case_3():
         print(torch.backends.cudnn.deterministic)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="Now can only delete ast.Expr"
-    )
+    obj.run(pytorch_code)
 
 
 def test_case_4():
@@ -62,4 +56,4 @@ def test_case_4():
         torch.backends.cudnn.deterministic
         """
     )
-    obj.run(pytorch_code, expect_paddle_code="import paddle\n")
+    obj.run(pytorch_code)

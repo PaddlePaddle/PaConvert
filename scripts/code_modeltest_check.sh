@@ -27,6 +27,7 @@ if [[ "$DEVELOP_IF" == "OFF" ]]; then
 
     echo "Insalling develop version paddle"
     pip uninstall -y paddlepaddle
+    rm -rf /root/anaconda3/lib/python*/site-packages/paddlepaddle-0.0.0.dist-info/
     pip install --no-cache-dir paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
     python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
