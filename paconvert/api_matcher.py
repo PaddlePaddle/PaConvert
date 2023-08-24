@@ -3931,6 +3931,15 @@ class SvdMatcher(BaseMatcher):
         return code
 
 
+class ModuleGetSubMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = 'getattr({}, "{}")'.format(
+            self.paddleClass,
+            kwargs["target"].strip('"'),
+        )
+        return code
+
+
 class TensorIsSignedMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
