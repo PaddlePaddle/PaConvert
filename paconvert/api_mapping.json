@@ -9686,7 +9686,7 @@
     }
   },
   "torch.optim.lr_scheduler.StepLR": {
-    "Matcher": "lrSchedulerMatcher",
+    "Matcher": "LrSchedulerMatcher",
     "paddle_api": "paddle.optimizer.lr.StepDecay",
     "args_list": [
       "optimizer",
