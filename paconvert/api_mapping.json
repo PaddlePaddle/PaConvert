@@ -9685,6 +9685,20 @@
       "weight_decay": 0.0
     }
   },
+  "torch.optim.lr_scheduler.StepLR": {
+    "Matcher": "lrSchedulerMatcher",
+    "paddle_api": "paddle.optimizer.lr.StepDecay",
+    "args_list": [
+      "optimizer",
+      "step_size",
+      "gamma",
+      "last_epoch",
+      "verbose"
+    ],
+    "kwargs_change": {
+      "optimizer": "learning_rate"
+    }
+  },
   "torch.outer": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.outer",
