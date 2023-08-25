@@ -7380,10 +7380,25 @@
     "Matcher": "UnchangeMatcher"
   },
   "torch.nn.Module.float": {},
-  "torch.nn.Module.get_buffer": {},
+  "torch.nn.Module.get_buffer": {
+    "Matcher": "ModuleGetSubMatcher",
+    "args_list": [
+      "target"
+    ]
+  },
   "torch.nn.Module.get_extra_state": {},
-  "torch.nn.Module.get_parameter": {},
-  "torch.nn.Module.get_submodule": {},
+  "torch.nn.Module.get_parameter": {
+    "Matcher": "ModuleGetSubMatcher",
+    "args_list": [
+      "target"
+    ]
+  },
+  "torch.nn.Module.get_submodule": {
+    "Matcher": "ModuleGetSubMatcher",
+    "args_list": [
+      "target"
+    ]
+  },
   "torch.nn.Module.half": {},
   "torch.nn.Module.ipu": {},
   "torch.nn.Module.load_state_dict": {
@@ -7507,7 +7522,17 @@
       "module": "sublayer"
     }
   },
-  "torch.nn.Module.register_parameter": {},
+  "torch.nn.Module.register_parameter": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Layer.add_parameter",
+    "args_list": [
+      "name",
+      "param"
+    ],
+    "kwargs_change": {
+      "param": "parameter"
+    }
+  },
   "torch.nn.Module.requires_grad_": {},
   "torch.nn.Module.set_extra_state": {},
   "torch.nn.Module.share_memory": {},
