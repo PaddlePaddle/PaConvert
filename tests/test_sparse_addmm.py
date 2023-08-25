@@ -29,7 +29,9 @@ def test_case_1():
         v = torch.tensor([3, 4, 5], dtype=torch.float32)
         mat1 = torch.sparse_coo_tensor(i, v, [3, 3])
         mat2 = torch.tensor([[1., 2, 3], [3, 4, 5], [3, 4, 5]])
-        result = torch.sparse.addmm(x, mat1, mat2)
+        result = None
+        if torch.cuda.is_available():
+            result = torch.sparse.addmm(x, mat1, mat2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,7 +47,9 @@ def test_case_2():
         v = torch.tensor([3, 4, 5], dtype=torch.float32)
         mat1 = torch.sparse_coo_tensor(i, v, [3, 3])
         mat2 = torch.tensor([[1., 2, 3], [3, 4, 5], [3, 4, 5]])
-        result = torch.sparse.addmm(input=x, mat1=mat1, mat2=mat2, beta=0.6, alpha=0.7)
+        result = None
+        if torch.cuda.is_available():
+            result = torch.sparse.addmm(input=x, mat1=mat1, mat2=mat2, beta=0.6, alpha=0.7)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -61,7 +65,9 @@ def test_case_3():
         v = torch.tensor([3, 4, 5], dtype=torch.float32)
         mat1 = torch.sparse_coo_tensor(i, v, [3, 3])
         mat2 = torch.tensor([[1., 2, 3], [3, 4, 5], [3, 4, 5]])
-        result = torch.sparse.addmm(beta=0.6, alpha=0.7, input=x, mat1=mat1, mat2=mat2)
+        result = None
+        if torch.cuda.is_available():
+            result = torch.sparse.addmm(beta=0.6, alpha=0.7, input=x, mat1=mat1, mat2=mat2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -77,7 +83,9 @@ def test_case_4():
         v = torch.tensor([3, 4, 5], dtype=torch.float32)
         mat1 = torch.sparse_coo_tensor(i, v, [3, 3])
         mat2 = torch.tensor([[1., 2, 3], [3, 4, 5], [3, 4, 5]])
-        result = torch.sparse.addmm(x, mat1, mat2, beta=0.6, alpha=0.7)
+        result = None
+        if torch.cuda.is_available():
+            result = torch.sparse.addmm(x, mat1, mat2, beta=0.6, alpha=0.7)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -93,7 +101,9 @@ def test_case_5():
         v = torch.tensor([3, 4, 5], dtype=torch.float32)
         mat1 = torch.sparse_coo_tensor(i, v, [3, 3])
         mat2 = torch.tensor([[1., 2, 3], [3, 4, 5], [3, 4, 5]])
-        result = torch.sparse.addmm(input=x, mat1=mat1, mat2=mat2, beta=0.6, alpha=0.7)
+        result = None
+        if torch.cuda.is_available():
+            result = torch.sparse.addmm(input=x, mat1=mat1, mat2=mat2, beta=0.6, alpha=0.7)
         """
     )
     obj.run(pytorch_code, ["result"])

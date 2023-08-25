@@ -27,7 +27,9 @@ def test_case_1():
         values = [1., 2., 3.]
         x = torch.sparse_coo_tensor(indices, values, [3, 3])
         dense = torch.ones([3, 2])
-        result = torch.sparse.mm(x, dense)
+        result = None
+        if torch.cuda.is_available():
+            result = torch.sparse.mm(x, dense)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -41,7 +43,9 @@ def test_case_2():
         values = [1., 2., 3.]
         x = torch.sparse_coo_tensor(indices, values, [3, 3])
         dense = torch.ones([3, 2])
-        result = torch.sparse.mm(sparse=x, dense=dense)
+        result = None
+        if torch.cuda.is_available():
+            result = torch.sparse.mm(sparse=x, dense=dense)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,7 +59,9 @@ def test_case_3():
         values = [1., 2., 3.]
         x = torch.sparse_coo_tensor(indices, values, [3, 3])
         dense = torch.ones([3, 2])
-        result = torch.sparse.mm(dense=dense, sparse=x)
+        result = None
+        if torch.cuda.is_available():
+            result = torch.sparse.mm(dense=dense, sparse=x)
         """
     )
     obj.run(pytorch_code, ["result"])
