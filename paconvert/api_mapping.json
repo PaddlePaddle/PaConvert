@@ -2985,6 +2985,22 @@
       "input": "x"
     }
   },
+  "torch.autocast": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.amp.auto_cast",
+    "args_list": [
+      "device_type",
+      "enabled",
+      "dtype",
+      "cache_enabled"
+    ],
+    "kwargs_change": {
+      "device_type": "",
+      "enabled": "enable",
+      "dtype": "dtype",
+      "cache_enabled": ""
+    }
+  },
   "torch.autograd.Function": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.autograd.PyLayer"
@@ -3585,6 +3601,20 @@
     "kwargs_change": {
       "input": "x",
       "correction": "ddof"
+    }
+  },
+  "torch.cpu.amp.autocast": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.amp.auto_cast",
+    "args_list": [
+      "enabled",
+      "dtype",
+      "cache_enabled"
+    ],
+    "kwargs_change": {
+      "enabled": "enable",
+      "dtype": "dtype",
+      "cache_enabled": ""
     }
   },
   "torch.cross": {
