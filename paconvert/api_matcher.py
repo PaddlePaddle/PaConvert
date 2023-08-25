@@ -3762,7 +3762,7 @@ class OptimAdamMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-class lrSchedulerMatcher(BaseMatcher):
+class LrSchedulerMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs_change = {}
         if "kwargs_change" in self.api_mapping:
