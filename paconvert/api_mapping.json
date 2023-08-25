@@ -74,7 +74,7 @@
     ]
   },
   "torch.Tensor.add_": {
-    "Matcher": "TensorAddMatcher",
+    "Matcher": "TensorAdd_Matcher",
     "paddle_api": "paddle.Tensor.add_",
     "args_list": [
       "other",
@@ -1170,7 +1170,7 @@
   },
   "torch.Tensor.is_conj": {},
   "torch.Tensor.is_contiguous": {
-    "Matcher": "TensorIsContiguousMatcher"
+    "Matcher": "SetTrueMatcher"
   },
   "torch.Tensor.is_cuda": {},
   "torch.Tensor.is_floating_point": {
@@ -1938,7 +1938,9 @@
       "divisor": "y"
     }
   },
-  "torch.Tensor.rename": {},
+  "torch.Tensor.rename": {
+    "Matcher": "TensorRenameMatcher"
+  },
   "torch.Tensor.rename_": {},
   "torch.Tensor.renorm": {
     "Matcher": "TensorFunc2PaddleFunc",
@@ -3157,11 +3159,17 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.is_compiled_with_cuda"
   },
+  "torch.backends.cudnn.allow_tf32": {
+    "Matcher": "SetTrueMatcher"
+  },
   "torch.backends.cudnn.benchmark": {
-    "Matcher": "DeleteMatcher"
+    "Matcher": "SetFalseMatcher"
   },
   "torch.backends.cudnn.deterministic": {
-    "Matcher": "DeleteMatcher"
+    "Matcher": "SetFalseMatcher"
+  },
+  "torch.backends.cudnn.enabled": {
+    "Matcher": "SetTrueMatcher"
   },
   "torch.backends.cudnn.is_available": {
     "Matcher": "CudnnIsAvailableMatcher"
@@ -7372,10 +7380,25 @@
     "Matcher": "UnchangeMatcher"
   },
   "torch.nn.Module.float": {},
-  "torch.nn.Module.get_buffer": {},
+  "torch.nn.Module.get_buffer": {
+    "Matcher": "ModuleGetSubMatcher",
+    "args_list": [
+      "target"
+    ]
+  },
   "torch.nn.Module.get_extra_state": {},
-  "torch.nn.Module.get_parameter": {},
-  "torch.nn.Module.get_submodule": {},
+  "torch.nn.Module.get_parameter": {
+    "Matcher": "ModuleGetSubMatcher",
+    "args_list": [
+      "target"
+    ]
+  },
+  "torch.nn.Module.get_submodule": {
+    "Matcher": "ModuleGetSubMatcher",
+    "args_list": [
+      "target"
+    ]
+  },
   "torch.nn.Module.half": {},
   "torch.nn.Module.ipu": {},
   "torch.nn.Module.load_state_dict": {
@@ -7499,7 +7522,17 @@
       "module": "sublayer"
     }
   },
-  "torch.nn.Module.register_parameter": {},
+  "torch.nn.Module.register_parameter": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Layer.add_parameter",
+    "args_list": [
+      "name",
+      "param"
+    ],
+    "kwargs_change": {
+      "param": "parameter"
+    }
+  },
   "torch.nn.Module.requires_grad_": {},
   "torch.nn.Module.set_extra_state": {},
   "torch.nn.Module.share_memory": {},
@@ -9599,6 +9632,7 @@
   },
   "torch.optim.Optimizer": {
     "Matcher": "OptimOptimizerMatcher",
+    "paddle_api": "paddle.optimizer.Optimizer",
     "args_list": [
       "params",
       "defaults"
@@ -9615,12 +9649,10 @@
     ]
   },
   "torch.optim.Optimizer.state_dict": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.optimizer.Optimizer.state_dict"
+    "Matcher": "UnchangeMatcher"
   },
   "torch.optim.Optimizer.step": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.optimizer.Optimizer.step"
+    "Matcher": "UnchangeMatcher"
   },
   "torch.optim.Optimizer.zero_grad": {},
   "torch.optim.RMSprop": {
@@ -10561,6 +10593,19 @@
       "input",
       "out"
     ]
+  },
+  "torch.special.softmax": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.softmax",
+    "args_list": [
+      "input",
+      "dim",
+      "dtype"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axis"
+    }
   },
   "torch.special.xlog1py": {
     "Matcher": "SpecialXLog1pYMatcher",

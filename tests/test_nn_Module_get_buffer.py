@@ -16,44 +16,30 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.backends.cudnn.benchmark")
+obj = APIBase("torch.nn.Module.get_buffer")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.backends.cudnn.benchmark = True
+        x = torch.tensor([1., 2., 3.])
+        module1 = torch.nn.Module()
+        module1.register_buffer('buffer', x)
+        result = module1.get_buffer('buffer')
         """
     )
-    obj.run(pytorch_code)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.backends.cudnn.benchmark = False
+        x = torch.tensor([1., 2., 3.])
+        module1 = torch.nn.Module()
+        module1.register_buffer('buffer', x)
+        result = module1.get_buffer(target='buffer')
         """
     )
-    obj.run(pytorch_code)
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        print(torch.backends.cudnn.benchmark)
-        """
-    )
-    obj.run(pytorch_code)
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        torch.backends.cudnn.benchmark
-        """
-    )
-    obj.run(pytorch_code)
+    obj.run(pytorch_code, ["result"])

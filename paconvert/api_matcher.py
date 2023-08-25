@@ -65,19 +65,23 @@ class GenericMatcher(BaseMatcher):
         new_kwargs = self.set_paddle_default_kwargs(new_kwargs)
 
         dtype_v = None
-        if "dtype" in new_kwargs:
+        if "dtype" in new_kwargs and "dtype" not in kwargs:
             dtype_v = new_kwargs.pop("dtype")
 
         pin_memory_v = False
-        if "pin_memory" in new_kwargs and new_kwargs.pop("pin_memory") == "(True)":
+        if (
+            "pin_memory" in new_kwargs
+            and "pin_memory" not in kwargs
+            and new_kwargs.pop("pin_memory") == "(True)"
+        ):
             pin_memory_v = True
 
         stop_gradient_v = None
-        if "requires_grad" in new_kwargs:
+        if "requires_grad" in new_kwargs and "requires_grad" not in kwargs:
             stop_gradient_v = "not " + new_kwargs.pop("requires_grad").strip("()")
 
         out_v = None
-        if "out" in new_kwargs:
+        if "out" in new_kwargs and "out" not in kwargs:
             out_v = new_kwargs.pop("out")
 
         res = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
@@ -147,6 +151,22 @@ class UnchangeMatcher(BaseMatcher):
         return "unchange"
 
 
+class SetTrueMatcher(BaseMatcher):
+    def get_paddle_api(self):
+        return "True"
+
+    def generate_code(self, kwargs):
+        return "True"
+
+
+class SetFalseMatcher(BaseMatcher):
+    def get_paddle_api(self):
+        return "False"
+
+    def generate_code(self, kwargs):
+        return "False"
+
+
 class IdentityMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         new_args = self.parse_args(args)
@@ -192,6 +212,26 @@ class TorchAddMatcher(BaseMatcher):
 
 
 class TensorAddMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def add(self, other, *, alpha=1):
+                if alpha != 1:
+                    return paddle.add(self, paddle.to_tensor(other)*alpha)
+                else:
+                    return paddle.add(self, paddle.to_tensor(other))
+
+            setattr(paddle.Tensor, 'add', add)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.write_aux_code()
+        return "unchange"
+
+
+class TensorAdd_Matcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "alpha" in kwargs:
             API_TEMPLATE = textwrap.dedent(
@@ -673,6 +713,15 @@ class TensorPermuteMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
+class TensorRenameMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        kwargs = self.parse_kwargs(kwargs)
+        if "columns" in kwargs:
+            return "NonTorchClass"
+
+        return None
+
+
 class TensorRepeatMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
@@ -1091,12 +1140,6 @@ class MeshgridMatcher(BaseMatcher):
             )
         else:
             code = "{}({})".format(self.get_paddle_api(), self.args_to_str(new_args))
-        return ast.parse(code).body
-
-
-class TensorIsContiguousMatcher(BaseMatcher):
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        code = "True"
         return ast.parse(code).body
 
 
@@ -3928,6 +3971,15 @@ class SvdMatcher(BaseMatcher):
                 self.kwargs_to_str(kwargs),
             )
 
+        return code
+
+
+class ModuleGetSubMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = 'getattr({}, "{}")'.format(
+            self.paddleClass,
+            kwargs["target"].strip('"'),
+        )
         return code
 
 

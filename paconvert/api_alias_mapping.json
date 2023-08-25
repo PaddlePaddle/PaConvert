@@ -7,6 +7,7 @@
   "torch.distributions.cauchy.Cauchy": "torch.distributions.Cauchy",
   "torch.distributions.continuous_bernoulli.ContinuousBernoulli": "torch.distributions.ContinuousBernoulli",
   "torch.distributions.dirichlet.Dirichlet": "torch.distributions.Dirichlet",
+  "torch.distributions.distribution.Distribution": "torch.distributions.Distribution",
   "torch.distributions.exp_family.ExponentialFamily": "torch.distributions.ExponentialFamily",
   "torch.distributions.exponential.Exponential": "torch.distributions.Exponential",
   "torch.distributions.geometric.Geometric": "torch.distributions.Geometric",

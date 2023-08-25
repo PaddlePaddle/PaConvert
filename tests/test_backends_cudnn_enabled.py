@@ -12,64 +12,48 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.add")
+obj = APIBase("torch.backends.cudnn.enabled")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3])
-        result = x.add(torch.tensor([1, 4, 6]))
+        torch.backends.cudnn.enabled = True
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3])
-        result = x.add(20)
+        torch.backends.cudnn.enabled = False
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code)
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        result = x.add(torch.tensor([1., 4, 6]), alpha=0.8)
+        print(torch.backends.cudnn.enabled)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code)
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        result = x.add(other=torch.tensor([1., 4, 6]), alpha=0.8)
+        torch.backends.cudnn.enabled
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
-
-
-# paddle.Tensor.add not support type promote and x/y must have same dtype
-def _test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.tensor([1., 2, 3]).add(torch.tensor([1, 4, 6]))
-        """
-    )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code)
