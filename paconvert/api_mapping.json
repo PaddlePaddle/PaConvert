@@ -10315,6 +10315,28 @@
       "device": "place"
     }
   },
+  "torch.sparse_csr_tensor": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.sparse.sparse_csr_tensor",
+    "args_list": [
+      "crow_indices",
+      "col_indices",
+      "values",
+      "size",
+      "dtype",
+      "device",
+      "requires_grad",
+      "check_invariants"
+    ],
+    "kwargs_change": {
+      "crow_indices": "crows",
+      "col_indices": "cols",
+      "size": "shape",
+      "dtype": "dtype",
+      "device": "place",
+      "check_invariants": ""
+    }
+  },
   "torch.special.digamma": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.digamma",
