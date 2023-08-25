@@ -10572,6 +10572,19 @@
       "out"
     ]
   },
+  "torch.special.softmax": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.softmax",
+    "args_list": [
+      "input",
+      "dim",
+      "dtype"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axis"
+    }
+  },
   "torch.special.xlog1py": {
     "Matcher": "SpecialXLog1pYMatcher",
     "args_list": [
