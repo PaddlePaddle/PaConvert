@@ -3886,6 +3886,40 @@ class LuMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class LinalgLuMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        out_v = kwargs.pop("out") if "out" in kwargs else None
+
+        new_kwargs = {}
+        new_kwargs["x"] = kwargs.pop("A")
+        new_kwargs.update(kwargs)
+        if out_v:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                tmp_lu, tmp_p = paddle.linalg.lu({})
+                P, L, U = paddle.linalg.lu_unpack(tmp_lu, tmp_p)
+                paddle.assign(P, {}[0]), paddle.assign(L, {}[1]), paddle.assign(U, {}[2])
+                """
+            )
+            code = API_TEMPLATE.format(
+                self.kwargs_to_str(new_kwargs),
+                out_v,
+                out_v,
+                out_v,
+            )
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                tmp_lu, tmp_p = paddle.linalg.lu({})
+                paddle.linalg.lu_unpack(tmp_lu, tmp_p)
+                """
+            )
+            code = API_TEMPLATE.format(
+                self.kwargs_to_str(new_kwargs),
+            )
+        return code
+
+
 class QrMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         some_v = kwargs.pop("some") if "some" in kwargs else None

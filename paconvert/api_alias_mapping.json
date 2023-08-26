@@ -19,6 +19,7 @@
   "torch.distributions.normal.Normal": "torch.distributions.Normal",
   "torch.distributions.one_hot_categorical.OneHotCategorical": "torch.distributions.OneHotCategorical",
   "torch.distributions.transformed_distribution.TransformedDistribution": "torch.distributions.TransformedDistribution",
+  "torch.distributions.transforms.CatTransform": "torch.distributions.CatTransform",
   "torch.distributions.transforms.ComposeTransform": "torch.distributions.ComposeTransform",
   "torch.distributions.transforms.CumulativeDistributionTransform": "torch.distributions.CumulativeDistributionTransform",
   "torch.distributions.transforms.SigmoidTransform": "torch.distributions.SigmoidTransform",
