@@ -3762,7 +3762,7 @@ class OptimAdamMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-class LrSchedulerConstantLRMatcher(BaseMatcher):
+class ConstantLRMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         optim = kwargs.pop("optimizer")
         factor = 0.3333333333333333
@@ -3786,10 +3786,13 @@ class LrSchedulerConstantLRMatcher(BaseMatcher):
         return code
 
 
+NoTransOptimList = ["paddle.optimizer.lr.CyclicLR"]
+
+
 class LrSchedulerMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         optim = kwargs.pop("optimizer")
-        if self.get_paddle_api() != "paddle.optimizer.lr.CyclicLR":
+        if self.get_paddle_api() not in NoTransOptimList:
             kwargs["learning_rate"] = optim + ".get_lr()"
         API_TEMPLATE = textwrap.dedent(
             """

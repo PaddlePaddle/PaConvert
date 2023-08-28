@@ -9686,7 +9686,7 @@
     }
   },
   "torch.optim.lr_scheduler.ConstantLR": {
-    "Matcher": "LrSchedulerConstantLRMatcher",
+    "Matcher": "ConstantLRMatcher",
     "paddle_api": "paddle.optimizer.lr.PiecewiseDecay",
     "args_list": [
       "optimizer",
