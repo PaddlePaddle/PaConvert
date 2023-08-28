@@ -3829,16 +3829,16 @@
       "new_states": "state_list"
     }
   },
-  "torch.cuda.stream": {
+  "torch.cuda.set_stream": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.device.cuda.stream_guard",
+    "paddle_api": "paddle.device.set_stream",
     "args_list": [
       "stream"
     ]
   },
-  "torch.cuda.set_stream": {
+  "torch.cuda.stream": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.device.set_stream",
+    "paddle_api": "paddle.device.cuda.stream_guard",
     "args_list": [
       "stream"
     ]
