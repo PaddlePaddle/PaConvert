@@ -68,4 +68,4 @@ def test_case_4():
         result = F.threshold(x, 0, 0, inplace=True)
         """
     )
-    obj.run(pytorch_code, ["result"], unsupport=True)
+    obj.run(pytorch_code, ["result"], unsupport=True, reason="paddle does not support the `inplace` parameter")
