@@ -9239,6 +9239,17 @@
       "param"
     ]
   },
+  "torch.nn.init.constant_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.Constant",
+    "args_list": [
+      "tensor",
+      "val"
+    ],
+    "kwargs_change": {
+      "val": "value"
+    }
+  },
   "torch.nn.modules.batchnorm._BatchNorm": {
     "Matcher": "Modules_BatchNormBaseMatcher",
     "paddle_api": "paddle.nn.layer.norm._BatchNormBase",
