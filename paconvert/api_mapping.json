@@ -5862,6 +5862,23 @@
       "A"
     ]
   },
+  "torch.linalg.solve_triangular": {
+    "Matcher": "LinalgSolveTriangularMatcher",
+    "paddle_api": "paddle.linalg.triangular_solve",
+    "args_list": [
+      "input",
+      "B",
+      "upper",
+      "left",
+      "unitriangular",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "B": "y",
+      "left": "transpose"
+    }
+  },
   "torch.linalg.svdvals": {
     "Matcher": "LinalgSvdvalsMatcher",
     "paddle_api": "paddle.linalg.svd",
