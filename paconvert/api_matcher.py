@@ -3766,6 +3766,51 @@ class OptimAdamMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class ConstantLRMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        optim = kwargs.pop("optimizer")
+        factor = 0.3333333333333333
+        total_iters = 5
+        if "factor" in kwargs:
+            factor = kwargs.pop("factor")
+        if "total_iters" in kwargs:
+            total_iters = kwargs.pop("total_iters")
+        kwargs["values"] = "[{}*{}.get_lr(), {}.get_lr()]".format(factor, optim, optim)
+        kwargs["boundaries"] = "[{}]".format(total_iters)
+        API_TEMPLATE = textwrap.dedent(
+            """
+            tmp_lr = {}({})
+            {}.set_lr_scheduler(tmp_lr)
+            tmp_lr
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.get_paddle_api(), self.kwargs_to_str(kwargs), optim
+        )
+        return code
+
+
+NoTransOptimList = ["paddle.optimizer.lr.CyclicLR"]
+
+
+class LrSchedulerMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        optim = kwargs.pop("optimizer")
+        if self.get_paddle_api() not in NoTransOptimList:
+            kwargs["learning_rate"] = optim + ".get_lr()"
+        API_TEMPLATE = textwrap.dedent(
+            """
+            tmp_lr = {}({})
+            {}.set_lr_scheduler(tmp_lr)
+            tmp_lr
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.get_paddle_api(), self.kwargs_to_str(kwargs), optim
+        )
+        return code
+
+
 class FunctionalSoftmaxMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "dim" not in kwargs or "None" in kwargs["dim"]:
