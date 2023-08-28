@@ -83,13 +83,11 @@ def test_case_5():
         """
         import torch
         result = None
-        if torch.cuda.is_available():
-            s = torch.cuda.Stream()
-            context = torch.cuda.stream(s)
-            data1 = torch.ones(size=[20])
-            data2 = torch.ones(size=[20])
-            with context:
-                result = data1 + data2
+        context = torch.cuda.stream(torch.cuda.Stream())
+        data1 = torch.ones(size=[20])
+        data2 = torch.ones(size=[20])
+        with context:
+            result = data1 + data2
         """
     )
     obj.run(pytorch_code, ["result"])
