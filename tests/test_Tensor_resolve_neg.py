@@ -16,18 +16,21 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.backends.cudnn.deterministic")
+obj = APIBase("torch.Tensor.resolve_neg")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.backends.cudnn.deterministic = True
+        result = torch.tensor([-1 + 1j, -2 + 2j, 3 - 3j]).resolve_neg()
         """
     )
     obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="Now can only delete ast.Expr"
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support this function temporarily",
     )
 
 
@@ -35,11 +38,15 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.backends.cudnn.deterministic = False
+        a = torch.tensor([-1 + 1j, -2 + 2j, 3 - 3j])
+        result = a.resolve_neg()
         """
     )
     obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="Now can only delete ast.Expr"
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support this function temporarily",
     )
 
 
@@ -47,19 +54,13 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        print(torch.backends.cudnn.deterministic)
+        a = torch.tensor([-1 + 1j, -2 + 2j])
+        result = a.resolve_neg()
         """
     )
     obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="Now can only delete ast.Expr"
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support this function temporarily",
     )
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        torch.backends.cudnn.deterministic
-        """
-    )
-    obj.run(pytorch_code, expect_paddle_code="import paddle\n")

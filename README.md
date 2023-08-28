@@ -473,13 +473,13 @@ class TransposeMatcher(BaseMatcher):
 
 **1）不需要辅助代码**
 
-判断标准：**代码保持完全不变，即可直接正常运行**。此时直接在json中配置已封装好的 `TensorUnchangeMatcher` 即可，无需编写新的Matcher。
+判断标准：**代码保持完全不变，即可直接正常运行**。此时直接在json中配置已封装好的 `UnchangeMatcher` 即可，无需编写新的Matcher。
 
 以 `torch.Tensor.tan` 为例：
 
 ```
 "torch.Tensor.tan": {
-    "Matcher": "TensorUnchangeMatcher"
+    "Matcher": "UnchangeMatcher"
 }
 ```
 
@@ -644,7 +644,7 @@ if x:
 
 * **精度与输入要求**：
 
-单测的输入Tensor 必须规范，Tensor中元素个数需 > 100，且不能为0等无效输入，默认会通过 `numpy.allclose(pytorch_result, paddle_result, rtol=1.0e-6, atol=0.0)` 来对比Pytorch、Paddle API的前向输出精度，由于该精度要求较高，如果达不到该精度要求，可以在 `obj.run` 时手动设置 `rtol` 、`atol` 适当降低阈值，来使单测运行通过。
+单测的输入Tensor 必须规范，Tensor中元素个数需 > 100，且不能为全为0值等无效输入，默认会通过 `numpy.allclose(pytorch_result, paddle_result, rtol=1.0e-6, atol=0.0)` 来对比Pytorch、Paddle API的前向输出精度，由于该精度要求较高，如果达不到该精度要求，可以在 `obj.run` 时手动设置 `rtol` 、`atol` 适当降低阈值，来使单测运行通过。
 
 * **单测覆盖范围要求**：
 

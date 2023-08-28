@@ -91,8 +91,9 @@ class BasicTransformer(BaseTransformer):
         #   such as torch.Tensor/torch.nn.Module/torch.add...
         for torch_package in TORCH_PACKAGE_LIST:
             if full_attr.startswith("%s." % torch_package):
-                torch_api = full_attr
                 self.torch_api_count += 1
+
+                torch_api = full_attr
                 log_debug(
                     self.logger,
                     "Start convert {} to Paddle --> ".format(torch_api),
@@ -125,6 +126,29 @@ class BasicTransformer(BaseTransformer):
                         )
                         return new_node
 
+                attr_list = full_attr.split(".")
+                if len(attr_list) >= 3:
+                    # def add_module(self, module):
+                    #     ...
+                    # torch.nn.Module.add = add_module
+                    torch_api = ".".join(attr_list[:-1])
+                    matcher = self.get_api_mather(torch_api)
+                    if matcher:
+                        paddle_api = matcher.get_paddle_api()
+                        new_node = (
+                            ast.parse(paddle_api + "." + attr_list[-1]).body[0].value
+                        )
+                        self.success_api_count += 1
+                        log_debug(
+                            self.logger,
+                            "[Success] convert setattr({}, '{}') to Paddle Successfully".format(
+                                torch_api, attr_list[-1]
+                            ),
+                            self.file_name,
+                            node.lineno,
+                        )
+                        return new_node
+
                 self.unsupport_map[torch_api] += 1
                 log_info(
                     self.logger,
@@ -140,12 +164,39 @@ class BasicTransformer(BaseTransformer):
         #   such as x.device...
         if "NonTorchClass" not in full_attr:
             attr_list = full_attr.split(".")
+
             torch_api = ".".join(["torch.Tensor", attr_list[-1]])
             if torch_api in ATTRIBUTE_MAPPING:
                 self.torch_api_count += 1
                 log_debug(
                     self.logger,
                     "Start convert Tensor Attribute: {} to Paddle ".format(torch_api),
+                    self.file_name,
+                    node.lineno,
+                )
+                return self.trans_class_attribute(node, torch_api)
+
+            torch_api = ".".join(["torch.autograd.function.FunctionCtx", attr_list[-1]])
+            if torch_api in API_MAPPING:
+                self.torch_api_count += 1
+                log_debug(
+                    self.logger,
+                    "Start convert torch.autograd.function.FunctionCtx Attribute: {} to Paddle --> ".format(
+                        torch_api
+                    ),
+                    self.file_name,
+                    node.lineno,
+                )
+                return self.trans_class_attribute(node, torch_api)
+
+            torch_api = ".".join(["torch.distributions.Distribution", attr_list[-1]])
+            if torch_api in API_MAPPING:
+                self.torch_api_count += 1
+                log_debug(
+                    self.logger,
+                    "Start convert torch.distributions.Distribution Attribute: {} to Paddle --> ".format(
+                        torch_api
+                    ),
                     self.file_name,
                     node.lineno,
                 )
@@ -177,7 +228,7 @@ class BasicTransformer(BaseTransformer):
                         self.success_api_count += 1
                         log_debug(
                             self.logger,
-                            "[Success]convert Tensor Attribute: {} to Paddle, just remain the same".format(
+                            "[Success]convert Class Attribute: {} to Paddle, just remain the same".format(
                                 torch_api
                             ),
                             self.file_name,
@@ -207,7 +258,7 @@ class BasicTransformer(BaseTransformer):
                             self.success_api_count += 1
                             log_debug(
                                 self.logger,
-                                "[Success]convert Tensor Attribute: {} to Paddle".format(
+                                "[Success]convert Class Attribute: {} to Paddle".format(
                                     torch_api
                                 ),
                                 self.file_name,
@@ -216,7 +267,7 @@ class BasicTransformer(BaseTransformer):
                             return new_node
 
         annotate_node = ast.parse(
-            "'Tensor Attribute: {}, not convert, please check whether it is torch.Tensor.* and convert manually'".format(
+            "'Class Attribute: {}, can not convert, please check whether it is torch.Tensor.*/torch.autograd.function.FunctionCtx.*/torch.distributions.Distribution.* and convert manually'".format(
                 torch_api
             )
         ).body[0]
@@ -434,14 +485,75 @@ class BasicTransformer(BaseTransformer):
                     )
                     return self.trans_class_method(node, torch_api)
 
+            torch_api = ".".join(["torch.autograd.function.FunctionCtx", attr_list[-1]])
+            if torch_api in API_MAPPING:
+                self.torch_api_count += 1
+                log_debug(
+                    self.logger,
+                    "Start convert torch.autograd.function.FunctionCtx Class Method: {} to Paddle --> ".format(
+                        torch_api
+                    ),
+                    self.file_name,
+                    node.lineno,
+                )
+                return self.trans_class_method(node, torch_api)
+
+            torch_api = ".".join(["torch.distributions.Distribution", attr_list[-1]])
+            if torch_api in API_MAPPING:
+                self.torch_api_count += 1
+                log_debug(
+                    self.logger,
+                    "Start convert torch.distributions.Distribution Class Method: {} to Paddle --> ".format(
+                        torch_api
+                    ),
+                    self.file_name,
+                    node.lineno,
+                )
+                return self.trans_class_method(node, torch_api)
+
+            torch_api = ".".join(["torch.profiler.profile", attr_list[-1]])
+            if torch_api in API_MAPPING:
+                self.torch_api_count += 1
+                log_debug(
+                    self.logger,
+                    "Start convert torch.profiler.profile Class Method: {} to Paddle --> ".format(
+                        torch_api
+                    ),
+                    self.file_name,
+                    node.lineno,
+                )
+                return self.trans_class_method(node, torch_api)
+
+            torch_api = ".".join(["torch.autograd.profiler.profile", attr_list[-1]])
+            if torch_api in API_MAPPING:
+                self.torch_api_count += 1
+                log_debug(
+                    self.logger,
+                    "Start convert torch.autograd.profiler.profile Class Method: {} to Paddle --> ".format(
+                        torch_api
+                    ),
+                    self.file_name,
+                    node.lineno,
+                )
+                return self.trans_class_method(node, torch_api)
+
         # NonTorchClass
         return node
 
     def trans_class_method(self, node, torch_api):
         matcher = self.get_api_mather(torch_api)
         if matcher:
+            node_args = node.args
+            # static method call
+            # PT_Optimizer.load_state_dict(self, swa_state_dict)
+            self_in_args = False
+            if len(node_args) >= 1:
+                if isinstance(node_args[0], ast.Name) and node_args[0].id == "self":
+                    self_in_args = True
+                    node_args = node_args[1:]
+
             node_list = matcher.get_paddle_class_nodes(
-                node.func, node.args, node.keywords
+                node.func, node_args, node.keywords
             )
             if node_list == "delete":
                 if isinstance(self.parent_node, ast.Expr):
@@ -469,9 +581,7 @@ class BasicTransformer(BaseTransformer):
                 self.torch_api_count -= 1
                 log_debug(
                     self.logger,
-                    " Misidentify Class Method: {}, so just remain the same".format(
-                        torch_api
-                    ),
+                    " Misidentify Class Method: {}".format(torch_api),
                     self.file_name,
                     node.lineno,
                 )
@@ -488,6 +598,10 @@ class BasicTransformer(BaseTransformer):
                 #   'float32'
                 #   x.shape
                 #   x.shape[2]
+                #   x * 2
+                #   assert x=1.
+                #   (x, y)
+                #   x > 1
                 if isinstance(
                     new_node,
                     (
@@ -502,6 +616,9 @@ class BasicTransformer(BaseTransformer):
                         ast.Compare,
                     ),
                 ):
+                    if self_in_args:
+                        if isinstance(new_node, ast.Call):
+                            new_node.args.insert(0, node.args[0])
                     self.insert_multi_node(node_list[0:-1])
                     self.success_api_count += 1
                     log_debug(
@@ -514,7 +631,7 @@ class BasicTransformer(BaseTransformer):
 
         torch_api = "*" + torch_api[torch_api.rfind(".") :]
         annotate_node = ast.parse(
-            "'Class Method: {}, not convert, please check whether it is torch.Tensor.*/Optimizer.*/nn.Module.*, and convert manually'".format(
+            "'Class Method: {}, can not convert, please check whether it is torch.Tensor.*/Optimizer.*/nn.Module.*/torch.distributions.Distribution.*/torch.autograd.function.FunctionCtx.*/torch.profiler.profile.*/torch.autograd.profiler.profile.*, and convert manually'".format(
                 torch_api
             )
         ).body[0]
