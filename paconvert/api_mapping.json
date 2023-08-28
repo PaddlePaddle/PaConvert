@@ -9686,7 +9686,7 @@
     }
   },
   "torch.optim.lr_scheduler.StepLR": {
-    "Matcher": "LrSchedulerMatcher",
+    "Matcher": "LrSchedulerTransOptimMatcher",
     "paddle_api": "paddle.optimizer.lr.StepDecay",
     "args_list": [
       "optimizer",
@@ -9694,10 +9694,7 @@
       "gamma",
       "last_epoch",
       "verbose"
-    ],
-    "kwargs_change": {
-      "optimizer": "learning_rate"
-    }
+    ]
   },
   "torch.outer": {
     "Matcher": "GenericMatcher",

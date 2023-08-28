@@ -52,7 +52,7 @@ def test_case_1():
         conv.bias = torch.nn.Parameter(bias)
 
         sgd = torch.optim.SGD(conv.parameters(), lr=0.1)
-        schduler = torch.optim.lr_scheduler.StepLR(sgd, step_size=2)
+        schduler = torch.optim.lr_scheduler.StepLR(sgd, step_size=2, verbose=True)
         for epoch in range(1, 11):
             out = conv(inp)
             loss = torch.mean(out)
