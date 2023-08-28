@@ -1802,6 +1802,75 @@ class TensorIndexCopyMatcher(BaseMatcher):
         return code
 
 
+class IndexCopyMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        out_v = None
+        if "out" in kwargs:
+            out_v = kwargs.pop("out")
+
+        if kwargs["dim"][1:-1].isdigit() and int(kwargs["dim"][1:-1]) == 0:
+            if out_v:
+                code = "paddle.assign(paddle.scatter({}, {}, {}), {})".format(
+                    kwargs["input"], kwargs["index"], kwargs["source"], out_v
+                )
+            else:
+                code = "paddle.scatter({}, {}, {})".format(
+                    kwargs["input"], kwargs["index"], kwargs["source"]
+                )
+            return code
+
+        if out_v:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                times, temp_shape, temp_index = paddle.prod(paddle.to_tensor({}.shape[:{}])), {}.shape, {}
+                {}, new_t = {}.reshape([-1] + temp_shape[{}+1:]), {}.reshape([-1] + temp_shape[{}+1:])
+                for i in range(1, times):
+                    temp_index= paddle.concat([temp_index, index+len(index)*i])
+                paddle.assign(paddle.scatter({}, temp_index, new_t).reshape(temp_shape), {})
+                """
+            )
+
+            code = API_TEMPLATE.format(
+                kwargs["input"],
+                kwargs["dim"],
+                kwargs["input"],
+                kwargs["index"],
+                kwargs["input"],
+                kwargs["input"],
+                kwargs["dim"],
+                kwargs["source"],
+                kwargs["dim"],
+                kwargs["input"],
+                out_v,
+            )
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                times, temp_shape, temp_index = paddle.prod(paddle.to_tensor({}.shape[:{}])), {}.shape, {}
+                {}, new_t = {}.reshape([-1] + temp_shape[{}+1:]), {}.reshape([-1] + temp_shape[{}+1:])
+                for i in range(1, times):
+                    temp_index= paddle.concat([temp_index, index+len(index)*i])
+                paddle.scatter({}, temp_index, new_t).reshape(temp_shape)
+                """
+            )
+
+            code = API_TEMPLATE.format(
+                kwargs["input"],
+                kwargs["dim"],
+                kwargs["input"],
+                kwargs["index"],
+                kwargs["input"],
+                kwargs["input"],
+                kwargs["dim"],
+                kwargs["source"],
+                kwargs["dim"],
+                kwargs["input"],
+            )
+
+        return code
+
+
 class InstanceNormMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "momentum" in kwargs:
