@@ -11328,6 +11328,10 @@
       "batch"
     ]
   },
+  "torch.utils.data.get_worker_info": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.io.get_worker_info"
+  },
   "torch.utils.data.random_split": {
     "Matcher": "RandomSplitMatcher",
     "paddle_api": "paddle.io.random_split",
