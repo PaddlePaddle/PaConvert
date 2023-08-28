@@ -26,11 +26,11 @@ class GetRngStateAllAPIBase(APIBase):
         check_value=True,
         check_dtype=True,
         check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
     ):
-        if len(paddle_result) == 0:
-            return True
-
-        assert isinstance(paddle_result[0], paddle.fluid.libpaddle.GeneratorState)
+        for res in paddle_result:
+            assert isinstance(res, paddle.framework.core.GeneratorState)
 
 
 obj = GetRngStateAllAPIBase("torch.cuda.get_rng_state_all")

@@ -13,8 +13,8 @@
 # limitations under the License.
 
 # install requirements library
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
+python -m pip install -r requirements.txt
+python -m pip install -r requirements-dev.txt
 pre-commit install
 
 # code_style_check
@@ -33,4 +33,4 @@ bash scripts/code_consistency_check.sh
 bash scripts/code_modeltest_check.sh
 
 # pipline test 
-bash scripts/code_pipeline_check.sh
+bash scripts/code_install_check.sh

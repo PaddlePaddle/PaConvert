@@ -16,25 +16,23 @@ set +x
 
 export FLAGS_set_to_1d=0
 DOWNLOAD_DATASET_IF="OFF"
-DEVELOP_IF="OFF"
 TORCH_PROJECT_PATH="torch_project"
 
-if [[ "$DEVELOP_IF" == "OFF" ]]; then
-    cd /workspace/$3/PaConvert/
-    PATH=$1
-    TORCH_PROJECT_PATH=$2
-    echo "Insalling cpu version torch"
-    pip uninstall -y torch 
-    pip uninstall -y paddlepaddle
-    pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
-    python -c "import torch; print('torch version information:' ,torch.__version__)"
-    echo "Insalling develop version paddle"
-    python -m pip install --no-cache-dir paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
-    python -c "import paddle; print('paddle version information:' ,paddle.__version__); print('paddle commit information:' ,paddle.__git_commit__)"
+cd /workspace/$3/PaConvert/
+PATH=$1
+TORCH_PROJECT_PATH=$2
 
-fi
+echo "Insalling cpu version torch"
+python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+python -c "import torch; print('torch version information:' ,torch.__version__)"
 
-# obtain the test case
+echo "Insalling develop version paddle"
+python -m pip uninstall -y paddlepaddle
+rm -rf /root/anaconda3/lib/python*/site-packages/paddlepaddle-0.0.0.dist-info/
+python -m pip install --no-cache-dir paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
+python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
+
+# obtain the model test set
 if [[ "$DOWNLOAD_DATASET_IF" == "ON" ]]; then
     echo '**************************start downloading datasets.....*********************************'
     mkdir -p torch_project

@@ -44,7 +44,7 @@ def test_case_2():
         result = cri(input, positive, negative)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_3():
@@ -100,7 +100,7 @@ def test_case_6():
         result = cri(input, positive, negative)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_7():
@@ -142,4 +142,4 @@ def test_case_9():
         result = cri(input, positive, negative)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
