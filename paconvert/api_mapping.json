@@ -8784,6 +8784,26 @@
       "target": "label"
     }
   },
+  "torch.nn.functional.max_pool1d": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.max_pool1d",
+    "args_list": [
+      "input",
+      "kernel_size",
+      "stride",
+      "padding",
+      "dilation",
+      "ceil_mode",
+      "return_indices"
+    ],
+    "unsupport_args": [
+      "dilation"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "return_indices": "return_mask"
+    }
+  },
   "torch.nn.functional.max_pool2d": {
     "Matcher": "FunctionalMaxPool2DMatcher",
     "paddle_api": "paddle.nn.functional.max_pool2d",
