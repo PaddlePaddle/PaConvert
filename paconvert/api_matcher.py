@@ -177,6 +177,33 @@ class IdentityMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
+class InitMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs_change = {}
+        if "kwargs_change" in self.api_mapping:
+            kwargs_change = self.api_mapping["kwargs_change"]
+        for k in kwargs_change:
+            if k in kwargs:
+                kwargs[kwargs_change[k]] = kwargs.pop(k)
+
+        init_tensor = kwargs.pop("tensor")
+        API_TEMPLATE = textwrap.dedent(
+            """
+            init_{} = {}({})
+            init_{}({})
+            """
+        )
+        init_name = self.get_paddle_api().split(".")[-1]
+        code = API_TEMPLATE.format(
+            init_name,
+            self.get_paddle_api(),
+            self.kwargs_to_str(kwargs),
+            init_name,
+            init_tensor,
+        )
+        return code
+
+
 class LayerMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "device" in kwargs:
