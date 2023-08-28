@@ -5750,6 +5750,17 @@
       "B": "y"
     }
   },
+  "torch.linalg.lu": {
+    "Matcher": "LinalgLuMatcher",
+    "args_list": [
+      "A",
+      "pivot",
+      "out"
+    ],
+    "kwargs_change": {
+      "A": "x"
+    }
+  },
   "torch.linalg.matmul": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.matmul",
@@ -6870,6 +6881,14 @@
     ]
   },
   "torch.nn.Dropout": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Dropout",
+    "args_list": [
+      "p",
+      "inplace"
+    ]
+  },
+  "torch.nn.Dropout1d": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Dropout",
     "args_list": [
