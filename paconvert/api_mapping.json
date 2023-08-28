@@ -5335,6 +5335,16 @@
       "out"
     ]
   },
+  "torch.index_copy": {
+    "Matcher": "IndexCopyMatcher",
+    "args_list": [
+      "input",
+      "dim",
+      "index",
+      "source",
+      "out"
+    ]
+  },
   "torch.index_select": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.index_select",
