@@ -3707,11 +3707,11 @@ class TensorRound_Matcher(BaseMatcher):
         if "decimals" in kwargs:
             API_TEMPLATE = textwrap.dedent(
                 """
-                paddle.assign(paddle.round((10**{}) * {}) / (10**{}), {})
+                paddle.assign(({} * (10**{})).round_() / (10**{}), {})
                 """
             )
             return API_TEMPLATE.format(
-                kwargs["decimals"], kwargs["input"], kwargs["decimals"], kwargs["input"]
+                kwargs["input"], kwargs["decimals"], kwargs["decimals"], kwargs["input"]
             )
         else:
             return "{}.round_()".format(kwargs["input"])
