@@ -4061,6 +4061,15 @@ class LinalgLuMatcher(BaseMatcher):
         return code
 
 
+class LinalgSolveTriangularMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        new_kwargs = {}
+        if "left" in kwargs:
+            new_kwargs["transpose"] = f"not {kwargs.pop('left')}"
+        new_kwargs.update(kwargs)
+        return GenericMatcher.generate_code(self, new_kwargs)
+
+
 class QrMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         some_v = kwargs.pop("some") if "some" in kwargs else None
