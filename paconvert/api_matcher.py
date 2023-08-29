@@ -3081,6 +3081,18 @@ class TensorReshape_asMatcher(BaseMatcher):
         return code
 
 
+class TensorResize_as_Matcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}.reshape_({}.shape)
+            """
+        )
+        code = API_TEMPLATE.format(self.paddleClass, kwargs["the_template"])
+        return code
+
+
 class SelectMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" not in kwargs:
@@ -3686,6 +3698,23 @@ class TensorRoundMatcher(BaseMatcher):
 
         self.write_aux_code()
         return "unchange"
+
+
+class TensorRound_Matcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["input"] = self.paddleClass
+
+        if "decimals" in kwargs:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                paddle.assign(paddle.round((10**{}) * {}) / (10**{}), {})
+                """
+            )
+            return API_TEMPLATE.format(
+                kwargs["decimals"], kwargs["input"], kwargs["decimals"], kwargs["input"]
+            )
+        else:
+            return "{}.round_()".format(kwargs["input"])
 
 
 class NonzeroMatcher(BaseMatcher):
