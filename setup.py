@@ -34,7 +34,13 @@ packages = [
     "paconvert.transformer",
 ]
 
-package_data = {"paconvert": ["api_mapping.json", "attribute_mapping.json"]}
+package_data = {
+    "paconvert": [
+        "api_mapping.json",
+        "attribute_mapping.json",
+        "api_alias_mapping.json",
+    ]
+}
 
 
 def get_tag():

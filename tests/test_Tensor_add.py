@@ -28,7 +28,7 @@ def test_case_1():
         result = x.add(torch.tensor([1, 4, 6]))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_2():
@@ -39,7 +39,7 @@ def test_case_2():
         result = x.add(20)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_3():
@@ -50,7 +50,7 @@ def test_case_3():
         result = x.add(torch.tensor([1., 4, 6]), alpha=0.8)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 def test_case_4():
@@ -61,7 +61,7 @@ def test_case_4():
         result = x.add(other=torch.tensor([1., 4, 6]), alpha=0.8)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)
 
 
 # paddle.Tensor.add not support type promote and x/y must have same dtype
@@ -72,4 +72,4 @@ def _test_case_5():
         result = torch.tensor([1., 2, 3]).add(torch.tensor([1, 4, 6]))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], is_aux_api=True)

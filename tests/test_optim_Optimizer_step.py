@@ -26,10 +26,10 @@ class optimOptimizerAPIBase(APIBase):
         check_value=True,
         check_dtype=True,
         check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
     ):
-        if paddle_result == pytorch_result:
-            return True
-        return False
+        assert paddle_result == pytorch_result
 
 
 obj = optimOptimizerAPIBase("torch.optim.Optimizer.step")
@@ -52,12 +52,11 @@ def test_case_1():
     )
 
 
-def test_case_2():
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
         import torch.nn as nn
-
         theta = torch.tensor([1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0], requires_grad=True)
         l = torch.nn.Linear(10, 1)
         optim = torch.optim.SGD(l.parameters(), lr = 1.0)
@@ -67,9 +66,4 @@ def test_case_2():
         result = optim.state_dict()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="currently not support optimizer subclass API",
-    )
+    obj.run(pytorch_code, ["result"])

@@ -15,21 +15,19 @@
 set +x
 
 export FLAGS_set_to_1d=0
-DEVELOP_IF="OFF"
 
-if [[ "$DEVELOP_IF" == "OFF" ]]; then
-    cd /workspace/$2/PaConvert/
-    PATH=$1
-    echo "Insalling cpu version torch"
-    pip uninstall -y torch 
-    pip uninstall -y paddlepaddle
-    pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
-    python -c "import torch; print('torch version information:' ,torch.__version__)"
-    echo "Insalling develop version paddle"
-    python -m pip install --no-cache-dir paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
-    python -c "import paddle; print('paddle version information:' ,paddle.__version__); print('paddle commit information:' ,paddle.__git_commit__)"
+cd /workspace/$2/PaConvert/
+PATH=$1
 
-fi
+echo "Insalling cpu version torch"
+python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+python -c "import torch; print('torch version information:' ,torch.__version__)"
+
+echo "Insalling develop version paddle"
+python -m pip uninstall -y paddlepaddle
+rm -rf /root/anaconda3/lib/python*/site-packages/paddlepaddle-0.0.0.dist-info/
+python -m pip install --no-cache-dir paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
+python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
 echo '*******************************start modeltest test*********************************'
 mkdir tests/code_library/model_case/paddle_code

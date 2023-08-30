@@ -218,7 +218,7 @@ pre-commit run --file [file_name]
 | PR-CI-CodeStyle   | scripts/code_style_check.sh |
 | PR-CI-UnitTest   | scripts/code_unittest_check.sh |
 | PR-CI-Coverage   | scripts/code_modeltest_check.sh |
-| PR-CI-Pipeline   | scripts/code_pipeline_check.sh |
+| PR-CI-Pipeline   | scripts/code_install_check.sh |
 | PR-CI-PRTemplate   | scripts/code_PRtemplate_check.sh |
 ```
 
@@ -231,7 +231,7 @@ bash scripts/code_consistency_check.sh
 bash scripts/code_style_check.sh
 bash scripts/code_unittest_check.sh
 bash scripts/code_modeltest_check.sh
-bash scripts/code_pipeline_check.sh
+bash scripts/code_install_check.sh
 bash scripts/code_PRtemplate_check.sh
 
 本地全部CI测试方法
@@ -473,13 +473,13 @@ class TransposeMatcher(BaseMatcher):
 
 **1）不需要辅助代码**
 
-判断标准：**代码保持完全不变，即可直接正常运行**。此时直接在json中配置已封装好的 `TensorUnchangeMatcher` 即可，无需编写新的Matcher。
+判断标准：**代码保持完全不变，即可直接正常运行**。此时直接在json中配置已封装好的 `UnchangeMatcher` 即可，无需编写新的Matcher。
 
 以 `torch.Tensor.tan` 为例：
 
 ```
 "torch.Tensor.tan": {
-    "Matcher": "TensorUnchangeMatcher"
+    "Matcher": "UnchangeMatcher"
 }
 ```
 
@@ -640,11 +640,19 @@ if x:
 
 * **运行单测**：可以在主目录下执行`pytest tests`命令运行所有单测；也可以执行`pytest tests/xxx.py`运行`tests`目录下的某一单测；如果希望遇到`error`则停止单测，可以加上参数`-x`，即`pytest tests/test_add.py -x`，单测运行过程中会将转换后的`paddle`代码写入`test_project/paddle_temp.py`，方便排查错误。
 
-**单测要求**：
+**单测规范**：
 
-需要考虑该torch api所有可能的用法case，可以从模型验证集中搜索并抽取尽可能多的用法case，要求至少列举3种完全不同的case（越多越好）。涉及到多个API参数的，应包含各种参数组合的情况（是否指定关键字、调整关键字顺序等），不能只考虑最简单常见的用法。
+* **精度与输入要求**：
 
-对任意torch API的用法case只允许有两种结果：a)正常转换且对比结果一致；b)不支持转换，此时返回None。不允许出现其他的错误情况，包括但不限于 **报错异常退出、错误转换** 等各种其他问题。
+单测的输入Tensor 必须规范，Tensor中元素个数需 > 100，且不能为全为0值等无效输入，默认会通过 `numpy.allclose(pytorch_result, paddle_result, rtol=1.0e-6, atol=0.0)` 来对比Pytorch、Paddle API的前向输出精度，由于该精度要求较高，如果达不到该精度要求，可以在 `obj.run` 时手动设置 `rtol` 、`atol` 适当降低阈值，来使单测运行通过。
+
+* **单测覆盖范围要求**：
+
+单测本质为模仿用户Pytorch代码的用法，因此需要考虑该torch api所有可能的用法case，不可自行增加判断来刻意绕过测试，否则将引入转换工具Bug或隐患。
+
+单测覆盖范围要求为：涉及到多个API形参的，应包含各种参数用法（ `全部指定关键字、全部不指定关键字、改变关键字顺序、默认参数全部指定、默认参数全部不指定` 五种情况必须考虑），不能只考虑最简单常见的用法，要求至少列举5种不同的使用case（越多越好）。
+
+对任意torch API的用法case只允许有两种结果：**a)支持转换且计算结果一致；b)不支持转换并用>>>标记**。不能出现其他的错误情况，包括但不限于 **触发Python语法问题导致异常退出、支持转换但计算结果对不上** 等各种问题。
 
 以 `torch.Tensor.new_zeros` 为例，其至少包含12种以上的torch用法case，如下：
 

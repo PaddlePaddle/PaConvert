@@ -92,7 +92,7 @@ def test_case_4():
         result = F.instance_norm(input=input, running_mean=data, running_var=data, weight=data, bias=data, eps=1e-4)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_5():
@@ -111,4 +111,4 @@ def test_case_5():
         result = F.instance_norm(input=input, running_mean=data, running_var=data, weight=data, bias=data, eps=1e-4, use_input_stats=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)

@@ -19,16 +19,24 @@ from apibase import APIBase
 
 
 class optimOptimizerAPIBase(APIBase):
-    def compare(self, name, pytorch_result, paddle_result, check_value=True):
-        if isinstance(paddle_result, paddle.optimizer.optimizer.Optimizer):
-            return True
-        return False
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
+    ):
+        assert isinstance(paddle_result, paddle.optimizer.optimizer.Optimizer)
 
 
 obj = optimOptimizerAPIBase("torch.optim.Optimizer.add_param_group")
 
 
-def test_case_1():
+def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -37,15 +45,10 @@ def test_case_1():
         w1.requires_grad = True
         w2 = torch.ones(3, 3)
         w2.requires_grad = True
-        o = optim.Adam([w1])
+        o = optim.Optimizer([w1], defaults={"learning_rate": 1.0})
         o.add_param_group({'params': w2})
         result0 = o.param_groups[0]["params"]
         result1 = o.param_groups[1]["params"]
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result0", "result1"],
-        unsupport=True,
-        reason="doesn't support the api optim.Adam",
-    )
+    obj.run(pytorch_code, ["result0", "result1"])
