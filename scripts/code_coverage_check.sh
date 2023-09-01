@@ -15,10 +15,7 @@
 set +x
 
 export FLAGS_set_to_1d=0
-ADD_GIT="OFF"
-
-cd /workspace/$2/PaConvert/
-PATH=$1
+cd /workspace/$1/PaConvert/
 
 echo "Insalling cpu version torch"
 python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
@@ -59,7 +56,7 @@ diff-cover coverage.xml --compare-branch origin/master > temp.txt;check_error1=$
 cat temp.txt
 
 echo '***********************start generating coverage rate detect******************************'
-python  tools/coverage/coverage_diff.py;check_error2=$?
+python tools/coverage/coverage_diff.py;check_error2=$?
 
 check_error=$((check_error1||check_error2)) 
 echo "$check_error" > flag.txt

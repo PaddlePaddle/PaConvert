@@ -16,8 +16,7 @@ set +x
 
 export FLAGS_set_to_1d=0
 
-cd /workspace/$2/PaConvert/
-PATH=$1
+cd /workspace/$1/PaConvert/
 
 echo "Insalling cpu version torch"
 python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
@@ -30,9 +29,9 @@ python -m pip install --no-cache-dir paddlepaddle==0.0.0 -f https://www.paddlepa
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
 echo '*******************************start modeltest test*********************************'
-mkdir tests/code_library/model_case/paddle_code
-python tools/modeltest/code_modeltest_check.py;check_error1=$?
-rm -rf tests/code_library/model_case/paddle_code
+mkdir tests/code_library/model_case/convert_paddle_code
+python tools/modeltest/modeltest_check.py;check_error1=$?
+
 
 echo '************************************************************************************'
 echo "______      _____                          _   "

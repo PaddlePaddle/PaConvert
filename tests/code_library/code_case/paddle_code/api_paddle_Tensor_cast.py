@@ -1,5 +1,5 @@
 import sys
-sys.path.append('tests/code_library/code_case/temp_paddle_code/utils')
+sys.path.append('tests/code_library/code_case/convert_paddle_code/utils')
 import paddle_aux
 import paddle
 print('#########################case1#########################')

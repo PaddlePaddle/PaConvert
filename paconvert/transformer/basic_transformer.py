@@ -49,14 +49,15 @@ def change_torch_package_list():
 
 class BasicTransformer(BaseTransformer):
     def __init__(self, root, file, imports_map, logger, unsupport_map=None):
-        super(BasicTransformer, self).__init__(root, file, imports_map, logger)
+        super(BasicTransformer, self).__init__(
+            root, file, imports_map, logger, unsupport_map
+        )
         # use to identify tensor method/attribute
         self.black_list = self.imports_map[self.file]["other_packages"] + [
             "ndarray",
             "args",
             "arg",
         ]
-        self.unsupport_map = unsupport_map
 
     def visit_Attribute(self, node):
         """
@@ -91,9 +92,9 @@ class BasicTransformer(BaseTransformer):
         #   such as torch.Tensor/torch.nn.Module/torch.add...
         for torch_package in TORCH_PACKAGE_LIST:
             if full_attr.startswith("%s." % torch_package):
-                self.torch_api_count += 1
-
                 torch_api = full_attr
+
+                self.torch_api_count += 1
                 log_debug(
                     self.logger,
                     "Start convert {} to Paddle --> ".format(torch_api),
@@ -108,17 +109,38 @@ class BasicTransformer(BaseTransformer):
                             self.success_api_count += 1
                             log_debug(
                                 self.logger,
-                                "[Success]remove {} ".format(torch_api),
+                                "[Delete] Just remove {} ".format(torch_api),
                                 self.file_name,
                                 node.lineno,
                             )
                             return None
+                    elif paddle_api == "unchange":
+                        self.success_api_count += 1
+                        log_debug(
+                            self.logger,
+                            "[Success] Convert {} to Paddle, just remain the same".format(
+                                torch_api
+                            ),
+                            self.file_name,
+                            node.lineno,
+                        )
+                        return node
+                    elif paddle_api == "misidentify":
+                        # This API usage indicate that is is not a Pytorch API
+                        self.torch_api_count -= 1
+                        log_debug(
+                            self.logger,
+                            " Misidentify {}".format(torch_api),
+                            self.file_name,
+                            node.lineno,
+                        )
+                        return node
                     elif paddle_api:
                         new_node = ast.parse(paddle_api).body[0].value
                         self.success_api_count += 1
                         log_debug(
                             self.logger,
-                            "[Success] convert {} to Paddle Successfully".format(
+                            "[Success] Convert {} to Paddle Successfully".format(
                                 torch_api
                             ),
                             self.file_name,
@@ -131,9 +153,9 @@ class BasicTransformer(BaseTransformer):
                     # def add_module(self, module):
                     #     ...
                     # torch.nn.Module.add = add_module
-                    torch_api = ".".join(attr_list[:-1])
-                    matcher = self.get_api_mather(torch_api)
+                    matcher = self.get_api_mather(".".join(attr_list[:-1]))
                     if matcher:
+                        torch_api = ".".join(attr_list[:-1])
                         paddle_api = matcher.get_paddle_api()
                         new_node = (
                             ast.parse(paddle_api + "." + attr_list[-1]).body[0].value
@@ -141,7 +163,7 @@ class BasicTransformer(BaseTransformer):
                         self.success_api_count += 1
                         log_debug(
                             self.logger,
-                            "[Success] convert setattr({}, '{}') to Paddle Successfully".format(
+                            "[Success] Convert setattr({}, '{}') to Paddle Successfully".format(
                                 torch_api, attr_list[-1]
                             ),
                             self.file_name,
@@ -152,7 +174,7 @@ class BasicTransformer(BaseTransformer):
                 self.unsupport_map[torch_api] += 1
                 log_info(
                     self.logger,
-                    "[Not Support] convert {} to Paddle is not supported currently".format(
+                    "[Not Support] Convert {} to Paddle is not supported currently".format(
                         torch_api
                     ),
                     self.file_name,
@@ -165,106 +187,103 @@ class BasicTransformer(BaseTransformer):
         if "NonTorchClass" not in full_attr:
             attr_list = full_attr.split(".")
 
-            torch_api = ".".join(["torch.Tensor", attr_list[-1]])
-            if torch_api in ATTRIBUTE_MAPPING:
-                self.torch_api_count += 1
-                log_debug(
-                    self.logger,
-                    "Start convert Tensor Attribute: {} to Paddle ".format(torch_api),
-                    self.file_name,
-                    node.lineno,
-                )
-                return self.trans_class_attribute(node, torch_api)
+            torch_class_apis = []
+            torch_class_apis.append(".".join(["torch.Tensor", attr_list[-1]]))
+            torch_class_apis.append(
+                ".".join(["torch.autograd.function.FunctionCtx", attr_list[-1]])
+            )
+            torch_class_apis.append(
+                ".".join(["torch.distributions.Distribution", attr_list[-1]])
+            )
 
-            torch_api = ".".join(["torch.autograd.function.FunctionCtx", attr_list[-1]])
-            if torch_api in API_MAPPING:
-                self.torch_api_count += 1
-                log_debug(
-                    self.logger,
-                    "Start convert torch.autograd.function.FunctionCtx Attribute: {} to Paddle --> ".format(
-                        torch_api
-                    ),
-                    self.file_name,
-                    node.lineno,
-                )
-                return self.trans_class_attribute(node, torch_api)
-
-            torch_api = ".".join(["torch.distributions.Distribution", attr_list[-1]])
-            if torch_api in API_MAPPING:
-                self.torch_api_count += 1
-                log_debug(
-                    self.logger,
-                    "Start convert torch.distributions.Distribution Attribute: {} to Paddle --> ".format(
-                        torch_api
-                    ),
-                    self.file_name,
-                    node.lineno,
-                )
-                return self.trans_class_attribute(node, torch_api)
+            if torch_class_apis:
+                for torch_class_api in torch_class_apis:
+                    if torch_class_api in ATTRIBUTE_MAPPING:
+                        self.torch_api_count += 1
+                        log_debug(
+                            self.logger,
+                            "Start convert Class Attribute: {} to Paddle ".format(
+                                torch_class_api
+                            ),
+                            self.file_name,
+                            node.lineno,
+                        )
+                        return self.trans_class_attribute(node, torch_class_api)
 
         # NonTorchClass
         return node
 
     def trans_class_attribute(self, node, torch_api):
-        if torch_api in ATTRIBUTE_MAPPING:
-            attribute_mapping = ATTRIBUTE_MAPPING[torch_api]
-            if "Matcher" in attribute_mapping:
-                matcher = eval(attribute_mapping["Matcher"])(
-                    self, torch_api, attribute_mapping, self.logger
-                )
-                if matcher:
-                    node_list = matcher.get_paddle_class_attribute_nodes(node)
-                    if node_list == "delete":
-                        if isinstance(self.parent_node, ast.Expr):
-                            self.success_api_count += 1
-                            log_debug(
-                                self.logger,
-                                "[Success]remove {} ".format(torch_api),
-                                self.file_name,
-                                node.lineno,
-                            )
-                            return None
-                    elif node_list == "unchange":
+        attribute_mapping = ATTRIBUTE_MAPPING[torch_api]
+        if "Matcher" in attribute_mapping:
+            matcher = eval(attribute_mapping["Matcher"])(
+                self, torch_api, attribute_mapping, self.logger
+            )
+            if matcher:
+                node_list = matcher.get_paddle_class_attribute_nodes(node)
+                if node_list == "delete":
+                    if isinstance(self.parent_node, ast.Expr):
                         self.success_api_count += 1
                         log_debug(
                             self.logger,
-                            "[Success]convert Class Attribute: {} to Paddle, just remain the same".format(
+                            "[Delete] Just remove Class Attribute: {} ".format(
                                 torch_api
                             ),
                             self.file_name,
                             node.lineno,
                         )
-                        return node
-                    elif node_list:
-                        new_node = node_list[-1]
-                        if isinstance(new_node, ast.Expr):
-                            new_node = new_node.value
+                        return None
+                elif node_list == "unchange":
+                    self.success_api_count += 1
+                    log_debug(
+                        self.logger,
+                        "[Success] Convert Class Attribute: {} to Paddle, just remain the same".format(
+                            torch_api
+                        ),
+                        self.file_name,
+                        node.lineno,
+                    )
+                    return node
+                elif node_list == "misidentify":
+                    # This API usage indicate that is is not a torch.Tensor
+                    self.torch_api_count -= 1
+                    log_debug(
+                        self.logger,
+                        " Misidentify Class Attribute: {}".format(torch_api),
+                        self.file_name,
+                        node.lineno,
+                    )
+                    return node
+                elif node_list:
+                    new_node = node_list[-1]
+                    if isinstance(new_node, ast.Expr):
+                        new_node = new_node.value
 
-                        if isinstance(
-                            new_node,
-                            (
-                                ast.Call,
-                                ast.Attribute,
-                                ast.Name,
-                                ast.Constant,
-                                ast.Compare,
-                                ast.BinOp,
-                                ast.UnaryOp,
-                                ast.Tuple,
-                                ast.Assert,
+                    if isinstance(
+                        new_node,
+                        (
+                            ast.Call,
+                            ast.Attribute,
+                            ast.Name,
+                            ast.Constant,
+                            ast.Compare,
+                            ast.BinOp,
+                            ast.UnaryOp,
+                            ast.Tuple,
+                            ast.Assert,
+                        ),
+                    ):
+                        self.insert_multi_node(node_list[0:-1])
+                        self.success_api_count += 1
+                        log_debug(
+                            self.logger,
+                            "[Success] Convert Class Attribute: {} to Paddle".format(
+                                torch_api
                             ),
-                        ):
-                            self.insert_multi_node(node_list[0:-1])
-                            self.success_api_count += 1
-                            log_debug(
-                                self.logger,
-                                "[Success]convert Class Attribute: {} to Paddle".format(
-                                    torch_api
-                                ),
-                                self.file_name,
-                                node.lineno,
-                            )
-                            return new_node
+                            self.file_name,
+                            node.lineno,
+                        )
+                        return new_node
 
         annotate_node = ast.parse(
             "'Class Attribute: {}, can not convert, please check whether it is torch.Tensor.*/torch.autograd.function.FunctionCtx.*/torch.distributions.Distribution.* and convert manually'".format(
@@ -275,7 +294,7 @@ class BasicTransformer(BaseTransformer):
         self.unsupport_map[torch_api] += 1
         log_info(
             self.logger,
-            "[Not Support] convert Tensor Attribute: {} to Paddle is not supported currently".format(
+            "[Not Support] convert Class Attribute: {} to Paddle is not supported currently".format(
                 torch_api
             ),
             self.file_name,
@@ -339,81 +358,108 @@ class BasicTransformer(BaseTransformer):
         # Torch Package Call, include torch third_party
         #   such as : torch.add(x, y) / torch.add(torch.abs(x), y)
         full_attr = self.get_full_attr(node.func)
+        torch_api = None
+        if "setuptools.setup" == full_attr:
+            torch_api = full_attr
+
         for torch_package in TORCH_PACKAGE_LIST:
             if full_attr.startswith("%s." % torch_package):
                 torch_api = full_attr
-                self.torch_api_count += 1
-                log_debug(
-                    self.logger,
-                    "Start convert {} to Paddle --> ".format(torch_api),
-                    self.file_name,
-                    node.lineno,
-                )
-                support = True
 
-                matcher = self.get_api_mather(torch_api)
-                if not matcher:
+        if torch_api:
+            self.torch_api_count += 1
+            log_debug(
+                self.logger,
+                "Start convert {} to Paddle --> ".format(torch_api),
+                self.file_name,
+                node.lineno,
+            )
+
+            support = True
+            matcher = self.get_api_mather(torch_api)
+            if not matcher:
+                support = False
+            # such as torch.max(*args, **kwargs)
+            if isinstance(node.args, ast.Starred):
+                support = False
+            for k_node in node.keywords:
+                if k_node.arg is None:
                     support = False
-                # such as torch.max(*args, **kwargs)
-                if isinstance(node.args, ast.Starred):
-                    support = False
-                for k_node in node.keywords:
-                    if k_node.arg is None:
-                        support = False
 
-                if support:
-                    node_list = matcher.get_paddle_nodes(node.args, node.keywords)
-                    if node_list == "delete":
-                        if isinstance(self.parent_node, ast.Expr):
-                            self.success_api_count += 1
-                            log_debug(
-                                self.logger,
-                                "[Success]remove {} ".format(torch_api),
-                                self.file_name,
-                                node.lineno,
-                            )
-                            return None
-                    elif node_list:
-                        new_node = node_list[-1]
-                        # ast.Expr, which contain ast.Call or ast.Name
-                        if isinstance(new_node, ast.Expr):
-                            new_node = new_node.value
+            if support:
+                node_list = matcher.get_paddle_nodes(node.args, node.keywords)
+                if node_list == "delete":
+                    if isinstance(self.parent_node, ast.Expr):
+                        self.success_api_count += 1
+                        log_debug(
+                            self.logger,
+                            "[[Delete]] Just remove {} ".format(torch_api),
+                            self.file_name,
+                            node.lineno,
+                        )
+                        return None
+                elif node_list == "unchange":
+                    self.success_api_count += 1
+                    log_debug(
+                        self.logger,
+                        "[Success] Convert {} to Paddle, just remain the same".format(
+                            torch_api
+                        ),
+                        self.file_name,
+                        node.lineno,
+                    )
+                    return node
+                elif node_list == "misidentify":
+                    # This API usage indicate that is is not a Pytorch API
+                    self.torch_api_count -= 1
+                    log_debug(
+                        self.logger,
+                        " Misidentify {}".format(torch_api),
+                        self.file_name,
+                        node.lineno,
+                    )
+                    return node
+                elif node_list:
+                    new_node = node_list[-1]
+                    # ast.Expr, which contain ast.Call or ast.Name
+                    if isinstance(new_node, ast.Expr):
+                        new_node = new_node.value
 
-                        if isinstance(
-                            new_node,
-                            (
-                                ast.Call,
-                                ast.Name,
-                                ast.Constant,
-                                ast.Attribute,
-                                ast.Compare,
-                                ast.BinOp,
-                                ast.UnaryOp,
-                                ast.Tuple,
-                                ast.Assert,
-                                ast.Subscript,
-                            ),
-                        ):
-                            self.insert_multi_node(node_list[0:-1])
-                            self.success_api_count += 1
-                            log_debug(
-                                self.logger,
-                                "[Success]convert {} to Paddle ".format(torch_api),
-                                self.file_name,
-                                node.lineno,
-                            )
-                            return new_node
+                    if isinstance(
+                        new_node,
+                        (
+                            ast.Call,
+                            ast.Name,
+                            ast.Constant,
+                            ast.Attribute,
+                            ast.Compare,
+                            ast.BinOp,
+                            ast.UnaryOp,
+                            ast.Tuple,
+                            ast.Assert,
+                            ast.Subscript,
+                        ),
+                    ):
+                        self.insert_multi_node(node_list[0:-1])
+                        self.success_api_count += 1
+                        log_debug(
+                            self.logger,
+                            "[Success] Convert {} to Paddle ".format(torch_api),
+                            self.file_name,
+                            node.lineno,
+                        )
+                        return new_node
 
-                self.unsupport_map[torch_api] += 1
-                log_info(
-                    self.logger,
-                    "[Not Support] convert {} to Paddle is not supported currently".format(
-                        torch_api
-                    ),
-                    self.file_name,
-                    node.lineno,
-                )
-                return node
+            self.unsupport_map[torch_api] += 1
+            log_info(
+                self.logger,
+                "[Not Support] convert {} to Paddle is not supported currently".format(
+                    torch_api
+                ),
+                self.file_name,
+                node.lineno,
+            )
+            return node
 
         # Torch Class call
         #   such as : x.add(y) / x.abs().add / sgd.step() / model.to(torch.device('cuda'))
@@ -443,99 +489,39 @@ class BasicTransformer(BaseTransformer):
                     is_module_api = True
                     is_optim_api = True
 
+            torch_class_apis = []
             if is_tensor_api:
-                torch_api = ".".join(["torch.Tensor", attr_list[-1]])
-                if torch_api in API_MAPPING:
-                    self.torch_api_count += 1
-                    log_debug(
-                        self.logger,
-                        "Start convert Tensor Class Method: {} to Paddle --> ".format(
-                            torch_api
-                        ),
-                        self.file_name,
-                        node.lineno,
-                    )
-                    return self.trans_class_method(node, torch_api)
-
+                torch_class_apis.append(".".join(["torch.Tensor", attr_list[-1]]))
             if is_module_api:
-                torch_api = ".".join(["torch.nn.Module", attr_list[-1]])
-                if torch_api in API_MAPPING:
-                    self.torch_api_count += 1
-                    log_debug(
-                        self.logger,
-                        "Start convert Layer Class Method: {} to Paddle --> ".format(
-                            torch_api
-                        ),
-                        self.file_name,
-                        node.lineno,
-                    )
-                    return self.trans_class_method(node, torch_api)
-
+                torch_class_apis.append(".".join(["torch.nn.Module", attr_list[-1]]))
             if is_optim_api:
-                torch_api = ".".join(["torch.optim.Optimizer", attr_list[-1]])
-                if torch_api in API_MAPPING:
-                    self.torch_api_count += 1
-                    log_debug(
-                        self.logger,
-                        "Start convert Optimizer Class Method: {} to Paddle --> ".format(
-                            torch_api
-                        ),
-                        self.file_name,
-                        node.lineno,
-                    )
-                    return self.trans_class_method(node, torch_api)
-
-            torch_api = ".".join(["torch.autograd.function.FunctionCtx", attr_list[-1]])
-            if torch_api in API_MAPPING:
-                self.torch_api_count += 1
-                log_debug(
-                    self.logger,
-                    "Start convert torch.autograd.function.FunctionCtx Class Method: {} to Paddle --> ".format(
-                        torch_api
-                    ),
-                    self.file_name,
-                    node.lineno,
+                torch_class_apis.append(
+                    ".".join(["torch.optim.Optimizer", attr_list[-1]])
                 )
-                return self.trans_class_method(node, torch_api)
+            torch_class_apis.append(
+                ".".join(["torch.autograd.function.FunctionCtx", attr_list[-1]])
+            )
+            torch_class_apis.append(
+                ".".join(["torch.distributions.Distribution", attr_list[-1]])
+            )
+            torch_class_apis.append(".".join(["torch.profiler.profile", attr_list[-1]]))
+            torch_class_apis.append(
+                ".".join(["torch.autograd.profiler.profile", attr_list[-1]])
+            )
 
-            torch_api = ".".join(["torch.distributions.Distribution", attr_list[-1]])
-            if torch_api in API_MAPPING:
-                self.torch_api_count += 1
-                log_debug(
-                    self.logger,
-                    "Start convert torch.distributions.Distribution Class Method: {} to Paddle --> ".format(
-                        torch_api
-                    ),
-                    self.file_name,
-                    node.lineno,
-                )
-                return self.trans_class_method(node, torch_api)
-
-            torch_api = ".".join(["torch.profiler.profile", attr_list[-1]])
-            if torch_api in API_MAPPING:
-                self.torch_api_count += 1
-                log_debug(
-                    self.logger,
-                    "Start convert torch.profiler.profile Class Method: {} to Paddle --> ".format(
-                        torch_api
-                    ),
-                    self.file_name,
-                    node.lineno,
-                )
-                return self.trans_class_method(node, torch_api)
-
-            torch_api = ".".join(["torch.autograd.profiler.profile", attr_list[-1]])
-            if torch_api in API_MAPPING:
-                self.torch_api_count += 1
-                log_debug(
-                    self.logger,
-                    "Start convert torch.autograd.profiler.profile Class Method: {} to Paddle --> ".format(
-                        torch_api
-                    ),
-                    self.file_name,
-                    node.lineno,
-                )
-                return self.trans_class_method(node, torch_api)
+            if torch_class_apis:
+                for torch_class_api in torch_class_apis:
+                    if torch_class_api in API_MAPPING:
+                        self.torch_api_count += 1
+                        log_debug(
+                            self.logger,
+                            "Start convert Class Method: {} to Paddle --> ".format(
+                                torch_class_api
+                            ),
+                            self.file_name,
+                            node.lineno,
+                        )
+                        return self.trans_class_method(node, torch_class_api)
 
         # NonTorchClass
         return node
@@ -560,7 +546,7 @@ class BasicTransformer(BaseTransformer):
                     self.success_api_count += 1
                     log_debug(
                         self.logger,
-                        "[Success]remove {} ".format(torch_api),
+                        "[Delete] Just remove Class Method: {} ".format(torch_api),
                         self.file_name,
                         node.lineno,
                     )
@@ -569,14 +555,14 @@ class BasicTransformer(BaseTransformer):
                 self.success_api_count += 1
                 log_debug(
                     self.logger,
-                    "[Success]convert Class Method: {} to Paddle, just remain the same".format(
+                    "[Success] Convert Class Method: {} to Paddle, just remain the same".format(
                         torch_api
                     ),
                     self.file_name,
                     node.lineno,
                 )
                 return node
-            elif node_list == "NonTorchClass":
+            elif node_list == "misidentify":
                 # This API usage indicate that is is not a torch.Tensor
                 self.torch_api_count -= 1
                 log_debug(
@@ -623,7 +609,9 @@ class BasicTransformer(BaseTransformer):
                     self.success_api_count += 1
                     log_debug(
                         self.logger,
-                        "[Success]convert Class Method: {} to Paddle".format(torch_api),
+                        "[Success] Convert Class Method: {} to Paddle".format(
+                            torch_api
+                        ),
                         self.file_name,
                         node.lineno,
                     )
@@ -665,61 +653,4 @@ class BasicTransformer(BaseTransformer):
                 return None
             else:
                 setattr(node, field, new_node)
-        return node
-
-    def visit_FunctionDef(self, node):
-        self.scope_stack.append(node)
-        super(BasicTransformer, self).generic_visit(node)
-        self.scope_stack.pop()
-        return node
-
-    def visit_While(self, node):
-        self.scope_stack.append(node)
-        super(BasicTransformer, self).generic_visit(node)
-        self.scope_stack.pop()
-        return node
-
-    def visit_If(self, node):
-        self.scope_stack.append(node)
-        super(BasicTransformer, self).generic_visit(node)
-        self.scope_stack.pop()
-        return node
-
-    def visit_Try(self, node):
-        self.scope_stack.append(node)
-        super(BasicTransformer, self).generic_visit(node)
-        self.scope_stack.pop()
-        return node
-
-    def visit_TryFinally(self, node):
-        self.scope_stack.append(node)
-        node = super(BasicTransformer, self).generic_visit(node)
-        self.scope_stack.pop()
-        return node
-
-    def visit_For(self, node):
-        self.scope_stack.append(node)
-        super(BasicTransformer, self).generic_visit(node)
-        self.scope_stack.pop()
-        return node
-
-    def visit_With(self, node):
-        self.scope_stack.append(node)
-        super(BasicTransformer, self).generic_visit(node)
-        self.scope_stack.pop()
-        return node
-
-    def visit_ExceptHandler(self, node):
-        self.scope_stack.append(node)
-        super(BasicTransformer, self).generic_visit(node)
-        self.scope_stack.pop()
-        return node
-
-    def visit_Module(self, node):
-        self.scope_stack.append(node)
-        super(BasicTransformer, self).generic_visit(node)
-        self.scope_stack.pop()
-        # log_debug(self.logger, "Mark this file which has been converted already", self.file_name)
-        # mark_node = ast.parse("' This file is generated by Paddle converter, you can remove this mark'").body[0]
-        # self.record_scope((self.root, 'body', 0), mark_node)
         return node

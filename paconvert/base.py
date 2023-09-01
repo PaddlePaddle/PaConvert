@@ -60,7 +60,7 @@ TORCH_PACKAGE_LIST = [
 
 
 class BaseTransformer(ast.NodeTransformer):
-    def __init__(self, root, file, imports_map, logger):
+    def __init__(self, root, file, imports_map, logger, unsupport_map=None):
         self.root = root
         self.file = file
         self.file_name = os.path.basename(file)
@@ -73,6 +73,7 @@ class BaseTransformer(ast.NodeTransformer):
         self.scope_insert_lines = collections.defaultdict(dict)
         self.logger = logger
         self.black_list = []
+        self.unsupport_map = unsupport_map
 
     def transform(self):
         self.visit(self.root)
@@ -119,6 +120,23 @@ class BaseTransformer(ast.NodeTransformer):
 
         return self.scope_body_index(-2)
 
+    def insert_scope(self):
+        # if multiple line, insert into scope node only One time
+        for scope_node in self.scope_insert_lines:
+            for body in self.scope_insert_lines[scope_node]:
+                insert_lines = self.scope_insert_lines[scope_node][body]
+                insert_lines = sorted(
+                    insert_lines.items(), key=lambda x: x[0], reverse=True
+                )
+                for index, lines in insert_lines:
+                    log_debug(
+                        self.logger,
+                        "insert extra {} lines".format(len(lines)),
+                        self.file_name,
+                    )
+                    for line in lines[::-1]:
+                        getattr(scope_node, body).insert(index, line)
+
     def record_scope(self, scope_body_index, node_list):
         if not isinstance(node_list, list):
             node_list = [node_list]
@@ -144,23 +162,6 @@ class BaseTransformer(ast.NodeTransformer):
                 self.scope_insert_lines[scope_node][body].update({index: node_list})
         else:
             self.scope_insert_lines[scope_node][body] = {index: node_list}
-
-    def insert_scope(self):
-        # if multiple line, insert into scope node only One time
-        for scope_node in self.scope_insert_lines:
-            for body in self.scope_insert_lines[scope_node]:
-                insert_lines = self.scope_insert_lines[scope_node][body]
-                insert_lines = sorted(
-                    insert_lines.items(), key=lambda x: x[0], reverse=True
-                )
-                for index, lines in insert_lines:
-                    log_debug(
-                        self.logger,
-                        "insert extra {} lines".format(len(lines)),
-                        self.file_name,
-                    )
-                    for line in lines[::-1]:
-                        getattr(scope_node, body).insert(index, line)
 
     def insert_multi_node(self, node_list):
         if len(node_list) == 0:
@@ -231,6 +232,60 @@ class BaseTransformer(ast.NodeTransformer):
         else:
             return None
 
+    def visit_FunctionDef(self, node):
+        self.scope_stack.append(node)
+        super(BaseTransformer, self).generic_visit(node)
+        self.scope_stack.pop()
+        return node
+
+    def visit_While(self, node):
+        self.scope_stack.append(node)
+        super(BaseTransformer, self).generic_visit(node)
+        self.scope_stack.pop()
+        return node
+
+    def visit_If(self, node):
+        self.scope_stack.append(node)
+        super(BaseTransformer, self).generic_visit(node)
+        self.scope_stack.pop()
+        return node
+
+    def visit_Try(self, node):
+        self.scope_stack.append(node)
+        super(BaseTransformer, self).generic_visit(node)
+        self.scope_stack.pop()
+        return node
+
+    def visit_TryFinally(self, node):
+        self.scope_stack.append(node)
+        super(BaseTransformer, self).generic_visit(node)
+        self.scope_stack.pop()
+        return node
+
+    def visit_For(self, node):
+        self.scope_stack.append(node)
+        super(BaseTransformer, self).generic_visit(node)
+        self.scope_stack.pop()
+        return node
+
+    def visit_With(self, node):
+        self.scope_stack.append(node)
+        super(BaseTransformer, self).generic_visit(node)
+        self.scope_stack.pop()
+        return node
+
+    def visit_ExceptHandler(self, node):
+        self.scope_stack.append(node)
+        super(BaseTransformer, self).generic_visit(node)
+        self.scope_stack.pop()
+        return node
+
+    def visit_Module(self, node):
+        self.scope_stack.append(node)
+        super(BaseTransformer, self).generic_visit(node)
+        self.scope_stack.pop()
+        return node
+
 
 class BaseMatcher(object):
     def __init__(self, transformer, torch_api, api_mapping, logger):
@@ -257,7 +312,7 @@ class BaseMatcher(object):
         args_list = self.api_mapping.get("args_list") or []
         # more args, not match torch class method, indicate it is not torch Class
         if len(args) > len(args_list):
-            return "NonTorchClass"
+            return "misidentify"
 
         unsupport_args = self.api_mapping.get("unsupport_args") or []
 
@@ -284,7 +339,7 @@ class BaseMatcher(object):
                 return None
             # TODO: will open after all args have been add in args_list
             # if k not in args_list:
-            #    return 'NonTorchClass'
+            #    return 'misidentify'
             v = astor.to_source(node.value).replace("\n", "")
             new_kwargs[k] = v
 
@@ -405,28 +460,21 @@ class BaseMatcher(object):
 
     def get_paddle_nodes(self, args, kwargs):
         new_kwargs = self.parse_args_and_kwargs(args, kwargs)
-        if new_kwargs is not None:
+        if new_kwargs == "misidentify":
+            return "misidentify"
+        elif new_kwargs is not None:
             new_code = self.generate_code(new_kwargs)
-            if new_code:
+            if new_code == "misidentify":
+                return "misidentify"
+            elif new_code == "unchange":
+                return "unchange"
+            elif new_code:
                 return ast.parse(new_code).body
         return None
 
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
-        new_kwargs = self.parse_args_and_kwargs(args, kwargs)
-        # NonTorchClass means This API usage not match torch.Tensor/Module/Optimizer, so it is not a torch Class
-        if new_kwargs == "NonTorchClass":
-            return "NonTorchClass"
-        elif new_kwargs is not None:
-            new_code = self.generate_code(new_kwargs)
-            if new_code == "NonTorchClass":
-                return "NonTorchClass"
-            elif new_code == "unchange":
-                return "NonTorchClass"
-            elif new_code:
-                return ast.parse(new_code).body
-
-        return None
+        return self.get_paddle_nodes(args, kwargs)
 
     def get_paddle_class_attribute_nodes(self, node):
         return None
