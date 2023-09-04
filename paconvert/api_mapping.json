@@ -1992,7 +1992,16 @@
     ]
   },
   "torch.Tensor.resize_": {},
-  "torch.Tensor.resize_as_": {},
+  "torch.Tensor.resize_as_": {
+    "Matcher": "TensorResize_as_Matcher",
+    "args_list": [
+      "the_template",
+      "memory_format"
+    ],
+    "kwargs_change": {
+      "memory_format": ""
+    }
+  },
   "torch.Tensor.resolve_conj": {},
   "torch.Tensor.resolve_neg": {},
   "torch.Tensor.retain_grad": {
@@ -2030,7 +2039,12 @@
       "out"
     ]
   },
-  "torch.Tensor.round_": {},
+  "torch.Tensor.round_": {
+    "Matcher": "TensorRound_Matcher",
+    "args_list": [
+      "decimals"
+    ]
+  },
   "torch.Tensor.rsqrt": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.rsqrt"
@@ -2069,7 +2083,23 @@
       "src": "values"
     }
   },
-  "torch.Tensor.scatter_add": {},
+  "torch.Tensor.scatter_add": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.put_along_axis",
+    "args_list": [
+      "dim",
+      "index",
+      "src"
+    ],
+    "kwargs_change": {
+      "dim": "axis",
+      "index": "indices",
+      "src": "values"
+    },
+    "paddle_default_kwargs": {
+      "reduce": "'add'"
+    }
+  },
   "torch.Tensor.scatter_add_": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.put_along_axis_",
