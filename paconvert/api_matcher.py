@@ -682,11 +682,6 @@ class RandintMatcher(BaseMatcher):
         return code
 
 
-class ReduceOpMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        return self.get_paddle_api()
-
-
 class ScatterMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "async_op" in kwargs:

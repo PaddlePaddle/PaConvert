@@ -4037,7 +4037,7 @@
     }
   },
   "torch.distributed.ReduceOp": {
-    "Matcher": "ReduceOpMatcher",
+    "Matcher": "Func2Attribute",
     "paddle_api": "paddle.distributed.ReduceOp"
   },
   "torch.distributed.all_to_all": {
