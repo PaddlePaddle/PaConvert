@@ -16,8 +16,7 @@ set +x
 
 export FLAGS_set_to_1d=0
 
-cd /workspace/$2/PaConvert/
-PATH=$1
+cd /workspace/$1/PaConvert/
 
 echo "Insalling develop version paddle"
 python -m pip uninstall -y paddlepaddle

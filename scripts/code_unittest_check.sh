@@ -16,8 +16,7 @@ set +x
 
 export FLAGS_set_to_1d=0
 
-cd /workspace/$2/PaConvert/
-PATH=$1
+cd /workspace/$1/PaConvert/
 export LD_LIBRARY_PATH=/root/anaconda3/lib:$LD_LIBRARY_PATH
 
 echo "Insalling cpu version torch"
@@ -33,7 +32,7 @@ python -c "import paddle; print('paddle version information:' , paddle.__version
 echo "Checking code unit test by pytest ..."
 python -m pip install pytest-timeout
 
-pytest /workspace/$2/PaConvert/tests;check_error=$?
+pytest /workspace/$1/PaConvert/tests;check_error=$?
 
 echo '************************************************************************************'
 echo "______      _____                          _   "

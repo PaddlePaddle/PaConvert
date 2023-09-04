@@ -12,12 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+   isort:skip_file
+"""
+
 import ast
 import textwrap
 
 import astor
 
 from paconvert.base import BaseMatcher
+from paconvert.transformer.custom_op_transformer import CPP_EXTENSION_LIST  # noqa: F401
 from paconvert.utils import get_unique_name, process_reduce_and_size_average
 
 
@@ -686,7 +691,7 @@ class TensorTransposeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         # may be ndarray.transpose([list]) / ndarray.transpose(list)
         if len(kwargs) != 2:
-            return "NonTorchClass"
+            return "misidentify"
 
         API_TEMPLATE = textwrap.dedent(
             """
@@ -744,7 +749,7 @@ class TensorRenameMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         kwargs = self.parse_kwargs(kwargs)
         if "columns" in kwargs:
-            return "NonTorchClass"
+            return "misidentify"
 
         return None
 
@@ -755,10 +760,10 @@ class TensorRepeatMatcher(BaseMatcher):
         kwargs = self.parse_kwargs(kwargs)
 
         if len(args) == 0 and len(kwargs) == 0:
-            return "NonTorchClass"
+            return "misidentify"
 
         if "axis" in kwargs:
-            return "NonTorchClass"
+            return "misidentify"
 
         if len(args) == 1 and isinstance(args[0], (ast.List, ast.Tuple)):
             repeat_list = self.parse_args(args)[0]
@@ -1767,6 +1772,7 @@ class ColumnStackMatcher(BaseMatcher):
         return code
 
 
+# will implenment by aux_code
 class TensorIndexCopyMatcher(BaseMatcher):
     def generate_code(self, kwargs):
 
@@ -3087,7 +3093,7 @@ class SelectMatcher(BaseMatcher):
             kwargs["input"] = self.paddleClass
 
         if len(kwargs) != 3:
-            return "NonTorchClass"
+            return "misidentify"
 
         API_TEMPLATE = textwrap.dedent(
             """
@@ -4298,3 +4304,21 @@ class Func2Attribute(BaseMatcher):
         code = "{}".format(self.get_paddle_api())
 
         return code
+
+
+class SetUpMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        is_cpp_extension = False
+        if "cmdclass" in kwargs:
+            if "paddle.utils.cpp_extension.BuildExtension" in kwargs["cmdclass"]:
+                is_cpp_extension = True
+
+        if not is_cpp_extension:
+            return "misidentify"
+
+        kwargs.pop("cmdclass")
+        global CPP_EXTENSION_LIST
+        CPP_EXTENSION_LIST.append(kwargs["name"].strip('"'))
+        return ast.parse(
+            "paddle.utils.cpp_extension.setup({})".format(self.kwargs_to_str(kwargs))
+        )

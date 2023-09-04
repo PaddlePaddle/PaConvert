@@ -14,35 +14,19 @@
 #
 
 import os
-import sys
 
-limit = 80
+MODEL_LIST = []
 
-
-def _check_coverage_rate():
-    """
-    Run it every time and if coverage rate is too low,
-    it warns the user and updates the coverage data
-    """
-
-    coverage_rate = 100
-    with open("./temp.txt", "r") as f:
-        lines = f.readlines()
-        for line in lines:
-            line = line.strip()
-            if line.startswith("Coverage:"):
-                coverage_rate = int(line[10:-1])
-
-    os.system("rm temp.txt")
-
-    if coverage_rate > limit:
-        return False
-
-    return True
+def add_model(torch_file):
+    dir_name = os.path.dirname(__file__)
+    torch_file = os.path.join(dir_name, "torch_code/", torch_file)
+    global MODEL_LIST
+    MODEL_LIST.append(torch_file)
 
 
-if __name__ == "__main__":
-    flag = _check_coverage_rate()
-
-    if flag:
-        sys.exit(1)
+# this part is about model file list
+# add_model("model_torch_mobilenet.py")
+add_model("model_torch_resnet.py")
+# add_model("model_torch_vggnet.py")
+# add_model("model_torch_xception.py")
+add_model("model_torch_lenet.py")

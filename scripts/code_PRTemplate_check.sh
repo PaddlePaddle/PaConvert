@@ -16,13 +16,9 @@ set +x
 
 export FLAGS_set_to_1d=0
 
-AGILE_PULL_ID="AGILE_PULL_ID"
-GITHUB_API_TOKEN="GITHUB_API_TOKEN"
-
-cd /workspace/$2/PaConvert/ 
-PATH=$1
-AGILE_PULL_ID=$3
-GITHUB_API_TOKEN=$4
+cd /workspace/$1/PaConvert/ 
+AGILE_PULL_ID=$2
+GITHUB_API_TOKEN=$3
 
 echo "start PR template testing..."
 

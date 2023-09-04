@@ -15,21 +15,21 @@
 
 import os
 
-global_file_mapping_dict = {}
-dir_name = os.path.dirname(__file__)
-torch_file_path = os.path.join(dir_name, "torch_code/")
-paddle_file_path = os.path.join(dir_name, "paddle_code/")
-
+CODE_CONSISTENCY_MAPPING = {}
+cur_dir = os.path.dirname(__file__)
 
 def add_to_dict(torch_file, paddle_file):
-    global global_file_mapping_dict
-    torch_file = os.path.join(torch_file_path, torch_file)
-    paddle_file = os.path.join(paddle_file_path, paddle_file)
-    global_file_mapping_dict[torch_file] = paddle_file
+    if not os.path.isabs(torch_file):
+        torch_file = os.path.join(cur_dir, "torch_code/", torch_file)
+        
+    if not os.path.isabs(paddle_file):
+        paddle_file = os.path.join(cur_dir, "paddle_code/", paddle_file)
+
+    global CODE_CONSISTENCY_MAPPING
+    CODE_CONSISTENCY_MAPPING[torch_file] = paddle_file
 
 
 # this part is about api mapping file
-
 add_to_dict("api_torch_equal.py", "api_paddle_equall_all.py")
 add_to_dict("api_torch_randint.py", "api_paddle_randint.py")
 add_to_dict("api_torch_LongTensor.py", "api_paddle_Tensor2Long.py")
@@ -83,3 +83,8 @@ add_to_dict(
     "attribute_setattr.py",
     "attribute_setattr.py",
 )
+
+
+# this part is about custom op
+cur_dir = os.path.dirname(__file__)
+add_to_dict(os.path.join(cur_dir, "custom_op/torch_code/"), os.path.join(cur_dir, "custom_op/paddle_code/"))

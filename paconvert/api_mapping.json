@@ -1,4 +1,7 @@
 {
+  "setuptools.setup": {
+    "Matcher": "SetUpMatcher"
+  },
   "torch.BoolTensor": {
     "Matcher": "TensorMatcher",
     "paddle_api": "paddle.Tensor"
@@ -3715,11 +3718,10 @@
       "cache_enabled"
     ],
     "kwargs_change": {
-      "enabled": "enable"
-    },
-    "unsupport_args": [
-      "cache_enabled"
-    ]
+      "enabled": "enable",
+      "dtype": "dtype",
+      "cache_enabled": ""
+    }
   },
   "torch.cuda.current_device": {
     "Matcher": "GenericMatcher",
@@ -7430,9 +7432,6 @@
     "kwargs_change": {
       "module": "sublayer"
     }
-  },
-  "torch.nn.Module.apply": {
-    "Matcher": "UnchangeMatcher"
   },
   "torch.nn.Module.bfloat16": {},
   "torch.nn.Module.buffers": {
@@ -11318,6 +11317,33 @@
     "kwargs_change": {
       "name": ""
     }
+  },
+  "torch.utils.cpp_extension.load": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.utils.cpp_extension.load",
+    "args_list": [
+      "name",
+      "sources",
+      "extra_cflags",
+      "extra_cuda_cflags",
+      "extra_ldflags",
+      "extra_include_paths",
+      "build_directory",
+      "verbose",
+      "with_cuda",
+      "is_python_module",
+      "is_standalone",
+      "keep_intermediates"
+    ],
+    "kwargs_change": {
+      "extra_cflags": "extra_cxx_cflags",
+      "with_cuda": "",
+      "keep_intermediates": ""
+    },
+    "unsupport_args": [
+      "is_python_module",
+      "is_standalone"
+    ]
   },
   "torch.utils.data.BatchSampler": {
     "Matcher": "TorchUtilDataBatchSampler",
