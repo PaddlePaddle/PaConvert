@@ -5816,7 +5816,7 @@
     }
   },
   "torch.linalg.lu_factor_ex": {
-    "Matcher": "TripleAssignMatcher",
+    "Matcher": "LinalgLufactorexMatcher",
     "paddle_api": "paddle.linalg.lu",
     "args_list": [
       "A",

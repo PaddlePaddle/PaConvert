@@ -3492,6 +3492,47 @@ class TripleAssignMatcher(BaseMatcher):
             return code.strip("\n")
 
 
+class LinalgLufactorexMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs = self.set_paddle_default_kwargs(kwargs)
+        kwargs_change = {}
+        if "kwargs_change" in self.api_mapping:
+            kwargs_change = self.api_mapping["kwargs_change"]
+
+        for k in kwargs_change:
+            if k in kwargs:
+                if kwargs_change[k]:
+                    kwargs[kwargs_change[k]] = kwargs.pop(k)
+                else:
+                    kwargs.pop(k)
+
+        if "out" in kwargs:
+            out_v = kwargs.pop("out")
+            API_TEMPLATE = textwrap.dedent(
+                """
+                out1, out2, out3 = {}({})
+                out3 = paddle.to_tensor(out3.item(), dtype='int32')
+                paddle.assign(out1, {}[0]), paddle.assign(out2, {}[1]), paddle.assign(out3, {}[2])
+                """
+            )
+            code = API_TEMPLATE.format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v, out_v, out_v
+            )
+            return code.strip("\n")
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                out1, out2, out3 = {}({})
+                out3 = paddle.to_tensor(out3.item(), dtype='int32')
+                (out1, out2, out3)
+                """
+            )
+            code = API_TEMPLATE.format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs)
+            )
+            return code.strip("\n")
+
+
 class RoundMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" not in kwargs:

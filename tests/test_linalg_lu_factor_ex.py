@@ -25,7 +25,6 @@ def test_case_1():
         import torch
         x = torch.tensor([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]], dtype=torch.float64)
         LU, pivots, info = torch.linalg.lu_factor_ex(x)
-        info = info.item()
         """
     )
     obj.run(pytorch_code, ["LU", "pivots", "info"])
@@ -37,7 +36,6 @@ def test_case_2():
         import torch
         x = torch.tensor([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]], dtype=torch.float64)
         LU, pivots, info = torch.linalg.lu_factor_ex(A=x)
-        info = info.item()
         """
     )
     obj.run(pytorch_code, ["LU", "pivots", "info"])
@@ -49,7 +47,6 @@ def test_case_3():
         import torch
         x = torch.tensor([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]], dtype=torch.float64)
         LU, pivots, info = torch.linalg.lu_factor_ex(pivot=True, A=x)
-        info = info.item()
         """
     )
     obj.run(pytorch_code, ["LU", "pivots", "info"])
@@ -62,7 +59,6 @@ def test_case_4():
         x = torch.tensor([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]], dtype=torch.float64)
         out = (torch.tensor([], dtype=torch.float64), torch.tensor([], dtype=torch.int), torch.tensor([], dtype=torch.int))
         LU, pivots, info = torch.linalg.lu_factor_ex(x, pivot=True, check_errors=False, out=out)
-        info = info.item()
         """
     )
     obj.run(pytorch_code, ["LU", "pivots", "info"])
@@ -75,7 +71,6 @@ def test_case_5():
         x = torch.tensor([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]], dtype=torch.float64)
         out = (torch.tensor([], dtype=torch.float64), torch.tensor([], dtype=torch.int), torch.tensor([], dtype=torch.int))
         LU, pivots, info = torch.linalg.lu_factor_ex(A=x, pivot=True, check_errors=True, out=out)
-        info = info.item()
         """
     )
     obj.run(pytorch_code, ["LU", "pivots", "info"])
