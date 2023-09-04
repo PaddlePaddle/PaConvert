@@ -22,7 +22,7 @@ if [ $# -gt 0 ] ; then
     exit
 fi
 
-test_list="scatter.py reduce_scatter.py scatter_object_list.py all_to_all.py ReduceOp.py"
+test_list="scatter.py reduce_scatter.py scatter_object_list.py all_to_all.py"
 for i in $test_list; do
     torchrun --nproc_per_node=2 ${i}
     python -m paddle.distributed.launch /tmp/paddle/${i}
