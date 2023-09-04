@@ -5803,6 +5803,35 @@
       "A": "x"
     }
   },
+  "torch.linalg.lu_factor": {
+    "Matcher": "TupleAssignMatcher",
+    "paddle_api": "paddle.linalg.lu",
+    "args_list": [
+      "A",
+      "pivot",
+      "out"
+    ],
+    "kwargs_change": {
+      "A": "x"
+    }
+  },
+  "torch.linalg.lu_factor_ex": {
+    "Matcher": "TripleAssignMatcher",
+    "paddle_api": "paddle.linalg.lu",
+    "args_list": [
+      "A",
+      "pivot",
+      "check_errors",
+      "out"
+    ],
+    "kwargs_change": {
+      "A": "x",
+      "check_errors": ""
+    },
+    "paddle_default_kwargs": {
+      "get_infos": "True"
+    }
+  },
   "torch.linalg.matmul": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.matmul",
