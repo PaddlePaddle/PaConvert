@@ -4068,6 +4068,25 @@
       "other": "y"
     }
   },
+  "torch.distributed.ReduceOp": {
+    "Matcher": "Func2Attribute",
+    "paddle_api": "paddle.distributed.ReduceOp"
+  },
+  "torch.distributed.all_to_all": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.alltoall",
+    "args_list": [
+      "output_tensor_list",
+      "input_tensor_list",
+      "group",
+      "async_op"
+    ],
+    "kwargs_change": {
+      "output_tensor_list": "out_tensor_list",
+      "input_tensor_list": "in_tensor_list",
+      "async_op": ""
+    }
+  },
   "torch.distributed.broadcast": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.broadcast",
@@ -4080,6 +4099,10 @@
     "unsupport_args": [
       "async_op"
     ]
+  },
+  "torch.distributed.get_rank": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.get_rank"
   },
   "torch.distributed.init_process_group": {
     "Matcher": "GenericMatcher",
@@ -4119,6 +4142,21 @@
       "pg_options"
     ]
   },
+  "torch.distributed.reduce_scatter": {
+    "Matcher": "ScatterMatcher",
+    "paddle_api": "paddle.distributed.reduce_scatter",
+    "args_list": [
+      "output",
+      "input_list",
+      "op",
+      "group",
+      "async_op"
+    ],
+    "kwargs_change": {
+      "output": "tensor",
+      "input_list": "tensor_list"
+    }
+  },
   "torch.distributed.rpc.get_worker_info": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.rpc.get_worker_info",
@@ -4146,6 +4184,34 @@
   "torch.distributed.rpc.shutdown": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.rpc.shutdown"
+  },
+  "torch.distributed.scatter": {
+    "Matcher": "ScatterMatcher",
+    "paddle_api": "paddle.distributed.scatter",
+    "args_list": [
+      "tensor",
+      "scatter_list",
+      "src",
+      "group",
+      "async_op"
+    ],
+    "kwargs_change": {
+      "scatter_list": "tensor_list"
+    }
+  },
+  "torch.distributed.scatter_object_list": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.scatter_object_list",
+    "args_list": [
+      "scatter_object_output_list",
+      "scatter_object_input_list",
+      "src",
+      "group"
+    ],
+    "kwargs_change": {
+      "scatter_object_output_list": "out_object_list",
+      "scatter_object_input_list": "in_object_list"
+    }
   },
   "torch.distributions.Bernoulli": {
     "Matcher": "GenericMatcher",
