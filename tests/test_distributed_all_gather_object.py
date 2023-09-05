@@ -24,11 +24,12 @@ def test_case_1():
         """
         import torch
         import torch.distributed as dist
-        dist.init_process_group("nccl", init_method='tcp://127.0.0.1:23456', rank=0, world_size=3)
-        gather_objects = ["foo", 12, {1: 2}]
-        output = [None for _ in gather_objects]
-        dist.all_gather_object(output, gather_objects[dist.get_rank()])
-        result=True
+        if torch.cuda.is_available():
+            dist.init_process_group("nccl", init_method='tcp://127.0.0.1:23456', rank=0, world_size=3)
+            gather_objects = ["foo", 12, {1: 2}]
+            output = [None for _ in gather_objects]
+            dist.all_gather_object(output, gather_objects[dist.get_rank()])
+            result=True
         """
     )
     obj.run(pytorch_code, ["result"])
