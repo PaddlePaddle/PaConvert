@@ -48,8 +48,8 @@ def test_case_2():
     obj.run(pytorch_code, ["x1", "x2", "result"])
 
 
-# unknow reason cause the difference
-def _test_case_3():
+# result is difference when set full=True
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -60,7 +60,7 @@ def _test_case_3():
         result = torch.nn.functional.poisson_nll_loss(x1, x2, full=True)
         """
     )
-    obj.run(pytorch_code, ["x1", "x2", "result"])
+    obj.run(pytorch_code, ["x1", "x2", "result"], check_value=False)
 
 
 def test_case_4():
@@ -85,12 +85,13 @@ def test_case_5():
         b = [[1.3492, 0.1915, 2.9434, 1.4151]]
         x1 = torch.tensor(a)
         x2 = torch.tensor(b)
-        result = torch.nn.functional.poisson_nll_loss(x1, x2, reduction="sum")
+        result = torch.nn.functional.poisson_nll_loss(x1, x2, True, False, reduction="sum")
         """
     )
     obj.run(pytorch_code, ["x1", "x2", "result"])
 
 
+# result is difference when set full=True
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """
@@ -99,7 +100,21 @@ def test_case_6():
         b = [[1.3492, 0.1915, 2.9434, 1.4151]]
         x1 = torch.tensor(a)
         x2 = torch.tensor(b)
-        result = torch.nn.functional.poisson_nll_loss(x1, x2, reduction="none")
+        result = torch.nn.functional.poisson_nll_loss(input=x1, target=x2, log_input=False, full=True, reduction="sum")
+        """
+    )
+    obj.run(pytorch_code, ["x1", "x2", "result"], check_value=False)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [[1.3192, 1.9915, 1.9674, 0]]
+        b = [[1.3492, 0.1915, 2.9434, 1.4151]]
+        x1 = torch.tensor(a)
+        x2 = torch.tensor(b)
+        result = torch.nn.functional.poisson_nll_loss(target=x2, log_input=True, full=False, input=x1, reduction="none")
         """
     )
     obj.run(pytorch_code, ["x1", "x2", "result"])
@@ -119,7 +134,7 @@ def test_case_8():
     obj.run(pytorch_code, ["x1", "x2", "result"])
 
 
-def test_case_7():
+def test_case_9():
     pytorch_code = textwrap.dedent(
         """
         import torch
