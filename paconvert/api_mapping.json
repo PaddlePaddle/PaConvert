@@ -8802,11 +8802,9 @@
     "kwargs_change": {
       "logits": "x",
       "tau": "temperature",
+      "eps": "",
       "dim": "axis"
-    },
-    "unsupport_args": [
-      "eps"
-    ]
+    }
   },
   "torch.nn.functional.hardshrink": {
     "Matcher": "GenericMatcher",

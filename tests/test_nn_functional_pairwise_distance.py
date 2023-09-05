@@ -28,7 +28,7 @@ def test_case_1():
         b = [1.3492, 0.1915, 2.9434, 1.4151]
         x1 = torch.tensor(a)
         x2 = torch.tensor(b)
-        result = torch.nn.functional.pairwise_distance(x1, x2, p=2.0, eps=1e-6, keepdim=False)
+        result = torch.nn.functional.pairwise_distance(x1, x2, 2.0, 1e-6, False)
         """
     )
     obj.run(pytorch_code, ["x1", "x2", "result"])
@@ -42,7 +42,7 @@ def test_case_2():
         b = [1.3492, 0.1915, 2.9434, 1.4151]
         x1 = torch.tensor(a)
         x2 = torch.tensor(b)
-        result = torch.nn.functional.pairwise_distance(x1, x2, p=1.0, eps=1e-6, keepdim=False)
+        result = torch.nn.functional.pairwise_distance(x1=x1, x2=x2, p=1.0, eps=1e-6, keepdim=False)
         """
     )
     obj.run(pytorch_code, ["x1", "x2", "result"])
@@ -56,7 +56,7 @@ def test_case_3():
         b = [1.3492, 0.1915, 2.9434, 1.4151]
         x1 = torch.tensor(a)
         x2 = torch.tensor(b)
-        result = torch.nn.functional.pairwise_distance(x1, x2, p=2.0, eps=1e-2, keepdim=False)
+        result = torch.nn.functional.pairwise_distance(keepdim=False, x2=x2, eps=1e-2, p=2.0, x1=x1)
         """
     )
     obj.run(pytorch_code, ["x1", "x2", "result"])
@@ -70,7 +70,7 @@ def test_case_4():
         b = [1.3492, 0.1915, 2.9434, 1.4151]
         x1 = torch.tensor(a)
         x2 = torch.tensor(b)
-        result = torch.nn.functional.pairwise_distance(x1, x2, p=2.0, eps=1e-2, keepdim=True)
+        result = torch.nn.functional.pairwise_distance(x1, x2, p=2.0)
         """
     )
     obj.run(pytorch_code, ["x1", "x2", "result"])

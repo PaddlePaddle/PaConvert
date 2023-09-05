@@ -42,7 +42,7 @@ def test_case_2():
         b = [[1, -1, -1, 1]]
         x = torch.tensor(a)
         y = torch.tensor(b)
-        result = torch.nn.functional.hinge_embedding_loss(x, y, margin=0.5)
+        result = torch.nn.functional.hinge_embedding_loss(x, y, 0.5)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -56,7 +56,7 @@ def test_case_3():
         b = [[1, -1, -1, 1]]
         x = torch.tensor(a)
         y = torch.tensor(b)
-        result = torch.nn.functional.hinge_embedding_loss(x, y, reduction="sum")
+        result = torch.nn.functional.hinge_embedding_loss(input=x, target=y, margin=0.5, reduction="sum")
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -70,7 +70,7 @@ def test_case_4():
         b = [[1, -1, -1, 1]]
         x = torch.tensor(a)
         y = torch.tensor(b)
-        result = torch.nn.functional.hinge_embedding_loss(x, y, reduction="none")
+        result = torch.nn.functional.hinge_embedding_loss(margin=0.5, target=y, input=x, reduction="none")
         """
     )
     obj.run(pytorch_code, ["result"])

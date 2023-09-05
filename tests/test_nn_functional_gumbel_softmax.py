@@ -74,13 +74,29 @@ def test_case_5():
         import torch
         a = [[1.3192, 1.9915, 1.9674, 1.7151],[1.3492, 0.1915, 2.9434, 1.4151]]
         x = torch.tensor(a)
-        result = torch.nn.functional.gumbel_softmax(x, tau=2, hard=True, dim=0, eps=0.0001)
+        result = torch.nn.functional.gumbel_softmax(x, 2, True, 0.0001, 0)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="paddle does not enhance the eps parameter",
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.3192, 1.9915, 1.9674, 1.7151],[1.3492, 0.1915, 2.9434, 1.4151]])
+        result = torch.nn.functional.gumbel_softmax(logits=x, tau=2, hard=True, eps=0.0001, dim=0)
+        """
     )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.3192, 1.9915, 1.9674, 1.7151],[1.3492, 0.1915, 2.9434, 1.4151]])
+        result = torch.nn.functional.gumbel_softmax(hard=True, dim=0, eps=0.0001, tau=2, logits=x)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
