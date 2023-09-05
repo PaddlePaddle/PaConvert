@@ -53,7 +53,7 @@ def test_case_3():
         import torch
         x = torch.zeros(5, 3)
         t = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=torch.float)
-        index = torch.tensor([2, 2, 2])
+        index = torch.tensor([0, 1, 2])
         result = x.index_copy_(0, index, t)
         """
     )

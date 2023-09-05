@@ -16,23 +16,19 @@ set +x
 
 export FLAGS_set_to_1d=0
 DOWNLOAD_DATASET_IF="OFF"
-DEVELOP_IF="OFF"
-TORCH_PROJECT_PATH="torch_project"
 
-if [[ "$DEVELOP_IF" == "OFF" ]]; then
-    cd /workspace/$3/PaConvert/
-    PATH=$1
-    TORCH_PROJECT_PATH=$2
+cd /workspace/$1/PaConvert/
+TORCH_PROJECT_PATH=$2
 
-    echo "Insalling cpu version torch"
-    pip install torch --index-url https://download.pytorch.org/whl/cpu
-    python -c "import torch; print('torch version information:' ,torch.__version__)"
+echo "Insalling cpu version torch"
+python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+python -c "import torch; print('torch version information:' ,torch.__version__)"
 
-    echo "Insalling develop version paddle"
-    pip uninstall -y paddlepaddle
-    pip install --no-cache-dir paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
-    python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
-fi
+echo "Insalling develop version paddle"
+python -m pip uninstall -y paddlepaddle
+rm -rf /root/anaconda3/lib/python*/site-packages/paddlepaddle-0.0.0.dist-info/
+python -m pip install --no-cache-dir paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
+python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
 # obtain the model test set
 if [[ "$DOWNLOAD_DATASET_IF" == "ON" ]]; then
@@ -90,13 +86,10 @@ echo '**************************************************************************
 #check whether common API transfer is successful
 
 echo '**************************start converting common API case********************************'
-mkdir tests/code_library/code_case/temp_paddle_code
-python tools/consistency/api_code_consistency_check.py;check_error2=$?
-rm -rf tests/code_library/code_case/temp_paddle_code
+mkdir tests/code_library/code_case/convert_paddle_code
+python tools/consistency/consistency_check.py;check_error2=$?
 
 
-                                                 
-                                                 
 echo '************************************************************************************'
 echo "______      _____                          _   "
 echo "| ___ \    / ____|                        | |  "
@@ -107,15 +100,15 @@ echo "\\_|  \\__,_|\\_____\\___/|_| |_|\\_/ \\___|_|   \\__|"
 echo -e '\n************************************************************************************'
 
 if [ ${check_error1} != 0  ]; then  
-    echo "Your PR code test set translation check failed."
+    echo "Your PR code-test-set (more than 15W+ lines) convert check failed."
 else
-    echo "Your PR code test set translation check passed."
+    echo "Your PR code-test-set (more than 15W+ lines) convert check passed."
 fi
 
 if [ ${check_error2} != 0  ]; then  
-    echo "Your PR code common code translation check failed."
+    echo "Your PR code example convert check failed."
 else
-    echo "Your PR code common code translation check passed."
+    echo "Your PR code example convert check passed."
 fi
 echo -e '************************************************************************************'
 

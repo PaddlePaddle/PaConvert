@@ -1,0 +1,2 @@
+import GeometricKernelAttention
+from .geometric_kernel_attn_func import custom_op_module

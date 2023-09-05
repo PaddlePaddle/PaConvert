@@ -15,20 +15,13 @@
 set +x
 
 export FLAGS_set_to_1d=0
-DEVELOP_IF="OFF"
 
-if [[ "$DEVELOP_IF" == "OFF" ]]; then
-    cd /workspace/$2/PaConvert/
-    PATH=$1
-else
-    # use pre-commit 2.17
-    if ! [[ $(pre-commit --version) == *"2.17.0"* ]]; then
-        pip install pre-commit==2.17.0 1>nul
-    fi
-fi
+cd /workspace/$1/PaConvert/
 
 # pre-commit multi-thread running.
 echo "Checking code style by pre-commit ..."
+pip install pre-commit==2.17.0 1
+pre-commit install
 pre-commit run --all-files;check_error=$?
 echo '************************************************************************************'
 echo "______      _____                          _   "

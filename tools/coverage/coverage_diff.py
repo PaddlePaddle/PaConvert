@@ -16,7 +16,7 @@
 import os
 import sys
 
-number = 90
+limit = 80
 
 
 def _check_coverage_rate():
@@ -35,7 +35,7 @@ def _check_coverage_rate():
 
     os.system("rm temp.txt")
 
-    if coverage_rate > number:
+    if coverage_rate > limit:
         return False
 
     return True

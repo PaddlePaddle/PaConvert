@@ -13,8 +13,8 @@
 # limitations under the License.
 
 # install requirements library
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
+python -m pip install -r requirements.txt
+python -m pip install -r requirements-dev.txt
 pre-commit install
 
 # code_style_check
