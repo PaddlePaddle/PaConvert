@@ -15,21 +15,21 @@
 
 import os
 
-global_file_mapping_dict = {}
-dir_name = os.path.dirname(__file__)
-torch_file_path = os.path.join(dir_name, "torch_code/")
-paddle_file_path = os.path.join(dir_name, "paddle_code/")
-
+CODE_CONSISTENCY_MAPPING = {}
+cur_dir = os.path.dirname(__file__)
 
 def add_to_dict(torch_file, paddle_file):
-    global global_file_mapping_dict
-    torch_file = os.path.join(torch_file_path, torch_file)
-    paddle_file = os.path.join(paddle_file_path, paddle_file)
-    global_file_mapping_dict[torch_file] = paddle_file
+    if not os.path.isabs(torch_file):
+        torch_file = os.path.join(cur_dir, "torch_code/", torch_file)
+        
+    if not os.path.isabs(paddle_file):
+        paddle_file = os.path.join(cur_dir, "paddle_code/", paddle_file)
+
+    global CODE_CONSISTENCY_MAPPING
+    CODE_CONSISTENCY_MAPPING[torch_file] = paddle_file
 
 
 # this part is about api mapping file
-
 add_to_dict("api_torch_equal.py", "api_paddle_equall_all.py")
 add_to_dict("api_torch_randint.py", "api_paddle_randint.py")
 add_to_dict("api_torch_LongTensor.py", "api_paddle_Tensor2Long.py")
@@ -46,14 +46,14 @@ add_to_dict("api_torch_Tensor_expand.py", "api_paddle_Tensor_expand.py")
 add_to_dict("api_torch_FloatTensor.py", "api_paddle_Tensor2Float.py")
 add_to_dict("api_torch_Tensor_normal_.py", "api_paddle_6_Tensor_normal_.py")
 add_to_dict("api_torch_nn_BatchNorm1d.py", "api_paddle_nn_BatchNorm1D.py")
-add_to_dict("api_torch_Tensor_uniform_.py", "api_torch_Tensor_uniform_.py")
+add_to_dict("api_torch_Tensor_uniform_.py", "api_paddle_Tensor_uniform_.py")
 add_to_dict("api_torch_sigmoid.py", "api_paddle_nn_functional_sigmoid.py")
 add_to_dict("api_torch_nn_BCEWithLogitsLoss.py", "api_paddle_nn_BCEWithLogitsLoss.py")
 add_to_dict(
     "api_torch_nn_functional_interpolate.py", "api_paddle_nn_functional_interpolate.py"
 )
 add_to_dict("api_torch_new_empty.py", "api_paddle_6_new_empty.py")
-add_to_dict("api_torch_permute.py", "api_torch_transpose.py")
+add_to_dict("api_torch_permute.py", "api_paddle_transpose.py")
 add_to_dict("api_torch_tensor.py", "api_paddle_to_tensor.py")
 add_to_dict("api_torch_Size.py", "api_padddle_6_Size.py")
 add_to_dict("api_torch_nn_InstanceNorm3d.py", "api_paddle_nn_InstanceNorm3D.py")
@@ -63,6 +63,8 @@ add_to_dict("api_torch_cuda_is_available.py", "api_paddle_6_cuda_is_available.py
 add_to_dict("api_torch_nn_BatchNorm2d.py", "api_paddle_nn_BatchNorm2D.py")
 add_to_dict("api_torch_IntTensor.py", "api_paddle_Tensor2Int.py")
 add_to_dict("api_torch_data_BatchSampler.py", "api_paddle_io_BatchSampler.py")
+add_to_dict("non_torch_class_method.py", "non_paddle_class_method.py")
+add_to_dict("class_method_static_call.py", "class_method_static_call.py")
 
 
 # this part is about attribute mapping file
@@ -71,3 +73,18 @@ add_to_dict(
     "attribute_torch_Tensor_requires_grad.py",
     "attribute_paddle_Tensor_stop_gradient.py",
 )
+
+add_to_dict(
+    "attribute_visit_name.py",
+    "attribute_visit_name.py",
+)
+
+add_to_dict(
+    "attribute_setattr.py",
+    "attribute_setattr.py",
+)
+
+
+# this part is about custom op
+cur_dir = os.path.dirname(__file__)
+add_to_dict(os.path.join(cur_dir, "custom_op/torch_code/"), os.path.join(cur_dir, "custom_op/paddle_code/"))

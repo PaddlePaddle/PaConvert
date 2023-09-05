@@ -16,50 +16,69 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.backends.cudnn.deterministic")
+obj = APIBase("torch.nn.Dropout1d")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.backends.cudnn.deterministic = True
+        import torch.nn as nn
+        x = torch.randn(20, 16)
+        model = nn.Dropout1d(0.4)
+        result = model(x)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="Now can only delete ast.Expr"
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.backends.cudnn.deterministic = False
+        import torch.nn as nn
+        x = torch.randn(20, 16)
+        model = nn.Dropout1d(0.4, False)
+        result = model(x)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="Now can only delete ast.Expr"
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        print(torch.backends.cudnn.deterministic)
+        import torch.nn as nn
+        x = torch.randn(20, 16)
+        model = nn.Dropout1d(p=0.4)
+        result = model(x)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="Now can only delete ast.Expr"
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.backends.cudnn.deterministic
+        import torch.nn as nn
+        x = torch.randn(20, 16)
+        model = nn.Dropout1d(p=0.4, inplace=False)
+        result = model(x)
         """
     )
-    obj.run(pytorch_code, expect_paddle_code="import paddle\n")
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.randn(20, 16)
+        model = nn.Dropout1d(p=0.4, inplace=True)
+        result = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

@@ -24,27 +24,30 @@ class ImportTransformer(BaseTransformer):
     Record import information
     """
 
-    def __init__(self, root, file, imports_map, logger):
-        super(ImportTransformer, self).__init__(root, file, imports_map, logger)
+    def __init__(self, root, file, imports_map, logger, unsupport_map=None):
+        super(ImportTransformer, self).__init__(
+            root, file, imports_map, logger, unsupport_map
+        )
         self.imports_map[self.file]["other_packages"] = []
         self.import_paddle = False
+        self.import_setuptools = False
 
     def visit_Import(self, node):
         """
         1. remove import torch.nn
         2. remove import torch.nn as nn
-        3. record which paddle
+        3. record whether to import paddle
         """
         new_node_names = []
         for alias_node in node.names:
-            belong_torch = False
-            for torch_package in TORCH_PACKAGE_LIST:
-                if (
-                    "%s." % torch_package in alias_node.name
-                    or torch_package == alias_node.name
-                ):
-                    belong_torch = True
-                    self.import_paddle = True
+            remove = False
+            for pkg_name in TORCH_PACKAGE_LIST + ["setuptools"]:
+                if f"{pkg_name}." in alias_node.name or pkg_name == alias_node.name:
+                    if pkg_name == "setuptools":
+                        self.import_setuptools = True
+                    else:
+                        remove = True
+                        self.import_paddle = True
                     if alias_node.asname:
                         log_info(
                             self.logger,
@@ -62,9 +65,9 @@ class ImportTransformer(BaseTransformer):
                             self.file_name,
                             node.lineno,
                         )
-                        self.imports_map[self.file][torch_package] = torch_package
+                        self.imports_map[self.file][alias_node.name] = alias_node.name
 
-            if not belong_torch:
+            if not remove:
                 if alias_node.asname:
                     self.imports_map[self.file]["other_packages"].append(
                         alias_node.asname
@@ -88,9 +91,12 @@ class ImportTransformer(BaseTransformer):
         """
         # from . import Net (node.module is None)
         if node.module:
-            for torch_package in TORCH_PACKAGE_LIST:
-                if "%s." % torch_package in node.module or torch_package == node.module:
-                    self.import_paddle = True
+            for pkg_name in TORCH_PACKAGE_LIST + ["setuptools"]:
+                if f"{pkg_name}." in node.module or pkg_name == node.module:
+                    if pkg_name == "setuptools":
+                        self.import_setuptools = True
+                    else:
+                        self.import_paddle = True
                     for alias_node in node.names:
                         if alias_node.asname:
                             log_info(
@@ -173,15 +179,38 @@ class ImportTransformer(BaseTransformer):
 
     def visit_Name(self, node):
         """
-        change torch api to full api according to import info.
+        change torch api name to full api according to import info.
         eg.
-            Module -> torch.nn.Module
+            from torch.nn import Module
+            from torch import Tensor
+            from torch import float32
+
+            1. class A(Module):
+            2. def func() -> Tensor:
+            3. def func(x: Tensor):
+            4. def func(dtype=float32):
+            5. Tensor(2, 3)
+            6. isinstance(x, Tensor)
+            7. setattr(Tensor, 'add', func)
         """
-        torch_api = self.get_full_api_from_node(node)
-        if torch_api:
-            if torch_api in ALIAS_MAPPING:
-                torch_api = ALIAS_MAPPING[torch_api]
-            return ast.parse(torch_api).body[0].value
+        is_torch = False
+        if isinstance(
+            self.parent_node,
+            (ast.Call, ast.ClassDef, ast.FunctionDef, ast.arg, ast.arguments),
+        ):
+            is_torch = True
+        elif isinstance(self.parent_node, ast.Call) and isinstance(
+            self.parent_node.func, ast.Name
+        ):
+            if self.parent_node.func.id in ["isinstance", "setattr"]:
+                is_torch = True
+
+        if is_torch:
+            torch_api = self.get_full_api_from_node(node)
+            if torch_api:
+                if torch_api in ALIAS_MAPPING:
+                    torch_api = ALIAS_MAPPING[torch_api]
+                return ast.parse(torch_api).body[0].value
         return node
 
     def visit_Module(self, node):
@@ -193,3 +222,11 @@ class ImportTransformer(BaseTransformer):
         if self.import_paddle:
             log_info(self.logger, "add 'import paddle' in first line", self.file_name)
             self.record_scope((self.root, "body", 0), ast.parse("import paddle").body)
+
+        if self.import_setuptools:
+            log_info(
+                self.logger, "add 'import setuptools' in second line", self.file_name
+            )
+            self.record_scope(
+                (self.root, "body", 1), ast.parse("import setuptools").body
+            )

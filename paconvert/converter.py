@@ -30,6 +30,10 @@ from paconvert.transformer.import_transformer import ImportTransformer
 from paconvert.transformer.tensor_requires_grad_transformer import (
     TensorRequiresGradTransformer,
 )
+from paconvert.transformer.custom_op_transformer import (
+    PreCustomOpTransformer,
+    CustomOpTransformer,
+)
 from paconvert.utils import AuxFileHelper, get_unique_name, log_info
 
 
@@ -189,7 +193,9 @@ class Converter:
 
     def transfer_file(self, old_path, new_path):
         if old_path.endswith(".py"):
-            log_info(self.logger, "Start convert {} --> {}".format(old_path, new_path))
+            log_info(
+                self.logger, "Start convert file: {} --> {}".format(old_path, new_path)
+            )
             with open(old_path, "r", encoding="UTF-8") as f:
                 code = f.read()
                 root = ast.parse(code)
@@ -204,7 +210,9 @@ class Converter:
                 self.logger, "Finish convert {} --> {}\n".format(old_path, new_path)
             )
         elif old_path.endswith("requirements.txt"):
-            log_info(self.logger, "Start convert {} --> {}".format(old_path, new_path))
+            log_info(
+                self.logger, "Start convert file: {} --> {}".format(old_path, new_path)
+            )
             with open(old_path, "r", encoding="UTF-8") as old_file:
                 code = old_file.read()
             code = code.replace("torch", "paddlepaddle-gpu")
@@ -221,27 +229,20 @@ class Converter:
             shutil.copyfile(old_path, new_path)
 
     def transfer_node(self, root, file):
-        # import ast transformer
-        import_trans = ImportTransformer(root, file, self.imports_map, self.logger)
-        import_trans.transform()
-        # basic api ast transformer
-        if import_trans.import_paddle:
-            # attribute requires_grad transformer
-            attribute_requires_grad_trans = TensorRequiresGradTransformer(
-                root, file, self.imports_map, self.logger
+        transformers = [
+            ImportTransformer,  # import ast transformer
+            TensorRequiresGradTransformer,  # attribute requires_grad transformer
+            BasicTransformer,  # most of api transformer
+            PreCustomOpTransformer,  # pre process for C++ custom op
+            CustomOpTransformer,  # C++ custom op transformer
+        ]
+        for transformer in transformers:
+            trans = transformer(
+                root, file, self.imports_map, self.logger, self.unsupport_map
             )
-            attribute_requires_grad_trans.transform()
-            # api transformer
-            api_trans = BasicTransformer(
-                root,
-                file,
-                self.imports_map,
-                self.logger,
-                self.unsupport_map,
-            )
-            api_trans.transform()
-            self.torch_api_count += api_trans.torch_api_count
-            self.success_api_count += api_trans.success_api_count
+            trans.transform()
+            self.torch_api_count += trans.torch_api_count
+            self.success_api_count += trans.success_api_count
 
     def mark_unsupport(self, code):
         lines = code.split("\n")
@@ -257,7 +258,11 @@ class Converter:
             if in_str:
                 continue
 
-            if "Class Method:" in line or "Tensor Attribute:" in line:
+            if (
+                "Class Method:" in line
+                or "Class Attribute:" in line
+                or "C++ Custom OP" in line
+            ):
                 mark_next_line = True
                 continue
             else:
