@@ -4068,6 +4068,10 @@
       "other": "y"
     }
   },
+  "torch.distributed.ReduceOp": {
+    "Matcher": "Func2Attribute",
+    "paddle_api": "paddle.distributed.ReduceOp"
+  },
   "torch.distributed.all_gather_object": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.all_gather_object",
@@ -4076,10 +4080,6 @@
       "obj",
       "group"
     ]
-  },
-  "torch.distributed.ReduceOp": {
-    "Matcher": "Func2Attribute",
-    "paddle_api": "paddle.distributed.ReduceOp"
   },
   "torch.distributed.all_to_all": {
     "Matcher": "GenericMatcher",
