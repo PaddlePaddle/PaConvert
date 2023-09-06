@@ -24,7 +24,6 @@ import shutil
 
 import astor
 
-from paconvert.base import TORCH_PACKAGE_LIST
 from paconvert.transformer.basic_transformer import BasicTransformer
 from paconvert.transformer.import_transformer import ImportTransformer
 from paconvert.transformer.tensor_requires_grad_transformer import (
@@ -91,10 +90,9 @@ class Converter:
             unsupport_map = sorted(
                 self.unsupport_map.items(), key=lambda x: x[1], reverse=True
             )
-            import pandas
-
-            df = pandas.DataFrame.from_dict(dict(unsupport_map), orient="index")
-            df.to_excel("unsupport_map.xlsx")
+            # import pandas
+            # df = pandas.DataFrame.from_dict(dict(unsupport_map), orient="index")
+            # df.to_excel("unsupport_map.xlsx")
             log_info(self.logger, "\n===========================================")
             log_info(self.logger, "Not Support API List:")
             log_info(self.logger, "===========================================")
@@ -202,7 +200,7 @@ class Converter:
 
             self.transfer_node(root, old_path)
             code = astor.to_source(root)
-            code = self.mark_unsupport(code)
+            code = self.mark_unsupport(code, old_path)
 
             with open(new_path, "w", encoding="UTF-8") as file:
                 file.write(code)
@@ -244,7 +242,7 @@ class Converter:
             self.torch_api_count += trans.torch_api_count
             self.success_api_count += trans.success_api_count
 
-    def mark_unsupport(self, code):
+    def mark_unsupport(self, code, file):
         lines = code.split("\n")
         mark_next_line = False
         in_str = False
@@ -273,7 +271,7 @@ class Converter:
                     continue
 
             # model_torch.npy
-            for torch_package in TORCH_PACKAGE_LIST:
+            for torch_package in self.imports_map[file]["torch_packages"]:
                 if tmp_line.startswith("%s." % torch_package):
                     lines[i] = ">>>" + line
                     break

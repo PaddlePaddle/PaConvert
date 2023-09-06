@@ -189,7 +189,7 @@ pip3 install torch torchvision torchaudio --index-url https://download.pytorch.o
 
 #### 其它库
 ```bash
-pip install -r requirements-dev.txt
+pip install -r tests/requirements.txt
 ```
 
 ### 代码审查

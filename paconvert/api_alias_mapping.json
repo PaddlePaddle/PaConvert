@@ -34,6 +34,7 @@
   "torch.nn.modules.GroupNorm": "torch.nn.GroupNorm",
   "torch.nn.modules.activation.ReLU": "torch.nn.ReLU",
   "torch.nn.modules.conv.Conv2d": "torch.nn.Conv2d",
+  "torch.nn.modules.distance.CosineSimilarity": "torch.nn.modules.CosineSimilarity",
   "torch.nn.modules.module.Module": "torch.nn.Module",
   "torch.nn.parameter.Parameter": "torch.nn.Parameter",
   "torch.random.get_rng_state": "torch.get_rng_state",

@@ -29,7 +29,6 @@ python -m pip install --no-cache-dir paddlepaddle==0.0.0 -f https://www.paddlepa
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
 echo '*******************************start modeltest test*********************************'
-mkdir tests/code_library/model_case/convert_paddle_code
 python tools/modeltest/modeltest_check.py;check_error1=$?
 
 
