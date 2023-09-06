@@ -45,7 +45,7 @@ y = paddle.transpose(x=x, perm=perm_0)
 
 ```bash
 python3.8 -m pip install -U paconvert
-paconvert -in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "DEBUG"] [--run_check 1]
+paconvert --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "DEBUG"] [--run_check 1]
 ```
 
 2. 使用源码安装
