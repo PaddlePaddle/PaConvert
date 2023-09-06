@@ -14,3 +14,19 @@
 # 
 
 python ../../paconvert/main.py --in_dir . --out_dir /tmp/paddle
+
+export CUDA_VISIBLE_DEVICES=0,1
+
+if [ $# -gt 0 ] ; then
+    item=$1
+    torchrun --nproc_per_node=2 ${item}
+    python -m paddle.distributed.launch /tmp/paddle/${item}
+    exit
+fi
+
+test_list="scatter reduce_scatter scatter_object_list all_to_all"
+for i in $test_list; do
+    test_file="${i}.py"
+    torchrun --nproc_per_node=2 ${test_file}
+    python -m paddle.distributed.launch /tmp/paddle/${test_file}
+done
