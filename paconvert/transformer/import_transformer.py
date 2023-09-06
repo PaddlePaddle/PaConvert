@@ -43,10 +43,10 @@ class ImportTransformer(BaseTransformer):
             remove = False
             for pkg_name in TORCH_PACKAGE_LIST + ["setuptools"]:
                 if f"{pkg_name}." in alias_node.name or pkg_name == alias_node.name:
+                    remove = True
                     if pkg_name == "setuptools":
                         self.import_setuptools = True
                     else:
-                        remove = True
                         self.import_paddle = True
                     if alias_node.asname:
                         log_info(
@@ -67,6 +67,7 @@ class ImportTransformer(BaseTransformer):
                         )
                         self.imports_map[self.file][alias_node.name] = alias_node.name
 
+            # other_packages
             if not remove:
                 if alias_node.asname:
                     self.imports_map[self.file]["other_packages"].append(
@@ -89,64 +90,69 @@ class ImportTransformer(BaseTransformer):
         1. remove from torch import nn
         2. remove from torch import nn.functional as F
         """
-        # from . import Net (node.module is None)
-        if node.module:
-            for pkg_name in TORCH_PACKAGE_LIST + ["setuptools"]:
-                if f"{pkg_name}." in node.module or pkg_name == node.module:
-                    if pkg_name == "setuptools":
-                        self.import_setuptools = True
-                    else:
-                        self.import_paddle = True
-                    for alias_node in node.names:
-                        if alias_node.asname:
-                            log_info(
-                                self.logger,
-                                "remove 'from {} import {} as {}' ".format(
-                                    node.module, alias_node.name, alias_node.asname
-                                ),
-                                self.file_name,
-                                node.lineno,
-                            )
-                            self.imports_map[self.file][alias_node.asname] = ".".join(
-                                [node.module, alias_node.name]
-                            )
-                        else:
-                            log_info(
-                                self.logger,
-                                "remove 'from {} import {}' ".format(
-                                    node.module, alias_node.name
-                                ),
-                                self.file_name,
-                                node.lineno,
-                            )
-                            self.imports_map[self.file][alias_node.name] = ".".join(
-                                [node.module, alias_node.name]
-                            )
-                    return None
-
-        # import from this directory
+        # import from current project
         if node.level > 0:
-            import_path = os.path.dirname(self.file)
-            i = 1
-            while i < node.level:
-                import_path += "../"
-                i += 1
-
-            # from . import Net (node.module is None)
+            # from ..datasets import xxx
+            # from ... import xxx (node.module is None)
+            """
+            import_path = os.path.dirname(self.file) + "../" * (node.level-1)
             if node.module:
-                import_path = import_path + "/" + node.module.replace(".", "/")
+                import_path = os.path.join(import_path, node.module.replace(".", "/"))
+
             if os.path.exists(import_path) or os.path.exists(import_path + ".py"):
                 return node
+            """
+            return node
         else:
+            # from yolov3.datasets import xxx
+            # from datasets import xxx
             dir_name = os.path.dirname(self.file)
             # the case of dir_name = 'E:/' will happen with windows
             while len(dir_name) > 1 and dir_name[-2] != ":":
-                import_path = dir_name + "/" + node.module.replace(".", "/")
+                import_path = os.path.join(dir_name, node.module.replace(".", "/"))
+
                 if os.path.exists(import_path) or os.path.exists(import_path + ".py"):
                     return node
+
                 dir_name = os.path.dirname(dir_name)
 
-        # import from site-packages, third_party module, just add to others
+        # from torch import nn
+        # from torch.nn import functional as F
+        # from datasets import xxx
+        for pkg_name in TORCH_PACKAGE_LIST + ["setuptools"]:
+            if f"{pkg_name}." in node.module or pkg_name == node.module:
+                if pkg_name == "setuptools":
+                    self.import_setuptools = True
+                else:
+                    self.import_paddle = True
+                for alias_node in node.names:
+                    if alias_node.asname:
+                        log_info(
+                            self.logger,
+                            "remove 'from {} import {} as {}' ".format(
+                                node.module, alias_node.name, alias_node.asname
+                            ),
+                            self.file_name,
+                            node.lineno,
+                        )
+                        self.imports_map[self.file][alias_node.asname] = ".".join(
+                            [node.module, alias_node.name]
+                        )
+                    else:
+                        log_info(
+                            self.logger,
+                            "remove 'from {} import {}' ".format(
+                                node.module, alias_node.name
+                            ),
+                            self.file_name,
+                            node.lineno,
+                        )
+                        self.imports_map[self.file][alias_node.name] = ".".join(
+                            [node.module, alias_node.name]
+                        )
+                return None
+
+        # other_packages
         for alias_node in node.names:
             if alias_node.asname:
                 self.imports_map[self.file]["other_packages"].append(alias_node.asname)
@@ -156,7 +162,6 @@ class ImportTransformer(BaseTransformer):
                     self.imports_map[self.file]["other_packages"].append(
                         alias_node.name
                     )
-
         return node
 
     def visit_Attribute(self, node):
