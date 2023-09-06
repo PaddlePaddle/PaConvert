@@ -694,6 +694,18 @@ class ScatterMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class SparseSoftmaxMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = ""
+        if "dtype" in kwargs:
+            dtype_v = kwargs.pop("dtype")
+            code = code + "{}=paddle.sparse.cast({}, value_dtype={})\n".format(
+                kwargs["input"], kwargs["input"], dtype_v
+            )
+        code = code + GenericMatcher.generate_code(self, kwargs)
+        return code
+
+
 class TensorTransposeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         # may be ndarray.transpose([list]) / ndarray.transpose(list)
