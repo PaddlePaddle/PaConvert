@@ -34,7 +34,7 @@ def convert_pytorch_code_to_paddle():
     for pytorch_dir in MODEL_LIST:
         convert_paddle_dir = pytorch_dir.replace("torch_code", "convert_paddle_code")
         exit_code = os.system(
-            f"python paconvert/main.py --in_dir {pytorch_dir} --out_dir {convert_paddle_dir}"
+            f"python paconvert/main.py --in_dir {pytorch_dir} --out_dir {convert_paddle_dir}  --log_level 'DEBUG' "
         )
         if exit_code != 0:
             print(f"The {pytorch_dir} convert fail!")

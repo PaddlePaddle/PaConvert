@@ -29,6 +29,7 @@ class ImportTransformer(BaseTransformer):
             root, file, imports_map, logger, unsupport_map
         )
         self.imports_map[self.file]["other_packages"] = []
+        self.imports_map[self.file]["torch_packages"] = []
         self.import_paddle = False
         self.import_setuptools = False
 
@@ -40,10 +41,29 @@ class ImportTransformer(BaseTransformer):
         """
         new_node_names = []
         for alias_node in node.names:
-            remove = False
+            has_done = False
+
+            # import from current project
+            dir_name = os.path.dirname(self.file)
+            while (
+                len(dir_name) > 1 and dir_name[-2] != ":"
+            ):  # the case of dir_name = 'E:/' will happen with windows
+                import_path = os.path.join(dir_name, alias_node.name.replace(".", "/"))
+
+                if os.path.exists(import_path) or os.path.exists(import_path + ".py"):
+                    self.insert_other_packages(self.imports_map, alias_node)
+                    new_node_names.append(alias_node)
+                    has_done = True
+                    break
+
+                dir_name = os.path.dirname(dir_name)
+            if has_done:
+                continue
+
+            # import from torch
             for pkg_name in TORCH_PACKAGE_LIST + ["setuptools"]:
                 if f"{pkg_name}." in alias_node.name or pkg_name == alias_node.name:
-                    remove = True
+                    self.imports_map[self.file]["torch_packages"].append(pkg_name)
                     if pkg_name == "setuptools":
                         self.import_setuptools = True
                     else:
@@ -66,18 +86,14 @@ class ImportTransformer(BaseTransformer):
                             node.lineno,
                         )
                         self.imports_map[self.file][alias_node.name] = alias_node.name
+                    has_done = True
+                    break
+            if has_done:
+                continue
 
             # other_packages
-            if not remove:
-                if alias_node.asname:
-                    self.imports_map[self.file]["other_packages"].append(
-                        alias_node.asname
-                    )
-                else:
-                    self.imports_map[self.file]["other_packages"].append(
-                        alias_node.name
-                    )
-                new_node_names.append(alias_node)
+            self.insert_other_packages(self.imports_map, alias_node)
+            new_node_names.append(alias_node)
 
         if len(new_node_names) > 0:
             node.names = new_node_names
@@ -102,25 +118,27 @@ class ImportTransformer(BaseTransformer):
             if os.path.exists(import_path) or os.path.exists(import_path + ".py"):
                 return node
             """
+            self.insert_other_packages(self.imports_map, node)
             return node
         else:
             # from yolov3.datasets import xxx
             # from datasets import xxx
             dir_name = os.path.dirname(self.file)
-            # the case of dir_name = 'E:/' will happen with windows
-            while len(dir_name) > 1 and dir_name[-2] != ":":
+            while (
+                len(dir_name) > 1 and dir_name[-2] != ":"
+            ):  # the case of dir_name = 'E:/' will happen with windows
                 import_path = os.path.join(dir_name, node.module.replace(".", "/"))
 
                 if os.path.exists(import_path) or os.path.exists(import_path + ".py"):
+                    self.insert_other_packages(self.imports_map, node)
                     return node
 
                 dir_name = os.path.dirname(dir_name)
 
-        # from torch import nn
-        # from torch.nn import functional as F
-        # from datasets import xxx
+        # import from torch
         for pkg_name in TORCH_PACKAGE_LIST + ["setuptools"]:
             if f"{pkg_name}." in node.module or pkg_name == node.module:
+                self.imports_map[self.file]["torch_packages"].append(pkg_name)
                 if pkg_name == "setuptools":
                     self.import_setuptools = True
                 else:
@@ -153,16 +171,27 @@ class ImportTransformer(BaseTransformer):
                 return None
 
         # other_packages
-        for alias_node in node.names:
-            if alias_node.asname:
-                self.imports_map[self.file]["other_packages"].append(alias_node.asname)
-            else:
-                # from data_loader.modules import *
-                if alias_node.name != "*":
-                    self.imports_map[self.file]["other_packages"].append(
-                        alias_node.name
-                    )
+        self.insert_other_packages(self.imports_map, node)
         return node
+
+    def insert_other_packages(self, imports_map, node):
+        if isinstance(node, ast.ImportFrom):
+            for alias_node in node.names:
+                if alias_node.asname:
+                    self.imports_map[self.file]["other_packages"].append(
+                        alias_node.asname
+                    )
+                else:
+                    # from data_loader.modules import *
+                    if alias_node.name != "*":
+                        self.imports_map[self.file]["other_packages"].append(
+                            alias_node.name
+                        )
+        elif isinstance(node, ast.alias):
+            if node.asname:
+                self.imports_map[self.file]["other_packages"].append(node.asname)
+            else:
+                self.imports_map[self.file]["other_packages"].append(node.name)
 
     def visit_Attribute(self, node):
         """

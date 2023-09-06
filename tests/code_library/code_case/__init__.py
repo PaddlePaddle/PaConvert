@@ -65,6 +65,7 @@ add_to_dict("api_torch_IntTensor.py", "api_paddle_Tensor2Int.py")
 add_to_dict("api_torch_data_BatchSampler.py", "api_paddle_io_BatchSampler.py")
 add_to_dict("non_torch_class_method.py", "non_paddle_class_method.py")
 add_to_dict("class_method_static_call.py", "class_method_static_call.py")
+add_to_dict("import_analysis.py", "import_analysis.py")
 
 
 # this part is about attribute mapping file

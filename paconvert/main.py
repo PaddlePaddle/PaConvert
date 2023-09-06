@@ -83,7 +83,6 @@ def main():
         sys.exit(0)
 
     if args.separate_convert:
-        # change_torch_package_list()
         project_num_100 = 0
         project_num_95 = 0
         project_num_90 = 0
@@ -121,10 +120,9 @@ def main():
                 project_num_90 / project_num,
             )
         )
-        import pandas
-
-        df = pandas.DataFrame.from_dict(dict(convert_rate_map), orient="index")
-        df.to_excel("convert_rate_map.xlsx")
+        # import pandas
+        # df = pandas.DataFrame.from_dict(dict(convert_rate_map), orient="index")
+        # df.to_excel("convert_rate_map.xlsx")
         sys.exit(0)
 
     assert args.in_dir is not None, "User must specify --in_dir "

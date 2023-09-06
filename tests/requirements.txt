@@ -4,3 +4,4 @@ pytest-cov
 regex
 coverage
 diff-cover
+pandas

@@ -24,7 +24,6 @@ from paconvert.base import (
     API_MAPPING,
     ATTRIBUTE_MAPPING,
     ALIAS_MAPPING,
-    TORCH_PACKAGE_LIST,
     BaseTransformer,
 )
 from paconvert.utils import log_debug, log_info
@@ -40,11 +39,6 @@ def iter_fields(node):
             yield field, getattr(node, field)
         except AttributeError:
             pass
-
-
-def change_torch_package_list():
-    global TORCH_PACKAGE_LIST
-    TORCH_PACKAGE_LIST = ["torch"]
 
 
 class BasicTransformer(BaseTransformer):
@@ -90,7 +84,7 @@ class BasicTransformer(BaseTransformer):
 
         # Torch Package Attribute, include torch third_party
         #   such as torch.Tensor/torch.nn.Module/torch.add...
-        for torch_package in TORCH_PACKAGE_LIST:
+        for torch_package in self.imports_map[self.file]["torch_packages"]:
             if full_attr.startswith("%s." % torch_package):
                 torch_api = full_attr
 
@@ -210,7 +204,7 @@ class BasicTransformer(BaseTransformer):
                         )
                         return self.trans_class_attribute(node, torch_class_api)
 
-        # NonTorchClass
+        # Others
         return node
 
     def trans_class_attribute(self, node, torch_api):
@@ -355,111 +349,109 @@ class BasicTransformer(BaseTransformer):
         # Use Postorder traversal
         super(BasicTransformer, self).generic_visit(node)
 
+        full_attr = self.get_full_attr(node.func)
+
         # Torch Package Call, include torch third_party
         #   such as : torch.add(x, y) / torch.add(torch.abs(x), y)
-        full_attr = self.get_full_attr(node.func)
-        torch_api = None
-        if "setuptools.setup" == full_attr:
-            torch_api = full_attr
-
-        for torch_package in TORCH_PACKAGE_LIST:
-            if full_attr.startswith("%s." % torch_package):
+        for torch_package in self.imports_map[self.file]["torch_packages"]:
+            if (
+                full_attr.startswith("%s." % torch_package)
+                or "setuptools.setup" == full_attr
+            ):
                 torch_api = full_attr
+                self.torch_api_count += 1
+                log_debug(
+                    self.logger,
+                    "Start convert {} to Paddle --> ".format(torch_api),
+                    self.file_name,
+                    node.lineno,
+                )
 
-        if torch_api:
-            self.torch_api_count += 1
-            log_debug(
-                self.logger,
-                "Start convert {} to Paddle --> ".format(torch_api),
-                self.file_name,
-                node.lineno,
-            )
-
-            support = True
-            matcher = self.get_api_mather(torch_api)
-            if not matcher:
-                support = False
-            # such as torch.max(*args, **kwargs)
-            if isinstance(node.args, ast.Starred):
-                support = False
-            for k_node in node.keywords:
-                if k_node.arg is None:
+                support = True
+                matcher = self.get_api_mather(torch_api)
+                if not matcher:
                     support = False
+                # such as torch.max(*args, **kwargs)
+                if isinstance(node.args, ast.Starred):
+                    support = False
+                for k_node in node.keywords:
+                    if k_node.arg is None:
+                        support = False
 
-            if support:
-                node_list = matcher.get_paddle_nodes(node.args, node.keywords)
-                if node_list == "delete":
-                    if isinstance(self.parent_node, ast.Expr):
+                if support:
+                    node_list = matcher.get_paddle_nodes(node.args, node.keywords)
+                    if node_list == "delete":
+                        if isinstance(self.parent_node, ast.Expr):
+                            self.success_api_count += 1
+                            log_debug(
+                                self.logger,
+                                "[[Delete]] Just remove {} ".format(torch_api),
+                                self.file_name,
+                                node.lineno,
+                            )
+                            return None
+                    elif node_list == "unchange":
                         self.success_api_count += 1
                         log_debug(
                             self.logger,
-                            "[[Delete]] Just remove {} ".format(torch_api),
+                            "[Success] Convert {} to Paddle, just remain the same".format(
+                                torch_api
+                            ),
                             self.file_name,
                             node.lineno,
                         )
-                        return None
-                elif node_list == "unchange":
-                    self.success_api_count += 1
-                    log_debug(
-                        self.logger,
-                        "[Success] Convert {} to Paddle, just remain the same".format(
-                            torch_api
-                        ),
-                        self.file_name,
-                        node.lineno,
-                    )
-                    return node
-                elif node_list == "misidentify":
-                    # This API usage indicate that is is not a Pytorch API
-                    self.torch_api_count -= 1
-                    log_debug(
-                        self.logger,
-                        " Misidentify {}".format(torch_api),
-                        self.file_name,
-                        node.lineno,
-                    )
-                    return node
-                elif node_list:
-                    new_node = node_list[-1]
-                    # ast.Expr, which contain ast.Call or ast.Name
-                    if isinstance(new_node, ast.Expr):
-                        new_node = new_node.value
-
-                    if isinstance(
-                        new_node,
-                        (
-                            ast.Call,
-                            ast.Name,
-                            ast.Constant,
-                            ast.Attribute,
-                            ast.Compare,
-                            ast.BinOp,
-                            ast.UnaryOp,
-                            ast.Tuple,
-                            ast.Assert,
-                            ast.Subscript,
-                        ),
-                    ):
-                        self.insert_multi_node(node_list[0:-1])
-                        self.success_api_count += 1
+                        return node
+                    elif node_list == "misidentify":
+                        # This API usage indicate that is is not a Pytorch API
+                        self.torch_api_count -= 1
                         log_debug(
                             self.logger,
-                            "[Success] Convert {} to Paddle ".format(torch_api),
+                            " Misidentify {}".format(torch_api),
                             self.file_name,
                             node.lineno,
                         )
-                        return new_node
+                        return node
+                    elif node_list:
+                        new_node = node_list[-1]
+                        # ast.Expr, which contain ast.Call or ast.Name
+                        if isinstance(new_node, ast.Expr):
+                            new_node = new_node.value
 
-            self.unsupport_map[torch_api] += 1
-            log_info(
-                self.logger,
-                "[Not Support] convert {} to Paddle is not supported currently".format(
-                    torch_api
-                ),
-                self.file_name,
-                node.lineno,
-            )
-            return node
+                        if isinstance(
+                            new_node,
+                            (
+                                ast.Call,
+                                ast.Name,
+                                ast.Constant,
+                                ast.Attribute,
+                                ast.Compare,
+                                ast.BinOp,
+                                ast.UnaryOp,
+                                ast.Tuple,
+                                ast.Assert,
+                                ast.Subscript,
+                            ),
+                        ):
+                            self.insert_multi_node(node_list[0:-1])
+                            self.success_api_count += 1
+                            log_debug(
+                                self.logger,
+                                "[Success] Convert {} to Paddle ".format(torch_api),
+                                self.file_name,
+                                node.lineno,
+                            )
+                            return new_node
+
+                self.unsupport_map[torch_api] += 1
+                log_info(
+                    self.logger,
+                    "[Not Support] convert {} to Paddle is not supported currently".format(
+                        torch_api
+                    ),
+                    self.file_name,
+                    node.lineno,
+                )
+                return node
 
         # Torch Class call
         #   such as : x.add(y) / x.abs().add / sgd.step() / model.to(torch.device('cuda'))
@@ -523,7 +515,7 @@ class BasicTransformer(BaseTransformer):
                         )
                         return self.trans_class_method(node, torch_class_api)
 
-        # NonTorchClass
+        # Others
         return node
 
     def trans_class_method(self, node, torch_api):

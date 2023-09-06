@@ -19,7 +19,7 @@ format:
 .PHONY: install
 install:
 	pip install -r requirements.txt
-	pip install -r requirements-dev.txt
+	pip install -r tests/requirements.txt
 	pre-commit install
 
 # # # # # # # # # # # # # # # Lint Block # # # # # # # # # # # # # # # 

@@ -13,7 +13,7 @@
 # limitations under the License.
 # 
 
-python ../../paconvert/main.py --in_dir . --out_dir /tmp/paddle
+python ../../paconvert/main.py --in_dir . --out_dir /tmp/paddle --log_level "DEBUG"
 
 export CUDA_VISIBLE_DEVICES=0,1
 
