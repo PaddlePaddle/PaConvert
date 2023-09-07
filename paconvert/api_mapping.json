@@ -10175,6 +10175,22 @@
   "torch.profiler.profile.start": {},
   "torch.profiler.profile.step": {},
   "torch.profiler.profile.stop": {},
+  "torch.profiler.schedule": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.profiler.make_scheduler",
+    "args_list": [
+      "wait",
+      "warmup",
+      "active",
+      "repeat",
+      "skip_first"
+    ],
+    "kwargs_change": {
+      "wait": "closed",
+      "warmup": "ready",
+      "active": "record"
+    }
+  },
   "torch.qr": {
     "Matcher": "QrMatcher",
     "paddle_api": "paddle.linalg.qr",
@@ -10706,6 +10722,19 @@
     "kwargs_change": {
       "sparse": "x",
       "dense": "y"
+    }
+  },
+  "torch.sparse.softmax": {
+    "Matcher": "SparseSoftmaxMatcher",
+    "paddle_api": "paddle.sparse.nn.functional.softmax",
+    "args_list": [
+      "input",
+      "dim",
+      "dtype"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axis"
     }
   },
   "torch.sparse.sum": {
