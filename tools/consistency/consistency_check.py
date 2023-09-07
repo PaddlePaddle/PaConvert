@@ -29,7 +29,7 @@ def convert_pytorch_code_to_paddle():
     for pytorch_dir, _ in CODE_CONSISTENCY_MAPPING.items():
         convert_paddle_dir = pytorch_dir.replace("torch_code", "convert_paddle_code")
         exit_code = os.system(
-            f"python3.8 paconvert/main.py --in_dir {pytorch_dir} --out_dir {convert_paddle_dir} --log_level 'DEBUG' "
+            f"python3.8 paconvert/main.py --in_dir {pytorch_dir} --out_dir {convert_paddle_dir}"
         )
         if exit_code != 0:
             print(f"The {pytorch_dir} convert fail!")
