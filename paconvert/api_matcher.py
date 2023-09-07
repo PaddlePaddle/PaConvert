@@ -699,9 +699,11 @@ class SparseSoftmaxMatcher(BaseMatcher):
         code = ""
         if "dtype" in kwargs:
             dtype_v = kwargs.pop("dtype")
+            tmp_val = get_unique_name("tmp_val")
             code = code + "{}=paddle.sparse.cast({}, value_dtype={})\n".format(
-                kwargs["input"], kwargs["input"], dtype_v
+                tmp_val, kwargs["input"], dtype_v
             )
+            kwargs["input"] = tmp_val
         code = code + GenericMatcher.generate_code(self, kwargs)
         return code
 
