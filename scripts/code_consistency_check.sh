@@ -81,7 +81,7 @@ fi
 
 # Check the grammar mechanism of the test set and other issues
 echo '**************************start converting test case********************************'
-python paconvert/main.py --in_dir $TORCH_PROJECT_PATH --log_level "DEBUG" --show_unsupport 1;check_error1=$?
+python paconvert/main.py --in_dir $TORCH_PROJECT_PATH --show_unsupport 1;check_error1=$?
 echo '************************************************************************************'
 #check whether common API transfer is successful
 
