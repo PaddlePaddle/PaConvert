@@ -4072,6 +4072,15 @@
     "Matcher": "Func2Attribute",
     "paddle_api": "paddle.distributed.ReduceOp"
   },
+  "torch.distributed.all_gather_object": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.all_gather_object",
+    "args_list": [
+      "object_list",
+      "obj",
+      "group"
+    ]
+  },
   "torch.distributed.all_to_all": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.alltoall",
