@@ -230,13 +230,20 @@ class ImportTransformer(BaseTransformer):
         is_torch = False
         if isinstance(
             self.parent_node,
-            (ast.Call, ast.ClassDef, ast.FunctionDef, ast.arg, ast.arguments),
+            (
+                ast.ClassDef,  # 1. ast.ClassDef(bases=[ast.Name])
+                ast.FunctionDef,  # 2. ast.FunctionDef(returns=ast.Name)
+                ast.arg,  # 3. ast.arg(args='x', annotation=ast.Name)
+                ast.arguments,  # 4. ast.arguments(args=[ast.arg(args='dtype'], defaults=[ast.Name])
+            ),
         ):
             is_torch = True
         elif isinstance(self.parent_node, ast.Call) and isinstance(
             self.parent_node.func, ast.Name
         ):
-            if self.parent_node.func.id in ["isinstance", "setattr"]:
+            if self.parent_node.func == node:  # 5
+                is_torch = True
+            elif self.parent_node.func.id in ["isinstance", "setattr"]:  # 6/7
                 is_torch = True
 
         if is_torch:
