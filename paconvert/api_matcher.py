@@ -874,7 +874,7 @@ class TensorCdoubleMatcher(BaseMatcher):
 
 class TensorTypeAsMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "{}.astype(dtype={}.dtype)".format(self.paddleClass, kwargs["tensor"])
+        code = f"{self.paddleClass}.astype(dtype={kwargs['tensor']}.dtype)"
         return code
 
 
@@ -1037,30 +1037,6 @@ class CudnnIsAvailableMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         code = "bool(paddle.device.get_cudnn_version())"
         return code
-
-
-class FunctionInterpolateMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        kwargs_change = {}
-        if "kwargs_change" in self.api_mapping:
-            kwargs_change = self.api_mapping["kwargs_change"]
-        new_kwargs = {}
-        for k in list(kwargs.keys()):
-            if k in kwargs_change:
-                if kwargs_change[k]:
-                    new_kwargs[kwargs_change[k]] = kwargs.pop(k)
-            else:
-                # TODO: should handle these args specially
-                if k in ["recompute_scale_factor", "antialias"]:
-                    kwargs.pop(k)
-                    continue
-
-                # TODO: kwargs_change -> kwargs_mapping
-                # not mapping in kwargs in there is not in kwargs_mapping
-                new_kwargs[k] = kwargs[k]
-
-        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
-        return code.strip("\n")
 
 
 class BatchNormMatcher(BaseMatcher):
@@ -1365,8 +1341,7 @@ class TensorTypeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if len(kwargs) == 0:
             return None
-        dtype = kwargs["dtype"]
-        code = f"{self.paddleClass}.astype({dtype})"
+        code = f"{self.paddleClass}.astype({kwargs['dtype']})"
         return code
 
 

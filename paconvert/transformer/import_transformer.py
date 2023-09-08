@@ -63,10 +63,10 @@ class ImportTransformer(BaseTransformer):
             # import from torch
             for pkg_name in TORCH_PACKAGE_LIST + ["setuptools"]:
                 if f"{pkg_name}." in alias_node.name or pkg_name == alias_node.name:
-                    self.imports_map[self.file]["torch_packages"].append(pkg_name)
                     if pkg_name == "setuptools":
                         self.import_setuptools = True
                     else:
+                        self.imports_map[self.file]["torch_packages"].append(pkg_name)
                         self.import_paddle = True
                     if alias_node.asname:
                         log_info(
@@ -138,10 +138,10 @@ class ImportTransformer(BaseTransformer):
         # import from torch
         for pkg_name in TORCH_PACKAGE_LIST + ["setuptools"]:
             if f"{pkg_name}." in node.module or pkg_name == node.module:
-                self.imports_map[self.file]["torch_packages"].append(pkg_name)
                 if pkg_name == "setuptools":
                     self.import_setuptools = True
                 else:
+                    self.imports_map[self.file]["torch_packages"].append(pkg_name)
                     self.import_paddle = True
                 for alias_node in node.names:
                     if alias_node.asname:

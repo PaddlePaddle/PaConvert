@@ -6839,7 +6839,7 @@
     }
   },
   "torch.nn.Bilinear": {
-    "Matcher": "LayerMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Bilinear",
     "args_list": [
       "in1_features",
@@ -6850,6 +6850,7 @@
       "dtype"
     ],
     "kwargs_change": {
+      "bias": "bias_attr",
       "device": "",
       "dtype": ""
     }
@@ -6894,7 +6895,7 @@
     ]
   },
   "torch.nn.Conv1d": {
-    "Matcher": "LayerMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Conv1D",
     "args_list": [
       "in_channels",
@@ -6908,10 +6909,15 @@
       "padding_mode",
       "device",
       "dtype"
-    ]
+    ],
+    "kwargs_change": {
+      "bias": "bias_attr",
+      "device": "",
+      "dtype": ""
+    }
   },
   "torch.nn.Conv2d": {
-    "Matcher": "LayerMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Conv2D",
     "args_list": [
       "in_channels",
@@ -6925,10 +6931,15 @@
       "padding_mode",
       "device",
       "dtype"
-    ]
+    ],
+    "kwargs_change": {
+      "bias": "bias_attr",
+      "device": "",
+      "dtype": ""
+    }
   },
   "torch.nn.Conv3d": {
-    "Matcher": "LayerMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Conv3D",
     "args_list": [
       "in_channels",
@@ -6942,10 +6953,15 @@
       "padding_mode",
       "device",
       "dtype"
-    ]
+    ],
+    "kwargs_change": {
+      "bias": "bias_attr",
+      "device": "",
+      "dtype": ""
+    }
   },
   "torch.nn.ConvTranspose1d": {
-    "Matcher": "LayerMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Conv1DTranspose",
     "args_list": [
       "in_channels",
@@ -6963,10 +6979,15 @@
     ],
     "unsupport_args": [
       "padding_mode"
-    ]
+    ],
+    "kwargs_change": {
+      "bias": "bias_attr",
+      "device": "",
+      "dtype": ""
+    }
   },
   "torch.nn.ConvTranspose2d": {
-    "Matcher": "LayerMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Conv2DTranspose",
     "args_list": [
       "in_channels",
@@ -6984,10 +7005,15 @@
     ],
     "unsupport_args": [
       "padding_mode"
-    ]
+    ],
+    "kwargs_change": {
+      "bias": "bias_attr",
+      "device": "",
+      "dtype": ""
+    }
   },
   "torch.nn.ConvTranspose3d": {
-    "Matcher": "LayerMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Conv3DTranspose",
     "args_list": [
       "in_channels",
@@ -7005,7 +7031,12 @@
     ],
     "unsupport_args": [
       "padding_mode"
-    ]
+    ],
+    "kwargs_change": {
+      "bias": "bias_attr",
+      "device": "",
+      "dtype": ""
+    }
   },
   "torch.nn.CosineEmbeddingLoss": {
     "Matcher": "SizeAverageMatcher",
@@ -7420,7 +7451,7 @@
     ]
   },
   "torch.nn.Linear": {
-    "Matcher": "LayerMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Linear",
     "args_list": [
       "in_features",
@@ -7428,7 +7459,12 @@
       "bias",
       "device",
       "dtype"
-    ]
+    ],
+    "kwargs_change": {
+      "bias": "bias_attr",
+      "device": "",
+      "dtype": ""
+    }
   },
   "torch.nn.LocalResponseNorm": {
     "Matcher": "GenericMatcher",
@@ -8907,7 +8943,7 @@
     ]
   },
   "torch.nn.functional.interpolate": {
-    "Matcher": "FunctionInterpolateMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.interpolate",
     "args_list": [
       "input",
@@ -8920,7 +8956,11 @@
     ],
     "kwargs_change": {
       "input": "x"
-    }
+    },
+    "unsupport_args": [
+      "recompute_scale_factor",
+      "antialias"
+    ]
   },
   "torch.nn.functional.kl_div": {
     "Matcher": "FunctionalKLDivMatcher",
