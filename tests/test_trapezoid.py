@@ -76,3 +76,27 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_alias_case_1():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        y = torch.tensor([1, 1, 1, 0, 1]).type(torch.float32)
+        x = torch.tensor([1, 2, 3, 0, 1]).type(torch.float32)
+        result = torch.trapz(y, dx=2, dim=-1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_alias_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        y = torch.tensor([1, 1, 1, 0, 1]).type(torch.float32)
+        x = torch.tensor([1, 2, 3, 0, 1]).type(torch.float32)
+        result = torch.trapz(y=y, x=x, dim=-1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

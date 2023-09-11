@@ -108,17 +108,6 @@ class BasicTransformer(BaseTransformer):
                                 node.lineno,
                             )
                             return None
-                    elif paddle_api == "unchange":
-                        self.success_api_count += 1
-                        log_debug(
-                            self.logger,
-                            "[Success] Convert {} to Paddle, just remain the same".format(
-                                torch_api
-                            ),
-                            self.file_name,
-                            node.lineno,
-                        )
-                        return node
                     elif paddle_api == "misidentify":
                         # This API usage indicate that is is not a Pytorch API
                         self.torch_api_count -= 1
@@ -190,19 +179,20 @@ class BasicTransformer(BaseTransformer):
                 ".".join(["torch.distributions.Distribution", attr_list[-1]])
             )
 
-            if torch_class_apis:
-                for torch_class_api in torch_class_apis:
-                    if torch_class_api in ATTRIBUTE_MAPPING:
-                        self.torch_api_count += 1
-                        log_debug(
-                            self.logger,
-                            "Start convert Class Attribute: {} to Paddle ".format(
-                                torch_class_api
-                            ),
-                            self.file_name,
-                            node.lineno,
-                        )
-                        return self.trans_class_attribute(node, torch_class_api)
+            for torch_class_api in torch_class_apis:
+                if torch_class_api in ALIAS_MAPPING:
+                    torch_class_api = ALIAS_MAPPING[torch_class_api]
+                if torch_class_api in ATTRIBUTE_MAPPING:
+                    self.torch_api_count += 1
+                    log_debug(
+                        self.logger,
+                        "Start convert Class Attribute: {} to Paddle ".format(
+                            torch_class_api
+                        ),
+                        self.file_name,
+                        node.lineno,
+                    )
+                    return self.trans_class_attribute(node, torch_class_api)
 
         # Others
         return node
@@ -390,17 +380,6 @@ class BasicTransformer(BaseTransformer):
                                 node.lineno,
                             )
                             return None
-                    elif node_list == "unchange":
-                        self.success_api_count += 1
-                        log_debug(
-                            self.logger,
-                            "[Success] Convert {} to Paddle, just remain the same".format(
-                                torch_api
-                            ),
-                            self.file_name,
-                            node.lineno,
-                        )
-                        return node
                     elif node_list == "misidentify":
                         # This API usage indicate that is is not a Pytorch API
                         self.torch_api_count -= 1
@@ -501,19 +480,20 @@ class BasicTransformer(BaseTransformer):
                 ".".join(["torch.autograd.profiler.profile", attr_list[-1]])
             )
 
-            if torch_class_apis:
-                for torch_class_api in torch_class_apis:
-                    if torch_class_api in API_MAPPING:
-                        self.torch_api_count += 1
-                        log_debug(
-                            self.logger,
-                            "Start convert Class Method: {} to Paddle --> ".format(
-                                torch_class_api
-                            ),
-                            self.file_name,
-                            node.lineno,
-                        )
-                        return self.trans_class_method(node, torch_class_api)
+            for torch_class_api in torch_class_apis:
+                if torch_class_api in ALIAS_MAPPING:
+                    torch_class_api = ALIAS_MAPPING[torch_class_api]
+                if torch_class_api in API_MAPPING:
+                    self.torch_api_count += 1
+                    log_debug(
+                        self.logger,
+                        "Start convert Class Method: {} to Paddle --> ".format(
+                            torch_class_api
+                        ),
+                        self.file_name,
+                        node.lineno,
+                    )
+                    return self.trans_class_method(node, torch_class_api)
 
         # Others
         return node

@@ -49,7 +49,9 @@ def test_case_3():
         result = src.unique(sorted=True, return_inverse=True, return_counts=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="Paddle not support 'sorted' "
+    )
 
 
 def test_case_4():
@@ -60,7 +62,9 @@ def test_case_4():
         result = src.unique(sorted=True, return_inverse=True, return_counts=True, dim=0)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="Paddle not support 'sorted' "
+    )
 
 
 def test_case_5():
@@ -71,4 +75,6 @@ def test_case_5():
         result = src.unique(True, True, dim=0)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="Paddle not support 'sorted' "
+    )

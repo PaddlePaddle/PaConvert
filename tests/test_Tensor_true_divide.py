@@ -23,8 +23,34 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
+        a = torch.Tensor([[1., 2.], [3., 4.]])
         result = a.true_divide(a)
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.Tensor([[1., 2.], [3., 4.]])
+        b = torch.Tensor([[5., 6.], [7., 8.]])
+        result = a.true_divide(other=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# paddle not support type promote
+# torch.true_divide(int, int) return float, but paddle return int
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4, 9, 8]])
+        b = torch.tensor([2, 3, 4])
+        result = a.true_divide(other=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_dtype=False)
