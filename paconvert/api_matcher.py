@@ -1292,30 +1292,6 @@ class TensorRequiresGradMatcher(BaseMatcher):
         return ast.parse(code.strip("\n")).body
 
 
-class FunctionalMaxPool2DMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "dilation" in kwargs:
-            if kwargs["dilation"] != "(1)":
-                return None
-            else:
-                kwargs.pop("dilation")
-
-        if "kwargs_change" in self.api_mapping:
-            kwargs_change = self.api_mapping["kwargs_change"]
-            for key in list(kwargs_change.keys()):
-                if key in kwargs:
-                    kwargs[kwargs_change[key]] = kwargs[key]
-                    kwargs.pop(key)
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle.nn.functional.max_pool2d({})
-            """
-        )
-        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
-        return code
-
-
 class LoadMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         unsupported_params = [
