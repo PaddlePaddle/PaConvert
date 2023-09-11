@@ -9093,16 +9093,16 @@
       "ceil_mode",
       "return_indices"
     ],
-    "unsupport_args": [
-      "dilation"
-    ],
     "kwargs_change": {
       "input": "x",
       "return_indices": "return_mask"
-    }
+    },
+    "unsupport_args": [
+      "dilation"
+    ]
   },
   "torch.nn.functional.max_pool2d": {
-    "Matcher": "FunctionalMaxPool2DMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.max_pool2d",
     "args_list": [
       "input",
@@ -9116,7 +9116,30 @@
     "kwargs_change": {
       "input": "x",
       "return_indices": "return_mask"
-    }
+    },
+    "unsupport_args": [
+      "dilation"
+    ]
+  },
+  "torch.nn.functional.max_pool3d": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.max_pool3d",
+    "args_list": [
+      "input",
+      "kernel_size",
+      "stride",
+      "padding",
+      "dilation",
+      "ceil_mode",
+      "return_indices"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "return_indices": "return_mask"
+    },
+    "unsupport_args": [
+      "dilation"
+    ]
   },
   "torch.nn.functional.max_unpool1d": {
     "Matcher": "UnpoolMatcher",

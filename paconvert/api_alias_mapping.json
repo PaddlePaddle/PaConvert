@@ -80,6 +80,7 @@
   "torch.random.seed": "torch.seed",
   "torch.random.set_rng_state": "torch.set_rng_state",
   "torch.torch.Tensor": "torch.Tensor",
+  "torch.torch.finfo": "torch.finfo",
   "torch.utils.data._utils.collate.default_collate": "torch.utils.data.default_collate",
   "torch.utils.data.dataloader.DataLoader": "torch.utils.data.DataLoader",
   "torch.utils.data.dataloader.default_collate": "torch.utils.data.default_collate",
