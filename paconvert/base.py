@@ -298,16 +298,6 @@ class BaseMatcher(object):
     def get_aux_dir(self):
         return os.path.dirname(AuxFileHelper().fileName)
 
-    def get_paddle_api(self):
-        if self.paddle_api:
-            return self.paddle_api
-        if "paddle_api" in self.api_mapping:
-            return self.api_mapping["paddle_api"]
-        return None
-
-    def set_paddle_api(self, paddle_api):
-        self.paddle_api = paddle_api
-
     def parse_args_and_kwargs(self, args, kwargs):
         args_list = self.api_mapping.get("args_list") or []
         # more args, not match torch class method, indicate it is not torch Class
@@ -454,6 +444,21 @@ class BaseMatcher(object):
             )
             self.transformer.insert_multi_node(ast.parse(code).body)
 
+    def set_paddle_api(self, paddle_api):
+        self.paddle_api = paddle_api
+
+    def get_paddle_api(self):
+        if self.paddle_api:
+            return self.paddle_api
+        if "paddle_api" in self.api_mapping:
+            return self.api_mapping["paddle_api"]
+        return None
+
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+        code = "{}".format(self.paddle_api)
+        return ast.parse(code).body
+
     @staticmethod
     def generate_code(self, kwargs):
         return None
@@ -475,6 +480,3 @@ class BaseMatcher(object):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
         return self.get_paddle_nodes(args, kwargs)
-
-    def get_paddle_class_attribute_nodes(self, node):
-        return None

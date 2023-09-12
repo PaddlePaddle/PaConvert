@@ -28,10 +28,10 @@ def test_case_1():
                         [-0.3371, -1.0584,  0.5296],
                         [ 0.3550, -0.4022,  1.5569],
                         [ 0.2445, -0.0158,  1.1414]])
-        result = x.svd()[1]
+        result = x.svd()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
@@ -43,10 +43,10 @@ def test_case_2():
                         [-0.3371, -1.0584,  0.5296],
                         [ 0.3550, -0.4022,  1.5569],
                         [ 0.2445, -0.0158,  1.1414]])
-        result = x.svd(some=False)[1]
+        result = x.svd(False)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
@@ -58,10 +58,12 @@ def test_case_3():
                         [-0.3371, -1.0584,  0.5296],
                         [ 0.3550, -0.4022,  1.5569],
                         [ 0.2445, -0.0158,  1.1414]])
-        result = x.svd(compute_uv=False)[1]
+        result = x.svd(compute_uv=False)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="compute_uv is not supported"
+    )
 
 
 def test_case_4():
@@ -73,7 +75,49 @@ def test_case_4():
                         [-0.3371, -1.0584,  0.5296],
                         [ 0.3550, -0.4022,  1.5569],
                         [ 0.2445, -0.0158,  1.1414]])
-        result = x.svd(some=False, compute_uv=False)[1]
+        result = x.svd(False, False)
+        """
+    )
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="compute_uv is not supported"
+    )
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        x = torch.tensor(
+            [
+                [0.2364, -0.7752, 0.6372],
+                [1.7201, 0.7394, -0.0504],
+                [-0.3371, -1.0584, 0.5296],
+                [0.3550, -0.4022, 1.5569],
+                [0.2445, -0.0158, 1.1414],
+            ]
+        )
+        result = x.svd(some=False)[1]
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        x = torch.tensor(
+            [
+                [0.2364, -0.7752, 0.6372],
+                [1.7201, 0.7394, -0.0504],
+                [-0.3371, -1.0584, 0.5296],
+                [0.3550, -0.4022, 1.5569],
+                [0.2445, -0.0158, 1.1414],
+            ]
+        )
+        result = x.svd(True)[1]
         """
     )
     obj.run(pytorch_code, ["result"])
