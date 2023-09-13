@@ -101,7 +101,7 @@ class BasicTransformer(BaseTransformer):
                     if paddle_api == "delete":
                         if isinstance(self.parent_node, ast.Expr):
                             self.success_api_count += 1
-                            log_debug(
+                            log_info(
                                 self.logger,
                                 "[Delete] Just remove {} ".format(torch_api),
                                 self.file_name,
@@ -121,7 +121,7 @@ class BasicTransformer(BaseTransformer):
                     elif paddle_api:
                         new_node = ast.parse(paddle_api).body[0].value
                         self.success_api_count += 1
-                        log_debug(
+                        log_info(
                             self.logger,
                             "[Success] Convert {} to Paddle Successfully".format(
                                 torch_api
@@ -144,7 +144,7 @@ class BasicTransformer(BaseTransformer):
                             ast.parse(paddle_api + "." + attr_list[-1]).body[0].value
                         )
                         self.success_api_count += 1
-                        log_debug(
+                        log_info(
                             self.logger,
                             "[Success] Convert setattr({}, '{}') to Paddle Successfully".format(
                                 torch_api, attr_list[-1]
@@ -165,19 +165,44 @@ class BasicTransformer(BaseTransformer):
                 )
                 return node
 
-        # Torch Class attribute, such as: x.device
+        # Torch Class attribute
         #   such as x.device...
         if "NonTorchClass" not in full_attr:
+            is_tensor_api = False
+            is_func_ctx_api = False
+            is_distribution_api = False
+
+            # when len(attr_list)> 2, need to more strict
             attr_list = full_attr.split(".")
+            if len(attr_list) > 2:
+                if "self." in full_attr:
+                    # can be owned by other class
+                    # self.weight.device
+                    is_tensor_api = True
+                if ".T." in full_attr:
+                    # x.T.add
+                    is_tensor_api = True
+            elif len(attr_list) == 2:
+                if "self." in full_attr:
+                    # can be inherit by users
+                    pass
+                else:
+                    # Standard form
+                    is_tensor_api = True
+                    is_func_ctx_api = True
+                    is_distribution_api = True
 
             torch_class_apis = []
-            torch_class_apis.append(".".join(["torch.Tensor", attr_list[-1]]))
-            torch_class_apis.append(
-                ".".join(["torch.autograd.function.FunctionCtx", attr_list[-1]])
-            )
-            torch_class_apis.append(
-                ".".join(["torch.distributions.Distribution", attr_list[-1]])
-            )
+            if is_tensor_api:
+                torch_class_apis.append(".".join(["torch.Tensor", attr_list[-1]]))
+            if is_func_ctx_api:
+                torch_class_apis.append(
+                    ".".join(["torch.autograd.function.FunctionCtx", attr_list[-1]])
+                )
+            if is_distribution_api:
+                torch_class_apis.append(
+                    ".".join(["torch.distributions.Distribution", attr_list[-1]])
+                )
 
             for torch_class_api in torch_class_apis:
                 if torch_class_api in ALIAS_MAPPING:
@@ -208,7 +233,7 @@ class BasicTransformer(BaseTransformer):
                 if node_list == "delete":
                     if isinstance(self.parent_node, ast.Expr):
                         self.success_api_count += 1
-                        log_debug(
+                        log_info(
                             self.logger,
                             "[Delete] Just remove Class Attribute: {} ".format(
                                 torch_api
@@ -219,7 +244,7 @@ class BasicTransformer(BaseTransformer):
                         return None
                 elif node_list == "unchange":
                     self.success_api_count += 1
-                    log_debug(
+                    log_info(
                         self.logger,
                         "[Success] Convert Class Attribute: {} to Paddle, just remain the same".format(
                             torch_api
@@ -259,7 +284,7 @@ class BasicTransformer(BaseTransformer):
                     ):
                         self.insert_multi_node(node_list[0:-1])
                         self.success_api_count += 1
-                        log_debug(
+                        log_info(
                             self.logger,
                             "[Success] Convert Class Attribute: {} to Paddle".format(
                                 torch_api
@@ -373,7 +398,7 @@ class BasicTransformer(BaseTransformer):
                     if node_list == "delete":
                         if isinstance(self.parent_node, ast.Expr):
                             self.success_api_count += 1
-                            log_debug(
+                            log_info(
                                 self.logger,
                                 "[[Delete]] Just remove {} ".format(torch_api),
                                 self.file_name,
@@ -413,7 +438,7 @@ class BasicTransformer(BaseTransformer):
                         ):
                             self.insert_multi_node(node_list[0:-1])
                             self.success_api_count += 1
-                            log_debug(
+                            log_info(
                                 self.logger,
                                 "[Success] Convert {} to Paddle ".format(torch_api),
                                 self.file_name,
@@ -438,27 +463,41 @@ class BasicTransformer(BaseTransformer):
             is_tensor_api = False
             is_module_api = False
             is_optim_api = False
-            #  x.reshape
-            #  self.weight.reshape
-            #  x.T.reshape
-            # when > 2, need to more strict
+            is_func_ctx_api = False
+            is_distribution_api = False
+            is_profile_api = False
+            is_auto_grad_profile_api = False
+
+            # when len(attr_list)> 2, need to more strict
             attr_list = full_attr.split(".")
             if len(attr_list) > 2:
                 if "self." in full_attr:
+                    # can be owned by other class
                     # self.weight.add
-                    is_tensor_api = True
+                    # self.lienar.add_module
                     # self.optimizer.load_state_dict
+                    is_tensor_api = True
+                    is_module_api = True
                     is_optim_api = True
                 if ".T." in full_attr:
+                    # x.T.add
                     is_tensor_api = True
             elif len(attr_list) == 2:
                 if "self." in full_attr:
+                    # can be inherit by users
+                    # self.add_module
+                    # self.load_state_dict
                     is_module_api = True
                     is_optim_api = True
                 else:
+                    # Standard form
                     is_tensor_api = True
                     is_module_api = True
                     is_optim_api = True
+                    is_func_ctx_api = True
+                    is_distribution_api = True
+                    is_profile_api = True
+                    is_auto_grad_profile_api = True
 
             torch_class_apis = []
             if is_tensor_api:
@@ -469,16 +508,22 @@ class BasicTransformer(BaseTransformer):
                 torch_class_apis.append(
                     ".".join(["torch.optim.Optimizer", attr_list[-1]])
                 )
-            torch_class_apis.append(
-                ".".join(["torch.autograd.function.FunctionCtx", attr_list[-1]])
-            )
-            torch_class_apis.append(
-                ".".join(["torch.distributions.Distribution", attr_list[-1]])
-            )
-            torch_class_apis.append(".".join(["torch.profiler.profile", attr_list[-1]]))
-            torch_class_apis.append(
-                ".".join(["torch.autograd.profiler.profile", attr_list[-1]])
-            )
+            if is_func_ctx_api:
+                torch_class_apis.append(
+                    ".".join(["torch.autograd.function.FunctionCtx", attr_list[-1]])
+                )
+            if is_distribution_api:
+                torch_class_apis.append(
+                    ".".join(["torch.distributions.Distribution", attr_list[-1]])
+                )
+            if is_profile_api:
+                torch_class_apis.append(
+                    ".".join(["torch.profiler.profile", attr_list[-1]])
+                )
+            if is_auto_grad_profile_api:
+                torch_class_apis.append(
+                    ".".join(["torch.autograd.profiler.profile", attr_list[-1]])
+                )
 
             for torch_class_api in torch_class_apis:
                 if torch_class_api in ALIAS_MAPPING:
@@ -516,7 +561,7 @@ class BasicTransformer(BaseTransformer):
             if node_list == "delete":
                 if isinstance(self.parent_node, ast.Expr):
                     self.success_api_count += 1
-                    log_debug(
+                    log_info(
                         self.logger,
                         "[Delete] Just remove Class Method: {} ".format(torch_api),
                         self.file_name,
@@ -525,7 +570,7 @@ class BasicTransformer(BaseTransformer):
                     return None
             elif node_list == "unchange":
                 self.success_api_count += 1
-                log_debug(
+                log_info(
                     self.logger,
                     "[Success] Convert Class Method: {} to Paddle, just remain the same".format(
                         torch_api
@@ -579,7 +624,7 @@ class BasicTransformer(BaseTransformer):
                             new_node.args.insert(0, node.args[0])
                     self.insert_multi_node(node_list[0:-1])
                     self.success_api_count += 1
-                    log_debug(
+                    log_info(
                         self.logger,
                         "[Success] Convert Class Method: {} to Paddle".format(
                             torch_api

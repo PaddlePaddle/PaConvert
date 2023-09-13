@@ -90,9 +90,10 @@ class Converter:
             unsupport_map = sorted(
                 self.unsupport_map.items(), key=lambda x: x[1], reverse=True
             )
-            # import pandas
-            # df = pandas.DataFrame.from_dict(dict(unsupport_map), orient="index")
-            # df.to_excel("unsupport_map.xlsx")
+            import pandas
+
+            df = pandas.DataFrame.from_dict(dict(unsupport_map), orient="index")
+            df.to_excel("unsupport_map.xlsx")
             log_info(self.logger, "\n===========================================")
             log_info(self.logger, "Not Support API List:")
             log_info(self.logger, "===========================================")
@@ -266,17 +267,17 @@ class Converter:
             else:
                 # func decorator_list: @
                 if mark_next_line and line != "@":
-                    lines[i] = ">>>" + line
+                    lines[i] = ">>>>>>" + line
                     mark_next_line = False
                     continue
 
             # model_torch.npy
             for torch_package in self.imports_map[file]["torch_packages"]:
                 if tmp_line.startswith("%s." % torch_package):
-                    lines[i] = ">>>" + line
+                    lines[i] = ">>>>>>" + line
                     break
 
                 if re.match(r".*[^A-Za-z_]{1}%s\." % torch_package, tmp_line):
-                    lines[i] = ">>>" + line
+                    lines[i] = ">>>>>>" + line
 
         return "\n".join(lines)

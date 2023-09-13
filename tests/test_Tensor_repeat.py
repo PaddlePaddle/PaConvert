@@ -11,20 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+
+
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.split", is_aux_api=True)
+obj = APIBase("torch.Tensor.repeat", is_aux_api=True)
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(80).reshape(8, 10)
-        result = a.split(4)
+        x = torch.tensor([1, 2, 3])
+        result = x.repeat(4)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +35,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(80).reshape(8, 10)
-        result = a.split(4, 0)
+        x = torch.tensor([1, 2, 3])
+        result = x.repeat(4, 2, 3)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,8 +46,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(80).reshape(8, 10)
-        result = a.split(split_size=2, dim=1)
+        x = torch.tensor([1, 2, 3])
+        result = x.repeat([4, 2, 3])
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -56,8 +57,8 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(80).reshape(8, 10)
-        result = a.split(split_size = [2, 6], dim = 0)
+        x = torch.tensor([1, 2, 3])
+        result = x.repeat((4, 2, 3))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -67,9 +68,9 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(80).reshape(8, 10)
-        b = 2
-        result = a.split(b, dim=1)
+        x = torch.tensor([1, 2, 3])
+        a=4
+        result = x.repeat(a)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -79,9 +80,9 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(80).reshape(8, 10)
-        b = 2
-        result = a.split(b, dim = 0)
+        x = torch.tensor([1, 2, 3])
+        a=[4, 2, 3]
+        result = x.repeat(a)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -91,13 +92,59 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        str1.split(',')
+        x = torch.tensor([1, 2, 3])
+        a=(4, 2, 3)
+        result = x.repeat(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 2, 3])
+        a=(4, 2, 3)
+        result = x.repeat(*a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 2, 3])
+        result = x.repeat(repeats=[4, 2, 3])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 2, 3])
+        result = x.repeat(repeats=(4, 2, 3))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        geo.repeat(spacing=4.0, repeat_lower=(-1, -1, -1), repeat_higher=(1, 1, 1))
         """
     )
     expect_code = textwrap.dedent(
         """
         import paddle
-        str1.split(',')
+        geo.repeat(spacing=4.0, repeat_lower=(-1, -1, -1), repeat_higher=(1, 1, 1))
         """
     )
     obj.run(pytorch_code, expect_paddle_code=expect_code)

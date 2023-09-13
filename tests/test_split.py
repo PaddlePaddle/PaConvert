@@ -17,7 +17,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.split")
+obj = APIBase("torch.split", is_aux_api=True)
 
 
 def test_case_1():
@@ -28,7 +28,7 @@ def test_case_1():
         result = torch.split(a, 2)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -39,7 +39,7 @@ def test_case_2():
         result = torch.split(a, 2, dim=0)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -50,7 +50,7 @@ def test_case_3():
         result = torch.split(a, 2, dim=1)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -58,18 +58,54 @@ def test_case_4():
         """
         import torch
         a = torch.arange(10).reshape(5, 2)
-        result = torch.split(a, [1,4])
+        result = torch.split(a, [1, 4])
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(9).reshape(3,3)
-        result = torch.split(a, split_size_or_sections=[1,2], dim=1)
+        a = torch.arange(9).reshape(3, 3)
+        result = torch.split(a, split_size_or_sections=[1, 2], dim=1)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(12).reshape(6, 2)
+        split_size = 2
+        result = torch.split(a, split_size, dim=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(10).reshape(5, 2)
+        sections = [1, 4]
+        result = torch.split(a, sections)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(9).reshape(3,3)
+        sections = [1, 2]
+        result = torch.split(a, split_size_or_sections=sections, dim=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
