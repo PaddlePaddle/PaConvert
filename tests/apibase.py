@@ -24,12 +24,14 @@ from paconvert.converter import Converter
 
 
 class APIBase(object):
-    def __init__(self, pytorch_api) -> None:
+    def __init__(self, pytorch_api, is_aux_api=False) -> None:
         """
         args:
             pytorch_api: The corresponding pytorch api
+            is_aux_api: the bool value for api that need Auxiliary code
         """
         self.pytorch_api = pytorch_api
+        self.is_aux_api = is_aux_api
 
     def run(
         self,
@@ -43,7 +45,6 @@ class APIBase(object):
         atol=0.0,
         unsupport=False,
         reason=None,
-        is_aux_api=False,
     ) -> None:
         """
         args:
@@ -55,7 +56,6 @@ class APIBase(object):
             check_stop_gradient: If false, the stop gradient will not be checked
             unsupport: If true, conversion is not supported
             reason: the reason why it is not supported
-            is_aux_api: the bool value for api that need Auxiliary code
         """
         if unsupport:
             assert (
@@ -70,7 +70,7 @@ class APIBase(object):
             pytorch_result = [loc[name] for name in compared_tensor_names]
 
             paddle_code = self.convert(pytorch_code)
-            if is_aux_api:
+            if self.is_aux_api:
                 paddle_code = (
                     textwrap.dedent(
                         """
@@ -98,8 +98,8 @@ class APIBase(object):
                 )
         if expect_paddle_code:
             convert_paddle_code = self.convert(pytorch_code)
-            assert (
-                convert_paddle_code == expect_paddle_code
+            assert convert_paddle_code == expect_paddle_code.lstrip(
+                "\n"
             ), "[{}]: get unexpected code".format(self.pytorch_api)
 
     def compare(

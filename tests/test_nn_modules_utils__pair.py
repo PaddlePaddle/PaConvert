@@ -18,7 +18,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.modules.utils._pair")
+obj = APIBase("torch.nn.modules.utils._pair", is_aux_api=True)
 
 
 def test_case_1():
@@ -29,7 +29,7 @@ def test_case_1():
         result = torch.nn.modules.utils._pair(x.size())
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -39,7 +39,7 @@ def test_case_2():
         result = torch.nn.modules.utils._pair(3)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -49,7 +49,7 @@ def test_case_3():
         result = torch.nn.modules.utils._pair((3, 4, 5))
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -59,4 +59,4 @@ def test_case_4():
         result = torch.nn.modules.utils._pair([3, 4, 5])
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
