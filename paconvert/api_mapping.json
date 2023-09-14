@@ -390,14 +390,26 @@
       "other": "y"
     }
   },
-  "torch.Tensor.bitwise_and_": {},
+  "torch.Tensor.bitwise_and_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.bitwise_and_",
+    "args_list": [
+      "other"
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
+  },
   "torch.Tensor.bitwise_left_shift": {},
   "torch.Tensor.bitwise_left_shift_": {},
   "torch.Tensor.bitwise_not": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.bitwise_not"
   },
-  "torch.Tensor.bitwise_not_": {},
+  "torch.Tensor.bitwise_not_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.bitwise_not_"
+  },
   "torch.Tensor.bitwise_or": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.bitwise_or",
@@ -409,7 +421,16 @@
       "other": "y"
     }
   },
-  "torch.Tensor.bitwise_or_": {},
+  "torch.Tensor.bitwise_or_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.bitwise_or_",
+    "args_list": [
+      "other"
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
+  },
   "torch.Tensor.bitwise_right_shift": {},
   "torch.Tensor.bitwise_right_shift_": {},
   "torch.Tensor.bitwise_xor": {
@@ -423,7 +444,16 @@
       "other": "y"
     }
   },
-  "torch.Tensor.bitwise_xor_": {},
+  "torch.Tensor.bitwise_xor_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.bitwise_xor_",
+    "args_list": [
+      "other"
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
+  },
   "torch.Tensor.bmm": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.bmm",
@@ -652,7 +682,9 @@
   "torch.Tensor.cumprod": {
     "Matcher": "UnchangeMatcher"
   },
-  "torch.Tensor.cumprod_": {},
+  "torch.Tensor.cumprod_": {
+    "Matcher": "UnchangeMatcher"
+  },
   "torch.Tensor.cumsum": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.cumsum",
@@ -665,7 +697,17 @@
       "dim": "axis"
     }
   },
-  "torch.Tensor.cumsum_": {},
+  "torch.Tensor.cumsum_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.cumsum_",
+    "args_list": [
+      "dim",
+      "dtype"
+    ],
+    "kwargs_change": {
+      "dim": "axis"
+    }
+  },
   "torch.Tensor.data_ptr": {},
   "torch.Tensor.deg2rad": {
     "Matcher": "UnchangeMatcher"
@@ -680,7 +722,10 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.detach"
   },
-  "torch.Tensor.detach_": {},
+  "torch.Tensor.detach_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.detach_"
+  },
   "torch.Tensor.diag": {
     "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.diag",
@@ -743,7 +788,10 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.digamma"
   },
-  "torch.Tensor.digamma_": {},
+  "torch.Tensor.digamma_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.digamma_"
+  },
   "torch.Tensor.dim": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.dim"
@@ -806,7 +854,16 @@
       "other": "y"
     }
   },
-  "torch.Tensor.eq_": {},
+  "torch.Tensor.eq_": {
+    "Matcher": "Num2TensorBinaryMatcher",
+    "paddle_api": "paddle.Tensor.equal_",
+    "args_list": [
+      "other"
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
+  },
   "torch.Tensor.equal": {
     "Matcher": "EqualMatcher",
     "paddle_api": "paddle.Tensor.equal_all",
@@ -962,7 +1019,13 @@
       "other"
     ]
   },
-  "torch.Tensor.floor_divide_": {},
+  "torch.Tensor.floor_divide_": {
+    "Matcher": "Num2TensorBinaryMatcher",
+    "paddle_api": "paddle.Tensor.floor_divide_",
+    "args_list": [
+      "other"
+    ]
+  },
   "torch.Tensor.fmax": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.fmax",
@@ -1001,7 +1064,10 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.frac"
   },
-  "torch.Tensor.frac_": {},
+  "torch.Tensor.frac_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.frac_"
+  },
   "torch.Tensor.frexp": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.frexp"
@@ -1030,7 +1096,16 @@
       "other": "y"
     }
   },
-  "torch.Tensor.gcd_": {},
+  "torch.Tensor.gcd_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.gcd_",
+    "args_list": [
+      "other"
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
+  },
   "torch.Tensor.ge": {
     "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.Tensor.greater_equal",
@@ -1039,7 +1114,13 @@
       "other"
     ]
   },
-  "torch.Tensor.ge_": {},
+  "torch.Tensor.ge_": {
+    "Matcher": "Num2TensorBinaryMatcher",
+    "paddle_api": "paddle.Tensor.greater_equal_",
+    "args_list": [
+      "other"
+    ]
+  },
   "torch.Tensor.geometric_": {},
   "torch.Tensor.geqrf": {},
   "torch.Tensor.ger": {
@@ -1065,7 +1146,13 @@
       "other"
     ]
   },
-  "torch.Tensor.greater_": {},
+  "torch.Tensor.greater_": {
+    "Matcher": "Num2TensorBinaryMatcher",
+    "paddle_api": "paddle.Tensor.greater_than_",
+    "args_list": [
+      "other"
+    ]
+  },
   "torch.Tensor.greater_equal": {
     "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.Tensor.greater_equal",
@@ -1077,7 +1164,13 @@
       "other": "y"
     }
   },
-  "torch.Tensor.greater_equal_": {},
+  "torch.Tensor.greater_equal_": {
+    "Matcher": "Num2TensorBinaryMatcher",
+    "paddle_api": "paddle.Tensor.greater_equal_",
+    "args_list": [
+      "other"
+    ]
+  },
   "torch.Tensor.gt": {
     "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.Tensor.greater_than",
@@ -1086,7 +1179,13 @@
       "other"
     ]
   },
-  "torch.Tensor.gt_": {},
+  "torch.Tensor.gt_": {
+    "Matcher": "Num2TensorBinaryMatcher",
+    "paddle_api": "paddle.Tensor.greater_than_",
+    "args_list": [
+      "other"
+    ]
+  },
   "torch.Tensor.half": {
     "Matcher": "TensorFP16Matcher",
     "min_input_args": 0,
@@ -1193,7 +1292,18 @@
   "torch.Tensor.index_fill": {},
   "torch.Tensor.index_fill_": {},
   "torch.Tensor.index_put": {},
-  "torch.Tensor.index_put_": {},
+  "torch.Tensor.index_put_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.index_put_",
+    "args_list": [
+      "indices",
+      "value",
+      "accumulate"
+    ],
+    "kwargs_change": {
+      "values": "value"
+    }
+  },
   "torch.Tensor.index_reduce": {},
   "torch.Tensor.index_reduce_": {},
   "torch.Tensor.index_select": {
@@ -4143,6 +4253,14 @@
     "kwargs_change": {
       "input": "x"
     }
+  },
+  "torch.cumprod_": {
+    "Matcher": "CumprodMatcher",
+    "paddle_api": "paddle.cumprod_",
+    "args_list": [
+      "dim",
+      "dtype"
+    ]
   },
   "torch.cumsum": {
     "Matcher": "GenericMatcher",
@@ -9216,6 +9334,20 @@
       "max_val": "max"
     }
   },
+  "torch.nn.functional.hardtanh_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.hardtanh_",
+    "args_list": [
+      "input",
+      "min_val",
+      "max_val"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "min_val": "min",
+      "max_val": "max"
+    }
+  },
   "torch.nn.functional.hinge_embedding_loss": {
     "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.functional.hinge_embedding_loss",
@@ -9326,6 +9458,17 @@
       "input",
       "negative_slope",
       "inplace"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+  "torch.nn.functional.leaky_relu_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.leaky_relu_",
+    "args_list": [
+      "input",
+      "negative_slope"
     ],
     "kwargs_change": {
       "input": "x"
