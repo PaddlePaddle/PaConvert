@@ -321,7 +321,9 @@ class TransposeMatcher(BaseMatcher):
 - 对于 **不需要辅助代码** 即可运行的用法，直接返回 'unchange'
 - 对于 **需要辅助代码** 才可运行的用法，首先要额外重写 `generate_aux_code` 函数，其是模仿Pytorch类API用法的辅助代码，然后显式的调用 `write_aux_code` ，此时将在后台模块里注入辅助代码，最后再返回 'unchange' 即可
 
-由于 **辅助代码** 会不可避免的改变一些Paddle API的用法感官，因此尽可能减少使用辅助代码（即调用 `self.write_aux_code()`）。所以我们需要判断用户的不同用法，在必要的情形下才 `write_aux_code` 。
+由于 **辅助代码** 会改变原Paddle Tensor API的用法，应可能取两者功能的并集，所以在编写辅助代码的函数时，需采用 `*args、**kwargs` 来描述参数，从而可同时兼容pytorch与原paddle的参数名，例如 `paddle.Tensor.add` 被辅助函数修改后应同时可支持输入 `y` 与 `other` 作为第二个输入。
+
+另外我们需要判断用户的不同用法，在必要的情形下才 `write_aux_code` 使用辅助函数，以尽可能的减少辅助代码的使用。
 
 基于[Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html)，我们可参考以下原则来判断是否需要辅助代码：
 

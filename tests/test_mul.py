@@ -32,7 +32,7 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support input type promote
+# paddle not support input type promote, and x/y must have the same dtype
 def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -45,7 +45,7 @@ def _test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support input type promote
+# paddle not support input type promote, and x/y must have the same dtype
 def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
@@ -57,8 +57,7 @@ def _test_case_3():
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support input type promote
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -69,7 +68,7 @@ def _test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support input type promote
+# paddle not support input type promote, and x/y must have the same dtype
 def _test_case_5():
     pytorch_code = textwrap.dedent(
         """

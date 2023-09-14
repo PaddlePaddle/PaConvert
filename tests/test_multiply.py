@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
 import textwrap
 
 from apibase import APIBase
@@ -31,7 +32,7 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-# paddle.multiply not support type promote and x/y must have same dtype
+# paddle not support input type promote, and x/y must have the same dtype
 def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -44,36 +45,61 @@ def _test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_3():
+# paddle not support input type promote, and x/y must have the same dtype
+def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
         input = torch.tensor([0.2015, -0.4255,  2.6087])
-        result = torch.multiply(input, other=5.0)
+        result = torch.multiply(input, other=5)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# paddle.multiply not support type promote and x/y must have same dtype
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
         input = torch.tensor([3, 6, 9])
-        result = torch.multiply(input, other = torch.tensor([0.2015, -0.4255, 2.6087]))
+        result = torch.multiply(input, other=5)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_5():
+# paddle not support input type promote, and x/y must have the same dtype
+def _test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
         input = torch.tensor([0.2015, -0.4255,  2.6087])
         out = torch.tensor([0.2015, -0.4255,  2.6087])
-        result = torch.multiply(input, torch.tensor([0.2015, -0.4255, 2.6087]), out=out)
+        result = torch.multiply(input, other=5, out=out)
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.2015, -0.4255,  2.6087])
+        out = torch.tensor([0.2015, -0.4255,  2.6087])
+        result = torch.multiply(input=input, other=torch.tensor(5.), out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.2015, -0.4255,  2.6087])
+        other = torch.tensor([0.2015, -0.4255,  2.6087])
+        result = torch.multiply(other=other, input=input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

@@ -70,6 +70,7 @@ def test_case_3():
     )
 
 
+# paddle not support type promote and x/y must have same dtype
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """

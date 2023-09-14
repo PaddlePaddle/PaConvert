@@ -17,7 +17,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.subtract", is_aux_api=True)
+obj = APIBase("torch.Tensor.sub_")
 
 
 def test_case_1():
@@ -25,10 +25,10 @@ def test_case_1():
         """
         import torch
         x = torch.tensor([1, 2, 3])
-        result = x.subtract(torch.tensor([1, 4, 6]))
+        x.sub_(torch.tensor([1, 4, 6]))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x"])
 
 
 def test_case_2():
@@ -36,21 +36,21 @@ def test_case_2():
         """
         import torch
         x = torch.tensor([1, 2, 3])
-        result = x.subtract(20)
+        x.sub_(20)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3])
-        result = x.subtract(other=20)
+        x = torch.tensor([1., 2, 3])
+        x.sub_(torch.tensor([1., 4, 6]), alpha=0.8)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x"])
 
 
 def test_case_4():
@@ -58,29 +58,30 @@ def test_case_4():
         """
         import torch
         x = torch.tensor([1., 2, 3])
-        result = x.subtract(torch.tensor([1., 4, 6]), alpha=0.8)
+        x.sub_(other=torch.tensor([1., 4, 6]), alpha=0.8)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        result = x.subtract(other=torch.tensor([1., 4, 6]), alpha=0.8)
+        x = torch.ones((10, 4))
+        x.sub_(4.5, alpha=5)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x"])
 
 
-# paddle not support type promote and x/y must have same dtype
+# paddle.sub_ has bug, when float - int, but result'dtype is int, wrong type promote
 def _test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1., 2, 3]).subtract(torch.tensor([1, 4, 6]))
+        x = torch.ones((10, 4))
+        x.sub_(4, alpha=5)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x"])
