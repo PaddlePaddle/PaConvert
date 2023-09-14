@@ -172,4 +172,4 @@ Thank you to use Paddle Code Convert Tool. You can make any suggestions to us.
 
 # 贡献代码
 
-欢迎你向我们贡献代码，详细开发步骤请参考 [贡献代码教程](docs/Contribution.md)
+欢迎你向我们贡献代码，详细开发步骤请参考 [贡献代码教程](docs/CONTRIBUTING.md)
