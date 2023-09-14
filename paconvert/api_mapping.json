@@ -1504,12 +1504,22 @@
       "other": "y"
     }
   },
-  "torch.Tensor.logical_and_": {},
-  "torch.Tensor.logical_not": {
+  "torch.Tensor.logical_and_": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.logical_not"
+    "paddle_api": "paddle.Tensor.logical_and_",
+    "args_list": [
+      "other"
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
-  "torch.Tensor.logical_not_": {},
+  "torch.Tensor.logical_not": {
+    "Matcher": "UnchangeMatcher"
+  },
+  "torch.Tensor.logical_not_": {
+    "Matcher": "UnchangeMatcher"
+  },
   "torch.Tensor.logical_or": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.logical_or",
@@ -1521,7 +1531,16 @@
       "other": "y"
     }
   },
-  "torch.Tensor.logical_or_": {},
+  "torch.Tensor.logical_or_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.logical_or_",
+    "args_list": [
+      "other"
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
+  },
   "torch.Tensor.logical_xor": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.logical_xor",
@@ -1533,7 +1552,16 @@
       "other": "y"
     }
   },
-  "torch.Tensor.logical_xor_": {},
+  "torch.Tensor.logical_xor_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.logical_xor_",
+    "args_list": [
+      "other"
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
+  },
   "torch.Tensor.logit": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.logit",
@@ -1542,7 +1570,13 @@
       "eps"
     ]
   },
-  "torch.Tensor.logit_": {},
+  "torch.Tensor.logit_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.logit_",
+    "args_list": [
+      "eps"
+    ]
+  },
   "torch.Tensor.logsumexp": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.logsumexp",
@@ -1571,7 +1605,13 @@
       "other"
     ]
   },
-  "torch.Tensor.lt_": {},
+  "torch.Tensor.lt_": {
+    "Matcher": "Num2TensorBinaryMatcher",
+    "paddle_api": "paddle.Tensor.less_than_",
+    "args_list": [
+      "other"
+    ]
+  },
   "torch.Tensor.lu": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.lu",
