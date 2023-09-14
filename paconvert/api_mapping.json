@@ -760,6 +760,22 @@
       "other": "y"
     }
   },
+  "torch.Tensor.div": {
+    "Matcher": "TensorDivideMatcher",
+    "paddle_api": "paddle.Tensor.divide",
+    "args_list": [
+      "other",
+      "rounding_mode"
+    ]
+  },
+  "torch.Tensor.div_": {
+    "Matcher": "TensorDivideWithRoundingModeMatcher",
+    "paddle_api": "paddle.Tensor.divide_",
+    "args_list": [
+      "other",
+      "rounding_mode"
+    ]
+  },
   "torch.Tensor.divide": {
     "Matcher": "TensorDivideMatcher",
     "paddle_api": "paddle.Tensor.divide",
@@ -770,7 +786,14 @@
       "rounding_mode"
     ]
   },
-  "torch.Tensor.divide_": {},
+  "torch.Tensor.divide_": {
+    "Matcher": "TensorDivideWithRoundingModeMatcher",
+    "paddle_api": "paddle.Tensor.divide_",
+    "args_list": [
+      "other",
+      "rounding_mode"
+    ]
+  },
   "torch.Tensor.dot": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.dot",
@@ -2612,7 +2635,16 @@
       "other": "y"
     }
   },
-  "torch.Tensor.true_divide_": {},
+  "torch.Tensor.true_divide_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.divide_",
+    "args_list": [
+      "other"
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
+  },
   "torch.Tensor.trunc": {
     "Matcher": "UnchangeMatcher"
   },

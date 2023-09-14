@@ -2724,6 +2724,37 @@ class DivideMatcher(BaseMatcher):
         return code
 
 
+class TensorDivideWithRoundingModeMatcher(BaseMatcher):
+    def get_rounding_method(self, mode):
+        if "trunc" in mode:
+            return ".trunc_()"
+        elif "floor" in mode:
+            return ".floor_()"
+        else:
+            return ""
+
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}({}){}
+            """
+        )
+
+        if "other" in kwargs:
+            kwargs["y"] = "paddle.to_tensor({})".format(kwargs.pop("other").strip("\n"))
+
+        rounding_mode_v = "None"
+        if "rounding_mode" in kwargs:
+            rounding_mode_v = kwargs.pop("rounding_mode")
+        rounding_method = self.get_rounding_method(rounding_mode_v)
+
+        code = API_TEMPLATE.format(
+            self.get_paddle_api(), self.kwargs_to_str(kwargs), rounding_method
+        )
+
+        return code
+
+
 class AllcloseMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         code = GenericMatcher.generate_code(self, kwargs)
