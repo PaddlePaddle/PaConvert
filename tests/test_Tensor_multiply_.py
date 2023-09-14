@@ -68,8 +68,8 @@ def test_case_3():
     )
 
 
-# paddle.multiply_ not support type promote and x/y must have same dtype
-def _test_case_4():
+# paddle not support type promote and x/y must have same dtype
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch

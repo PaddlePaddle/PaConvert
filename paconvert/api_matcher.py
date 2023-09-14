@@ -232,24 +232,25 @@ class InitMatcher(BaseMatcher):
         return code
 
 
-class TorchAddMatcher(BaseMatcher):
+class Num2TensorBinaryWithAlphaMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "alpha" in kwargs:
-            code = "{}(x={}, y=paddle.to_tensor({})*{})".format(
-                self.get_paddle_api(), kwargs["input"], kwargs["alpha"], kwargs["other"]
+        if "input" in kwargs:
+            kwargs["x"] = kwargs.pop("input")
+        if "other" in kwargs:
+            if "alpha" in kwargs:
+                kwargs["y"] = "paddle.to_tensor({}*{})".format(
+                    kwargs.pop("alpha"), kwargs.pop("other")
+                )
+            else:
+                kwargs["y"] = "paddle.to_tensor({})".format(kwargs.pop("other"))
+
+        if "out" in kwargs and kwargs["out"] != "None":
+            out_v = kwargs.pop("out")
+            code = "paddle.assign({}({}), output={})".format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v
             )
         else:
-            code = "{}(x={}, y=paddle.to_tensor({}))".format(
-                self.get_paddle_api(), kwargs["input"], kwargs["other"]
-            )
-
-        if "out" in kwargs:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.assign({}, output={})
-                """
-            )
-            code = API_TEMPLATE.format(code, kwargs["out"])
+            code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
         return code
 
@@ -258,13 +259,67 @@ class TensorAddMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def add(self, other, *, alpha=1):
-                if alpha != 1:
-                    return paddle.add(self, paddle.to_tensor(other)*alpha)
+            def add(self, *args, **kwargs):
+                if 'other' in kwargs:
+                    y = kwargs['other']
+                elif 'y' in kwargs:
+                    y = kwargs['y']
                 else:
-                    return paddle.add(self, paddle.to_tensor(other))
+                    y = args[0]
+
+                if 'alpha' in kwargs:
+                    alpha = kwargs['alpha']
+                    if alpha != 1:
+                        if not isinstance(y, paddle.Tensor):
+                            y = paddle.to_tensor(alpha * y)
+                        else:
+                            y = alpha * y
+                else:
+                    if not isinstance(y, paddle.Tensor):
+                        y = paddle.to_tensor(y)
+
+                return paddle.add(self, y)
 
             setattr(paddle.Tensor, 'add', add)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        if len(kwargs) == 0:
+            return "unchange"
+
+        self.write_aux_code()
+        return "unchange"
+
+
+class TensorSubtractMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def sub(self, *args, **kwargs):
+                if 'other' in kwargs:
+                    y = kwargs['other']
+                elif 'y' in kwargs:
+                    y = kwargs['y']
+                else:
+                    y = args[0]
+
+                if 'alpha' in kwargs:
+                    alpha = kwargs['alpha']
+                    if alpha != 1:
+                        if not isinstance(y, paddle.Tensor):
+                            y = paddle.to_tensor(alpha * y)
+                        else:
+                            y = alpha * y
+                else:
+                    if not isinstance(y, paddle.Tensor):
+                        y = paddle.to_tensor(y)
+
+                return paddle.subtract(self, y)
+
+            setattr(paddle.Tensor, 'sub', sub)
+            setattr(paddle.Tensor, 'subtract', sub)
             """
         )
         return CODE_TEMPLATE
@@ -274,25 +329,69 @@ class TensorAddMatcher(BaseMatcher):
         return "unchange"
 
 
-class TensorAdd_Matcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "alpha" in kwargs:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {}(y=paddle.to_tensor({})*{})
-                """
-            )
-            code = API_TEMPLATE.format(
-                self.get_paddle_api(), kwargs["alpha"], kwargs["other"]
-            )
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {}(y=paddle.to_tensor({}))
-                """
-            )
-            code = API_TEMPLATE.format(self.get_paddle_api(), kwargs["other"])
-        return code
+class TensorMultiplyMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def mul(self, *args, **kwargs):
+                if 'other' in kwargs:
+                    y = kwargs['other']
+                elif 'y' in kwargs:
+                    y = kwargs['y']
+                else:
+                    y = args[0]
+
+                if not isinstance(y, paddle.Tensor):
+                    y = paddle.to_tensor(y)
+
+                return paddle.multiply(self, y)
+
+            setattr(paddle.Tensor, 'mul', mul)
+            setattr(paddle.Tensor, 'multiply', mul)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.write_aux_code()
+        return "unchange"
+
+
+class TensorDivideMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def div(self, *args, **kwargs):
+                if 'other' in kwargs:
+                    y = kwargs['other']
+                elif 'y' in kwargs:
+                    y = kwargs['y']
+                else:
+                    y = args[0]
+
+                if not isinstance(y, paddle.Tensor):
+                    y = paddle.to_tensor(y)
+
+                res = paddle.divide(self, y)
+
+                if 'rounding_mode' in kwargs:
+                    rounding_mode = kwargs['rounding_mode']
+                    if rounding_mode=='trunc':
+                        res = paddle.trunc(res)
+                    elif rounding_mode=='floor':
+                        res = paddle.floor(res)
+
+                return res
+
+            setattr(paddle.Tensor, 'div', div)
+            setattr(paddle.Tensor, 'divide', div)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.write_aux_code()
+        return "unchange"
 
 
 class TransposeMatcher(BaseMatcher):
@@ -2649,26 +2748,36 @@ class AMinMaxMatcher(BaseMatcher):
         return code
 
 
-class DivMatcher(BaseMatcher):
+class DivideMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "input" not in kwargs:
-            kwargs["input"] = self.paddleClass
+        if "input" in kwargs:
+            kwargs["x"] = kwargs.pop("input").strip("\n")
+        if "other" in kwargs:
+            kwargs["y"] = "paddle.to_tensor({})".format(kwargs.pop("other").strip("\n"))
+
+        rounding_mode_v = "None"
+        if "rounding_mode" in kwargs:
+            rounding_mode_v = kwargs.pop("rounding_mode")
+
+        out_v = "None"
+        if "out" in kwargs:
+            out_v = kwargs.pop("out")
 
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle.divide(x={}, y=paddle.to_tensor({}))
+            {}({})
             """
         )
-        code = API_TEMPLATE.format(kwargs["input"], kwargs["other"])
+        code = API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
-        if "rounding_mode" in kwargs and kwargs["rounding_mode"] != "None":
-            if "trunc" in kwargs["rounding_mode"]:
+        if rounding_mode_v != "None":
+            if "trunc" in rounding_mode_v:
                 code = "paddle.trunc({})".format(code)
-            elif "floor" in kwargs["rounding_mode"]:
+            elif "floor" in rounding_mode_v:
                 code = "paddle.floor({})".format(code)
 
-        if "out" in kwargs and kwargs["out"] != "None":
-            code = "paddle.assign({}, output={})".format(code, kwargs["out"])
+        if out_v != "None":
+            code = "paddle.assign({}, output={})".format(code, out_v)
 
         return code
 
@@ -2695,37 +2804,17 @@ class Assert_AllcloseMatcher(BaseMatcher):
 class Num2TensorBinaryMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" in kwargs:
-            kwargs["x"] = kwargs.pop("input").strip("\n")
+            kwargs["x"] = kwargs.pop("input")
         if "other" in kwargs:
-            kwargs["y"] = "paddle.to_tensor({})".format(kwargs.pop("other").strip("\n"))
+            kwargs["y"] = "paddle.to_tensor({})".format(kwargs.pop("other"))
+
         if "out" in kwargs and kwargs["out"] != "None":
-            out_v = kwargs.pop("out").strip("\n")
+            out_v = kwargs.pop("out")
             code = "paddle.assign({}({}), output={})".format(
                 self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v
             )
         else:
             code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-
-        return code
-
-
-class SubMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "input" not in kwargs:
-            kwargs["input"] = self.paddleClass
-
-        if "alpha" not in kwargs:
-            kwargs["alpha"] = 1
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {} - {} * {}
-            """
-        )
-        code = API_TEMPLATE.format(kwargs["input"], kwargs["alpha"], kwargs["other"])
-
-        if "out" in kwargs and kwargs["out"] != "None":
-            code = "paddle.assign({}, output={})".format(code, kwargs["out"])
 
         return code
 
@@ -2806,7 +2895,7 @@ class TensorReshape_asMatcher(BaseMatcher):
 
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle.reshape({}, {}.shape)
+            {}.reshape({}.shape)
             """
         )
         code = API_TEMPLATE.format(self.paddleClass, kwargs["other"])

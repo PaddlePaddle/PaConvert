@@ -77,7 +77,7 @@
     ]
   },
   "torch.Tensor.add_": {
-    "Matcher": "TensorAdd_Matcher",
+    "Matcher": "Num2TensorBinaryWithAlphaMatcher",
     "paddle_api": "paddle.Tensor.add_",
     "args_list": [
       "other",
@@ -732,14 +732,14 @@
       "other": "y"
     }
   },
-  "torch.Tensor.div": {
-    "Matcher": "DivMatcher",
+  "torch.Tensor.divide": {
+    "Matcher": "TensorDivideMatcher",
+    "paddle_api": "paddle.Tensor.divide",
     "args_list": [
       "other",
       "rounding_mode"
     ]
   },
-  "torch.Tensor.div_": {},
   "torch.Tensor.divide_": {},
   "torch.Tensor.dot": {
     "Matcher": "GenericMatcher",
@@ -1582,25 +1582,6 @@
   "torch.Tensor.msort": {
     "Matcher": "MSortMatcher"
   },
-  "torch.Tensor.mul": {
-    "Matcher": "Num2TensorBinaryMatcher",
-    "paddle_api": "paddle.Tensor.multiply",
-    "args_list": [
-      "other"
-    ],
-    "kwargs_change": {
-      "other": "y"
-    }
-  },
-  "torch.Tensor.mul_": {
-    "paddle_api": "paddle.Tensor.multiply",
-    "args_list": [
-      "other"
-    ],
-    "kwargs_change": {
-      "other": "y"
-    }
-  },
   "torch.Tensor.multinomial": {
     "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.multinomial",
@@ -1611,18 +1592,13 @@
     ]
   },
   "torch.Tensor.multiply": {
-    "Matcher": "Num2TensorBinaryMatcher",
+    "Matcher": "TensorMultiplyMatcher",
     "paddle_api": "paddle.Tensor.multiply",
     "args_list": [
       "other"
     ]
   },
-  "torch.Tensor.multiply_": {
-    "paddle_api": "paddle.Tensor.multiply",
-    "args_list": [
-      "other"
-    ]
-  },
+  "torch.Tensor.multiply_": {},
   "torch.Tensor.mv": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.mv",
@@ -2270,22 +2246,22 @@
   "torch.Tensor.storage_offset": {},
   "torch.Tensor.storage_type": {},
   "torch.Tensor.stride": {},
-  "torch.Tensor.sub": {
-    "Matcher": "SubMatcher",
-    "args_list": [
-      "other",
-      "alpha"
-    ]
-  },
-  "torch.Tensor.sub_": {},
   "torch.Tensor.subtract": {
-    "Matcher": "SubMatcher",
+    "Matcher": "TensorSubtractMatcher",
+    "paddle_api": "paddle.Tensor.subtract",
     "args_list": [
       "other",
       "alpha"
     ]
   },
-  "torch.Tensor.subtract_": {},
+  "torch.Tensor.subtract_": {
+    "Matcher": "Num2TensorBinaryWithAlphaMatcher",
+    "paddle_api": "paddle.Tensor.subtract_",
+    "args_list": [
+      "other",
+      "alpha"
+    ]
+  },
   "torch.Tensor.sum": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.sum",
@@ -2426,7 +2402,7 @@
   },
   "torch.Tensor.triu_": {},
   "torch.Tensor.true_divide": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.Tensor.divide",
     "args_list": [
       "other"
@@ -2634,7 +2610,7 @@
     }
   },
   "torch.add": {
-    "Matcher": "TorchAddMatcher",
+    "Matcher": "Num2TensorBinaryWithAlphaMatcher",
     "paddle_api": "paddle.add",
     "args_list": [
       "input",
@@ -4585,8 +4561,9 @@
       "type_q": "cls_q"
     }
   },
-  "torch.div": {
-    "Matcher": "DivMatcher",
+  "torch.divide": {
+    "Matcher": "DivideMatcher",
+    "paddle_api": "paddle.divide",
     "args_list": [
       "input",
       "other",
@@ -6508,19 +6485,6 @@
       "input",
       "out"
     ]
-  },
-  "torch.mul": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.multiply",
-    "args_list": [
-      "input",
-      "other",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "other": "y"
-    }
   },
   "torch.multinomial": {
     "Matcher": "GenericMatcher",
@@ -11270,17 +11234,9 @@
       "correction": "unbiased"
     }
   },
-  "torch.sub": {
-    "Matcher": "SubMatcher",
-    "args_list": [
-      "input",
-      "other",
-      "alpha",
-      "out"
-    ]
-  },
   "torch.subtract": {
-    "Matcher": "SubMatcher",
+    "Matcher": "Num2TensorBinaryWithAlphaMatcher",
+    "paddle_api": "paddle.subtract",
     "args_list": [
       "input",
       "other",
@@ -11580,7 +11536,7 @@
     ]
   },
   "torch.true_divide": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.divide",
     "args_list": [
       "input",

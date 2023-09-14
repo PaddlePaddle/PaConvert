@@ -64,7 +64,7 @@ def test_case_4():
     obj.run(pytorch_code, ["x"])
 
 
-# paddle.Tensor.add not support type promote and x/y must have same dtype
+# paddle not support type promote and x/y must have same dtype
 def _test_case_5():
     pytorch_code = textwrap.dedent(
         """
@@ -76,7 +76,7 @@ def _test_case_5():
     obj.run(pytorch_code, ["x"])
 
 
-# paddle.Tensor.add not support type promote and x/y must have same dtype
+# paddle not support type promote and x/y must have same dtype
 def _test_case_6():
     pytorch_code = textwrap.dedent(
         """

@@ -17,7 +17,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.mul")
+obj = APIBase("torch.Tensor.mul", is_aux_api=True)
 
 
 def test_case_1():
@@ -32,13 +32,14 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_2():
+# paddle not support input type promote, and x/y must have the same dtype
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
         input = torch.tensor([0.2015, -0.4255,  2.6087])
-        other = torch.tensor([2., 6, 4])
-        result = input.mul(other)
+        other = torch.tensor([2, 6, 4])
+        result = input.mul(other=other)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -49,7 +50,7 @@ def test_case_3():
         """
         import torch
         input = torch.tensor([0.2015, -0.4255,  2.6087])
-        result = input.mul(other=5.)
+        result = input.mul(other=torch.tensor(5.))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -60,14 +61,25 @@ def test_case_4():
         """
         import torch
         input = torch.tensor([3, 6, 9])
+        result = input.mul(5)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([3, 6, 9])
         result = input.mul(other=5)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# paddle.multiply not support type promote and x/y must have same dtype
-def _test_case_5():
+# paddle not support type promote and x/y must have same dtype
+def _test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch

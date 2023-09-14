@@ -3,8 +3,8 @@
 **Pa**ddlePaddle Code **Convert** Toolkits
 
 # 重要
-- 当前支持约1200个Pytorch API的一键转换，我们通过285个Pytorch 模型代码测试，代码行数平均转换率约为85+%
-- 当前PaConvert转换工具还在内测中，欢迎下载试用，也欢迎通过issue方式向我们报Bug与提建议
+- 当前共支持约1200个Pytorch API的一键转换，我们通过285个Pytorch 模型代码测试，代码行数平均转换率约为 **85+%**
+- 当前PaConvert转换工具还在内测中，欢迎下载试用，欢迎通过issue方式向我们报Bug与提建议
 
 # 概述
 PaConvert全称是 **代码转换工具**，能自动将其它深度学习框架训练或推理的**代码**，转换为PaddlePaddle的**代码**，方便快速自动地 **模型代码迁移**。

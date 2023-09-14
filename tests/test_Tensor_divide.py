@@ -16,43 +16,37 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.subtract")
+obj = APIBase("torch.Tensor.divide", is_aux_api=True)
 
 
-# paddle not support type promote and x/y must have same dtype
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
         a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
-        b = torch.tensor([1, 1, 1, 0])
-        result = torch.subtract(a, b)
+        result = a.divide(torch.tensor([0.5]))
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support type promote and x/y must have same dtype
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
         a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
-        b = torch.tensor([1, 1, 1, 0])
-        result = torch.subtract(input=a, other=b)
+        result = a.divide(0.5)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support type promote and x/y must have same dtype
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
         a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
-        b = torch.tensor([1, 1, 1, 0])
-        result = torch.subtract(a, b, alpha=3)
+        result = a.divide(other=0.5)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -62,9 +56,9 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
-        b = torch.tensor([1., 1., 1., 0.])
-        result = torch.subtract(a, b)
+        a = torch.tensor([[ 0.5950,-0.0872], [2.3298, -0.2972]])
+        b = torch.tensor([0.1815, -1.0111])
+        result = a.divide(other=b)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -74,9 +68,9 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
-        b = torch.tensor([1., 1., 1., 0.])
-        result = torch.subtract(input=a, other=b)
+        a = torch.tensor([[ 0.5950,-0.0872], [2.3298, -0.2972]])
+        b = torch.tensor([0.1815, -1.0111])
+        result = a.divide(other=b, rounding_mode=None)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -86,10 +80,9 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
-        b = torch.tensor([1., 1., 1., 0.])
-        out = torch.tensor([1., 1, 1, 0])
-        result = torch.subtract(a, b, alpha=3, out=out)
+        a = torch.tensor([[ 0.5950,-0.0872], [2.3298, -0.2972]])
+        b = torch.tensor([0.1815, -1.0111])
+        result = a.divide(other=b, rounding_mode="trunc")
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -99,20 +92,38 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
-        result = torch.subtract(a, 0.5, alpha=3)
+        a = torch.tensor([[ 0.5950,-0.0872], [2.3298, -0.2972]])
+        b = torch.tensor([0.1815, -1.0111])
+        result = a.divide(other=b, rounding_mode="floor")
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
+# paddle not support type promote
+# torch.divide(int, int) return float, but paddle return int
 def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
-        out = torch.tensor([1., 1, 1, 0])
-        result = torch.subtract(a, 0.5, alpha=3, out=out)
+        a = torch.tensor([[4, 9, 8]])
+        b = torch.tensor([2, 3, 4])
+        result = a.divide(b)
         """
     )
-    obj.run(pytorch_code, ["out"])
+    obj.run(pytorch_code, ["result"], check_dtype=False)
+
+
+# paddle not support type promote
+# torch.divide(int, int) return float, but paddle return int, when can not divide exactly,
+# paddle result equal to trunc divide, result is wrong
+def _test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4, 3, 8]])
+        b = torch.tensor([3, 2, 5])
+        result = a.divide(other=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_dtype=False)
