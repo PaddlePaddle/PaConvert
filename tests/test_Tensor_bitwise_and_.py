@@ -59,9 +59,20 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        x = torch.tensor([True, False, True])
         y = torch.tensor([False, False, True])
-        a = torch.tensor([True, False, True])
-        a.bitwise_and_(y)
+        x.bitwise_and_(other=y)
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1, 2, 3])
+        a.bitwise_and_(other=torch.tensor([-1, 9, 10]))
         """
     )
     obj.run(pytorch_code, ["a"])
