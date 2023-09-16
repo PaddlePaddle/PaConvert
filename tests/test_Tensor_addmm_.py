@@ -80,3 +80,16 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["x"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1., 2], [4, 5]])
+        mat1 = torch.tensor([[1., 2], [4, 5]])
+        mat2 = torch.tensor([[1., 2], [4, 5]])
+        x.addmm_(beta=0.6, mat1=mat1, alpha=0.7, mat2=mat2)
+        """
+    )
+    obj.run(pytorch_code, ["x"])
