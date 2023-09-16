@@ -30,14 +30,12 @@ def test_case_1():
     obj.run(pytorch_code, ["a"])
 
 
-# paddle.pow_ not support type promote and x/y must have same dtype
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
         a = torch.tensor([0.4331,  1.2475,  0.6834, -0.2791])
-        b = torch.tensor([1, 2, 3, 4])
-        a.pow_(b)
+        a.pow_(exponent=3.)
         """
     )
     obj.run(pytorch_code, ["a"])

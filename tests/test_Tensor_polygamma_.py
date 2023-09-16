@@ -36,7 +36,7 @@ def test_case_2():
         """
         import torch
         x = torch.tensor([1.02, 2.21, 3.33, 4])
-        x.polygamma_(1)
+        x.polygamma_(n = 1)
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -58,7 +58,7 @@ def test_case_4():
         """
         import torch
         x = torch.tensor([1.02, 2, 3.333], dtype=torch.float64)
-        x.polygamma_(3)
+        x.polygamma_(n = 3)
         """
     )
     obj.run(pytorch_code, ["x"])

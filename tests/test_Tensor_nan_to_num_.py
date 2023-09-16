@@ -50,3 +50,14 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["input"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([float('nan'), float('inf'), -float('inf'), 3.14])
+        input.nan_to_num_(posinf=1., nan=0., neginf=-1.)
+        """
+    )
+    obj.run(pytorch_code, ["input"])
