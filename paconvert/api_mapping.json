@@ -1515,10 +1515,12 @@
     }
   },
   "torch.Tensor.logical_not": {
-    "Matcher": "UnchangeMatcher"
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.logical_not"
   },
   "torch.Tensor.logical_not_": {
-    "Matcher": "UnchangeMatcher"
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.logical_not_"
   },
   "torch.Tensor.logical_or": {
     "Matcher": "GenericMatcher",
