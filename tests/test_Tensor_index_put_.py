@@ -52,7 +52,7 @@ def test_case_3():
         x = torch.ones([5, 3])
         t = torch.tensor([1.], dtype=torch.float)
         indices = [torch.tensor(i) for i in [[0, 0], [0, 1]]]
-        x.index_put_(indices=indices, values=t, accumulate=True)
+        x.index_put_(indices, t, True)
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -65,7 +65,33 @@ def test_case_4():
         x = torch.ones([5, 3])
         t = torch.tensor([1.], dtype=torch.float)
         indices = [torch.tensor(i) for i in [[0, 0], [0, 1]]]
+        x.index_put_(indices=indices, values=t, accumulate=True)
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones([5, 3])
+        t = torch.tensor([1.], dtype=torch.float)
+        indices = [torch.tensor(i) for i in [[0, 0], [0, 1]]]
         x.index_put_(indices=indices, values=t, accumulate=False)
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones([5, 3])
+        t = torch.tensor([1.], dtype=torch.float)
+        indices = [torch.tensor(i) for i in [[0, 0], [0, 1]]]
+        x.index_put_(accumulate=True, indices=indices, values=t)
         """
     )
     obj.run(pytorch_code, ["x"])
