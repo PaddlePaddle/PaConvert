@@ -26,7 +26,7 @@ def test_case_1():
         import torch.nn.functional as F
         x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                             [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        F.leaky_relu_(x)
+        F.leaky_relu_(input=x, negative_slope=0.08)
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -52,7 +52,7 @@ def test_case_3():
         import torch.nn.functional as F
         x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                             [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        F.leaky_relu_(input=x, negative_slope=0.08)
+        F.leaky_relu_(x)
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -65,13 +65,26 @@ def test_case_4():
         import torch.nn.functional as F
         x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                             [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        F.leaky_relu_(x, 0.09)
+        F.leaky_relu_(negative_slope=0.08, input=x)
         """
     )
     obj.run(pytorch_code, ["x"])
 
 
 def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        F.leaky_relu_(x, 0.09)
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch

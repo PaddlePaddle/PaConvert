@@ -51,3 +51,25 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["out"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([-1])
+        torch.abs_(input=a)
+        """
+    )
+    obj.run(pytorch_code, ["a"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([-1, 2, -3])
+        torch.abs_(input=a)
+        """
+    )
+    obj.run(pytorch_code, ["a"])
