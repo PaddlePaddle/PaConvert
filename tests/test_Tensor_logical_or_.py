@@ -24,7 +24,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([True, False, True]).logical_or_(torch.tensor([True, False, False]))
+        a = torch.tensor([True, False, True]).logical_or_(other=torch.tensor([True, False, False]))
         """
     )
     obj.run(pytorch_code, ["a"])
@@ -34,9 +34,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([0, 1, 10, 0], dtype=torch.int8)
-        b = torch.tensor([4, 0, 1, 0], dtype=torch.int8)
+        a = torch.tensor([0, 1, 10, 7, 0], dtype=torch.int8)
+        b = torch.tensor([4, 0, 1, 5, 0], dtype=torch.int8)
         a.logical_or_(b)
+        a = a.bool()
         """
     )
     obj.run(pytorch_code, ["a"])
@@ -46,9 +47,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([0, 1, 10, 0], dtype=torch.float32)
-        b = torch.tensor([4, 0, 1, 0], dtype=torch.float32)
-        a.logical_or_(b)
+        a = torch.tensor([0, 1, 10, 7, 0], dtype=torch.int8)
+        a.logical_or_(other=torch.tensor([4, 0, 1, 5, 0], dtype=torch.int8))
+        a = a.bool()
         """
     )
     obj.run(pytorch_code, ["a"])
@@ -58,22 +59,23 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([0, 1, 10, 0], dtype=torch.float32)
-        b = torch.tensor([4, 0, 1, 0], dtype=torch.float32)
-        a.logical_or_(other=torch.tensor([4, 0, 10., 0.]))
+        a = torch.tensor([0, 1, 10, 7, 0], dtype=torch.float32)
+        b = torch.tensor([4, 0, 1, 5, 0], dtype=torch.float32)
+        a.logical_or_(b)
+        a = a.bool()
         """
     )
     obj.run(pytorch_code, ["a"])
 
 
-# paddle not support type promote
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([0, 1, 10, 0], dtype=torch.float32)
-        b = torch.tensor([4, 0, 1, 0], dtype=torch.int8)
-        a.logical_or_(b)
+        a = torch.tensor([0, 1, 10, 7, 0], dtype=torch.float32)
+        b = torch.tensor([4, 0, 1, 5, 0], dtype=torch.float32)
+        a.logical_or_(other=b)
+        a = a.bool()
         """
     )
     obj.run(pytorch_code, ["a"])
