@@ -9844,7 +9844,8 @@
       "dim",
       "keepdim",
       "out",
-      "dtype"
+      "dtype",
+      "p"
     ],
     "kwargs_change": {
       "input": "x",
