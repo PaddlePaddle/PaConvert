@@ -133,3 +133,25 @@ def test_case_10():
         """
     )
     obj.run(pytorch_code, ["x"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1., 2.], [3., 4.]])
+        x.ge_(torch.tensor([[1., 1.], [4., 4.]]))
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1., 2.], [3., 4.]])
+        x.ge_(2.)
+        """
+    )
+    obj.run(pytorch_code, ["x"])

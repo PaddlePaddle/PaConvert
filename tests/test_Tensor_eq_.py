@@ -35,8 +35,7 @@ def test_case_2():
         """
         import torch
         x = torch.tensor([[1, 2], [3, 4]])
-        other = torch.tensor([[1, 1], [4, 4]])
-        x.eq_(other=other)
+        x.eq_(other=torch.tensor([[1, 1], [4, 4]]))
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -47,7 +46,7 @@ def test_case_3():
         """
         import torch
         x = torch.tensor([[1, 2], [3, 4]])
-        other = torch.tensor([[1, 2], [3, 4]])
+        other = torch.tensor([[1, 1], [4, 4]])
         x.eq_(other)
         """
     )
@@ -59,8 +58,8 @@ def test_case_4():
         """
         import torch
         x = torch.tensor([[1, 2], [3, 4]])
-        other = torch.tensor([1, 2])
-        x.eq_(other)
+        other = torch.tensor([[1, 1], [4, 4]])
+        x.eq_(other=other)
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -71,7 +70,8 @@ def test_case_5():
         """
         import torch
         x = torch.tensor([[1, 2], [3, 4]])
-        x.eq_(2)
+        other = torch.tensor([[1, 2], [3, 4]])
+        x.eq_(other)
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -82,7 +82,76 @@ def test_case_6():
         """
         import torch
         x = torch.tensor([[1, 2], [3, 4]])
+        other = torch.tensor([[1, 2], [3, 4]])
+        x.eq_(other=other)
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2], [3, 4]])
+        other = torch.tensor([1, 2])
+        x.eq_(other)
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2], [3, 4]])
+        other = torch.tensor([1, 2])
+        x.eq_(other=other)
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2], [3, 4]])
+        x.eq_(2)
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2], [3, 4]])
         x.eq_(other=2)
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1., 2.], [3., 4.]])
+        x.eq_(torch.tensor([[1., 1.], [4., 4.]]))
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1., 2.], [3., 4.]])
+        x.eq_(2.)
         """
     )
     obj.run(pytorch_code, ["x"])
