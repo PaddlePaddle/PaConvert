@@ -683,7 +683,15 @@
     "Matcher": "UnchangeMatcher"
   },
   "torch.Tensor.cumprod_": {
-    "Matcher": "UnchangeMatcher"
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.cumprod_",
+    "args_list": [
+      "dim",
+      "dtype"
+    ],
+    "kwargs_change": {
+      "dtype": "dtype"
+    }
   },
   "torch.Tensor.cumsum": {
     "Matcher": "GenericMatcher",
@@ -705,7 +713,8 @@
       "dtype"
     ],
     "kwargs_change": {
-      "dim": "axis"
+      "dim": "axis",
+      "dtype": "dtype"
     }
   },
   "torch.Tensor.data_ptr": {},
