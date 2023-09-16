@@ -1165,7 +1165,8 @@
   "torch.Tensor.hypot_": {},
   "torch.Tensor.i0": {},
   "torch.Tensor.i0_": {
-    "Matcher": "UnchangeMatcher"
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.i0_"
   },
   "torch.Tensor.igamma": {},
   "torch.Tensor.igamma_": {},
@@ -2635,7 +2636,8 @@
     "Matcher": "UnchangeMatcher"
   },
   "torch.Tensor.trunc_": {
-    "Matcher": "UnchangeMatcher"
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.trunc_"
   },
   "torch.Tensor.type": {
     "Matcher": "TensorTypeMatcher",
