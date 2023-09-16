@@ -4315,7 +4315,8 @@
     "paddle_api": "paddle.distribution.Distribution",
     "args_list": [
       "batch_shape",
-      "event_shape"
+      "event_shape",
+      "validate_args"
     ],
     "kwargs_change": {
       "validate_args": ""
