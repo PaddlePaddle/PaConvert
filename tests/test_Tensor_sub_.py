@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 import textwrap
 
 from apibase import APIBase
@@ -24,64 +23,68 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3])
-        x.sub_(torch.tensor([1, 4, 6]))
+        a = torch.tensor([0.5950, -0.0872, 2.3298, -0.2972])
+        b = torch.tensor([1., 2., 3., 4.])
+        a.sub_(b)
         """
     )
-    obj.run(pytorch_code, ["x"])
+    obj.run(pytorch_code, ["a"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3])
-        x.sub_(20)
+        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
+        b = torch.tensor([1., 2., 3., 4.])
+        a.sub_(other=b)
         """
     )
-    obj.run(pytorch_code, ["x"])
+    obj.run(pytorch_code, ["a"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        x.sub_(torch.tensor([1., 4, 6]), alpha=0.8)
+        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
+        b = torch.tensor([1., 2., 3., 4.])
+        a.sub_(b, alpha=3)
         """
     )
-    obj.run(pytorch_code, ["x"])
+    obj.run(pytorch_code, ["a"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        x.sub_(other=torch.tensor([1., 4, 6]), alpha=0.8)
+        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
+        a.sub_(0.5, alpha=3)
         """
     )
-    obj.run(pytorch_code, ["x"])
+    obj.run(pytorch_code, ["a"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones((10, 4))
-        x.sub_(4.5, alpha=5)
+        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
+        b = torch.tensor([1., 2., 3., 4.])
+        a.sub_(other=b, alpha=3)
         """
     )
-    obj.run(pytorch_code, ["x"])
+    obj.run(pytorch_code, ["a"])
 
 
-# paddle.sub_ has bug, when float - int, but result'dtype is int, wrong type promote
-def _test_case_6():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones((10, 4))
-        x.sub_(4, alpha=5)
+        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
+        b = torch.tensor([1., 2., 3., 4.])
+        a.sub_(alpha=3, other=b)
         """
     )
-    obj.run(pytorch_code, ["x"])
+    obj.run(pytorch_code, ["a"])

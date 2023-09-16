@@ -2442,6 +2442,21 @@
   "torch.Tensor.storage_offset": {},
   "torch.Tensor.storage_type": {},
   "torch.Tensor.stride": {},
+  "torch.Tensor.sub": {
+    "Matcher": "TensorSubMatcher",
+    "paddle_api": "paddle.Tensor.subtract",
+    "args_list": [
+      "other"
+    ]
+  },
+  "torch.Tensor.sub_": {
+    "Matcher": "Num2TensorBinaryWithAlphaMatcher",
+    "paddle_api": "paddle.Tensor.subtract_",
+    "args_list": [
+      "other",
+      "alpha"
+    ]
+  },
   "torch.Tensor.subtract": {
     "Matcher": "TensorSubtractMatcher",
     "paddle_api": "paddle.Tensor.subtract",
