@@ -11859,7 +11859,8 @@
       "dim",
       "correction",
       "keepdim",
-      "out"
+      "out",
+      "unbiased"
     ]
   },
   "torch.vdot": {
