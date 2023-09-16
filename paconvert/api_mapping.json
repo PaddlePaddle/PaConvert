@@ -9792,7 +9792,8 @@
       "module",
       "name",
       "n_power_iterations",
-      "eps"
+      "eps",
+      "dim"
     ],
     "kwargs_change": {
       "module": "layer"
