@@ -36,7 +36,7 @@ def test_case_2():
         import torch
         x = torch.tensor([[1, 2], [3, 4]])
         other = torch.tensor([[1, 1], [4, 4]])
-        x.eq_(other)
+        x.eq_(other=other)
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -72,6 +72,17 @@ def test_case_5():
         import torch
         x = torch.tensor([[1, 2], [3, 4]])
         x.eq_(2)
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2], [3, 4]])
+        x.eq_(other=2)
         """
     )
     obj.run(pytorch_code, ["x"])

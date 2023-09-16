@@ -56,3 +56,42 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["x"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, 1.0, 1.0],
+                        [2.0, 2.0, 2.0],
+                        [3.0, 3.0, 3.0]])
+        x.cumsum_(dim=1, dtype=torch.float32)
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, 1.0, 1.0],
+                        [2.0, 2.0, 2.0],
+                        [3.0, 3.0, 3.0]])
+        x.cumsum_(dtype=torch.float32, dim=1)
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, 1.0, 1.0],
+                        [2.0, 2.0, 2.0],
+                        [3.0, 3.0, 3.0]])
+        x.cumsum_(1, dtype=torch.float32)
+        """
+    )
+    obj.run(pytorch_code, ["x"])

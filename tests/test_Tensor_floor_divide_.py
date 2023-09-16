@@ -37,13 +37,47 @@ def test_case_2():
         """
         import torch
         a = torch.tensor([4.0, 3.0])
-        a.floor_divide_(torch.tensor([2.0, 2.0]))
+        b = torch.tensor([2.0, 2.0])
+        a.floor_divide_(other=b)
         """
     )
     obj.run(pytorch_code, ["a"])
 
 
 def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([4.0, 3.0])
+        a.floor_divide_(torch.tensor([2.0, 2.0]))
+        """
+    )
+    obj.run(pytorch_code, ["a"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([4.0, 3.0])
+        a.floor_divide_(other=torch.tensor([2.0, 2.0]))
+        """
+    )
+    obj.run(pytorch_code, ["a"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([4.0, 3.0])
+        a.floor_divide_(2.)
+        """
+    )
+    obj.run(pytorch_code, ["a"])
+
+
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
