@@ -66,6 +66,10 @@ class GenericMatcher(BaseMatcher):
                 ]:
                     new_kwargs.pop(k)
                     continue
+                else:
+                    if k not in self.api_mapping["args_list"]:
+                        if k not in ["dtype", "pin_memory", "requires_grad", "out"]:
+                            return None
 
         new_kwargs = self.set_paddle_default_kwargs(new_kwargs)
 
