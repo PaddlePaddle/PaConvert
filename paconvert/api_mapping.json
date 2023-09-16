@@ -4263,14 +4263,6 @@
       "input": "x"
     }
   },
-  "torch.cumprod_": {
-    "Matcher": "CumprodMatcher",
-    "paddle_api": "paddle.cumprod_",
-    "args_list": [
-      "dim",
-      "dtype"
-    ]
-  },
   "torch.cumsum": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.cumsum",
