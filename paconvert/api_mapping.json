@@ -1306,7 +1306,7 @@
     "paddle_api": "paddle.Tensor.index_put_",
     "args_list": [
       "indices",
-      "value",
+      "values",
       "accumulate"
     ],
     "kwargs_change": {
