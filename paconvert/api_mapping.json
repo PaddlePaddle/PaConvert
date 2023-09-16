@@ -9859,7 +9859,8 @@
       "mean",
       "std",
       "generator",
-      "out"
+      "out",
+      "size"
     ],
     "kwargs_change": {
       "size": "shape"
