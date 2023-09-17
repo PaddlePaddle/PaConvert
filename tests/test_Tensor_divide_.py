@@ -76,3 +76,14 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["a"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
+        a.divide_(rounding_mode="trunc", other=torch.tensor([0.5]))
+        """
+    )
+    obj.run(pytorch_code, ["a"])
