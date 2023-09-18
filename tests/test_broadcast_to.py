@@ -57,7 +57,7 @@ def test_case_4():
         """
         import torch
         x = torch.rand(3, 3)
-        result = torch.broadcast_to(torch.tensor([1, 2, 3]), x.shape)
+        result = torch.broadcast_to(torch.tensor([1, 2, 3]), size=x.shape)
         """
     )
     obj.run(pytorch_code, ["result"])

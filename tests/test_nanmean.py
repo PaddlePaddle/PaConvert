@@ -85,3 +85,15 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1, 2], [3., float("nan")]])
+        out = torch.tensor([[1, 2], [3., float("nan")]], dtype=torch.float64)
+        result = torch.nanmean(input, 1, False, dtype=torch.float64, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

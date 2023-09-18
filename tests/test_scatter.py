@@ -24,9 +24,9 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        input = torch.arange(15).reshape([3, 5]).type(torch.float32)
         index = torch.tensor([[0],[1],[2]])
-        input = torch.zeros(3, 5)
-        result = torch.scatter(input,1, index, 1.0)
+        result = torch.scatter(input, 1, index, 1.0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -36,9 +36,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        input = torch.arange(15).reshape([3, 5]).type(torch.float32)
         index = torch.tensor([[0, 1, 2, 0]])
-        input = torch.zeros(3, 5)
-        result = torch.scatter(input,1, index, 1.0)
+        result = torch.scatter(input, 1, index, 1.0)
         """
     )
     obj.run(
@@ -50,10 +50,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        input = torch.arange(15).reshape([3, 5]).type(torch.float32)
         index = torch.tensor([[0],[1],[2]])
-        input = torch.zeros(3, 5)
-        result = torch.scatter(input,1, index, 1.0,reduce='multiply')
-
+        result = torch.scatter(input, 1, index, 1.0, reduce='multiply')
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -63,9 +62,9 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        input = torch.arange(15).reshape([3, 5]).type(torch.float32)
         index = torch.tensor([[0],[1],[2]])
-        input = torch.ones(3, 5)
-        result = torch.scatter(input,1, index, 1.0,reduce='add')
+        result = torch.scatter(input, 1, index, 1.0, reduce='add')
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -75,10 +74,10 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        input = torch.arange(15).reshape([3, 5]).type(torch.float32)
         index = torch.tensor([[0],[1],[2]])
-        input = torch.zeros(3, 5)
         out = torch.zeros(3, 5)
-        result = torch.scatter(input,1, index, 1.0,reduce='add',out=out)
+        result = torch.scatter(input, 1, index, 1.0, reduce='add', out=out)
         """
     )
     obj.run(pytorch_code, ["out"])
@@ -88,10 +87,14 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        index = torch.tensor([[0],[1],[2]])
-        input = torch.zeros(3, 5)
-        out = torch.zeros(3, 5)
-        result = torch.scatter(input,1, index, 1.0,out=out)
+        x = torch.arange(15).reshape([3, 5]).type(torch.float32)
+        index = torch.tensor([[0], [1], [2]])
+        result = torch.scatter(x, 1, index, src=torch.rand(3, 5), reduce='add')
         """
     )
-    obj.run(pytorch_code, ["out"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Paddle not support 'src' parameter, which is Tensor",
+    )

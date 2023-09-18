@@ -27,7 +27,9 @@ def test_case_1():
         result.normal_()
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="Paddle not support this API"
+    )
 
 
 def test_case_2():
@@ -38,7 +40,9 @@ def test_case_2():
         result.normal_(mean=0)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="Paddle not support this API"
+    )
 
 
 def test_case_3():
@@ -49,7 +53,9 @@ def test_case_3():
         result.normal_(mean=0, std=1)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="Paddle not support this API"
+    )
 
 
 def test_case_4():
@@ -60,4 +66,6 @@ def test_case_4():
         result.normal_(mean=0, std=2)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="Paddle not support this API"
+    )

@@ -26,7 +26,7 @@ def test_case_1():
         import torch
         x1 = torch.tensor([[1.4309,  1.2706], [-0.8562,  0.9796]])
         x2 = torch.ones_like(x1)
-        result = torch.cosine_similarity(x1, x2)
+        result = torch.cosine_similarity(x1, x2, 1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -50,7 +50,7 @@ def test_case_3():
         import torch
         x1 = torch.tensor([1.4309,  1.2706, -0.8562,  0.9796])
         x2 = torch.ones_like(x1)
-        result = torch.cosine_similarity(x1=x1, x2=x2, axis=0)
+        result = torch.cosine_similarity(x1=x1, x2=x2, dim=0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -62,7 +62,19 @@ def test_case_4():
         import torch
         x1 = torch.tensor([1.4309,  1.2706, -0.8562,  0.9796])
         x2 = torch.ones_like(x1)
-        result = torch.cosine_similarity(x1=x1, x2=x2, axis=0, eps=0.1)
+        result = torch.cosine_similarity(x1=x1, x2=x2, dim=0, eps=0.1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x1 = torch.tensor([1.4309,  1.2706, -0.8562,  0.9796])
+        x2 = torch.ones_like(x1)
+        result = torch.cosine_similarity(x1, x2, 0, 0.1)
         """
     )
     obj.run(pytorch_code, ["result"])

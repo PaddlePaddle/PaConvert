@@ -88,7 +88,7 @@ def test_case_5():
             [ 1.5027, -0.3270,  0.5905,  0.6538],
             [-1.5745,  1.3330, -0.5596, -0.6548],
             [ 0.1264, -0.5080,  1.6420,  0.1992]])
-        var, mean = torch.var_mean(a, dim=1, keepdim=True)
+        var, mean = torch.var_mean(a, 1, True, False)
         """
     )
     obj.run(pytorch_code, ["var", "mean"])
@@ -103,7 +103,7 @@ def test_case_6():
             [ 1.5027, -0.3270,  0.5905,  0.6538],
             [-1.5745,  1.3330, -0.5596, -0.6548],
             [ 0.1264, -0.5080,  1.6420,  0.1992]])
-        var, mean = torch.var_mean(a, dim=1, correction=0, keepdim=True)
+        var, mean = torch.var_mean(input=a, dim=1, correction=0, keepdim=True)
         """
     )
     obj.run(pytorch_code, ["var", "mean"])

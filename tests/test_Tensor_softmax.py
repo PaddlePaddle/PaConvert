@@ -37,10 +37,15 @@ def test_case_2():
         import torch
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
-        result = input.softmax(dim=1)
+        result = input.softmax()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Default dim is not same for pytorch with paddle",
+    )
 
 
 def test_case_3():
@@ -61,7 +66,7 @@ def test_case_4():
         import torch
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
-        result = input.softmax(dim=1, dtype=torch.float32)
+        result = input.softmax(dim=1, dtype=torch.float64)
         """
     )
     obj.run(pytorch_code, ["result"])

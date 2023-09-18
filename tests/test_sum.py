@@ -84,3 +84,15 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([1., 2., 3.])
+        out = torch.tensor([1.], dtype=torch.float64)
+        result = torch.sum(input, 0, True, dtype=torch.float64, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

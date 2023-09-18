@@ -61,3 +61,14 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = input.mean(1, True, dtype=torch.float64)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
