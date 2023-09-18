@@ -687,11 +687,13 @@
     "paddle_api": "paddle.Tensor.cumprod_",
     "args_list": [
       "dim",
+      "*",
       "dtype"
     ],
     "kwargs_change": {
       "dtype": "dtype"
-    }
+    },
+    "min_input_args": 1
   },
   "torch.Tensor.cumsum": {
     "Matcher": "GenericMatcher",
@@ -715,7 +717,8 @@
     "kwargs_change": {
       "dim": "axis",
       "dtype": "dtype"
-    }
+    },
+    "min_input_args": 1
   },
   "torch.Tensor.data_ptr": {},
   "torch.Tensor.deg2rad": {
