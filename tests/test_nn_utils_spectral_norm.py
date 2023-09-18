@@ -56,3 +56,16 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        m = torch.nn.utils.spectral_norm(nn.Linear(20, 40), 'weight', 1, 1e-5, 0)
+        a = torch.ones(20)
+        result = m(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

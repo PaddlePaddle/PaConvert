@@ -87,7 +87,7 @@ def test_case_5():
         import torch.nn as nn
         x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                             [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        with torch.autocast(device_type='cpu', dtype=torch.bfloat16, enabled=True, cache_enabled=None):
+        with torch.autocast('cpu', torch.bfloat16, True):
             result = x*x
 
         """

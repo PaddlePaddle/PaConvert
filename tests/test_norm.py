@@ -103,3 +103,17 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[-12., -11., -10., -9. ],
+                    [-8. , -7. , -6. , -5. ],
+                    [-4. , -3. , -2. , -1. ]])
+        out = torch.tensor([1.], dtype=torch.float64)
+        result = torch.norm(input, 2, 1, True, out, torch.float64)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

@@ -18,6 +18,7 @@ import json
 import os
 import re
 import textwrap
+from itertools import groupby
 
 import astor
 
@@ -300,11 +301,33 @@ class BaseMatcher(object):
 
     def parse_args_and_kwargs(self, args, kwargs):
         args_list = self.api_mapping.get("args_list") or []
-        # more args, not match torch class method, indicate it is not torch Class
-        if len(args) > len(args_list):
-            return "misidentify"
-
+        min_args_num = self.api_mapping.get("min_args_num") or 0
         unsupport_args = self.api_mapping.get("unsupport_args") or []
+
+        group_list = [
+            list(v) for k, v in groupby(args_list, lambda x: x == "*") if not k
+        ]
+        posion_args_list = group_list[0] if len(group_list) > 0 else []
+        force_kwargs_list = group_list[1] if len(group_list) > 1 else []
+        force_kwargs_num = 0
+        for node in kwargs:
+            k = node.arg
+            # not support 'torch.rot90(tensor, **config)'
+            if k is None:
+                return None
+            # not support some API args
+            if k in unsupport_args:
+                return None
+            if k not in args_list:
+                return "misidentify"
+            if k in force_kwargs_list:
+                force_kwargs_num += 1
+
+        posion_args_num = len(args) + len(kwargs) - force_kwargs_num
+        if posion_args_num < min_args_num:
+            return "misidentify"
+        if posion_args_num > len(posion_args_list):
+            return "misidentify"
 
         new_kwargs = {}
         for i, node in enumerate(args):
@@ -321,14 +344,6 @@ class BaseMatcher(object):
 
         for node in kwargs:
             k = node.arg
-            # not support 'torch.rot90(tensor, **config)'
-            if k is None:
-                return None
-            # not support some API args
-            if k in unsupport_args:
-                return None
-            # if k not in args_list:
-            #    return 'misidentify'
             v = astor.to_source(node.value).replace("\n", "")
             new_kwargs[k] = v
 

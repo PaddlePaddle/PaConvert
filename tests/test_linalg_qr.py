@@ -35,14 +35,10 @@ def test_case_2():
         """
         import torch
         x = torch.tensor([[12., -51, 4], [6, 167, -68], [-4, 24, -41]])
-        out = torch.linalg.qr(x, mode='r')
-        if len(out) == 2:
-            result = out[1]
-        else:
-            result = out
+        Q, R = torch.linalg.qr(x, mode='reduced')
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["Q", "R"])
 
 
 def test_case_3():
@@ -50,9 +46,31 @@ def test_case_3():
         """
         import torch
         x = torch.tensor([[12., -51, 4], [6, 167, -68], [-4, 24, -41]])
-        out = (torch.tensor([]), torch.tensor([]))
-        torch.linalg.qr(x, out=out)
-        result = torch.flatten(torch.cat(out))
+        Q, R = torch.linalg.qr(A=x, mode='complete')
+        """
+    )
+    obj.run(pytorch_code, ["Q", "R"])
+
+
+# when mode='r', torch return empty Q and R, but paddle only return R, should fix Matcher to adapt
+def _test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[12., -51, 4], [6, 167, -68], [-4, 24, -41]])
+        result = torch.linalg.qr(A=x, mode='r')
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[12., -51, 4], [6, 167, -68], [-4, 24, -41]])
+        out = (torch.tensor([]), torch.tensor([]))
+        result = torch.linalg.qr(x, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

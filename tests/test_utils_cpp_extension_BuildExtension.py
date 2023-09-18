@@ -19,7 +19,6 @@ from apibase import APIBase
 obj = APIBase("torch.utils.cpp_extension.BuildExtension")
 
 
-# The cpp compile not supports
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
@@ -28,6 +27,22 @@ def test_case_1():
         CppExtension(
             name='extension',
             sources=['extension.cpp'],
+            extra_compile_args=['-g'])
+        dic = {'build_ext': BuildExtension}
+        result = True
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        from setuptools import setup
+        from torch.utils.cpp_extension import BuildExtension, CppExtension
+        CppExtension(
+            'extension',
+            ['extension.cpp'],
             extra_compile_args=['-g'])
         dic = {'build_ext': BuildExtension}
         result = True
