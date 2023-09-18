@@ -761,20 +761,8 @@
     }
   },
   "torch.Tensor.div": {
-    "Matcher": "TensorDivideMatcher",
-    "paddle_api": "paddle.Tensor.divide",
-    "args_list": [
-      "other",
-      "rounding_mode"
-    ]
   },
   "torch.Tensor.div_": {
-    "Matcher": "TensorDivideWithRoundingModeMatcher",
-    "paddle_api": "paddle.Tensor.divide_",
-    "args_list": [
-      "other",
-      "rounding_mode"
-    ]
   },
   "torch.Tensor.divide": {
     "Matcher": "TensorDivideMatcher",
@@ -789,6 +777,7 @@
   "torch.Tensor.divide_": {
     "Matcher": "TensorDivideWithRoundingModeMatcher",
     "paddle_api": "paddle.Tensor.divide_",
+    "min_input_args": 1,
     "args_list": [
       "other",
       "rounding_mode"
@@ -2636,7 +2625,7 @@
     }
   },
   "torch.Tensor.true_divide_": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.Tensor.divide_",
     "args_list": [
       "other"
