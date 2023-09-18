@@ -49,9 +49,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1.0, 1.0, 1.0],
-                        [2.0, 2.0, 2.0],
-                        [3.0, 3.0, 3.0]])
+        x = torch.tensor([[1, 1, 1],
+                        [2, 2, 2],
+                        [3, 3, 3]])
         x.cumsum_(dim=1)
         """
     )

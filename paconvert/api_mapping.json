@@ -712,6 +712,7 @@
     "paddle_api": "paddle.Tensor.cumsum_",
     "args_list": [
       "dim",
+      "*",
       "dtype"
     ],
     "kwargs_change": {
