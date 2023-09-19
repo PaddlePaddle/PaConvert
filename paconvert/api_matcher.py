@@ -2741,7 +2741,7 @@ class TensorDivideWithRoundingModeMatcher(BaseMatcher):
         )
 
         if "other" in kwargs:
-            kwargs["y"] = "paddle.to_tensor({})".format(kwargs.pop("other").strip("\n"))
+            kwargs["y"] = "paddle.to_tensor({})".format(kwargs.pop("other"))
 
         rounding_mode_v = "None"
         if "rounding_mode" in kwargs:
