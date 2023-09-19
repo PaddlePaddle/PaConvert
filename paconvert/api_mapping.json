@@ -894,7 +894,16 @@
       "other": "y"
     }
   },
-  "torch.Tensor.eq_": {},
+  "torch.Tensor.eq_": {
+    "Matcher": "Num2TensorBinaryMatcher",
+    "paddle_api": "paddle.Tensor.equal_",
+    "args_list": [
+      "other"
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
+  },
   "torch.Tensor.equal": {
     "Matcher": "EqualMatcher",
     "paddle_api": "paddle.Tensor.equal_all",
@@ -1149,7 +1158,13 @@
       "other"
     ]
   },
-  "torch.Tensor.ge_": {},
+  "torch.Tensor.ge_": {
+    "Matcher": "Num2TensorBinaryMatcher",
+    "paddle_api": "paddle.Tensor.greater_equal_",
+    "args_list": [
+      "other"
+    ]
+  },
   "torch.Tensor.geometric_": {},
   "torch.Tensor.geqrf": {},
   "torch.Tensor.ger": {
@@ -1175,7 +1190,13 @@
       "other"
     ]
   },
-  "torch.Tensor.greater_": {},
+  "torch.Tensor.greater_": {
+    "Matcher": "Num2TensorBinaryMatcher",
+    "paddle_api": "paddle.Tensor.greater_than_",
+    "args_list": [
+      "other"
+    ]
+  },
   "torch.Tensor.greater_equal": {
     "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.Tensor.greater_equal",
@@ -1187,7 +1208,13 @@
       "other": "y"
     }
   },
-  "torch.Tensor.greater_equal_": {},
+  "torch.Tensor.greater_equal_": {
+    "Matcher": "Num2TensorBinaryMatcher",
+    "paddle_api": "paddle.Tensor.greater_equal_",
+    "args_list": [
+      "other"
+    ]
+  },
   "torch.Tensor.gt": {
     "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.Tensor.greater_than",
@@ -1196,7 +1223,13 @@
       "other"
     ]
   },
-  "torch.Tensor.gt_": {},
+  "torch.Tensor.gt_": {
+    "Matcher": "Num2TensorBinaryMatcher",
+    "paddle_api": "paddle.Tensor.greater_than_",
+    "args_list": [
+      "other"
+    ]
+  },
   "torch.Tensor.half": {
     "Matcher": "TensorFP16Matcher",
     "min_input_args": 0,
