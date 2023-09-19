@@ -124,7 +124,22 @@
       "mat2": "y"
     }
   },
-  "torch.Tensor.addmm_": {},
+  "torch.Tensor.addmm_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.addmm_",
+    "min_input_args": 2,
+    "args_list": [
+      "mat1",
+      "mat2",
+      "*",
+      "alpha",
+      "beta"
+    ],
+    "kwargs_change": {
+      "mat1": "x",
+      "mat2": "y"
+    }
+  },
   "torch.Tensor.addmv": {
     "Matcher": "AddMRMatcher",
     "paddle_api": "paddle.mm",
@@ -1147,7 +1162,11 @@
   },
   "torch.Tensor.hypot_": {},
   "torch.Tensor.i0": {},
-  "torch.Tensor.i0_": {},
+  "torch.Tensor.i0_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.i0_",
+    "min_input_args": 0
+  },
   "torch.Tensor.igamma": {},
   "torch.Tensor.igamma_": {},
   "torch.Tensor.igammac": {},
@@ -2311,7 +2330,11 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.sigmoid"
   },
-  "torch.Tensor.sigmoid_": {},
+  "torch.Tensor.sigmoid_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.sigmoid_",
+    "min_input_args": 0
+  },
   "torch.Tensor.sign": {
     "Matcher": "UnchangeMatcher"
   },
@@ -2610,9 +2633,14 @@
   },
   "torch.Tensor.true_divide_": {},
   "torch.Tensor.trunc": {
-    "Matcher": "UnchangeMatcher"
+    "Matcher": "UnchangeMatcher",
+    "min_input_args": 0
   },
-  "torch.Tensor.trunc_": {},
+  "torch.Tensor.trunc_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.trunc_",
+    "min_input_args": 0
+  },
   "torch.Tensor.type": {
     "Matcher": "TensorTypeMatcher",
     "paddle_api": "paddle.Tensor.astype",
