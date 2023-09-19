@@ -602,7 +602,7 @@ class MaxMinMatcher(BaseMatcher):
                 self.kwargs_to_str(new_kwargs),
                 out_v,
             )
-            return ast.parse(code.strip("\n")).body
+            return ast.parse(code).body
         else:
             out_v = new_kwargs.pop("out")
             return ast.parse(
@@ -696,7 +696,7 @@ class TensorMatcher(BaseMatcher):
                         code = "paddle.to_tensor(data={}, dtype='float32')".format(data)
                     else:
                         code = "paddle.to_tensor(data={})".format(data)
-                node = ast.parse(code.strip("\n")).body
+                node = ast.parse(code).body
                 return node
             shape = str(shape).replace("'", "")
 
@@ -742,7 +742,7 @@ class TensorMatcher(BaseMatcher):
         else:
             code = "paddle.empty(shape={})".format(shape)
 
-        node = ast.parse(code.strip("\n")).body
+        node = ast.parse(code).body
         return node
 
 
@@ -1019,7 +1019,7 @@ class TensorNew_Matcher(BaseMatcher):
         if pin_memory_v:
             code = code.rstrip("\n") + ".pin_memory()"
 
-        return ast.parse(code.strip("\n")).body
+        return ast.parse(code).body
 
 
 class TensorNewFullMatcher(BaseMatcher):
@@ -1058,7 +1058,7 @@ class TensorNewFullMatcher(BaseMatcher):
         if pin_memory_v:
             code = code.rstrip("\n") + ".pin_memory()"
 
-        return code.strip("\n")
+        return code
 
 
 class TensorNewTensorMatcher(BaseMatcher):
@@ -1079,7 +1079,7 @@ class TensorNewTensorMatcher(BaseMatcher):
             kwargs["dtype"] = "{}.dtype".format(self.paddleClass)
 
         code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-        return code.strip("\n")
+        return code
 
 
 class TorchTensorMatcher(BaseMatcher):
@@ -1096,12 +1096,12 @@ class TorchTensorMatcher(BaseMatcher):
 
         code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
-        return code.strip("\n")
+        return code
 
 
 class CudaIsAvailableMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "{}() >= 1".format(self.get_paddle_api().strip("\n"))
+        code = "{}() >= 1".format(self.get_paddle_api())
         return code
 
 
@@ -1303,7 +1303,7 @@ class TensorRequiresGrad_Matcher(BaseMatcher):
         )
         out = get_unique_name("out")
         code = API_TEMPLATE.format(out, self.paddleClass, out, requires_grad_v, out)
-        return ast.parse(code.strip("\n")).body
+        return ast.parse(code).body
 
 
 class LoadMatcher(BaseMatcher):
@@ -1891,7 +1891,7 @@ class SizeMatcher(BaseMatcher):
         else:
             code = "list({})".format(astor.to_source(args[0]).strip("\n"))
 
-        node = ast.parse(code.strip("\n")).body
+        node = ast.parse(code).body
         return node
 
 
@@ -2693,9 +2693,9 @@ class AMinMaxMatcher(BaseMatcher):
 class DivideMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" in kwargs:
-            kwargs["x"] = kwargs.pop("input").strip("\n")
+            kwargs["x"] = kwargs.pop("input")
         if "other" in kwargs:
-            kwargs["y"] = "paddle.to_tensor({})".format(kwargs.pop("other").strip("\n"))
+            kwargs["y"] = "paddle.to_tensor({})".format(kwargs.pop("other"))
 
         rounding_mode_v = "None"
         if "rounding_mode" in kwargs:
@@ -2727,7 +2727,7 @@ class DivideMatcher(BaseMatcher):
 class AllcloseMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         code = GenericMatcher.generate_code(self, kwargs)
-        code = code.strip("\n") + ".item()"
+        code = "{}.item()".format(code)
         return code
 
 
@@ -3132,10 +3132,10 @@ class TupleAssignMatcher(BaseMatcher):
             code = API_TEMPLATE.format(
                 self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v, out_v
             )
-            return code.strip("\n")
         else:
             code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-            return code.strip("\n")
+
+        return code
 
 
 class TripleAssignMatcher(BaseMatcher):
@@ -3163,10 +3163,10 @@ class TripleAssignMatcher(BaseMatcher):
             code = API_TEMPLATE.format(
                 self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v, out_v, out_v
             )
-            return code.strip("\n")
         else:
             code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-            return code.strip("\n")
+
+        return code
 
 
 class RoundMatcher(BaseMatcher):
@@ -3313,7 +3313,7 @@ class ParameterMatcher(BaseMatcher):
             requires_grad_v,
             out,
         )
-        return ast.parse(code.strip("\n")).body
+        return ast.parse(code).body
 
 
 class Modules_BatchNormBaseMatcher(BaseMatcher):
@@ -3455,7 +3455,7 @@ class SortMatcher(BaseMatcher):
         for key in change_kwargs:
             if key in kwargs:
                 if change_kwargs[key]:
-                    kwargs[change_kwargs[key]] = kwargs.pop(key).strip("\n")
+                    kwargs[change_kwargs[key]] = kwargs.pop(key)
                 else:
                     kwargs.pop(key)
 
@@ -3474,7 +3474,7 @@ class SortMatcher(BaseMatcher):
             code = API_TEMPLATE.format(
                 self.kwargs_to_str(kwargs), self.kwargs_to_str(kwargs), out_v, out_v
             )
-        return code.strip("\n")
+        return code
 
 
 class WhereMatcher(BaseMatcher):
@@ -3568,9 +3568,7 @@ class Get_EnumMatcher(BaseMatcher):
 
 class UnpoolMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs["indices"] = (
-            "(" + kwargs.pop("indices").strip("\n") + ").astype('int32')"
-        )
+        kwargs["indices"] = "{}.astype('int32')".format(kwargs["indices"])
 
         return GenericMatcher.generate_code(self, kwargs)
 
@@ -3654,10 +3652,10 @@ class FunctionalSoftmaxMatcher(BaseMatcher):
 
 class FunctionalLinearMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs["weight"] = kwargs["weight"].strip("\n") + ".T"
+        kwargs["weight"] = "{}.T".format(kwargs["weight"])
 
         if "input" in kwargs:
-            kwargs["x"] = kwargs.pop("input").strip("\n")
+            kwargs["x"] = kwargs.pop("input")
 
         return "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
@@ -3665,10 +3663,10 @@ class FunctionalLinearMatcher(BaseMatcher):
 class FunctionalBilinearMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "bias" in kwargs:
-            kwargs["bias"] = kwargs["bias"].strip("\n") + ".unsqueeze(0)"
+            kwargs["bias"] = "{}.unsqueeze(0)".format(kwargs["bias"])
 
-        kwargs["x1"] = kwargs.pop("input1").strip("\n")
-        kwargs["x2"] = kwargs.pop("input2").strip("\n")
+        kwargs["x1"] = kwargs.pop("input1")
+        kwargs["x2"] = kwargs.pop("input2")
 
         return "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
@@ -3678,7 +3676,7 @@ class FunctionalOneHotMatcher(BaseMatcher):
         if "num_classes" not in kwargs:
             kwargs["num_classes"] = "{}.max().item() + 1".format(kwargs["input"])
 
-        kwargs["x"] = kwargs.pop("input").strip("\n")
+        kwargs["x"] = kwargs.pop("input")
 
         return "{}({}).astype('int64')".format(
             self.get_paddle_api(), self.kwargs_to_str(kwargs)
@@ -3888,13 +3886,13 @@ class TensorIsSignedMatcher(BaseMatcher):
         self.parse_func(func)
         paddle_class = self.paddleClass
         code = "{}.dtype not in [paddle.uint8]".format(paddle_class)
-        return ast.parse(code.strip("\n")).body
+        return ast.parse(code).body
 
 
 class TensorToBoolMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "dim" in kwargs:
-            kwargs["axis"] = kwargs.pop("dim").strip("\n")
+            kwargs["axis"] = kwargs.pop("dim")
 
         paddle_api = self.get_paddle_api()
         paddle_api_name = paddle_api[paddle_api.rfind(".") :]
@@ -3913,7 +3911,7 @@ class TensorDatasetMatcher(BaseMatcher):
             tensors_v += ", {}".format(arg)
         tensors_v += "]"
         code = "{}({})".format(self.get_paddle_api(), tensors_v)
-        node = ast.parse(code.strip("\n")).body
+        node = ast.parse(code).body
         return node
 
 
