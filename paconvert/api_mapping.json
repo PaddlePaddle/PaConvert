@@ -1526,7 +1526,13 @@
       "other"
     ]
   },
-  "torch.Tensor.le_": {},
+  "torch.Tensor.le_": {
+    "Matcher": "Num2TensorBinaryMatcher",
+    "paddle_api": "paddle.Tensor.less_equal_",
+    "args_list": [
+      "other"
+    ]
+  },
   "torch.Tensor.lerp": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.lerp",
@@ -1559,7 +1565,13 @@
       "other"
     ]
   },
-  "torch.Tensor.less_": {},
+  "torch.Tensor.less_": {
+    "Matcher": "Num2TensorBinaryMatcher",
+    "paddle_api": "paddle.Tensor.less_than_",
+    "args_list": [
+      "other"
+    ]
+  },
   "torch.Tensor.less_equal": {
     "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.Tensor.less_equal",
@@ -1568,7 +1580,13 @@
       "other"
     ]
   },
-  "torch.Tensor.less_equal_": {},
+  "torch.Tensor.less_equal_": {
+    "Matcher": "Num2TensorBinaryMatcher",
+    "paddle_api": "paddle.Tensor.less_equal_",
+    "args_list": [
+      "other"
+    ]
+  },
   "torch.Tensor.lgamma": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.lgamma"
@@ -1726,7 +1744,13 @@
       "other"
     ]
   },
-  "torch.Tensor.lt_": {},
+  "torch.Tensor.lt_": {
+    "Matcher": "Num2TensorBinaryMatcher",
+    "paddle_api": "paddle.Tensor.less_than_",
+    "args_list": [
+      "other"
+    ]
+  },
   "torch.Tensor.lu": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.lu",
@@ -2030,7 +2054,13 @@
       "other"
     ]
   },
-  "torch.Tensor.ne_": {},
+  "torch.Tensor.ne_": {
+    "Matcher": "Num2TensorBinaryMatcher",
+    "paddle_api": "paddle.Tensor.not_equal_",
+    "args_list": [
+      "other"
+    ]
+  },
   "torch.Tensor.neg": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.neg"
@@ -2172,7 +2202,13 @@
       "other"
     ]
   },
-  "torch.Tensor.not_equal_": {},
+  "torch.Tensor.not_equal_": {
+    "Matcher": "Num2TensorBinaryMatcher",
+    "paddle_api": "paddle.Tensor.not_equal_",
+    "args_list": [
+      "other"
+    ]
+  },
   "torch.Tensor.numel": {
     "Matcher": "Func2Attribute",
     "paddle_api": "paddle.Tensor.size"
