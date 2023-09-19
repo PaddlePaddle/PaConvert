@@ -144,9 +144,11 @@ class APIBase(object):
             return
 
         if isinstance(pytorch_result, (bool, np.number, int, str, type(None))):
-            assert isinstance(
-                paddle_result, (bool, np.number, int, str, type(None))
-            ), "paddle result should be bool/np.number/int/str"
+            assert type(paddle_result) == type(
+                pytorch_result
+            ), "paddle result's type [{}] should be the same with pytorch's type [{}]".format(
+                type(paddle_result), type(pytorch_result)
+            )
             if check_value:
                 assert (
                     pytorch_result == paddle_result
