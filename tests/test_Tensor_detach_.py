@@ -31,7 +31,12 @@ def test_case_1():
         y.detach_()
         """
     )
-    obj.run(pytorch_code, ["y"])
+    obj.run(
+        pytorch_code,
+        ["y"],
+        unsupport=True,
+        reason="Tensor.detach_ throws unexpected exception, refer to: https://github.com/PaddlePaddle/Paddle/issues/57303",
+    )
 
 
 def test_case_2():
@@ -42,4 +47,9 @@ def test_case_2():
         x.detach_()
         """
     )
-    obj.run(pytorch_code, ["x"])
+    obj.run(
+        pytorch_code,
+        ["x"],
+        unsupport=True,
+        reason="Tensor.detach_ throws unexpected exception, refer to: https://github.com/PaddlePaddle/Paddle/issues/57303",
+    )
