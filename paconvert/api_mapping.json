@@ -1456,7 +1456,17 @@
       "other": "y"
     }
   },
-  "torch.Tensor.lcm_": {},
+  "torch.Tensor.lcm_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.lcm_",
+    "min_input_args": 1,
+    "args_list": [
+      "other"
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
+  },
   "torch.Tensor.ldexp": {
     "Matcher": "LdExpMatcher",
     "min_input_args": 1,
@@ -1464,7 +1474,17 @@
       "other"
     ]
   },
-  "torch.Tensor.ldexp_": {},
+  "torch.Tensor.ldexp_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.ldexp_",
+    "min_input_args": 1,
+    "args_list": [
+      "other"
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
+  },
   "torch.Tensor.le": {
     "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.Tensor.less_equal",
@@ -1520,7 +1540,11 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.lgamma"
   },
-  "torch.Tensor.lgamma_": {},
+  "torch.Tensor.lgamma_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.lgamma_",
+    "min_input_args": 0
+  },
   "torch.Tensor.log": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.log"
@@ -1529,17 +1553,32 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.log10"
   },
-  "torch.Tensor.log10_": {},
+  "torch.Tensor.log10_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.log10_",
+    "min_input_args": 0
+  },
   "torch.Tensor.log1p": {
     "Matcher": "UnchangeMatcher"
   },
-  "torch.Tensor.log1p_": {},
+  "torch.Tensor.log1p_": {
+    "Matcher": "UnchangeMatcher",
+    "min_input_args": 0
+  },
   "torch.Tensor.log2": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.log2"
   },
-  "torch.Tensor.log2_": {},
-  "torch.Tensor.log_": {},
+  "torch.Tensor.log2_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.log2_",
+    "min_input_args": 0
+  },
+  "torch.Tensor.log_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.log_",
+    "min_input_args": 0
+  },
   "torch.Tensor.log_normal_": {},
   "torch.Tensor.logaddexp": {
     "Matcher": "LogAddExpMatcher",
@@ -1618,7 +1657,14 @@
       "eps"
     ]
   },
-  "torch.Tensor.logit_": {},
+  "torch.Tensor.logit_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.logit_",
+    "min_input_args": 0,
+    "args_list": [
+      "eps"
+    ]
+  },
   "torch.Tensor.logsumexp": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.logsumexp",
@@ -1850,7 +1896,16 @@
       "neginf"
     ]
   },
-  "torch.Tensor.nan_to_num_": {},
+  "torch.Tensor.nan_to_num_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.nan_to_num_",
+    "min_input_args": 0,
+    "args_list": [
+      "nan",
+      "posinf",
+      "neginf"
+    ]
+  },
   "torch.Tensor.nanmean": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.nanmean",
@@ -1947,12 +2002,20 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.neg"
   },
-  "torch.Tensor.neg_": {},
+  "torch.Tensor.neg_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.neg_",
+    "min_input_args": 0
+  },
   "torch.Tensor.negative": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.neg"
   },
-  "torch.Tensor.negative_": {},
+  "torch.Tensor.negative_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.neg_",
+    "min_input_args": 0
+  },
   "torch.Tensor.nelement": {
     "Matcher": "Func2Attribute",
     "paddle_api": "paddle.Tensor.size"
@@ -2126,7 +2189,14 @@
       "n"
     ]
   },
-  "torch.Tensor.polygamma_": {},
+  "torch.Tensor.polygamma_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.polygamma_",
+    "min_input_args": 1,
+    "args_list": [
+      "n"
+    ]
+  },
   "torch.Tensor.positive": {},
   "torch.Tensor.pow": {
     "Matcher": "GenericMatcher",
@@ -2139,7 +2209,17 @@
       "exponent": "y"
     }
   },
-  "torch.Tensor.pow_": {},
+  "torch.Tensor.pow_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.pow_",
+    "min_input_args": 1,
+    "args_list": [
+      "exponent"
+    ],
+    "kwargs_change": {
+      "exponent": "y"
+    }
+  },
   "torch.Tensor.prod": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.prod",
