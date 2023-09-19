@@ -253,31 +253,6 @@ class Num2TensorBinaryWithAlphaMatcher(BaseMatcher):
         return code
 
 
-class TensorInplaceLogicalMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        API_TEMPLATE = textwrap.dedent(
-            """
-            _input_dtype_ = {}.dtype
-            paddle.assign({}({}).cast(_input_dtype_), {})
-            """
-        )
-
-        # the case of non-inplace op
-        # if "input" in kwargs:
-        #     kwargs["x"] = kwargs.pop("input")
-        if "other" in kwargs:
-            kwargs["y"] = kwargs.pop("other")
-
-        code = API_TEMPLATE.format(
-            self.paddleClass,
-            self.get_paddle_api(),
-            self.kwargs_to_str(kwargs),
-            self.paddleClass,
-        )
-
-        return code
-
-
 class TensorAddMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
