@@ -4010,7 +4010,7 @@ class TensorInplaceCompareMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             _input_dtype_ = {}.dtype
-            {}({}).cast_(_input_dtype_)
+            paddle.assign({}({}).cast(_input_dtype_), {})
             """
         )
 
@@ -4021,7 +4021,10 @@ class TensorInplaceCompareMatcher(BaseMatcher):
             kwargs["y"] = "paddle.to_tensor({})".format(kwargs.pop("other").strip("\n"))
 
         code = API_TEMPLATE.format(
-            self.paddleClass, self.get_paddle_api(), self.kwargs_to_str(kwargs)
+            self.paddleClass,
+            self.get_paddle_api(),
+            self.kwargs_to_str(kwargs),
+            self.paddleClass,
         )
 
         return code
