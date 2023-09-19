@@ -760,8 +760,6 @@
       "other": "y"
     }
   },
-  "torch.Tensor.div": {},
-  "torch.Tensor.div_": {},
   "torch.Tensor.divide": {
     "Matcher": "TensorDivideMatcher",
     "paddle_api": "paddle.Tensor.divide",
