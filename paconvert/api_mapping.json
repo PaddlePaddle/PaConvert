@@ -1148,21 +1148,6 @@
       "other": "y"
     }
   },
-  "torch.Tensor.ge": {
-    "Matcher": "Num2TensorBinaryMatcher",
-    "paddle_api": "paddle.Tensor.greater_equal",
-    "min_input_args": 1,
-    "args_list": [
-      "other"
-    ]
-  },
-  "torch.Tensor.ge_": {
-    "Matcher": "Num2TensorBinaryMatcher",
-    "paddle_api": "paddle.Tensor.greater_equal_",
-    "args_list": [
-      "other"
-    ]
-  },
   "torch.Tensor.geometric_": {},
   "torch.Tensor.geqrf": {},
   "torch.Tensor.ger": {
@@ -1215,8 +1200,6 @@
       "other"
     ]
   },
-  "torch.Tensor.gt": {},
-  "torch.Tensor.gt_": {},
   "torch.Tensor.half": {
     "Matcher": "TensorFP16Matcher",
     "min_input_args": 0,
@@ -1728,8 +1711,6 @@
     ]
   },
   "torch.Tensor.lstsq": {},
-  "torch.Tensor.lt": {},
-  "torch.Tensor.lt_": {},
   "torch.Tensor.lu": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.lu",
@@ -2025,8 +2006,6 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.ndimension"
   },
-  "torch.Tensor.ne": {},
-  "torch.Tensor.ne_": {},
   "torch.Tensor.neg": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.neg"
