@@ -2450,6 +2450,7 @@
     "min_input_args": 1,
     "args_list": [
       "other",
+      "*",
       "alpha"
     ]
   },
