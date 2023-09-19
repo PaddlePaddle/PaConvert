@@ -30,7 +30,7 @@ python -c "import paddle; print('paddle version information:' , paddle.__version
 
 # use Coverage diff-cover
 echo "Insalling coverage and diff-cover for incremental code inspection"
-python -m pip install diff-cover coverage
+python -m pip install coverage diff-cover
 python -m pip install pytest-timeout
 
 if [[ "$DEVELOP_IF" == "ON" ]]; then
@@ -44,11 +44,11 @@ fi
 
 # coverage code check
 echo '****************************start detecting coverate rate*********************************'
-coverage run -m pytest
+python -m coverage run -m pytest
 
 echo '**************************start generating coverage.xml file******************************'
-coverage xml -o coverage.xml
-coverage html
+python -m coverage xml -o coverage.xml
+python -m coverage html
 
 echo '************************start generating coverage rate report*****************************'
 diff-cover coverage.xml --compare-branch origin/master > temp.txt;check_error1=$?

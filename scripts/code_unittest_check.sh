@@ -32,8 +32,7 @@ python -c "import paddle; print('paddle version information:' , paddle.__version
 
 echo "Checking code unit test by pytest ..."
 python -m pip install pytest-timeout
-
-pytest /workspace/$1/PaConvert/tests;check_error=$?
+python -m pytest /workspace/$1/PaConvert/tests;check_error=$?
 
 echo '************************************************************************************'
 echo "______      _____                          _   "
@@ -47,7 +46,7 @@ if [ ${check_error} != 0 ];then
     echo "Your PR code unit test check failed." 
     echo "Please run the following command." 
     echo "" 
-    echo "    pytest tests" 
+    echo "    python -m pytest tests" 
     echo "" 
     echo "For more information, please refer to our check guide:" 
     echo "https://github.com/PaddlePaddle/PaConvert#readme." 
