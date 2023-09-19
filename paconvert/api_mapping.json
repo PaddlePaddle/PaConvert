@@ -1215,21 +1215,8 @@
       "other"
     ]
   },
-  "torch.Tensor.gt": {
-    "Matcher": "Num2TensorBinaryMatcher",
-    "paddle_api": "paddle.Tensor.greater_than",
-    "min_input_args": 1,
-    "args_list": [
-      "other"
-    ]
-  },
-  "torch.Tensor.gt_": {
-    "Matcher": "Num2TensorBinaryMatcher",
-    "paddle_api": "paddle.Tensor.greater_than_",
-    "args_list": [
-      "other"
-    ]
-  },
+  "torch.Tensor.gt": {},
+  "torch.Tensor.gt_": {},
   "torch.Tensor.half": {
     "Matcher": "TensorFP16Matcher",
     "min_input_args": 0,
@@ -1505,7 +1492,10 @@
     "min_input_args": 1,
     "args_list": [
       "other"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.ldexp_": {
     "Matcher": "GenericMatcher",
@@ -1736,21 +1726,8 @@
     ]
   },
   "torch.Tensor.lstsq": {},
-  "torch.Tensor.lt": {
-    "Matcher": "Num2TensorBinaryMatcher",
-    "paddle_api": "paddle.Tensor.less_than",
-    "min_input_args": 1,
-    "args_list": [
-      "other"
-    ]
-  },
-  "torch.Tensor.lt_": {
-    "Matcher": "Num2TensorBinaryMatcher",
-    "paddle_api": "paddle.Tensor.less_than_",
-    "args_list": [
-      "other"
-    ]
-  },
+  "torch.Tensor.lt": {},
+  "torch.Tensor.lt_": {},
   "torch.Tensor.lu": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.lu",
@@ -2046,21 +2023,8 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.ndimension"
   },
-  "torch.Tensor.ne": {
-    "Matcher": "Num2TensorBinaryMatcher",
-    "paddle_api": "paddle.Tensor.not_equal",
-    "min_input_args": 1,
-    "args_list": [
-      "other"
-    ]
-  },
-  "torch.Tensor.ne_": {
-    "Matcher": "Num2TensorBinaryMatcher",
-    "paddle_api": "paddle.Tensor.not_equal_",
-    "args_list": [
-      "other"
-    ]
-  },
+  "torch.Tensor.ne": {},
+  "torch.Tensor.ne_": {},
   "torch.Tensor.neg": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.neg"
