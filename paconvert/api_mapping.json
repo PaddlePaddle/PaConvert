@@ -2566,8 +2566,10 @@
   "torch.Tensor.subtract": {
     "Matcher": "TensorSubtractMatcher",
     "paddle_api": "paddle.Tensor.subtract",
+    "min_input_args": 1,
     "args_list": [
       "other",
+      "*",
       "alpha"
     ]
   },
