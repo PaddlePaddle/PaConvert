@@ -4014,11 +4014,13 @@ class TensorInplaceReserveTypeMatcher(BaseMatcher):
             """
         )
 
-        # the case of non-inplace op
-        # if "input" in kwargs:
-        #     kwargs["x"] = kwargs.pop("input")
+        convert_tensor = self.api_mapping.get("convert_tensor", {})
+
         if "other" in kwargs:
-            kwargs["y"] = "paddle.to_tensor({})".format(kwargs.pop("other").strip("\n"))
+            other_v = kwargs.pop("other")
+            if "other" in convert_tensor:
+                other_v = "paddle.to_tensor({})".format(other_v)
+            kwargs["y"] = other_v
 
         code = API_TEMPLATE.format(
             self.paddleClass, self.get_paddle_api(), self.kwargs_to_str(kwargs)

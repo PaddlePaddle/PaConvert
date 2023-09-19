@@ -898,6 +898,9 @@
     "Matcher": "TensorInplaceReserveTypeMatcher",
     "paddle_api": "paddle.Tensor.equal_",
     "min_input_args": 1,
+    "convert_tensor": [
+      "other"
+    ],
     "args_list": [
       "other"
     ]
@@ -1177,6 +1180,9 @@
     "Matcher": "TensorInplaceReserveTypeMatcher",
     "paddle_api": "paddle.Tensor.greater_than_",
     "min_input_args": 1,
+    "convert_tensor": [
+      "other"
+    ],
     "args_list": [
       "other"
     ]
@@ -1196,6 +1202,9 @@
     "Matcher": "TensorInplaceReserveTypeMatcher",
     "paddle_api": "paddle.Tensor.greater_equal_",
     "min_input_args": 1,
+    "convert_tensor": [
+      "other"
+    ],
     "args_list": [
       "other"
     ]
@@ -1542,6 +1551,9 @@
     "Matcher": "TensorInplaceReserveTypeMatcher",
     "paddle_api": "paddle.Tensor.less_than_",
     "min_input_args": 1,
+    "convert_tensor": [
+      "other"
+    ],
     "args_list": [
       "other"
     ]
@@ -1558,6 +1570,9 @@
     "Matcher": "TensorInplaceReserveTypeMatcher",
     "paddle_api": "paddle.Tensor.less_equal_",
     "min_input_args": 1,
+    "convert_tensor": [
+      "other"
+    ],
     "args_list": [
       "other"
     ]
@@ -2185,6 +2200,9 @@
     "Matcher": "TensorInplaceReserveTypeMatcher",
     "paddle_api": "paddle.Tensor.not_equal_",
     "min_input_args": 1,
+    "convert_tensor": [
+      "other"
+    ],
     "args_list": [
       "other"
     ]
