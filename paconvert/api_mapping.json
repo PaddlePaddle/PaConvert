@@ -760,10 +760,8 @@
       "other": "y"
     }
   },
-  "torch.Tensor.div": {
-  },
-  "torch.Tensor.div_": {
-  },
+  "torch.Tensor.div": {},
+  "torch.Tensor.div_": {},
   "torch.Tensor.divide": {
     "Matcher": "TensorDivideMatcher",
     "paddle_api": "paddle.Tensor.divide",
@@ -780,6 +778,7 @@
     "min_input_args": 1,
     "args_list": [
       "other",
+      "*",
       "rounding_mode"
     ]
   },
