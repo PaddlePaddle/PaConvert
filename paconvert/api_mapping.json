@@ -2896,6 +2896,17 @@
       "input": "x"
     }
   },
+  "torch.abs_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.abs_",
+    "min_input_args": 1,
+    "args_list": [
+      "input"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.add": {
     "Matcher": "Num2TensorBinaryWithAlphaMatcher",
     "paddle_api": "paddle.add",
