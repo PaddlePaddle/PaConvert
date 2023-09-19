@@ -1,4 +1,6 @@
 {
+  "torch.Tensor.absolute": "torch.Tensor.abs",
+  "torch.Tensor.absolute_": "torch.Tensor.abs_",
   "torch.Tensor.acos": "torch.Tensor.arccos",
   "torch.Tensor.acos_": "torch.Tensor.arccos_",
   "torch.Tensor.acosh": "torch.Tensor.arccosh",
@@ -20,6 +22,7 @@
   "torch.Tensor.sub": "torch.Tensor.subtract",
   "torch.Tensor.sub_": "torch.Tensor.subtract_",
   "torch.absolute": "torch.abs",
+  "torch.absolute_": "torch.abs_",
   "torch.acos": "torch.arccos",
   "torch.acosh": "torch.arccosh",
   "torch.amp.autocast_mode.autocast": "torch.amp.autocast",

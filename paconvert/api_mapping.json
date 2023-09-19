@@ -50,14 +50,10 @@
     "paddle_api": "paddle.Tensor"
   },
   "torch.Tensor.abs": {
-    "Matcher": "UnchangeMatcher"
-  },
-  "torch.Tensor.abs_": {},
-  "torch.Tensor.absolute": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.abs"
   },
-  "torch.Tensor.absolute_": {},
+  "torch.Tensor.abs_": {},
   "torch.Tensor.add": {
     "Matcher": "TensorAddMatcher",
     "paddle_api": "paddle.Tensor.add",
@@ -2179,7 +2175,7 @@
   "torch.Tensor.rot90": {
     "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.rot90",
-    "min_input_args": 2,
+    "min_input_args": 0,
     "args_list": [
       "k",
       "dims"

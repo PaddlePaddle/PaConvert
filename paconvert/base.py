@@ -301,7 +301,7 @@ class BaseMatcher(object):
 
     def parse_args_and_kwargs(self, args, kwargs):
         args_list = self.api_mapping.get("args_list") or []
-        min_args_num = self.api_mapping.get("min_args_num") or 0
+        min_input_args_num = self.api_mapping.get("min_input_args") or 0
         unsupport_args = self.api_mapping.get("unsupport_args") or []
 
         group_list = [
@@ -324,7 +324,7 @@ class BaseMatcher(object):
                 force_kwargs_num += 1
 
         posion_args_num = len(args) + len(kwargs) - force_kwargs_num
-        if posion_args_num < min_args_num:
+        if posion_args_num < min_input_args_num:
             return "misidentify"
         if posion_args_num > len(posion_args_list):
             return "misidentify"
