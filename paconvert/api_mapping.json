@@ -2442,8 +2442,6 @@
   "torch.Tensor.storage_offset": {},
   "torch.Tensor.storage_type": {},
   "torch.Tensor.stride": {},
-  "torch.Tensor.sub": {},
-  "torch.Tensor.sub_": {},
   "torch.Tensor.subtract": {
     "Matcher": "TensorSubtractMatcher",
     "paddle_api": "paddle.Tensor.subtract",
