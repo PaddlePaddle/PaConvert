@@ -895,14 +895,12 @@
     }
   },
   "torch.Tensor.eq_": {
-    "Matcher": "Num2TensorBinaryMatcher",
+    "Matcher": "TensorInplaceCompareMatcher",
     "paddle_api": "paddle.Tensor.equal_",
+    "min_input_args": 1,
     "args_list": [
       "other"
-    ],
-    "kwargs_change": {
-      "other": "y"
-    }
+    ]
   },
   "torch.Tensor.equal": {
     "Matcher": "EqualMatcher",
@@ -1191,8 +1189,9 @@
     ]
   },
   "torch.Tensor.greater_": {
-    "Matcher": "Num2TensorBinaryMatcher",
+    "Matcher": "TensorInplaceCompareMatcher",
     "paddle_api": "paddle.Tensor.greater_than_",
+    "min_input_args": 1,
     "args_list": [
       "other"
     ]
@@ -1209,8 +1208,9 @@
     }
   },
   "torch.Tensor.greater_equal_": {
-    "Matcher": "Num2TensorBinaryMatcher",
+    "Matcher": "TensorInplaceCompareMatcher",
     "paddle_api": "paddle.Tensor.greater_equal_",
+    "min_input_args": 1,
     "args_list": [
       "other"
     ]
@@ -1556,8 +1556,9 @@
     ]
   },
   "torch.Tensor.less_": {
-    "Matcher": "Num2TensorBinaryMatcher",
+    "Matcher": "TensorInplaceCompareMatcher",
     "paddle_api": "paddle.Tensor.less_than_",
+    "min_input_args": 1,
     "args_list": [
       "other"
     ]
@@ -1571,8 +1572,9 @@
     ]
   },
   "torch.Tensor.less_equal_": {
-    "Matcher": "Num2TensorBinaryMatcher",
+    "Matcher": "TensorInplaceCompareMatcher",
     "paddle_api": "paddle.Tensor.less_equal_",
+    "min_input_args": 1,
     "args_list": [
       "other"
     ]
@@ -2167,8 +2169,9 @@
     ]
   },
   "torch.Tensor.not_equal_": {
-    "Matcher": "Num2TensorBinaryMatcher",
+    "Matcher": "TensorInplaceCompareMatcher",
     "paddle_api": "paddle.Tensor.not_equal_",
+    "min_input_args": 1,
     "args_list": [
       "other"
     ]

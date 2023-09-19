@@ -4005,14 +4005,12 @@ class TensorMaxMinMatcher(BaseMatcher):
             ).body
 
 
-class TensorCompareMatcher(BaseMatcher):
-    def get_cast_func(self):
-        return f"._cast({self.paddleClass}.dtype)"
-
+class TensorInplaceCompareMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            {}({}){}
+            _input_dtype_ = {}.dtype
+            {}({}).cast_(_input_dtype_)
             """
         )
 
@@ -4023,7 +4021,7 @@ class TensorCompareMatcher(BaseMatcher):
             kwargs["y"] = "paddle.to_tensor({})".format(kwargs.pop("other").strip("\n"))
 
         code = API_TEMPLATE.format(
-            self.get_paddle_api(), self.kwargs_to_str(kwargs), self.get_cast_func()
+            self.paddleClass, self.get_paddle_api(), self.kwargs_to_str(kwargs)
         )
 
         return code
