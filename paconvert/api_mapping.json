@@ -1494,7 +1494,7 @@
     }
   },
   "torch.Tensor.logical_and_": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "TensorInplaceLogicalMatcher",
     "paddle_api": "paddle.Tensor.logical_and_",
     "min_input_args": 1,
     "args_list": [
@@ -1509,7 +1509,7 @@
     "paddle_api": "paddle.Tensor.logical_not"
   },
   "torch.Tensor.logical_not_": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "TensorInplaceLogicalMatcher",
     "paddle_api": "paddle.Tensor.logical_not_",
     "min_input_args": 0
   },
@@ -1525,7 +1525,7 @@
     }
   },
   "torch.Tensor.logical_or_": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "TensorInplaceLogicalMatcher",
     "paddle_api": "paddle.Tensor.logical_or_",
     "min_input_args": 1,
     "args_list": [
@@ -1547,7 +1547,7 @@
     }
   },
   "torch.Tensor.logical_xor_": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "TensorInplaceLogicalMatcher",
     "paddle_api": "paddle.Tensor.logical_xor_",
     "min_input_args": 1,
     "args_list": [

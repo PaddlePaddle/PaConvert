@@ -37,7 +37,6 @@ def test_case_2():
         a = torch.tensor([0, 1, 10, 7, 0], dtype=torch.int8)
         b = torch.tensor([4, 0, 1, 5, 0], dtype=torch.int8)
         a.logical_xor_(b)
-        a = a.bool()
         """
     )
     obj.run(pytorch_code, ["a"])
@@ -49,7 +48,6 @@ def test_case_3():
         import torch
         a = torch.tensor([0, 1, 10, 7, 0], dtype=torch.int8)
         a.logical_xor_(other=torch.tensor([4, 0, 1, 5, 0], dtype=torch.int8))
-        a = a.bool()
         """
     )
     obj.run(pytorch_code, ["a"])
@@ -62,7 +60,6 @@ def test_case_4():
         a = torch.tensor([0, 1, 10, 7, 0], dtype=torch.float32)
         b = torch.tensor([4, 0, 1, 5, 0], dtype=torch.float32)
         a.logical_xor_(b)
-        a = a.bool()
         """
     )
     obj.run(pytorch_code, ["a"])
@@ -75,7 +72,6 @@ def test_case_5():
         a = torch.tensor([0, 1, 10, 7, 0], dtype=torch.float32)
         b = torch.tensor([4, 0, 1, 5, 0], dtype=torch.float32)
         a.logical_xor_(other=b)
-        a = a.bool()
         """
     )
     obj.run(pytorch_code, ["a"])

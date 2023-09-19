@@ -36,7 +36,6 @@ def test_case_2():
         import torch
         a = torch.tensor([0, 1, 10, 0], dtype=torch.int8)
         a.logical_not_()
-        a = a.bool()
         """
     )
     obj.run(pytorch_code, ["a"])
@@ -48,7 +47,6 @@ def test_case_3():
         import torch
         a = torch.tensor([0, 1, 10, 0], dtype=torch.float32)
         a.logical_not_()
-        a = a.bool()
         """
     )
     obj.run(pytorch_code, ["a"])
@@ -59,7 +57,6 @@ def test_case_4():
         """
         import torch
         a = torch.tensor([0, 1, 10, 0], dtype=torch.float32).logical_not_()
-        a = a.bool()
         """
     )
     obj.run(pytorch_code, ["a"])
