@@ -25,7 +25,6 @@ def test_case_1():
         import torch
         x = torch.tensor([[1, 2], [3, 4]])
         x.lt_(torch.tensor([[1, 3], [4, 4]]))
-        x = x.bool()
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -37,7 +36,6 @@ def test_case_2():
         import torch
         x = torch.tensor([[1, 2], [3, 4]])
         x.lt_(other=torch.tensor([[1, 3], [4, 4]]))
-        x = x.bool()
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -50,7 +48,6 @@ def test_case_3():
         x = torch.tensor([[1, 2], [3, 4]])
         other = torch.tensor([[1, 3], [4, 4]])
         x.lt_(other)
-        x = x.bool()
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -63,7 +60,6 @@ def test_case_4():
         x = torch.tensor([[1, 2], [3, 4]])
         other = torch.tensor([[1, 3], [4, 4]])
         x.lt_(other=other)
-        x = x.bool()
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -76,7 +72,6 @@ def test_case_5():
         x = torch.tensor([[1, 2], [3, 4]])
         other = torch.tensor([[1, 2], [3, 4]])
         x.lt_(other)
-        x = x.bool()
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -89,7 +84,6 @@ def test_case_6():
         x = torch.tensor([[1, 2], [3, 4]])
         other = torch.tensor([[1, 2], [3, 4]])
         x.lt_(other=other)
-        x = x.bool()
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -102,7 +96,6 @@ def test_case_7():
         x = torch.tensor([[1, 2], [3, 4]])
         other = torch.tensor([1, 2])
         x.lt_(other)
-        x = x.bool()
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -115,7 +108,6 @@ def test_case_8():
         x = torch.tensor([[1, 2], [3, 4]])
         other = torch.tensor([1, 2])
         x.lt_(other=other)
-        x = x.bool()
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -127,7 +119,6 @@ def test_case_9():
         import torch
         x = torch.tensor([[1, 2], [3, 4]])
         x.lt_(2)
-        x = x.bool()
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -139,7 +130,6 @@ def test_case_10():
         import torch
         x = torch.tensor([[1, 2], [3, 4]])
         x.lt_(other=2)
-        x = x.bool()
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -151,7 +141,6 @@ def test_case_11():
         import torch
         x = torch.tensor([[1., 2.], [3., 4.]])
         x.lt_(torch.tensor([[1., 2.5], [4., 4.]]))
-        x = x.bool()
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -163,7 +152,6 @@ def test_case_12():
         import torch
         x = torch.tensor([[1., 2.], [3., 4.]])
         x.lt_(2.5)
-        x = x.bool()
         """
     )
     obj.run(pytorch_code, ["x"])
