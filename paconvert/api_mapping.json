@@ -55,6 +55,7 @@
   "torch.Tensor.abs_": {},
   "torch.Tensor.absolute": {
     "Matcher": "GenericMatcher",
+    "min_input_args": 0,
     "paddle_api": "paddle.Tensor.abs"
   },
   "torch.Tensor.absolute_": {},
@@ -393,6 +394,7 @@
   "torch.Tensor.bitwise_and_": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.bitwise_and_",
+    "min_input_args": 1,
     "args_list": [
       "other"
     ],
@@ -404,11 +406,13 @@
   "torch.Tensor.bitwise_left_shift_": {},
   "torch.Tensor.bitwise_not": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.bitwise_not"
+    "paddle_api": "paddle.Tensor.bitwise_not",
+    "min_input_args": 0
   },
   "torch.Tensor.bitwise_not_": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.bitwise_not_"
+    "paddle_api": "paddle.Tensor.bitwise_not_",
+    "min_input_args": 0
   },
   "torch.Tensor.bitwise_or": {
     "Matcher": "GenericMatcher",
@@ -424,6 +428,7 @@
   "torch.Tensor.bitwise_or_": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.bitwise_or_",
+    "min_input_args": 1,
     "args_list": [
       "other"
     ],
@@ -447,6 +452,7 @@
   "torch.Tensor.bitwise_xor_": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.bitwise_xor_",
+    "min_input_args": 1,
     "args_list": [
       "other"
     ],
@@ -803,6 +809,7 @@
   },
   "torch.Tensor.digamma_": {
     "Matcher": "GenericMatcher",
+    "min_input_args": 0,
     "paddle_api": "paddle.Tensor.digamma_"
   },
   "torch.Tensor.dim": {
@@ -1026,6 +1033,7 @@
   "torch.Tensor.floor_divide_": {
     "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.Tensor.floor_divide_",
+    "min_input_args": 1,
     "args_list": [
       "other"
     ]
@@ -1066,11 +1074,13 @@
   "torch.Tensor.fmod_": {},
   "torch.Tensor.frac": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.frac"
+    "paddle_api": "paddle.Tensor.frac",
+    "min_input_args": 0
   },
   "torch.Tensor.frac_": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.frac_"
+    "paddle_api": "paddle.Tensor.frac_",
+    "min_input_args": 0
   },
   "torch.Tensor.frexp": {
     "Matcher": "GenericMatcher",
@@ -1103,6 +1113,7 @@
   "torch.Tensor.gcd_": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.gcd_",
+    "min_input_args": 1,
     "args_list": [
       "other"
     ],
@@ -1275,6 +1286,7 @@
   "torch.Tensor.index_put_": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.index_put_",
+    "min_input_args": 2,
     "args_list": [
       "indices",
       "values",
