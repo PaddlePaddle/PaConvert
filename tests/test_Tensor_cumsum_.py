@@ -11,22 +11,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.index_add_")
+obj = APIBase("torch.Tensor.cumsum_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones([5, 3])
-        t = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=torch.float)
-        index = torch.tensor([0, 4, 2])
-        x.index_add_(0, index, t)
+        x = torch.tensor([[1.0, 1.0, 1.0],
+                        [2.0, 2.0, 2.0],
+                        [3.0, 3.0, 3.0]])
+        x.cumsum_(0)
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -36,10 +36,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones([5, 3])
-        t = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=torch.float)
-        index = torch.tensor([0, 4, 2])
-        x.index_add_(dim=0, index=index, source=t)
+        x = torch.tensor([[1.0, 1.0, 1.0],
+                        [2.0, 2.0, 2.0],
+                        [3.0, 3.0, 3.0]])
+        x.cumsum_(dim=1)
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -49,10 +49,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones([5, 3])
-        t = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=torch.float)
-        index = torch.tensor([0, 4, 2])
-        x.index_add_(dim=0, index=index, source=t, alpha=3)
+        x = torch.tensor([[1, 1, 1],
+                        [2, 2, 2],
+                        [3, 3, 3]])
+        x.cumsum_(dim=1)
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -62,10 +62,10 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones([5, 3])
-        t = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=torch.float)
-        index = torch.tensor([0, 4, 2])
-        x.index_add_(dim=0, index=index, source=t, alpha=-1)
+        x = torch.tensor([[1.0, 1.0, 1.0],
+                        [2.0, 2.0, 2.0],
+                        [3.0, 3.0, 3.0]])
+        x.cumsum_(dim=1, dtype=torch.float32)
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -75,10 +75,10 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones([5, 3])
-        t = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=torch.float)
-        index = torch.tensor([0, 4, 2])
-        x.index_add_(source=t, alpha=3, dim=0, index=index)
+        x = torch.tensor([[1.0, 1.0, 1.0],
+                        [2.0, 2.0, 2.0],
+                        [3.0, 3.0, 3.0]])
+        x.cumsum_(dtype=torch.float32, dim=1)
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -88,10 +88,10 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones([5, 3])
-        t = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=torch.float)
-        index = torch.tensor([0, 4, 2])
-        x.index_add_(0, index, t, alpha=-1)
+        x = torch.tensor([[1.0, 1.0, 1.0],
+                        [2.0, 2.0, 2.0],
+                        [3.0, 3.0, 3.0]])
+        x.cumsum_(1, dtype=torch.float32)
         """
     )
     obj.run(pytorch_code, ["x"])

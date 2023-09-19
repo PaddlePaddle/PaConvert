@@ -12,21 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.index_add_")
+obj = APIBase("torch.Tensor.bitwise_xor_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones([5, 3])
-        t = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=torch.float)
-        index = torch.tensor([0, 4, 2])
-        x.index_add_(0, index, t)
+        x = torch.tensor([1, 2, 3])
+        y = torch.tensor([-1, 9, 10])
+        x.bitwise_xor_(y)
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -36,10 +36,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones([5, 3])
-        t = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=torch.float)
-        index = torch.tensor([0, 4, 2])
-        x.index_add_(dim=0, index=index, source=t)
+        x = torch.tensor([True, False, True])
+        y = torch.tensor([False, False, True])
+        x.bitwise_xor_(y)
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -49,10 +48,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones([5, 3])
-        t = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=torch.float)
-        index = torch.tensor([0, 4, 2])
-        x.index_add_(dim=0, index=index, source=t, alpha=3)
+        x = torch.tensor([1, 2, 3])
+        x.bitwise_xor_(torch.tensor([-1, 9, 10]))
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -62,36 +59,31 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones([5, 3])
-        t = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=torch.float)
-        index = torch.tensor([0, 4, 2])
-        x.index_add_(dim=0, index=index, source=t, alpha=-1)
+        y = torch.tensor([False, False, True])
+        y.bitwise_xor_(torch.tensor([True, False, True]))
         """
     )
-    obj.run(pytorch_code, ["x"])
+    obj.run(pytorch_code, ["y"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones([5, 3])
-        t = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=torch.float)
-        index = torch.tensor([0, 4, 2])
-        x.index_add_(source=t, alpha=3, dim=0, index=index)
+        y = torch.tensor([False, False, True])
+        y.bitwise_xor_(other=torch.tensor([True, False, True]))
         """
     )
-    obj.run(pytorch_code, ["x"])
+    obj.run(pytorch_code, ["y"])
 
 
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones([5, 3])
-        t = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=torch.float)
-        index = torch.tensor([0, 4, 2])
-        x.index_add_(0, index, t, alpha=-1)
+        x = torch.tensor([True, False, True])
+        y = torch.tensor([False, False, True])
+        x.bitwise_xor_(other=y)
         """
     )
     obj.run(pytorch_code, ["x"])
