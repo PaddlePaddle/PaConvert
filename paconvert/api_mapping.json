@@ -895,7 +895,7 @@
     }
   },
   "torch.Tensor.eq_": {
-    "Matcher": "TensorInplaceCompareMatcher",
+    "Matcher": "TensorInplaceReserveTypeMatcher",
     "paddle_api": "paddle.Tensor.equal_",
     "min_input_args": 1,
     "args_list": [
@@ -1174,7 +1174,7 @@
     ]
   },
   "torch.Tensor.greater_": {
-    "Matcher": "TensorInplaceCompareMatcher",
+    "Matcher": "TensorInplaceReserveTypeMatcher",
     "paddle_api": "paddle.Tensor.greater_than_",
     "min_input_args": 1,
     "args_list": [
@@ -1193,7 +1193,7 @@
     }
   },
   "torch.Tensor.greater_equal_": {
-    "Matcher": "TensorInplaceCompareMatcher",
+    "Matcher": "TensorInplaceReserveTypeMatcher",
     "paddle_api": "paddle.Tensor.greater_equal_",
     "min_input_args": 1,
     "args_list": [
@@ -1539,7 +1539,7 @@
     ]
   },
   "torch.Tensor.less_": {
-    "Matcher": "TensorInplaceCompareMatcher",
+    "Matcher": "TensorInplaceReserveTypeMatcher",
     "paddle_api": "paddle.Tensor.less_than_",
     "min_input_args": 1,
     "args_list": [
@@ -1555,7 +1555,7 @@
     ]
   },
   "torch.Tensor.less_equal_": {
-    "Matcher": "TensorInplaceCompareMatcher",
+    "Matcher": "TensorInplaceReserveTypeMatcher",
     "paddle_api": "paddle.Tensor.less_equal_",
     "min_input_args": 1,
     "args_list": [
@@ -1646,7 +1646,7 @@
     }
   },
   "torch.Tensor.logical_and_": {
-    "Matcher": "TensorInplaceLogicalMatcher",
+    "Matcher": "TensorInplaceReserveTypeMatcher",
     "paddle_api": "paddle.Tensor.logical_and_",
     "min_input_args": 1,
     "args_list": [
@@ -1661,7 +1661,7 @@
     "paddle_api": "paddle.Tensor.logical_not"
   },
   "torch.Tensor.logical_not_": {
-    "Matcher": "TensorInplaceLogicalMatcher",
+    "Matcher": "TensorInplaceReserveTypeMatcher",
     "paddle_api": "paddle.Tensor.logical_not_",
     "min_input_args": 0
   },
@@ -1677,7 +1677,7 @@
     }
   },
   "torch.Tensor.logical_or_": {
-    "Matcher": "TensorInplaceLogicalMatcher",
+    "Matcher": "TensorInplaceReserveTypeMatcher",
     "paddle_api": "paddle.Tensor.logical_or_",
     "min_input_args": 1,
     "args_list": [
@@ -1699,7 +1699,7 @@
     }
   },
   "torch.Tensor.logical_xor_": {
-    "Matcher": "TensorInplaceLogicalMatcher",
+    "Matcher": "TensorInplaceReserveTypeMatcher",
     "paddle_api": "paddle.Tensor.logical_xor_",
     "min_input_args": 1,
     "args_list": [
@@ -2182,7 +2182,7 @@
     ]
   },
   "torch.Tensor.not_equal_": {
-    "Matcher": "TensorInplaceCompareMatcher",
+    "Matcher": "TensorInplaceReserveTypeMatcher",
     "paddle_api": "paddle.Tensor.not_equal_",
     "min_input_args": 1,
     "args_list": [
