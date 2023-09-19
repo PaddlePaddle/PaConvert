@@ -78,7 +78,19 @@ def test_case_5():
     obj.run(pytorch_code, ["a"])
 
 
-def test_case_6():
+# paddle.sub_ has bug, when float - int, but result'dtype is int, wrong type promote
+def _test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones((10, 4))
+        x.sub_(4, alpha=5)
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
