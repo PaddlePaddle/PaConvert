@@ -50,3 +50,19 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.Tensor([1,2,3])
+        result = a.type()
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        reason="Pytorch return 'torch.FloatTensor' while Paddle rerurn 'paddle.float32' ",
+    )

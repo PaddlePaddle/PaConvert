@@ -283,10 +283,7 @@ class TensorAddMatcher(BaseMatcher):
         )
         return CODE_TEMPLATE
 
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        if len(kwargs) == 0:
-            return "unchange"
-
+    def generate_code(self, kwargs):
         self.write_aux_code()
         return "unchange"
 
@@ -322,7 +319,7 @@ class TensorSubtractMatcher(BaseMatcher):
         )
         return CODE_TEMPLATE
 
-    def get_paddle_class_nodes(self, func, args, kwargs):
+    def generate_code(self, kwargs):
         self.write_aux_code()
         return "unchange"
 
@@ -350,7 +347,7 @@ class TensorMultiplyMatcher(BaseMatcher):
         )
         return CODE_TEMPLATE
 
-    def get_paddle_class_nodes(self, func, args, kwargs):
+    def generate_code(self, kwargs):
         self.write_aux_code()
         return "unchange"
 
@@ -387,16 +384,13 @@ class TensorDivideMatcher(BaseMatcher):
         )
         return CODE_TEMPLATE
 
-    def get_paddle_class_nodes(self, func, args, kwargs):
+    def generate_code(self, kwargs):
         self.write_aux_code()
         return "unchange"
 
 
 class TransposeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if len(kwargs) != 3:
-            return None
-
         API_TEMPLATE = textwrap.dedent(
             """
             x = {}
@@ -425,9 +419,6 @@ class SwapAxesMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" not in kwargs:
             kwargs["input"] = self.paddleClass
-
-        if len(kwargs) != 3:
-            return None
 
         if "dim0" in kwargs:
             kwargs["axis0"] = kwargs.pop("dim0")
@@ -781,10 +772,6 @@ class SparseSoftmaxMatcher(BaseMatcher):
 
 class TensorTransposeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        # may be ndarray.transpose([list]) / ndarray.transpose(list)
-        if len(kwargs) != 2:
-            return "misidentify"
-
         API_TEMPLATE = textwrap.dedent(
             """
             x = {}
@@ -843,8 +830,6 @@ class TensorPermuteMatcher(BaseMatcher):
 class TensorRenameMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         kwargs = self.parse_kwargs(kwargs)
-        if kwargs is None:
-            return None
         if "columns" in kwargs:
             return "misidentify"
 
@@ -1218,30 +1203,26 @@ class TensorSkipMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
-class TensorCopyMatcher(BaseMatcher):
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        self.parse_func(func)
-        args = self.parse_args(args)
+class TensorCopy_Matcher(BaseMatcher):
+    def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
             paddle.assign({}, output={})
             """
         )
-        code = API_TEMPLATE.format(args[0], self.paddleClass)
-        return ast.parse(code).body
+        code = API_TEMPLATE.format(kwargs["src"], self.paddleClass)
+        return code
 
 
 class TensorMaskedFillMatcher(BaseMatcher):
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        self.parse_func(func)
-        kwargs = self.parse_args_and_kwargs(args, kwargs)
+    def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
             paddle.where({}, {}, {})
             """
         )
         code = API_TEMPLATE.format(kwargs["mask"], self.paddleClass, kwargs["value"])
-        return ast.parse(code).body
+        return code
 
 
 class TensorExpandMatcher(BaseMatcher):
@@ -1266,29 +1247,14 @@ class TensorExpandMatcher(BaseMatcher):
 
 
 class TensorSoftmaxMatcher(BaseMatcher):
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        self.parse_func(func)
-        kwargs = self.parse_args_and_kwargs(args, kwargs)
-
-        if "dim" in kwargs:
-            kwargs["axis"] = kwargs.pop("dim")
-        else:
+    def generate_code(self, kwargs):
+        if "dim" not in kwargs:
             return None
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle.nn.functional.softmax({}, {})
-            """
-        )
-        code = API_TEMPLATE.format(self.paddleClass, self.kwargs_to_str(kwargs))
-        return ast.parse(code).body
+        return TensorFunc2PaddleFunc.generate_code(self, kwargs)
 
 
 class TensorRequiresGrad_Matcher(BaseMatcher):
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        self.parse_func(func)
-        kwargs = self.parse_args_and_kwargs(args, kwargs)
-
+    def generate_code(self, kwargs):
         if "requires_grad" in kwargs:
             requires_grad_v = kwargs["requires_grad"]
         else:
@@ -1303,7 +1269,7 @@ class TensorRequiresGrad_Matcher(BaseMatcher):
         )
         out = get_unique_name("out")
         code = API_TEMPLATE.format(out, self.paddleClass, out, requires_grad_v, out)
-        return ast.parse(code).body
+        return code
 
 
 class LoadMatcher(BaseMatcher):
@@ -1330,8 +1296,9 @@ class LoadMatcher(BaseMatcher):
 class TensorTypeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if len(kwargs) == 0:
-            return None
-        code = f"{self.paddleClass}.astype({kwargs['dtype']})"
+            code = f"str({self.paddleClass}.dtype)"
+        else:
+            code = f"{self.paddleClass}.astype({kwargs['dtype']})"
         return code
 
 
@@ -2893,9 +2860,6 @@ class SelectMatcher(BaseMatcher):
         if "input" not in kwargs:
             kwargs["input"] = self.paddleClass
 
-        if len(kwargs) != 3:
-            return "misidentify"
-
         API_TEMPLATE = textwrap.dedent(
             """
             paddle.index_select({}, index=paddle.to_tensor([{}]), axis={}).squeeze({})
@@ -3320,8 +3284,7 @@ class Tuple2ListMatcher(BaseMatcher):
 
 
 class ParameterMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        kwargs = self.parse_args_and_kwargs(args, kwargs)
+    def generate_code(self, kwargs):
         if "requires_grad" in kwargs:
             requires_grad_v = kwargs["requires_grad"]
         else:
@@ -3344,7 +3307,7 @@ class ParameterMatcher(BaseMatcher):
             requires_grad_v,
             out,
         )
-        return ast.parse(code).body
+        return code
 
 
 class Modules_BatchNormBaseMatcher(BaseMatcher):
@@ -3390,7 +3353,7 @@ class TensorTakeMatcher(BaseMatcher):
         )
         return CODE_TEMPLATE
 
-    def get_paddle_class_nodes(self, func, args, kwargs):
+    def generate_code(self, kwargs):
         self.write_aux_code()
         return "unchange"
 
@@ -3410,18 +3373,10 @@ class TensorSplitMatcher(BaseMatcher):
         )
         return CODE_TEMPLATE
 
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        args_list = self.api_mapping.get("args_list") or []
-        for k in kwargs:
-            if k not in args_list:
-                return "misidentify"
-
-        if len(args) + len(kwargs) < 1 or len(args) + len(kwargs) > 2:
+    def generate_code(self, kwargs):
+        v = [v for v in kwargs.values()][0]
+        if '"""' in v:
             return "misidentify"
-
-        if len(args) == 1 and isinstance(args[0], ast.Constant):
-            if isinstance(args[0].value, str):
-                return "misidentify"
 
         self.write_aux_code()
         return "unchange"
@@ -3441,8 +3396,8 @@ class TensorRoundMatcher(BaseMatcher):
         )
         return CODE_TEMPLATE
 
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        if args is None and kwargs is None:
+    def generate_code(self, kwargs):
+        if len(kwargs) == 0:
             return "unchange"
 
         self.write_aux_code()
@@ -3913,11 +3868,9 @@ class ModuleGetSubMatcher(BaseMatcher):
 
 
 class TensorIsSignedMatcher(BaseMatcher):
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        self.parse_func(func)
-        paddle_class = self.paddleClass
-        code = "{}.dtype not in [paddle.uint8]".format(paddle_class)
-        return ast.parse(code).body
+    def generate_code(self, kwargs):
+        code = "{}.dtype not in [paddle.uint8]".format(self.paddleClass)
+        return code
 
 
 class TensorToBoolMatcher(BaseMatcher):
@@ -4013,12 +3966,12 @@ class Func2Attribute(BaseMatcher):
 
 class SetUpMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        is_cpp_extension = False
+        is_torch_cpp_extension = False
         if "cmdclass" in kwargs:
             if "paddle.utils.cpp_extension.BuildExtension" in kwargs["cmdclass"]:
-                is_cpp_extension = True
+                is_torch_cpp_extension = True
 
-        if not is_cpp_extension:
+        if not is_torch_cpp_extension:
             return "misidentify"
 
         kwargs.pop("cmdclass")

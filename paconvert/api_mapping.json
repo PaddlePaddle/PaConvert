@@ -620,7 +620,7 @@
     "Matcher": "TensorSkipMatcher"
   },
   "torch.Tensor.copy_": {
-    "Matcher": "TensorCopyMatcher",
+    "Matcher": "TensorCopy_Matcher",
     "min_input_args": 1,
     "args_list": [
       "src",
@@ -2398,15 +2398,15 @@
     "Matcher": "TensorRoundMatcher",
     "min_input_args": 0,
     "args_list": [
-      "input",
-      "decimals",
-      "out"
+      "*",
+      "decimals"
     ]
   },
   "torch.Tensor.round_": {
     "Matcher": "TensorRound_Matcher",
     "min_input_args": 0,
     "args_list": [
+      "*",
       "decimals"
     ]
   },
@@ -2563,7 +2563,10 @@
     "args_list": [
       "dim",
       "dtype"
-    ]
+    ],
+    "kwargs_change": {
+      "dim": "axis"
+    }
   },
   "torch.Tensor.sort": {
     "Matcher": "TensorFunc2PaddleFunc",
