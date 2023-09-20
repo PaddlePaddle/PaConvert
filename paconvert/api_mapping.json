@@ -1500,21 +1500,6 @@
       "other": "y"
     }
   },
-  "torch.Tensor.le": {
-    "Matcher": "Num2TensorBinaryMatcher",
-    "paddle_api": "paddle.Tensor.less_equal",
-    "min_input_args": 1,
-    "args_list": [
-      "other"
-    ]
-  },
-  "torch.Tensor.le_": {
-    "Matcher": "Num2TensorBinaryMatcher",
-    "paddle_api": "paddle.Tensor.less_equal_",
-    "args_list": [
-      "other"
-    ]
-  },
   "torch.Tensor.lerp": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.lerp",
