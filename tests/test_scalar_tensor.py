@@ -23,7 +23,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = y = torch.scalar_tensor(False, dtype=torch.int32)
+        result = torch.scalar_tensor(False, dtype=torch.int32)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,7 +33,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = y = torch.scalar_tensor(1)
+        result = torch.scalar_tensor(1, dtype=torch.int32)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -43,7 +43,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = y = torch.scalar_tensor(s=False)
+        result = torch.scalar_tensor(s=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -53,7 +53,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = y = torch.scalar_tensor(s=1, dtype=torch.bool)
+        result = torch.scalar_tensor(s=1, dtype=torch.bool)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -63,17 +63,7 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = y = torch.scalar_tensor(s=1, dtype=torch.bool, pin_memory=False)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = y = torch.scalar_tensor(s=1, dtype=torch.float32, pin_memory=False, requires_grad=True)
+        result = torch.scalar_tensor(1., dtype=torch.float32, layout=torch.strided, device=torch.device('cpu'), pin_memory=False, requires_grad=True)
         """
     )
     obj.run(pytorch_code, ["result"])

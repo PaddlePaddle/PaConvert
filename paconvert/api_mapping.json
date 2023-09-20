@@ -697,7 +697,13 @@
   "torch.Tensor.cummax": {},
   "torch.Tensor.cummin": {},
   "torch.Tensor.cumprod": {
-    "Matcher": "UnchangeMatcher"
+    "Matcher": "UnchangeMatcher",
+    "min_input_args": 1,
+    "args_list": [
+      "dim",
+      "*",
+      "dtype"
+    ]
   },
   "torch.Tensor.cumprod_": {
     "Matcher": "GenericMatcher",
@@ -721,7 +727,8 @@
       "dtype"
     ],
     "kwargs_change": {
-      "dim": "axis"
+      "dim": "axis",
+      "dtype": "dtype"
     }
   },
   "torch.Tensor.cumsum_": {
@@ -1964,7 +1971,8 @@
       "dtype"
     ],
     "kwargs_change": {
-      "dim": "axis"
+      "dim": "axis",
+      "dtype": "dtype"
     }
   },
   "torch.Tensor.narrow": {
@@ -2230,7 +2238,8 @@
       "dtype"
     ],
     "kwargs_change": {
-      "dim": "axis"
+      "dim": "axis",
+      "dtype": "dtype"
     }
   },
   "torch.Tensor.put_": {},
@@ -2565,7 +2574,8 @@
       "dtype"
     ],
     "kwargs_change": {
-      "dim": "axis"
+      "dim": "axis",
+      "dtype": "dtype"
     }
   },
   "torch.Tensor.sort": {
@@ -2686,7 +2696,8 @@
       "dtype"
     ],
     "kwargs_change": {
-      "dim": "axis"
+      "dim": "axis",
+      "dtype": "dtype"
     }
   },
   "torch.Tensor.sum_to_size": {},
@@ -3415,10 +3426,12 @@
     "min_input_args": 1,
     "args_list": [
       "data",
+      "*",
       "dtype",
       "device"
     ],
     "kwargs_change": {
+      "dtype": "dtype",
       "device": "place"
     }
   },
@@ -3436,6 +3449,7 @@
     ],
     "kwargs_change": {
       "obj": "data",
+      "dtype": "dtype",
       "device": "place",
       "copy": ""
     }
@@ -4376,12 +4390,13 @@
     "args_list": [
       "input",
       "dim",
-      "dtype",
       "*",
+      "dtype",
       "out"
     ],
     "kwargs_change": {
-      "input": "x"
+      "input": "x",
+      "dtype": "dtype"
     }
   },
   "torch.cumsum": {
@@ -4396,7 +4411,8 @@
     ],
     "kwargs_change": {
       "input": "x",
-      "dim": "axis"
+      "dim": "axis",
+      "dtype": "dtype"
     }
   },
   "torch.cumulative_trapezoid": {
@@ -5091,7 +5107,8 @@
       "memory_format"
     ],
     "kwargs_change": {
-      "input": "x"
+      "input": "x",
+      "dtype": "dtype"
     }
   },
   "torch.enable_grad": {
@@ -5151,7 +5168,8 @@
     ],
     "kwargs_change": {
       "n": "num_rows",
-      "m": "num_columns"
+      "m": "num_columns",
+      "dtype": "dtype"
     }
   },
   "torch.fft.fft": {
@@ -5200,8 +5218,7 @@
       "requires_grad"
     ],
     "kwargs_change": {
-      "dim": "axis",
-      "input": "x"
+      "dtype": "dtype"
     }
   },
   "torch.fft.fftn": {
@@ -5482,8 +5499,7 @@
       "requires_grad"
     ],
     "kwargs_change": {
-      "dim": "axis",
-      "input": "x"
+      "dtype": "dtype"
     }
   },
   "torch.fft.rfftn": {
@@ -5695,7 +5711,8 @@
       "requires_grad"
     ],
     "kwargs_change": {
-      "size": "shape"
+      "size": "shape",
+      "dtype": "dtype"
     }
   },
   "torch.full_like": {
@@ -5712,7 +5729,8 @@
       "memory_format"
     ],
     "kwargs_change": {
-      "input": "x"
+      "input": "x",
+      "dtype": "dtype"
     }
   },
   "torch.gather": {
@@ -6564,7 +6582,8 @@
     ],
     "kwargs_change": {
       "end": "stop",
-      "steps": "num"
+      "steps": "num",
+      "dtype": "dtype"
     }
   },
   "torch.load": {
@@ -6754,7 +6773,8 @@
     ],
     "kwargs_change": {
       "end": "stop",
-      "steps": "num"
+      "steps": "num",
+      "dtype": "dtype"
     }
   },
   "torch.logsumexp": {
@@ -7135,7 +7155,8 @@
     ],
     "kwargs_change": {
       "input": "x",
-      "dim": "axis"
+      "dim": "axis",
+      "dtype": "dtype"
     }
   },
   "torch.narrow": {
@@ -7751,8 +7772,7 @@
         "bias_hh_attr"
       ],
       "device": "",
-      "dtype": "",
-      "nonlinearity": "activation"
+      "dtype": ""
     }
   },
   "torch.nn.GroupNorm": {
@@ -9620,7 +9640,7 @@
     }
   },
   "torch.nn.functional.log_softmax": {
-    "Matcher": "FunctionalSoftmaxMatcher",
+    "Matcher": "RequireDimMatcher",
     "paddle_api": "paddle.nn.functional.log_softmax",
     "args_list": [
       "input",
@@ -9631,7 +9651,8 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axis",
-      "_stacklevel": ""
+      "_stacklevel": "",
+      "dtype": "dtype"
     }
   },
   "torch.nn.functional.logsigmoid": {
@@ -10070,7 +10091,7 @@
     }
   },
   "torch.nn.functional.softmax": {
-    "Matcher": "FunctionalSoftmaxMatcher",
+    "Matcher": "RequireDimMatcher",
     "paddle_api": "paddle.nn.functional.softmax",
     "args_list": [
       "input",
@@ -10087,12 +10108,19 @@
   },
   "torch.nn.functional.softmin": {
     "Matcher": "FSoftMinMatcher",
+    "paddle_api": "paddle.nn.functional.softmax",
     "args_list": [
       "input",
       "dim",
       "_stacklevel",
       "dtype"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axis",
+      "_stacklevel": "",
+      "dtype": "dtype"
+    }
   },
   "torch.nn.functional.softplus": {
     "Matcher": "GenericMatcher",
@@ -10256,7 +10284,9 @@
       "dtype"
     ],
     "kwargs_change": {
-      "eps": "epsilon"
+      "eps": "epsilon",
+      "device": "",
+      "dtype": ""
     }
   },
   "torch.nn.modules.utils._ntuple": {
@@ -10491,7 +10521,8 @@
       "memory_format"
     ],
     "kwargs_change": {
-      "input": "x"
+      "input": "x",
+      "dtype": "dtype"
     }
   },
   "torch.optim.Adadelta": {
@@ -10868,7 +10899,8 @@
     ],
     "kwargs_change": {
       "input": "x",
-      "dim": "axis"
+      "dim": "axis",
+      "dtype": "dtype"
     }
   },
   "torch.profiler.profile": {},
@@ -10993,7 +11025,8 @@
       "memory_format"
     ],
     "kwargs_change": {
-      "input": "x"
+      "input": "x",
+      "dtype": "dtype"
     }
   },
   "torch.randn": {
@@ -11211,6 +11244,7 @@
     "paddle_api": "paddle.to_tensor",
     "args_list": [
       "s",
+      "*",
       "dtype",
       "layout",
       "device",
@@ -11218,7 +11252,9 @@
       "pin_memory"
     ],
     "kwargs_change": {
-      "s": "data"
+      "s": "data",
+      "dtype": "dtype",
+      "device": "place"
     },
     "paddle_default_kwargs": {
       "dtype": "paddle.float32"
@@ -11410,7 +11446,7 @@
     ]
   },
   "torch.softmax": {
-    "Matcher": "FunctionalSoftmaxMatcher",
+    "Matcher": "RequireDimMatcher",
     "paddle_api": "paddle.nn.functional.softmax",
     "args_list": [
       "input",
@@ -11485,7 +11521,7 @@
     }
   },
   "torch.sparse.sum": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "RequireDimMatcher",
     "paddle_api": "paddle.sparse.sum",
     "args_list": [
       "input",
@@ -11507,13 +11543,17 @@
       "indices",
       "values",
       "size",
+      "*",
       "dtype",
       "device",
-      "requires_grad"
+      "requires_grad",
+      "check_invariants"
     ],
     "kwargs_change": {
       "size": "shape",
-      "device": "place"
+      "dtype": "dtype",
+      "device": "place",
+      "check_invariants": ""
     }
   },
   "torch.sparse_csr_tensor": {
@@ -11524,8 +11564,11 @@
       "col_indices",
       "values",
       "size",
+      "*",
       "dtype",
+      "layout",
       "device",
+      "pin_memory",
       "requires_grad",
       "check_invariants"
     ],
@@ -11535,6 +11578,7 @@
       "size": "shape",
       "dtype": "dtype",
       "device": "place",
+      "pin_memory": "",
       "check_invariants": ""
     }
   },
@@ -11704,7 +11748,8 @@
     ],
     "kwargs_change": {
       "input": "x",
-      "dim": "axis"
+      "dim": "axis",
+      "dtype": "dtype"
     }
   },
   "torch.special.logit": {
@@ -11795,7 +11840,8 @@
     ],
     "kwargs_change": {
       "input": "x",
-      "dim": "axis"
+      "dim": "axis",
+      "dtype": "dtype"
     }
   },
   "torch.special.xlog1py": {
@@ -11940,7 +11986,8 @@
     ],
     "kwargs_change": {
       "input": "x",
-      "dim": "axis"
+      "dim": "axis",
+      "dtype": "dtype"
     }
   },
   "torch.svd": {
@@ -12202,7 +12249,10 @@
       "dtype",
       "device",
       "layout"
-    ]
+    ],
+    "kwargs_change": {
+      "dtype": "dtype"
+    }
   },
   "torch.triu": {
     "Matcher": "GenericMatcher",
@@ -12228,7 +12278,10 @@
       "dtype",
       "device",
       "layout"
-    ]
+    ],
+    "kwargs_change": {
+      "dtype": "dtype"
+    }
   },
   "torch.true_divide": {
     "Matcher": "Num2TensorBinaryMatcher",
@@ -12678,7 +12731,8 @@
       "memory_format"
     ],
     "kwargs_change": {
-      "input": "x"
+      "input": "x",
+      "dtype": "dtype"
     }
   }
 }
