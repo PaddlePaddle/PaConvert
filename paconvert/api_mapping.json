@@ -3589,7 +3589,7 @@
       "inputs": "xs"
     },
     "paddle_default_kwargs": {
-      "is_batched": false
+      "is_batched": "False"
     }
   },
   "torch.autograd.functional.jacobian": {
@@ -3614,7 +3614,7 @@
       "inputs": "xs"
     },
     "paddle_default_kwargs": {
-      "is_batched": false
+      "is_batched": "False"
     }
   },
   "torch.autograd.functional.jvp": {
@@ -4098,7 +4098,7 @@
       "input": "x"
     },
     "paddle_default_kwargs": {
-      "rowvar": true
+      "rowvar": "True"
     }
   },
   "torch.cos": {
@@ -11329,11 +11329,9 @@
       "input": "arr",
       "dim": "axis",
       "index": "indices",
-      "value": "values"
-    },
-    "unsupport_args": [
-      "src"
-    ]
+      "value": "values",
+      "src": "values"
+    }
   },
   "torch.scatter_add": {
     "Matcher": "GenericMatcher",
