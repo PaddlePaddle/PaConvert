@@ -27,7 +27,7 @@ def test_case_1():
         values = [1.0, 2.0, 3.0]
         dense_shape = [3, 3]
         coo = torch.sparse_coo_tensor(indices, values, dense_shape)
-        result = torch.sparse.sum(coo, dim=1).values()
+        result = torch.sparse.sum(coo, dim=1).to_dense()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -41,14 +41,13 @@ def test_case_2():
         values = [1.0, 2.0, 3.0]
         dense_shape = [3, 3]
         coo = torch.sparse_coo_tensor(indices, values, dense_shape)
-        result = torch.sparse.sum(input=coo, dim=-1).values()
+        result = torch.sparse.sum(input=coo, dim=-1).to_dense()
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# Torch returns 0-dimensional tensor, while paddle returns sparse tensor.
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -59,4 +58,28 @@ def _test_case_3():
         result = torch.sparse.sum(coo)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="torch returns 0-dimensional tensor, while paddle returns sparse tensor.",
+    )
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        indices = [[0, 1, 2], [1, 2, 0]]
+        values = [1.0, 2.0, 3.0]
+        dense_shape = [3, 3]
+        coo = torch.sparse_coo_tensor(indices, values, dense_shape)
+        result = torch.sparse.sum(coo, dim=1, dtype=torch.float64)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle not support 'dtype' ",
+    )

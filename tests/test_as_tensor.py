@@ -59,7 +59,7 @@ def test_case_4():
         import torch
         import numpy
         a, b , c = 1, 2, 3
-        result = torch.as_tensor((a, b, c))
+        result = torch.as_tensor((a, b, c), dtype=torch.float64)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -70,7 +70,7 @@ def test_case_5():
         """
         import torch
         import numpy
-        result = torch.as_tensor([1, 2, 3], dtype=torch.float64)
+        result = torch.as_tensor([1, 2, 3], dtype=torch.int64)
         """
     )
     obj.run(pytorch_code, ["result"])

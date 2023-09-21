@@ -35,7 +35,7 @@ def test_case_2():
         """
         import torch
         a =torch.ones((10,10))
-        result = a.type(torch.int8)
+        result = a.type(torch.int8, True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -46,7 +46,7 @@ def test_case_3():
         """
         import torch
         a = torch.Tensor([1,2,3])
-        result = a.type(torch.float64, True)
+        result = a.type(dtype=torch.float64, non_blocking=True)
         """
     )
     obj.run(pytorch_code, ["result"])

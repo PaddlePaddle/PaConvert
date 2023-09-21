@@ -2475,22 +2475,9 @@ class FSoftMinMatcher(BaseMatcher):
         if "dim" not in kwargs or kwargs["dim"] == "None":
             return None
 
-        if "dtype" in kwargs and kwargs["dim"] is not None:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.nn.functional.softmax(-{}, axis={}).astype({})
-                """
-            )
-            code = API_TEMPLATE.format(kwargs["input"], kwargs["dim"], kwargs["dtype"])
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.nn.functional.softmax(-{}, axis={})
-                """
-            )
-            code = API_TEMPLATE.format(kwargs["input"], kwargs["dim"])
+        kwargs["input"] = f"-{kwargs['input']}"
 
-        return code
+        return GenericMatcher.generate_code(self, kwargs)
 
 
 class FBatchNormMatcher(BaseMatcher):
@@ -3312,12 +3299,6 @@ class ParameterMatcher(BaseMatcher):
 
 class Modules_BatchNormBaseMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "track_running_stats" in kwargs:
-            track_running_stats = kwargs["track_running_stats"]
-        else:
-            track_running_stats = True
-        kwargs["use_global_stats"] = track_running_stats
-
         if "momentum" in kwargs:
             momentum = kwargs["momentum"]
         else:
@@ -3334,6 +3315,9 @@ class Modules_BatchNormBaseMatcher(BaseMatcher):
             kwargs[
                 "bias_attr"
             ] = f"None if ({kwargs['affine']} is None or {kwargs['affine']}) else False"
+
+        if "track_running_stats" in kwargs:
+            kwargs["use_global_stats"] = kwargs.pop("track_running_stats")
 
         return GenericMatcher.generate_code(self, kwargs)
 
@@ -3628,7 +3612,7 @@ class LrSchedulerMatcher(BaseMatcher):
         return code
 
 
-class FunctionalSoftmaxMatcher(BaseMatcher):
+class RequireDimMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "dim" not in kwargs or "None" in kwargs["dim"]:
             return None
