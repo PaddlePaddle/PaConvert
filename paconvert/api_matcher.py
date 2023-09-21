@@ -3958,6 +3958,30 @@ class TensorMaxMinMatcher(BaseMatcher):
             ).body
 
 
+class TensorInplaceReserveTypeMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            _x_dtype_ = {}.dtype
+            {}({}).cast_(_x_dtype_)
+            """
+        )
+
+        convert_tensor = self.api_mapping.get("convert_tensor", {})
+
+        if "other" in kwargs:
+            other_v = kwargs.pop("other")
+            if "other" in convert_tensor:
+                other_v = "paddle.to_tensor({})".format(other_v)
+            kwargs["y"] = other_v
+
+        code = API_TEMPLATE.format(
+            self.paddleClass, self.get_paddle_api(), self.kwargs_to_str(kwargs)
+        )
+
+        return code
+
+
 class Func2Attribute(BaseMatcher):
     def generate_code(self, kwargs):
         code = "{}".format(self.get_paddle_api())
