@@ -242,7 +242,7 @@ torch.ones(2, 3, requires_grad=False)
 
 torch.empty(m, n, pin_memory=True)
 
-torch.full(2, 3, device=torch.device("cpu"), pin_memory=False)
+torch.full([2, 3], 1.0, device=torch.device("cpu"), requires_grad=False)
 
 torch.rand(2, 3)
 
