@@ -7217,6 +7217,26 @@
       "dim"
     ]
   },
+  "torch.nanquantile": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nanquantile",
+    "args_list": [
+      "input",
+      "q",
+      "dim",
+      "keepdim",
+      "*",
+      "interpolation",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axis"
+    },
+    "unsupport_args": [
+      "interpolation "
+    ]
+  },
   "torch.nansum": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nansum",
