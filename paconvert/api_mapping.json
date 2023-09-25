@@ -2311,12 +2311,20 @@
   "torch.Tensor.qscheme": {},
   "torch.Tensor.quantile": {
     "Matcher": "GenericMatcher",
-    "min_input_args": 1,
     "paddle_api": "paddle.Tensor.quantile",
     "args_list": [
       "q",
-      "axis",
-      "keepdim"
+      "dim",
+      "keepdim",
+      "*",
+      "interpolation"
+    ],
+    "kwargs_change": {
+      "dim": "axis",
+      "input": "x"
+    },
+    "unsupport_args": [
+      "interpolation"
     ]
   },
   "torch.Tensor.rad2deg": {
