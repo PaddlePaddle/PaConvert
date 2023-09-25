@@ -30,6 +30,4 @@ def test_case_1():
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="Paddle not support this api convert now",
     )
