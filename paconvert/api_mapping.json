@@ -2729,7 +2729,22 @@
       "correction": "unbiased"
     }
   },
-  "torch.Tensor.stft": {},
+  "torch.Tensor.stft": {
+    "Matcher": "TensorStftMatcher",
+    "paddle_api": "paddle.signal.stft",
+    "min_input_args": 1,
+    "args_list": [
+      "n_fft",
+      "hop_length",
+      "win_length",
+      "window",
+      "center",
+      "normalized",
+      "onesided",
+      "length",
+      "return_complex"
+    ]
+  },
   "torch.Tensor.storage": {},
   "torch.Tensor.storage_offset": {},
   "torch.Tensor.storage_type": {},
