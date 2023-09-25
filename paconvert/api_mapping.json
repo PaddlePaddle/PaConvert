@@ -54,7 +54,11 @@
     "min_input_args": 0,
     "paddle_api": "paddle.Tensor.abs"
   },
-  "torch.Tensor.abs_": {},
+  "torch.Tensor.abs_": {
+    "Matcher": "TensorFunc2PaddleFunc",
+    "min_input_args": 0,
+    "paddle_api": "paddle.abs_"
+  },
   "torch.Tensor.add": {
     "Matcher": "TensorAddMatcher",
     "paddle_api": "paddle.Tensor.add",
