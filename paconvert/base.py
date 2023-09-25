@@ -166,7 +166,11 @@ class BaseTransformer(ast.NodeTransformer):
 
     def insert_multi_node(self, node_list):
         if len(node_list) == 0:
-            return
+            return True
+
+        if isinstance(self.parent_node, (ast.DictComp, ast.ListComp)):
+            return False
+
         import_nodes = []
         other_nodes = []
         for node in node_list:
@@ -182,6 +186,8 @@ class BaseTransformer(ast.NodeTransformer):
 
         if len(other_nodes) > 0:
             self.record_scope(self.scope_body_index(), other_nodes)
+
+        return True
 
     def get_full_attr(self, node):
         # torch.nn.functional.relu

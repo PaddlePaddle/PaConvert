@@ -50,3 +50,35 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        tensor_dict = {"tensor1": torch.ones(2, 3), "tensor2": -1*torch.ones(2, 3)}
+        result = {key: value.requires_grad_() for key, value in tensor_dict.items()}
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Can not support insert multi line to ast.ListComp",
+    )
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        tensor_list = [torch.ones(2, 3), -1*torch.ones(2, 3)]
+        result = [value.requires_grad_() for value in tensor_list]
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Can not support insert multi line to ast.DictComp",
+    )

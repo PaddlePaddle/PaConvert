@@ -3421,6 +3421,9 @@ class NormMatcher(BaseMatcher):
 
 class SortMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        if "input" not in kwargs:
+            kwargs["x"] = self.paddleClass
+
         change_kwargs = self.api_mapping["kwargs_change"]
         for key in change_kwargs:
             if key in kwargs:

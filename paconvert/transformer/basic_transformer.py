@@ -282,17 +282,17 @@ class BasicTransformer(BaseTransformer):
                             ast.Assert,
                         ),
                     ):
-                        self.insert_multi_node(node_list[0:-1])
-                        self.success_api_count += 1
-                        log_info(
-                            self.logger,
-                            "[Success] Convert Class Attribute: {} to Paddle".format(
-                                torch_api
-                            ),
-                            self.file_name,
-                            node.lineno,
-                        )
-                        return new_node
+                        if self.insert_multi_node(node_list[0:-1]):
+                            self.success_api_count += 1
+                            log_info(
+                                self.logger,
+                                "[Success] Convert Class Attribute: {} to Paddle".format(
+                                    torch_api
+                                ),
+                                self.file_name,
+                                node.lineno,
+                            )
+                            return new_node
 
         annotate_node = ast.parse(
             "'Class Attribute: {}, can not convert, please check whether it is torch.Tensor.*/torch.autograd.function.FunctionCtx.*/torch.distributions.Distribution.* and convert manually'".format(
@@ -436,15 +436,15 @@ class BasicTransformer(BaseTransformer):
                                 ast.Subscript,
                             ),
                         ):
-                            self.insert_multi_node(node_list[0:-1])
-                            self.success_api_count += 1
-                            log_info(
-                                self.logger,
-                                "[Success] Convert {} to Paddle ".format(torch_api),
-                                self.file_name,
-                                node.lineno,
-                            )
-                            return new_node
+                            if self.insert_multi_node(node_list[0:-1]):
+                                self.success_api_count += 1
+                                log_info(
+                                    self.logger,
+                                    "[Success] Convert {} to Paddle ".format(torch_api),
+                                    self.file_name,
+                                    node.lineno,
+                                )
+                                return new_node
 
                 self.unsupport_map[torch_api] += 1
                 log_info(
@@ -622,17 +622,18 @@ class BasicTransformer(BaseTransformer):
                     if self_in_args:
                         if isinstance(new_node, ast.Call):
                             new_node.args.insert(0, node.args[0])
-                    self.insert_multi_node(node_list[0:-1])
-                    self.success_api_count += 1
-                    log_info(
-                        self.logger,
-                        "[Success] Convert Class Method: {} to Paddle".format(
-                            torch_api
-                        ),
-                        self.file_name,
-                        node.lineno,
-                    )
-                    return new_node
+
+                    if self.insert_multi_node(node_list[0:-1]):
+                        self.success_api_count += 1
+                        log_info(
+                            self.logger,
+                            "[Success] Convert Class Method: {} to Paddle".format(
+                                torch_api
+                            ),
+                            self.file_name,
+                            node.lineno,
+                        )
+                        return new_node
 
         torch_api = "*" + torch_api[torch_api.rfind(".") :]
         annotate_node = ast.parse(

@@ -123,6 +123,37 @@ class APIBase(object):
             check_dtype: If false, the dtype will not be checked
             check_stop_gradient: If false, the stop gradient will not be checked
         """
+        if isinstance(pytorch_result, dict):
+            assert isinstance(paddle_result, dict), "paddle result should be dict"
+            assert len(pytorch_result) == len(
+                paddle_result
+            ), "paddle result have different length with pytorch"
+            pytorch_result_k = [k for k in pytorch_result.keys()]
+            pytorch_result_v = [v for v in pytorch_result.values()]
+            paddle_result_k = [k for k in paddle_result.keys()]
+            paddle_result_v = [v for v in paddle_result.values()]
+            self.compare(
+                self.pytorch_api,
+                pytorch_result_k,
+                paddle_result_k,
+                check_value,
+                check_dtype,
+                check_stop_gradient,
+                rtol,
+                atol,
+            )
+            self.compare(
+                self.pytorch_api,
+                pytorch_result_v,
+                paddle_result_v,
+                check_value,
+                check_dtype,
+                check_stop_gradient,
+                rtol,
+                atol,
+            )
+            return
+
         if isinstance(pytorch_result, (tuple, list)):
             assert isinstance(
                 paddle_result, (tuple, list)
