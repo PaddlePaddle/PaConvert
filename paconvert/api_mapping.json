@@ -2833,7 +2833,14 @@
     "paddle_api": "paddle.Tensor.to_dense"
   },
   "torch.Tensor.to_mkldnn": {},
-  "torch.Tensor.to_sparse": {},
+  "torch.Tensor.to_sparse": {
+    "Matcher": "GenericMatcher",
+    "min_input_args": 0,
+    "paddle_api": "paddle.Tensor.to_sparse_coo",
+    "args_list": [
+      "sparse_dim"
+    ]
+  },
   "torch.Tensor.tolist": {
     "Matcher": "UnchangeMatcher"
   },
