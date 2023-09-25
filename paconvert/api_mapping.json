@@ -2631,21 +2631,21 @@
     }
   },
   "torch.Tensor.sort": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "SortMatcher",
     "paddle_api": "paddle.sort",
     "min_input_args": 0,
     "args_list": [
       "dim",
       "descending",
       "*",
-      "stable"
+      "stable",
+      "dim",
+      "descending"
     ],
     "kwargs_change": {
-      "dim": "axis"
-    },
-    "unsupport_args": [
-      "stable"
-    ]
+      "dim": "axis",
+      "stable": ""
+    }
   },
   "torch.Tensor.sparse_dim": {},
   "torch.Tensor.sparse_mask": {},
@@ -6998,11 +6998,7 @@
   },
   "torch.meshgrid": {
     "Matcher": "MeshgridMatcher",
-    "paddle_api": "paddle.meshgrid",
-    "args_list": [
-      "tensors",
-      "indexing"
-    ]
+    "paddle_api": "paddle.meshgrid"
   },
   "torch.min": {
     "Matcher": "MaxMinMatcher",
@@ -11514,12 +11510,15 @@
   "torch.sort": {
     "Matcher": "SortMatcher",
     "paddle_api": "paddle.sort",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "dim",
       "descending",
-      "stable",
       "*",
+      "stable",
+      "dim",
+      "descending",
       "out"
     ],
     "kwargs_change": {
