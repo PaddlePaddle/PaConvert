@@ -24,7 +24,22 @@ def test_case_1():
         """
         import torch
         a = torch.Tensor([[1.,2.], [3.,4.]])
-        b = a.to_sparse(sparse_dim=1)
+        b = a.to_sparse(1)
+        result = b.to_dense()
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+    )
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.Tensor([[1.,2.], [3.,4.]])
+        b = a.to_sparse(sparse_dim = 1)
         result = b.to_dense()
         """
     )
