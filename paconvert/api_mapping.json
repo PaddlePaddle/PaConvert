@@ -2821,8 +2821,7 @@
   },
   "torch.Tensor.tensor_split": {},
   "torch.Tensor.tile": {
-    "Matcher": "GenericMatcher",
-    "min_input_args": 0,
+    "Matcher": "TensorTileMatcher",
     "paddle_api": "paddle.Tensor.tile"
   },
   "torch.Tensor.to": {

@@ -31,3 +31,17 @@ def test_case_1():
         pytorch_code,
         ["result"],
     )
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.Tensor([[1.,2.], [3.,4.]])
+        result = a.tile(1, 2)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+    )

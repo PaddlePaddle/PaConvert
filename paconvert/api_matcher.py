@@ -473,6 +473,28 @@ class CreateMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
+class TensorTileMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+
+        if len(args) == 1 and isinstance(args[0], (ast.List, ast.Tuple)):
+            repeat_times_list = self.parse_args(args)[0]
+        else:  # len(args) >= 1
+            repeat_times_list = self.parse_args(args)
+
+        kwargs = self.parse_kwargs(kwargs)
+        if kwargs is None:
+            return None
+
+        if "reps" in kwargs:
+            kwargs = {"repeat_times": kwargs.pop("reps"), **kwargs}
+        else:
+            kwargs = {"repeat_times": str(repeat_times_list).replace("'", ""), **kwargs}
+
+        code = "{}.tile({})".format(self.paddleClass, self.kwargs_to_str(kwargs))
+        return ast.parse(code).body
+
+
 class DeviceMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if len(kwargs) == 1:
