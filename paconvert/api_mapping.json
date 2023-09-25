@@ -2309,7 +2309,16 @@
     ]
   },
   "torch.Tensor.qscheme": {},
-  "torch.Tensor.quantile": {},
+  "torch.Tensor.quantile": {
+    "Matcher": "GenericMatcher",
+    "min_input_args": 1,
+    "paddle_api": "paddle.Tensor.quantile",
+    "args_list": [
+      "q",
+      "axis",
+      "keepdim"
+    ]
+  },
   "torch.Tensor.rad2deg": {
     "Matcher": "UnchangeMatcher"
   },
