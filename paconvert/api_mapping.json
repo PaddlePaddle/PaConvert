@@ -665,12 +665,20 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.cos"
   },
-  "torch.Tensor.cos_": {},
+  "torch.Tensor.cos_": {
+    "Matcher": "TensorFunc2PaddleFunc",
+    "min_input_args": 0,
+    "paddle_api": "paddle.cos_"
+  },
   "torch.Tensor.cosh": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.cosh"
   },
-  "torch.Tensor.cosh_": {},
+  "torch.Tensor.cosh_": {
+    "Matcher": "TensorFunc2PaddleFunc",
+    "min_input_args": 0,
+    "paddle_api": "paddle.cosh_"
+  },
   "torch.Tensor.count_nonzero": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.count_nonzero",
@@ -955,7 +963,11 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.erf"
   },
-  "torch.Tensor.erf_": {},
+  "torch.Tensor.erf_": {
+    "Matcher": "TensorFunc2PaddleFunc",
+    "min_input_args": 0,
+    "paddle_api": "paddle.erf_"
+  },
   "torch.Tensor.erfc": {
     "Matcher": "ErfCMatcher"
   },
@@ -994,7 +1006,11 @@
   "torch.Tensor.expm1": {
     "Matcher": "UnchangeMatcher"
   },
-  "torch.Tensor.expm1_": {},
+  "torch.Tensor.expm1_": {
+    "Matcher": "TensorFunc2PaddleFunc",
+    "min_input_args": 0,
+    "paddle_api": "paddle.expm1_"
+  },
   "torch.Tensor.exponential_": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.exponential_",
@@ -2404,7 +2420,20 @@
       "maxnorm": "max_norm"
     }
   },
-  "torch.Tensor.renorm_": {},
+  "torch.Tensor.renorm_": {
+    "Matcher": "TensorFunc2PaddleFunc",
+    "min_input_args": 0,
+    "paddle_api": "paddle.renorm_",
+    "args_list": [
+      "p",
+      "dim",
+      "maxnorm"
+    ],
+    "kwargs_change": {
+      "dim": "axis",
+      "maxnorm": "max_norm"
+    }
+  },
   "torch.Tensor.repeat": {
     "Matcher": "TensorRepeatMatcher"
   },
@@ -2697,9 +2726,14 @@
   },
   "torch.Tensor.square": {
     "Matcher": "GenericMatcher",
+    "min_input_args": 0,
     "paddle_api": "paddle.Tensor.square"
   },
-  "torch.Tensor.square_": {},
+  "torch.Tensor.square_": {
+    "Matcher": "TensorFunc2PaddleFunc",
+    "min_input_args": 0,
+    "paddle_api": "paddle.square_"
+  },
   "torch.Tensor.squeeze": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.squeeze",
@@ -2897,7 +2931,14 @@
       "diagonal"
     ]
   },
-  "torch.Tensor.tril_": {},
+  "torch.Tensor.tril_": {
+    "Matcher": "TensorFunc2PaddleFunc",
+    "min_input_args": 0,
+    "paddle_api": "paddle.tril_",
+    "args_list": [
+      "diagonal"
+    ]
+  },
   "torch.Tensor.triu": {
     "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.triu",
@@ -2906,7 +2947,14 @@
       "diagonal"
     ]
   },
-  "torch.Tensor.triu_": {},
+  "torch.Tensor.triu_": {
+    "Matcher": "TensorFunc2PaddleFunc",
+    "min_input_args": 0,
+    "paddle_api": "paddle.triu_",
+    "args_list": [
+      "diagonal"
+    ]
+  },
   "torch.Tensor.true_divide": {
     "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.Tensor.divide",
