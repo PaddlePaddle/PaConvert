@@ -28,4 +28,4 @@ def test_case_1():
         a.arcsin_()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["a"])
