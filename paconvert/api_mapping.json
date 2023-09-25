@@ -256,21 +256,37 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.acos"
   },
-  "torch.Tensor.arccos_": {},
+  "torch.Tensor.arccos_": {
+    "Matcher": "TensorFunc2PaddleFunc",
+    "min_input_args": 0,
+    "paddle_api": "paddle.acos_"
+  },
   "torch.Tensor.arccosh": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.acosh"
   },
-  "torch.Tensor.arccosh_": {},
+  "torch.Tensor.arccosh_": {
+    "Matcher": "TensorFunc2PaddleFunc",
+    "min_input_args": 0,
+    "paddle_api": "paddle.acosh_"
+  },
   "torch.Tensor.arcsin": {
     "Matcher": "UnchangeMatcher"
   },
-  "torch.Tensor.arcsin_": {},
+  "torch.Tensor.arcsin_": {
+    "Matcher": "TensorFunc2PaddleFunc",
+    "min_input_args": 0,
+    "paddle_api": "paddle.asin_"
+  },
   "torch.Tensor.arcsinh": {
     "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.asinh"
   },
-  "torch.Tensor.arcsinh_": {},
+  "torch.Tensor.arcsinh_": {
+    "Matcher": "TensorFunc2PaddleFunc",
+    "min_input_args": 0,
+    "paddle_api": "paddle.asinh_"
+  },
   "torch.Tensor.arctan": {
     "Matcher": "UnchangeMatcher"
   },
@@ -286,12 +302,20 @@
     }
   },
   "torch.Tensor.arctan2_": {},
-  "torch.Tensor.arctan_": {},
+  "torch.Tensor.arctan_": {
+    "Matcher": "TensorFunc2PaddleFunc",
+    "min_input_args": 0,
+    "paddle_api": "paddle.atan_"
+  },
   "torch.Tensor.arctanh": {
     "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.atanh"
   },
-  "torch.Tensor.arctanh_": {},
+  "torch.Tensor.arctanh_": {
+    "Matcher": "TensorFunc2PaddleFunc",
+    "min_input_args": 0,
+    "paddle_api": "paddle.atanh_"
+  },
   "torch.Tensor.argmax": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.argmax",
