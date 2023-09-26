@@ -2312,6 +2312,7 @@
   "torch.Tensor.quantile": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.quantile",
+    "min_input_args": 1,
     "args_list": [
       "q",
       "dim",
@@ -2854,6 +2855,7 @@
   "torch.Tensor.tensor_split": {},
   "torch.Tensor.tile": {
     "Matcher": "TensorTileMatcher",
+    "min_input_args": 1,
     "paddle_api": "paddle.Tensor.tile"
   },
   "torch.Tensor.to": {
@@ -7235,6 +7237,7 @@
   "torch.nanquantile": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nanquantile",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "q",
@@ -11050,6 +11053,7 @@
   "torch.quantile": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.quantile",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "q",
