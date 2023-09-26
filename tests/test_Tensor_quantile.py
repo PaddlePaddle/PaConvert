@@ -23,7 +23,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0., 1., 2., 3.],dtype=torch.float64).quantile(0.6)
+        result = torch.tensor([[ 0.0795, -1.2117,  0.9765], [ 1.1707,  0.6706,  0.4884]],dtype=torch.float64).quantile(0.6)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,7 +33,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0., 1., 2., 3.],dtype=torch.float64).quantile(0.6, dim=None)
+        result = torch.tensor([[ 0.0795, -1.2117,  0.9765], [ 1.1707,  0.6706,  0.4884]],dtype=torch.float64).quantile(0.6, dim=None)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -43,7 +43,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0., 1., 2., 3.],dtype=torch.float64).quantile(0.6, dim=None, keepdim=False)
+        result = torch.tensor([[ 0.0795, -1.2117,  0.9765], [ 1.1707,  0.6706,  0.4884]],dtype=torch.float64).quantile(0.6, dim=0, keepdim=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -53,7 +53,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0., 1., 2., 3.],dtype=torch.float64).quantile(0.6, dim=None, keepdim=False)
+        result = torch.tensor([[ 0.0795, -1.2117,  0.9765], [ 1.1707,  0.6706,  0.4884]],dtype=torch.float64).quantile(0.6, dim=1, keepdim=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -63,7 +63,7 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.quantile(torch.tensor([[ 0.0795, -1.2117,  0.9765], [ 1.1707,  0.6706,  0.4884]],dtype=torch.float64), 0.6, dim=1, keepdim=True)
+        result = torch.tensor([[ 0.0795, -1.2117,  0.9765], [ 1.1707,  0.6706,  0.4884]],dtype=torch.float64).quantile(0.6, dim=1, keepdim=True)
         """
     )
     obj.run(pytorch_code, ["result"])

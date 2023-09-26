@@ -2730,7 +2730,7 @@
     }
   },
   "torch.Tensor.stft": {
-    "Matcher": "TensorStftMatcher",
+    "Matcher": "StftMatcher",
     "paddle_api": "paddle.signal.stft",
     "min_input_args": 1,
     "args_list": [
