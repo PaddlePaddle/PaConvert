@@ -52,7 +52,7 @@ def test_case_3():
         x = torch.tensor([[1.0, 1.0, 1.0],
                         [2.0, 2.0, 2.0],
                         [3.0, 3.0, 3.0]])
-        result = x.cumprod(dim=1)
+        result = x.cumprod(1)
         """
     )
     obj.run(pytorch_code, ["result"])

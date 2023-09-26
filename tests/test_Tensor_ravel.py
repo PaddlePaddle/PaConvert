@@ -17,7 +17,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.ravel")
+obj = APIBase("torch.Tensor.ravel")
 
 
 def test_case_1():

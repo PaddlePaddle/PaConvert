@@ -17,7 +17,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.absolute")
+obj = APIBase("torch.Tensor.absolute")
 
 
 def test_case_1():
@@ -36,6 +36,50 @@ def test_case_2():
         """
         import torch
         result = torch.tensor([[-4, 9], [-23, 2]]).absolute()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        try:
+            a = torch.tensor([[-4, 9], [-23, 2]])
+            assert 0, "Raise AssertionError"
+        except Exception as e:
+            error_msg = str(e)
+        """
+    )
+    obj.run(pytorch_code, ["error_msg"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        try:
+            a = torch.tensor([[-4, 9], [-23, 2]])
+            assert 0, "Raise AssertionError"
+        except Exception as e:
+            error_msg = str(e)
+        finally:
+            pass
+        """
+    )
+    obj.run(pytorch_code, ["error_msg"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        i = 0
+        result = []
+        while i < 5:
+            result.append(torch.tensor(i).absolute())
+            i += 1
         """
     )
     obj.run(pytorch_code, ["result"])

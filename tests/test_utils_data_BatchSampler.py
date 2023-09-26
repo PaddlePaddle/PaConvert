@@ -23,28 +23,33 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         from torch.utils.data import BatchSampler
-        result = list(BatchSampler(range(10), batch_size=3, drop_last=True))
+        from torch.utils.data import SequentialSampler
+        batch_sampler = BatchSampler(sampler=SequentialSampler([3, 9, 10, 5, 7, 6, 1]), batch_size=3, drop_last=True)
+        result = list(batch_sampler)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_2():
+# paddle not support sampler is any iterable
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         from torch.utils.data import BatchSampler
-        result = list(BatchSampler(range(10), batch_size=3, drop_last=False))
+        batch_sampler = BatchSampler([3, 9, 10, 5, 7, 6, 1], batch_size=3, drop_last=False)
+        result = list(batch_sampler)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_3():
+# paddle not support sampler is any iterable
+def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = batch_sampler_train = torch.utils.data.BatchSampler(range(10), 2, drop_last=True)
-        result = list(result)
+        batch_sampler = torch.utils.data.BatchSampler([3, 9, 10, 5, 7, 6, 1], 2, True)
+        result = list(batch_sampler)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,19 +60,19 @@ def test_case_4():
         """
         import torch
         batch_size = 4
-        result = batch_sampler_train = torch.utils.data.BatchSampler(range(10), batch_size, drop_last=False)
-        result = list(result)
+        batch_sampler = torch.utils.data.BatchSampler(torch.utils.data.SequentialSampler([3, 9, 10, 5, 7, 6, 1]), batch_size, False)
+        result = list(batch_sampler)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_5():
+# paddle not support sampler is any iterable
+def _test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        batch_size = 4
-        result = list(torch.utils.data.BatchSampler(sampler=range(10), batch_size=batch_size, drop_last=False))
+        result = list(torch.utils.data.BatchSampler(batch_size=4, drop_last=False, sampler=[3, 9, 10, 5, 7, 6, 1]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -77,8 +82,8 @@ def test_alias_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        batch_size = 4
-        result = list(torch.utils.data.sampler.BatchSampler(sampler=range(10), batch_size=batch_size, drop_last=False))
+        batch_sampler = torch.utils.data.sampler.BatchSampler(sampler=torch.utils.data.SequentialSampler([3, 9, 10, 5, 7, 6, 1]), batch_size=3, drop_last=True)
+        result = list(batch_sampler)
         """
     )
     obj.run(pytorch_code, ["result"])

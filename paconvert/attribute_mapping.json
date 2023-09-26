@@ -1,24 +1,29 @@
 {
-  "torch.Tensor.H": {},
+  "torch.Tensor.H": {
+    "Matcher": "TensorHMatcher"
+  },
   "torch.Tensor.T": {
-    "Matcher": "TensorUnchangeMatcher"
+    "Matcher": "UnchangeMatcher"
   },
   "torch.Tensor.device": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.place"
   },
   "torch.Tensor.dtype": {
-    "Matcher": "TensorUnchangeMatcher"
+    "Matcher": "UnchangeMatcher"
   },
   "torch.Tensor.grad": {
-    "Matcher": "TensorUnchangeMatcher"
+    "Matcher": "UnchangeMatcher"
   },
   "torch.Tensor.imag": {
-    "Matcher": "TensorUnchangeMatcher"
+    "Matcher": "Attribute2Func",
+    "paddle_api": "paddle.Tensor.imag"
   },
-  "torch.Tensor.is_cuda": {},
+  "torch.Tensor.is_cuda": {
+    "Matcher": "TensorIsCudaMatcher"
+  },
   "torch.Tensor.is_leaf": {
-    "Matcher": "TensorUnchangeMatcher"
+    "Matcher": "UnchangeMatcher"
   },
   "torch.Tensor.is_meta": {},
   "torch.Tensor.is_quantized": {},
@@ -26,20 +31,33 @@
     "Matcher": "Attribute2Func",
     "paddle_api": "paddle.Tensor.is_sparse"
   },
-  "torch.Tensor.mH": {},
-  "torch.Tensor.mT": {},
+  "torch.Tensor.mH": {
+    "Matcher": "TensorMhMatcher"
+  },
+  "torch.Tensor.mT": {
+    "Matcher": "TensorMtMatcher"
+  },
   "torch.Tensor.names": {},
   "torch.Tensor.ndim": {
-    "Matcher": "TensorUnchangeMatcher"
+    "Matcher": "UnchangeMatcher"
   },
   "torch.Tensor.real": {
-    "Matcher": "TensorUnchangeMatcher"
+    "Matcher": "Attribute2Func",
+    "paddle_api": "paddle.Tensor.real"
   },
   "torch.Tensor.requires_grad": {
-    "Matcher": "TensorRequires_GradMatcher",
+    "Matcher": "TensorRequiresGradMatcher",
     "paddle_api": "paddle.Tensor.stop_gradient"
   },
   "torch.Tensor.shape": {
-    "Matcher": "TensorUnchangeMatcher"
-  }
+    "Matcher": "UnchangeMatcher"
+  },
+  "torch.autograd.function.FunctionCtx.saved_tensors": {},
+  "torch.autograd.profiler.profile.self_cpu_time_total": {},
+  "torch.distributions.Distribution.batch_shape": {},
+  "torch.distributions.Distribution.event_shape": {},
+  "torch.distributions.Distribution.mean": {},
+  "torch.distributions.Distribution.mode": {},
+  "torch.distributions.Distribution.stddev": {},
+  "torch.distributions.Distribution.variance": {}
 }

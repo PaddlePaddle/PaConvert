@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.adaptive_avg_pool3d")
+obj = APIBase("torch.nn.functional.adaptive_avg_pool3d")
 
 
 def test_case_1():

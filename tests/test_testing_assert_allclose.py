@@ -15,7 +15,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.histc")
+obj = APIBase("torch.testing.assert_allclose")
 
 
 def test_case_1():

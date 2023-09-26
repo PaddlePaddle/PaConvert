@@ -23,8 +23,61 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.true_divide(a)
+        a = torch.tensor([4.67, 9.76 , 8.53])
+        b = torch.tensor([3.5, 3.90, 1.83])
+        result = a.true_divide(b)
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4., 9., 8.]])
+        b = torch.tensor([2., 3., 4.])
+        result = a.true_divide(other=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([4.67, 9.76 , 8.53])
+        result = a.true_divide(2.0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# paddle not support type promote
+# torch.true_divide(int, int) return float, but paddle return int
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4, 9, 8]])
+        b = torch.tensor([2, 3, 4])
+        result = a.true_divide(other=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_dtype=False)
+
+
+# paddle not support type promote
+# torch.true_divide(int, int) return float, but paddle return int, when can not divide exactly,
+# paddle result equal to trunc divide, result is wrong
+def _test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4, 3, 8]])
+        b = torch.tensor([3, 2, 5])
+        result = a.true_divide(other=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_dtype=False)

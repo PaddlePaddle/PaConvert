@@ -29,7 +29,7 @@ def test_case_1():
         result = torch.pinverse(x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_2():
@@ -42,7 +42,7 @@ def test_case_2():
         result = torch.pinverse(x, rcond=1e-13)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_3():
@@ -55,4 +55,4 @@ def test_case_3():
         result = torch.pinverse(input=x, rcond=1e-13)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)

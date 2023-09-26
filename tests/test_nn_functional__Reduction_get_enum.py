@@ -17,7 +17,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.functional._Reduction.get_enum")
+obj = APIBase("torch.nn.functional._Reduction.get_enum", is_aux_api=True)
 
 
 def test_case_1():
@@ -27,7 +27,7 @@ def test_case_1():
         result = torch.nn.functional._Reduction.get_enum('mean')
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -37,7 +37,7 @@ def test_case_2():
         result = torch.nn.functional._Reduction.get_enum("mean")
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -47,7 +47,7 @@ def test_case_3():
         result = torch.nn.functional._Reduction.get_enum("sum")
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -58,4 +58,4 @@ def test_case_4():
         result = torch.nn.functional._Reduction.get_enum(reduction = reduction)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])

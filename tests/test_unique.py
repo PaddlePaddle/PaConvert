@@ -67,8 +67,5 @@ def test_case_4():
         """
     )
     obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="Paddle does not currently support the 'sorted' input parameter.",
+        pytorch_code, ["result"], unsupport=True, reason="Paddle not support 'sorted' "
     )

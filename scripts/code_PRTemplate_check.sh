@@ -15,16 +15,10 @@
 set +x
 
 export FLAGS_set_to_1d=0
-DEVELOP_IF="OFF"
-AGILE_PULL_ID="AGILE_PULL_ID"
-GITHUB_API_TOKEN="GITHUB_API_TOKEN"
 
-if [[ "$DEVELOP_IF" == "OFF" ]]; then
-    cd /workspace/$2/PaConvert/ 
-    PATH=$1
-    AGILE_PULL_ID=$3
-    GITHUB_API_TOKEN=$4
-fi
+cd /workspace/$1/PaConvert/ 
+AGILE_PULL_ID=$2
+GITHUB_API_TOKEN=$3
 
 echo "start PR template testing..."
 

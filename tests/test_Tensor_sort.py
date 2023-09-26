@@ -25,8 +25,6 @@ def test_case_1():
         import torch
         a = torch.tensor([[4, 9], [23, 2]])
         result = a.sort()
-        if isinstance(result, tuple):
-            result = result[0]
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -37,9 +35,7 @@ def test_case_2():
         """
         import torch
         a = torch.tensor([[4, 9], [23, 2]])
-        result = a.sort(0)
-        if isinstance(result, tuple):
-            result = result[0]
+        result = a.sort(stable=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -50,25 +46,41 @@ def test_case_3():
         """
         import torch
         a = torch.tensor([[4, 9], [23, 2]])
-        result = a.sort(dim=1, descending=True, stable=True)
-        if isinstance(result, tuple):
-            result = result[0]
+        result = a.sort(0)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="unsupprt stable parameter"
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        a = torch.tensor([[4, 9], [23, 2]])
+        result = a.sort(0, True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
         descending=False
         a = torch.tensor([[4, 9], [23, 2]])
         result = a.sort(dim=1, descending=descending)
-        if isinstance(result, tuple):
-            result = result[0]
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4, 9], [23, 2]])
+        result = a.sort(dim=1, descending=True, stable=True)
         """
     )
     obj.run(pytorch_code, ["result"])

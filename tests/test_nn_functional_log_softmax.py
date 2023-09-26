@@ -37,7 +37,7 @@ def test_case_1():
         pytorch_code,
         ["result"],
         unsupport=True,
-        reason="The result is different from the pytorch calculation",
+        reason="When dim is None, paddle and pytorch generate different results due to the way to calculate dimensions",
     )
 
 
@@ -55,12 +55,7 @@ def test_case_2():
         result = F.log_softmax(x, dim=1)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="The result is different from the pytorch calculation",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -81,7 +76,7 @@ def test_case_3():
         pytorch_code,
         ["result"],
         unsupport=True,
-        reason="The result is different from the pytorch calculation",
+        reason="When dim is None, paddle and pytorch generate different results due to the way to calculate dimensions",
     )
 
 
@@ -103,5 +98,5 @@ def test_case_4():
         pytorch_code,
         ["result"],
         unsupport=True,
-        reason="The result is different from the pytorch calculation",
+        reason="When dim is None, paddle and pytorch generate different results due to the way to calculate dimensions",
     )

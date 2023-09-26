@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.sigmoid")
+obj = APIBase("torch.Tensor.trace")
 
 
 def test_case_1():
