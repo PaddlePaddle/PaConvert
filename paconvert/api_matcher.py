@@ -508,6 +508,17 @@ class TensorStftMatcher(BaseMatcher):
         return code
 
 
+class StftMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if ("return_complex" in kwargs) and (kwargs.pop("return_complex") == "(False)"):
+            code = "paddle.as_real(paddle.signal.stft({}))".format(
+                self.kwargs_to_str(kwargs)
+            )
+        else:
+            code = "paddle.signal.stft({})".format(self.kwargs_to_str(kwargs))
+        return code
+
+
 class DeviceMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if len(kwargs) == 1:

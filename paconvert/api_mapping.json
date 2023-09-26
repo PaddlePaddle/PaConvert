@@ -12073,6 +12073,25 @@
       "correction": "unbiased"
     }
   },
+  "torch.stft": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.signal.stft",
+    "args_list": [
+      "input",
+      "n_fft",
+      "hop_length",
+      "win_length",
+      "window",
+      "center",
+      "normalized",
+      "onesided",
+      "length",
+      "return_complex"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.subtract": {
     "Matcher": "Num2TensorBinaryWithAlphaMatcher",
     "paddle_api": "paddle.subtract",
