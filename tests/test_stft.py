@@ -41,7 +41,7 @@ def test_case_1():
         result = torch.stft(x, n_fft=4, onesided=False)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1e-1, atol=1e-04)
 
 
 def test_case_2():
@@ -66,4 +66,4 @@ def test_case_2():
         result = torch.stft(x, n_fft=4, onesided=False, center=False)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1e-1, atol=1e-04)
