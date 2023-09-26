@@ -2422,7 +2422,7 @@
   },
   "torch.Tensor.renorm_": {
     "Matcher": "TensorFunc2PaddleFunc",
-    "min_input_args": 0,
+    "min_input_args": 3,
     "paddle_api": "paddle.renorm_",
     "args_list": [
       "p",
