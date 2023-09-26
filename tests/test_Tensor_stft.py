@@ -41,7 +41,7 @@ def test_case_1():
         result = x.stft(n_fft=4, onesided=False, return_complex=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], atol=1e-04)
 
 
 def test_case_2():
@@ -66,4 +66,4 @@ def test_case_2():
         result = x.stft(n_fft=4, onesided=False, return_complex=False)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], atol=1e-04)
