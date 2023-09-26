@@ -45,7 +45,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(9)
+        a = torch.arange(9.)
         result = a.reshape([3, 3])
         """
     )
@@ -68,6 +68,18 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        a = torch.arange(9)
+        shape = (3, 3)
+        result = a.reshape(*shape)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
         a = torch.arange(4.)
         k = 2
         result = a.reshape((k, k))
@@ -76,7 +88,7 @@ def test_case_5():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_6():
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -88,7 +100,7 @@ def test_case_6():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_7():
+def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -99,7 +111,7 @@ def test_case_7():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_8():
+def test_case_9():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -110,7 +122,7 @@ def test_case_8():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_9():
+def test_case_10():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -121,7 +133,7 @@ def test_case_9():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_10():
+def test_case_11():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -130,19 +142,3 @@ def test_case_10():
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-def test_case_11():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x.reshape(size=[-1])
-        """
-    )
-    expect_code = textwrap.dedent(
-        """
-        import paddle
-        x.reshape(size=[-1])
-        """
-    )
-    obj.run(pytorch_code, expect_paddle_code=expect_code)

@@ -87,7 +87,12 @@ def test_case_5():
         result, indices = F.max_pool1d(input , 5, stride=2, padding=2, ceil_mode=True, return_indices=True)
         """
     )
-    obj.run(pytorch_code, ["result", "indices"], check_dtype=False)
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
+    )
 
 
 # when return_indices=False, paddle result and indices shape is (1, 3, 2), which is right: ceil(6/5)=2
@@ -103,4 +108,9 @@ def _test_case_6():
         result, indices = F.max_pool1d(input, kernel_size=5, ceil_mode=True, return_indices=True)
         """
     )
-    obj.run(pytorch_code, ["result", "indices"], check_dtype=False)
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
+    )

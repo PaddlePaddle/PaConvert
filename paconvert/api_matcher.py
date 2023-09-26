@@ -1978,8 +1978,11 @@ class SpecialErfcxMatcher(BaseMatcher):
         return code
 
 
-class SpecialXlogyMatcher(BaseMatcher):
+class XLogYMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        if "input" not in kwargs:
+            kwargs["input"] = self.paddleClass
+
         if "out" in kwargs and kwargs["out"] != "None":
             API_TEMPLATE = textwrap.dedent(
                 """
@@ -2129,29 +2132,6 @@ class LogAddExp2Matcher(BaseMatcher):
             API_TEMPLATE = textwrap.dedent(
                 """
                 paddle.log2(2. ** {} + 2. ** {})
-                """
-            )
-            code = API_TEMPLATE.format(kwargs["input"], kwargs["other"])
-
-        return code
-
-
-class XLogYMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "input" not in kwargs:
-            kwargs["input"] = self.paddleClass
-
-        if "out" in kwargs and kwargs["out"] != "None":
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.assign(paddle.multiply(paddle.to_tensor({}), paddle.log(paddle.to_tensor({}))), output={})
-                """
-            )
-            code = API_TEMPLATE.format(kwargs["input"], kwargs["other"], kwargs["out"])
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.multiply(paddle.to_tensor({}), paddle.log(paddle.to_tensor({})))
                 """
             )
             code = API_TEMPLATE.format(kwargs["input"], kwargs["other"])

@@ -78,7 +78,7 @@ def test_case_5():
         import torch
         input = torch.arange(0, 15,dtype=torch.float32, requires_grad=True).reshape((3, 5))
         target = torch.arange(100, 160, 4, dtype=torch.float32, requires_grad=True).reshape((3, 5)) + 4
-        result = F.kl_div(input, target, True, False, reduction="mean")
+        result = F.kl_div(input=input, target=target, size_average=True, reduce=False, reduction="mean")
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -130,7 +130,7 @@ def test_case_9():
         import torch
         input = torch.arange(0, 15,dtype=torch.float32, requires_grad=True).reshape((3, 5))
         target = torch.arange(100, 160, 4, dtype=torch.float32, requires_grad=True).reshape((3, 5)) + 4
-        result = F.kl_div(input, target, None, None, "sum")
+        result = F.kl_div(input=input, target=target,size_average=None, reduce=None, reduction="sum")
         """
     )
     obj.run(pytorch_code, ["result"])

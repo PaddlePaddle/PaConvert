@@ -19,86 +19,141 @@ from apibase import APIBase
 obj = APIBase("torch.nn.MultiheadAttention")
 
 
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
         import torch.nn as nn
-        query = torch.ones([2,32,128])
-        key = torch.ones([2,32,128])
-        value = torch.ones([2,32,128])
-        multihead_attn = nn.MultiheadAttention(embed_dim=128, num_heads=1)
+        query = torch.ones([4, 32, 128])
+        key = torch.ones([4, 32, 128])
+        value = torch.ones([4, 32, 128])
+        multihead_attn = nn.MultiheadAttention(128, 2, 0.0, True)
         result = multihead_attn(query, key, value)
-        if isinstance(result, tuple):
-            result = result[0]
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle input q/k/v shape is [batch_size, seq_len, emb_dim], but torch input q/k/v shape is [seq_len, batch_size, emb_dim]",
+    )
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
         import torch.nn as nn
-        query = torch.ones([2,32,128])
-        key = torch.ones([2,32,128])
-        value = torch.ones([2,32,128])
-        multihead_attn = nn.MultiheadAttention(embed_dim=128, num_heads=1, dropout=0)
+        query = torch.ones([4, 32, 128])
+        key = torch.ones([4, 32, 128])
+        value = torch.ones([4, 32, 128])
+        multihead_attn = nn.MultiheadAttention(embed_dim=128, num_heads=2, dropout=0.0, bias=True)
         result = multihead_attn(query, key, value)
-        if isinstance(result, tuple):
-            result = result[0]
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle input q/k/v shape is [batch_size, seq_len, emb_dim], but torch input q/k/v shape is [seq_len, batch_size, emb_dim]",
+    )
 
 
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
         import torch.nn as nn
-        query = torch.ones([2,32,128])
-        key = torch.ones([2,32,128])
-        value = torch.ones([2,32,128])
-        multihead_attn = nn.MultiheadAttention(embed_dim=128, num_heads=1, dropout=0, bias=False)
+        query = torch.ones([4, 32, 128])
+        key = torch.ones([4, 32, 128])
+        value = torch.ones([4, 32, 128])
+        multihead_attn = nn.MultiheadAttention(embed_dim=128, num_heads=2, dropout=0.0, bias=True, add_bias_kv=False, add_zero_attn=False)
         result = multihead_attn(query, key, value)
-        if isinstance(result, tuple):
-            result = result[0]
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle input q/k/v shape is [batch_size, seq_len, emb_dim], but torch input q/k/v shape is [seq_len, batch_size, emb_dim]",
+    )
 
 
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
         import torch.nn as nn
-        query = torch.ones([2,32,128])
-        key = torch.ones([2,32,128])
-        value = torch.ones([2,32,128])
-        multihead_attn = nn.MultiheadAttention(128, 1, 0, False)
+        query = torch.ones([4, 32, 128])
+        key = torch.ones([4, 32, 128])
+        value = torch.ones([4, 32, 128])
+        multihead_attn = nn.MultiheadAttention(128, 2, 0.5, False, kdim=128, vdim=128)
         result = multihead_attn(query, key, value)
-        if isinstance(result, tuple):
-            result = result[0]
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle input q/k/v shape is [batch_size, seq_len, emb_dim], but torch input q/k/v shape is [seq_len, batch_size, emb_dim]",
+    )
 
 
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
         import torch.nn as nn
-        query = torch.ones([2,32,128])
-        key = torch.ones([2,32,128])
-        value = torch.ones([2,32,128])
-        multihead_attn = nn.MultiheadAttention(128, 1, 0, False, kdim=None)
+        query = torch.ones([4, 32, 128])
+        key = torch.ones([4, 32, 128])
+        value = torch.ones([4, 32, 128])
+        multihead_attn = nn.MultiheadAttention(128, 2, 0.5, False, batch_first=True)
         result = multihead_attn(query, key, value)
-        if isinstance(result, tuple):
-            result = result[0]
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle input q/k/v shape is [batch_size, seq_len, emb_dim], but torch input q/k/v shape is [seq_len, batch_size, emb_dim]",
+    )
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        query = torch.ones([4, 32, 128])
+        key = torch.ones([4, 32, 128])
+        value = torch.ones([4, 32, 128])
+        multihead_attn = nn.MultiheadAttention(128, 2, kdim=128, vdim=128, device=torch.device('cpu'), dtype=torch.float32)
+        result = multihead_attn(query, key, value)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle input q/k/v shape is [batch_size, seq_len, emb_dim], but torch input q/k/v shape is [seq_len, batch_size, emb_dim]",
+    )
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        query = torch.ones([4, 32, 128])
+        key = torch.ones([4, 32, 128])
+        value = torch.ones([4, 32, 128])
+        multihead_attn = nn.MultiheadAttention(128, 2)
+        result = multihead_attn(query, key, value)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle input q/k/v shape is [batch_size, seq_len, emb_dim], but torch input q/k/v shape is [seq_len, batch_size, emb_dim]",
+    )
