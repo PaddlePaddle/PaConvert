@@ -356,22 +356,6 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.nonzero"
   },
-  "torch.as_strided": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.as_strided",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "size",
-      "stride",
-      "storage_offset"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "size": "shape",
-      "storage_offset": "offset"
-    }
-  },
   "torch.Tensor.as_strided": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.as_strided",
@@ -3638,6 +3622,22 @@
       "input": "x"
     }
   },
+  "torch.as_strided": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.as_strided",
+    "min_input_args": 2,
+    "args_list": [
+      "input",
+      "size",
+      "stride",
+      "storage_offset"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "size": "shape",
+      "storage_offset": "offset"
+    }
+  },
   "torch.as_tensor": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.to_tensor",
@@ -4166,12 +4166,12 @@
       "input": "x"
     }
   },
-  "torch.clamp_min": {
+  "torch.clamp_max": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.clip",
     "args_list": [
       "input",
-      "min",
+      "max",
       "*",
       "out"
     ],
@@ -4179,12 +4179,12 @@
       "input": "x"
     }
   },
-  "torch.clamp_max": {
+  "torch.clamp_min": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.clip",
     "args_list": [
       "input",
-      "max",
+      "min",
       "*",
       "out"
     ],
