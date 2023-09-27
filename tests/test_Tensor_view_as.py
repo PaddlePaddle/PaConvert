@@ -16,15 +16,40 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.t")
+obj = APIBase("torch.Tensor.view_as")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.t()
+        a = torch.ones([15])
+        b = torch.zeros([3, 5])
+        result = a.view_as(b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.ones([15])
+        b = torch.zeros([3, 5])
+        result = a.view_as(other=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.ones([15])
+        b = torch.zeros([3, 5])
+        result = a.view_as(other=b+1)
         """
     )
     obj.run(pytorch_code, ["result"])

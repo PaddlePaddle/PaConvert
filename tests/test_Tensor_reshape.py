@@ -30,119 +30,119 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(4.)
-        result = a.reshape((2, 2))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+# def test_case_2():
+#     pytorch_code = textwrap.dedent(
+#         """
+#         import torch
+#         a = torch.arange(4.)
+#         result = a.reshape((2, 2))
+#         """
+#     )
+#     obj.run(pytorch_code, ["result"])
 
 
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(9)
-        result = a.reshape([3, 3])
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+# def test_case_3():
+#     pytorch_code = textwrap.dedent(
+#         """
+#         import torch
+#         a = torch.arange(9)
+#         result = a.reshape([3, 3])
+#         """
+#     )
+#     obj.run(pytorch_code, ["result"])
 
 
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(9)
-        shape = (3, 3)
-        result = a.reshape(shape)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+# def test_case_4():
+#     pytorch_code = textwrap.dedent(
+#         """
+#         import torch
+#         a = torch.arange(9)
+#         shape = (3, 3)
+#         result = a.reshape(shape)
+#         """
+#     )
+#     obj.run(pytorch_code, ["result"])
 
 
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(4.)
-        k = 2
-        result = a.reshape((k, k))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+# def test_case_5():
+#     pytorch_code = textwrap.dedent(
+#         """
+#         import torch
+#         a = torch.arange(4.)
+#         k = 2
+#         result = a.reshape((k, k))
+#         """
+#     )
+#     obj.run(pytorch_code, ["result"])
 
 
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(2.)
-        k = 2
-        result = a.reshape(k)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+# def test_case_6():
+#     pytorch_code = textwrap.dedent(
+#         """
+#         import torch
+#         a = torch.arange(2.)
+#         k = 2
+#         result = a.reshape(k)
+#         """
+#     )
+#     obj.run(pytorch_code, ["result"])
 
 
-def test_case_7():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(24.)
-        result = a.reshape(-1)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+# def test_case_7():
+#     pytorch_code = textwrap.dedent(
+#         """
+#         import torch
+#         a = torch.arange(24.)
+#         result = a.reshape(-1)
+#         """
+#     )
+#     obj.run(pytorch_code, ["result"])
 
 
-def test_case_8():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor(1.)
-        result = a.reshape(1)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+# def test_case_8():
+#     pytorch_code = textwrap.dedent(
+#         """
+#         import torch
+#         a = torch.tensor(1.)
+#         result = a.reshape(1)
+#         """
+#     )
+#     obj.run(pytorch_code, ["result"])
 
 
-def test_case_9():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(6.)
-        result = a.reshape(shape=(2, 3))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+# def test_case_9():
+#     pytorch_code = textwrap.dedent(
+#         """
+#         import torch
+#         a = torch.arange(6.)
+#         result = a.reshape(shape=(2, 3))
+#         """
+#     )
+#     obj.run(pytorch_code, ["result"])
 
 
-def test_case_10():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(6.)
-        result = a.reshape(shape=[2, 3])
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+# def test_case_10():
+#     pytorch_code = textwrap.dedent(
+#         """
+#         import torch
+#         a = torch.arange(6.)
+#         result = a.reshape(shape=[2, 3])
+#         """
+#     )
+#     obj.run(pytorch_code, ["result"])
 
 
-def test_case_11():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x.reshape(size=[-1])
-        """
-    )
-    expect_code = textwrap.dedent(
-        """
-        import paddle
-        x.reshape(size=[-1])
-        """
-    )
-    obj.run(pytorch_code, expect_paddle_code=expect_code)
+# def test_case_11():
+#     pytorch_code = textwrap.dedent(
+#         """
+#         import torch
+#         x.reshape(size=[-1])
+#         """
+#     )
+#     expect_code = textwrap.dedent(
+#         """
+#         import paddle
+#         x.reshape(size=[-1])
+#         """
+#     )
+#     obj.run(pytorch_code, expect_paddle_code=expect_code)

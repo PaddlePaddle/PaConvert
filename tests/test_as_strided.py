@@ -11,19 +11,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+#
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.tensor")
+obj = APIBase("torch.as_strided")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([2, 3])
+        x = torch.tensor([[ 0.0335,  0.1830, -0.1269],
+        [ 0.1897, -0.1422, -0.4940],
+        [-0.7674, -0.0134, -0.3733]])
+        result = torch.as_strided(x, (2, 2), (1, 2))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,8 +36,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        data = [2, 3]
-        result = torch.tensor(data)
+        x = torch.tensor([[ 0.0335,  0.1830, -0.1269],
+        [ 0.1897, -0.1422, -0.4940],
+        [-0.7674, -0.0134, -0.3733]])
+        result = torch.as_strided(x, (2, 2), (1, 2), 0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +49,13 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        data = [2, 3]
-        result = torch.tensor(data, dtype=torch.float)
+        x = torch.tensor([[ 0.0335,  0.1830, -0.1269],
+        [ 0.1897, -0.1422, -0.4940],
+        [-0.7674, -0.0134, -0.3733]])
+        size = (2, 2)
+        stride = (1, 2)
+        storage_offset = 0
+        result = torch.as_strided(x, size, stride, storage_offset)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,8 +65,12 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        data = [2, 3]
-        result = torch.tensor(data, dtype=torch.float, device=None)
+        x = torch.tensor([[ 0.0335,  0.1830, -0.1269],
+        [ 0.1897, -0.1422, -0.4940],
+        [-0.7674, -0.0134, -0.3733]])
+        size = (2, 2)
+        stride = (1, 2)
+        result = torch.as_strided(x, size, stride, 0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -66,32 +80,10 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        data = [2, 3]
-        result = torch.tensor(data, dtype=torch.float, device=None, requires_grad = False)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        data = [2, 3]
-        result = None
-        if torch.cuda.is_available():
-            result = torch.tensor(data, requires_grad = False, pin_memory=True)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_7():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        data = [2, 3]
-        result = torch.tensor(data, requires_grad = False, pin_memory=False)
+        x = torch.tensor([[ 0.0335,  0.1830, -0.1269],
+        [ 0.1897, -0.1422, -0.4940],
+        [-0.7674, -0.0134, -0.3733]])
+        result = torch.as_strided(x, size = (2,2), stride = (2,2), storage_offset = 0)
         """
     )
     obj.run(pytorch_code, ["result"])

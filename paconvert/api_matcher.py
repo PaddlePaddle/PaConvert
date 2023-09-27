@@ -2781,6 +2781,55 @@ class HypotMatcher(BaseMatcher):
         return code
 
 
+class TensorViewMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def view(self, *args, **kwargs):
+                if args:
+                    if len(args)==1 and isinstance(args[0], (tuple, list, str)):
+                        return paddle.view(self, args[0])
+                    else:
+                        return paddle.view(self, list(args))
+                elif kwargs:
+                    assert 'shape_or_dtype' in kwargs
+                    return paddle.view(self, shape=kwargs['shape_or_dtype'])
+
+            setattr(paddle.Tensor, 'view', view)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        if kwargs:
+            if len(kwargs) == 1 and "shape_or_dtype" in kwargs:
+                return "unchange"
+            else:
+                return "misidentify"
+
+        if args:
+            if len(args) > 1 and isinstance(args[0], (ast.Tuple, ast.List)):
+                return "unchange"
+            else:
+                self.write_aux_code()
+                return "unchange"
+
+        return "misidentify"
+
+
+class TensorView_asMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}.view({}.shape)
+            """
+        )
+        code = API_TEMPLATE.format(self.paddleClass, kwargs["other"])
+
+        return code
+
+
 class TensorReshapeMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(

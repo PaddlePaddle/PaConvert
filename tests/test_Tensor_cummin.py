@@ -16,14 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.tensor")
+obj = APIBase("torch.Tensor.cummin")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([2, 3])
+        x = torch.tensor([[1.0, 1.0, 1.0],
+                        [2.0, 2.0, 2.0],
+                        [3.0, 3.0, 3.0]])
+        result = x.cummin(0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,8 +36,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        data = [2, 3]
-        result = torch.tensor(data)
+        x = torch.tensor([[1.0, 1.0, 1.0],
+                        [2.0, 2.0, 2.0],
+                        [3.0, 3.0, 3.0]])
+        result = x.cummin(1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +49,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        data = [2, 3]
-        result = torch.tensor(data, dtype=torch.float)
+        x = torch.tensor([[1.0, 1.0, 1.0],
+                        [2.0, 2.0, 2.0],
+                        [3.0, 3.0, 3.0]])
+        result = x.cummin(dim=1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,43 +62,10 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        data = [2, 3]
-        result = torch.tensor(data, dtype=torch.float, device=None)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        data = [2, 3]
-        result = torch.tensor(data, dtype=torch.float, device=None, requires_grad = False)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        data = [2, 3]
-        result = None
-        if torch.cuda.is_available():
-            result = torch.tensor(data, requires_grad = False, pin_memory=True)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_7():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        data = [2, 3]
-        result = torch.tensor(data, requires_grad = False, pin_memory=False)
+        x = torch.tensor([[1.0, 1.0, 1.0],
+                        [2.0, 2.0, 2.0],
+                        [3.0, 3.0, 3.0]])
+        result = x.cummin(dim=0)
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -11,19 +11,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+#
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.tensor")
+obj = APIBase("torch.Tensor.index_put")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([2, 3])
+        x = torch.ones([5, 3])
+        t = torch.tensor([1.], dtype=torch.float)
+        indices = [torch.tensor(i) for i in [[0, 0], [0, 1]]]
+        result = x.index_put(indices, t)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,8 +36,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        data = [2, 3]
-        result = torch.tensor(data)
+        x = torch.ones([5, 3])
+        t = torch.tensor([1.], dtype=torch.float)
+        indices = [torch.tensor(i) for i in [[0, 0], [0, 1]]]
+        result = x.index_put(indices, values=t)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +49,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        data = [2, 3]
-        result = torch.tensor(data, dtype=torch.float)
+        x = torch.ones([5, 3])
+        t = torch.tensor([1.], dtype=torch.float)
+        indices = [torch.tensor(i) for i in [[0, 0], [0, 1]]]
+        result = x.index_put(indices, t, True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,8 +62,10 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        data = [2, 3]
-        result = torch.tensor(data, dtype=torch.float, device=None)
+        x = torch.ones([5, 3])
+        t = torch.tensor([1.], dtype=torch.float)
+        indices = [torch.tensor(i) for i in [[0, 0], [0, 1]]]
+        result = x.index_put(indices=indices, values=t, accumulate=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -66,8 +75,10 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        data = [2, 3]
-        result = torch.tensor(data, dtype=torch.float, device=None, requires_grad = False)
+        x = torch.ones([5, 3])
+        t = torch.tensor([1.], dtype=torch.float)
+        indices = [torch.tensor(i) for i in [[0, 0], [0, 1]]]
+        result = x.index_put(indices=indices, values=t, accumulate=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -77,21 +88,10 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        data = [2, 3]
-        result = None
-        if torch.cuda.is_available():
-            result = torch.tensor(data, requires_grad = False, pin_memory=True)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_7():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        data = [2, 3]
-        result = torch.tensor(data, requires_grad = False, pin_memory=False)
+        x = torch.ones([5, 3])
+        t = torch.tensor([1.], dtype=torch.float)
+        indices = [torch.tensor(i) for i in [[0, 0], [0, 1]]]
+        result = x.index_put(accumulate=True, indices=indices, values=t)
         """
     )
     obj.run(pytorch_code, ["result"])

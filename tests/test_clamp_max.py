@@ -16,14 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.tensor")
+obj = APIBase("torch.clamp_max")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([2, 3])
+        a = torch.tensor([-1.7120,  0.1734, -0.0478, 0.8922])
+        result = torch.clamp_max(a, -0.5)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,8 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        data = [2, 3]
-        result = torch.tensor(data)
+        a = torch.tensor([-1.7120,  0.1734, -0.0478, 0.8922])
+        result = torch.clamp_max(a, max=-0.2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +45,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        data = [2, 3]
-        result = torch.tensor(data, dtype=torch.float)
+        a = torch.tensor([-1.7120,  0.1734, -0.0478, 0.8922])
+        result = torch.clamp_max(input=a, max=-0.5)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,43 +56,22 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        data = [2, 3]
-        result = torch.tensor(data, dtype=torch.float, device=None)
+        a = torch.tensor([-1.7120,  0.1734, -0.0478, 0.8922])
+        out = torch.ones_like(a)
+        result = torch.clamp_max(input=a, max=-0.5, out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])
 
 
-def test_case_5():
+# the max param of paddle does not support specifying multiple lower bounds, and by default only the first element is taken.
+def _test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        data = [2, 3]
-        result = torch.tensor(data, dtype=torch.float, device=None, requires_grad = False)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        data = [2, 3]
-        result = None
-        if torch.cuda.is_available():
-            result = torch.tensor(data, requires_grad = False, pin_memory=True)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_7():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        data = [2, 3]
-        result = torch.tensor(data, requires_grad = False, pin_memory=False)
+        a = torch.tensor([-1.7120,  0.1734, -0.0478, 0.8922])
+        max = torch.tensor([-0.3, 0.04, 0.23, 0.98])
+        result = torch.clamp_max(a, max=max)
         """
     )
     obj.run(pytorch_code, ["result"])
