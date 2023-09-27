@@ -465,10 +465,6 @@ class CreateMatcher(BaseMatcher):
 
             kwargs = {"shape": str(shape).replace("'", ""), **kwargs}
 
-        for k in ["layout", "device", "memory_format"]:
-            if k in kwargs:
-                kwargs.pop(k)
-
         code = GenericMatcher.generate_code(self, kwargs)
         return ast.parse(code).body
 
@@ -636,15 +632,16 @@ class TensorMatcher(BaseMatcher):
         if "size" in kwargs:
             shape = kwargs.pop("size")
         else:
-            if len(args) == 0:
-                # torch has bug, treat 0D as 0-Size, but paddle not support 0-size
-                return None
             if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
                 shape = self.parse_args(args)
-            elif isinstance(args[0], ast.Starred):
+            elif len(args) == 1 and isinstance(args[0], ast.Starred):
                 shape = astor.to_source(args[0].value).strip("\n")
             else:
-                data = self.parse_args(args)[0]
+                if len(args) == 0:
+                    data = []
+                else:
+                    data = self.parse_args(args)[0]
+
                 if (
                     "torch.IntTensor" == self.torch_api
                     or "torch.cuda.IntTensor" == self.torch_api
@@ -681,14 +678,13 @@ class TensorMatcher(BaseMatcher):
                     "torch.cuda.BoolTensor" == self.torch_api
                 ):
                     code = "paddle.to_tensor(data={}, dtype='bool')".format(data)
-
                 else:
-                    if not isinstance(args[0], ast.Name):
+                    if len(args) > 0 and not isinstance(args[0], ast.Name):
                         code = "paddle.to_tensor(data={}, dtype='float32')".format(data)
                     else:
                         code = "paddle.to_tensor(data={})".format(data)
-                node = ast.parse(code).body
-                return node
+                return ast.parse(code).body
+
             shape = str(shape).replace("'", "")
 
         if (
@@ -733,8 +729,7 @@ class TensorMatcher(BaseMatcher):
         else:
             code = "paddle.empty(shape={})".format(shape)
 
-        node = ast.parse(code).body
-        return node
+        return ast.parse(code).body
 
 
 class RandintMatcher(BaseMatcher):
@@ -808,20 +803,21 @@ class TensorSizeMatcher(BaseMatcher):
 class TensorPermuteMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
-
-        if len(args) == 1 and isinstance(args[0], (ast.List, ast.Tuple)):
-            perm_list = self.parse_args(args)[0]
-        elif len(args) >= 1:
-            perm_list = self.parse_args(args)
-
         kwargs = self.parse_kwargs(kwargs)
         if kwargs is None:
             return None
 
         if "dims" in kwargs:
-            kwargs = {"perm": kwargs.pop("dims"), **kwargs}
+            kwargs = {"perm": kwargs.pop("dims")}
         else:
-            kwargs = {"perm": str(perm_list).replace("'", ""), **kwargs}
+            if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
+                perm = self.parse_args(args)
+            elif isinstance(args[0], ast.Starred):
+                perm = astor.to_source(args[0].value).strip("\n")
+            else:
+                perm = self.parse_args(args)[0]
+
+            kwargs = {"perm": str(perm).replace("'", "")}
 
         code = "{}.transpose({})".format(self.paddleClass, self.kwargs_to_str(kwargs))
         return ast.parse(code).body
@@ -830,6 +826,8 @@ class TensorPermuteMatcher(BaseMatcher):
 class TensorRenameMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         kwargs = self.parse_kwargs(kwargs)
+        if kwargs is None:
+            return None
         if "columns" in kwargs:
             return "misidentify"
 
@@ -1232,7 +1230,7 @@ class TensorExpandMatcher(BaseMatcher):
         if kwargs is None:
             return None
         if "size" in kwargs:
-            kwargs = {"shape": kwargs.pop("size"), **kwargs}
+            kwargs = {"shape": kwargs.pop("size")}
         else:
             if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
                 shape = self.parse_args(args)
@@ -1240,7 +1238,8 @@ class TensorExpandMatcher(BaseMatcher):
                 shape = astor.to_source(args[0].value).strip("\n")
             else:
                 shape = self.parse_args(args)[0]
-            kwargs = {"shape": str(shape).replace("'", ""), **kwargs}
+
+            kwargs = {"shape": str(shape).replace("'", "")}
 
         code = "{}.expand({})".format(self.paddleClass, self.kwargs_to_str(kwargs))
         return ast.parse(code).body
@@ -1858,8 +1857,7 @@ class SizeMatcher(BaseMatcher):
         else:
             code = "list({})".format(astor.to_source(args[0]).strip("\n"))
 
-        node = ast.parse(code).body
-        return node
+        return ast.parse(code).body
 
 
 class TensorToMatcher(BaseMatcher):
@@ -2734,6 +2732,7 @@ class Chain_MatmulMatcher(BaseMatcher):
         new_kwargs = self.parse_kwargs(kwargs)
         if new_kwargs is None:
             return None
+
         code = "{}".format(new_args[0])
         for arg in new_args[1:]:
             code = code + " @ {}".format(arg)
@@ -3862,8 +3861,7 @@ class TensorDatasetMatcher(BaseMatcher):
             tensors_v += ", {}".format(arg)
         tensors_v += "]"
         code = "{}({})".format(self.get_paddle_api(), tensors_v)
-        node = ast.parse(code).body
-        return node
+        return ast.parse(code).body
 
 
 class TensorMaxMinMatcher(BaseMatcher):

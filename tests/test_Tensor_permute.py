@@ -23,8 +23,8 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.permute(dims=(0,1))
+        x = torch.tensor([1., 2., 3., 4.])
+        result = x.permute(0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +34,90 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.permute((0, 1))
+        x = torch.tensor([[1., 2.], [ 3., 4.]])
+        result = x.permute(0, 1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.Tensor([[1., 2.], [3., 4.]])
+        result = x.permute((0, 1))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.Tensor([[1., 2.], [3., 4.]])
+        result = x.permute([0, 1])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# the only corner case, input a variable which is Constant, has no solution
+def _test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.Tensor([1., 2., 3., 4.])
+        dims = 0
+        result = x.permute(dims)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.Tensor([[1., 2.], [3., 4.]])
+        dims = (0, 1)
+        result = x.permute(dims)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.Tensor([[1., 2.], [3., 4.]])
+        dims = (0, 1)
+        result = x.permute(*dims)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.Tensor([[1., 2.], [3., 4.]])
+        dims = (0, 1)
+        result = x.permute(dims=dims)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.Tensor([[1., 2.], [3., 4.]])
+        result = x.permute(dims=(0, 1))
         """
     )
     obj.run(pytorch_code, ["result"])

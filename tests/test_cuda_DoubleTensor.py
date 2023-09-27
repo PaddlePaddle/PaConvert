@@ -96,9 +96,4 @@ def test_case_6():
             result = torch.cuda.DoubleTensor()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support 0-Size Tensor",
-    )
+    obj.run(pytorch_code, ["result"])
