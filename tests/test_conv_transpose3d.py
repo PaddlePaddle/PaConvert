@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.functional.dropout")
+obj = APIBase("torch.nn.functional.conv_transpose3d")
 
 
 def test_case_1():
@@ -24,9 +24,9 @@ def test_case_1():
         """
         import torch
         import torch.nn.functional as F
-        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
-                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        result = F.dropout(x)
+        x = torch.randn(20, 16, 10, 10, 10)
+        weight = torch.randn(16, 33, 2, 2, 2)
+        result = F.conv_transpose3d(x, weight)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -37,9 +37,10 @@ def test_case_2():
         """
         import torch
         import torch.nn.functional as F
-        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
-                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        result = F.dropout(x, 0.5)
+        x = torch.randn(20, 16, 10, 10, 10)
+        weight = torch.randn(16, 33, 2, 2, 2)
+        bias = torch.randn(33)
+        result = F.conv_transpose3d(x, weight, bias)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -50,9 +51,9 @@ def test_case_3():
         """
         import torch
         import torch.nn.functional as F
-        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
-                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        result = F.dropout(x, p=0.5)
+        x = torch.randn(20, 16, 10, 10, 10)
+        weight = torch.randn(16, 33, 2, 2, 2)
+        result = F.conv_transpose3d(x, weight, stride=2)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -63,9 +64,9 @@ def test_case_4():
         """
         import torch
         import torch.nn.functional as F
-        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
-                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        result = F.dropout(x, 0.5, True, True)
+        x = torch.randn(20, 16, 10, 10, 10)
+        weight = torch.randn(16, 33, 2, 2, 2)
+        result = F.conv_transpose3d(x, weight, stride=2, padding=2)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -76,9 +77,35 @@ def test_case_5():
         """
         import torch
         import torch.nn.functional as F
-        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
-                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        result = F.dropout(input=x, p=0.5, training=True, inplace=True)
+        x = torch.randn(20, 16, 10, 10, 10)
+        weight = torch.randn(16, 33, 2, 2, 2)
+        result = F.conv_transpose3d(x, weight, stride=2, padding=2, dilation=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.randn(20, 16, 10, 10, 10)
+        weight = torch.randn(16, 8, 2, 2, 2)
+        result = F.conv_transpose3d(x, weight, stride=2, padding=2, dilation=1, groups=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.randn(20, 16, 10, 10, 10)
+        weight = torch.randn(16, 8, 2, 2, 2)
+        result = F.conv_transpose3d(x, weight, stride=2, padding=2, output_padding=1, dilation=1, groups=2)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)

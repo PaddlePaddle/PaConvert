@@ -123,9 +123,7 @@ class BasicTransformer(BaseTransformer):
                         self.success_api_count += 1
                         log_info(
                             self.logger,
-                            "[Success] Convert {} to Paddle Successfully".format(
-                                torch_api
-                            ),
+                            "[Success] Convert {} to Paddle".format(torch_api),
                             self.file_name,
                             node.lineno,
                         )
@@ -146,7 +144,7 @@ class BasicTransformer(BaseTransformer):
                         self.success_api_count += 1
                         log_info(
                             self.logger,
-                            "[Success] Convert setattr({}, '{}') to Paddle Successfully".format(
+                            "[Success] Convert setattr({}, '{}') to Paddle".format(
                                 torch_api, attr_list[-1]
                             ),
                             self.file_name,
@@ -211,7 +209,7 @@ class BasicTransformer(BaseTransformer):
                     self.torch_api_count += 1
                     log_debug(
                         self.logger,
-                        "Start convert Class Attribute: {} to Paddle ".format(
+                        "Start convert Class Attribute: {} to Paddle --> ".format(
                             torch_class_api
                         ),
                         self.file_name,
@@ -254,7 +252,7 @@ class BasicTransformer(BaseTransformer):
                     )
                     return node
                 elif node_list == "misidentify":
-                    # This API usage indicate that is is not a torch.Tensor
+                    # This API usage indicate that it is not this class attribute
                     self.torch_api_count -= 1
                     log_debug(
                         self.logger,
@@ -440,7 +438,7 @@ class BasicTransformer(BaseTransformer):
                                 self.success_api_count += 1
                                 log_info(
                                     self.logger,
-                                    "[Success] Convert {} to Paddle ".format(torch_api),
+                                    "[Success] Convert {} to Paddle".format(torch_api),
                                     self.file_name,
                                     node.lineno,
                                 )
@@ -580,8 +578,7 @@ class BasicTransformer(BaseTransformer):
                 )
                 return node
             elif node_list == "misidentify":
-                # This API usage indicate that is is not a torch.Tensor
-                self.torch_api_count -= 1
+                # This API usage indicate that it is not this class method
                 log_debug(
                     self.logger,
                     " Misidentify Class Method: {}".format(torch_api),
@@ -621,7 +618,7 @@ class BasicTransformer(BaseTransformer):
                 ):
                     if self_in_args:
                         if isinstance(new_node, ast.Call):
-                            new_node.args.insert(0, node.args[0])
+                            new_node.args.insert(0, ast.Name(id="self", ctx=ast.Load()))
 
                     if self.insert_multi_node(node_list[0:-1]):
                         self.success_api_count += 1
