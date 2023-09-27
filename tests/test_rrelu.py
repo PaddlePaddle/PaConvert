@@ -16,17 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.functional.dropout")
+obj = APIBase("torch.rrelu")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn.functional as F
         x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                             [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        result = F.dropout(x)
+        result = torch.rrelu(x)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -36,10 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn.functional as F
         x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                             [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        result = F.dropout(x, 0.5)
+        result = torch.rrelu(x, 0.2, 0.9)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -49,10 +47,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn.functional as F
         x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                             [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        result = F.dropout(x, p=0.5)
+        result = torch.rrelu(x, lower=0.02, upper=0.9)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -62,10 +59,9 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn.functional as F
         x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                             [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        result = F.dropout(x, 0.5, True, True)
+        result = torch.rrelu(x, lower=0.02, upper=0.9, training=True)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -75,10 +71,9 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn.functional as F
         x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                             [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        result = F.dropout(input=x, p=0.5, training=True, inplace=True)
+        result = torch.rrelu(x, lower=0.02, upper=0.9, training=True)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)

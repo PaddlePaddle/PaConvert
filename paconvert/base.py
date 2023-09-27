@@ -132,7 +132,7 @@ class BaseTransformer(ast.NodeTransformer):
                 for index, lines in insert_lines:
                     log_debug(
                         self.logger,
-                        "insert extra {} lines".format(len(lines)),
+                        "insert extra {} lines on finally".format(len(lines)),
                         self.file_name,
                     )
                     for line in lines[::-1]:

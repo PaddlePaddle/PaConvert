@@ -16,16 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.cosine_similarity")
+obj = APIBase("torch.max_pool1d")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        y = torch.tensor([[8., 3., 3.], [2., 3., 4.]])
-        result = torch.cosine_similarity(x, y)
+        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857],
+            [-1.2533, -0.9829, -1.0981],
+            [ 0.1507, -1.1431, -2.0361]]])
+        result = torch.max_pool1d(input , 3)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,9 +36,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        y = torch.tensor([[8., 3., 3.], [2., 3., 4.]])
-        result = torch.cosine_similarity(x, y, 1)
+        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857],
+            [-1.2533, -0.9829, -1.0981],
+            [ 0.1507, -1.1431, -2.0361]]])
+        result = torch.max_pool1d(input , 3, stride=2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -47,9 +49,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        y = torch.tensor([[8., 3., 3.], [2., 3., 4.]])
-        result = torch.cosine_similarity(x, y, dim=1)
+        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857, 0.4586, 0.9876, 0.5487],
+            [-1.2533, -0.9829, -1.0981, 0.7655, 0.8541, 0.9873],
+            [ 0.1507, -1.1431, -2.0361, 0.2344, 0.5675, 0.1546]]])
+        result = torch.max_pool1d(input , 5, stride=2, padding=2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -59,21 +62,10 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        y = torch.tensor([[8., 3., 3.], [2., 3., 4.]])
-        result = torch.cosine_similarity(x1=x, x2=y, dim=1)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
-        y = torch.tensor([[8., 3., 3.], [2., 3., 4.]])
-        result = torch.cosine_similarity(x, y, dim=1, eps=1e-5)
+        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857, 0.4586, 0.9876, 0.5487],
+            [-1.2533, -0.9829, -1.0981, 0.7655, 0.8541, 0.9873],
+            [ 0.1507, -1.1431, -2.0361, 0.2344, 0.5675, 0.1546]]])
+        result = torch.max_pool1d(input , 5, stride=2, padding=2, ceil_mode=True)
         """
     )
     obj.run(pytorch_code, ["result"])
