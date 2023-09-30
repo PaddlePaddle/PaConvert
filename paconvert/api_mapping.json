@@ -10412,6 +10412,14 @@
       "val": "value"
     }
   },
+  "torch.nn.init.dirac_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.Dirac",
+    "args_list": [
+      "tensor",
+      "groups"
+    ]
+  },
   "torch.nn.modules.batchnorm._BatchNorm": {
     "Matcher": "Modules_BatchNormBaseMatcher",
     "paddle_api": "paddle.nn.layer.norm._BatchNormBase",
