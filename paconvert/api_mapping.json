@@ -10420,6 +10420,13 @@
       "groups"
     ]
   },
+  "torch.nn.init.eye_": {
+    "Matcher": "InitEyeMatcher",
+    "paddle_api": "paddle.nn.initializer.Assign",
+    "args_list": [
+      "tensor"
+    ]
+  },
   "torch.nn.modules.batchnorm._BatchNorm": {
     "Matcher": "Modules_BatchNormBaseMatcher",
     "paddle_api": "paddle.nn.layer.norm._BatchNormBase",

@@ -230,6 +230,16 @@ class InitMatcher(BaseMatcher):
         return code
 
 
+class InitEyeMatcher(InitMatcher):
+    def generate_code(self, kwargs):
+        init_tensor = kwargs["tensor"]
+        init_value = "paddle.eye({}.shape[0], {}.shape[1])".format(
+            init_tensor, init_tensor
+        )
+        kwargs["value"] = init_value
+        return super().generate_code(kwargs)
+
+
 class Num2TensorBinaryWithAlphaMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" in kwargs:
