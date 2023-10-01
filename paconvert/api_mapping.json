@@ -10427,6 +10427,19 @@
       "tensor"
     ]
   },
+  "torch.nn.init.kaiming_normal_": {
+    "Matcher": "InitKaimingMatcher",
+    "paddle_api": "paddle.nn.initializer.KaimingNormal",
+    "args_list": [
+      "tensor",
+      "a",
+      "mode",
+      "nonlinearity"
+    ],
+    "kwargs_change": {
+      "a": "negative_slope"
+    }
+  },
   "torch.nn.modules.batchnorm._BatchNorm": {
     "Matcher": "Modules_BatchNormBaseMatcher",
     "paddle_api": "paddle.nn.layer.norm._BatchNormBase",

@@ -240,6 +240,18 @@ class InitEyeMatcher(InitMatcher):
         return super().generate_code(kwargs)
 
 
+class InitKaimingMatcher(InitMatcher):
+    def generate_code(self, kwargs):
+        if "nonlinearity" not in kwargs:
+            kwargs["nonlinearity"] = '"leaky_relu"'
+        if "mode" in kwargs:
+            if "fan_out" in kwargs["mode"]:
+                return None
+            kwargs.pop("mode")
+
+        return super().generate_code(kwargs)
+
+
 class Num2TensorBinaryWithAlphaMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" in kwargs:
