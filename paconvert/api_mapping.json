@@ -10472,6 +10472,14 @@
       "value": "1.0"
     }
   },
+  "torch.nn.init.orthogonal_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.Orthogonal",
+    "args_list": [
+      "tensor",
+      "gain"
+    ]
+  },
   "torch.nn.init.zeros_": {
     "Matcher": "InitMatcher",
     "paddle_api": "paddle.nn.initializer.Constant",
