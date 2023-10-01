@@ -11048,6 +11048,25 @@
       "max_momentum"
     ]
   },
+  "torch.optim.lr_scheduler.ReduceLROnPlateau": {
+    "Matcher": "Optim2LrSchedulerMatcher",
+    "paddle_api": "paddle.optimizer.lr.ReduceOnPlateau",
+    "args_list": [
+      "optimizer",
+      "mode",
+      "factor",
+      "patience",
+      "threshold",
+      "threshold_mode",
+      "cooldown",
+      "min_lr",
+      "eps",
+      "verbose"
+    ],
+    "kwargs_change": {
+      "eps": "epsilon"
+    }
+  },
   "torch.optim.lr_scheduler.StepLR": {
     "Matcher": "Optim2LrSchedulerMatcher",
     "paddle_api": "paddle.optimizer.lr.StepDecay",
