@@ -10996,6 +10996,17 @@
       "verbose"
     ]
   },
+  "torch.optim.lr_scheduler.MultiStepLR": {
+    "Matcher": "Optim2LrSchedulerMatcher",
+    "paddle_api": "paddle.optimizer.lr.MultiStepDecay",
+    "args_list": [
+      "optimizer",
+      "milestones",
+      "gamma",
+      "last_epoch",
+      "verbose"
+    ]
+  },
   "torch.optim.lr_scheduler.StepLR": {
     "Matcher": "Optim2LrSchedulerMatcher",
     "paddle_api": "paddle.optimizer.lr.StepDecay",
