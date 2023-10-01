@@ -10943,6 +10943,39 @@
       "verbose"
     ]
   },
+  "torch.optim.lr_scheduler.CyclicLR": {
+    "Matcher": "LRSchedulerMatcher",
+    "paddle_api": "paddle.optimizer.lr.CyclicLR",
+    "args_list": [
+      "optimizer",
+      "base_lr",
+      "max_lr",
+      "step_size_up",
+      "step_size_down",
+      "mode",
+      "gamma",
+      "scale_fn",
+      "scale_mode",
+      "cycle_momentum",
+      "base_momentum",
+      "max_momentum",
+      "last_epoch",
+      "verbose"
+    ],
+    "kwargs_change": {
+      "base_lr": "base_learning_rate",
+      "max_lr": "max_learning_rate",
+      "gamma": "exp_gamma"
+    },
+    "unsupport_args": [
+      "cycle_momentum",
+      "base_momentum",
+      "max_momentum"
+    ],
+    "paddle_default_kwargs": {
+      "step_size_up": "2000"
+    }
+  },
   "torch.optim.lr_scheduler.StepLR": {
     "Matcher": "Optim2LrSchedulerMatcher",
     "paddle_api": "paddle.optimizer.lr.StepDecay",
