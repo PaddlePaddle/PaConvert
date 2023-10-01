@@ -51,13 +51,13 @@ def generate_torch_code(scheduler_init: str):
     conv.bias = torch.nn.Parameter(bias)
 
     sgd = torch.optim.SGD(conv.parameters(), lr=0.1)
-    schduler = {}
+    scheduler = {}
     for epoch in range(1, 11):
         out = conv(inp)
         loss = torch.mean(out)
         loss.backward()
         sgd.step()
-        schduler.step()
+        scheduler.step()
     result1 = conv.weight
     result2 = conv.bias
   """.format(

@@ -52,13 +52,13 @@ def test_case_1():
         conv.bias = torch.nn.Parameter(bias)
 
         sgd = torch.optim.SGD(conv.parameters(), lr=0.1)
-        schduler = torch.optim.lr_scheduler.ConstantLR(sgd, verbose=True)
+        scheduler = torch.optim.lr_scheduler.ConstantLR(sgd, verbose=True)
         for epoch in range(1, 11):
             out = conv(inp)
             loss = torch.mean(out)
             loss.backward()
             sgd.step()
-            schduler.step()
+            scheduler.step()
         result1 = conv.weight
         result2 = conv.bias
         """
@@ -99,13 +99,13 @@ def test_case_2():
         conv.bias = torch.nn.Parameter(bias)
 
         sgd = torch.optim.SGD(conv.parameters(), lr=0.2)
-        schduler = torch.optim.lr_scheduler.ConstantLR(sgd, factor=0.05)
+        scheduler = torch.optim.lr_scheduler.ConstantLR(sgd, factor=0.05)
         for epoch in range(1, 11):
             out = conv(inp)
             loss = torch.mean(out)
             loss.backward()
             sgd.step()
-            schduler.step()
+            scheduler.step()
         result1 = conv.weight
         result2 = conv.bias
         """
@@ -146,13 +146,13 @@ def test_case_3():
         conv.bias = torch.nn.Parameter(bias)
 
         sgd = torch.optim.SGD(conv.parameters(), lr=0.2)
-        schduler = torch.optim.lr_scheduler.ConstantLR(sgd, total_iters=3)
+        scheduler = torch.optim.lr_scheduler.ConstantLR(sgd, total_iters=3)
         for epoch in range(1, 11):
             out = conv(inp)
             loss = torch.mean(out)
             loss.backward()
             sgd.step()
-            schduler.step()
+            scheduler.step()
         result1 = conv.weight
         result2 = conv.bias
         """
