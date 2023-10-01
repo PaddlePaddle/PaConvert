@@ -10933,7 +10933,7 @@
     ]
   },
   "torch.optim.lr_scheduler.CosineAnnealingLR": {
-    "Matcher": "CosineAnnealingLRMatcher",
+    "Matcher": "Optim2LrSchedulerMatcher",
     "paddle_api": "paddle.optimizer.lr.CosineAnnealingDecay",
     "args_list": [
       "optimizer",
@@ -10944,7 +10944,7 @@
     ]
   },
   "torch.optim.lr_scheduler.StepLR": {
-    "Matcher": "LrSchedulerMatcher",
+    "Matcher": "Optim2LrSchedulerMatcher",
     "paddle_api": "paddle.optimizer.lr.StepDecay",
     "args_list": [
       "optimizer",

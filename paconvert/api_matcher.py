@@ -3568,7 +3568,7 @@ class LRSchedulerMatcher(BaseMatcher):
         return code
 
 
-class CosineAnnealingLRMatcher(LRSchedulerMatcher):
+class Optim2LrSchedulerMatcher(LRSchedulerMatcher):
     def generate_code(self, kwargs):
         optimizer = kwargs["optimizer"]
         kwargs["learning_rate"] = "{}.get_lr()".format(optimizer)
@@ -3587,26 +3587,6 @@ class ConstantLRMatcher(LRSchedulerMatcher):
         kwargs["values"] = "[{}*{}.get_lr(), {}.get_lr()]".format(factor, optim, optim)
         kwargs["boundaries"] = "[{}]".format(total_iters)
         return super().generate_code(kwargs)
-
-
-class LrSchedulerMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        optim = kwargs.pop("optimizer")
-        if self.get_paddle_api() not in [
-            "paddle.optimizer.lr.CyclicLR",
-        ]:
-            kwargs["learning_rate"] = optim + ".get_lr()"
-        API_TEMPLATE = textwrap.dedent(
-            """
-            tmp_lr = {}({})
-            {}.set_lr_scheduler(tmp_lr)
-            tmp_lr
-            """
-        )
-        code = API_TEMPLATE.format(
-            self.get_paddle_api(), self.kwargs_to_str(kwargs), optim
-        )
-        return code
 
 
 class RequireDimMatcher(BaseMatcher):
