@@ -10453,6 +10453,15 @@
       "a": "negative_slope"
     }
   },
+  "torch.nn.init.normal_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.Normal",
+    "args_list": [
+      "tensor",
+      "mean",
+      "std"
+    ]
+  },
   "torch.nn.modules.batchnorm._BatchNorm": {
     "Matcher": "Modules_BatchNormBaseMatcher",
     "paddle_api": "paddle.nn.layer.norm._BatchNormBase",
