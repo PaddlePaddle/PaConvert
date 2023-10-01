@@ -3551,17 +3551,9 @@ class OptimAdamMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-class ConstantLRMatcher(BaseMatcher):
+class LRSchedulerMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        optim = kwargs.pop("optimizer")
-        factor = 0.3333333333333333
-        total_iters = 5
-        if "factor" in kwargs:
-            factor = kwargs.pop("factor")
-        if "total_iters" in kwargs:
-            total_iters = kwargs.pop("total_iters")
-        kwargs["values"] = "[{}*{}.get_lr(), {}.get_lr()]".format(factor, optim, optim)
-        kwargs["boundaries"] = "[{}]".format(total_iters)
+        optimizer = kwargs.pop("optimizer")
         API_TEMPLATE = textwrap.dedent(
             """
             tmp_lr = {}({})
@@ -3570,9 +3562,31 @@ class ConstantLRMatcher(BaseMatcher):
             """
         )
         code = API_TEMPLATE.format(
-            self.get_paddle_api(), self.kwargs_to_str(kwargs), optim
+            self.get_paddle_api(), self.kwargs_to_str(kwargs), optimizer
         )
+
         return code
+
+
+class CosineAnnealingLRMatcher(LRSchedulerMatcher):
+    def generate_code(self, kwargs):
+        optimizer = kwargs["optimizer"]
+        kwargs["learning_rate"] = "{}.get_lr()".format(optimizer)
+        return super().generate_code(kwargs)
+
+
+class ConstantLRMatcher(LRSchedulerMatcher):
+    def generate_code(self, kwargs):
+        optim = kwargs["optimizer"]
+        factor = 0.3333333333333333
+        total_iters = 5
+        if "factor" in kwargs:
+            factor = kwargs.pop("factor")
+        if "total_iters" in kwargs:
+            total_iters = kwargs.pop("total_iters")
+        kwargs["values"] = "[{}*{}.get_lr(), {}.get_lr()]".format(factor, optim, optim)
+        kwargs["boundaries"] = "[{}]".format(total_iters)
+        return super().generate_code(kwargs)
 
 
 class LrSchedulerMatcher(BaseMatcher):
