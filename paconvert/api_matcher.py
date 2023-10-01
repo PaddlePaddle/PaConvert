@@ -3605,6 +3605,26 @@ class ConstantLRMatcher(LRSchedulerMatcher):
         return super().generate_code(kwargs)
 
 
+class OneCycleLRMatcher(LRSchedulerMatcher):
+    def generate_code(self, kwargs):
+        if "total_steps" in kwargs and "None" not in kwargs["total_steps"]:
+            pass
+        else:
+            steps_per_epoch = kwargs.pop("steps_per_epoch")
+            epochs = kwargs.pop("epochs")
+            kwargs["total_steps"] = "({})*({})".format(steps_per_epoch, epochs)
+
+        if "final_div_factor" in kwargs:
+            final_div_factor = kwargs.pop("final_div_factor")
+            max_lr = kwargs["max_lr"]
+            div_factor = kwargs["div_factor"]
+            kwargs["end_learning_rate"] = "({}) * 1. /(({}) * {})".format(
+                max_lr, div_factor, final_div_factor
+            )
+
+        return super().generate_code(kwargs)
+
+
 class RequireDimMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "dim" not in kwargs or "None" in kwargs["dim"]:

@@ -11017,6 +11017,37 @@
       "verbose"
     ]
   },
+  "torch.optim.lr_scheduler.OneCycleLR": {
+    "Matcher": "OneCycleLRMatcher",
+    "paddle_api": "paddle.optimizer.lr.OneCycleLR",
+    "args_list": [
+      "optimizer",
+      "max_lr",
+      "total_steps",
+      "epochs",
+      "steps_per_epoch",
+      "pct_start",
+      "anneal_strategy",
+      "cycle_momentum",
+      "base_momentum",
+      "max_momentum",
+      "div_factor",
+      "final_div_factor",
+      "three_phase",
+      "last_epoch",
+      "verbose"
+    ],
+    "kwargs_change": {
+      "max_lr": "max_learning_rate",
+      "pct_start": "phase_pct",
+      "div_factor": "divide_factor"
+    },
+    "unsupport_args": [
+      "cycle_momentum",
+      "base_momentum",
+      "max_momentum"
+    ]
+  },
   "torch.optim.lr_scheduler.StepLR": {
     "Matcher": "Optim2LrSchedulerMatcher",
     "paddle_api": "paddle.optimizer.lr.StepDecay",
