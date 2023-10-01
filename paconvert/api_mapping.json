@@ -10976,6 +10976,16 @@
       "step_size_up": "2000"
     }
   },
+  "torch.optim.lr_scheduler.ExponentialLR": {
+    "Matcher": "Optim2LrSchedulerMatcher",
+    "paddle_api": "paddle.optimizer.lr.ExponentialDecay",
+    "args_list": [
+      "optimizer",
+      "gamma",
+      "last_epoch",
+      "verbose"
+    ]
+  },
   "torch.optim.lr_scheduler.StepLR": {
     "Matcher": "Optim2LrSchedulerMatcher",
     "paddle_api": "paddle.optimizer.lr.StepDecay",
