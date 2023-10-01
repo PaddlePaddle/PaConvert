@@ -205,9 +205,12 @@ class SetFalseMatcher(BaseMatcher):
 
 class InitMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs_change = {}
-        if "kwargs_change" in self.api_mapping:
-            kwargs_change = self.api_mapping["kwargs_change"]
+        default_kwargs = self.api_mapping.get("paddle_default_kwargs", {})
+        for k in default_kwargs:
+            if k not in kwargs:
+                kwargs[k] = default_kwargs[k]
+
+        kwargs_change = self.api_mapping.get("kwargs_change", {})
         for k in kwargs_change:
             if k in kwargs:
                 kwargs[kwargs_change[k]] = kwargs.pop(k)

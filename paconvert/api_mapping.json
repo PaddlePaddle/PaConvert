@@ -10462,6 +10462,26 @@
       "std"
     ]
   },
+  "torch.nn.init.ones_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.Constant",
+    "args_list": [
+      "tensor"
+    ],
+    "paddle_default_kwargs": {
+      "value": "1.0"
+    }
+  },
+  "torch.nn.init.zeros_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.Constant",
+    "args_list": [
+      "tensor"
+    ],
+    "paddle_default_kwargs": {
+      "value": "0.0"
+    }
+  },
   "torch.nn.modules.batchnorm._BatchNorm": {
     "Matcher": "Modules_BatchNormBaseMatcher",
     "paddle_api": "paddle.nn.layer.norm._BatchNormBase",
