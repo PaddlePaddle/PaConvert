@@ -10496,6 +10496,28 @@
       "low": "0.0"
     }
   },
+  "torch.nn.init.xavier_normal_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.XavierNormal",
+    "args_list": [
+      "tensor",
+      "gain"
+    ],
+    "unsupport_args": [
+      "gain"
+    ]
+  },
+  "torch.nn.init.xavier_uniform_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.XavierUniform",
+    "args_list": [
+      "tensor",
+      "gain"
+    ],
+    "unsupport_args": [
+      "gain"
+    ]
+  },
   "torch.nn.init.zeros_": {
     "Matcher": "InitMatcher",
     "paddle_api": "paddle.nn.initializer.Constant",

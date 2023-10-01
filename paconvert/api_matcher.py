@@ -205,6 +205,11 @@ class SetFalseMatcher(BaseMatcher):
 
 class InitMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        unsupport_args = self.api_mapping.get("unsupport_args", [])
+        for k in unsupport_args:
+            if k in kwargs:
+                return None
+
         kwargs_change = self.api_mapping.get("kwargs_change", {})
         for k in kwargs_change:
             if k in kwargs:
