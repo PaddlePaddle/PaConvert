@@ -10480,6 +10480,22 @@
       "gain"
     ]
   },
+  "torch.nn.init.uniform_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.Uniform",
+    "args_list": [
+      "tensor",
+      "a",
+      "b"
+    ],
+    "kwargs_change": {
+      "a": "low",
+      "b": "high"
+    },
+    "paddle_default_kwargs": {
+      "low": "0.0"
+    }
+  },
   "torch.nn.init.zeros_": {
     "Matcher": "InitMatcher",
     "paddle_api": "paddle.nn.initializer.Constant",
