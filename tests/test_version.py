@@ -17,7 +17,24 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.__version__")
+
+class VersionAPI(APIBase):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
+    ):
+        # torch return: torch.torch_version.TorchVersion
+        assert type(str(pytorch_result)) == type(paddle_result)
+
+
+obj = VersionAPI("torch.__version__")
 
 
 def test_case_1():
@@ -27,4 +44,4 @@ def test_case_1():
         result = torch.__version__
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])

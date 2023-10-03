@@ -30,7 +30,7 @@ def test_case_1():
 
             [[ 1.1336, -0.4025],
             [-0.7089,  0.9032]]])
-        result = torch.linalg.slogdet(A=a)
+        result = torch.linalg.slogdet(a)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -52,3 +52,18 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 0.7308,  1.0060,  0.5270,  1.4516],
+                        [-0.1383,  1.5706,  0.4724,  0.4141],
+                        [ 0.1193,  0.2829,  0.9037,  0.3957],
+                        [-0.8202, -0.6474, -0.1631, -0.6543]])
+        out = (torch.tensor(0.), torch.tensor(0.))
+        result = torch.linalg.slogdet(A=x, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

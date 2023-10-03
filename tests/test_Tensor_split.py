@@ -16,59 +16,88 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.split")
+obj = APIBase("torch.Tensor.split", is_aux_api=True)
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(8).reshape(4, 2)
-        result = a.split(1)[0]
+        a = torch.arange(80).reshape(8, 10)
+        result = a.split(4)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(8).reshape(4, 2)
-        result = a.split(split_size=1)[0]
+        a = torch.arange(80).reshape(8, 10)
+        result = a.split(4, 0)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(8).reshape(4, 2)
-        result = a.split(1, 0)[0]
+        a = torch.arange(80).reshape(8, 10)
+        result = a.split(split_size=2, dim=1)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(8).reshape(4, 2)
-        result = a.split(1, dim=0)[0]
+        a = torch.arange(80).reshape(8, 10)
+        result = a.split(split_size = [2, 6], dim = 0)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(8).reshape(4, 2)
-        result = a.split(split_size = 1, dim = 0)[0]
+        a = torch.arange(80).reshape(8, 10)
+        b = 2
+        result = a.split(b, dim=1)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(80).reshape(8, 10)
+        b = 2
+        result = a.split(b, dim = 0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        str1.split(',')
+        """
+    )
+    expect_code = textwrap.dedent(
+        """
+        import paddle
+        str1.split(',')
+        """
+    )
+    obj.run(pytorch_code, expect_paddle_code=expect_code)

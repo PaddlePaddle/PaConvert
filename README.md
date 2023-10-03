@@ -2,8 +2,9 @@
 
 **Pa**ddlePaddle Code **Convert** Toolkits
 
-# 最近更新
-- 当前共支持约1100个Pytorch API的一键转换
+# 重要
+- 当前共支持约1200个Pytorch API的一键转换，我们通过285个Pytorch 模型代码测试，代码行数平均转换率约为 **85+%**
+- 当前PaConvert转换工具还在内测中，欢迎下载试用，欢迎通过issue方式向我们报Bug与提建议
 
 # 概述
 PaConvert全称是 **代码转换工具**，能自动将其它深度学习框架训练或推理的**代码**，转换为PaddlePaddle的**代码**，方便快速自动地 **模型代码迁移**。
@@ -122,8 +123,8 @@ class MyNet(paddle.nn.Layer):
 
 
 net = MyNet()
->>>sgd = torch.optim.SGD(net.parameters(), lr=0.1, momentum=0.9)
->>>lr = torch.optim.lr_scheduler.MultiStepLR(sgd, milestones=[2, 4, 6], gamma=0.8)
+>>>>>>sgd = torch.optim.SGD(net.parameters(), lr=0.1, momentum=0.9)
+>>>>>>lr = torch.optim.lr_scheduler.MultiStepLR(sgd, milestones=[2, 4, 6], gamma=0.8)
 ```
 
 打印信息如下：
@@ -152,7 +153,7 @@ There are 10 Pytorch APIs in this Project:
  2  Pytorch APIs are not supported to convert to Paddle currently!
  Convert Rate is: 80.000%
 
-For these 2 Pytorch APIs that do not support to Convert now, which have been marked by >>> before the line,
+For these 2 Pytorch APIs that do not support to Convert now, which have been marked by >>>>>> before the line,
 please refer to https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html
 and convert it by yourself manually. In addition, these APIs will be supported in future.
 
@@ -166,9 +167,9 @@ Thank you to use Paddle Code Convert Tool. You can make any suggestions to us.
 
 **对于转换成功的API**：代码风格上会略有变化，会 **补全API全名、补全参数关键字、移除注释、移除多余空行** 。因为在 `源码->语法树->源码` 的过程中，会采用标准写法来生成代码，而 `注释、空行` 等代码无法被语法树识别，将被移除。
 
-**对于不支持转换的API**：将 **补全为Pytorch API全名**，同时在行前通过 `>>>` 的形式加以标记，用户必须对该API进行人工手动转换，然后删除标记，否则代码无法运行。
+**对于不支持转换的API**：将 **补全为Pytorch API全名**，同时在行前通过 `>>>>>>` 的形式加以标记，用户必须对该API进行人工手动转换，然后删除标记，否则代码无法运行。
 
 
 # 贡献代码
 
-欢迎你向我们贡献代码，详细开发步骤请参考 [贡献代码教程](docs/Contribution.md)
+欢迎你向我们贡献代码，详细开发步骤请参考 [贡献代码教程](docs/CONTRIBUTING.md)

@@ -80,7 +80,23 @@ def test_case_6():
         """
         import torch
         x = torch.tensor([[0]], dtype=torch.float64)
-        result = x.nanquantile(q=0.3, dim=1, keepdim=True)
+        result = x.nanquantile(0.3, 1, True)
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0]], dtype=torch.float64)
+        result = x.nanquantile(q=0.3, dim=1, keepdim=True, interpolation='higher')
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Paddle not support this parameter",
+    )

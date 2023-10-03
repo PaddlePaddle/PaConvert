@@ -19,7 +19,6 @@ from apibase import APIBase
 obj = APIBase("torch.utils.cpp_extension.CUDAExtension")
 
 
-# The cuda compile not supports
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
@@ -28,6 +27,22 @@ def test_case_1():
         CUDAExtension(
                 name='cuda_extension',
                 sources=['extension.cpp', 'extension_kernel.cu'],
+                extra_compile_args={'cxx': ['-g'],
+                                    'nvcc': ['-O2']})
+        result = True
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        from torch.utils.cpp_extension import CUDAExtension
+
+        CUDAExtension(
+                'cuda_extension',
+                ['extension.cpp', 'extension_kernel.cu'],
                 extra_compile_args={'cxx': ['-g'],
                                     'nvcc': ['-O2']})
         result = True

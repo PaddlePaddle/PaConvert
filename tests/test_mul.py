@@ -32,7 +32,8 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_2():
+# paddle not support input type promote, and x/y must have the same dtype
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -44,7 +45,8 @@ def test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_3():
+# paddle not support input type promote, and x/y must have the same dtype
+def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -66,7 +68,8 @@ def test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_5():
+# paddle not support input type promote, and x/y must have the same dtype
+def _test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -76,3 +79,27 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.2015, -0.4255,  2.6087])
+        out = torch.tensor([0.2015, -0.4255,  2.6087])
+        result = torch.mul(input=input, other=torch.tensor(5.), out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.2015, -0.4255,  2.6087])
+        other = torch.tensor([0.2015, -0.4255,  2.6087])
+        result = torch.mul(other=other, input=input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

@@ -26,28 +26,17 @@ def test_case_1():
         from torch.utils.data import Dataset
         import numpy as np
 
-        class Data(Dataset):
+        class MyDataset(Dataset):
             def __init__(self):
-                self.x = np.arange(0,100,1)
+                self.x = np.arange(0, 100, 1)
 
             def __getitem__(self, idx):
                 return self.x[idx]
 
             def __len__(self):
-                return self.x.shape[0]
+                return len(self.x)
 
-        class MySampler(SequentialSampler):
-            def __init__(self, data_source):
-                self.data_source = data_source
-
-            def __iter__(self):
-                return iter(range(len(self.data_source)))
-
-            def __len__(self):
-                return len(self.data_source)
-
-        data = Data()
-        s = MySampler(data)
+        s = SequentialSampler(MyDataset())
         result = []
         for d in s:
             result.append(d)
@@ -63,28 +52,18 @@ def test_case_2():
         from torch.utils.data import Dataset
         import numpy as np
 
-        class Data(Dataset):
+        class MyDataset(Dataset):
             def __init__(self):
-                self.x = np.arange(0,100,1)
+                self.x = np.arange(0, 100, 1)
 
             def __getitem__(self, idx):
                 return self.x[idx]
 
             def __len__(self):
-                return self.x.shape[0]
+                return len(self.x)
 
-        class MySampler(SequentialSampler):
-            def __init__(self, data):
-                self.data_source = data
-
-            def __iter__(self):
-                return iter(range(len(self.data_source)))
-
-            def __len__(self):
-                return len(self.data_source)
-
-        data = Data()
-        s = MySampler(data=data)
+        data = MyDataset()
+        s = SequentialSampler(data_source=data)
         result = []
         for d in s:
             result.append(d)
@@ -101,9 +80,9 @@ def test_case_3():
         import numpy as np
         import torch
 
-        class Data(Dataset):
+        class MyDataset(Dataset):
             def __init__(self):
-                self.x = np.arange(0,100,1).reshape(10, 10)
+                self.x = np.arange(0, 100, 1).reshape(10, 10)
                 self.y = np.arange(0, 10, 1)
 
             def __getitem__(self, idx):
@@ -122,11 +101,11 @@ def test_case_3():
             def __len__(self):
                 return len(self.data_source)
 
-        data = Data()
-        s = MySampler(data)
+        dataset = MyDataset()
+        s = MySampler(dataset)
         result = []
-        for idx in s:
-            result.append(idx)
+        for d in s:
+            result.append(d)
         result = torch.tensor(result)
         """
     )

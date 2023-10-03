@@ -1,4 +1,5 @@
 # Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
+# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +19,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.modules.utils._ntuple")
+obj = APIBase("torch.nn.modules.utils._ntuple", is_aux_api=True)
 
 
 def test_case_1():
@@ -28,7 +29,7 @@ def test_case_1():
         result = torch.nn.modules.utils._ntuple(3)(3)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -38,7 +39,7 @@ def test_case_2():
         result = torch.nn.modules.utils._ntuple(3)((2, 3, 4))
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -48,7 +49,7 @@ def test_case_3():
         result = torch.nn.modules.utils._ntuple(2)((2, 3, 4))
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -59,4 +60,4 @@ def test_case_4():
         result = torch.nn.modules.utils._ntuple(2)(x.size())
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])

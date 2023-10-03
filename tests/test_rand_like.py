@@ -58,7 +58,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.rand_like(torch.zeros(3, 4, dtype=torch.float64), dtype=torch.float32, requires_grad=True)
+        result = torch.rand_like(torch.zeros(3, 4, dtype=torch.float64), dtype=torch.float32, requires_grad=True, memory_format=torch.preserve_format)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -68,7 +68,7 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.rand_like(input=torch.zeros(3, 4, dtype=torch.float64), dtype=torch.float32, requires_grad=True)
+        result = torch.rand_like(torch.zeros(3, 4, dtype=torch.float64), dtype=torch.float32, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)

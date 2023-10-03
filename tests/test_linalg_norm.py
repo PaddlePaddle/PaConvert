@@ -35,7 +35,41 @@ def test_case_2():
         """
         import torch
         x = torch.tensor([[10, 2, 3], [3, 10, 5], [5, 6, 12.]])
+        result = torch.linalg.norm(input=x, ord=float('inf'), dim=-1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[10, 2, 3], [3, 10, 5], [5, 6, 12.]])
         result = torch.linalg.norm(x, float('inf'), dim=-1)
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[10, 2, 3], [3, 10, 5], [5, 6, 12.]])
+        result = torch.linalg.norm(input=x, ord=float('inf'), dim=-1, keepdim=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[10, 2, 3], [3, 10, 5], [5, 6, 12.]])
+        out = torch.tensor([1.], dtype=torch.float64)
+        result = torch.linalg.norm(x, float('inf'), -1, False, dtype=torch.float64, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

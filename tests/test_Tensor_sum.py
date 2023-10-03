@@ -69,7 +69,7 @@ def test_case_5():
         import torch
         input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
         out = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
-        result = input.sum(dim=1, keepdim=True)
+        result = input.sum(dim=1, keepdim=True, dtype=torch.float64)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -81,6 +81,18 @@ def test_case_6():
         import torch
         input = torch.tensor([1, 2, 3])
         result = input.sum()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        out = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = input.sum(1, True, dtype=torch.float64)
         """
     )
     obj.run(pytorch_code, ["result"])

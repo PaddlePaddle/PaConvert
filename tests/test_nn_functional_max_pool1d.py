@@ -75,6 +75,7 @@ def test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
+# torch indices dtype is int64, paddle indices dtype is int32
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
@@ -83,14 +84,19 @@ def test_case_5():
         input = torch.tensor([[[ 1.1524,  0.4714,  0.2857, 0.4586, 0.9876],
             [-1.2533, -0.9829, -1.0981, 0.7655, 0.8541],
             [ 0.1507, -1.1431, -2.0361, 0.2344, 0.5675]]])
-        result, index = F.max_pool1d(input , 5, stride=2, padding=2, ceil_mode=True, return_indices=True)
-        index = index.type(torch.int32)
+        result, indices = F.max_pool1d(input , 5, stride=2, padding=2, ceil_mode=True, return_indices=True)
         """
     )
-    obj.run(pytorch_code, ["result", "index"])
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
+    )
 
 
-# if enable the return_indices, the results of torch and paddle are different in following
+# when return_indices=False, paddle result and indices shape is (1, 3, 2), which is right: ceil(6/5)=2
+# when return_indices=True, paddle result and indices shape is (1, 3, 1), which is bug
 def _test_case_6():
     pytorch_code = textwrap.dedent(
         """
@@ -99,8 +105,12 @@ def _test_case_6():
         input = torch.tensor([[[ 1.1524,  0.4714,  0.2857, 0.4586, 0.9876, 0.5487],
             [-1.2533, -0.9829, -1.0981, 0.7655, 0.8541, 0.9873],
             [ 0.1507, -1.1431, -2.0361, 0.2344, 0.5675, 0.1546]]])
-        result, index = F.max_pool1d(input , 5, stride=2, padding=2, ceil_mode=True, return_indices=True)
-        index = index.type(torch.int32)
+        result, indices = F.max_pool1d(input, kernel_size=5, ceil_mode=True, return_indices=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
+    )

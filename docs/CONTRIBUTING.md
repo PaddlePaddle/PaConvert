@@ -134,6 +134,7 @@ torch.permute
 ```python
 Matcher       :必须，转换器，亦称为转换规则，表示执行转换时的核心逻辑。每一个API均对应一种转换规则，所有API都需要配置。
 paddle_api    :可选，对应的 Paddle API，仅 `GenericMatcher` 时需要。
+min_input_args:可选，至少输入的参数个数，如果是类方法API（例如torch.Tensor.*），则必须输入，可用来辅助判断类方法API
 args_list     :必须，根据顺序填写 torch api 的 `全部参数名`，所有API都需要配置。
 kwargs_change :可选，参数名称的差异，仅 `GenericMatcher` 且有参数名差异时需要。
 unsupport_args:可选，Paddle API不支持的参数功能，通过该字段配置后，这些参数如被使用将直接标记为不支持转换。
@@ -321,7 +322,9 @@ class TransposeMatcher(BaseMatcher):
 - 对于 **不需要辅助代码** 即可运行的用法，直接返回 'unchange'
 - 对于 **需要辅助代码** 才可运行的用法，首先要额外重写 `generate_aux_code` 函数，其是模仿Pytorch类API用法的辅助代码，然后显式的调用 `write_aux_code` ，此时将在后台模块里注入辅助代码，最后再返回 'unchange' 即可
 
-由于 **辅助代码** 会不可避免的改变一些Paddle API的用法感官，因此尽可能减少使用辅助代码（即调用 `self.write_aux_code()`）。所以我们需要判断用户的不同用法，在必要的情形下才 `write_aux_code` 。
+由于 **辅助代码** 会改变原Paddle Tensor API的用法，应可能取两者功能的并集，所以在编写辅助代码的函数时，需采用 `*args、**kwargs` 来描述参数，从而可同时兼容pytorch与原paddle的参数名，例如 `paddle.Tensor.add` 被辅助函数修改后应同时可支持输入 `y` 与 `other` 作为第二个输入。
+
+另外我们需要判断用户的不同用法，在必要的情形下才 `write_aux_code` 使用辅助函数，以尽可能的减少辅助代码的使用。
 
 基于[Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html)，我们可参考以下原则来判断是否需要辅助代码：
 
@@ -394,7 +397,7 @@ x.reshape(2, 3)
 
 3) API功能缺失。如果是整个API都缺失的，只需在API映射表中标注 **功能缺失** 即可，无需其他开发。如果是API局部功能缺失，则对功能缺失点，在代码中返回None表示不支持，同时在API映射表中说明此功能点 **Paddle暂无转写方式**，同时编写单测但可以注释掉不运行；对其他功能点正常开发即可。
 
-4) 别名实现。如果一个API是别名API(alias API)，例如 `torch.nn.modules.GroupNorm` 是 `torch.nn.GroupNorm` 的别名，那么就无需编写相关 Matcher，只需在 `paconvert/api_alias_mapping.json` 中增加该别名 API 的配置，同时也无需增加相应单测文件，只需在主API的单测文件中增加 `test_alias_case_1/test_alias_case_2...` 即可。
+4) 别名实现。如果一个API是别名API(alias API)，例如 `torch.nn.modules.GroupNorm` 是 `torch.nn.GroupNorm` 的别名，那么就无需编写相关 Matcher，只需在 `paconvert/api_alias_mapping.json` 中增加该别名 API 的配置，同时也需要编写单测文件。
 
     ```bash
     {

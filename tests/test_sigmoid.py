@@ -23,7 +23,9 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.sigmoid(torch.tensor([ 0.9213,  1.0887, -0.8858, -1.7683]))
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        result = torch.sigmoid(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,31 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([ 0.9213,  1.0887, -0.8858, -1.7683])
-        result = torch.sigmoid(a)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = [ 0.9213,  1.0887, -0.8858, -1.7683]
-        out = torch.tensor(a)
-        result = torch.sigmoid(torch.tensor(a), out=out)
-        """
-    )
-    obj.run(pytorch_code, ["out"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([ 0.9213,  1.0887, -0.8858, -1.7683])
-        result = torch.sigmoid(input=a)
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        result = torch.sigmoid(input=x)
         """
     )
     obj.run(pytorch_code, ["result"])

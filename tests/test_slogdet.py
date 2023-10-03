@@ -74,7 +74,7 @@ def test_case_4():
                         [ 0.1193,  0.2829,  0.9037,  0.3957],
                         [-0.8202, -0.6474, -0.1631, -0.6543]])
         out = (torch.tensor(0.), torch.tensor(0.))
-        result1, result2 = torch.slogdet(x, out=out)
+        result1, result2 = torch.slogdet(input=x, out=out)
         """
     )
     obj.run(pytorch_code, ["result1", "result2", "out"])

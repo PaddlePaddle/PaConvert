@@ -64,8 +64,19 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        out = torch.zeros(5)
+        out = torch.empty(5)
         result = torch.normal(mean=torch.arange(1., 6.), out=out)
         """
     )
     obj.run(pytorch_code, ["result", "out"], check_value=False)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        out = torch.empty(10, 10, dtype=torch.int32)
+        result = torch.randint(0, 1, (10, 10), out=out, dtype=torch.int32, layout=torch.strided, device=torch.device('cpu'), pin_memory=False, requires_grad=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

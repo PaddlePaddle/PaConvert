@@ -60,7 +60,7 @@ def test_case_2():
          [[-0.5989, -0.4732,  1.3252],
           [-0.7614,  1.0493,  0.8488],
           [-0.1300,  0.1287,  0.6234]]]])
-        result = torch.linalg.matrix_rank(A, hermitian=True)
+        result = torch.linalg.matrix_rank(A, atol=torch.tensor(1.0), rtol=torch.tensor(0.0),  hermitian=True)
         """
     )
     obj.run(pytorch_code, ["result"], check_dtype=False)
@@ -94,15 +94,11 @@ def test_case_3():
          [[-0.5989, -0.4732,  1.3252],
           [-0.7614,  1.0493,  0.8488],
           [-0.1300,  0.1287,  0.6234]]]])
-        result = torch.linalg.matrix_rank(A, atol=1.0, rtol=0.0)
+        out = torch.empty((2, 4), dtype=torch.int64)
+        result = torch.linalg.matrix_rank(A, atol=1.0, rtol=0.0, hermitian=True, out=out)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support `atol` and `rtol`",
-    )
+    obj.run(pytorch_code, ["result"], check_dtype=False)
 
 
 def test_case_4():
@@ -133,8 +129,8 @@ def test_case_4():
          [[-0.5989, -0.4732,  1.3252],
           [-0.7614,  1.0493,  0.8488],
           [-0.1300,  0.1287,  0.6234]]]])
-        result = torch.empty((2, 4), dtype=torch.int64)
-        torch.linalg.matrix_rank(A, hermitian=True, out=result)
+        out = torch.empty((2, 4), dtype=torch.int64)
+        result = torch.linalg.matrix_rank(A, torch.tensor(1.), True, out=out)
         """
     )
     obj.run(pytorch_code, ["result"], check_dtype=False)
