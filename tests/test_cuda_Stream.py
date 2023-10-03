@@ -27,7 +27,12 @@ def _test_case_1():
         result = stream.query()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle has no corresponding api tentatively",
+    )
 
 
 def _test_case_2():
@@ -38,7 +43,12 @@ def _test_case_2():
         result = stream.query()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle has no corresponding api tentatively",
+    )
 
 
 def _test_case_3():
@@ -49,7 +59,12 @@ def _test_case_3():
         result = stream.query()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle has no corresponding api tentatively",
+    )
 
 
 def _test_case_4():
@@ -60,7 +75,12 @@ def _test_case_4():
         result = stream.query()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle has no corresponding api tentatively",
+    )
 
 
 def _test_case_5():
@@ -71,7 +91,12 @@ def _test_case_5():
         result = stream.query()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle has no corresponding api tentatively",
+    )
 
 
 def _test_case_6():
@@ -82,7 +107,12 @@ def _test_case_6():
         result = stream.query()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle has no corresponding api tentatively",
+    )
 
 
 def _test_case_7():
@@ -93,4 +123,9 @@ def _test_case_7():
         result = stream.query()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle has no corresponding api tentatively",
+    )
