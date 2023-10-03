@@ -19,7 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.cuda.stream")
 
 
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -27,10 +27,15 @@ def _test_case_1():
         result = stream.query()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle has no corresponding api tentatively",
+    )
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -38,10 +43,15 @@ def _test_case_2():
         result = stream.query()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle has no corresponding api tentatively",
+    )
 
 
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -49,10 +59,14 @@ def _test_case_3():
         result = stream.query()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle has no corresponding api tentatively",
+    )
 
-
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -60,10 +74,14 @@ def _test_case_4():
         result = stream.query()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle has no corresponding api tentatively",
+    )
 
-
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -71,10 +89,14 @@ def _test_case_5():
         result = stream.query()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle has no corresponding api tentatively",
+    )
 
-
-def _test_case_6():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -82,10 +104,14 @@ def _test_case_6():
         result = stream.query()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle has no corresponding api tentatively",
+    )
 
-
-def _test_case_7():
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -93,4 +119,9 @@ def _test_case_7():
         result = stream.query()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle has no corresponding api tentatively",
+    )
