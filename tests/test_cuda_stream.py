@@ -66,6 +66,7 @@ def test_case_3():
         reason="paddle has no corresponding api tentatively",
     )
 
+
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
@@ -80,6 +81,7 @@ def test_case_4():
         unsupport=True,
         reason="paddle has no corresponding api tentatively",
     )
+
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
@@ -96,6 +98,7 @@ def test_case_5():
         reason="paddle has no corresponding api tentatively",
     )
 
+
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """
@@ -110,6 +113,7 @@ def test_case_6():
         unsupport=True,
         reason="paddle has no corresponding api tentatively",
     )
+
 
 def test_case_7():
     pytorch_code = textwrap.dedent(
