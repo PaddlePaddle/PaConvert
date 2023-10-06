@@ -4400,6 +4400,16 @@
       "device": "device"
     }
   },
+  "torch.cuda.get_device_name": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.device.cuda.get_device_properties",
+    "args_list": [
+      "device"
+    ],
+    "kwargs_change": {
+      "device": "device"
+    }
+  },
   "torch.cuda.get_device_properties": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.get_device_properties",
