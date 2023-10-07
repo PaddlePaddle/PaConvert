@@ -23,8 +23,9 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        current_device = torch.cuda.current_device()
-        result = torch.cuda.get_device_name(current_device)
+        if torch.cuda.is_available():
+            current_device = torch.cuda.current_device()
+            result = torch.cuda.get_device_name(current_device)
         """
     )
     obj.run(
