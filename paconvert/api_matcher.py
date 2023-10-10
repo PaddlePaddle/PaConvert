@@ -250,8 +250,6 @@ class InitEyeMatcher(InitMatcher):
 
 class InitKaimingMatcher(InitMatcher):
     def generate_code(self, kwargs):
-        if "nonlinearity" not in kwargs:
-            kwargs["nonlinearity"] = '"leaky_relu"'
         if "mode" in kwargs:
             if "fan_out" in kwargs["mode"]:
                 return None
