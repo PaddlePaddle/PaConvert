@@ -1834,12 +1834,15 @@
   },
   "torch.Tensor.max": {
     "Matcher": "TensorMaxMinMatcher",
-    "paddle_api": "paddle.Tensor.maximum",
+    "paddle_api": "paddle.Tensor.max",
+    "min_input_args": 0,
     "args_list": [
+      "dim",
+      "keepdim",
       "other"
     ],
     "kwargs_change": {
-      "other": "y"
+      "dim": "axis"
     }
   },
   "torch.Tensor.maximum": {
@@ -1884,12 +1887,15 @@
   },
   "torch.Tensor.min": {
     "Matcher": "TensorMaxMinMatcher",
-    "paddle_api": "paddle.Tensor.minimum",
+    "paddle_api": "paddle.Tensor.min",
+    "min_input_args": 0,
     "args_list": [
+      "dim",
+      "keepdim",
       "other"
     ],
     "kwargs_change": {
-      "other": "y"
+      "dim": "axis"
     }
   },
   "torch.Tensor.minimum": {
@@ -4521,7 +4527,7 @@
     ]
   },
   "torch.cummin": {
-    "Matcher": "TupleAssignMatcher",
+    "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.cummin",
     "args_list": [
       "input",
@@ -6286,7 +6292,7 @@
     }
   },
   "torch.kthvalue": {
-    "Matcher": "TupleAssignMatcher",
+    "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.kthvalue",
     "args_list": [
       "input",
@@ -6530,7 +6536,7 @@
     }
   },
   "torch.linalg.lu_factor": {
-    "Matcher": "TupleAssignMatcher",
+    "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.linalg.lu",
     "args_list": [
       "A",
@@ -6641,7 +6647,7 @@
   },
   "torch.linalg.pinv": {},
   "torch.linalg.qr": {
-    "Matcher": "TupleAssignMatcher",
+    "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.linalg.qr",
     "args_list": [
       "A",
@@ -6984,15 +6990,17 @@
   "torch.matrix_rank": {},
   "torch.max": {
     "Matcher": "MaxMinMatcher",
-    "paddle_api": "paddle.maximum",
+    "paddle_api": "paddle.max",
     "args_list": [
       "input",
-      "other",
+      "dim",
+      "keepdim",
+      "*",
       "out"
     ],
     "kwargs_change": {
       "input": "x",
-      "other": "y"
+      "dim": "axis"
     }
   },
   "torch.max_pool1d": {
@@ -7103,15 +7111,17 @@
   },
   "torch.min": {
     "Matcher": "MaxMinMatcher",
-    "paddle_api": "paddle.minimum",
+    "paddle_api": "paddle.min",
     "args_list": [
       "input",
-      "other",
+      "dim",
+      "keepdim",
+      "*",
       "out"
     ],
     "kwargs_change": {
       "input": "x",
-      "other": "y"
+      "dim": "axis"
     }
   },
   "torch.minimum": {
@@ -7139,7 +7149,7 @@
     ]
   },
   "torch.mode": {
-    "Matcher": "TupleAssignMatcher",
+    "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.mode",
     "args_list": [
       "input",
@@ -12308,7 +12318,7 @@
     }
   },
   "torch.topk": {
-    "Matcher": "TupleAssignMatcher",
+    "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.topk",
     "args_list": [
       "input",
