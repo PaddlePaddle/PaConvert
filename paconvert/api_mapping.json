@@ -10440,7 +10440,7 @@
       "a": "negative_slope"
     },
     "paddle_default_kwargs": {
-      "nonlinearity": "leaky_relu"
+      "nonlinearity": "'leaky_relu'"
     }
   },
   "torch.nn.init.kaiming_uniform_": {
@@ -10456,7 +10456,7 @@
       "a": "negative_slope"
     },
     "paddle_default_kwargs": {
-      "nonlinearity": "leaky_relu"
+      "nonlinearity": "'leaky_relu'"
     }
   },
   "torch.nn.init.normal_": {
