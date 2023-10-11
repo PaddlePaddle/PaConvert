@@ -205,12 +205,20 @@ class SetFalseMatcher(BaseMatcher):
 
 class InitMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs_change = {}
-        if "kwargs_change" in self.api_mapping:
-            kwargs_change = self.api_mapping["kwargs_change"]
+        unsupport_args = self.api_mapping.get("unsupport_args", [])
+        for k in unsupport_args:
+            if k in kwargs:
+                return None
+
+        kwargs_change = self.api_mapping.get("kwargs_change", {})
         for k in kwargs_change:
             if k in kwargs:
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
+
+        default_kwargs = self.api_mapping.get("paddle_default_kwargs", {})
+        for k in default_kwargs:
+            if k not in kwargs:
+                kwargs[k] = default_kwargs[k]
 
         init_tensor = kwargs.pop("tensor")
         API_TEMPLATE = textwrap.dedent(
@@ -228,6 +236,26 @@ class InitMatcher(BaseMatcher):
             init_tensor,
         )
         return code
+
+
+class InitEyeMatcher(InitMatcher):
+    def generate_code(self, kwargs):
+        init_tensor = kwargs["tensor"]
+        init_value = "paddle.eye({}.shape[0], {}.shape[1])".format(
+            init_tensor, init_tensor
+        )
+        kwargs["value"] = init_value
+        return super().generate_code(kwargs)
+
+
+class InitKaimingMatcher(InitMatcher):
+    def generate_code(self, kwargs):
+        if "mode" in kwargs:
+            if "fan_out" in kwargs["mode"]:
+                return None
+            kwargs.pop("mode")
+
+        return super().generate_code(kwargs)
 
 
 class Num2TensorBinaryWithAlphaMatcher(BaseMatcher):

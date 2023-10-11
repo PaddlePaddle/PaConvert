@@ -10432,6 +10432,128 @@
       "val": "value"
     }
   },
+  "torch.nn.init.dirac_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.Dirac",
+    "args_list": [
+      "tensor",
+      "groups"
+    ]
+  },
+  "torch.nn.init.eye_": {
+    "Matcher": "InitEyeMatcher",
+    "paddle_api": "paddle.nn.initializer.Assign",
+    "args_list": [
+      "tensor"
+    ]
+  },
+  "torch.nn.init.kaiming_normal_": {
+    "Matcher": "InitKaimingMatcher",
+    "paddle_api": "paddle.nn.initializer.KaimingNormal",
+    "args_list": [
+      "tensor",
+      "a",
+      "mode",
+      "nonlinearity"
+    ],
+    "kwargs_change": {
+      "a": "negative_slope"
+    },
+    "paddle_default_kwargs": {
+      "nonlinearity": "'leaky_relu'"
+    }
+  },
+  "torch.nn.init.kaiming_uniform_": {
+    "Matcher": "InitKaimingMatcher",
+    "paddle_api": "paddle.nn.initializer.KaimingUniform",
+    "args_list": [
+      "tensor",
+      "a",
+      "mode",
+      "nonlinearity"
+    ],
+    "kwargs_change": {
+      "a": "negative_slope"
+    },
+    "paddle_default_kwargs": {
+      "nonlinearity": "'leaky_relu'"
+    }
+  },
+  "torch.nn.init.normal_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.Normal",
+    "args_list": [
+      "tensor",
+      "mean",
+      "std"
+    ]
+  },
+  "torch.nn.init.ones_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.Constant",
+    "args_list": [
+      "tensor"
+    ],
+    "paddle_default_kwargs": {
+      "value": "1.0"
+    }
+  },
+  "torch.nn.init.orthogonal_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.Orthogonal",
+    "args_list": [
+      "tensor",
+      "gain"
+    ]
+  },
+  "torch.nn.init.uniform_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.Uniform",
+    "args_list": [
+      "tensor",
+      "a",
+      "b"
+    ],
+    "kwargs_change": {
+      "a": "low",
+      "b": "high"
+    },
+    "paddle_default_kwargs": {
+      "low": "0.0"
+    }
+  },
+  "torch.nn.init.xavier_normal_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.XavierNormal",
+    "args_list": [
+      "tensor",
+      "gain"
+    ],
+    "unsupport_args": [
+      "gain"
+    ]
+  },
+  "torch.nn.init.xavier_uniform_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.XavierUniform",
+    "args_list": [
+      "tensor",
+      "gain"
+    ],
+    "unsupport_args": [
+      "gain"
+    ]
+  },
+  "torch.nn.init.zeros_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.Constant",
+    "args_list": [
+      "tensor"
+    ],
+    "paddle_default_kwargs": {
+      "value": "0.0"
+    }
+  },
   "torch.nn.modules.batchnorm._BatchNorm": {
     "Matcher": "Modules_BatchNormBaseMatcher",
     "paddle_api": "paddle.nn.layer.norm._BatchNormBase",
