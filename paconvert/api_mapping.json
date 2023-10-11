@@ -3192,11 +3192,9 @@
     "Matcher": "TensorViewMatcher"
   },
   "torch.Tensor.view_as": {
-    "Matcher": "TensorView_asMatcher",
-    "min_input_args": 1,
-    "args_list": [
-      "other"
-    ]
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.view_as",
+    "min_input_args": 1
   },
   "torch.Tensor.vsplit": {},
   "torch.Tensor.where": {
