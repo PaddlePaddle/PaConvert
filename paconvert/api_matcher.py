@@ -2956,7 +2956,7 @@ class TensorViewMatcher(BaseMatcher):
 
     def get_paddle_class_nodes(self, func, args, kwargs):
         if kwargs:
-            if len(kwargs) == 1 and "shape_or_dtype" in kwargs:
+            if len(kwargs) == 1:
                 return "unchange"
             else:
                 return "misidentify"
@@ -2969,19 +2969,6 @@ class TensorViewMatcher(BaseMatcher):
                 return "unchange"
 
         return "misidentify"
-
-
-class TensorView_asMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {}.view({}.shape)
-            """
-        )
-        code = API_TEMPLATE.format(self.paddleClass, kwargs["other"])
-
-        return code
 
 
 class TensorReshapeMatcher(BaseMatcher):
