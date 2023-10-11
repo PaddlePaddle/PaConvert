@@ -113,3 +113,12 @@ def test_case_6():
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        generate_torch_code(
+            "torch.optim.lr_scheduler.ReduceLROnPlateau(sgd, 'max', 0.1, 10, 1e-4, 'rel', 0, 0, 1e-8, False)"
+        )
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)

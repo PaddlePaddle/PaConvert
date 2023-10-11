@@ -104,3 +104,12 @@ def test_case_5():
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        generate_torch_code(
+            "torch.optim.lr_scheduler.ExponentialLR(sgd, 0.5, -1, False)"
+        )
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
