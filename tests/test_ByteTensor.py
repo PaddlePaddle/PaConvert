@@ -92,9 +92,4 @@ def test_case_7():
         result = torch.ByteTensor()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support 0-Size Tensor",
-    )
+    obj.run(pytorch_code, ["result"])

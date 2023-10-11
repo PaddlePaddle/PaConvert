@@ -16,14 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.BoolTensor")
+obj = APIBase("torch.nn.init.xavier_uniform_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.BoolTensor(2, 3)
+        conv = torch.nn.Conv2d(4, 6, (3, 3))
+        torch.nn.init.xavier_uniform_(conv.weight)
+        result = conv.weight
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -33,8 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        shape = [2, 3]
-        result = torch.BoolTensor(*shape)
+        conv = torch.nn.Conv2d(3, 6, (3, 3))
+        torch.nn.init.xavier_uniform_(tensor=conv.weight)
+        result = conv.weight
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -44,38 +47,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        dim1, dim2 = 2, 3
-        result = torch.BoolTensor(dim1, dim2)
+        conv = torch.nn.Conv2d(3, 6, (3, 3))
+        torch.nn.init.xavier_uniform_(tensor=conv.weight, gain=2.)
+        result = conv.weight
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.BoolTensor([[3, 4], [5, 8]])
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.BoolTensor((1, 2, 3))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.BoolTensor()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], unsupport=True, reason="gain is not supported")

@@ -16,14 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.maximum")
+obj = APIBase("torch.nn.init.dirac_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.maximum(torch.tensor([[1, 2], [3, 4]]), torch.tensor([[1, 1], [4, 4]]))
+        conv = torch.nn.Conv2d(4, 6, (3, 3))
+        torch.nn.init.dirac_(conv.weight)
+        result = conv.weight
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,9 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[1, 2], [3, 4]])
-        other = torch.tensor([[1, 1], [4, 4]])
-        result = torch.maximum(input, other)
+        conv = torch.nn.Conv2d(3, 6, (3, 3))
+        torch.nn.init.dirac_(conv.weight, 1)
+        result = conv.weight
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,9 +47,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[1, 2], [3, 4]])
-        other = torch.tensor([[1, 2], [3, 4]])
-        result = torch.maximum(input, other)
+        conv = torch.nn.Conv2d(3, 6, (3, 3))
+        torch.nn.init.dirac_(tensor=conv.weight, groups=1)
+        result = conv.weight
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -57,9 +59,9 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[1, 2], [3, 4]])
-        other = torch.tensor([1, 2])
-        result = torch.maximum(input=input, other=other)
+        conv = torch.nn.Conv2d(3, 6, (3, 3))
+        torch.nn.init.dirac_(groups=1, tensor=conv.weight)
+        result = conv.weight
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -69,10 +71,21 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[1, 2], [3, 4]])
-        other = torch.tensor([[1, 2], [3, 4]])
-        out = torch.tensor([1, 2])
-        result = torch.maximum(input=input, other=other, out=out)
+        conv = torch.nn.Conv2d(3, 6, (3, 3))
+        torch.nn.init.dirac_(conv.weight, groups=1)
+        result = conv.weight
         """
     )
-    obj.run(pytorch_code, ["result", "out"])
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        conv = torch.nn.Conv2d(3, 6, (3, 3))
+        torch.nn.init.dirac_(tensor=conv.weight)
+        result = conv.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"])

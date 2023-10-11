@@ -16,14 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.rand")
+obj = APIBase("torch.nn.init.normal_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.rand(3)
+        conv = torch.nn.Conv2d(4, 6, (3, 3))
+        torch.nn.init.normal_(conv.weight)
+        result = conv.weight
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -33,7 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.rand(3, 5)
+        conv = torch.nn.Conv2d(4, 6, (3, 3))
+        torch.nn.init.normal_(conv.weight, 0.2, 2.)
+        result = conv.weight
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -43,7 +47,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.rand((4, 4))
+        conv = torch.nn.Conv2d(4, 6, (3, 3))
+        torch.nn.init.normal_(conv.weight, mean=0.2, std=2.)
+        result = conv.weight
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -53,19 +59,21 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.rand([4, 4])
+        conv = torch.nn.Conv2d(4, 6, (3, 3))
+        torch.nn.init.normal_(conv.weight, std=2.)
+        result = conv.weight
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
-# the only corner case, input a variable which is Constant, has no solution but low usage
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        shape = 3
-        result = torch.rand(shape)
+        conv = torch.nn.Conv2d(4, 6, (3, 3))
+        torch.nn.init.normal_(conv.weight, mean=0.2)
+        result = conv.weight
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -75,8 +83,9 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        shape = [4, 4]
-        result = torch.rand(shape)
+        conv = torch.nn.Conv2d(4, 6, (3, 3))
+        torch.nn.init.normal_(tensor=conv.weight, mean=0.2, std=2.)
+        result = conv.weight
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -86,8 +95,9 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        shape = [4, 4]
-        result = torch.rand(*shape)
+        conv = torch.nn.Conv2d(4, 6, (3, 3))
+        torch.nn.init.normal_(mean=0.1, tensor=conv.weight)
+        result = conv.weight
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -97,40 +107,9 @@ def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.rand(size=[6, 6], dtype=torch.float64)
+        conv = torch.nn.Conv2d(4, 6, (3, 3))
+        torch.nn.init.normal_(mean=0.1, std=1.5, tensor=conv.weight)
+        result = conv.weight
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
-
-
-def test_case_9():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.rand([6, 6], dtype=torch.float64, requires_grad=True)
-        """
-    )
-    obj.run(pytorch_code, ["result"], check_value=False)
-
-
-def test_case_10():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        flag = True
-        result = torch.rand(6, 6, dtype=torch.float64, requires_grad=flag)
-        """
-    )
-    obj.run(pytorch_code, ["result"], check_value=False)
-
-
-def test_case_11():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = 3
-        out = torch.tensor([2., 3.], dtype=torch.float64)
-        result = torch.rand(a, a, generator=None, out=out, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True, pin_memory=False)
-        """
-    )
-    obj.run(pytorch_code, ["result", "out"], check_value=False)

@@ -1881,12 +1881,15 @@
   },
   "torch.Tensor.max": {
     "Matcher": "TensorMaxMinMatcher",
-    "paddle_api": "paddle.Tensor.maximum",
+    "paddle_api": "paddle.Tensor.max",
+    "min_input_args": 0,
     "args_list": [
+      "dim",
+      "keepdim",
       "other"
     ],
     "kwargs_change": {
-      "other": "y"
+      "dim": "axis"
     }
   },
   "torch.Tensor.maximum": {
@@ -1931,12 +1934,15 @@
   },
   "torch.Tensor.min": {
     "Matcher": "TensorMaxMinMatcher",
-    "paddle_api": "paddle.Tensor.minimum",
+    "paddle_api": "paddle.Tensor.min",
+    "min_input_args": 0,
     "args_list": [
+      "dim",
+      "keepdim",
       "other"
     ],
     "kwargs_change": {
-      "other": "y"
+      "dim": "axis"
     }
   },
   "torch.Tensor.minimum": {
@@ -2010,7 +2016,17 @@
       "other"
     ]
   },
-  "torch.Tensor.multiply_": {},
+  "torch.Tensor.multiply_": {
+    "Matcher": "Num2TensorBinaryMatcher",
+    "paddle_api": "paddle.Tensor.multiply_",
+    "min_input_args": 1,
+    "args_list": [
+      "other"
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
+  },
   "torch.Tensor.mv": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.mv",
@@ -4631,7 +4647,7 @@
     }
   },
   "torch.cummin": {
-    "Matcher": "TupleAssignMatcher",
+    "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.cummin",
     "args_list": [
       "input",
@@ -6396,7 +6412,7 @@
     }
   },
   "torch.kthvalue": {
-    "Matcher": "TupleAssignMatcher",
+    "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.kthvalue",
     "args_list": [
       "input",
@@ -6640,7 +6656,7 @@
     }
   },
   "torch.linalg.lu_factor": {
-    "Matcher": "TupleAssignMatcher",
+    "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.linalg.lu",
     "args_list": [
       "A",
@@ -6751,7 +6767,7 @@
   },
   "torch.linalg.pinv": {},
   "torch.linalg.qr": {
-    "Matcher": "TupleAssignMatcher",
+    "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.linalg.qr",
     "args_list": [
       "A",
@@ -7094,15 +7110,17 @@
   "torch.matrix_rank": {},
   "torch.max": {
     "Matcher": "MaxMinMatcher",
-    "paddle_api": "paddle.maximum",
+    "paddle_api": "paddle.max",
     "args_list": [
       "input",
-      "other",
+      "dim",
+      "keepdim",
+      "*",
       "out"
     ],
     "kwargs_change": {
       "input": "x",
-      "other": "y"
+      "dim": "axis"
     }
   },
   "torch.max_pool1d": {
@@ -7213,15 +7231,17 @@
   },
   "torch.min": {
     "Matcher": "MaxMinMatcher",
-    "paddle_api": "paddle.minimum",
+    "paddle_api": "paddle.min",
     "args_list": [
       "input",
-      "other",
+      "dim",
+      "keepdim",
+      "*",
       "out"
     ],
     "kwargs_change": {
       "input": "x",
-      "other": "y"
+      "dim": "axis"
     }
   },
   "torch.minimum": {
@@ -7249,7 +7269,7 @@
     ]
   },
   "torch.mode": {
-    "Matcher": "TupleAssignMatcher",
+    "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.mode",
     "args_list": [
       "input",
@@ -10522,6 +10542,128 @@
       "val": "value"
     }
   },
+  "torch.nn.init.dirac_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.Dirac",
+    "args_list": [
+      "tensor",
+      "groups"
+    ]
+  },
+  "torch.nn.init.eye_": {
+    "Matcher": "InitEyeMatcher",
+    "paddle_api": "paddle.nn.initializer.Assign",
+    "args_list": [
+      "tensor"
+    ]
+  },
+  "torch.nn.init.kaiming_normal_": {
+    "Matcher": "InitKaimingMatcher",
+    "paddle_api": "paddle.nn.initializer.KaimingNormal",
+    "args_list": [
+      "tensor",
+      "a",
+      "mode",
+      "nonlinearity"
+    ],
+    "kwargs_change": {
+      "a": "negative_slope"
+    },
+    "paddle_default_kwargs": {
+      "nonlinearity": "'leaky_relu'"
+    }
+  },
+  "torch.nn.init.kaiming_uniform_": {
+    "Matcher": "InitKaimingMatcher",
+    "paddle_api": "paddle.nn.initializer.KaimingUniform",
+    "args_list": [
+      "tensor",
+      "a",
+      "mode",
+      "nonlinearity"
+    ],
+    "kwargs_change": {
+      "a": "negative_slope"
+    },
+    "paddle_default_kwargs": {
+      "nonlinearity": "'leaky_relu'"
+    }
+  },
+  "torch.nn.init.normal_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.Normal",
+    "args_list": [
+      "tensor",
+      "mean",
+      "std"
+    ]
+  },
+  "torch.nn.init.ones_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.Constant",
+    "args_list": [
+      "tensor"
+    ],
+    "paddle_default_kwargs": {
+      "value": "1.0"
+    }
+  },
+  "torch.nn.init.orthogonal_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.Orthogonal",
+    "args_list": [
+      "tensor",
+      "gain"
+    ]
+  },
+  "torch.nn.init.uniform_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.Uniform",
+    "args_list": [
+      "tensor",
+      "a",
+      "b"
+    ],
+    "kwargs_change": {
+      "a": "low",
+      "b": "high"
+    },
+    "paddle_default_kwargs": {
+      "low": "0.0"
+    }
+  },
+  "torch.nn.init.xavier_normal_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.XavierNormal",
+    "args_list": [
+      "tensor",
+      "gain"
+    ],
+    "unsupport_args": [
+      "gain"
+    ]
+  },
+  "torch.nn.init.xavier_uniform_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.XavierUniform",
+    "args_list": [
+      "tensor",
+      "gain"
+    ],
+    "unsupport_args": [
+      "gain"
+    ]
+  },
+  "torch.nn.init.zeros_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.Constant",
+    "args_list": [
+      "tensor"
+    ],
+    "paddle_default_kwargs": {
+      "value": "0.0"
+    }
+  },
   "torch.nn.modules.batchnorm._BatchNorm": {
     "Matcher": "Modules_BatchNormBaseMatcher",
     "paddle_api": "paddle.nn.layer.norm._BatchNormBase",
@@ -12418,7 +12560,7 @@
     }
   },
   "torch.topk": {
-    "Matcher": "TupleAssignMatcher",
+    "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.topk",
     "args_list": [
       "input",

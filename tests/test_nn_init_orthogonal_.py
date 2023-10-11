@@ -16,14 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.IntTensor")
+obj = APIBase("torch.nn.init.orthogonal_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.IntTensor(2, 3)
+        conv = torch.nn.Conv2d(4, 6, (3, 3))
+        torch.nn.init.orthogonal_(conv.weight)
+        result = conv.weight
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -33,8 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        shape = [2, 3]
-        result = torch.IntTensor(*shape)
+        conv = torch.nn.Conv2d(3, 6, (3, 3))
+        torch.nn.init.orthogonal_(tensor=conv.weight)
+        result = conv.weight
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -44,8 +47,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        dim1, dim2 = 2, 3
-        result = torch.IntTensor(dim1, dim2)
+        conv = torch.nn.Conv2d(3, 6, (3, 3))
+        torch.nn.init.orthogonal_(tensor=conv.weight, gain=2)
+        result = conv.weight
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -55,11 +59,9 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        def fun(x: torch.IntTensor):
-            return x * 2
-
-        a = torch.IntTensor(3, 4)
-        result = fun(a)
+        conv = torch.nn.Conv2d(3, 6, (3, 3))
+        torch.nn.init.orthogonal_(gain=2, tensor=conv.weight)
+        result = conv.weight
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -69,38 +71,22 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.IntTensor([[3, 4], [5, 8]])
+        conv = torch.nn.Conv2d(4, 6, (3, 3))
+        torch.nn.init.orthogonal_(conv.weight, 2)
+        result = conv.weight
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[3, 4], [5, 8]], dtype=torch.int)
-        result = torch.IntTensor(a)
+        x = torch.randn(1, 2, 4)
+        linear = torch.nn.Linear(in_features=4, out_features=6)
+        torch.nn.init.orthogonal_(linear.weight)
+        result = linear(x)
         """
     )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_7():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.IntTensor((1, 2, 3))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_8():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.IntTensor()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)

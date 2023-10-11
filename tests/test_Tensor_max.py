@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.max")
+obj = APIBase("torch.Tensor.max", is_aux_api=True)
 
 
 def test_case_1():
@@ -24,18 +24,18 @@ def test_case_1():
         """
         import torch
         x = torch.tensor([[1, 2, 3], [3, 4, 6]])
+        out = torch.tensor([1, 2, 3])
         result = x.max()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, 2, 3], [3, 4, 6]])
-        result = x.max(dim=1)
+        result = torch.tensor([[1, 2, 3], [3, 4, 6]]).max()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -46,7 +46,7 @@ def test_case_3():
         """
         import torch
         x = torch.tensor([[1, 2, 3], [3, 4, 6]])
-        result = x.max(1, True)
+        result = x.max(1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -57,7 +57,7 @@ def test_case_4():
         """
         import torch
         x = torch.tensor([[1, 2, 3], [3, 4, 6]])
-        result = x.max(dim=0, keepdim=True)
+        result = x.max(-1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -67,7 +67,19 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([[1, 2, 3], [3, 4, 6]]).max()
+        x = torch.tensor([[1, 2, 3], [3, 4, 6]])
+        result = x.max(dim=-1, keepdim=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2, 3], [3, 4, 6]])
+        result = x.max(dim=1, keepdim=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -77,8 +89,9 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        dim = 1
         keepdim = False
-        result = torch.tensor([[1, 2, 3], [3, 4, 6]]).max(1, keepdim)
+        result = torch.tensor([[1, 2, 3], [3, 4, 6]]).max(dim, keepdim)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -98,7 +111,8 @@ def test_case_9():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([[1, 2, 3], [3, 4, 6]]).max(other=torch.tensor([[1, 0, 3], [3, 4, 3]]))
+        other = torch.tensor([[1, 0, 3], [3, 4, 3]])
+        result = torch.tensor([[1, 2, 3], [3, 4, 6]]).max(other)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -108,8 +122,7 @@ def test_case_10():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        y = torch.tensor([[1, 0, 3], [3, 4, 3]])
-        result = torch.tensor([[1, 2, 3], [3, 4, 6]]).max(y)
+        result = torch.tensor([[1, 2, 3], [3, 4, 6]]).max(other=torch.tensor([[1, 0, 3], [3, 4, 3]]))
         """
     )
     obj.run(pytorch_code, ["result"])
