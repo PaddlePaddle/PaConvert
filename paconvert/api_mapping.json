@@ -744,7 +744,7 @@
     ]
   },
   "torch.Tensor.cummax": {
-    "Matcher": "TupleAssignMatcher",
+    "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.Tensor.cummax",
     "args_list": [
       "dim"
@@ -754,7 +754,7 @@
     }
   },
   "torch.Tensor.cummin": {
-    "Matcher": "TupleAssignMatcher",
+    "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.Tensor.cummin",
     "args_list": [
       "dim"
@@ -4631,7 +4631,7 @@
     ]
   },
   "torch.cummax": {
-    "Matcher": "TupleAssignMatcher",
+    "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.cummax",
     "args_list": [
       "input",
