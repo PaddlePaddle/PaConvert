@@ -68,3 +68,17 @@ def test_case_6():
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+
+
+# reference: https://www.paddlepaddle.org.cn/documentation/docs/en/api/paddle/optimizer/lr/CosineAnnealingDecay_en.html
+# note: paddle not support restart
+def _test_case_7():
+    pytorch_code = textwrap.dedent(
+        generate_torch_code(
+            [
+                "torch.optim.lr_scheduler.CosineAnnealingLR(optimizer=sgd, T_max=10, eta_min=0.0, last_epoch=-1, verbose=False)",
+                "torch.optim.lr_scheduler.CosineAnnealingLR(optimizer=sgd, T_max=10, eta_min=0.0, last_epoch=scheduler_1.last_epoch, verbose=False)",
+            ]
+        )
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)

@@ -68,7 +68,7 @@ def generate_torch_code(scheduler_init, step_with_loss=False):
     train_segment = ""
 
     for name, init in zip(scheduler_names, scheduler_init):
-        train_segment += train_segment_template.format(name, init, name, step_with_loss)
+        train_segment += train_segment_template.format(name, init, name, step_args)
 
     result_segment = """
     result1 = conv.weight

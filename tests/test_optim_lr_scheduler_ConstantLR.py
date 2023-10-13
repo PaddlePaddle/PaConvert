@@ -82,3 +82,15 @@ def test_case_8():
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        generate_torch_code(
+            [
+                "torch.optim.lr_scheduler.ConstantLR(optimizer=sgd, factor=0.05, total_iters=3, last_epoch=-1, verbose=False)",
+                "torch.optim.lr_scheduler.ConstantLR(optimizer=sgd, factor=0.05, total_iters=3, last_epoch=scheduler_1.last_epoch, verbose=False)",
+            ]
+        )
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
