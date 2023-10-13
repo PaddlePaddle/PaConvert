@@ -72,7 +72,8 @@ def test_case_6():
 
 # reference: https://www.paddlepaddle.org.cn/documentation/docs/en/api/paddle/optimizer/lr/CosineAnnealingDecay_en.html
 # note: paddle not support restart
-def _test_case_7():
+# paddle result has diff with pytorch result
+def test_case_7():
     pytorch_code = textwrap.dedent(
         generate_torch_code(
             [
@@ -81,4 +82,4 @@ def _test_case_7():
             ]
         )
     )
-    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5, check_value=False)

@@ -68,3 +68,17 @@ def test_case_6():
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+
+
+# note: ExponentialLR does not support resume training
+# paddle result has diff with pytorch result
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        generate_torch_code(
+            [
+                "torch.optim.lr_scheduler.ExponentialLR(optimizer=sgd, gamma=0.5, last_epoch=-1, verbose=False)",
+                "torch.optim.lr_scheduler.ExponentialLR(optimizer=sgd, gamma=0.5, last_epoch=scheduler_1.last_epoch, verbose=True)",
+            ]
+        )
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5, check_value=False)

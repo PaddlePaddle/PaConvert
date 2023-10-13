@@ -86,3 +86,17 @@ def test_case_8():
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+
+
+# note: StepLR does not support resume training
+# paddle result has diff with pytorch result
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        generate_torch_code(
+            [
+                "torch.optim.lr_scheduler.StepLR(optimizer=sgd, step_size=3, gamma=0.2, last_epoch=-1, verbose=False)",
+                "torch.optim.lr_scheduler.StepLR(optimizer=sgd, step_size=3, gamma=0.2, last_epoch=scheduler_1.last_epoch, verbose=False)",
+            ]
+        )
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5, check_value=False)

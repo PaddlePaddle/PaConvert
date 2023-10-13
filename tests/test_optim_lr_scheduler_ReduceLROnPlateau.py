@@ -87,3 +87,17 @@ def test_case_7():
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+
+
+# note: fine, ReduceLROnPlateau does not support `last_epoch`
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        generate_torch_code(
+            [
+                "torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer=sgd, mode='min',verbose=False)",
+                "torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer=sgd, mode='min',verbose=True)",
+            ],
+            step_with_loss=True,
+        )
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
