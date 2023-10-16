@@ -11074,8 +11074,143 @@
       "verbose"
     ]
   },
+  "torch.optim.lr_scheduler.CosineAnnealingLR": {
+    "Matcher": "Optim2LrSchedulerMatcher",
+    "paddle_api": "paddle.optimizer.lr.CosineAnnealingDecay",
+    "args_list": [
+      "optimizer",
+      "T_max",
+      "eta_min",
+      "last_epoch",
+      "verbose"
+    ]
+  },
+  "torch.optim.lr_scheduler.CyclicLR": {
+    "Matcher": "LRSchedulerMatcher",
+    "paddle_api": "paddle.optimizer.lr.CyclicLR",
+    "args_list": [
+      "optimizer",
+      "base_lr",
+      "max_lr",
+      "step_size_up",
+      "step_size_down",
+      "mode",
+      "gamma",
+      "scale_fn",
+      "scale_mode",
+      "cycle_momentum",
+      "base_momentum",
+      "max_momentum",
+      "last_epoch",
+      "verbose"
+    ],
+    "kwargs_change": {
+      "base_lr": "base_learning_rate",
+      "max_lr": "max_learning_rate",
+      "gamma": "exp_gamma"
+    },
+    "unsupport_args": [
+      "cycle_momentum",
+      "base_momentum",
+      "max_momentum"
+    ],
+    "paddle_default_kwargs": {
+      "step_size_up": "2000"
+    }
+  },
+  "torch.optim.lr_scheduler.ExponentialLR": {
+    "Matcher": "Optim2LrSchedulerMatcher",
+    "paddle_api": "paddle.optimizer.lr.ExponentialDecay",
+    "args_list": [
+      "optimizer",
+      "gamma",
+      "last_epoch",
+      "verbose"
+    ]
+  },
+  "torch.optim.lr_scheduler.LambdaLR": {
+    "Matcher": "Optim2LrSchedulerMatcher",
+    "paddle_api": "paddle.optimizer.lr.LambdaDecay",
+    "args_list": [
+      "optimizer",
+      "lr_lambda",
+      "last_epoch",
+      "verbose"
+    ]
+  },
+  "torch.optim.lr_scheduler.MultiStepLR": {
+    "Matcher": "Optim2LrSchedulerMatcher",
+    "paddle_api": "paddle.optimizer.lr.MultiStepDecay",
+    "args_list": [
+      "optimizer",
+      "milestones",
+      "gamma",
+      "last_epoch",
+      "verbose"
+    ]
+  },
+  "torch.optim.lr_scheduler.MultiplicativeLR": {
+    "Matcher": "Optim2LrSchedulerMatcher",
+    "paddle_api": "paddle.optimizer.lr.MultiplicativeDecay",
+    "args_list": [
+      "optimizer",
+      "lr_lambda",
+      "last_epoch",
+      "verbose"
+    ]
+  },
+  "torch.optim.lr_scheduler.OneCycleLR": {
+    "Matcher": "OneCycleLRMatcher",
+    "paddle_api": "paddle.optimizer.lr.OneCycleLR",
+    "args_list": [
+      "optimizer",
+      "max_lr",
+      "total_steps",
+      "epochs",
+      "steps_per_epoch",
+      "pct_start",
+      "anneal_strategy",
+      "cycle_momentum",
+      "base_momentum",
+      "max_momentum",
+      "div_factor",
+      "final_div_factor",
+      "three_phase",
+      "last_epoch",
+      "verbose"
+    ],
+    "kwargs_change": {
+      "max_lr": "max_learning_rate",
+      "pct_start": "phase_pct",
+      "div_factor": "divide_factor"
+    },
+    "unsupport_args": [
+      "cycle_momentum",
+      "base_momentum",
+      "max_momentum"
+    ]
+  },
+  "torch.optim.lr_scheduler.ReduceLROnPlateau": {
+    "Matcher": "Optim2LrSchedulerMatcher",
+    "paddle_api": "paddle.optimizer.lr.ReduceOnPlateau",
+    "args_list": [
+      "optimizer",
+      "mode",
+      "factor",
+      "patience",
+      "threshold",
+      "threshold_mode",
+      "cooldown",
+      "min_lr",
+      "eps",
+      "verbose"
+    ],
+    "kwargs_change": {
+      "eps": "epsilon"
+    }
+  },
   "torch.optim.lr_scheduler.StepLR": {
-    "Matcher": "LrSchedulerMatcher",
+    "Matcher": "Optim2LrSchedulerMatcher",
     "paddle_api": "paddle.optimizer.lr.StepDecay",
     "args_list": [
       "optimizer",
