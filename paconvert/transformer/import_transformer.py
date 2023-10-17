@@ -135,7 +135,7 @@ class ImportTransformer(BaseTransformer):
 
                 dir_name = os.path.dirname(dir_name)
 
-        # import from torch
+        # import from TORCH_PACKAGE_LIST
         for pkg_name in TORCH_PACKAGE_LIST + ["setuptools"]:
             if f"{pkg_name}." in node.module or pkg_name == node.module:
                 if pkg_name == "setuptools":
