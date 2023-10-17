@@ -55,9 +55,9 @@
     "paddle_api": "paddle.Tensor.abs"
   },
   "torch.Tensor.abs_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.abs_"
+    "paddle_api": "paddle.Tensor.abs_"
   },
   "torch.Tensor.add": {
     "Matcher": "TensorAddMatcher",
@@ -257,35 +257,35 @@
     "paddle_api": "paddle.Tensor.acos"
   },
   "torch.Tensor.arccos_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.acos_"
+    "paddle_api": "paddle.Tensor.acos_"
   },
   "torch.Tensor.arccosh": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.acosh"
   },
   "torch.Tensor.arccosh_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.acosh_"
+    "paddle_api": "paddle.Tensor.acosh_"
   },
   "torch.Tensor.arcsin": {
     "Matcher": "UnchangeMatcher"
   },
   "torch.Tensor.arcsin_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.asin_"
+    "paddle_api": "paddle.Tensor.asin_"
   },
   "torch.Tensor.arcsinh": {
     "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.asinh"
   },
   "torch.Tensor.arcsinh_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.asinh_"
+    "paddle_api": "paddle.Tensor.asinh_"
   },
   "torch.Tensor.arctan": {
     "Matcher": "UnchangeMatcher"
@@ -303,18 +303,18 @@
   },
   "torch.Tensor.arctan2_": {},
   "torch.Tensor.arctan_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.atan_"
+    "paddle_api": "paddle.Tensor.atan_"
   },
   "torch.Tensor.arctanh": {
     "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.atanh"
   },
   "torch.Tensor.arctanh_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.atanh_"
+    "paddle_api": "paddle.Tensor.atanh_"
   },
   "torch.Tensor.argmax": {
     "Matcher": "GenericMatcher",
@@ -666,18 +666,18 @@
     "paddle_api": "paddle.Tensor.cos"
   },
   "torch.Tensor.cos_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.cos_"
+    "paddle_api": "paddle.Tensor.cos_"
   },
   "torch.Tensor.cosh": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.cosh"
   },
   "torch.Tensor.cosh_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.cosh_"
+    "paddle_api": "paddle.Tensor.cosh_"
   },
   "torch.Tensor.count_nonzero": {
     "Matcher": "GenericMatcher",
@@ -2416,9 +2416,9 @@
     }
   },
   "torch.Tensor.renorm_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 3,
-    "paddle_api": "paddle.renorm_",
+    "paddle_api": "paddle.Tensor.renorm_",
     "args_list": [
       "p",
       "dim",
@@ -2648,9 +2648,9 @@
     "Matcher": "UnchangeMatcher"
   },
   "torch.Tensor.sin_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.sin_"
+    "paddle_api": "paddle.Tensor.sin_"
   },
   "torch.Tensor.sinc": {
     "Matcher": "SincMatcher"
@@ -2660,9 +2660,9 @@
     "Matcher": "UnchangeMatcher"
   },
   "torch.Tensor.sinh_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.sinh_"
+    "paddle_api": "paddle.Tensor.sinh_"
   },
   "torch.Tensor.size": {
     "Matcher": "TensorSizeMatcher",
@@ -2877,17 +2877,17 @@
     "paddle_api": "paddle.tan"
   },
   "torch.Tensor.tan_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.tan_"
+    "paddle_api": "paddle.Tensor.tan_"
   },
   "torch.Tensor.tanh": {
     "Matcher": "UnchangeMatcher"
   },
   "torch.Tensor.tanh_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.tanh_"
+    "paddle_api": "paddle.Tensor.tanh_"
   },
   "torch.Tensor.tensor_split": {},
   "torch.Tensor.tile": {},
@@ -2940,9 +2940,9 @@
     ]
   },
   "torch.Tensor.tril_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.tril_",
+    "paddle_api": "paddle.Tensor.tril_",
     "args_list": [
       "diagonal"
     ]
@@ -2956,9 +2956,9 @@
     ]
   },
   "torch.Tensor.triu_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.triu_",
+    "paddle_api": "paddle.Tensor.triu_",
     "args_list": [
       "diagonal"
     ]
