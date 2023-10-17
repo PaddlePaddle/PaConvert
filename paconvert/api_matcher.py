@@ -2945,6 +2945,8 @@ class TensorViewMatcher(BaseMatcher):
                         return paddle.view(self, args[0])
                     else:
                         return paddle.view(self, list(args))
+                elif kwargs:
+                    return paddle.view(self, shape_or_dtype = kwargs['dtype'])
 
             setattr(paddle.Tensor, 'view', view)
             """
@@ -2952,6 +2954,11 @@ class TensorViewMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def get_paddle_class_nodes(self, func, args, kwargs):
+        if kwargs:
+            if len(kwargs) == 1 and "shape" in kwargs:
+                self.write_aux_code()
+                return "unchange"
+
         if args:
             if len(args) > 1 and isinstance(args[0], (ast.Tuple, ast.List)):
                 return "unchange"

@@ -3194,7 +3194,10 @@
   "torch.Tensor.view_as": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.view_as",
-    "min_input_args": 1
+    "min_input_args": 1,
+    "args_list": [
+      "other"
+    ]
   },
   "torch.Tensor.vsplit": {},
   "torch.Tensor.where": {

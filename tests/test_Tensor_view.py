@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.view")
+obj = APIBase("torch.Tensor.view", is_aux_api=True)
 
 
 def test_case_1():
@@ -100,7 +100,7 @@ def test_case_7():
     obj.run(pytorch_code, ["result"])
 
 
-# # 因为当前paddle.view 不支持没有 shape 的 tensor，所以该案例无法正常运行
+# # Because the current paddle.view does not support tensors without a shape, this case cannot run properly.
 # def test_case_9():
 #     pytorch_code = textwrap.dedent(
 #         """
@@ -129,6 +129,106 @@ def test_case_9():
         import torch
         a = torch.arange(6.)
         result = a.view(torch.int32)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(6.)
+        k = torch.int32
+        result = a.view(k)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(6)
+        result = a.view(dtype = torch.int32)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(6)
+        result = a.view(dtype = torch.float32)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(6)
+        result = a.view(dtype = torch.float)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(6)
+        result = a.view(dtype = torch.float64)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_15():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(6)
+        result = a.view(dtype = torch.double)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_16():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(6)
+        result = a.view(dtype = torch.cfloat)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_17():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(6)
+        result = a.view(dtype = torch.half)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_18():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(6)
+        result = a.view(dtype = torch.bool)
         """
     )
     obj.run(pytorch_code, ["result"])
