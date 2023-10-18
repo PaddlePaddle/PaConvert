@@ -150,8 +150,9 @@ def test_case_11():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(6)
-        result = a.view(dtype = torch.int32)
+        a = torch.arange(6.)
+        k = torch.int32
+        result = a.view(dtype = k)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -162,7 +163,7 @@ def test_case_12():
         """
         import torch
         a = torch.arange(6)
-        result = a.view(dtype = torch.float32)
+        result = a.view(dtype = torch.int32)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -173,7 +174,7 @@ def test_case_13():
         """
         import torch
         a = torch.arange(6)
-        result = a.view(dtype = torch.float)
+        result = a.view(dtype = torch.float32)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -184,7 +185,7 @@ def test_case_14():
         """
         import torch
         a = torch.arange(6)
-        result = a.view(dtype = torch.float64)
+        result = a.view(dtype = torch.cfloat)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -195,7 +196,7 @@ def test_case_15():
         """
         import torch
         a = torch.arange(6)
-        result = a.view(dtype = torch.double)
+        result = a.view(dtype = torch.half)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -206,7 +207,7 @@ def test_case_16():
         """
         import torch
         a = torch.arange(6)
-        result = a.view(dtype = torch.cfloat)
+        result = a.view(dtype = torch.bool)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -217,7 +218,7 @@ def test_case_17():
         """
         import torch
         a = torch.arange(6)
-        result = a.view(dtype = torch.half)
+        result = a.view(size = [2,3])
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -228,7 +229,8 @@ def test_case_18():
         """
         import torch
         a = torch.arange(6)
-        result = a.view(dtype = torch.bool)
+        k = (2,3)
+        result = a.view(size = k)
         """
     )
     obj.run(pytorch_code, ["result"])
