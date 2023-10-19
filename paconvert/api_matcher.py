@@ -2961,13 +2961,8 @@ class TensorViewMatcher(BaseMatcher):
                 return "unchange"
 
         if args:
-            if len(args) == 1:
-                if isinstance(args[0], (ast.Tuple, ast.List)):
-                    return "unchange"
-                if isinstance(args[0], (ast.Constant)) and isinstance(
-                    args[0].value, str
-                ):
-                    return "unchange"
+            if len(args) == 1 and isinstance(args[0], (ast.Tuple, ast.List)):
+                return "unchange"
             else:
                 self.write_aux_code()
                 return "unchange"
