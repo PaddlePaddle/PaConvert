@@ -3761,9 +3761,49 @@ class OptimAdamMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-class ConstantLRMatcher(BaseMatcher):
+class LRSchedulerMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        optim = kwargs.pop("optimizer")
+        optimizer = kwargs.pop("optimizer")
+
+        unsupport_args = self.api_mapping.get("unsupport_args", [])
+        for k in unsupport_args:
+            if k in kwargs:
+                return None
+
+        kwargs_change = self.api_mapping.get("kwargs_change", {})
+        for k in kwargs_change:
+            if k in kwargs:
+                kwargs[kwargs_change[k]] = kwargs.pop(k)
+
+        default_kwargs = self.api_mapping.get("paddle_default_kwargs", {})
+        for k in default_kwargs:
+            if k not in kwargs:
+                kwargs[k] = default_kwargs[k]
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            tmp_lr = {}({})
+            {}.set_lr_scheduler(tmp_lr)
+            tmp_lr
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.get_paddle_api(), self.kwargs_to_str(kwargs), optimizer
+        )
+
+        return code
+
+
+class Optim2LrSchedulerMatcher(LRSchedulerMatcher):
+    def generate_code(self, kwargs):
+        optimizer = kwargs["optimizer"]
+        kwargs["learning_rate"] = "{}.get_lr()".format(optimizer)
+        return super().generate_code(kwargs)
+
+
+class ConstantLRMatcher(LRSchedulerMatcher):
+    def generate_code(self, kwargs):
+        optim = kwargs["optimizer"]
         factor = 0.3333333333333333
         total_iters = 5
         if "factor" in kwargs:
@@ -3772,37 +3812,27 @@ class ConstantLRMatcher(BaseMatcher):
             total_iters = kwargs.pop("total_iters")
         kwargs["values"] = "[{}*{}.get_lr(), {}.get_lr()]".format(factor, optim, optim)
         kwargs["boundaries"] = "[{}]".format(total_iters)
-        API_TEMPLATE = textwrap.dedent(
-            """
-            tmp_lr = {}({})
-            {}.set_lr_scheduler(tmp_lr)
-            tmp_lr
-            """
-        )
-        code = API_TEMPLATE.format(
-            self.get_paddle_api(), self.kwargs_to_str(kwargs), optim
-        )
-        return code
+        return super().generate_code(kwargs)
 
 
-class LrSchedulerMatcher(BaseMatcher):
+class OneCycleLRMatcher(LRSchedulerMatcher):
     def generate_code(self, kwargs):
-        optim = kwargs.pop("optimizer")
-        if self.get_paddle_api() not in [
-            "paddle.optimizer.lr.CyclicLR",
-        ]:
-            kwargs["learning_rate"] = optim + ".get_lr()"
-        API_TEMPLATE = textwrap.dedent(
-            """
-            tmp_lr = {}({})
-            {}.set_lr_scheduler(tmp_lr)
-            tmp_lr
-            """
-        )
-        code = API_TEMPLATE.format(
-            self.get_paddle_api(), self.kwargs_to_str(kwargs), optim
-        )
-        return code
+        if "total_steps" in kwargs and "None" not in kwargs["total_steps"]:
+            pass
+        else:
+            steps_per_epoch = kwargs.pop("steps_per_epoch")
+            epochs = kwargs.pop("epochs")
+            kwargs["total_steps"] = "({})*({})".format(steps_per_epoch, epochs)
+
+        if "final_div_factor" in kwargs:
+            final_div_factor = kwargs.pop("final_div_factor")
+            max_lr = kwargs["max_lr"]
+            div_factor = kwargs["div_factor"]
+            kwargs["end_learning_rate"] = "({}) * 1. /(({}) * {})".format(
+                max_lr, div_factor, final_div_factor
+            )
+
+        return super().generate_code(kwargs)
 
 
 class RequireDimMatcher(BaseMatcher):

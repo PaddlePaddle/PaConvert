@@ -55,9 +55,9 @@
     "paddle_api": "paddle.Tensor.abs"
   },
   "torch.Tensor.abs_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.abs_"
+    "paddle_api": "paddle.Tensor.abs_"
   },
   "torch.Tensor.add": {
     "Matcher": "TensorAddMatcher",
@@ -257,35 +257,35 @@
     "paddle_api": "paddle.Tensor.acos"
   },
   "torch.Tensor.arccos_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.acos_"
+    "paddle_api": "paddle.Tensor.acos_"
   },
   "torch.Tensor.arccosh": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.acosh"
   },
   "torch.Tensor.arccosh_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.acosh_"
+    "paddle_api": "paddle.Tensor.acosh_"
   },
   "torch.Tensor.arcsin": {
     "Matcher": "UnchangeMatcher"
   },
   "torch.Tensor.arcsin_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.asin_"
+    "paddle_api": "paddle.Tensor.asin_"
   },
   "torch.Tensor.arcsinh": {
     "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.asinh"
   },
   "torch.Tensor.arcsinh_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.asinh_"
+    "paddle_api": "paddle.Tensor.asinh_"
   },
   "torch.Tensor.arctan": {
     "Matcher": "UnchangeMatcher"
@@ -303,18 +303,18 @@
   },
   "torch.Tensor.arctan2_": {},
   "torch.Tensor.arctan_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.atan_"
+    "paddle_api": "paddle.Tensor.atan_"
   },
   "torch.Tensor.arctanh": {
     "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.atanh"
   },
   "torch.Tensor.arctanh_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.atanh_"
+    "paddle_api": "paddle.Tensor.atanh_"
   },
   "torch.Tensor.argmax": {
     "Matcher": "GenericMatcher",
@@ -679,18 +679,18 @@
     "paddle_api": "paddle.Tensor.cos"
   },
   "torch.Tensor.cos_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.cos_"
+    "paddle_api": "paddle.Tensor.cos_"
   },
   "torch.Tensor.cosh": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.cosh"
   },
   "torch.Tensor.cosh_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.cosh_"
+    "paddle_api": "paddle.Tensor.cosh_"
   },
   "torch.Tensor.count_nonzero": {
     "Matcher": "GenericMatcher",
@@ -2463,9 +2463,9 @@
     }
   },
   "torch.Tensor.renorm_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 3,
-    "paddle_api": "paddle.renorm_",
+    "paddle_api": "paddle.Tensor.renorm_",
     "args_list": [
       "p",
       "dim",
@@ -2695,9 +2695,9 @@
     "Matcher": "UnchangeMatcher"
   },
   "torch.Tensor.sin_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.sin_"
+    "paddle_api": "paddle.Tensor.sin_"
   },
   "torch.Tensor.sinc": {
     "Matcher": "SincMatcher"
@@ -2707,9 +2707,9 @@
     "Matcher": "UnchangeMatcher"
   },
   "torch.Tensor.sinh_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.sinh_"
+    "paddle_api": "paddle.Tensor.sinh_"
   },
   "torch.Tensor.size": {
     "Matcher": "TensorSizeMatcher",
@@ -2924,17 +2924,17 @@
     "paddle_api": "paddle.tan"
   },
   "torch.Tensor.tan_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.tan_"
+    "paddle_api": "paddle.Tensor.tan_"
   },
   "torch.Tensor.tanh": {
     "Matcher": "UnchangeMatcher"
   },
   "torch.Tensor.tanh_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.tanh_"
+    "paddle_api": "paddle.Tensor.tanh_"
   },
   "torch.Tensor.tensor_split": {},
   "torch.Tensor.tile": {},
@@ -2987,9 +2987,9 @@
     ]
   },
   "torch.Tensor.tril_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.tril_",
+    "paddle_api": "paddle.Tensor.tril_",
     "args_list": [
       "diagonal"
     ]
@@ -3003,9 +3003,9 @@
     ]
   },
   "torch.Tensor.triu_": {
-    "Matcher": "TensorFunc2PaddleFunc",
+    "Matcher": "GenericMatcher",
     "min_input_args": 0,
-    "paddle_api": "paddle.triu_",
+    "paddle_api": "paddle.Tensor.triu_",
     "args_list": [
       "diagonal"
     ]
@@ -11185,8 +11185,143 @@
       "verbose"
     ]
   },
+  "torch.optim.lr_scheduler.CosineAnnealingLR": {
+    "Matcher": "Optim2LrSchedulerMatcher",
+    "paddle_api": "paddle.optimizer.lr.CosineAnnealingDecay",
+    "args_list": [
+      "optimizer",
+      "T_max",
+      "eta_min",
+      "last_epoch",
+      "verbose"
+    ]
+  },
+  "torch.optim.lr_scheduler.CyclicLR": {
+    "Matcher": "LRSchedulerMatcher",
+    "paddle_api": "paddle.optimizer.lr.CyclicLR",
+    "args_list": [
+      "optimizer",
+      "base_lr",
+      "max_lr",
+      "step_size_up",
+      "step_size_down",
+      "mode",
+      "gamma",
+      "scale_fn",
+      "scale_mode",
+      "cycle_momentum",
+      "base_momentum",
+      "max_momentum",
+      "last_epoch",
+      "verbose"
+    ],
+    "kwargs_change": {
+      "base_lr": "base_learning_rate",
+      "max_lr": "max_learning_rate",
+      "gamma": "exp_gamma"
+    },
+    "unsupport_args": [
+      "cycle_momentum",
+      "base_momentum",
+      "max_momentum"
+    ],
+    "paddle_default_kwargs": {
+      "step_size_up": "2000"
+    }
+  },
+  "torch.optim.lr_scheduler.ExponentialLR": {
+    "Matcher": "Optim2LrSchedulerMatcher",
+    "paddle_api": "paddle.optimizer.lr.ExponentialDecay",
+    "args_list": [
+      "optimizer",
+      "gamma",
+      "last_epoch",
+      "verbose"
+    ]
+  },
+  "torch.optim.lr_scheduler.LambdaLR": {
+    "Matcher": "Optim2LrSchedulerMatcher",
+    "paddle_api": "paddle.optimizer.lr.LambdaDecay",
+    "args_list": [
+      "optimizer",
+      "lr_lambda",
+      "last_epoch",
+      "verbose"
+    ]
+  },
+  "torch.optim.lr_scheduler.MultiStepLR": {
+    "Matcher": "Optim2LrSchedulerMatcher",
+    "paddle_api": "paddle.optimizer.lr.MultiStepDecay",
+    "args_list": [
+      "optimizer",
+      "milestones",
+      "gamma",
+      "last_epoch",
+      "verbose"
+    ]
+  },
+  "torch.optim.lr_scheduler.MultiplicativeLR": {
+    "Matcher": "Optim2LrSchedulerMatcher",
+    "paddle_api": "paddle.optimizer.lr.MultiplicativeDecay",
+    "args_list": [
+      "optimizer",
+      "lr_lambda",
+      "last_epoch",
+      "verbose"
+    ]
+  },
+  "torch.optim.lr_scheduler.OneCycleLR": {
+    "Matcher": "OneCycleLRMatcher",
+    "paddle_api": "paddle.optimizer.lr.OneCycleLR",
+    "args_list": [
+      "optimizer",
+      "max_lr",
+      "total_steps",
+      "epochs",
+      "steps_per_epoch",
+      "pct_start",
+      "anneal_strategy",
+      "cycle_momentum",
+      "base_momentum",
+      "max_momentum",
+      "div_factor",
+      "final_div_factor",
+      "three_phase",
+      "last_epoch",
+      "verbose"
+    ],
+    "kwargs_change": {
+      "max_lr": "max_learning_rate",
+      "pct_start": "phase_pct",
+      "div_factor": "divide_factor"
+    },
+    "unsupport_args": [
+      "cycle_momentum",
+      "base_momentum",
+      "max_momentum"
+    ]
+  },
+  "torch.optim.lr_scheduler.ReduceLROnPlateau": {
+    "Matcher": "Optim2LrSchedulerMatcher",
+    "paddle_api": "paddle.optimizer.lr.ReduceOnPlateau",
+    "args_list": [
+      "optimizer",
+      "mode",
+      "factor",
+      "patience",
+      "threshold",
+      "threshold_mode",
+      "cooldown",
+      "min_lr",
+      "eps",
+      "verbose"
+    ],
+    "kwargs_change": {
+      "eps": "epsilon"
+    }
+  },
   "torch.optim.lr_scheduler.StepLR": {
-    "Matcher": "LrSchedulerMatcher",
+    "Matcher": "Optim2LrSchedulerMatcher",
     "paddle_api": "paddle.optimizer.lr.StepDecay",
     "args_list": [
       "optimizer",
