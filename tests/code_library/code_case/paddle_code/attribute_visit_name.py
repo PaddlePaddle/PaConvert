@@ -8,12 +8,15 @@ class A(paddle.nn.Layer):
 
 
 def func1(data: paddle.Tensor):
-    data(x)
+>>>>>>    torch.utils.data(x)
+>>>>>>    torch.utils.data.data_loader(x)
     data['id']
     func(data)
+    data = json.load(f)
+    self.data = self.__make_dataset()
 
 
-def func2() ->paddle.Tensor:
+def func2(data) ->paddle.Tensor:
     pass
 
 

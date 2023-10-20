@@ -16,11 +16,11 @@ set +x
 
 export FLAGS_set_to_1d=0
 
-cd /workspace/$2/PaConvert/
-PATH=$1
+cd /workspace/$1/PaConvert/
 
 echo "Insalling develop version paddle"
 python -m pip uninstall -y paddlepaddle
+python -m pip uninstall -y paddlepaddle-gpu
 rm -rf /root/anaconda3/lib/python*/site-packages/paddlepaddle-0.0.0.dist-info/
 python -m pip install --no-cache-dir paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"

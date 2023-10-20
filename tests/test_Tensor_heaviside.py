@@ -34,7 +34,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([-1.5, 0, 2.0]).heaviside(torch.tensor([0.5]))
+        result = torch.tensor([-1.5, 0, 2.0]).heaviside(values=torch.tensor([0.5]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -56,7 +56,7 @@ def test_case_4():
         """
         import torch
         input = torch.tensor([-1.5, 0, 2.0])
-        result = input.heaviside(torch.tensor([0.5, 1.7, 0.8]))
+        result = input.heaviside(values=torch.tensor([0.5, 1.7, 0.8]))
         """
     )
     obj.run(pytorch_code, ["result"])

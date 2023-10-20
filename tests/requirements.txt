@@ -1,0 +1,7 @@
+pre-commit
+pytest
+pytest-cov
+regex
+coverage
+diff-cover
+pandas

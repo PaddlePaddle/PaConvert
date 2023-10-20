@@ -15,10 +15,7 @@
 set +x
 
 export FLAGS_set_to_1d=0
-ADD_GIT="OFF"
-
-cd /workspace/$2/PaConvert/
-PATH=$1
+cd /workspace/$1/PaConvert/
 
 echo "Insalling cpu version torch"
 python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
@@ -26,13 +23,14 @@ python -c "import torch; print('torch version information:' ,torch.__version__)"
 
 echo "Insalling develop version paddle"
 python -m pip uninstall -y paddlepaddle
+python -m pip uninstall -y paddlepaddle-gpu
 rm -rf /root/anaconda3/lib/python*/site-packages/paddlepaddle-0.0.0.dist-info/
 python -m pip install --no-cache-dir paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
 # use Coverage diff-cover
 echo "Insalling coverage and diff-cover for incremental code inspection"
-python -m pip install diff-cover coverage
+python -m pip install coverage diff-cover
 python -m pip install pytest-timeout
 
 if [[ "$DEVELOP_IF" == "ON" ]]; then
@@ -46,11 +44,11 @@ fi
 
 # coverage code check
 echo '****************************start detecting coverate rate*********************************'
-coverage run -m pytest
+python -m coverage run -m pytest
 
 echo '**************************start generating coverage.xml file******************************'
-coverage xml -o coverage.xml
-coverage html
+python -m coverage xml -o coverage.xml
+python -m coverage html
 
 echo '************************start generating coverage rate report*****************************'
 diff-cover coverage.xml --compare-branch origin/master > temp.txt;check_error1=$?
@@ -59,7 +57,7 @@ diff-cover coverage.xml --compare-branch origin/master > temp.txt;check_error1=$
 cat temp.txt
 
 echo '***********************start generating coverage rate detect******************************'
-python  tools/coverage/coverage_diff.py;check_error2=$?
+python tools/coverage/coverage_diff.py;check_error2=$?
 
 check_error=$((check_error1||check_error2)) 
 echo "$check_error" > flag.txt

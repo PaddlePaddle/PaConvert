@@ -65,7 +65,7 @@ def test_case_4():
         import torch.nn.functional as F
         x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                             [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        result = F.dropout(x, 0.5, training=True)
+        result = F.dropout(x, 0.5, True, True)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -78,7 +78,7 @@ def test_case_5():
         import torch.nn.functional as F
         x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                             [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        result = F.dropout(x, 0.5, training=True, inplace=True)
+        result = F.dropout(input=x, p=0.5, training=True, inplace=True)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)

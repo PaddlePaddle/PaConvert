@@ -35,7 +35,7 @@ def test_case_2():
         """
         import torch
         num = 5.
-        result = torch.full(torch.empty(2, 3).shape, num)
+        result = torch.full((2, 3), num)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,7 +45,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.full(torch.empty(2, 3).shape, 10, dtype=torch.float64, requires_grad=True)
+        result = torch.full([2, 3], 10, dtype=torch.float64, requires_grad=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -67,6 +67,17 @@ def test_case_5():
         """
         import torch
         result = torch.full(torch.empty(2, 3).shape, 6, layout=torch.strided, dtype=torch.float64, requires_grad=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        out = torch.rand(2, 3, dtype=torch.float64)
+        result = torch.full([2, 3], 6, out=out, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
         """
     )
     obj.run(pytorch_code, ["result"])

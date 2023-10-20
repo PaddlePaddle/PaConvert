@@ -24,8 +24,26 @@ def test_case_1():
         """
         import torch.nn as nn
         import torch
-        choices = nn.ParameterList([nn.Parameter(torch.ones(10, 10)) for i in range(10)])
-        result = list(choices)
+        result = []
+        for i in range(10):
+            result.append(nn.Parameter(torch.ones(i+1, i+1)))
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        choices = nn.ParameterList([nn.Parameter(torch.ones(i+1, i+1)) for i in range(10)])
+        result = list(choices)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Can not support insert multi line to ast.ListComp",
+    )

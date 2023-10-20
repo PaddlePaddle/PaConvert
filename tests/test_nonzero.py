@@ -89,7 +89,8 @@ def test_case_5():
                         [0.0, 0.4, 0.0, 0.0],
                         [0.0, 0.0, 1.2, 0.0],
                         [0.0, 0.0, 0.0,-0.4]])
-        result = torch.nonzero(x, as_tuple=False)
+        out = torch.tensor([1], dtype=torch.int64)
+        result = torch.nonzero(x, out=out)
         """
     )
     obj.run(pytorch_code, ["result"])

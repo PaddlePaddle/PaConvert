@@ -23,8 +23,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.empty(2, 3)
-        result = torch.ones(input.shape)
+        result = torch.ones(3)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +33,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        num = 5.
-        result = torch.ones(torch.empty(2, 3).shape)
+        result = torch.ones(3, 5)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,7 +43,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.ones(torch.empty(2, 3).shape, dtype=torch.float64, requires_grad=True)
+        result = torch.ones((4, 4))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,8 +53,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        flag = False
-        result = torch.ones(torch.empty(2, 3).shape, dtype=torch.float64, requires_grad=flag)
+        result = torch.ones([4, 4])
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -66,7 +63,73 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.ones(torch.empty(2, 3).shape, layout=torch.strided, dtype=torch.float64, requires_grad=True)
+        shape = 3
+        result = torch.ones(shape)
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        shape = [4, 4]
+        result = torch.ones(shape)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        shape = [4, 4]
+        result = torch.ones(*shape)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.ones(size=[6, 6], dtype=torch.int64)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.ones([6, 6], dtype=torch.float64, requires_grad=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        flag = True
+        result = torch.ones(6, 6, dtype=torch.float64, requires_grad=flag)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = 3
+        out = torch.tensor([2., 3.], dtype=torch.float64)
+        result = torch.ones(a, a, out=out, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True, pin_memory=False)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

@@ -24,7 +24,7 @@ def test_case_1():
         """
         import torch
         a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
-        result = torch.divide(a, torch.tensor([0.5]))
+        result = torch.divide(a, 0.5)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -36,7 +36,7 @@ def test_case_2():
         import torch
         a = torch.tensor([[ 0.5950,-0.0872], [2.3298, -0.2972]])
         b = torch.tensor([0.1815, -1.0111])
-        result = torch.divide(input=a, other=b)
+        result = torch.divide(a, b)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -48,7 +48,7 @@ def test_case_3():
         import torch
         a = torch.tensor([[ 0.5950,-0.0872], [2.3298, -0.2972]])
         b = torch.tensor([0.1815, -1.0111])
-        result = torch.divide(input=a, other=b, rounding_mode=None)
+        result = torch.divide(input=a, other=b)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -60,7 +60,7 @@ def test_case_4():
         import torch
         a = torch.tensor([[ 0.5950,-0.0872], [2.3298, -0.2972]])
         b = torch.tensor([0.1815, -1.0111])
-        result = torch.divide(input=a, other=b, rounding_mode="trunc")
+        result = torch.divide(input=a, other=b, rounding_mode=None)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -72,7 +72,7 @@ def test_case_5():
         import torch
         a = torch.tensor([[ 0.5950,-0.0872], [2.3298, -0.2972]])
         b = torch.tensor([0.1815, -1.0111])
-        result = torch.divide(input=a, other=b, rounding_mode="floor")
+        result = torch.divide(input=a, other=b, rounding_mode="trunc")
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -84,8 +84,63 @@ def test_case_6():
         import torch
         a = torch.tensor([[ 0.5950,-0.0872], [2.3298, -0.2972]])
         b = torch.tensor([0.1815, -1.0111])
+        result = torch.divide(input=a, other=b, rounding_mode="floor")
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[ 0.5950,-0.0872], [2.3298, -0.2972]])
+        b = torch.tensor([0.1815, -1.0111])
         out = torch.tensor([[ 0.5950,-0.0872], [2.3298, -0.2972]])
         result = torch.divide(input=a, other=b, rounding_mode="floor", out=out)
         """
     )
     obj.run(pytorch_code, ["out"])
+
+
+# paddle not support type promote
+# torch.divide(int, int) return float, but paddle return int
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4, 9, 8]])
+        b = torch.tensor([2, 3, 4])
+        result = torch.divide(input=a, other=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_dtype=False)
+
+
+# paddle not support type promote
+# torch.divide(int, int) return float, but paddle return int
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4, 9, 8]])
+        b = torch.tensor([2, 3, 4])
+        result = torch.divide(input=a, other=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_dtype=False)
+
+
+# paddle not support type promote
+# torch.divide(int, int) return float, but paddle return int, when can not divide exactly,
+# paddle result equal to trunc divide, result is wrong
+def _test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4, 3, 8]])
+        b = torch.tensor([3, 2, 5])
+        result = torch.divide(input=a, other=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_dtype=False)

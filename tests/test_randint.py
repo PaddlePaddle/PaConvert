@@ -43,7 +43,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.randint(3, 10, (2, 2))
+        result = torch.randint(3, 10, (2, 2), dtype=torch.int32, requires_grad=False)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -63,7 +63,8 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.randint(3, 10, (2, 2), dtype=torch.float32, requires_grad=True)
+        out = torch.empty(2, 2, dtype=torch.int32)
+        result = torch.randint(3, 10, (2, 2), out=out, dtype=torch.int32, layout=torch.strided, device=torch.device('cpu'), pin_memory=False, requires_grad=False)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -74,7 +75,7 @@ def test_case_6():
         """
         import torch
         flag = False
-        result = torch.randint(3, 10, (2, 2), dtype=torch.int32, requires_grad=flag)
+        result = torch.randint(3, 10, (2, 2), dtype=torch.int64, requires_grad=flag)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)

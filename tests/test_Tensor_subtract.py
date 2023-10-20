@@ -12,20 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.subtract")
+obj = APIBase("torch.Tensor.subtract", is_aux_api=True)
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
-        b = torch.tensor([1, 1, 1, 0])
-        result = a.subtract(b)
+        x = torch.tensor([1, 2, 3])
+        result = x.subtract(torch.tensor([1, 4, 6]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,9 +35,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
-        b = torch.tensor([1, 1, 1, 0])
-        result = a.subtract(other=b)
+        x = torch.tensor([1, 2, 3])
+        result = x.subtract(20)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -47,9 +46,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
-        b = torch.tensor([1, 1, 1, 0])
-        result = a.subtract(b, alpha=3)
+        x = torch.tensor([1, 2, 3])
+        result = x.subtract(other=20)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -59,8 +57,30 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
-        result = a.subtract(0.5, alpha=3)
+        x = torch.tensor([1., 2, 3])
+        result = x.subtract(torch.tensor([1., 4, 6]), alpha=0.8)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2, 3])
+        result = x.subtract(other=torch.tensor([1., 4, 6]), alpha=0.8)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# paddle not support type promote and x/y must have same dtype
+def _test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([1., 2, 3]).subtract(torch.tensor([1, 4, 6]))
         """
     )
     obj.run(pytorch_code, ["result"])

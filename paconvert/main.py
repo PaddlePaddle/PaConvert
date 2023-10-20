@@ -83,7 +83,6 @@ def main():
         sys.exit(0)
 
     if args.separate_convert:
-        # change_torch_package_list()
         project_num_100 = 0
         project_num_95 = 0
         project_num_90 = 0

@@ -14,7 +14,7 @@
 
 # install requirements library
 python -m pip install -r requirements.txt
-python -m pip install -r requirements-dev.txt
+python -m pip install -r tests/requirements.txt
 pre-commit install
 
 # code_style_check

@@ -23,57 +23,45 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn.functional as F
         import torch.nn as nn
-        embedding = nn.Embedding(1000, 128)
-        anchor_ids = torch.randint(0, 1000, (1,))
-        anchor_ids = torch.tensor([568])
-        positive_ids = torch.tensor([123])
-        negative_ids = torch.tensor([121])
-        anchor = embedding(anchor_ids)
-        positive = embedding(positive_ids)
-        negative = embedding(negative_ids)
-        result = torch.nn.functional.triplet_margin_with_distance_loss(anchor, positive, negative, distance_function=nn.PairwiseDistance())
+        import numpy as np
+        np.random.seed(100)
+        anchor = torch.tensor(np.random.rand(128))
+        positive = torch.tensor(np.random.rand(128))
+        negative = torch.tensor(np.random.rand(128))
+        result = nn.functional.triplet_margin_with_distance_loss(anchor, positive, negative, distance_function=nn.PairwiseDistance())
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn.functional as F
         import torch.nn as nn
-        embedding = nn.Embedding(1000, 128)
-        anchor_ids = torch.randint(0, 1000, (1,))
-        anchor_ids = torch.tensor([568])
-        positive_ids = torch.tensor([123])
-        negative_ids = torch.tensor([121])
-        anchor = embedding(anchor_ids)
-        positive = embedding(positive_ids)
-        negative = embedding(negative_ids)
-        result = torch.nn.functional.triplet_margin_with_distance_loss(anchor, positive, negative, distance_function=nn.PairwiseDistance(), reduction='mean')
+        import numpy as np
+        np.random.seed(100)
+        anchor = torch.tensor(np.random.rand(128))
+        positive = torch.tensor(np.random.rand(128))
+        negative = torch.tensor(np.random.rand(128))
+        result = torch.nn.functional.triplet_margin_with_distance_loss(anchor=anchor, positive=positive, negative=negative, distance_function=nn.PairwiseDistance(), margin=2.0, reduction='mean')
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn.functional as F
         import torch.nn as nn
-        embedding = nn.Embedding(1000, 128)
-        anchor_ids = torch.randint(0, 1000, (1,))
-        anchor_ids = torch.tensor([568])
-        positive_ids = torch.tensor([123])
-        negative_ids = torch.tensor([121])
-        anchor = embedding(anchor_ids)
-        positive = embedding(positive_ids)
-        negative = embedding(negative_ids)
-        result = torch.nn.functional.triplet_margin_with_distance_loss(anchor, positive, negative, distance_function=nn.PairwiseDistance(), reduction='none')
+        import numpy as np
+        np.random.seed(100)
+        anchor = torch.tensor(np.random.rand(128))
+        positive = torch.tensor(np.random.rand(128))
+        negative = torch.tensor(np.random.rand(128))
+        result = torch.nn.functional.triplet_margin_with_distance_loss(anchor, positive, negative, distance_function=nn.PairwiseDistance(), margin=2.0, swap=True, reduction='none')
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])

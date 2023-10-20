@@ -27,4 +27,9 @@ def test_case_1():
         result = a.tile((1,))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Paddle not support this api convert now",
+    )
