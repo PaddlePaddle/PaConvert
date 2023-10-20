@@ -356,7 +356,20 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.nonzero"
   },
-  "torch.Tensor.as_strided": {},
+  "torch.Tensor.as_strided": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.as_strided",
+    "min_input_args": 2,
+    "args_list": [
+      "size",
+      "stride",
+      "storage_offset"
+    ],
+    "kwargs_change": {
+      "size": "shape",
+      "storage_offset": "offset"
+    }
+  },
   "torch.Tensor.as_subclass": {},
   "torch.Tensor.backward": {
     "Matcher": "GenericMatcher",
@@ -730,8 +743,26 @@
       "memory_format"
     ]
   },
-  "torch.Tensor.cummax": {},
-  "torch.Tensor.cummin": {},
+  "torch.Tensor.cummax": {
+    "Matcher": "DoubleAssignMatcher",
+    "paddle_api": "paddle.Tensor.cummax",
+    "args_list": [
+      "dim"
+    ],
+    "kwargs_change": {
+      "dim": "axis"
+    }
+  },
+  "torch.Tensor.cummin": {
+    "Matcher": "DoubleAssignMatcher",
+    "paddle_api": "paddle.Tensor.cummin",
+    "args_list": [
+      "dim"
+    ],
+    "kwargs_change": {
+      "dim": "axis"
+    }
+  },
   "torch.Tensor.cumprod": {
     "Matcher": "UnchangeMatcher",
     "min_input_args": 1,
@@ -1309,7 +1340,11 @@
     ]
   },
   "torch.Tensor.hypot_": {},
-  "torch.Tensor.i0": {},
+  "torch.Tensor.i0": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.i0",
+    "min_input_args": 0
+  },
   "torch.Tensor.i0_": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.i0_",
@@ -1355,7 +1390,19 @@
   },
   "torch.Tensor.index_fill": {},
   "torch.Tensor.index_fill_": {},
-  "torch.Tensor.index_put": {},
+  "torch.Tensor.index_put": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.index_put",
+    "min_input_args": 2,
+    "args_list": [
+      "indices",
+      "values",
+      "accumulate"
+    ],
+    "kwargs_change": {
+      "values": "value"
+    }
+  },
   "torch.Tensor.index_put_": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.index_put_",
@@ -3033,7 +3080,19 @@
       "sizes": "shape"
     }
   },
-  "torch.Tensor.unfold": {},
+  "torch.Tensor.unfold": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.unfold",
+    "min_input_args": 2,
+    "args_list": [
+      "dimension",
+      "size",
+      "step"
+    ],
+    "kwargs_change": {
+      "dimension": "axis"
+    }
+  },
   "torch.Tensor.uniform_": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.uniform_",
@@ -3129,8 +3188,17 @@
       "other": "y"
     }
   },
-  "torch.Tensor.view": {},
-  "torch.Tensor.view_as": {},
+  "torch.Tensor.view": {
+    "Matcher": "TensorViewMatcher"
+  },
+  "torch.Tensor.view_as": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.view_as",
+    "min_input_args": 1,
+    "args_list": [
+      "other"
+    ]
+  },
   "torch.Tensor.vsplit": {},
   "torch.Tensor.where": {
     "Matcher": "GenericMatcher",
@@ -3569,6 +3637,22 @@
     ],
     "kwargs_change": {
       "input": "x"
+    }
+  },
+  "torch.as_strided": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.as_strided",
+    "min_input_args": 2,
+    "args_list": [
+      "input",
+      "size",
+      "stride",
+      "storage_offset"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "size": "shape",
+      "storage_offset": "offset"
     }
   },
   "torch.as_tensor": {
@@ -4099,6 +4183,19 @@
       "input": "x"
     }
   },
+  "torch.clamp_max": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.clip",
+    "args_list": [
+      "input",
+      "max",
+      "*",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.clamp_min": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.clip",
@@ -4535,6 +4632,20 @@
     "args_list": [
       "device"
     ]
+  },
+  "torch.cummax": {
+    "Matcher": "DoubleAssignMatcher",
+    "paddle_api": "paddle.cummax",
+    "args_list": [
+      "input",
+      "dim",
+      "*",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axis"
+    }
   },
   "torch.cummin": {
     "Matcher": "DoubleAssignMatcher",
