@@ -19,14 +19,13 @@ from apibase import APIBase
 obj = APIBase("torch.Tensor.lt_")
 
 
-# shield unittests for unexpected behaviour of `Tensor.cast_`
-# ref: https://github.com/PaddlePaddle/PaConvert/pull/294
+# `paddle.Tensor.cast_` has bug when continuous inplace on cpu
 def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
         x = torch.tensor([[1, 2], [3, 4]])
-        x.lt_(torch.tensor([[1, 3], [4, 4]]))
+        x.lt_(torch.tensor([[1, 1], [4, 4]]))
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -37,7 +36,7 @@ def _test_case_2():
         """
         import torch
         x = torch.tensor([[1, 2], [3, 4]])
-        x.lt_(other=torch.tensor([[1, 3], [4, 4]]))
+        x.lt_(other=torch.tensor([[1, 1], [4, 4]]))
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -48,7 +47,7 @@ def _test_case_3():
         """
         import torch
         x = torch.tensor([[1, 2], [3, 4]])
-        other = torch.tensor([[1, 3], [4, 4]])
+        other = torch.tensor([[1, 1], [4, 4]])
         x.lt_(other)
         """
     )
@@ -60,62 +59,14 @@ def _test_case_4():
         """
         import torch
         x = torch.tensor([[1, 2], [3, 4]])
-        other = torch.tensor([[1, 3], [4, 4]])
+        other = torch.tensor([[1, 1], [4, 4]])
         x.lt_(other=other)
         """
     )
     obj.run(pytorch_code, ["x"])
 
 
-def _test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[1, 2], [3, 2]])
-        other = torch.tensor([[3, 4], [2, 2]])
-        x.lt_(other)
-        """
-    )
-    obj.run(pytorch_code, ["x"])
-
-
-def _test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[1, 2], [3, 4]])
-        other = torch.tensor([[2, 2], [3, 3]])
-        x.lt_(other=other)
-        """
-    )
-    obj.run(pytorch_code, ["x"])
-
-
-def _test_case_7():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[1, 2], [3, 4]])
-        other = torch.tensor([3, 2])
-        x.lt_(other)
-        """
-    )
-    obj.run(pytorch_code, ["x"])
-
-
-def _test_case_8():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[1, 2], [3, 4]])
-        other = torch.tensor([3, 2])
-        x.lt_(other=other)
-        """
-    )
-    obj.run(pytorch_code, ["x"])
-
-
-def _test_case_9():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -126,7 +77,7 @@ def _test_case_9():
     obj.run(pytorch_code, ["x"])
 
 
-def _test_case_10():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -137,12 +88,58 @@ def _test_case_10():
     obj.run(pytorch_code, ["x"])
 
 
+def _test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1., 2.], [3., 4.]])
+        x.lt_(torch.tensor([[1., 1.], [4., 4.]]))
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
+def _test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1., 2.], [3., 4.]])
+        x.lt_(other=torch.tensor([[1., 1.], [4., 4.]]))
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
+def _test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1., 2.], [3., 4.]])
+        other = torch.tensor([[1., 1.], [4., 4.]])
+        x.lt_(other)
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
+def _test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1., 2.], [3., 4.]])
+        other = torch.tensor([[1., 1.], [4., 4.]])
+        x.lt_(other=other)
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
 def _test_case_11():
     pytorch_code = textwrap.dedent(
         """
         import torch
         x = torch.tensor([[1., 2.], [3., 4.]])
-        x.lt_(torch.tensor([[1., 2.5], [4., 4.]]))
+        x.lt_(2.)
         """
     )
     obj.run(pytorch_code, ["x"])
@@ -153,7 +150,7 @@ def _test_case_12():
         """
         import torch
         x = torch.tensor([[1., 2.], [3., 4.]])
-        x.lt_(2.5)
+        x.lt_(other=2.)
         """
     )
     obj.run(pytorch_code, ["x"])

@@ -56,6 +56,8 @@ TORCH_PACKAGE_LIST = [
     "fairscale",
     "transformers",
     "datasets",
+    "accelerate",
+    "diffusers",
     "torch_xla",
 ]
 
