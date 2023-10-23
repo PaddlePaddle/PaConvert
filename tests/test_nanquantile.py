@@ -11,20 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.quantile")
+obj = APIBase("torch.nanquantile")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.quantile(torch.tensor([0., 1., 2., 3.],dtype=torch.float64), 0.6)
+        x = torch.tensor([1.02, 2.21, 3.333, 30], dtype=torch.float64)
+        result = torch.nanquantile(x, 0.5)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,7 +35,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.quantile(torch.tensor([0., 1., 2., 3.],dtype=torch.float64), 0.6, dim=None)
+        x = torch.tensor([float('nan'), 2.21, 3.333, 30], dtype=torch.float64)
+        result = torch.nanquantile(x, 0.6, dim=0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,7 +46,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.quantile(torch.tensor([0., 1., 2., 3.],dtype=torch.float64), 0.6, dim=None, keepdim=False)
+        x = torch.tensor([float('nan'), 1.02, 2.21, 3.333,30, float('nan')], dtype=torch.float64)
+        result = torch.nanquantile(x, q=0.3, dim=-1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -54,7 +57,8 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.quantile(torch.tensor([0., 1., 2., 3.],dtype=torch.float64), 0.6, dim=None, keepdim=False)
+        x = torch.tensor([[float('nan'), 1.02, 2.21, 3.333,30, float('nan')]], dtype=torch.float64)
+        result = torch.nanquantile(x, q=0.3, dim=1, keepdim=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -64,7 +68,8 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.quantile(torch.tensor([[ 0.0795, -1.2117,  0.9765], [ 1.1707,  0.6706,  0.4884]],dtype=torch.float64), 0.6, dim=1, keepdim=True)
+        x = torch.tensor([[float('nan'), 1.02, 2.21, 3.333,30, float('nan')]], dtype=torch.float64)
+        result = torch.nanquantile(x, q=0.3, dim=1, keepdim=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -74,8 +79,8 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([], dtype=torch.float64)
-        torch.quantile(torch.tensor([[ 0.0795, -1.2117,  0.9765], [ 1.1707,  0.6706,  0.4884]],dtype=torch.float64), 0.6, dim=1, keepdim=True, out=result)
+        x = torch.tensor([[float('nan'), 1.02, 2.21, 3.333,30, float('nan')]], dtype=torch.float64)
+        result = torch.nanquantile(input=x, q=0.3, dim=1, keepdim=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -85,8 +90,31 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[ 0.0795, -1.2117,  0.9765], [ 1.1707,  0.6706,  0.4884]], dtype=torch.float64)
-        result = torch.quantile(x=x, q=0.3, dim=1, keepdim=True, interpolation='higher')
+        x = torch.tensor([[0]], dtype=torch.float64)
+        result = torch.nanquantile(x, 0.3, 1, True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([float('nan'), 1.02, 2.21, 3.333,30, float('nan')], dtype=torch.float64)
+        result = torch.tensor([1], dtype=torch.float64)
+        torch.nanquantile(x, 0.3, -1, True, out=result)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0]], dtype=torch.float64)
+        result = torch.nanquantile(x=x, q=0.3, dim=1, keepdim=True, interpolation='higher')
         """
     )
     obj.run(
