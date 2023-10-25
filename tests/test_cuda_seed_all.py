@@ -26,9 +26,4 @@ def test_case_1():
         result = torch.cuda.seed_all()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle has no corresponding api tentatively",
-    )
+    obj.run(pytorch_code, ["result"])

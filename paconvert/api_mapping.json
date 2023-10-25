@@ -4486,6 +4486,14 @@
       "msg"
     ]
   },
+  "torch.cuda.seed": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.seed"
+  },
+  "torch.cuda.seed_all": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.seed"
+  },
   "torch.cuda.set_device": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.set_device",
