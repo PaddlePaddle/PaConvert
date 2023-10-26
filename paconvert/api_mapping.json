@@ -4488,11 +4488,17 @@
   },
   "torch.cuda.seed": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.seed"
+    "paddle_api": "paddle.seed",
+    "paddle_default_kwargs": {
+      "seed": 1024
+    }
   },
   "torch.cuda.seed_all": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.seed"
+    "paddle_api": "paddle.seed",
+    "paddle_default_kwargs": {
+      "seed": 1024
+    }
   },
   "torch.cuda.set_device": {
     "Matcher": "GenericMatcher",
@@ -4517,6 +4523,13 @@
   "torch.cuda.set_stream": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.set_stream",
+    "args_list": [
+      "stream"
+    ]
+  },
+  "torch.cuda.stream": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.device.cuda.stream_guard",
     "args_list": [
       "stream"
     ]

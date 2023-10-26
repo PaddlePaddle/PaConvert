@@ -23,15 +23,13 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        stream = torch.cuda.stream()
-        result = stream.query()
+        stream = torch.cuda.Stream()
+        result = torch.cuda.stream(stream)
         """
     )
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="paddle has no corresponding api tentatively",
     )
 
 
@@ -39,93 +37,63 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        stream = torch.cuda.stream(priority=0)
-        result = stream.query()
+        stream = torch.cuda.Stream(priority=0)
+        result = torch.cuda.stream(stream)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle has no corresponding api tentatively",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        stream = torch.cuda.stream(priority=-1)
-        result = stream.query()
+        stream = torch.cuda.Stream(priority=-1)
+        result = torch.cuda.stream(stream)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle has no corresponding api tentatively",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        stream = torch.cuda.stream(device=1)
-        result = stream.query()
+        stream = torch.cuda.Stream(device=1)
+        result = torch.cuda.stream(stream)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle has no corresponding api tentatively",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        stream = torch.cuda.stream(device=1,priority=-1)
-        result = stream.query()
+        stream = torch.cuda.Stream(device=1,priority=-1)
+        result = torch.cuda.stream(stream)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle has no corresponding api tentatively",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        stream = torch.cuda.stream(device='cuda:1',priority=-1)
-        result = stream.query()
+        stream = torch.cuda.Stream(device='cuda:1',priority=-1)
+        result = torch.cuda.stream(stream)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle has no corresponding api tentatively",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        stream = torch.cuda.stream(device='cuda',priority=-1)
-        result = stream.query()
+        stream = torch.cuda.Stream(device='cuda',priority=-1)
+        result = torch.cuda.stream(stream)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle has no corresponding api tentatively",
-    )
+    obj.run(pytorch_code, ["result"])
