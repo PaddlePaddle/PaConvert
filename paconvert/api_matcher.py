@@ -443,6 +443,65 @@ class TransposeMatcher(BaseMatcher):
         return code
 
 
+class BroadcastTensorsMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        new_args = self.parse_args(args)
+        code = "{}([{}])".format(self.get_paddle_api(), ",".join(new_args))
+        return ast.parse(code).body
+
+
+class BroadcastShapesMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        new_args = self.parse_args(args)
+        code = new_args[0]
+        # Call the paddle.broadcast_shape multiple times
+        for i in range(1, len(new_args)):
+            code = "{}({}, {})".format(self.get_paddle_api(), code, new_args[i])
+        return ast.parse(code).body
+
+
+class IInfoMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def convert_from_type(type):
+                type_map = {
+                        "int32": paddle.int32,
+                        "uint8": paddle.uint8,
+                        "int8": paddle.int8,
+                        "int16": paddle.int16,
+                        "int32": paddle.int32,
+                        "int64": paddle.int64,
+                        "float16": paddle.float16,
+                        "float32": paddle.float32,
+                        "float64": paddle.float64,
+                        "bfloat16": paddle.bfloat16,
+                        }
+                return type_map.get(type)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        type = kwargs.pop("type")
+        return "{}(paddle_aux.convert_from_type({}))".format(
+            self.get_paddle_api(), type
+        )
+
+
+class SmoothL1LossMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        kwargs = self.parse_kwargs(kwargs)
+        beta = kwargs.get("beta", None)
+        if beta is not None:
+            beta = beta.replace("(", "").replace(")", "")
+            if float(beta) != 1.0:
+                return None
+        code = SizeAverageMatcher.generate_code(self, kwargs)
+        return ast.parse(code).body
+
+
 class SwapAxesMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" not in kwargs:
