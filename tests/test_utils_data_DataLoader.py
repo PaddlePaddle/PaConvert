@@ -54,7 +54,6 @@ def test_case_1():
 
         data = Data()
         result = torch.utils.data.DataLoader(data)
-        print(result)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -78,7 +77,6 @@ def test_case_2():
 
         data = Data()
         result = torch.utils.data.DataLoader(dataset=data)
-        print(result)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -104,7 +102,6 @@ def test_case_3():
         result = torch.utils.data.DataLoader(dataset=data,
                 shuffle=False, sampler=None,
                 batch_sampler=None, num_workers=0, batch_size=1)
-        print(result)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -137,7 +134,6 @@ def test_case_4():
                 prefetch_factor=None,
                 persistent_workers=False,
                 pin_memory_device='')
-        print(result)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -170,7 +166,6 @@ def test_case_5():
                 prefetch_factor=None,
                 persistent_workers=False,
                 pin_memory_device='')
-        print(result)
         """
     )
     obj.run(pytorch_code, ["result"])
