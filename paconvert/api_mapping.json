@@ -4626,6 +4626,13 @@
       "stream"
     ]
   },
+  "torch.cuda.stream": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.device.cuda.stream_guard",
+    "args_list": [
+      "stream"
+    ]
+  },
   "torch.cuda.synchronize": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.synchronize",
