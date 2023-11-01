@@ -4819,6 +4819,32 @@
     "Matcher": "Func2Attribute",
     "paddle_api": "paddle.distributed.ReduceOp"
   },
+  "torch.distributed.ReduceOp.MAX": {
+    "Matcher": "Func2Attribute",
+    "paddle_api": "paddle.distributed.ReduceOp.MAX"
+  },
+  "torch.distributed.ReduceOp.MIN": {
+    "Matcher": "Func2Attribute",
+    "paddle_api": "paddle.distributed.ReduceOp.MIN"
+  },
+  "torch.distributed.ReduceOp.PRODUCT": {
+    "Matcher": "Func2Attribute",
+    "paddle_api": "paddle.distributed.ReduceOp.PROD"
+  },
+  "torch.distributed.ReduceOp.SUM": {
+    "Matcher": "Func2Attribute",
+    "paddle_api": "paddle.distributed.ReduceOp.SUM"
+  },
+  "torch.distributed.all_gather": {
+    "Matcher": "ScatterMatcher",
+    "paddle_api": "paddle.distributed.all_gather",
+    "args_list": [
+      "tensor_list",
+      "tensor",
+      "group",
+      "async_op"
+    ]
+  },
   "torch.distributed.all_gather_object": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.all_gather_object",
@@ -4826,6 +4852,16 @@
       "object_list",
       "obj",
       "group"
+    ]
+  },
+  "torch.distributed.all_reduce": {
+    "Matcher": "ScatterMatcher",
+    "paddle_api": "paddle.distributed.all_reduce",
+    "args_list": [
+      "tensor",
+      "op",
+      "group",
+      "async_op"
     ]
   },
   "torch.distributed.all_to_all": {
@@ -4843,6 +4879,13 @@
       "async_op": ""
     }
   },
+  "torch.distributed.barrier": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.barrier",
+    "args_list": [
+      "group"
+    ]
+  },
   "torch.distributed.broadcast": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.broadcast",
@@ -4854,6 +4897,26 @@
     ],
     "unsupport_args": [
       "async_op"
+    ]
+  },
+  "torch.distributed.broadcast_object_list": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.broadcast_object_list",
+    "args_list": [
+      "object_list",
+      "src",
+      "group",
+      "device"
+    ],
+    "kwargs_change": {
+      "device": ""
+    }
+  },
+  "torch.distributed.get_backend": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.get_backend",
+    "args_list": [
+      "group"
     ]
   },
   "torch.distributed.get_rank": {
@@ -4884,6 +4947,32 @@
       "pg_options": ""
     }
   },
+  "torch.distributed.irecv": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.irecv",
+    "args_list": [
+      "tensor",
+      "src",
+      "group",
+      "tag"
+    ],
+    "kwargs_change": {
+      "tag": ""
+    }
+  },
+  "torch.distributed.isend": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.isend",
+    "args_list": [
+      "tensor",
+      "dst",
+      "group",
+      "tag"
+    ],
+    "kwargs_change": {
+      "tag": ""
+    }
+  },
   "torch.distributed.new_group": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.new_group",
@@ -4896,6 +4985,30 @@
     "unsupport_args": [
       "timeout",
       "pg_options"
+    ]
+  },
+  "torch.distributed.recv": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.recv",
+    "args_list": [
+      "tensor",
+      "src",
+      "group",
+      "tag"
+    ],
+    "kwargs_change": {
+      "tag": ""
+    }
+  },
+  "torch.distributed.reduce": {
+    "Matcher": "ScatterMatcher",
+    "paddle_api": "paddle.distributed.reduce",
+    "args_list": [
+      "tensor",
+      "dst",
+      "op",
+      "group",
+      "async_op"
     ]
   },
   "torch.distributed.reduce_scatter": {
@@ -4967,6 +5080,19 @@
     "kwargs_change": {
       "scatter_object_output_list": "out_object_list",
       "scatter_object_input_list": "in_object_list"
+    }
+  },
+  "torch.distributed.send": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.send",
+    "args_list": [
+      "tensor",
+      "dst",
+      "group",
+      "tag"
+    ],
+    "kwargs_change": {
+      "tag": ""
     }
   },
   "torch.distributions.Bernoulli": {
@@ -7918,6 +8044,21 @@
     "unsupport_args": [
       "label_smoothing"
     ]
+  },
+  "torch.nn.DataParallel": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.DataParallel",
+    "args_list": [
+      "module",
+      "device_ids",
+      "output_device",
+      "dim"
+    ],
+    "kwargs_change": {
+      "device_ids": "",
+      "output_device": "",
+      "dim": ""
+    }
   },
   "torch.nn.Dropout": {
     "Matcher": "GenericMatcher",
