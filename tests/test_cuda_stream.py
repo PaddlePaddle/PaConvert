@@ -25,10 +25,11 @@ def test_case_1():
         import torch
         result = None
         if torch.cuda.is_available():
-            s = torch.cuda.Stream()
-            context = torch.cuda.stream(stream=s)
             data1 = torch.ones(size=[20])
             data2 = torch.ones(size=[20])
+
+            s = torch.cuda.Stream()
+            context = torch.cuda.stream(stream=s)
             with context:
                 result = data1 + data2
         """
@@ -42,9 +43,10 @@ def test_case_2():
         import torch
         result = None
         if torch.cuda.is_available():
-            context = torch.cuda.stream(stream=None)
             data1 = torch.ones(size=[60])
             data2 = torch.ones(size=[60])
+
+            context = torch.cuda.stream(stream=None)
             with context:
                 result = data1 + data2
         """
@@ -56,10 +58,12 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        data1 = torch.ones(size=[50])
-        data2 = torch.ones(size=[50])
-        with torch.cuda.stream(stream = torch.cuda.Stream()):
-            result = data1 + data2
+        result = None
+        if torch.cuda.is_available():
+            data1 = torch.ones(size=[50])
+            data2 = torch.ones(size=[50])
+            with torch.cuda.stream(stream = torch.cuda.Stream()):
+                result = data1 + data2
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -69,10 +73,12 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        data1 = torch.ones(size=[50])
-        data2 = torch.ones(size=[50])
-        with torch.cuda.stream(torch.cuda.Stream()):
-            result = data1 + data2
+        result = None
+        if torch.cuda.is_available():
+            data1 = torch.ones(size=[50])
+            data2 = torch.ones(size=[50])
+            with torch.cuda.stream(torch.cuda.Stream()):
+                result = data1 + data2
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -83,11 +89,12 @@ def test_case_5():
         """
         import torch
         result = None
-        context = torch.cuda.stream(torch.cuda.Stream())
-        data1 = torch.ones(size=[20])
-        data2 = torch.ones(size=[20])
-        with context:
-            result = data1 + data2
+        if torch.cuda.is_available():
+            data1 = torch.ones(size=[20])
+            data2 = torch.ones(size=[20])
+            context = torch.cuda.stream(torch.cuda.Stream())
+            with context:
+                result = data1 + data2
         """
     )
     obj.run(pytorch_code, ["result"])
