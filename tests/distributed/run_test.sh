@@ -21,7 +21,7 @@ if [ $# -gt 0 ] ; then
     item=$1
     cmd1="torchrun --nproc_per_node=2 ${item}"
     cmd2="python -m paddle.distributed.launch /tmp/paddle/${item}"
-    python test_dist.py "$cmd1" "$cmd2"
+    python t_dist.py "$cmd1" "$cmd2"
     exit
 fi
 
@@ -29,5 +29,5 @@ test_list=`ls *.py | grep -v common.py | grep -v test_dist.py`
 for item in $test_list; do
     cmd1="torchrun --nproc_per_node=2 ${item}"
     cmd2="python -m paddle.distributed.launch /tmp/paddle/${item}"
-    python test_dist.py "$cmd1" "$cmd2"
+    python t_dist.py "$cmd1" "$cmd2"
 done
