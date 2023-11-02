@@ -22,5 +22,5 @@ rank = dist.get_rank()
 tensor_list = [torch.zeros(2, dtype=torch.int64).cuda() for _ in range(2)]
 data = torch.arange(2, dtype=torch.int64).cuda() + 1 + 2 * rank
 dist.all_gather(tensor_list, data)
-print(tensor_list)
 # [[[4, 5, 6], [4, 5, 6]], [[1, 2, 3], [1, 2, 3]]] (2 GPUs)
+common.dump_output(tensor_list)

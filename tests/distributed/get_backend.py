@@ -18,4 +18,5 @@ import torch.distributed as dist
 common.init_env()
 
 g = dist.new_group([0, 1])
-print(dist.get_backend(g))
+result = dist.get_backend(g)
+common.dump_output(result.upper())

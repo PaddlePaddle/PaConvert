@@ -25,3 +25,4 @@ dist.broadcast_object_list(object_list, src=1)
 
 assert object_list == [{"bar": [4, 5, 6]}]
 print(object_list)
+common.dump_output(object_list)

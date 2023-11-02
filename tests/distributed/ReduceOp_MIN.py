@@ -29,3 +29,4 @@ dist.reduce_scatter(
 )
 
 print(data1)
+common.dump_output(data1)

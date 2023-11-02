@@ -25,3 +25,4 @@ else:
     data = torch.tensor([1, 2, 3]).cuda()
     task = dist.recv(data, src=0)
 print(data)
+common.dump_output(data)

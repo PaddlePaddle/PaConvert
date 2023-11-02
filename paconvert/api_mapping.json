@@ -4820,19 +4820,19 @@
     "paddle_api": "paddle.distributed.ReduceOp"
   },
   "torch.distributed.ReduceOp.MAX": {
-    "Matcher": "Func2Attribute",
+    "Matcher": "UnchangeMatcher",
     "paddle_api": "paddle.distributed.ReduceOp.MAX"
   },
   "torch.distributed.ReduceOp.MIN": {
-    "Matcher": "Func2Attribute",
+    "Matcher": "UnchangeMatcher",
     "paddle_api": "paddle.distributed.ReduceOp.MIN"
   },
   "torch.distributed.ReduceOp.PRODUCT": {
-    "Matcher": "Func2Attribute",
+    "Matcher": "UnchangeMatcher",
     "paddle_api": "paddle.distributed.ReduceOp.PROD"
   },
   "torch.distributed.ReduceOp.SUM": {
-    "Matcher": "Func2Attribute",
+    "Matcher": "UnchangeMatcher",
     "paddle_api": "paddle.distributed.ReduceOp.SUM"
   },
   "torch.distributed.all_gather": {
@@ -4912,6 +4912,17 @@
       "device": ""
     }
   },
+  "torch.distributed.gather": {
+    "Matcher": "ScatterMatcher",
+    "paddle_api": "paddle.distributed.gather",
+    "args_list": [
+      "tensor",
+      "gather_list",
+      "dst",
+      "group",
+      "async_op"
+    ]
+  },
   "torch.distributed.get_backend": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.get_backend",
@@ -4956,9 +4967,9 @@
       "group",
       "tag"
     ],
-    "kwargs_change": {
-      "tag": ""
-    }
+    "unsupport_args": [
+      "tag"
+    ]
   },
   "torch.distributed.isend": {
     "Matcher": "GenericMatcher",
@@ -4969,9 +4980,9 @@
       "group",
       "tag"
     ],
-    "kwargs_change": {
-      "tag": ""
-    }
+    "unsupport_args": [
+      "tag"
+    ]
   },
   "torch.distributed.new_group": {
     "Matcher": "GenericMatcher",
@@ -4996,9 +5007,9 @@
       "group",
       "tag"
     ],
-    "kwargs_change": {
-      "tag": ""
-    }
+    "unsupport_args": [
+      "tag"
+    ]
   },
   "torch.distributed.reduce": {
     "Matcher": "ScatterMatcher",
@@ -5091,9 +5102,9 @@
       "group",
       "tag"
     ],
-    "kwargs_change": {
-      "tag": ""
-    }
+    "unsupport_args": [
+      "tag"
+    ]
   },
   "torch.distributions.Bernoulli": {
     "Matcher": "GenericMatcher",
@@ -8057,9 +8068,11 @@
     "kwargs_change": {
       "module": "layers",
       "device_ids": "",
-      "output_device": "",
-      "dim": ""
-    }
+      "output_device": ""
+    },
+    "unsupport_args": [
+      "dim"
+    ]
   },
   "torch.nn.Dropout": {
     "Matcher": "GenericMatcher",

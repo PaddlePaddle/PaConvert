@@ -18,3 +18,4 @@ import torch.distributed as dist
 common.init_env()
 
 print(dist.ReduceOp)
+common.dump_output("finish")
