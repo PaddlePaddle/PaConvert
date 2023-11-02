@@ -44,7 +44,7 @@ def test_case_2():
         """
         import torch.nn as nn
         import torch
-        m = nn.InstanceNorm1d(3, affine=True)
+        m = nn.InstanceNorm1d(num_features=3, affine=True)
         input = torch.tensor([[[ 1.1524,  0.4714,  0.2857],
          [-1.2533, -0.9829, -1.0981],
          [ 0.1507, -1.1431, -2.0361]],
@@ -63,7 +63,7 @@ def test_case_3():
         """
         import torch.nn as nn
         import torch
-        m = nn.InstanceNorm1d(3, affine=False)
+        m = nn.InstanceNorm1d(num_features=3, affine=False)
         input = torch.tensor([[[ 1.1524,  0.4714,  0.2857],
          [-1.2533, -0.9829, -1.0981],
          [ 0.1507, -1.1431, -2.0361]],
@@ -121,6 +121,64 @@ def test_case_6():
         import torch.nn as nn
         import torch
         m = nn.InstanceNorm1d(3, affine=False, momentum=0.1, dtype=torch.float32)
+        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857],
+         [-1.2533, -0.9829, -1.0981],
+         [ 0.1507, -1.1431, -2.0361]],
+
+        [[ 0.1024, -0.4482,  0.4137],
+         [ 0.9385,  0.4565,  0.7702],
+         [ 0.4135, -0.2587,  0.0482]]])
+        result = m(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        m = nn.InstanceNorm1d(num_features=3, eps=1e-05, momentum=0.3, affine=True, track_running_stats=True, device=None, dtype=torch.float32)
+        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857],
+         [-1.2533, -0.9829, -1.0981],
+         [ 0.1507, -1.1431, -2.0361]],
+
+        [[ 0.1024, -0.4482,  0.4137],
+         [ 0.9385,  0.4565,  0.7702],
+         [ 0.4135, -0.2587,  0.0482]]])
+        result = m(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        m = nn.InstanceNorm1d(3, 1e-05, 0.3, False, False, None, torch.float32)
+        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857],
+         [-1.2533, -0.9829, -1.0981],
+         [ 0.1507, -1.1431, -2.0361]],
+
+        [[ 0.1024, -0.4482,  0.4137],
+         [ 0.9385,  0.4565,  0.7702],
+         [ 0.4135, -0.2587,  0.0482]]])
+        result = m(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# if eps != 1e-5, result is different, which has bug
+def _test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        m = nn.InstanceNorm1d(3, 1e-03, 0.3, False, False, None, torch.float32)
         input = torch.tensor([[[ 1.1524,  0.4714,  0.2857],
          [-1.2533, -0.9829, -1.0981],
          [ 0.1507, -1.1431, -2.0361]],
