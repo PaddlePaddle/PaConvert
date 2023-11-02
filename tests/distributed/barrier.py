@@ -19,3 +19,4 @@ common.init_env()
 
 dist.barrier()
 print("finish")
+common.dump_output("finish")
