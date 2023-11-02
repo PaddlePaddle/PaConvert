@@ -50,12 +50,13 @@ TORCH_PACKAGE_LIST = [
     "fasttext",
     "pytorch_lightning",
     "jieba",
-    "sentencepiece",
     "NLTK",
     "scikit-learn",
     "fairscale",
     "transformers",
     "datasets",
+    "accelerate",
+    "diffusers",
     "torch_xla",
 ]
 
@@ -190,22 +191,24 @@ class BaseTransformer(ast.NodeTransformer):
         return True
 
     def get_full_attr(self, node):
-        # torch.nn.functional.relu
         if isinstance(node, ast.Attribute):
             return self.get_full_attr(node.value) + "." + node.attr
         # x.abs() -> 'x'
         elif isinstance(node, ast.Name):
-            # array(1.) ...
+            # np.array(1.) -> 'np'
             node_str = astor.to_source(node).replace("\n", "")
             for item in self.black_list:
                 if item == node_str:
                     return "NonTorchClass"
+            # misidentify paddle.rand as x.rand
+            if node_str == "paddle":
+                return "NonTorchClass"
             return node.id
-        # 1. torch.abs(x).transpose(1, 0) -> 'torchClass'
-        # 2. (x == y).transpose(1, 0) -> 'torchClass'
-        # 3. (x + y).transpose(1, 0) -> 'torchClass'
-        # 4. x[0].transpose(1, 0) -> 'torchClass'
-        # 5. (-x).transpose(1, 0) -> 'torchClass'
+        # 1. torch.abs(x).transpose(1, 0) -> 'TorchClass'
+        # 2. (x == y).transpose(1, 0) -> 'TorchClass'
+        # 3. (x + y).transpose(1, 0) -> 'TorchClass'
+        # 4. x[0].transpose(1, 0) -> 'TorchClass'
+        # 5. (-x).transpose(1, 0) -> 'TorchClass'
         elif isinstance(
             node,
             (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript, ast.Assert),

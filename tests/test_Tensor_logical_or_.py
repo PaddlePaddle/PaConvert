@@ -32,7 +32,7 @@ def test_case_1():
     obj.run(pytorch_code, ["a"])
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -44,7 +44,7 @@ def _test_case_2():
     obj.run(pytorch_code, ["a"])
 
 
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -59,8 +59,8 @@ def _test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([0, 1, 10, 7, 0], dtype=torch.float32)
-        b = torch.tensor([4, 0, 1, 5, 0], dtype=torch.float32)
+        a = torch.tensor([0., 1., 10., 7., 0.], dtype=torch.float32)
+        b = torch.tensor([4., 0., 1., 5., 0.], dtype=torch.float32)
         a.logical_or_(b)
         """
     )
@@ -71,8 +71,8 @@ def _test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([0, 1, 10, 7, 0], dtype=torch.float32)
-        b = torch.tensor([4, 0, 1, 5, 0], dtype=torch.float32)
+        a = torch.tensor([0., 1., 10., 7., 0.], dtype=torch.float32)
+        b = torch.tensor([4., 0., 1., 5., 0.], dtype=torch.float32)
         a.logical_or_(other=b)
         """
     )

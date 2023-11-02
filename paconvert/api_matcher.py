@@ -205,12 +205,20 @@ class SetFalseMatcher(BaseMatcher):
 
 class InitMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs_change = {}
-        if "kwargs_change" in self.api_mapping:
-            kwargs_change = self.api_mapping["kwargs_change"]
+        unsupport_args = self.api_mapping.get("unsupport_args", [])
+        for k in unsupport_args:
+            if k in kwargs:
+                return None
+
+        kwargs_change = self.api_mapping.get("kwargs_change", {})
         for k in kwargs_change:
             if k in kwargs:
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
+
+        default_kwargs = self.api_mapping.get("paddle_default_kwargs", {})
+        for k in default_kwargs:
+            if k not in kwargs:
+                kwargs[k] = default_kwargs[k]
 
         init_tensor = kwargs.pop("tensor")
         API_TEMPLATE = textwrap.dedent(
@@ -228,6 +236,26 @@ class InitMatcher(BaseMatcher):
             init_tensor,
         )
         return code
+
+
+class InitEyeMatcher(InitMatcher):
+    def generate_code(self, kwargs):
+        init_tensor = kwargs["tensor"]
+        init_value = "paddle.eye({}.shape[0], {}.shape[1])".format(
+            init_tensor, init_tensor
+        )
+        kwargs["value"] = init_value
+        return super().generate_code(kwargs)
+
+
+class InitKaimingMatcher(InitMatcher):
+    def generate_code(self, kwargs):
+        if "mode" in kwargs:
+            if "fan_out" in kwargs["mode"]:
+                return None
+            kwargs.pop("mode")
+
+        return super().generate_code(kwargs)
 
 
 class Num2TensorBinaryWithAlphaMatcher(BaseMatcher):
@@ -465,10 +493,6 @@ class CreateMatcher(BaseMatcher):
 
             kwargs = {"shape": str(shape).replace("'", ""), **kwargs}
 
-        for k in ["layout", "device", "memory_format"]:
-            if k in kwargs:
-                kwargs.pop(k)
-
         code = GenericMatcher.generate_code(self, kwargs)
         return ast.parse(code).body
 
@@ -529,78 +553,225 @@ class PadMatcher(BaseMatcher):
 
 
 class MaxMinMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def min(*args, **kwargs):
+                if 'input' in kwargs:
+                    kwargs['x'] = kwargs.pop('input')
+
+                out_v = None
+                if 'out' in kwargs:
+                    out_v = kwargs.pop('out')
+
+                if 'other' in kwargs:
+                    kwargs['y'] = kwargs.pop('other')
+                    ret = paddle.minimum(*args, **kwargs)
+                elif len(args)==2 and isinstance(args[1], paddle.Tensor):
+                    ret = paddle.minimum(*args, **kwargs)
+                else:
+                    if 'dim' in kwargs:
+                        kwargs['axis'] = kwargs.pop('dim')
+
+                    if 'axis' in kwargs or len(args) >= 2:
+                        if out_v:
+                            ret = paddle.min(*args, **kwargs), paddle.argmin(*args, **kwargs)
+                            paddle.assign(ret[0], out_v[0])
+                            paddle.assign(ret[1], out_v[1])
+                            return out_v
+                        else:
+                            ret = paddle.min(*args, **kwargs), paddle.argmin(*args, **kwargs)
+                            return ret
+                    else:
+                        ret = paddle.min(*args, **kwargs)
+                        return ret
+
+                if out_v:
+                    paddle.assign(ret, out_v)
+                    return out_v
+                else:
+                    return ret
+
+            def max(*args, **kwargs):
+                if 'input' in kwargs:
+                    kwargs['x'] = kwargs.pop('input')
+
+                out_v = None
+                if 'out' in kwargs:
+                    out_v = kwargs.pop('out')
+
+                if 'other' in kwargs:
+                    kwargs['y'] = kwargs.pop('other')
+                    ret = paddle.maximum(*args, **kwargs)
+                elif len(args)==2 and isinstance(args[1], paddle.Tensor):
+                    ret = paddle.maximum(*args, **kwargs)
+                else:
+                    if 'dim' in kwargs:
+                        kwargs['axis'] = kwargs.pop('dim')
+
+                    if 'axis' in kwargs or len(args) >= 2:
+                        if out_v:
+                            ret = paddle.max(*args, **kwargs), paddle.argmax(*args, **kwargs)
+                            paddle.assign(ret[0], out_v[0])
+                            paddle.assign(ret[1], out_v[1])
+                            return out_v
+                        else:
+                            ret = paddle.max(*args, **kwargs), paddle.argmax(*args, **kwargs)
+                            return ret
+                        return out_v
+                    else:
+                        ret = paddle.max(*args, **kwargs)
+                        return ret
+
+                if out_v:
+                    paddle.assign(ret, out_v)
+                    return out_v
+                else:
+                    return ret
+            """
+        )
+        return CODE_TEMPLATE
+
     def get_paddle_nodes(self, args, kwargs):
-        new_kwargs = self.parse_kwargs(kwargs)
-        if new_kwargs is None:
+        kwargs_tmp = self.parse_kwargs(kwargs)
+        if kwargs_tmp is None:
             return None
 
+        call_maxmin = False
         call_maximinimum = False
-        if len(args) > 1 and not isinstance(args[1], ast.Num):
-            call_maximinimum = True
 
-        if "other" in new_kwargs:
-            call_maximinimum = True
+        if "out" in kwargs_tmp:
+            kwargs_tmp.pop("out")
+
+        if len(kwargs_tmp) > 0:
+            if "input" in kwargs_tmp and len(kwargs_tmp) == 1:
+                call_maxmin = True
+            if "dim" in kwargs_tmp or ("keepdim" in kwargs_tmp):
+                call_maxmin = True
+            if "other" in kwargs_tmp:
+                call_maximinimum = True
+        else:
+            if len(args) != 2:
+                call_maxmin = True
+            elif isinstance(args[1], ast.Constant):
+                call_maxmin = True
+
+        paddle_api = self.get_paddle_api()
 
         # the case of two Tensor
         if call_maximinimum:
-            return GenericMatcher(
-                self.transformer, self.torch_api, self.api_mapping, self.logger
-            ).get_paddle_nodes(args, kwargs)
-
-        # the case of one Tensor
-        args_list = ["input", "dim", "keepdim", "out"]
-
-        # parse args to kwargs
-        for i in range(len(args)):
-            new_kwargs[args_list[i]] = astor.to_source(args[i]).strip("\n")
-        for node in kwargs:
-            new_kwargs[node.arg] = astor.to_source(node.value).strip("\n")
-
-        # change kwargs' name
-        if "input" in new_kwargs:
+            self.api_mapping["args_list"] = ["input", "other", "*", "out"]
+            new_kwargs = self.parse_args_and_kwargs(args, kwargs)
             new_kwargs["x"] = new_kwargs.pop("input")
-        if "dim" in new_kwargs:
-            new_kwargs["axis"] = new_kwargs.pop("dim")
+            new_kwargs["y"] = new_kwargs.pop("other")
 
-        paddle_api = self.torch_api.replace("torch", "paddle")
-        paddle_api_arg = "paddle.argmin" if "min" in paddle_api else "paddle.argmax"
+            if "min" in paddle_api:
+                paddle_api = "paddle.minimum"
+            else:
+                paddle_api = "paddle.maximum"
 
-        if "axis" in new_kwargs and "out" not in new_kwargs:
-            return ast.parse(
-                "{}({}), {}({})".format(
-                    paddle_api,
-                    self.kwargs_to_str(new_kwargs),
-                    paddle_api_arg,
-                    self.kwargs_to_str(new_kwargs),
-                )
-            ).body
-        elif "axis" not in new_kwargs and "out" not in new_kwargs:
-            return ast.parse(
-                "{}({})".format(paddle_api, self.kwargs_to_str(new_kwargs))
-            ).body
-        elif "axis" in new_kwargs and "out" in new_kwargs:
-            out_v = new_kwargs.pop("out")
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.assign({}({}), {}[0]), paddle.assign({}({}), {}[1])
-                """
-            )
-            code = API_TEMPLATE.format(
-                paddle_api,
-                self.kwargs_to_str(new_kwargs),
-                out_v,
-                paddle_api_arg,
-                self.kwargs_to_str(new_kwargs),
-                out_v,
-            )
-            return ast.parse(code).body
-        else:
-            out_v = new_kwargs.pop("out")
-            return ast.parse(
-                "paddle.assign({}({}), {})".format(
+            if "out" in new_kwargs:
+                out_v = new_kwargs.pop("out")
+                code = "paddle.assign({}({}), {})".format(
                     paddle_api, self.kwargs_to_str(new_kwargs), out_v
                 )
-            ).body
+            else:
+                code = "{}({})".format(paddle_api, self.kwargs_to_str(new_kwargs))
+
+            return ast.parse(code).body
+
+        # the case of one tensor
+        if call_maxmin:
+            new_kwargs = self.parse_args_and_kwargs(args, kwargs)
+            new_kwargs["x"] = new_kwargs.pop("input")
+            if "dim" in new_kwargs:
+                new_kwargs["axis"] = new_kwargs.pop("dim")
+            if "keepdim" in new_kwargs:
+                new_kwargs["keepdim"] = new_kwargs.pop("keepdim")
+
+            if "axis" in new_kwargs:
+                if "min" in paddle_api:
+                    paddle_arg_api = "paddle.argmin"
+                else:
+                    paddle_arg_api = "paddle.argmax"
+
+                if "out" in new_kwargs:
+                    out_v = new_kwargs.pop("out")
+                    code = "paddle.assign({}({}), {}[0]), paddle.assign({}({}), {}[1])".format(
+                        paddle_api,
+                        self.kwargs_to_str(new_kwargs),
+                        out_v,
+                        paddle_arg_api,
+                        self.kwargs_to_str(new_kwargs),
+                        out_v,
+                    )
+                else:
+                    code = "{}({}), {}({})".format(
+                        paddle_api,
+                        self.kwargs_to_str(new_kwargs),
+                        paddle_arg_api,
+                        self.kwargs_to_str(new_kwargs),
+                    )
+            else:
+                code = "{}({})".format(paddle_api, self.kwargs_to_str(new_kwargs))
+
+            return ast.parse(code).body
+
+        self.write_aux_code()
+        self.set_paddle_api(paddle_api.replace("paddle", "paddle_aux"))
+        return UnchangeMatcher.get_paddle_nodes(self, args, kwargs)
+
+
+class TensorMaxMinMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def min_class_func(self, *args, **kwargs):
+                if 'other' in kwargs:
+                    kwargs['y'] = kwargs.pop('other')
+                    ret = paddle.minimum(self, *args, **kwargs)
+                elif len(args)==1 and isinstance(args[0], paddle.Tensor):
+                    ret = paddle.minimum(self, *args, **kwargs)
+                else:
+                    if 'dim' in kwargs:
+                        kwargs['axis'] = kwargs.pop('dim')
+
+                    if 'axis' in kwargs or len(args) >= 1:
+                        ret = paddle.min(self, *args, **kwargs), paddle.argmin(self, *args, **kwargs)
+                    else:
+                        ret = paddle.min(self, *args, **kwargs)
+
+                return ret
+
+            def max_class_func(self, *args, **kwargs):
+                if 'other' in kwargs:
+                    kwargs['y'] = kwargs.pop('other')
+                    ret = paddle.maximum(self, *args, **kwargs)
+                elif len(args)==1 and isinstance(args[0], paddle.Tensor):
+                    ret = paddle.maximum(self, *args, **kwargs)
+                else:
+                    if 'dim' in kwargs:
+                        kwargs['axis'] = kwargs.pop('dim')
+
+                    if 'axis' in kwargs or len(args) >= 1:
+                        ret = paddle.max(self, *args, **kwargs), paddle.argmax(self, *args, **kwargs)
+                    else:
+                        ret = paddle.max(self, *args, **kwargs)
+
+                return ret
+
+            setattr(paddle.Tensor, "min", min_class_func)
+            setattr(paddle.Tensor, "max", max_class_func)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        if len(kwargs) > 2:
+            return "misidentify"
+
+        self.write_aux_code()
+        return "unchange"
 
 
 class EqualMatcher(BaseMatcher):
@@ -636,15 +807,16 @@ class TensorMatcher(BaseMatcher):
         if "size" in kwargs:
             shape = kwargs.pop("size")
         else:
-            if len(args) == 0:
-                # torch has bug, treat 0D as 0-Size, but paddle not support 0-size
-                return None
             if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
                 shape = self.parse_args(args)
-            elif isinstance(args[0], ast.Starred):
+            elif len(args) == 1 and isinstance(args[0], ast.Starred):
                 shape = astor.to_source(args[0].value).strip("\n")
             else:
-                data = self.parse_args(args)[0]
+                if len(args) == 0:
+                    data = []
+                else:
+                    data = self.parse_args(args)[0]
+
                 if (
                     "torch.IntTensor" == self.torch_api
                     or "torch.cuda.IntTensor" == self.torch_api
@@ -681,14 +853,13 @@ class TensorMatcher(BaseMatcher):
                     "torch.cuda.BoolTensor" == self.torch_api
                 ):
                     code = "paddle.to_tensor(data={}, dtype='bool')".format(data)
-
                 else:
-                    if not isinstance(args[0], ast.Name):
+                    if len(args) > 0 and not isinstance(args[0], ast.Name):
                         code = "paddle.to_tensor(data={}, dtype='float32')".format(data)
                     else:
                         code = "paddle.to_tensor(data={})".format(data)
-                node = ast.parse(code).body
-                return node
+                return ast.parse(code).body
+
             shape = str(shape).replace("'", "")
 
         if (
@@ -733,8 +904,7 @@ class TensorMatcher(BaseMatcher):
         else:
             code = "paddle.empty(shape={})".format(shape)
 
-        node = ast.parse(code).body
-        return node
+        return ast.parse(code).body
 
 
 class RandintMatcher(BaseMatcher):
@@ -808,20 +978,21 @@ class TensorSizeMatcher(BaseMatcher):
 class TensorPermuteMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
-
-        if len(args) == 1 and isinstance(args[0], (ast.List, ast.Tuple)):
-            perm_list = self.parse_args(args)[0]
-        elif len(args) >= 1:
-            perm_list = self.parse_args(args)
-
         kwargs = self.parse_kwargs(kwargs)
         if kwargs is None:
             return None
 
         if "dims" in kwargs:
-            kwargs = {"perm": kwargs.pop("dims"), **kwargs}
+            kwargs = {"perm": kwargs.pop("dims")}
         else:
-            kwargs = {"perm": str(perm_list).replace("'", ""), **kwargs}
+            if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
+                perm = self.parse_args(args)
+            elif isinstance(args[0], ast.Starred):
+                perm = astor.to_source(args[0].value).strip("\n")
+            else:
+                perm = self.parse_args(args)[0]
+
+            kwargs = {"perm": str(perm).replace("'", "")}
 
         code = "{}.transpose({})".format(self.paddleClass, self.kwargs_to_str(kwargs))
         return ast.parse(code).body
@@ -830,6 +1001,8 @@ class TensorPermuteMatcher(BaseMatcher):
 class TensorRenameMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         kwargs = self.parse_kwargs(kwargs)
+        if kwargs is None:
+            return None
         if "columns" in kwargs:
             return "misidentify"
 
@@ -1096,22 +1269,6 @@ class CudnnIsAvailableMatcher(BaseMatcher):
         return code
 
 
-class BatchNormMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "momentum" in kwargs:
-            kwargs["momentum"] = f"1 - {kwargs.pop('momentum')}"
-
-        if "affine" in kwargs:
-            kwargs["weight_attr"] = f"None if {kwargs['affine']} else False"
-            kwargs["bias_attr"] = f"None if {kwargs.pop('affine')} else False"
-
-        if "track_running_stats" in kwargs:
-            kwargs["use_global_stats"] = f"not {kwargs.pop('track_running_stats')}"
-
-        code = GenericMatcher.generate_code(self, kwargs)
-        return code
-
-
 class SplitMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -1232,7 +1389,7 @@ class TensorExpandMatcher(BaseMatcher):
         if kwargs is None:
             return None
         if "size" in kwargs:
-            kwargs = {"shape": kwargs.pop("size"), **kwargs}
+            kwargs = {"shape": kwargs.pop("size")}
         else:
             if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
                 shape = self.parse_args(args)
@@ -1240,7 +1397,8 @@ class TensorExpandMatcher(BaseMatcher):
                 shape = astor.to_source(args[0].value).strip("\n")
             else:
                 shape = self.parse_args(args)[0]
-            kwargs = {"shape": str(shape).replace("'", ""), **kwargs}
+
+            kwargs = {"shape": str(shape).replace("'", "")}
 
         code = "{}.expand({})".format(self.paddleClass, self.kwargs_to_str(kwargs))
         return ast.parse(code).body
@@ -1808,13 +1966,11 @@ class IndexCopyMatcher(BaseMatcher):
         return code
 
 
-class InstanceNormMatcher(BaseMatcher):
+class ReverseMomentumMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "momentum" in kwargs:
-            momentum = kwargs["momentum"]
-        else:
-            momentum = 0.1
-        kwargs["momentum"] = f"1-{momentum}"
+            kwargs["momentum"] = f"1 - {kwargs.pop('momentum')}"
+
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -1858,8 +2014,7 @@ class SizeMatcher(BaseMatcher):
         else:
             code = "list({})".format(astor.to_source(args[0]).strip("\n"))
 
-        node = ast.parse(code).body
-        return node
+        return ast.parse(code).body
 
 
 class TensorToMatcher(BaseMatcher):
@@ -2460,40 +2615,6 @@ class FSoftMinMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-class FBatchNormMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        kwargs["x"] = kwargs.pop("input")
-        if "eps" in kwargs:
-            kwargs["epsilon"] = kwargs.pop("eps")
-        if "momentum" in kwargs:
-            kwargs["momentum"] = "1 - " + kwargs["momentum"]
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {}({})
-            """
-        )
-        code = API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-
-        return code
-
-
-class FInstanceNormMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        kwargs["x"] = kwargs.pop("input")
-        if "momentum" in kwargs:
-            kwargs["momentum"] = "1 - " + kwargs["momentum"]
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {}({})
-            """
-        )
-        code = API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-
-        return code
-
-
 class MSortMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" not in kwargs:
@@ -2734,6 +2855,7 @@ class Chain_MatmulMatcher(BaseMatcher):
         new_kwargs = self.parse_kwargs(kwargs)
         if new_kwargs is None:
             return None
+
         code = "{}".format(new_args[0])
         for arg in new_args[1:]:
             code = code + " @ {}".format(arg)
@@ -2759,6 +2881,46 @@ class HypotMatcher(BaseMatcher):
             code = "paddle.assign({}, output={})".format(code, kwargs["out"])
 
         return code
+
+
+class TensorViewMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def view(self, *args, **kwargs):
+                if args:
+                    if len(args)==1 and isinstance(args[0], (tuple, list, str)):
+                        return paddle.view(self, args[0])
+                    else:
+                        return paddle.view(self, list(args))
+                elif kwargs:
+                    key = [k for k in kwargs.keys()]
+                    return paddle.view(self, shape_or_dtype = kwargs[key[0]])
+
+            setattr(paddle.Tensor, 'view', view)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        if kwargs:
+            if len(kwargs) == 1:
+                self.write_aux_code()
+                return "unchange"
+
+        if args:
+            if len(args) == 1:
+                if isinstance(args[0], (ast.Tuple, ast.List)):
+                    return "unchange"
+                if isinstance(args[0], (ast.Constant)) and isinstance(
+                    args[0].value, str
+                ):
+                    return "unchange"
+
+            self.write_aux_code()
+            return "unchange"
+
+        return "misidentify"
 
 
 class TensorReshapeMatcher(BaseMatcher):
@@ -3073,7 +3235,7 @@ class FunctionalSmoothL1LossMatcher(BaseMatcher):
         return code
 
 
-class TupleAssignMatcher(BaseMatcher):
+class DoubleAssignMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs_change = {}
         if "kwargs_change" in self.api_mapping:
@@ -3275,31 +3437,6 @@ class ParameterMatcher(BaseMatcher):
             out,
         )
         return code
-
-
-class Modules_BatchNormBaseMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "momentum" in kwargs:
-            momentum = kwargs["momentum"]
-        else:
-            momentum = 0.1
-        kwargs["momentum"] = f"1-{momentum}"
-
-        if "affine" not in kwargs:
-            kwargs["weight_attr"] = None
-            kwargs["bias_attr"] = None
-        else:
-            kwargs[
-                "weight_attr"
-            ] = f"None if ({kwargs['affine']} is None or {kwargs['affine']}) else False"
-            kwargs[
-                "bias_attr"
-            ] = f"None if ({kwargs['affine']} is None or {kwargs['affine']}) else False"
-
-        if "track_running_stats" in kwargs:
-            kwargs["use_global_stats"] = kwargs.pop("track_running_stats")
-
-        return GenericMatcher.generate_code(self, kwargs)
 
 
 class TensorTakeMatcher(BaseMatcher):
@@ -3551,9 +3688,49 @@ class OptimAdamMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-class ConstantLRMatcher(BaseMatcher):
+class LRSchedulerMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        optim = kwargs.pop("optimizer")
+        optimizer = kwargs.pop("optimizer")
+
+        unsupport_args = self.api_mapping.get("unsupport_args", [])
+        for k in unsupport_args:
+            if k in kwargs:
+                return None
+
+        kwargs_change = self.api_mapping.get("kwargs_change", {})
+        for k in kwargs_change:
+            if k in kwargs:
+                kwargs[kwargs_change[k]] = kwargs.pop(k)
+
+        default_kwargs = self.api_mapping.get("paddle_default_kwargs", {})
+        for k in default_kwargs:
+            if k not in kwargs:
+                kwargs[k] = default_kwargs[k]
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            tmp_lr = {}({})
+            {}.set_lr_scheduler(tmp_lr)
+            tmp_lr
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.get_paddle_api(), self.kwargs_to_str(kwargs), optimizer
+        )
+
+        return code
+
+
+class Optim2LrSchedulerMatcher(LRSchedulerMatcher):
+    def generate_code(self, kwargs):
+        optimizer = kwargs["optimizer"]
+        kwargs["learning_rate"] = "{}.get_lr()".format(optimizer)
+        return super().generate_code(kwargs)
+
+
+class ConstantLRMatcher(LRSchedulerMatcher):
+    def generate_code(self, kwargs):
+        optim = kwargs["optimizer"]
         factor = 0.3333333333333333
         total_iters = 5
         if "factor" in kwargs:
@@ -3562,37 +3739,27 @@ class ConstantLRMatcher(BaseMatcher):
             total_iters = kwargs.pop("total_iters")
         kwargs["values"] = "[{}*{}.get_lr(), {}.get_lr()]".format(factor, optim, optim)
         kwargs["boundaries"] = "[{}]".format(total_iters)
-        API_TEMPLATE = textwrap.dedent(
-            """
-            tmp_lr = {}({})
-            {}.set_lr_scheduler(tmp_lr)
-            tmp_lr
-            """
-        )
-        code = API_TEMPLATE.format(
-            self.get_paddle_api(), self.kwargs_to_str(kwargs), optim
-        )
-        return code
+        return super().generate_code(kwargs)
 
 
-class LrSchedulerMatcher(BaseMatcher):
+class OneCycleLRMatcher(LRSchedulerMatcher):
     def generate_code(self, kwargs):
-        optim = kwargs.pop("optimizer")
-        if self.get_paddle_api() not in [
-            "paddle.optimizer.lr.CyclicLR",
-        ]:
-            kwargs["learning_rate"] = optim + ".get_lr()"
-        API_TEMPLATE = textwrap.dedent(
-            """
-            tmp_lr = {}({})
-            {}.set_lr_scheduler(tmp_lr)
-            tmp_lr
-            """
-        )
-        code = API_TEMPLATE.format(
-            self.get_paddle_api(), self.kwargs_to_str(kwargs), optim
-        )
-        return code
+        if "total_steps" in kwargs and "None" not in kwargs["total_steps"]:
+            pass
+        else:
+            steps_per_epoch = kwargs.pop("steps_per_epoch")
+            epochs = kwargs.pop("epochs")
+            kwargs["total_steps"] = "({})*({})".format(steps_per_epoch, epochs)
+
+        if "final_div_factor" in kwargs:
+            final_div_factor = kwargs.pop("final_div_factor")
+            max_lr = kwargs["max_lr"]
+            div_factor = kwargs["div_factor"]
+            kwargs["end_learning_rate"] = "({}) * 1. /(({}) * {})".format(
+                max_lr, div_factor, final_div_factor
+            )
+
+        return super().generate_code(kwargs)
 
 
 class RequireDimMatcher(BaseMatcher):
@@ -3862,67 +4029,7 @@ class TensorDatasetMatcher(BaseMatcher):
             tensors_v += ", {}".format(arg)
         tensors_v += "]"
         code = "{}({})".format(self.get_paddle_api(), tensors_v)
-        node = ast.parse(code).body
-        return node
-
-
-class TensorMaxMinMatcher(BaseMatcher):
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        self.parse_func(func)
-        new_kwargs = self.parse_kwargs(kwargs)
-        if new_kwargs is None:
-            return None
-
-        call_maximinimum = False
-        if len(args) > 0 and not isinstance(args[0], ast.Num):
-            call_maximinimum = True
-
-        if "other" in new_kwargs:
-            call_maximinimum = True
-
-        # the case of two Tensor
-        if call_maximinimum:
-            return GenericMatcher(
-                self.transformer, self.torch_api, self.api_mapping, self.logger
-            ).get_paddle_class_nodes(func, args, kwargs)
-
-        # the case of one Tensor
-        args_list = ["dim", "keepdim"]
-
-        # parse args to kwargs
-        for i in range(len(args)):
-            new_kwargs[args_list[i]] = astor.to_source(args[i]).strip("\n")
-        for node in kwargs:
-            new_kwargs[node.arg] = astor.to_source(node.value).strip("\n")
-
-        # change kwargs' name
-        if "dim" in new_kwargs:
-            new_kwargs["axis"] = new_kwargs.pop("dim")
-
-        if "min" in self.torch_api:
-            paddle_api, paddle_api_arg = (
-                self.paddleClass + ".min",
-                self.paddleClass + ".argmin",
-            )
-        else:
-            paddle_api, paddle_api_arg = (
-                self.paddleClass + ".max",
-                self.paddleClass + ".argmax",
-            )
-
-        if "axis" in new_kwargs:
-            return ast.parse(
-                "{}({}), {}({})".format(
-                    paddle_api,
-                    self.kwargs_to_str(new_kwargs),
-                    paddle_api_arg,
-                    self.kwargs_to_str(new_kwargs),
-                )
-            ).body
-        else:
-            return ast.parse(
-                "{}({})".format(paddle_api, self.kwargs_to_str(new_kwargs))
-            ).body
+        return ast.parse(code).body
 
 
 class TensorInplaceReserveTypeMatcher(BaseMatcher):

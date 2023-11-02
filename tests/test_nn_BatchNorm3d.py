@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.BatchNorm1d")
+obj = APIBase("torch.nn.BatchNorm3d")
 
 
 def test_case_1():
@@ -24,8 +24,8 @@ def test_case_1():
         """
         import torch.nn as nn
         import torch
-        m = torch.nn.BatchNorm1d(5, affine=False)
-        input = torch.arange(10, dtype=torch.float32).reshape(2, 5)
+        m = torch.nn.BatchNorm3d(5)
+        input = torch.arange(960, dtype=torch.float32).reshape(2, 5, 6, 4, 4)
         result = m(input)
         """
     )
@@ -37,8 +37,8 @@ def test_case_2():
         """
         import torch.nn as nn
         import torch
-        m = torch.nn.BatchNorm1d(5, affine=False, eps=1e-5)
-        input = torch.arange(10, dtype=torch.float32).reshape(2, 5)
+        m = torch.nn.BatchNorm3d(5, affine=False, eps=1e-5)
+        input = torch.arange(960, dtype=torch.float32).reshape(2, 5, 6, 4, 4)
         result = m(input)
         """
     )
@@ -50,8 +50,8 @@ def test_case_3():
         """
         import torch.nn as nn
         import torch
-        m = torch.nn.BatchNorm1d(5, 1e-5, 0.2, affine=False)
-        input = torch.arange(10, dtype=torch.float32).reshape(2, 5)
+        m = torch.nn.BatchNorm3d(5, 1e-5, 0.2, affine=False)
+        input = torch.arange(960, dtype=torch.float32).reshape(2, 5, 6, 4, 4)
         result = m(input)
         """
     )
@@ -63,8 +63,8 @@ def test_case_4():
         """
         import torch.nn as nn
         import torch
-        m = torch.nn.BatchNorm1d(5, 1e-5, 0.2, affine=True)
-        input = torch.arange(10, dtype=torch.float32).reshape(2, 5)
+        m = torch.nn.BatchNorm3d(5, 1e-5, 0.2, affine=True)
+        input = torch.arange(960, dtype=torch.float32).reshape(2, 5, 6, 4, 4)
         result = m(input)
         """
     )
@@ -76,8 +76,8 @@ def test_case_5():
         """
         import torch.nn as nn
         import torch
-        m = torch.nn.BatchNorm1d(5, 1e-5, 0.2, affine=True, track_running_stats=True)
-        input = torch.arange(10, dtype=torch.float32).reshape(2, 5)
+        m = torch.nn.BatchNorm3d(5, 1e-5, 0.2, affine=True, track_running_stats=True)
+        input = torch.arange(960, dtype=torch.float32).reshape(2, 5, 6, 4, 4)
         result = m(input)
         """
     )
@@ -89,9 +89,8 @@ def test_case_6():
         """
         import torch.nn as nn
         import torch
-        a = False
-        m = torch.nn.BatchNorm1d(5, affine=a)
-        input = torch.arange(10, dtype=torch.float32).reshape(2, 5)
+        m = torch.nn.BatchNorm3d(5)
+        input = torch.arange(960, dtype=torch.float32).reshape(2, 5, 6, 4, 4)
         result = m(input)
         """
     )
@@ -103,9 +102,9 @@ def test_case_7():
         """
         import torch.nn as nn
         import torch
-        a = True
-        m = torch.nn.BatchNorm1d(5, 1e-5, 0.2, affine=a, track_running_stats=True)
-        input = torch.arange(10, dtype=torch.float32).reshape(2, 5)
+        a = False
+        m = torch.nn.BatchNorm3d(5, affine=a)
+        input = torch.arange(960, dtype=torch.float32).reshape(2, 5, 6, 4, 4)
         result = m(input)
         """
     )
@@ -118,8 +117,34 @@ def test_case_8():
         import torch.nn as nn
         import torch
         a = True
-        m = torch.nn.BatchNorm1d(5, 1e-5, 0.2, affine=a, track_running_stats=True, dtype=torch.float32)
-        input = torch.arange(10, dtype=torch.float32).reshape(2, 5)
+        m = torch.nn.BatchNorm3d(5, 1e-5, 0.2, affine=a, track_running_stats=True)
+        input = torch.arange(960, dtype=torch.float32).reshape(2, 5, 6, 4, 4)
+        result = m(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        m = torch.nn.BatchNorm3d(num_features=5, eps=1e-05, momentum=0.2, affine=True, track_running_stats=True, device=None, dtype=torch.float32)
+        input = torch.arange(960, dtype=torch.float32).reshape(2, 5, 6, 4, 4)
+        result = m(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        m = torch.nn.BatchNorm3d(5, 1e-05, 0.2, False, False, None, torch.float32)
+        input = torch.arange(960, dtype=torch.float32).reshape(2, 5, 6, 4, 4)
         result = m(input)
         """
     )

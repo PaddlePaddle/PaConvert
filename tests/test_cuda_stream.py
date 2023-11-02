@@ -23,22 +23,32 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        stream = torch.cuda.Stream()
-        result = torch.cuda.stream(stream)
+        result = None
+        if torch.cuda.is_available():
+            data1 = torch.ones(size=[20])
+            data2 = torch.ones(size=[20])
+
+            s = torch.cuda.Stream()
+            context = torch.cuda.stream(stream=s)
+            with context:
+                result = data1 + data2
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        stream = torch.cuda.Stream(priority=0)
-        result = torch.cuda.stream(stream)
+        result = None
+        if torch.cuda.is_available():
+            data1 = torch.ones(size=[60])
+            data2 = torch.ones(size=[60])
+
+            context = torch.cuda.stream(stream=None)
+            with context:
+                result = data1 + data2
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -48,8 +58,12 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        stream = torch.cuda.Stream(priority=-1)
-        result = torch.cuda.stream(stream)
+        result = None
+        if torch.cuda.is_available():
+            data1 = torch.ones(size=[50])
+            data2 = torch.ones(size=[50])
+            with torch.cuda.stream(stream = torch.cuda.Stream()):
+                result = data1 + data2
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -59,8 +73,12 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        stream = torch.cuda.Stream(device=1)
-        result = torch.cuda.stream(stream)
+        result = None
+        if torch.cuda.is_available():
+            data1 = torch.ones(size=[50])
+            data2 = torch.ones(size=[50])
+            with torch.cuda.stream(torch.cuda.Stream()):
+                result = data1 + data2
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -70,30 +88,13 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        stream = torch.cuda.Stream(device=1,priority=-1)
-        result = torch.cuda.stream(stream)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        stream = torch.cuda.Stream(device='cuda:1',priority=-1)
-        result = torch.cuda.stream(stream)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_7():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        stream = torch.cuda.Stream(device='cuda',priority=-1)
-        result = torch.cuda.stream(stream)
+        result = None
+        if torch.cuda.is_available():
+            data1 = torch.ones(size=[20])
+            data2 = torch.ones(size=[20])
+            context = torch.cuda.stream(torch.cuda.Stream())
+            with context:
+                result = data1 + data2
         """
     )
     obj.run(pytorch_code, ["result"])

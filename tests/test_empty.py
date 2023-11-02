@@ -26,7 +26,12 @@ def test_case_1():
         result = torch.empty(3)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        reason=" 'empty' get random uninitialized Tensor",
+    )
 
 
 def test_case_2():
@@ -36,7 +41,12 @@ def test_case_2():
         result = torch.empty(3, 5)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        reason=" 'empty' get random uninitialized Tensor",
+    )
 
 
 def test_case_3():
@@ -46,10 +56,63 @@ def test_case_3():
         result = torch.empty((4, 4))
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        reason=" 'empty' get random uninitialized Tensor",
+    )
 
 
 def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.empty([4, 4])
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        reason=" 'empty' get random uninitialized Tensor",
+    )
+
+
+# the only corner case, input a variable which is Constant, has no solution
+def _test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        shape = 3
+        result = torch.empty(shape)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        reason=" 'empty' get random uninitialized Tensor",
+    )
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        shape = [4, 4]
+        result = torch.empty(shape)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        reason=" 'empty' get random uninitialized Tensor",
+    )
+
+
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -57,30 +120,45 @@ def test_case_4():
         result = torch.empty(*shape)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        reason=" 'empty' get random uninitialized Tensor",
+    )
 
 
-def test_case_5():
+def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.empty([6, 6], dtype=torch.int64)
+        result = torch.empty(size=[6, 6], dtype=torch.int64)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        reason=" 'empty' get random uninitialized Tensor",
+    )
 
 
-def test_case_6():
+def test_case_9():
     pytorch_code = textwrap.dedent(
         """
         import torch
         result = torch.empty([6, 6], dtype=torch.float64, requires_grad=True)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        reason=" 'empty' get random uninitialized Tensor",
+    )
 
 
-def test_case_7():
+def test_case_10():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -88,16 +166,26 @@ def test_case_7():
         result = torch.empty(6, 6, dtype=torch.float64, requires_grad=flag, memory_format=torch.contiguous_format)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        reason=" 'empty' get random uninitialized Tensor",
+    )
 
 
-def test_case_8():
+def test_case_11():
     pytorch_code = textwrap.dedent(
         """
         import torch
         a = 3
         out = torch.tensor([2., 3.], dtype=torch.float64)
-        result = torch.empty(a, a, out=out, dtype=torch.float64, requires_grad=True)
+        result = torch.empty(a, a, out=out, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True, pin_memory=False)
         """
     )
-    obj.run(pytorch_code, ["result", "out"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result", "out"],
+        check_value=False,
+        reason=" 'empty' get random uninitialized Tensor",
+    )
