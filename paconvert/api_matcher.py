@@ -445,6 +445,8 @@ class TransposeMatcher(BaseMatcher):
 
 class BroadcastTensorsMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
+        if len(args) == 1 and isinstance(args[0], ast.Starred):
+            return None
         new_args = self.parse_args(args)
         code = "{}([{}])".format(self.get_paddle_api(), ",".join(new_args))
         return ast.parse(code).body
@@ -452,6 +454,8 @@ class BroadcastTensorsMatcher(BaseMatcher):
 
 class BroadcastShapesMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
+        if len(args) == 1 and isinstance(args[0], ast.Starred):
+            return None
         new_args = self.parse_args(args)
         code = new_args[0]
         # Call the paddle.broadcast_shape multiple times
@@ -496,7 +500,7 @@ class SmoothL1LossMatcher(BaseMatcher):
         beta = kwargs.get("beta", None)
         if beta is not None:
             beta = beta.replace("(", "").replace(")", "")
-            if float(beta) != 1.0:
+            if not beta.isnumeric() or float(beta) != 1.0:
                 return None
         code = SizeAverageMatcher.generate_code(self, kwargs)
         return ast.parse(code).body

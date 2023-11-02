@@ -13225,14 +13225,16 @@
       "pin_memory_device"
     ],
     "kwargs_change": {
-      "sampler": "",
-      "pin_memory": "",
-      "multiprocessing_context": "",
-      "generator": "",
-      "prefetch_factor": "",
-      "persistent_workers": "",
-      "pin_memory_device": ""
-    }
+      "generator": ""
+    },
+    "unsupport_args": [
+      "pin_memory",
+      "multiprocessing_context",
+      "sampler",
+      "prefetch_factor",
+      "persistent_workers",
+      "pin_memory_device"
+    ]
   },
   "torch.utils.data.Dataset": {
     "Matcher": "GenericMatcher",

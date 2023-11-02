@@ -100,7 +100,7 @@ def test_case_3():
 
         data = Data()
         result = torch.utils.data.DataLoader(dataset=data,
-                shuffle=False, sampler=None,
+                shuffle=False,
                 batch_sampler=None, num_workers=0, batch_size=1)
         """
     )
@@ -136,7 +136,12 @@ def test_case_4():
                 pin_memory_device='')
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="The parameter sampler not support.",
+    )
 
 
 def test_case_5():
@@ -168,4 +173,9 @@ def test_case_5():
                 pin_memory_device='')
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="The parameter sampler not support.",
+    )

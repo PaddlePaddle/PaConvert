@@ -43,7 +43,7 @@ def test_case_1():
         pytorch_code,
         ["result"],
         unsupport=True,
-        reason="pytorch and paddle return different results",
+        reason="torch log_softmax + ctc_loss is equivalent to paddle ctc_loss",
     )
 
 
@@ -68,5 +68,5 @@ def test_case_2():
         pytorch_code,
         ["result"],
         unsupport=True,
-        reason="pytorch and paddle return different results",
+        reason="torch log_softmax + ctc_loss is equivalent to paddle ctc_loss",
     )
