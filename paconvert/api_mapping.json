@@ -9203,10 +9203,10 @@
       "enable_nested_tensor",
       "mask_check"
     ],
-    "unsupport_args": [
-      "enable_nested_tensor",
-      "mask_check"
-    ]
+    "kwargs_change": {
+      "enable_nested_tensor": "",
+      "mask_check": ""
+    }
   },
   "torch.nn.TransformerEncoderLayer": {
     "Matcher": "GenericMatcher",
@@ -13225,15 +13225,15 @@
       "pin_memory_device"
     ],
     "kwargs_change": {
-      "generator": ""
+      "pin_memory": "",
+      "multiprocessing_context": "",
+      "generator": "",
+      "persistent_workers": "",
+      "pin_memory_device": ""
     },
     "unsupport_args": [
-      "pin_memory",
-      "multiprocessing_context",
       "sampler",
-      "prefetch_factor",
-      "persistent_workers",
-      "pin_memory_device"
+      "prefetch_factor"
     ]
   },
   "torch.utils.data.Dataset": {

@@ -100,13 +100,7 @@ def test_case_6():
         result = transformer(tgt)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="paddle unsupport enable_nested_tensor args",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_7():
@@ -120,10 +114,4 @@ def test_case_7():
         result = transformer(tgt)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="paddle unsupport mask_check args",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
