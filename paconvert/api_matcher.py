@@ -1269,22 +1269,6 @@ class CudnnIsAvailableMatcher(BaseMatcher):
         return code
 
 
-class BatchNormMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "momentum" in kwargs:
-            kwargs["momentum"] = f"1 - {kwargs.pop('momentum')}"
-
-        if "affine" in kwargs:
-            kwargs["weight_attr"] = f"None if {kwargs['affine']} else False"
-            kwargs["bias_attr"] = f"None if {kwargs.pop('affine')} else False"
-
-        if "track_running_stats" in kwargs:
-            kwargs["use_global_stats"] = f"not {kwargs.pop('track_running_stats')}"
-
-        code = GenericMatcher.generate_code(self, kwargs)
-        return code
-
-
 class SplitMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -1982,13 +1966,11 @@ class IndexCopyMatcher(BaseMatcher):
         return code
 
 
-class InstanceNormMatcher(BaseMatcher):
+class ReverseMomentumMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "momentum" in kwargs:
-            momentum = kwargs["momentum"]
-        else:
-            momentum = 0.1
-        kwargs["momentum"] = f"1-{momentum}"
+            kwargs["momentum"] = f"1 - {kwargs.pop('momentum')}"
+
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -2631,40 +2613,6 @@ class FSoftMinMatcher(BaseMatcher):
         kwargs["input"] = f"-{kwargs['input']}"
 
         return GenericMatcher.generate_code(self, kwargs)
-
-
-class FBatchNormMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        kwargs["x"] = kwargs.pop("input")
-        if "eps" in kwargs:
-            kwargs["epsilon"] = kwargs.pop("eps")
-        if "momentum" in kwargs:
-            kwargs["momentum"] = "1 - " + kwargs["momentum"]
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {}({})
-            """
-        )
-        code = API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-
-        return code
-
-
-class FInstanceNormMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        kwargs["x"] = kwargs.pop("input")
-        if "momentum" in kwargs:
-            kwargs["momentum"] = "1 - " + kwargs["momentum"]
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {}({})
-            """
-        )
-        code = API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-
-        return code
 
 
 class MSortMatcher(BaseMatcher):
@@ -3489,31 +3437,6 @@ class ParameterMatcher(BaseMatcher):
             out,
         )
         return code
-
-
-class Modules_BatchNormBaseMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "momentum" in kwargs:
-            momentum = kwargs["momentum"]
-        else:
-            momentum = 0.1
-        kwargs["momentum"] = f"1-{momentum}"
-
-        if "affine" not in kwargs:
-            kwargs["weight_attr"] = None
-            kwargs["bias_attr"] = None
-        else:
-            kwargs[
-                "weight_attr"
-            ] = f"None if ({kwargs['affine']} is None or {kwargs['affine']}) else False"
-            kwargs[
-                "bias_attr"
-            ] = f"None if ({kwargs['affine']} is None or {kwargs['affine']}) else False"
-
-        if "track_running_stats" in kwargs:
-            kwargs["use_global_stats"] = kwargs.pop("track_running_stats")
-
-        return GenericMatcher.generate_code(self, kwargs)
 
 
 class TensorTakeMatcher(BaseMatcher):

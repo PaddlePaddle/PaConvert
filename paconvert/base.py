@@ -50,7 +50,6 @@ TORCH_PACKAGE_LIST = [
     "fasttext",
     "pytorch_lightning",
     "jieba",
-    "sentencepiece",
     "NLTK",
     "scikit-learn",
     "fairscale",
