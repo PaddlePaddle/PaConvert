@@ -500,7 +500,11 @@ class SmoothL1LossMatcher(BaseMatcher):
         beta = kwargs.get("beta", None)
         if beta is not None:
             beta = beta.replace("(", "").replace(")", "")
-            if not beta.isnumeric() or float(beta) != 1.0:
+            try:
+                beta = float(beta)
+                if float(beta) != 1.0:
+                    return None
+            except:
                 return None
         code = SizeAverageMatcher.generate_code(self, kwargs)
         return ast.parse(code).body
