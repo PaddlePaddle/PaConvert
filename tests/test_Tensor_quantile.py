@@ -36,7 +36,7 @@ def test_case_2():
         """
         import torch
         x = torch.tensor([0., 1., 2., 3.],dtype=torch.float64)
-        result = x.quantile(0.6, dim=None)
+        result = x.quantile(q=0.6)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -47,7 +47,8 @@ def test_case_3():
         """
         import torch
         x = torch.tensor([0., 1., 2., 3.],dtype=torch.float64)
-        result = x.quantile(0.6, dim=None, keepdim=False)
+        k = 0.6
+        result = x.quantile(k)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -58,13 +59,57 @@ def test_case_4():
         """
         import torch
         x = torch.tensor([0., 1., 2., 3.],dtype=torch.float64)
-        result = x.quantile(0.6, dim=None, keepdim=False)
+        result = x.quantile(0.6, dim=None)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([0., 1., 2., 3.],dtype=torch.float64)
+        result = x.quantile(0.6, dim=None, keepdim=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([0., 1., 2., 3.],dtype=torch.float64)
+        result = x.quantile(q=0.6, dim=None, keepdim=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([0., 1., 2., 3.],dtype=torch.float64)
+        result = x.quantile(0.6, None, False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([0., 1., 2., 3.],dtype=torch.float64)
+        result = x.quantile(q=0.6, keepdim=False, dim=None)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
     pytorch_code = textwrap.dedent(
         """
         import torch
