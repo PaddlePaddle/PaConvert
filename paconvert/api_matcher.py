@@ -446,9 +446,11 @@ class TransposeMatcher(BaseMatcher):
 class BroadcastTensorsMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         if len(args) == 1 and isinstance(args[0], ast.Starred):
-            return None
-        new_args = self.parse_args(args)
-        code = "{}([{}])".format(self.get_paddle_api(), ",".join(new_args))
+            star_var = astor.to_source(args[0].value).strip("\n")
+            code = "{}({})".format(self.get_paddle_api(), star_var)
+        else:
+            new_args = self.parse_args(args)
+            code = "{}([{}])".format(self.get_paddle_api(), ",".join(new_args))
         return ast.parse(code).body
 
 
@@ -468,7 +470,7 @@ class IInfoMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def convert_from_type(type):
+            def _STR_2_PADDLE_DTYPE(type):
                 type_map = {
                         "int32": paddle.int32,
                         "uint8": paddle.uint8,
@@ -489,7 +491,7 @@ class IInfoMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         self.write_aux_code()
         type = kwargs.pop("type")
-        return "{}(paddle_aux.convert_from_type({}))".format(
+        return "{}(paddle_aux._STR_2_PADDLE_DTYPE({}))".format(
             self.get_paddle_api(), type
         )
 

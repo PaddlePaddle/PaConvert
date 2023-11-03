@@ -71,8 +71,8 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.broadcast_tensors(torch.tensor([[0,1,2]]),
-                torch.tensor([[0],[1]]), torch.tensor([[20]]))
+        tensors = torch.tensor([[0,1,2]]), torch.tensor([[0],[1]]), torch.tensor([[20]])
+        result = torch.broadcast_tensors(*tensors)
         """
     )
     obj.run(pytorch_code, ["result"])
