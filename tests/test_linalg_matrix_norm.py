@@ -29,12 +29,7 @@ def test_case_1():
         result = torch.linalg.matrix_norm(x)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -44,15 +39,10 @@ def test_case_2():
         x = torch.tensor([[0.02773777, 0.93004224, 0.06911496],
                 [0.24831591, 0.45733623, 0.07717843],
                 [0.48016702, 0.14235102, 0.42620817]])
-        result = torch.linalg.matrix_norm(A=x, ord='fro')
+        result = torch.linalg.matrix_norm(input=x, ord='fro')
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -63,12 +53,35 @@ def test_case_3():
                 [0.24831591, 0.45733623, 0.07717843],
                 [0.48016702, 0.14235102, 0.42620817]])
         out = torch.tensor([])
-        result = torch.linalg.matrix_norm(A=x, ord='fro', dtype=torch.float32, out=out)
+        result = torch.linalg.matrix_norm(input=x, dtype=torch.float32, ord='fro', out=out)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result", "out"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0.02773777, 0.93004224, 0.06911496],
+                [0.24831591, 0.45733623, 0.07717843],
+                [0.48016702, 0.14235102, 0.42620817]])
+        out = torch.tensor([], dtype=torch.float64)
+        result = torch.linalg.matrix_norm(input=x, ord='fro', dim=(-2, -1), keepdim=True, dtype=torch.float64, out=out)
+        """
     )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0.02773777, 0.93004224, 0.06911496],
+                [0.24831591, 0.45733623, 0.07717843],
+                [0.48016702, 0.14235102, 0.42620817]])
+        out = torch.tensor([])
+        result = torch.linalg.matrix_norm(x, 'fro', (-2, -1), True, dtype=torch.float32, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
