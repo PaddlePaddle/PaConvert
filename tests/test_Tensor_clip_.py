@@ -75,3 +75,13 @@ def _test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([-1.7120,  0.1734, -0.0478, -0.0922]).clip_(max=0.5, min=-0.5)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

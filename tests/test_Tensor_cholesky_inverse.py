@@ -57,3 +57,16 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[ 0.9967, -0.6374,  1.5858],
+            [ 0.0000,  0.6860, -1.0314],
+            [ 0.0000,  0.0000,  2.6615]])
+        result = a.cholesky_inverse(True)
+        """
+    )
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)

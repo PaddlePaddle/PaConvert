@@ -82,3 +82,17 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[0.95311481, 0.56955051, 0.50434124],
+            [0.73109186, 0.35652584, 0.86189222]])
+        fw = torch.tensor([1, 6, 9])
+        aw = torch.tensor([0.4282, 0.0255, 0.4144])
+        result = a.cov(fweights=fw, correction=0, aweights=aw)
+        """
+    )
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)

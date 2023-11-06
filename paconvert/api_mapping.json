@@ -254,6 +254,7 @@
   "torch.Tensor.apply_": {},
   "torch.Tensor.arccos": {
     "Matcher": "GenericMatcher",
+    "min_input_args": 0,
     "paddle_api": "paddle.Tensor.acos"
   },
   "torch.Tensor.arccos_": {
@@ -263,6 +264,7 @@
   },
   "torch.Tensor.arccosh": {
     "Matcher": "GenericMatcher",
+    "min_input_args": 0,
     "paddle_api": "paddle.Tensor.acosh"
   },
   "torch.Tensor.arccosh_": {
@@ -271,7 +273,8 @@
     "paddle_api": "paddle.Tensor.acosh_"
   },
   "torch.Tensor.arcsin": {
-    "Matcher": "UnchangeMatcher"
+    "Matcher": "UnchangeMatcher",
+    "min_input_args": 0
   },
   "torch.Tensor.arcsin_": {
     "Matcher": "GenericMatcher",
@@ -354,7 +357,8 @@
   },
   "torch.Tensor.argwhere": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.nonzero"
+    "paddle_api": "paddle.Tensor.nonzero",
+    "min_input_args": 0
   },
   "torch.Tensor.as_strided": {
     "Matcher": "GenericMatcher",
@@ -420,6 +424,7 @@
     "Matcher": "TensorBF16Matcher",
     "min_input_args": 0,
     "args_list": [
+      "*",
       "memory_format"
     ]
   },
@@ -527,6 +532,7 @@
     "Matcher": "TensorBoolMatcher",
     "min_input_args": 0,
     "args_list": [
+      "*",
       "memory_format"
     ]
   },
@@ -545,6 +551,7 @@
     "Matcher": "TensorByteMatcher",
     "min_input_args": 0,
     "args_list": [
+      "*",
       "memory_format"
     ]
   },
@@ -553,6 +560,7 @@
     "Matcher": "TensorCdoubleMatcher",
     "min_input_args": 0,
     "args_list": [
+      "*",
       "memory_format"
     ]
   },
@@ -567,6 +575,7 @@
     "Matcher": "TensorCfloatMatcher",
     "min_input_args": 0,
     "args_list": [
+      "*",
       "memory_format"
     ]
   },
@@ -575,6 +584,7 @@
     "Matcher": "TensorCharMatcher",
     "min_input_args": 0,
     "args_list": [
+      "*",
       "memory_format"
     ]
   },
@@ -791,6 +801,7 @@
     "min_input_args": 1,
     "args_list": [
       "dim",
+      "*",
       "dtype"
     ],
     "kwargs_change": {
@@ -948,6 +959,7 @@
     "Matcher": "TensorDoubleMatcher",
     "min_input_args": 0,
     "args_list": [
+      "*",
       "memory_format"
     ]
   },
@@ -2533,7 +2545,7 @@
   "torch.Tensor.roll": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.roll",
-    "min_input_args": 2,
+    "min_input_args": 1,
     "args_list": [
       "shifts",
       "dims"
@@ -8741,6 +8753,7 @@
   "torch.nn.NLLLoss": {
     "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.NLLLoss",
+    "min_input_args": 0,
     "args_list": [
       "weight",
       "size_average",
@@ -11744,6 +11757,7 @@
   "torch.roll": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.roll",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "shifts",

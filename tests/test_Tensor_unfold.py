@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.as_strided")
+obj = APIBase("torch.Tensor.unfold")
 
 
 def test_case_1():
