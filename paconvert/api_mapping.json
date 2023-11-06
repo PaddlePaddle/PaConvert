@@ -2087,7 +2087,7 @@
     ]
   },
   "torch.Tensor.nanquantile": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "NanquantileMatcher",
     "paddle_api": "paddle.Tensor.nanquantile",
     "min_input_args": 1,
     "args_list": [

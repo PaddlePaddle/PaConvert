@@ -100,3 +100,14 @@ def test_case_7():
         unsupport=True,
         reason="Paddle not support this parameter",
     )
+
+
+def test_multi_q():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[float('nan'), 1.02, 2.21, 3.333,30, float('nan')]], dtype=torch.float64)
+        result = x.nanquantile(q=torch.tensor([0.3, 0.4], dtype=torch.float64), dim=1, keepdim=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

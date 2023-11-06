@@ -4078,3 +4078,20 @@ class SetUpMatcher(BaseMatcher):
         return ast.parse(
             "paddle.utils.cpp_extension.setup({})".format(self.kwargs_to_str(kwargs))
         )
+
+
+class NanquantileMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        new_kwargs = {}
+        kwargs_change = self.api_mapping["kwargs_change"]
+        for k in list(kwargs.keys()):
+            if k in kwargs_change:
+                new_kwargs[kwargs_change[k]] = kwargs[k]
+            else:
+                new_kwargs[k] = kwargs[k]
+            if "q" in k:
+                if "tensor" in kwargs[k] and "[" in kwargs[k]:
+                    new_kwargs[k] = "{}.tolist()".format(kwargs[k])
+
+        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
+        return code
