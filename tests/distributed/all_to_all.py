@@ -35,5 +35,5 @@ dist.all_to_all(
     async_op=False,
 )
 
-print("out:")
 print(out_tensor_list)
+common.dump_output(out_tensor_list)

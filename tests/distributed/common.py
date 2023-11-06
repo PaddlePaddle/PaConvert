@@ -13,6 +13,8 @@
 # limitations under the License.
 #
 import os
+import subprocess
+import sys
 
 import torch
 
@@ -22,3 +24,30 @@ def init_env():
         local_rank = os.environ["LOCAL_RANK"]
         os.environ["CUDA_VISIBLE_DEVICES"] = local_rank
     torch.distributed.init_process_group(backend="nccl")
+
+
+def dump_output(x):
+    rank = torch.distributed.get_rank()
+    path = os.environ.get("DUMP_FILE", None)
+    if path is not None:
+        path = path.replace("rank0", "rank" + str(rank))
+        torch.save(x, path)
+
+
+def run_local(cmd, envs=None):
+    env_local = {}
+    env_local.update(os.environ)
+    if envs is not None:
+        env_local.update(envs)
+    print(f"local_cmd: {cmd}")
+
+    local_proc = subprocess.Popen(
+        cmd.split(" "),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env=env_local,
+    )
+
+    local_out, local_err = local_proc.communicate()
+    sys.stdout.write("local_out: %s\n" % local_out.decode())
+    sys.stderr.write("local_err: %s\n" % local_err.decode())

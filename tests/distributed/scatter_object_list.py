@@ -26,3 +26,4 @@ dist.scatter_object_list(out_object_list, in_object_list, src=1, group=None)
 
 print("out:")
 print(out_object_list)
+common.dump_output(out_object_list)
