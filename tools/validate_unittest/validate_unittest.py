@@ -18,6 +18,7 @@ import json
 import os
 import re
 import sys
+import traceback
 
 import pytest
 
@@ -29,10 +30,11 @@ project_dir = os.path.join(os.path.dirname(__file__), "../..")
 output_dir = os.path.dirname(__file__)
 
 whitelist_pattern = [
-    r"^test_(\w*)Tensor\.py",
-    r"^test_distributed_all_gather_object\.py",
-    r"^test_hub_download_url_to_file\.py",
-    r"^test_Size\.py",
+    r"^test_distributed_all_gather_object\.py",  # 分布式，本地没跑完，先跳过
+    r"^test_hub_download_url_to_file\.py",  # 要下载，费时间，先跳过了
+    r"^test_(\w*)Tensor\.py",  # 特殊类构造函数，api_mapping.json 不合用，跳过
+    r"^test_Size\.py",  # api_mapping.json 不合用
+    r"^test_nn_ParameterList\.py",  # 该文件没有测试 torch.nn.ParameterList
 ]
 
 
@@ -87,7 +89,9 @@ def extract_api_name(api, code: str):
     api_seg = api.split(".")
     for i in range(len(api_seg)):
         api_nickname = ".".join(api_seg[i:])
-        if code.find(api_nickname) >= 0:
+        pattern = rf"\b{re.escape(api_nickname)}\b"
+        matched = re.search(pattern, code)
+        if matched:
             return api_nickname
     else:
         raise ValueError(f"{api} not found in {repr(code)}")
@@ -96,7 +100,8 @@ def extract_api_name(api, code: str):
 def extract_params_from_invoking(api, code: str):
     args, kwargs = [], []
     api_name = extract_api_name(api, code)
-    idx = code.find(api_name)
+    pattern = rf"\b{re.escape(api_name)}\b"
+    idx = re.search(pattern, code).start()
     assert idx >= 0, f"api_name {api_name} must exists."
 
     code, idx = code[idx + len(api_name) :], 0
@@ -128,7 +133,9 @@ def extract_params_from_invoking(api, code: str):
                         args.append(value)
                 idx = i + 1
             if c == ")":
-                assert pair_stack[-1] == "(", f"Unpaired in {repr(code)}"
+                assert (
+                    len(pair_stack) > 0 and pair_stack[-1] == "("
+                ), f"Unpaired in {repr(code)}"
                 pair_stack.pop()
                 if len(pair_stack) == 0:
                     break
@@ -165,14 +172,11 @@ def check_call_variety(test_data, api_mapping):
 
         mapping_data = api_mapping[api]
 
-        if "min_input_args" not in mapping_data:
-            print(f"{api} has no mapping data 'min_input_args'.")
-            continue
-        min_input_args = mapping_data["min_input_args"]
-
-        if "args_list" not in mapping_data and min_input_args != 0:
+        if "args_list" not in mapping_data:
             print(f"{api} has no mapping data 'args_list'.")
             continue
+
+        min_input_args = mapping_data.get("min_input_args", -1)
 
         args_list = mapping_data.get("args_list", [])
         args_list_without_key = (
@@ -187,20 +191,26 @@ def check_call_variety(test_data, api_mapping):
         all_args = False
         all_kwargs = False
         not_subsequence = False
+        all_default = False if "min_input_args" in mapping_data else None
 
         for code in code_list:
             try:
                 api_name = extract_api_name(api, code)
                 args, kwargs = extract_params_from_invoking(api, code)
-            except Exception as e:
+            except Exception:
                 print(f'Error when extract params from invoking "{api}"')
-                print(e)
+                print(traceback.format_exc())
                 exit(-1)
 
-            if len(args) + len(kwargs) < min_input_args:
-                raise ValueError(
-                    f"{api}(*{args}, **{kwargs}) not meet min_input_args={min_input_args}"
-                )
+            if all_default is False:
+                if len(args) == min_input_args:
+                    all_default = True
+
+            # allow min_input_args not found
+            # if len(args) + len(kwargs) < min_input_args:
+            #     raise ValueError(
+            #         f"{api}(*{args}, **{kwargs}) not meet min_input_args={min_input_args}"
+            #     )
 
             if len(args) == len(args_list_without_key):
                 all_args = True
@@ -219,13 +229,14 @@ def check_call_variety(test_data, api_mapping):
             #     print(args_list_with_key, keys)
             #     print(all_args, all_kwargs, not_subsequence, code)
 
-        if all_args and all_kwargs and not_subsequence:
+        if all_args and all_kwargs and not_subsequence and all_default is True:
             continue
 
         report[api] = {
             "all args": all_args,
             "all kwargs": all_kwargs,
             "kwargs out of order": not_subsequence,
+            "all default": all_default,
         }
 
         if not all_args:
@@ -234,6 +245,13 @@ def check_call_variety(test_data, api_mapping):
             print(f"{api} has no unittest with all arguments with keyword.")
         if not not_subsequence and len(args_list) > 1:
             print(f"{api} has no unittest with keyword arguments out of order.")
+        if not all_default:
+            if all_default is False:
+                print(
+                    f"{api} has no unittest with all default arguments, min_input_args={min_input_args}."
+                )
+            else:
+                print(f"{api} do not have configured 'min_input_args'.")
 
     return report
 
@@ -305,11 +323,23 @@ if __name__ == "__main__":
             with open(report_outpath, "w") as f:
                 f.write("# Unittest Validation Report\n\n")
 
-                columns = ["api", "all args", "all kwargs", "kwargs out of order"]
+                columns = [
+                    "api",
+                    "all args",
+                    "all kwargs",
+                    "kwargs out of order",
+                    "all default",
+                ]
                 f.write(f'| {" | ".join(columns)} |\n')
                 f.write(f'| {" | ".join(["---"] * len(columns))} |\n')
+
+                item2desc_dict = {
+                    True: "✅",
+                    False: "❌",
+                    None: "⚠️",
+                }
+
                 for api, data in report.items():
-                    item2desc = lambda v: "✅" if v else "❌"
                     f.write(
-                        f'| {api} | {" | ".join([item2desc(data[k]) for k in columns[1:]])} |\n'
+                        f'| {api} | {" | ".join([item2desc_dict[data[k]] for k in columns[1:]])} |\n'
                     )
