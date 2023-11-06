@@ -4029,6 +4029,14 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "'bool'"
   },
+  "torch.broadcast_shapes": {
+    "Matcher": "BroadcastShapesMatcher",
+    "paddle_api": "paddle.broadcast_shape"
+  },
+  "torch.broadcast_tensors": {
+    "Matcher": "BroadcastTensorsMatcher",
+    "paddle_api": "paddle.broadcast_tensors"
+  },
   "torch.broadcast_to": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.broadcast_to",
@@ -5928,6 +5936,13 @@
       "dim": "axes"
     }
   },
+  "torch.finfo": {
+    "Matcher": "IInfoMatcher",
+    "paddle_api": "paddle.finfo",
+    "args_list": [
+      "type"
+    ]
+  },
   "torch.fix": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.trunc",
@@ -6348,6 +6363,13 @@
       "other",
       "*",
       "out"
+    ]
+  },
+  "torch.iinfo": {
+    "Matcher": "IInfoMatcher",
+    "paddle_api": "paddle.iinfo",
+    "args_list": [
+      "type"
     ]
   },
   "torch.imag": {
@@ -8233,6 +8255,18 @@
       "dtype": ""
     }
   },
+  "torch.nn.GaussianNLLLoss": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.GaussianNLLLoss",
+    "args_list": [
+      "full",
+      "eps",
+      "reduction"
+    ],
+    "kwargs_change": {
+      "eps": "epsilon"
+    }
+  },
   "torch.nn.GroupNorm": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.GroupNorm",
@@ -8864,6 +8898,28 @@
       "modules": "sublayers"
     }
   },
+  "torch.nn.MultiLabelSoftMarginLoss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.MultiLabelSoftMarginLoss",
+    "args_list": [
+      "weight",
+      "size_average",
+      "reduce",
+      "reduction"
+    ]
+  },
+  "torch.nn.MultiMarginLoss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.MultiMarginLoss",
+    "args_list": [
+      "p",
+      "margin",
+      "weight",
+      "size_average",
+      "reduce",
+      "reduction"
+    ]
+  },
   "torch.nn.MultiheadAttention": {
     "paddle_api": "paddle.nn.MultiHeadAttention",
     "args_list": [
@@ -8960,6 +9016,21 @@
     "args_list": [
       "downscale_factor"
     ]
+  },
+  "torch.nn.PoissonNLLLoss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.PoissonNLLLoss",
+    "args_list": [
+      "log_input",
+      "full",
+      "size_average",
+      "eps",
+      "reduce",
+      "reduction"
+    ],
+    "kwargs_change": {
+      "eps": "epsilon"
+    }
   },
   "torch.nn.RNN": {
     "Matcher": "RNNMatcher",
@@ -9138,6 +9209,19 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Sigmoid"
   },
+  "torch.nn.SmoothL1Loss": {
+    "Matcher": "SmoothL1LossMatcher",
+    "paddle_api": "paddle.nn.SmoothL1Loss",
+    "args_list": [
+      "size_average",
+      "reduce",
+      "reduction",
+      "beta"
+    ],
+    "kwargs_change": {
+      "beta": "delta"
+    }
+  },
   "torch.nn.SoftMarginLoss": {
     "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.SoftMarginLoss",
@@ -9233,6 +9317,35 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Tanhshrink"
   },
+  "torch.nn.Transformer": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Transformer",
+    "args_list": [
+      "d_model",
+      "nhead",
+      "num_encoder_layers",
+      "num_decoder_layers",
+      "dim_feedforward",
+      "dropout",
+      "activation",
+      "custom_encoder",
+      "custom_decoder",
+      "layer_norm_eps",
+      "batch_first",
+      "norm_first",
+      "device",
+      "dtype"
+    ],
+    "kwargs_change": {
+      "norm_first": "normalize_before",
+      "device": "",
+      "dtype": ""
+    },
+    "unsupport_args": [
+      "layer_norm_eps",
+      "batch_first"
+    ]
+  },
   "torch.nn.TransformerDecoder": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.TransformerDecoder",
@@ -9245,6 +9358,49 @@
   "torch.nn.TransformerDecoderLayer": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.TransformerDecoderLayer",
+    "args_list": [
+      "d_model",
+      "nhead",
+      "dim_feedforward",
+      "dropout",
+      "activation",
+      "layer_norm_eps",
+      "batch_first",
+      "norm_first",
+      "device",
+      "dtype"
+    ],
+    "kwargs_change": {
+      "norm_first": "normalize_before",
+      "device": "",
+      "dtype": ""
+    },
+    "unsupport_args": [
+      "layer_norm_eps",
+      "batch_first"
+    ],
+    "paddle_default_kwargs": {
+      "dim_feedforward": 2048
+    }
+  },
+  "torch.nn.TransformerEncoder": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.TransformerEncoder",
+    "args_list": [
+      "encoder_layer",
+      "num_layers",
+      "norm",
+      "enable_nested_tensor",
+      "mask_check"
+    ],
+    "kwargs_change": {
+      "enable_nested_tensor": "",
+      "mask_check": ""
+    }
+  },
+  "torch.nn.TransformerEncoderLayer": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.TransformerEncoderLayer",
     "args_list": [
       "d_model",
       "nhead",
@@ -10643,6 +10799,26 @@
     ],
     "kwargs_change": {
       "input": "x"
+    }
+  },
+  "torch.nn.functional.triplet_margin_loss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.functional.triplet_margin_loss",
+    "args_list": [
+      "anchor",
+      "positive",
+      "negative",
+      "margin",
+      "p",
+      "eps",
+      "swap",
+      "size_average",
+      "reduce",
+      "reduction"
+    ],
+    "kwargs_change": {
+      "anchor": "input",
+      "eps": "epsilon"
     }
   },
   "torch.nn.functional.triplet_margin_with_distance_loss": {
@@ -13227,6 +13403,39 @@
     "paddle_api": "paddle.io.ChainDataset",
     "args_list": [
       "datasets"
+    ]
+  },
+  "torch.utils.data.DataLoader": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.io.DataLoader",
+    "args_list": [
+      "dataset",
+      "batch_size",
+      "shuffle",
+      "sampler",
+      "batch_sampler",
+      "num_workers",
+      "collate_fn",
+      "pin_memory",
+      "drop_last",
+      "timeout",
+      "worker_init_fn",
+      "multiprocessing_context",
+      "generator",
+      "prefetch_factor",
+      "persistent_workers",
+      "pin_memory_device"
+    ],
+    "kwargs_change": {
+      "pin_memory": "",
+      "multiprocessing_context": "",
+      "generator": "",
+      "persistent_workers": "",
+      "pin_memory_device": ""
+    },
+    "unsupport_args": [
+      "sampler",
+      "prefetch_factor"
     ]
   },
   "torch.utils.data.Dataset": {
