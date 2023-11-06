@@ -74,3 +74,21 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = (2,)
+        y = (3, 1)
+        shapes = x, y, (1, 1, 2)
+        result = torch.broadcast_shapes(*shapes)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="The parameter *shapes is currently not supported.",
+    )
