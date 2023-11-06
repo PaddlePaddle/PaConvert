@@ -2400,6 +2400,7 @@
   "torch.Tensor.quantile": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.quantile",
+    "min_input_args": 1,
     "args_list": [
       "q",
       "dim",
