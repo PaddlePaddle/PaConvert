@@ -25,6 +25,7 @@ sys.path.append(os.path.dirname(__file__) + "/../../tests")
 
 import apibase
 
+project_dir = os.path.join(os.path.dirname(__file__), "../..")
 output_dir = os.path.dirname(__file__)
 
 whitelist_pattern = [
@@ -254,12 +255,12 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    with open("paconvert/api_mapping.json", "r") as f:
+    with open(os.path.join(project_dir, "paconvert/api_mapping.json"), "r") as f:
         api_mapping = json.load(f)
-    with open("paconvert/api_alias_mapping.json", "r") as f:
+    with open(os.path.join(project_dir, "paconvert/api_alias_mapping.json"), "r") as f:
         api_alias_mapping = json.load(f)
 
-    test_data_path = os.path.join(output_dir, "unittest_data.json")
+    test_data_path = os.path.join(output_dir, "validation.json")
 
     if os.path.exists(test_data_path) and os.path.isfile(test_data_path):
         with open(test_data_path, "r") as f:
@@ -300,9 +301,9 @@ if __name__ == "__main__":
         report = check_call_variety(test_data, api_mapping)
 
         if args.report:
-            report_outpath = os.path.join(output_dir, "callvariety_report.md")
+            report_outpath = os.path.join(output_dir, "validation_report.md")
             with open(report_outpath, "w") as f:
-                f.write("# Call Variety Report\n\n")
+                f.write("# Unittest Validation Report\n\n")
 
                 columns = ["api", "all args", "all kwargs", "kwargs out of order"]
                 f.write(f'| {" | ".join(columns)} |\n')
