@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.NLLLoss")
+obj = APIBase("torch.nn.NLLLoss2d")
 
 
 def test_case_1():
@@ -27,7 +27,7 @@ def test_case_1():
         input = torch.arange(0, 15, dtype=torch.float32, requires_grad=True).reshape((3, 5))
         target = torch.tensor([1, 0, 4])
         m = nn.LogSoftmax(dim=1)
-        loss = nn.NLLLoss(size_average=True, reduce=True, reduction="none")
+        loss = nn.NLLLoss2d(size_average=True, reduce=True, reduction="none")
         result = loss(m(input), target)
         """
     )
@@ -42,7 +42,7 @@ def test_case_2():
         input = torch.arange(0, 15, dtype=torch.float32, requires_grad=True).reshape((3, 5))
         target = torch.tensor([1, 0, 4])
         m = nn.LogSoftmax(dim=1)
-        loss = nn.NLLLoss(size_average=True, reduce=False, reduction="none")
+        loss = nn.NLLLoss2d(size_average=True, reduce=False, reduction="none")
         result = loss(m(input), target)
         """
     )
@@ -57,7 +57,7 @@ def test_case_3():
         input = torch.arange(0, 15, dtype=torch.float32, requires_grad=True).reshape((3, 5))
         target = torch.tensor([1, 0, 4])
         m = nn.LogSoftmax(dim=1)
-        loss = nn.NLLLoss(size_average=True, reduce=False, reduction="sum")
+        loss = nn.NLLLoss2d(size_average=True, reduce=False, reduction="sum")
         result = loss(m(input), target)
         """
     )
@@ -72,7 +72,7 @@ def test_case_4():
         input = torch.arange(0, 15, dtype=torch.float32, requires_grad=True).reshape((3, 5))
         target = torch.tensor([1, 0, 4])
         m = nn.LogSoftmax(dim=1)
-        loss = nn.NLLLoss(size_average=False, reduce=True, reduction="none")
+        loss = nn.NLLLoss2d(size_average=False, reduce=True, reduction="none")
         result = loss(m(input), target)
         """
     )
@@ -87,7 +87,7 @@ def test_case_5():
         input = torch.arange(0, 15, dtype=torch.float32, requires_grad=True).reshape((3, 5))
         target = torch.tensor([1, 0, 4])
         m = nn.LogSoftmax(dim=1)
-        loss = nn.NLLLoss(size_average=True, reduce=True, reduction="mean")
+        loss = nn.NLLLoss2d(size_average=True, reduce=True, reduction="mean")
         result = loss(m(input), target)
         """
     )
@@ -102,7 +102,7 @@ def test_case_6():
         input = torch.arange(0, 15, dtype=torch.float32, requires_grad=True).reshape((3, 5))
         target = torch.tensor([1, 0, 4])
         m = nn.LogSoftmax(dim=1)
-        loss = nn.NLLLoss(size_average=True, reduce=True, reduction="sum")
+        loss = nn.NLLLoss2d(size_average=True, reduce=True, reduction="sum")
         result = loss(m(input), target)
         """
     )
@@ -117,7 +117,7 @@ def test_case_7():
         input = torch.arange(0, 15, dtype=torch.float32, requires_grad=True).reshape((3, 5))
         target = torch.tensor([1, 0, 4])
         m = nn.LogSoftmax(dim=1)
-        loss = nn.NLLLoss(size_average=False, reduce=True, reduction="mean")
+        loss = nn.NLLLoss2d(size_average=False, reduce=True, reduction="mean")
         result = loss(m(input), target)
         """
     )
@@ -132,7 +132,7 @@ def test_case_8():
         input = torch.arange(0, 15, dtype=torch.float32, requires_grad=True).reshape((3, 5))
         target = torch.tensor([1, 0, 4])
         m = nn.LogSoftmax(dim=1)
-        loss = nn.NLLLoss(size_average=False, reduce=True, reduction="sum")
+        loss = nn.NLLLoss2d(size_average=False, reduce=True, reduction="sum")
         result = loss(m(input), target)
         """
     )
@@ -147,7 +147,7 @@ def test_case_9():
         input = torch.arange(0, 15, dtype=torch.float32, requires_grad=True).reshape((3, 5))
         target = torch.tensor([1, 0, 4])
         m = nn.LogSoftmax(dim=1)
-        loss = nn.NLLLoss(size_average=False, reduce=False, reduction="none")
+        loss = nn.NLLLoss2d(size_average=False, reduce=False, reduction="none")
         result = loss(m(input), target)
         """
     )
@@ -162,7 +162,7 @@ def test_case_10():
         input = torch.arange(0, 15, dtype=torch.float32, requires_grad=True).reshape((3, 5))
         target = torch.tensor([1, 0, 4])
         m = nn.LogSoftmax(dim=1)
-        loss = nn.NLLLoss(size_average=False, reduce=False, reduction="mean")
+        loss = nn.NLLLoss2d(size_average=False, reduce=False, reduction="mean")
         result = loss(m(input), target)
         """
     )
@@ -177,7 +177,7 @@ def test_case_11():
         input = torch.arange(0, 15, dtype=torch.float32, requires_grad=True).reshape((3, 5))
         target = torch.tensor([1, 0, 4])
         m = nn.LogSoftmax(dim=1)
-        loss = nn.NLLLoss(size_average=False, reduce=False, reduction="sum")
+        loss = nn.NLLLoss2d(size_average=False, reduce=False, reduction="sum")
         result = loss(m(input), target)
         """
     )
@@ -192,7 +192,7 @@ def test_case_12():
         input = torch.arange(0, 15, dtype=torch.float32, requires_grad=True).reshape((3, 5))
         target = torch.tensor([1, 0, 4])
         m = nn.LogSoftmax(dim=1)
-        loss = nn.NLLLoss(size_average=True, reduce=False, reduction="mean")
+        loss = nn.NLLLoss2d(size_average=True, reduce=False, reduction="mean")
         result = loss(m(input), target)
         """
     )
@@ -207,7 +207,7 @@ def test_case_13():
         input = torch.arange(0, 15, dtype=torch.float32, requires_grad=True).reshape((3, 5))
         target = torch.tensor([1, 0, 4])
         m = nn.LogSoftmax(dim=1)
-        loss = nn.NLLLoss(reduction="mean")
+        loss = nn.NLLLoss2d(reduction="mean")
         result = loss(m(input), target)
         """
     )
@@ -222,7 +222,7 @@ def test_case_14():
         input = torch.arange(0, 15, dtype=torch.float32, requires_grad=True).reshape((3, 5))
         target = torch.tensor([1, 0, 4])
         m = nn.LogSoftmax(dim=1)
-        loss = nn.NLLLoss(reduction="sum")
+        loss = nn.NLLLoss2d(reduction="sum")
         result = loss(m(input), target)
         """
     )
@@ -237,7 +237,7 @@ def test_case_15():
         input = torch.arange(0, 15, dtype=torch.float32, requires_grad=True).reshape((3, 5))
         target = torch.tensor([1, 0, 4])
         m = nn.LogSoftmax(dim=1)
-        loss = nn.NLLLoss(ignore_index=-1, reduction="sum")
+        loss = nn.NLLLoss2d(ignore_index=-1, reduction="sum")
         result = loss(m(input), target)
         """
     )
