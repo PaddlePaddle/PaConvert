@@ -24,7 +24,10 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.randn(4,4).pin_memory()
+        if torch.cuda.is_available():
+            x = torch.randn(4,4).pin_memory()
+        else:
+            x = torch.randn(4,4)
         result = x.is_pinned()
         """
     )
