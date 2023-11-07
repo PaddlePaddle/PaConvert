@@ -1474,7 +1474,8 @@
   "torch.Tensor.is_inference": {},
   "torch.Tensor.is_meta": {},
   "torch.Tensor.is_pinned": {
-    "Matcher": "Is_PinnedMatcher"
+    "Matcher": "Is_PinnedMatcher",
+    "min_input_args": 0
   },
   "torch.Tensor.is_quantized": {},
   "torch.Tensor.is_set_to": {},
@@ -2323,7 +2324,8 @@
   },
   "torch.Tensor.pin_memory": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.pin_memory"
+    "paddle_api": "paddle.Tensor.pin_memory",
+    "min_input_args": 0
   },
   "torch.Tensor.pinverse": {
     "Matcher": "TensorFunc2PaddleFunc",

@@ -24,9 +24,7 @@ def test_case_1():
         """
         import torch
         a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = None
-        if torch.cuda.is_available():
-            result = a.pin_memory()
+        result = a.pin_memory()
         """
     )
     obj.run(pytorch_code, ["result"])
