@@ -1190,6 +1190,29 @@ class TensorTypeAsMatcher(BaseMatcher):
         return code
 
 
+class TensorTileMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_kwargs(kwargs)
+        if kwargs is None:
+            return None
+
+        if "dims" in kwargs:
+            kwargs = {"repeat_times": kwargs.pop("dims")}
+        else:
+            if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
+                perm = self.parse_args(args)
+            elif isinstance(args[0], ast.Starred):
+                perm = astor.to_source(args[0].value).strip("\n")
+            else:
+                perm = self.parse_args(args)[0]
+
+            kwargs = {"repeat_times": str(perm).replace("'", "")}
+
+        code = "{}.tile({})".format(self.paddleClass, self.kwargs_to_str(kwargs))
+        return ast.parse(code).body
+
+
 class TensorNew_Matcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
@@ -4147,3 +4170,11 @@ class SetUpMatcher(BaseMatcher):
         return ast.parse(
             "paddle.utils.cpp_extension.setup({})".format(self.kwargs_to_str(kwargs))
         )
+
+
+class Is_PinnedMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        code = f"'pinned' in str({self.paddleClass}.place)"
+
+        return code

@@ -1473,7 +1473,10 @@
   },
   "torch.Tensor.is_inference": {},
   "torch.Tensor.is_meta": {},
-  "torch.Tensor.is_pinned": {},
+  "torch.Tensor.is_pinned": {
+    "Matcher": "Is_PinnedMatcher",
+    "min_input_args": 0
+  },
   "torch.Tensor.is_quantized": {},
   "torch.Tensor.is_set_to": {},
   "torch.Tensor.is_shared": {},
@@ -2321,7 +2324,8 @@
   },
   "torch.Tensor.pin_memory": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.pin_memory"
+    "paddle_api": "paddle.Tensor.pin_memory",
+    "min_input_args": 0
   },
   "torch.Tensor.pinverse": {
     "Matcher": "GenericMatcher",
@@ -2395,7 +2399,25 @@
     ]
   },
   "torch.Tensor.qscheme": {},
-  "torch.Tensor.quantile": {},
+  "torch.Tensor.quantile": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.quantile",
+    "min_input_args": 1,
+    "args_list": [
+      "q",
+      "dim",
+      "keepdim",
+      "*",
+      "interpolation",
+      "out"
+    ],
+    "kwargs_change": {
+      "dim": "axis"
+    },
+    "unsupport_args": [
+      "interpolation "
+    ]
+  },
   "torch.Tensor.rad2deg": {
     "Matcher": "UnchangeMatcher"
   },
@@ -2937,7 +2959,10 @@
     "paddle_api": "paddle.Tensor.tanh_"
   },
   "torch.Tensor.tensor_split": {},
-  "torch.Tensor.tile": {},
+  "torch.Tensor.tile": {
+    "Matcher": "TensorTileMatcher",
+    "paddle_api": "paddle.Tensor.tile"
+  },
   "torch.Tensor.to": {
     "Matcher": "TensorToMatcher"
   },
@@ -2946,7 +2971,14 @@
     "paddle_api": "paddle.Tensor.to_dense"
   },
   "torch.Tensor.to_mkldnn": {},
-  "torch.Tensor.to_sparse": {},
+  "torch.Tensor.to_sparse": {
+    "Matcher": "GenericMatcher",
+    "min_input_args": 0,
+    "paddle_api": "paddle.Tensor.to_sparse_coo",
+    "args_list": [
+      "sparse_dim"
+    ]
+  },
   "torch.Tensor.tolist": {
     "Matcher": "UnchangeMatcher"
   },
@@ -7586,6 +7618,26 @@
     },
     "unsupport_args": [
       "dim"
+    ]
+  },
+  "torch.nanquantile": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nanquantile",
+    "args_list": [
+      "input",
+      "q",
+      "dim",
+      "keepdim",
+      "*",
+      "interpolation",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axis"
+    },
+    "unsupport_args": [
+      "interpolation "
     ]
   },
   "torch.nansum": {

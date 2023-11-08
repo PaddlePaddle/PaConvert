@@ -11,20 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.tile")
+obj = APIBase("torch.Tensor.quantile")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3., 4.])
-        result = x.tile(1)
+        x = torch.tensor([0., 1., 2., 3.],dtype=torch.float64)
+        result = x.quantile(0.6)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +35,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1., 2.], [ 3., 4.]])
-        result = x.tile(2, 1)
+        x = torch.tensor([0., 1., 2., 3.],dtype=torch.float64)
+        result = x.quantile(q=0.6)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,8 +46,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.Tensor([[1., 2.], [3., 4.]])
-        result = x.tile((2, 1))
+        x = torch.tensor([0., 1., 2., 3.],dtype=torch.float64)
+        k = 0.6
+        result = x.quantile(k)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -56,21 +58,20 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.Tensor([[1., 2.], [3., 4.]])
-        result = x.tile([2, 1])
+        x = torch.tensor([0., 1., 2., 3.],dtype=torch.float64)
+        k = 0.6
+        result = x.quantile(q=k)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# the only corner case, input a variable which is Constant, has no solution
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.Tensor([1., 2., 3., 4.])
-        dims = 1
-        result = x.tile(dims)
+        x = torch.tensor([0., 1., 2., 3.],dtype=torch.float64)
+        result = x.quantile(0.6, dim=None)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -80,9 +81,8 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.Tensor([[1., 2.], [3., 4.]])
-        dims = (2, 1)
-        result = x.tile(dims)
+        x = torch.tensor([0., 1., 2., 3.],dtype=torch.float64)
+        result = x.quantile(0.6, dim=None, keepdim=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -92,9 +92,8 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.Tensor([[1., 2.], [3., 4.]])
-        dims = (2, 1)
-        result = x.tile(*dims)
+        x = torch.tensor([0., 1., 2., 3.],dtype=torch.float64)
+        result = x.quantile(q=0.6, dim=None, keepdim=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -104,9 +103,8 @@ def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.Tensor([[1., 2.], [3., 4.]])
-        dims = (2, 1)
-        result = x.tile(dims=dims)
+        x = torch.tensor([0., 1., 2., 3.],dtype=torch.float64)
+        result = x.quantile(0.6, None, False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -116,8 +114,19 @@ def test_case_9():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.Tensor([[1., 2.], [3., 4.]])
-        result = x.tile(dims=(2, 1))
+        x = torch.tensor([0., 1., 2., 3.],dtype=torch.float64)
+        result = x.quantile(q=0.6, keepdim=False, dim=None)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 0.0795, -1.2117,  0.9765], [ 1.1707,  0.6706,  0.4884]],dtype=torch.float64)
+        result = x.quantile(0.6, dim=1, keepdim=True)
         """
     )
     obj.run(pytorch_code, ["result"])
