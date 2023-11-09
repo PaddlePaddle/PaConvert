@@ -293,26 +293,20 @@ if __name__ == "__main__":
         with open(test_data_path, "w") as f:
             json.dump(test_data, f)
 
-    for k, v in api_alias_mapping.items():
-        if v in api_mapping:
-            api_mapping[k] = api_mapping[v]
+    for alias, target in api_alias_mapping.items():
+        if target in api_mapping:
+            api_mapping[alias] = api_mapping[target]
         else:
-            # 如果都没有对应单测，跳过
-            if k not in test_data and v not in test_data:
-                pass
-            # 如果都没有对应标注，则忽略这两个单测
-            if k not in api_mapping and v not in api_mapping:
-                if k in test_data:
-                    test_data.pop(k)
-                    print(f"skip {k} from test_data because of no mapping.")
-                if v in test_data:
-                    test_data.pop(v)
-                    print(f"skip {v} from test_data because of no mapping.")
-            else:
-                ka, va = k in api_mapping, v in api_mapping
-                kd, vd = k in test_data, v in test_data
+            # 不应该单独配置 alias 的 api_mapping.json
+            if alias in api_mapping:
                 raise ValueError(
-                    f"({k}, {v}) not found in api_mapping, {ka} {va}, {kd} {vd}."
+                    f"alias {alias} should not appear in api_mapping.json."
+                )
+
+            # 没有目标的 alias 不应该有单测
+            if alias in test_data:
+                raise ValueError(
+                    f"alias {alias} is not configured but it's unittest exists."
                 )
 
     if not args.no_check:
