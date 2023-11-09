@@ -203,7 +203,7 @@ def check_call_variety(test_data, api_mapping):
                 exit(-1)
 
             if all_default is False:
-                if len(args) == min_input_args:
+                if len(args) == min_input_args and len(kwargs) == 0:
                     all_default = True
 
             # allow min_input_args not found
@@ -296,11 +296,11 @@ if __name__ == "__main__":
     for k, v in api_alias_mapping.items():
         if v in api_mapping:
             api_mapping[k] = api_mapping[v]
-        elif k in api_mapping:
-            api_mapping[v] = api_mapping[k]
         else:
+            # 如果都没有对应单测，跳过
             if k not in test_data and v not in test_data:
                 pass
+            # 如果都没有对应标注，则忽略这两个单测
             if k not in api_mapping and v not in api_mapping:
                 if k in test_data:
                     test_data.pop(k)
