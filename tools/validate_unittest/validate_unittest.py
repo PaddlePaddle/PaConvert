@@ -259,10 +259,7 @@ def check_call_variety(test_data, api_mapping):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Call Variety Check v0.1")
     parser.add_argument(
-        "path", type=str, nargs="+", help="Path to test directory or file"
-    )
-    parser.add_argument(
-        "--rerun", "-r", action="store_true", default=False, help="Rerun tests"
+        "--rerun", "-r", dest="files_or_dirs", nargs="+", help="Rerun tests"
     )
     parser.add_argument(
         "--no-check", action="store_true", default=False, help="Disable check"
@@ -284,11 +281,10 @@ if __name__ == "__main__":
         with open(test_data_path, "r") as f:
             test_data = json.load(f)
     else:
-        args.rerun = True
         test_data = {}
 
-    if args.rerun:
-        newtest_data = get_test_cases(args.path)
+    if args.files_or_dirs is not None and len(args.files_or_dirs) > 0:
+        newtest_data = get_test_cases(args.files_or_dirs)
         test_data.update(newtest_data)
         with open(test_data_path, "w") as f:
             json.dump(test_data, f)

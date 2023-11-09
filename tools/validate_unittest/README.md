@@ -5,13 +5,14 @@
 - 全部不指定关键字 `all args`
 - 全部指定关键字 `all kwargs`
 - 改变关键字顺序 `kwargs out of order`
+- 全部不指定默认值 `all default`
 
 ### 用法
 
 首次使用时，需要先构建测试数据，在项目根目录下执行：
 
 ```bash
-python tools/validate_unittest/validate_unittest.py tests
+python tools/validate_unittest/validate_unittest.py -r tests
 ```
 
 *注意：即使单测出错，也可以正常收集数据。等待全部执行完即可，会生成 `tools/validate_unittest/validation.json` 数据文件*
@@ -35,5 +36,8 @@ python tools/validate_unittest/validate_unittest.py tests
 3. 重新生成若干个单测的数据
 
     ```bash
+    # 通配符
     python tools/validate_unittest/validate_unittest.py -r tests/test_Tensor_div*
+    # 列表
+    python tools/validate_unittest/validate_unittest.py -r tests/test_Tensor_divide.py tests/test_Tensor_div.py
     ```
