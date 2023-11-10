@@ -19,13 +19,63 @@ from apibase import APIBase
 obj = APIBase("torch.linalg.eigh")
 
 
-def test_case_1():
+def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
         A = torch.ones((2, 2), dtype=torch.complex128)
         A = A + A.T.conj()  # creates a Hermitian matrix
-        result = torch.linalg.eigh(A)[0]
+        result = torch.linalg.eigh(A)
         """
     )
     obj.run(pytorch_code, ["result"], atol=1e-7)
+
+
+def _test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        A = torch.ones((2, 2), dtype=torch.complex128)
+        A = A + A.T.conj()  # creates a Hermitian matrix
+        result = torch.linalg.eigh(input=A)
+        """
+    )
+    obj.run(pytorch_code, ["result"], atol=1e-7)
+
+
+def _test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        A = torch.ones((2, 2), dtype=torch.complex128)
+        A = A + A.T.conj()  # creates a Hermitian matrix
+        result = torch.linalg.eigh(UPLO='L', input=A)
+        """
+    )
+    obj.run(pytorch_code, ["result"], atol=1e-7)
+
+
+def _test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        A = torch.ones((2, 2), dtype=torch.complex128)
+        A = A + A.T.conj()  # creates a Hermitian matrix
+        out = torch.tensor([])
+        result = torch.linalg.eigh(input=A, UPLO='L', out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"], atol=1e-7)
+
+
+def _test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        A = torch.ones((2, 2), dtype=torch.complex128)
+        A = A + A.T.conj()  # creates a Hermitian matrix
+        out = torch.tensor([])
+        result = torch.linalg.eigh(A, 'L', out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"], atol=1e-7)

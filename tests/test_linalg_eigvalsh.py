@@ -59,7 +59,7 @@ def test_case_4():
         import torch
         x = torch.tensor([[1, -2j], [2j, 5]])
         out = torch.tensor([])
-        result = torch.linalg.eigvalsh(x, UPLO="L", out=out)
+        result = torch.linalg.eigvalsh(input=x, UPLO="L", out=out)
         """
     )
     obj.run(pytorch_code, ["result", "out"])

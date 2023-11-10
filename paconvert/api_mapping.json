@@ -596,6 +596,7 @@
   "torch.Tensor.cholesky_solve": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.cholesky_solve",
+    "min_input_args": 1,
     "args_list": [
       "input2",
       "upper"
@@ -1137,12 +1138,14 @@
   },
   "torch.Tensor.float_power": {
     "Matcher": "FloatPowerMatcher",
+    "min_input_args": 1,
     "args_list": [
       "exponent"
     ]
   },
   "torch.Tensor.float_power_": {
     "Matcher": "FloatPowerInplaceMatcher",
+    "min_input_args": 1,
     "args_list": [
       "exponent"
     ]
@@ -2916,6 +2919,7 @@
   "torch.Tensor.symeig": {
     "Matcher": "SymeigMatcher",
     "paddle_api": "paddle.linalg.eigh",
+    "min_input_args": 0,
     "args_list": [
       "eigenvectors",
       "upper"
@@ -3007,6 +3011,7 @@
   "torch.Tensor.triangular_solve": {
     "Matcher": "TensorTriangularSolveMatcher",
     "paddle_api": "paddle.linalg.triangular_solve",
+    "min_input_args": 1,
     "args_list": [
       "A",
       "upper",
@@ -3768,7 +3773,8 @@
   },
   "torch.autograd.enable_grad": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.enable_grad"
+    "paddle_api": "paddle.enable_grad",
+    "min_input_args": 0
   },
   "torch.autograd.function.FunctionCtx": {
     "Matcher": "GenericMatcher",
@@ -3928,6 +3934,7 @@
   "torch.autograd.set_grad_enabled": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.set_grad_enabled",
+    "min_input_args": 1,
     "args_list": [
       "mode"
     ]
@@ -6643,6 +6650,7 @@
   "torch.linalg.eig": {
     "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.linalg.eig",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -6655,9 +6663,11 @@
   "torch.linalg.eigh": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linalg.eigh",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "UPLO",
+      "*",
       "out"
     ],
     "kwargs_change": {
@@ -6679,6 +6689,7 @@
   "torch.linalg.eigvalsh": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linalg.eigvalsh",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "UPLO",
@@ -6783,11 +6794,13 @@
   "torch.linalg.matrix_norm": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linalg.norm",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "ord",
       "dim",
       "keepdim",
+      "*",
       "dtype",
       "out"
     ],
@@ -6862,8 +6875,10 @@
   "torch.linalg.pinv": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linalg.pinv",
+    "min_input_args": 1,
     "args_list": [
       "input",
+      "*",
       "atol",
       "rtol",
       "hermitian",
@@ -6901,9 +6916,11 @@
   "torch.linalg.solve": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linalg.solve",
+    "min_input_args": 2,
     "args_list": [
       "A",
       "B",
+      "*",
       "left",
       "out"
     ],
@@ -6937,9 +6954,11 @@
   "torch.linalg.svd": {
     "Matcher": "TripleAssignMatcher",
     "paddle_api": "paddle.linalg.svd",
+    "min_input_args": 1,
     "args_list": [
       "A",
       "full_matrices",
+      "*",
       "driver",
       "out"
     ],
@@ -6985,11 +7004,13 @@
   "torch.linalg.vector_norm": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linalg.norm",
+    "min_input_args": 1,
     "args_list": [
       "x",
       "ord",
       "dim",
       "keepdim",
+      "*",
       "dtype",
       "out"
     ],
@@ -11505,6 +11526,7 @@
   "torch.pca_lowrank": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linalg.pca_lowrank",
+    "min_input_args": 1,
     "args_list": [
       "A",
       "q",
@@ -12743,10 +12765,12 @@
   "torch.symeig": {
     "Matcher": "SymeigMatcher",
     "paddle_api": "paddle.linalg.eigh",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "eigenvectors",
       "upper",
+      "*",
       "out"
     ],
     "kwargs_change": {

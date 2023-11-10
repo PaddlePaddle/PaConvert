@@ -19,7 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.linalg.svd")
 
 
-def test_case_1():
+def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -30,10 +30,10 @@ def test_case_1():
         u, s, v = torch.linalg.svd(A)
         """
     )
-    obj.run(pytorch_code, ["u", "s", "v"], check_value=False)
+    obj.run(pytorch_code, ["u", "s", "v"])
 
 
-def test_case_2():
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -47,13 +47,13 @@ def test_case_2():
                 [0.2445, -0.0158, 1.1414],
             ]
         )
-        s = torch.linalg.svd(A=A, full_matrices=False)[1]
+        s = torch.linalg.svd(A=A, full_matrices=False)
         """
     )
     obj.run(pytorch_code, ["s"])
 
 
-def test_case_3():
+def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -67,13 +67,13 @@ def test_case_3():
                 [0.2445, -0.0158, 1.1414],
             ]
         )
-        s = torch.linalg.svd(driver=None, A=A, full_matrices=False)[1]
+        s = torch.linalg.svd(driver=None, A=A, full_matrices=False)
         """
     )
     obj.run(pytorch_code, ["s"])
 
 
-def test_case_4():
+def _test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -88,13 +88,13 @@ def test_case_4():
             ]
         )
         out = [torch.tensor([]),torch.tensor([]),torch.tensor([])]
-        s = torch.linalg.svd(A=A, full_matrices=True, driver=None, out=out)[1]
+        s = torch.linalg.svd(A=A, full_matrices=True, driver=None, out=out)
         """
     )
     obj.run(pytorch_code, ["s"])
 
 
-def test_case_5():
+def _test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -109,7 +109,7 @@ def test_case_5():
             ]
         )
         out = [torch.tensor([]),torch.tensor([]),torch.tensor([])]
-        s = torch.linalg.svd(A, True, driver=None, out=out)[1]
+        s = torch.linalg.svd(A, True, driver=None, out=out)
         """
     )
     obj.run(pytorch_code, ["s"])

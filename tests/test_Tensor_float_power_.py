@@ -27,7 +27,7 @@ def test_case_1():
         result = x.float_power_(2)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "x"])
 
 
 def test_case_2():
@@ -38,7 +38,7 @@ def test_case_2():
         result = x.float_power_(exponent=2)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "x"])
 
 
 def test_case_3():

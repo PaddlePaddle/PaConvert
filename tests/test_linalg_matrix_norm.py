@@ -53,7 +53,7 @@ def test_case_3():
                 [0.24831591, 0.45733623, 0.07717843],
                 [0.48016702, 0.14235102, 0.42620817]])
         out = torch.tensor([])
-        result = torch.linalg.matrix_norm(input=x, dtype=torch.float32, ord='fro', out=out)
+        result = torch.linalg.matrix_norm(input=x, keepdim=True, dtype=torch.float32, ord='fro', dim=(-2, -1), out=out)
         """
     )
     obj.run(pytorch_code, ["result", "out"])

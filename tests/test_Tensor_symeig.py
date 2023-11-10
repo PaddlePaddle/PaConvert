@@ -50,3 +50,14 @@ def _test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def _test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, -2j], [2j, 5]])
+        result = x.symeig(True, True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
