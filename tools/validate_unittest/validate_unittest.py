@@ -34,7 +34,10 @@ whitelist_pattern = [
     r"^test_hub_download_url_to_file\.py",  # 要下载，费时间，先跳过了
     r"^test_(\w*)Tensor\.py",  # 特殊类构造函数，api_mapping.json 不合用，跳过
     r"^test_Size\.py",  # api_mapping.json 不合用
-    r"^test_nn_ParameterList\.py",  # 该文件没有测试 torch.nn.ParameterList
+    r"^test_nn_ParameterList\.py",  # 该文件没有测试 torch.nn.ParameterLisaa
+    r"^test_utils_cpp_extension_BuildExtension\.py",  # 该文件测试的 api 没有调用
+    r"^test_utils_data_Sampler\.py",  # 该文件测试时仅将 api 作为基类继承
+    r"^test_utils_data_SequentialSampler\.py",  # 该文件测试时仅将 api 作为基类继承
 ]
 
 
@@ -89,7 +92,7 @@ def extract_api_name(api, code: str):
     api_seg = api.split(".")
     for i in range(len(api_seg)):
         api_nickname = ".".join(api_seg[i:])
-        pattern = rf"\b{re.escape(api_nickname)}\b"
+        pattern = rf"\b{re.escape(api_nickname)}\b\("
         matched = re.search(pattern, code)
         if matched:
             return api_nickname
@@ -100,7 +103,8 @@ def extract_api_name(api, code: str):
 def extract_params_from_invoking(api, code: str):
     args, kwargs = [], []
     api_name = extract_api_name(api, code)
-    pattern = rf"\b{re.escape(api_name)}\b"
+    # 这个 pattern 假设 api 调用时一定跟着括号，不然会出错
+    pattern = rf"\b{re.escape(api_name)}\b\("
     idx = re.search(pattern, code).start()
     assert idx >= 0, f"api_name {api_name} must exists."
 
@@ -127,10 +131,10 @@ def extract_params_from_invoking(api, code: str):
                         assert (
                             key not in kwargs
                         ), f"duplicated key {key} in {repr(code)}"
-                        kwargs.append((key, value))
+                        kwargs.append((key.strip(), value.strip()))
                         key = None
                     else:
-                        args.append(value)
+                        args.append(value.strip())
                 idx = i + 1
             if c == ")":
                 assert (
@@ -178,7 +182,13 @@ def check_call_variety(test_data, api_mapping):
 
         min_input_args = mapping_data.get("min_input_args", -1)
 
-        args_list = mapping_data.get("args_list", [])
+        args_list_full = mapping_data.get("args_list", [])
+
+        # 这里只移除了不支持的参数，但是事实上，移除不支持的参数会影响其他检查，如
+        # (a, b, c, d) 中移除了 (c)，那么不指定关键字最多只能传入 a、b
+        unsupport_args = mapping_data.get("unsupport_args", [])
+        args_list = [arg for arg in args_list_full if arg not in unsupport_args]
+
         args_list_without_key = (
             args_list.copy()
             if "*" not in args_list

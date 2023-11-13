@@ -199,6 +199,7 @@ class APIBase(object):
                 paddle_result.numpy(False),
             )
         else:
+            print(pytorch_result, paddle_result)
             (
                 pytorch_numpy,
                 paddle_numpy,
