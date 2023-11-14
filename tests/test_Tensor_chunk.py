@@ -70,3 +70,23 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.ones(4, 6).chunk(2, 0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.ones(4, 6).chunk(dim=0, chunks=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

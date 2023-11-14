@@ -46,7 +46,7 @@ def test_case_3():
         """
         import torch
         try:
-            a = torch.tensor([[-4, 9], [-23, 2]])
+            a = torch.tensor([[-4, 9], [-23, 2]]).absolute()
             assert 0, "Raise AssertionError"
         except Exception as e:
             error_msg = str(e)
@@ -60,7 +60,7 @@ def test_case_4():
         """
         import torch
         try:
-            a = torch.tensor([[-4, 9], [-23, 2]])
+            a = torch.tensor([[-4, 9], [-23, 2]]).absolute()
             assert 0, "Raise AssertionError"
         except Exception as e:
             error_msg = str(e)

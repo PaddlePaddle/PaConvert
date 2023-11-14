@@ -46,7 +46,7 @@ def test_case_3():
         """
         import torch
         t = torch.tensor([ 0.0000,  0.2500, -0.5000, -0.2500])
-        result = torch.fft.fftshift(t, (0,))
+        result = torch.fft.ifftshift(t, (0,))
         """
     )
     obj.run(pytorch_code, ["result"])

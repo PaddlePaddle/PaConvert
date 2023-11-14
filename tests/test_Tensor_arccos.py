@@ -17,7 +17,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.arccos")
+obj = APIBase("torch.Tensor.arccos")
 
 
 def test_case_1():

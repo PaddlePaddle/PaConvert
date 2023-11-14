@@ -63,3 +63,14 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        y = torch.tensor([False, False, True])
+        result = torch.tensor([True, False, True]).bitwise_xor(other=y)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

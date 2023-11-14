@@ -11,56 +11,68 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.unfold")
+obj = APIBase("torch.trapz")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.arange(1., 8)
-        results = x.unfold(0, 2, 1)
+        y = torch.tensor([1.0, 1, 1, 0, 1])
+        result = torch.trapz(y)
         """
     )
-    obj.run(pytorch_code, ["results"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.arange(1., 8)
-        results = x.unfold(0, 2, 2)
+        y = torch.tensor([1, 1, 1, 0, 1]).type(torch.float32)
+        x = torch.tensor([1, 2, 3, 0, 1]).type(torch.float32)
+        result = torch.trapz(y=y, x=x)
         """
     )
-    obj.run(pytorch_code, ["results"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.arange(1., 8)
-        dimension = 0
-        size = 2
-        step = 1
-        results = x.unfold(dimension, size, step)
+        y = torch.tensor([1, 1, 1, 0, 1]).type(torch.float32)
+        x = torch.tensor([1, 2, 3, 0, 1]).type(torch.float32)
+        result = torch.trapz(y=y, dim=-1, dx=2)
         """
     )
-    obj.run(pytorch_code, ["results"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.arange(1., 8)
-        results = x.unfold(dimension = 0, size = 2, step = 2)
+        y = torch.tensor([1, 1, 1, 0, 1]).type(torch.float32)
+        x = torch.tensor([1, 2, 3, 0, 1]).type(torch.float32)
+        result = torch.trapz(y, dx=2, dim=-1)
         """
     )
-    obj.run(pytorch_code, ["results"])
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        y = torch.tensor([1, 1, 1, 0, 1]).type(torch.float32)
+        x = torch.tensor([1, 2, 3, 0, 1]).type(torch.float32)
+        result = torch.trapz(y=y, x=x, dim=-1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
