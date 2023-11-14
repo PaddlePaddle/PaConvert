@@ -1367,7 +1367,7 @@ class TensorCopy_Matcher(BaseMatcher):
             paddle.assign({}, output={})
             """
         )
-        code = API_TEMPLATE.format(kwargs["src"], self.paddleClass)
+        code = API_TEMPLATE.format(kwargs["other"], self.paddleClass)
         return code
 
 
