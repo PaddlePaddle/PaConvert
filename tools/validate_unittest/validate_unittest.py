@@ -317,6 +317,7 @@ if __name__ == "__main__":
 
     if not args.no_check:
         report = check_call_variety(test_data, api_mapping)
+        sorted_report = dict(sorted(report.items(), key=lambda x: x[0]))
 
         if args.report:
             report_outpath = os.path.join(output_dir, "validation_report.md")
@@ -339,7 +340,7 @@ if __name__ == "__main__":
                     None: "⚠️",
                 }
 
-                for api, data in report.items():
+                for api, data in sorted_report.items():
                     f.write(
                         f'| {api} | {" | ".join([item2desc_dict[data[k]] for k in columns[1:]])} |\n'
                     )
