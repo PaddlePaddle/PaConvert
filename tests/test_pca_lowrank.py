@@ -20,15 +20,18 @@ obj = APIBase("torch.pca_lowrank")
 ATOL = 1e-7
 
 
+# Notice: In paddle, the cpu version and the gpu version symbols are different.
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
         x = torch.tensor([[1.0, -2], [2, 5]])
         u, s, v = torch.pca_lowrank(x)
+        u = torch.abs(u)
+        v = torch.abs(v)
         """
     )
-    obj.run(pytorch_code, ["s"], atol=ATOL)
+    obj.run(pytorch_code, ["u", "s", "v"], atol=ATOL)
 
 
 def test_case_2():
@@ -37,9 +40,11 @@ def test_case_2():
         import torch
         x = torch.tensor([[1.0, -2], [2, 5]])
         u, s, v = torch.pca_lowrank(A=x)
+        u = torch.abs(u)
+        v = torch.abs(v)
         """
     )
-    obj.run(pytorch_code, ["s"], atol=ATOL)
+    obj.run(pytorch_code, ["u", "s", "v"], atol=ATOL)
 
 
 def test_case_3():
@@ -49,9 +54,11 @@ def test_case_3():
         x = torch.tensor([[1.0, -2], [2, 5]])
         out = torch.tensor([])
         u, s, v = torch.pca_lowrank(niter=2, A=x)
+        u = torch.abs(u)
+        v = torch.abs(v)
         """
     )
-    obj.run(pytorch_code, ["s"], atol=ATOL)
+    obj.run(pytorch_code, ["u", "s", "v"], atol=ATOL)
 
 
 def test_case_4():
@@ -61,9 +68,11 @@ def test_case_4():
         x = torch.tensor([[1.0, -2], [2, 5]])
         out = torch.tensor([])
         u, s, v = torch.pca_lowrank(A=x, q=None, center=True, niter=2)
+        u = torch.abs(u)
+        v = torch.abs(v)
         """
     )
-    obj.run(pytorch_code, ["s"], atol=ATOL)
+    obj.run(pytorch_code, ["u", "s", "v"], atol=ATOL)
 
 
 def test_case_5():
@@ -72,6 +81,8 @@ def test_case_5():
         import torch
         x = torch.tensor([[1.0, -2], [2, 5]])
         u, s, v = torch.pca_lowrank(x, None, True, 2)
+        u = torch.abs(u)
+        v = torch.abs(v)
         """
     )
-    obj.run(pytorch_code, ["s"], atol=ATOL)
+    obj.run(pytorch_code, ["u", "s", "v"], atol=ATOL)
