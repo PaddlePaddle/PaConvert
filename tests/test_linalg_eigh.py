@@ -19,63 +19,72 @@ from apibase import APIBase
 obj = APIBase("torch.linalg.eigh")
 
 
-def _test_case_1():
+# Notice: In paddle, the cpu version and the gpu version symbols are different.
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
         A = torch.ones((2, 2), dtype=torch.complex128)
         A = A + A.T.conj()  # creates a Hermitian matrix
         result = torch.linalg.eigh(A)
+        result = [result[0], torch.abs(result[1])]
         """
     )
     obj.run(pytorch_code, ["result"], atol=1e-7)
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
         A = torch.ones((2, 2), dtype=torch.complex128)
         A = A + A.T.conj()  # creates a Hermitian matrix
         result = torch.linalg.eigh(input=A)
+        result = [result[0], torch.abs(result[1])]
         """
     )
     obj.run(pytorch_code, ["result"], atol=1e-7)
 
 
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
         A = torch.ones((2, 2), dtype=torch.complex128)
         A = A + A.T.conj()  # creates a Hermitian matrix
         result = torch.linalg.eigh(UPLO='L', input=A)
+        result = [result[0], torch.abs(result[1])]
         """
     )
     obj.run(pytorch_code, ["result"], atol=1e-7)
 
 
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
         A = torch.ones((2, 2), dtype=torch.complex128)
         A = A + A.T.conj()  # creates a Hermitian matrix
-        out = torch.tensor([])
+        result = torch.linalg.eigh(input=A, UPLO='L')
+        out = [torch.tensor([], dtype=torch.float64),torch.tensor([], dtype=torch.complex128)]
         result = torch.linalg.eigh(input=A, UPLO='L', out=out)
+        result = [result[0], torch.abs(result[1])]
+        out = [out[0], torch.abs(out[1])]
         """
     )
     obj.run(pytorch_code, ["result", "out"], atol=1e-7)
 
 
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
         A = torch.ones((2, 2), dtype=torch.complex128)
         A = A + A.T.conj()  # creates a Hermitian matrix
-        out = torch.tensor([])
-        result = torch.linalg.eigh(A, 'L', out)
+        out = [torch.tensor([], dtype=torch.float64),torch.tensor([], dtype=torch.complex128)]
+        result = torch.linalg.eigh(A, 'L', out=out)
+        result = [result[0], torch.abs(result[1])]
+        out = [out[0], torch.abs(out[1])]
         """
     )
     obj.run(pytorch_code, ["result", "out"], atol=1e-7)

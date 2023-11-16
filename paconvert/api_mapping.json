@@ -6661,7 +6661,7 @@
     }
   },
   "torch.linalg.eigh": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.linalg.eigh",
     "min_input_args": 1,
     "args_list": [

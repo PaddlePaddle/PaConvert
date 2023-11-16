@@ -19,7 +19,8 @@ from apibase import APIBase
 obj = APIBase("torch.linalg.svd")
 
 
-def _test_case_1():
+# Notice: In paddle, the cpu version and the gpu version symbols are different.
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -28,12 +29,15 @@ def _test_case_1():
             [[1.0, 2.0], [1.0, 3.0], [4.0, 6.0]]
         )
         u, s, v = torch.linalg.svd(A)
+        # Symbols are different
+        u = torch.abs(u)
+        v = torch.abs(v)
         """
     )
-    obj.run(pytorch_code, ["u", "s", "v"])
+    obj.run(pytorch_code, ["u", "s", "v"], atol=1e-5)
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -47,13 +51,16 @@ def _test_case_2():
                 [0.2445, -0.0158, 1.1414],
             ]
         )
-        s = torch.linalg.svd(A=A, full_matrices=False)
+        u, s, v = torch.linalg.svd(A=A, full_matrices=False)
+        # Symbols are different
+        u = torch.abs(u)
+        v = torch.abs(v)
         """
     )
-    obj.run(pytorch_code, ["s"])
+    obj.run(pytorch_code, ["u", "s", "v"], atol=1e-5)
 
 
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -67,13 +74,16 @@ def _test_case_3():
                 [0.2445, -0.0158, 1.1414],
             ]
         )
-        s = torch.linalg.svd(driver=None, A=A, full_matrices=False)
+        u, s, v = torch.linalg.svd(driver=None, A=A, full_matrices=False)
+        # Symbols are different
+        u = torch.abs(u)
+        v = torch.abs(v)
         """
     )
-    obj.run(pytorch_code, ["s"])
+    obj.run(pytorch_code, ["u", "s", "v"], atol=1e-5)
 
 
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -88,13 +98,18 @@ def _test_case_4():
             ]
         )
         out = [torch.tensor([]),torch.tensor([]),torch.tensor([])]
-        s = torch.linalg.svd(A=A, full_matrices=True, driver=None, out=out)
+        u, s, v = torch.linalg.svd(A=A, full_matrices=True, driver=None, out=out)
+        # Symbols are different
+        u = torch.abs(u)
+        v = torch.abs(v)
+        out[0] = torch.abs(out[0])
+        out[2] = torch.abs(out[2])
         """
     )
-    obj.run(pytorch_code, ["s"])
+    obj.run(pytorch_code, ["u", "s", "v", "out"], atol=1e-5)
 
 
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -109,7 +124,12 @@ def _test_case_5():
             ]
         )
         out = [torch.tensor([]),torch.tensor([]),torch.tensor([])]
-        s = torch.linalg.svd(A, True, driver=None, out=out)
+        u, s, v = torch.linalg.svd(A, True, driver=None, out=out)
+        # Symbols are different
+        u = torch.abs(u)
+        v = torch.abs(v)
+        out[0] = torch.abs(out[0])
+        out[2] = torch.abs(out[2])
         """
     )
-    obj.run(pytorch_code, ["s"])
+    obj.run(pytorch_code, ["u", "s", "v", "out"], atol=1e-5)

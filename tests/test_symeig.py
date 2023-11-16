@@ -72,6 +72,8 @@ def _test_case_5():
         x = torch.tensor([[1, -2j], [2j, 5]])
         out = [torch.tensor([]), torch.tensor([], dtype=torch.complex64)]
         result = torch.symeig(x, True, True, out=out)
+        result = [result[0], torch.abs(result[1])]
+        out = [out[0], torch.abs(out[1])]
         """
     )
-    obj.run(pytorch_code, ["result", "out"])
+    obj.run(pytorch_code, ["result", "out"], atol=1e-7)
