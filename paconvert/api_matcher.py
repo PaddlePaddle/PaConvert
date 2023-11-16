@@ -443,6 +443,75 @@ class TransposeMatcher(BaseMatcher):
         return code
 
 
+class BroadcastTensorsMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        if len(args) == 1 and isinstance(args[0], ast.Starred):
+            star_var = astor.to_source(args[0].value).strip("\n")
+            code = "{}({})".format(self.get_paddle_api(), star_var)
+        else:
+            new_args = self.parse_args(args)
+            code = "{}([{}])".format(self.get_paddle_api(), ",".join(new_args))
+        return ast.parse(code).body
+
+
+class BroadcastShapesMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        if len(args) == 1 and isinstance(args[0], ast.Starred):
+            return None
+        new_args = self.parse_args(args)
+        code = new_args[0]
+        # Call the paddle.broadcast_shape multiple times
+        for i in range(1, len(new_args)):
+            code = "{}({}, {})".format(self.get_paddle_api(), code, new_args[i])
+        return ast.parse(code).body
+
+
+class IInfoMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def _STR_2_PADDLE_DTYPE(type):
+                type_map = {
+                        "int32": paddle.int32,
+                        "uint8": paddle.uint8,
+                        "int8": paddle.int8,
+                        "int16": paddle.int16,
+                        "int32": paddle.int32,
+                        "int64": paddle.int64,
+                        "float16": paddle.float16,
+                        "float32": paddle.float32,
+                        "float64": paddle.float64,
+                        "bfloat16": paddle.bfloat16,
+                        }
+                return type_map.get(type)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        type = kwargs.pop("type")
+        return "{}(paddle_aux._STR_2_PADDLE_DTYPE({}))".format(
+            self.get_paddle_api(), type
+        )
+
+
+class SmoothL1LossMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        kwargs = self.parse_kwargs(kwargs)
+        beta = kwargs.get("beta", None)
+        if beta is not None:
+            beta = beta.replace("(", "").replace(")", "")
+            try:
+                beta = float(beta)
+                if float(beta) != 1.0:
+                    return None
+            except:
+                return None
+        code = SizeAverageMatcher.generate_code(self, kwargs)
+        return ast.parse(code).body
+
+
 class SwapAxesMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" not in kwargs:
@@ -1121,6 +1190,29 @@ class TensorTypeAsMatcher(BaseMatcher):
         return code
 
 
+class TensorTileMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_kwargs(kwargs)
+        if kwargs is None:
+            return None
+
+        if "dims" in kwargs:
+            kwargs = {"repeat_times": kwargs.pop("dims")}
+        else:
+            if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
+                perm = self.parse_args(args)
+            elif isinstance(args[0], ast.Starred):
+                perm = astor.to_source(args[0].value).strip("\n")
+            else:
+                perm = self.parse_args(args)[0]
+
+            kwargs = {"repeat_times": str(perm).replace("'", "")}
+
+        code = "{}.tile({})".format(self.paddleClass, self.kwargs_to_str(kwargs))
+        return ast.parse(code).body
+
+
 class TensorNew_Matcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
@@ -1269,22 +1361,6 @@ class CudnnIsAvailableMatcher(BaseMatcher):
         return code
 
 
-class BatchNormMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "momentum" in kwargs:
-            kwargs["momentum"] = f"1 - {kwargs.pop('momentum')}"
-
-        if "affine" in kwargs:
-            kwargs["weight_attr"] = f"None if {kwargs['affine']} else False"
-            kwargs["bias_attr"] = f"None if {kwargs.pop('affine')} else False"
-
-        if "track_running_stats" in kwargs:
-            kwargs["use_global_stats"] = f"not {kwargs.pop('track_running_stats')}"
-
-        code = GenericMatcher.generate_code(self, kwargs)
-        return code
-
-
 class SplitMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -1383,7 +1459,7 @@ class TensorCopy_Matcher(BaseMatcher):
             paddle.assign({}, output={})
             """
         )
-        code = API_TEMPLATE.format(kwargs["src"], self.paddleClass)
+        code = API_TEMPLATE.format(kwargs["other"], self.paddleClass)
         return code
 
 
@@ -1982,13 +2058,11 @@ class IndexCopyMatcher(BaseMatcher):
         return code
 
 
-class InstanceNormMatcher(BaseMatcher):
+class ReverseMomentumMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "momentum" in kwargs:
-            momentum = kwargs["momentum"]
-        else:
-            momentum = 0.1
-        kwargs["momentum"] = f"1-{momentum}"
+            kwargs["momentum"] = f"1 - {kwargs.pop('momentum')}"
+
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -2631,40 +2705,6 @@ class FSoftMinMatcher(BaseMatcher):
         kwargs["input"] = f"-{kwargs['input']}"
 
         return GenericMatcher.generate_code(self, kwargs)
-
-
-class FBatchNormMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        kwargs["x"] = kwargs.pop("input")
-        if "eps" in kwargs:
-            kwargs["epsilon"] = kwargs.pop("eps")
-        if "momentum" in kwargs:
-            kwargs["momentum"] = "1 - " + kwargs["momentum"]
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {}({})
-            """
-        )
-        code = API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-
-        return code
-
-
-class FInstanceNormMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        kwargs["x"] = kwargs.pop("input")
-        if "momentum" in kwargs:
-            kwargs["momentum"] = "1 - " + kwargs["momentum"]
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {}({})
-            """
-        )
-        code = API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-
-        return code
 
 
 class MSortMatcher(BaseMatcher):
@@ -3497,31 +3537,6 @@ class ParameterMatcher(BaseMatcher):
         return code
 
 
-class Modules_BatchNormBaseMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "momentum" in kwargs:
-            momentum = kwargs["momentum"]
-        else:
-            momentum = 0.1
-        kwargs["momentum"] = f"1-{momentum}"
-
-        if "affine" not in kwargs:
-            kwargs["weight_attr"] = None
-            kwargs["bias_attr"] = None
-        else:
-            kwargs[
-                "weight_attr"
-            ] = f"None if ({kwargs['affine']} is None or {kwargs['affine']}) else False"
-            kwargs[
-                "bias_attr"
-            ] = f"None if ({kwargs['affine']} is None or {kwargs['affine']}) else False"
-
-        if "track_running_stats" in kwargs:
-            kwargs["use_global_stats"] = kwargs.pop("track_running_stats")
-
-        return GenericMatcher.generate_code(self, kwargs)
-
-
 class TensorTakeMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -4203,3 +4218,11 @@ class SetUpMatcher(BaseMatcher):
         return ast.parse(
             "paddle.utils.cpp_extension.setup({})".format(self.kwargs_to_str(kwargs))
         )
+
+
+class Is_PinnedMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        code = f"'pinned' in str({self.paddleClass}.place)"
+
+        return code

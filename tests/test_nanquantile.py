@@ -12,21 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.BatchNorm1d")
+obj = APIBase("torch.nanquantile")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
-        import torch.nn as nn
         import torch
-        m = torch.nn.BatchNorm1d(5, affine=False)
-        input = torch.arange(10, dtype=torch.float32).reshape(2, 5)
-        result = m(input)
+        x = torch.tensor([1.02, 2.21, 3.333, 30], dtype=torch.float64)
+        result = torch.nanquantile(x, 0.5)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,11 +34,9 @@ def test_case_1():
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
-        import torch.nn as nn
         import torch
-        m = torch.nn.BatchNorm1d(5, affine=False, eps=1e-5)
-        input = torch.arange(10, dtype=torch.float32).reshape(2, 5)
-        result = m(input)
+        x = torch.tensor([float('nan'), 2.21, 3.333, 30], dtype=torch.float64)
+        result = torch.nanquantile(x, 0.6, dim=0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -48,11 +45,9 @@ def test_case_2():
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
-        import torch.nn as nn
         import torch
-        m = torch.nn.BatchNorm1d(5, 1e-5, 0.2, affine=False)
-        input = torch.arange(10, dtype=torch.float32).reshape(2, 5)
-        result = m(input)
+        x = torch.tensor([float('nan'), 1.02, 2.21, 3.333,30, float('nan')], dtype=torch.float64)
+        result = torch.nanquantile(x, q=0.3, dim=-1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -61,11 +56,9 @@ def test_case_3():
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
-        import torch.nn as nn
         import torch
-        m = torch.nn.BatchNorm1d(5, 1e-5, 0.2, affine=True)
-        input = torch.arange(10, dtype=torch.float32).reshape(2, 5)
-        result = m(input)
+        x = torch.tensor([[float('nan'), 1.02, 2.21, 3.333,30, float('nan')]], dtype=torch.float64)
+        result = torch.nanquantile(x, q=0.3, dim=1, keepdim=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -74,11 +67,9 @@ def test_case_4():
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
-        import torch.nn as nn
         import torch
-        m = torch.nn.BatchNorm1d(5, 1e-5, 0.2, affine=True, track_running_stats=True)
-        input = torch.arange(10, dtype=torch.float32).reshape(2, 5)
-        result = m(input)
+        x = torch.tensor([[float('nan'), 1.02, 2.21, 3.333,30, float('nan')]], dtype=torch.float64)
+        result = torch.nanquantile(x, q=0.3, dim=1, keepdim=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -87,12 +78,9 @@ def test_case_5():
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """
-        import torch.nn as nn
         import torch
-        a = False
-        m = torch.nn.BatchNorm1d(5, affine=a)
-        input = torch.arange(10, dtype=torch.float32).reshape(2, 5)
-        result = m(input)
+        x = torch.tensor([[float('nan'), 1.02, 2.21, 3.333,30, float('nan')]], dtype=torch.float64)
+        result = torch.nanquantile(input=x, q=0.3, dim=1, keepdim=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -101,12 +89,9 @@ def test_case_6():
 def test_case_7():
     pytorch_code = textwrap.dedent(
         """
-        import torch.nn as nn
         import torch
-        a = True
-        m = torch.nn.BatchNorm1d(5, 1e-5, 0.2, affine=a, track_running_stats=True)
-        input = torch.arange(10, dtype=torch.float32).reshape(2, 5)
-        result = m(input)
+        x = torch.tensor([[0]], dtype=torch.float64)
+        result = torch.nanquantile(x, 0.3, 1, True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -115,12 +100,26 @@ def test_case_7():
 def test_case_8():
     pytorch_code = textwrap.dedent(
         """
-        import torch.nn as nn
         import torch
-        a = True
-        m = torch.nn.BatchNorm1d(5, 1e-5, 0.2, affine=a, track_running_stats=True, dtype=torch.float32)
-        input = torch.arange(10, dtype=torch.float32).reshape(2, 5)
-        result = m(input)
+        x = torch.tensor([float('nan'), 1.02, 2.21, 3.333,30, float('nan')], dtype=torch.float64)
+        result = torch.tensor([1], dtype=torch.float64)
+        torch.nanquantile(x, 0.3, -1, True, out=result)
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0]], dtype=torch.float64)
+        result = torch.nanquantile(x=x, q=0.3, dim=1, keepdim=True, interpolation='higher')
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Paddle not support this parameter",
+    )

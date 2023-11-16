@@ -68,3 +68,30 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([], dtype=torch.float64)
+        torch.quantile(torch.tensor([[ 0.0795, -1.2117,  0.9765], [ 1.1707,  0.6706,  0.4884]],dtype=torch.float64), 0.6, dim=1, keepdim=True, out=result)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 0.0795, -1.2117,  0.9765], [ 1.1707,  0.6706,  0.4884]], dtype=torch.float64)
+        result = torch.quantile(x=x, q=0.3, dim=1, keepdim=True, interpolation='higher')
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Paddle not support this parameter",
+    )

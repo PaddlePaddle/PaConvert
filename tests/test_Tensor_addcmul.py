@@ -72,3 +72,31 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        tensor1 = torch.tensor([1., 2., 3.])
+        tensor2 = torch.tensor([4., 5., 6.])
+        input = torch.tensor([7., 8., 9.])
+        value = 5
+        result = input.addcmul(tensor1=tensor1, tensor2=tensor2, value=value)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        tensor1 = torch.tensor([1., 2., 3.])
+        tensor2 = torch.tensor([4., 5., 6.])
+        input = torch.tensor([7., 8., 9.])
+        value = 5
+        result = input.addcmul(tensor1=tensor1, value=value, tensor2=tensor2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

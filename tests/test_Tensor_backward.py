@@ -60,3 +60,33 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[[4., 5., 6.], [1., 2., 3.]]], requires_grad=True)
+        out = a ** 2
+        gradient = torch.tensor(2.0)
+        out.sum().backward(gradient, True)
+        a.grad = torch.tensor(a.grad, requires_grad=True)
+        result = a.grad
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[[4., 5., 6.], [1., 2., 3.]]], requires_grad=True)
+        out = a ** 2
+        gradient = torch.tensor(2.0)
+        out.sum().backward(retain_graph=True, gradient=gradient)
+        a.grad = torch.tensor(a.grad, requires_grad=True)
+        result = a.grad
+        """
+    )
+    obj.run(pytorch_code, ["result"])

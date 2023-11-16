@@ -33,7 +33,7 @@ def test_case_2():
         """
         import torch
         a = torch.tensor([1])
-        result = torch.abs(a)
+        result = torch.is_nonzero(a)
         """
     )
     obj.run(pytorch_code, ["result"])

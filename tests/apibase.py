@@ -174,7 +174,7 @@ class APIBase(object):
                 )
             return
 
-        if isinstance(pytorch_result, (bool, np.number, int, str, type(None))):
+        if isinstance(pytorch_result, (bool, np.number, int, float, str, type(None))):
             assert type(paddle_result) == type(
                 pytorch_result
             ), "paddle result's type [{}] should be the same with pytorch's type [{}]".format(
@@ -199,6 +199,7 @@ class APIBase(object):
                 paddle_result.numpy(False),
             )
         else:
+            print(pytorch_result, paddle_result)
             (
                 pytorch_numpy,
                 paddle_numpy,

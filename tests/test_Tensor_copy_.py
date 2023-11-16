@@ -53,3 +53,39 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([1., 2., 3., 4., 5., 6.])
+        dst = torch.tensor([2., 2., 3., 4., 5., 6.])
+        result = src.copy_(dst, True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([1., 2., 3., 4., 5., 6.])
+        dst = torch.tensor([2., 2., 3., 4., 5., 6.])
+        result = src.copy_(other=dst, non_blocking=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([1., 2., 3., 4., 5., 6.])
+        dst = torch.tensor([2., 2., 3., 4., 5., 6.])
+        result = src.copy_(non_blocking=True, other=dst)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
