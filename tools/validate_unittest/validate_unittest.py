@@ -58,16 +58,20 @@ class RecordAPIRunPlugin:
         self.whitelist_re = [re.compile(p) for p in whitelist_pattern]
         originapi = apibase.APIBase.run
 
-        def update_record(api, code):
-            records = self.collected_items.get(api, [])
-            records.append(code)
+        def update_record(api, code, unsupport=False):
+            sub_title = "code" if not unsupport else "unsupport"
+            records = self.collected_items.get(api, {})
+            sub_records = records.get(sub_title, [])
+            sub_records.append(code)
+            records.update({sub_title: sub_records})
             self.collected_items.update({api: records})
 
         def record_and_run(self, *args, **kwargs):
             pytorch_api = self.pytorch_api
             assert len(args) > 0
             pytorch_code = args[0]
-            update_record(pytorch_api, pytorch_code)
+            unsupport = kwargs.get("unsupport", False)
+            update_record(pytorch_api, pytorch_code, unsupport)
             return originapi(self, *args, **kwargs)
 
         monkeypatch.setattr(apibase.APIBase, "run", record_and_run)
@@ -120,7 +124,14 @@ def extract_params_from_invoking(api, code: str):
             if len(pair_stack) == 1 and c == "(":
                 idx = i + 1
         elif c == "=":
-            if len(pair_stack) == 1:
+            # 如果是 "=="，这是合法的，不做等号处理
+            if code[i + 1] == "=" or code[i - 1] == "=":
+                pass
+            # <=、>=、!= 也是合法的，不做等号处理
+            elif code[i - 1] in "<>!":
+                pass
+            # 如果是单个等号，那就作为关键字参数处理
+            elif len(pair_stack) == 1:
                 key = code[idx:i]
                 idx = i + 1
         elif c == "," or c == ")" or c == "]":
@@ -146,6 +157,10 @@ def extract_params_from_invoking(api, code: str):
             elif c == "]":
                 assert pair_stack[-1] == "[", f"Unpaired in {repr(code)}"
                 pair_stack.pop()
+        elif code[i : i + 7] == "lambda ":
+            pair_stack.append("lambda")
+        elif c == ":" and pair_stack[-1] == "lambda":
+            pair_stack.pop()
 
     if len(pair_stack) != 0:
         raise ValueError(f"Unpaired in {repr(code)}")
@@ -167,43 +182,84 @@ def match_subsequence(pattern, obj):
     return j == len(obj)
 
 
-def check_call_variety(test_data, api_mapping):
+def check_call_variety(test_data, api_mapping, verbose=True):
     report = {}
-    for api, code_list in test_data.items():
+    for api, unittest_data in test_data.items():
         if api not in api_mapping:
-            print(f"api {api} not found in api_mapping")
+            if "code" not in unittest_data:
+                if verbose:
+                    print(f"SKIP: api {api} is not prepared, skip validations.")
+            else:
+                print(f"WARNING: api {api} not found in api_mapping")
             continue
 
         mapping_data = api_mapping[api]
 
+        if "code" not in unittest_data:
+            "如果 = 0，说明该 api 只是占位符"
+            if len(mapping_data) > 0 and "Matcher" in mapping_data:
+                print(f"WARNING: api {api} has no unittest.")
+            continue
+
+        callable = mapping_data.get("callable", True)
+        if not callable:
+            print(f"SKIP: api {api} is not callable, skip validations.")
+            continue
+
+        abstract = mapping_data.get("abstract", False)
+        if abstract:
+            print(f"SKIP: api {api} is abstract, skip validations.")
+            continue
+
         if "args_list" not in mapping_data:
-            print(f"{api} has no mapping data 'args_list'.")
+            print(f"WARNING: {api} has no mapping data 'args_list'.")
             continue
 
         min_input_args = mapping_data.get("min_input_args", -1)
 
         args_list_full = mapping_data.get("args_list", [])
 
+        var_arg_name = None
+        var_kwarg_name = None
+
+        _args_list_position_end = len(args_list_full)
+        args_list_full_keyword = []
+        is_token = lambda x: x.isalpha() or x == "_"
+        for i, arg in enumerate(args_list_full):
+            if arg.startswith("*"):
+                _args_list_position_end = min(_args_list_position_end, i)
+                if arg.startswith("**"):
+                    if len(arg) > 2 and not is_token(arg[2]):
+                        raise ValueError(f'api {api} has unexpected arg "{arg}".')
+                    # 允许匿名可变参数列表，如 **kwargs 或 **
+                    var_kwarg_name = arg[2:]
+                else:
+                    var_arg_name = arg[1:]
+            elif is_token(arg[0]):
+                args_list_full_keyword.append(arg)
+            else:
+                raise ValueError(f'api {api} has unexpected arg "{arg}".')
+
+        args_list_full_positional = args_list_full[:_args_list_position_end]
+
         # 这里只移除了不支持的参数，但是事实上，移除不支持的参数会影响其他检查，如
         # (a, b, c, d) 中移除了 (c)，那么不指定关键字最多只能传入 a、b
         unsupport_args = mapping_data.get("unsupport_args", [])
         args_list = [arg for arg in args_list_full if arg not in unsupport_args]
 
-        args_list_without_key = (
-            args_list.copy()
-            if "*" not in args_list
-            else args_list[: args_list.index("*")]
-        )
-        args_list_with_key = args_list.copy()
-        if "*" in args_list_with_key:
-            args_list_with_key.remove("*")
+        args_list_positional = [
+            arg for arg in args_list_full_positional if arg not in unsupport_args
+        ]
+        args_list_keyword = [
+            arg for arg in args_list_full_keyword if arg not in unsupport_args
+        ]
 
         all_args = False
         all_kwargs = False
         not_subsequence = False
         all_default = False if "min_input_args" in mapping_data else None
 
-        for code in code_list:
+        for code in unittest_data["code"]:
             try:
                 api_name = extract_api_name(api, code)
                 args, kwargs = extract_params_from_invoking(api, code)
@@ -212,26 +268,42 @@ def check_call_variety(test_data, api_mapping):
                 print(traceback.format_exc())
                 exit(-1)
 
+            # 检查 kwargs 是否符合预设的 args_list
+            # 条件是，如果没有 **kwargs 参数，那么 kwargs 的 key 必须是 args_list 的子集
+            allowed_keys = args_list_keyword.copy()
+            if var_arg_name is not None and len(var_arg_name) > 0:
+                allowed_keys.append(var_arg_name)
+            if api == "torch.max" or api == "torch.min":
+                # 这个函数居然有重载，单独特判吧先
+                allowed_keys.append("other")
+
+            if var_kwarg_name is None and len(kwargs) > 0:
+                for k, v in kwargs:
+                    if k not in allowed_keys:
+                        raise ValueError(
+                            f"{api}(*{args}, **{kwargs}) has unexpected keyword argument '{k}'."
+                        )
+
+            # 如果没有 *arg，args 的长度必须小于等于 args_list_positional 的长度
+            if var_arg_name is None and len(args) > len(args_list_positional):
+                raise ValueError(
+                    f"{api}(*{args}, **{kwargs}) has too many position arguments, args_list={args_list_keyword}"
+                )
+
             if all_default is False:
                 if len(args) == min_input_args and len(kwargs) == 0:
                     all_default = True
 
-            # allow min_input_args not found
-            # if len(args) + len(kwargs) < min_input_args:
-            #     raise ValueError(
-            #         f"{api}(*{args}, **{kwargs}) not meet min_input_args={min_input_args}"
-            #     )
-
-            if len(args) == len(args_list_without_key):
+            if len(args) == len(args_list_positional):
                 all_args = True
 
             keys = [k[0].strip() for k in kwargs]
-            if len(keys) == len(args_list_with_key) and match_subsequence(
-                args_list_with_key, keys
+            if len(keys) == len(args_list_keyword) and match_subsequence(
+                args_list_keyword, keys
             ):
                 all_kwargs = True
-            if len(args_list_with_key) <= 1 or not match_subsequence(
-                args_list_with_key, keys
+            if len(args_list_keyword) <= 1 or not match_subsequence(
+                args_list_keyword, keys
             ):
                 not_subsequence = True
 
@@ -249,19 +321,24 @@ def check_call_variety(test_data, api_mapping):
             "all default": all_default,
         }
 
-        if not all_args:
-            print(f"{api} has no unittest with all arguments without keyword.")
-        if not all_kwargs:
-            print(f"{api} has no unittest with all arguments with keyword.")
-        if not not_subsequence and len(args_list) > 1:
-            print(f"{api} has no unittest with keyword arguments out of order.")
-        if not all_default:
-            if all_default is False:
+        if verbose:
+            if not all_args:
                 print(
-                    f"{api} has no unittest with all default arguments, min_input_args={min_input_args}."
+                    f"INFO: {api} has no unittest with all arguments without keyword."
                 )
-            else:
-                print(f"{api} do not have configured 'min_input_args'.")
+            if not all_kwargs:
+                print(f"INFO: {api} has no unittest with all arguments with keyword.")
+            if not not_subsequence and len(args_list) > 1:
+                print(
+                    f"INFO: {api} has no unittest with keyword arguments out of order."
+                )
+            if not all_default:
+                if all_default is False:
+                    print(
+                        f"INFO: {api} has no unittest with all default arguments, min_input_args={min_input_args}."
+                    )
+                else:
+                    print(f"INFO: {api} do not have configured 'min_input_args'.")
 
     return report
 
@@ -316,7 +393,7 @@ if __name__ == "__main__":
                 )
 
     if not args.no_check:
-        report = check_call_variety(test_data, api_mapping)
+        report = check_call_variety(test_data, api_mapping, verbose=(not args.report))
         sorted_report = dict(sorted(report.items(), key=lambda x: x[0]))
 
         if args.report:

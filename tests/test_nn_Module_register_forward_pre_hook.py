@@ -51,3 +51,29 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        result = []
+        class TestForHook(nn.Module):
+            def __init__(self):
+                super().__init__()
+
+                self.linear_1 = nn.Linear(in_features=2, out_features=2)
+            def forward(self, x):
+                x1 = self.linear_1(x)
+                return x, x1
+        def hook(module, fea_in):
+            result.append(1)
+
+        net = TestForHook()
+        net.register_forward_pre_hook(hook)
+        a = torch.tensor([0.,0.])
+        net(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
