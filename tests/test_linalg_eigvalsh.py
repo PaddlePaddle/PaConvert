@@ -16,17 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.linalg.matrix_norm")
+obj = APIBase("torch.linalg.eigvalsh")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[0.02773777, 0.93004224, 0.06911496],
-                [0.24831591, 0.45733623, 0.07717843],
-                [0.48016702, 0.14235102, 0.42620817]])
-        result = torch.linalg.matrix_norm(x)
+        x = torch.tensor([[1, -2j], [2j, 5]])
+        result = torch.linalg.eigvalsh(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -36,10 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[0.02773777, 0.93004224, 0.06911496],
-                [0.24831591, 0.45733623, 0.07717843],
-                [0.48016702, 0.14235102, 0.42620817]])
-        result = torch.linalg.matrix_norm(input=x, ord='fro')
+        x = torch.tensor([[1, -2j], [2j, 5]])
+        result = torch.linalg.eigvalsh(input=x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -49,11 +45,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[0.02773777, 0.93004224, 0.06911496],
-                [0.24831591, 0.45733623, 0.07717843],
-                [0.48016702, 0.14235102, 0.42620817]])
+        x = torch.tensor([[1, -2j], [2j, 5]])
         out = torch.tensor([])
-        result = torch.linalg.matrix_norm(input=x, keepdim=True, dtype=torch.float32, ord='fro', dim=(-2, -1), out=out)
+        result = torch.linalg.eigvalsh(x, out=out)
         """
     )
     obj.run(pytorch_code, ["result", "out"])
@@ -63,11 +57,9 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[0.02773777, 0.93004224, 0.06911496],
-                [0.24831591, 0.45733623, 0.07717843],
-                [0.48016702, 0.14235102, 0.42620817]])
-        out = torch.tensor([], dtype=torch.float64)
-        result = torch.linalg.matrix_norm(input=x, ord='fro', dim=(-2, -1), keepdim=True, dtype=torch.float64, out=out)
+        x = torch.tensor([[1, -2j], [2j, 5]])
+        out = torch.tensor([])
+        result = torch.linalg.eigvalsh(input=x, UPLO="L", out=out)
         """
     )
     obj.run(pytorch_code, ["result", "out"])
@@ -77,11 +69,9 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[0.02773777, 0.93004224, 0.06911496],
-                [0.24831591, 0.45733623, 0.07717843],
-                [0.48016702, 0.14235102, 0.42620817]])
+        x = torch.tensor([[1, -2j], [2j, 5]])
         out = torch.tensor([])
-        result = torch.linalg.matrix_norm(x, 'fro', (-2, -1), True, dtype=torch.float32, out=out)
+        result = torch.linalg.eigvalsh(x, "L", out=out)
         """
     )
     obj.run(pytorch_code, ["result", "out"])
