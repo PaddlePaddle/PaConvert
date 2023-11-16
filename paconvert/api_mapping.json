@@ -7097,8 +7097,7 @@
     "kwargs_change": {
       "input": "x",
       "atol": "",
-      "rtol": "rcond",
-      "hermitian": "hermitian"
+      "rtol": "rcond"
     }
   },
   "torch.linalg.qr": {
@@ -7226,8 +7225,7 @@
     ],
     "kwargs_change": {
       "ord": "p",
-      "dim": "axis",
-      "input": "x"
+      "dim": "axis"
     }
   },
   "torch.linspace": {
