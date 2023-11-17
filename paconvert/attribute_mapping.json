@@ -52,12 +52,123 @@
   "torch.Tensor.shape": {
     "Matcher": "UnchangeMatcher"
   },
+  "torch.__version__": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.__version__"
+  },
   "torch.autograd.function.FunctionCtx.saved_tensors": {},
   "torch.autograd.profiler.profile.self_cpu_time_total": {},
+  "torch.backends.cudnn.allow_tf32": {
+    "Matcher": "SetTrueMatcher"
+  },
+  "torch.backends.cudnn.benchmark": {
+    "Matcher": "SetFalseMatcher"
+  },
+  "torch.backends.cudnn.deterministic": {
+    "Matcher": "SetFalseMatcher"
+  },
+  "torch.backends.cudnn.enabled": {
+    "Matcher": "SetTrueMatcher"
+  },
+  "torch.bfloat16": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'bfloat16'"
+  },
+  "torch.bool": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'bool'"
+  },
+  "torch.cdouble": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'complex128'"
+  },
+  "torch.cfloat": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'complex64'"
+  },
+  "torch.complex128": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'complex128'"
+  },
+  "torch.complex64": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'complex64'"
+  },
   "torch.distributions.Distribution.batch_shape": {},
   "torch.distributions.Distribution.event_shape": {},
   "torch.distributions.Distribution.mean": {},
   "torch.distributions.Distribution.mode": {},
   "torch.distributions.Distribution.stddev": {},
-  "torch.distributions.Distribution.variance": {}
+  "torch.distributions.Distribution.variance": {},
+  "torch.double": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'float64'"
+  },
+  "torch.dtype": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.dtype"
+  },
+  "torch.float": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'float32'"
+  },
+  "torch.float16": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'float16'"
+  },
+  "torch.float32": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'float32'"
+  },
+  "torch.float64": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'float64'"
+  },
+  "torch.half": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'float16'"
+  },
+  "torch.int": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'int32'"
+  },
+  "torch.int16": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'int16'"
+  },
+  "torch.int32": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'int32'"
+  },
+  "torch.int64": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'int64'"
+  },
+  "torch.int8": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'int8'"
+  },
+  "torch.long": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'int64'"
+  },
+  "torch.optim.Optimizer.state_dict": {
+    "Matcher": "UnchangeMatcher"
+  },
+  "torch.short": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'int16'"
+  },
+  "torch.uint8": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'uint8'"
+  },
+  "torch.utils.cpp_extension.BuildExtension.with_options": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.utils.cpp_extension.BuildExtension.with_options"
+  },
+  "torch.utils.cpp_extension.CUDA_HOME": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.utils.cpp_extension.cpp_extension.CUDA_HOME"
+  }
 }

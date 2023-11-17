@@ -201,11 +201,6 @@ def check_call_variety(test_data, api_mapping, verbose=True):
                 print(f"WARNING: api {api} has no unittest.")
             continue
 
-        callable = mapping_data.get("callable", True)
-        if not callable:
-            print(f"SKIP: api {api} is not callable, skip validations.")
-            continue
-
         abstract = mapping_data.get("abstract", False)
         if abstract:
             print(f"SKIP: api {api} is abstract, skip validations.")
@@ -359,6 +354,8 @@ if __name__ == "__main__":
 
     with open(os.path.join(project_dir, "paconvert/api_mapping.json"), "r") as f:
         api_mapping = json.load(f)
+    with open(os.path.join(project_dir, "paconvert/attribute_mapping.json"), "r") as f:
+        attribute_mapping = json.load(f)
     with open(os.path.join(project_dir, "paconvert/api_alias_mapping.json"), "r") as f:
         api_alias_mapping = json.load(f)
 
@@ -391,6 +388,13 @@ if __name__ == "__main__":
                 raise ValueError(
                     f"alias {alias} is not configured but it's unittest exists."
                 )
+
+    test_attribute_count = 0
+    for attribute in attribute_mapping:
+        if attribute in test_data:
+            test_data.pop(attribute)
+            test_attribute_count += 1
+    print(f"INFO: {test_attribute_count} attribute unittests are removed.")
 
     if not args.no_check:
         report = check_call_variety(test_data, api_mapping, verbose=(not args.report))

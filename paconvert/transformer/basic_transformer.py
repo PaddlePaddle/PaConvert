@@ -652,13 +652,16 @@ class BasicTransformer(BaseTransformer):
 
     def get_api_mather(self, torch_api):
         if torch_api in API_MAPPING:
-            api_mapping = API_MAPPING[torch_api]
-            if "disable" in api_mapping and eval(api_mapping["disable"]):
-                return None
+            mapping_item = API_MAPPING[torch_api]
+        elif torch_api in ATTRIBUTE_MAPPING:
+            mapping_item = ATTRIBUTE_MAPPING[torch_api]
 
-            if "Matcher" in api_mapping:
-                matcher = api_mapping["Matcher"]
-                return eval(matcher)(self, torch_api, api_mapping, self.logger)
+        if "disable" in mapping_item and eval(mapping_item["disable"]):
+            return None
+
+        if "Matcher" in mapping_item:
+            matcher = mapping_item["Matcher"]
+            return eval(matcher)(self, torch_api, mapping_item, self.logger)
         return None
 
     def visit_Expr(self, node):
