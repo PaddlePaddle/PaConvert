@@ -655,6 +655,8 @@ class BasicTransformer(BaseTransformer):
             mapping_item = API_MAPPING[torch_api]
         elif torch_api in ATTRIBUTE_MAPPING:
             mapping_item = ATTRIBUTE_MAPPING[torch_api]
+        else:
+            return None
 
         if "disable" in mapping_item and eval(mapping_item["disable"]):
             return None

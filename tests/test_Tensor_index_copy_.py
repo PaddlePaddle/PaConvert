@@ -79,6 +79,36 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        x = torch.zeros(2, 1, 3, 3)
+        t = torch.tensor([
+            [[[1, 2, 3], [4, 5, 6], [7, 8, 9]]],
+            [[[1, 2, 3], [4, 5, 6], [7, 8, 9]]]], dtype=torch.float)
+        index = torch.tensor([0, 1, 2])
+        result = x.index_copy_(dim=2, index=index, source=t)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.zeros(2, 1, 3, 3)
+        t = torch.tensor([
+            [[[1, 2, 3], [4, 5, 6], [7, 8, 9]]],
+            [[[1, 2, 3], [4, 5, 6], [7, 8, 9]]]], dtype=torch.float)
+        index = torch.tensor([0, 1, 2])
+        result = x.index_copy_(dim=2, source=t, index=index)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
         x = torch.zeros(20)
         t = torch.tensor([1,3,4,5], dtype=torch.float)
         index = torch.tensor([0, 12, 2, 1])

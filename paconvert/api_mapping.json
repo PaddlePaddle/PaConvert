@@ -1425,6 +1425,7 @@
     "Matcher": "TensorFP16Matcher",
     "min_input_args": 0,
     "args_list": [
+      "*",
       "memory_format"
     ]
   },
@@ -1517,7 +1518,7 @@
     "args_list": [
       "dim",
       "index",
-      "tensor"
+      "source"
     ]
   },
   "torch.Tensor.index_fill": {},
@@ -1583,6 +1584,7 @@
     "Matcher": "TensorIntMatcher",
     "min_input_args": 0,
     "args_list": [
+      "*",
       "memory_format"
     ]
   },

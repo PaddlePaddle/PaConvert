@@ -69,3 +69,16 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x= torch.ones([5, 3])
+        t = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=torch.float)
+        index = torch.tensor([0, 4, 2])
+        result = x.index_add(dim=0, alpha=3, source=t, index=index)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
