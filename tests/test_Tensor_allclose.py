@@ -67,3 +67,33 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([10000., 1e-07]).allclose(torch.tensor([10000.1, 1e-08]), 1e-5, 2., False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([10000., 1e-07]).allclose(other=torch.tensor([10000.1, 1e-08]), rtol=1e-5, atol=2., equal_nan=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([10000., 1e-07]).allclose(rtol=1e-5, other=torch.tensor([10000.1, 1e-08]), atol=2., equal_nan=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

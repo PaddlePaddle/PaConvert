@@ -125,8 +125,8 @@ def test_case_8():
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
         target = torch.tensor([[1.,2.,3.],[4.,5.,6.]])
-        loss = torch.nn.functional.l1_loss
-        result = loss(input,target)
+        l1_loss = torch.nn.functional.l1_loss
+        result = l1_loss(input,target)
         """
     )
     obj.run(pytorch_code, ["result"])

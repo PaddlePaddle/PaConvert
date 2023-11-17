@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Softmax")
+obj = APIBase("torch.nn.Softmax2d")
 
 
 def test_case_1():

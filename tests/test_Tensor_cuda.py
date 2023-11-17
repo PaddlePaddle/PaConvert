@@ -30,3 +30,42 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.zeros((1,2,3,4))
+        result = None
+        if torch.cuda.is_available():
+            result = a.cuda(device="cuda:0", non_blocking=True, memory_format=torch.channels_last)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.zeros((1,2,3,4))
+        result = None
+        if torch.cuda.is_available():
+            result = a.cuda("cuda:0", True, torch.channels_last)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.zeros((1,2,3,4))
+        result = None
+        if torch.cuda.is_available():
+            result = a.cuda(non_blocking=True, device="cuda:0", memory_format=torch.channels_last)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

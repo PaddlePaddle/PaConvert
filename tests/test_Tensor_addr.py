@@ -66,3 +66,16 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([4., 5., 6.])
+        b = torch.tensor([1., 2., 3.])
+        input = torch.tensor([1., 2., 3.])
+        result = input.addr(vec1=a, alpha=3, vec2=b, beta=3)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

@@ -1190,6 +1190,29 @@ class TensorTypeAsMatcher(BaseMatcher):
         return code
 
 
+class TensorTileMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_kwargs(kwargs)
+        if kwargs is None:
+            return None
+
+        if "dims" in kwargs:
+            kwargs = {"repeat_times": kwargs.pop("dims")}
+        else:
+            if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
+                perm = self.parse_args(args)
+            elif isinstance(args[0], ast.Starred):
+                perm = astor.to_source(args[0].value).strip("\n")
+            else:
+                perm = self.parse_args(args)[0]
+
+            kwargs = {"repeat_times": str(perm).replace("'", "")}
+
+        code = "{}.tile({})".format(self.paddleClass, self.kwargs_to_str(kwargs))
+        return ast.parse(code).body
+
+
 class TensorNew_Matcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
@@ -1436,7 +1459,7 @@ class TensorCopy_Matcher(BaseMatcher):
             paddle.assign({}, output={})
             """
         )
-        code = API_TEMPLATE.format(kwargs["src"], self.paddleClass)
+        code = API_TEMPLATE.format(kwargs["other"], self.paddleClass)
         return code
 
 
@@ -2739,6 +2762,12 @@ class TriangularSolveMatcher(BaseMatcher):
             code = API_TEMPLATE.format(self.kwargs_to_str(new_kwargs), new_kwargs["x"])
 
         return code
+
+
+class TensorTriangularSolveMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["b"] = self.paddleClass
+        return TriangularSolveMatcher.generate_code(self, kwargs)
 
 
 class IndexAddMatcher(BaseMatcher):
@@ -4061,6 +4090,48 @@ class SvdMatcher(BaseMatcher):
         return code
 
 
+class SymeigMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def _CONVERT_SYMEIG(**kwargs):
+                out_v = kwargs.pop("out", None)
+                upper = kwargs.pop("upper", True)
+                UPLO = "U" if upper else "L"
+                eigenvectors = kwargs.pop("eigenvectors", False)
+                if not eigenvectors:
+                    result = (paddle.linalg.eigvalsh(kwargs["input"], UPLO=UPLO),
+                              paddle.to_tensor([], dtype=paddle.complex64))
+                else:
+                    result = paddle.linalg.eigh(kwargs["input"], UPLO=UPLO)
+                if out_v:
+                    result = paddle.assign(result[0], out_v[0]), paddle.assign(result[1], out_v[1])
+                return result
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        if "input" not in kwargs:
+            kwargs["input"] = self.paddleClass
+        return "paddle_aux._CONVERT_SYMEIG({})".format(self.kwargs_to_str(kwargs))
+
+
+class FloatPowerMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        return "{}.cast(paddle.float64).pow({})".format(
+            self.paddleClass, kwargs["exponent"]
+        )
+
+
+class FloatPowerInplaceMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        return "{}.cast_(paddle.float64).pow_({})".format(
+            self.paddleClass, kwargs["exponent"]
+        )
+
+
 class ModuleGetSubMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         code = 'getattr({}, "{}")'.format(
@@ -4288,4 +4359,9 @@ class InferenceModeMatcher(BaseMatcher):
                 code = "paddle.no_grad({})".format(kwargs["mode"])
         else:
             code = "paddle.no_grad()"
+class Is_PinnedMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        code = f"'pinned' in str({self.paddleClass}.place)"
+
         return code

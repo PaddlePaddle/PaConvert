@@ -65,3 +65,39 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([4, 3, 6, 3, 4])
+        weights = torch.tensor([ 0.0000,  0.2500,  0.5000,  0.7500,  1.0000])
+        result = input.bincount(weights=weights, minlength=6)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([4, 3, 6, 3, 4])
+        weights = torch.tensor([ 0.0000,  0.2500,  0.5000,  0.7500,  1.0000])
+        result = input.bincount(weights, 6)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([4, 3, 6, 3, 4])
+        weights = torch.tensor([ 0.0000,  0.2500,  0.5000,  0.7500,  1.0000])
+        result = input.bincount(minlength=6, weights=weights)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

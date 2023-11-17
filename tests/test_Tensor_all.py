@@ -72,3 +72,14 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.rand(4, 3)
+        result = a.all(keepdim=False, dim=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

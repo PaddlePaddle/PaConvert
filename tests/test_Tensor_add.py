@@ -76,8 +76,19 @@ def test_case_5():
     obj.run(pytorch_code, ["result"])
 
 
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2, 3])
+        result = x.add(alpha=0.8, other=torch.tensor([1., 4, 6]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
 # paddle not support type promote and x/y must have same dtype
-def _test_case_6():
+def _test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch

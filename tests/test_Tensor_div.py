@@ -127,3 +127,15 @@ def _test_case_9():
         """
     )
     obj.run(pytorch_code, ["result"], check_dtype=False)
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[ 0.5950,-0.0872], [2.3298, -0.2972]])
+        b = torch.tensor([0.1815, -1.0111])
+        result = a.div(rounding_mode="trunc", other=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
