@@ -201,6 +201,10 @@ def check_call_variety(test_data, api_mapping, verbose=True):
                 print(f"WARNING: api {api} has no unittest.")
             continue
 
+        is_partial_support = (
+            "unsupport" in unittest_data and len(unittest_data["unsupport"]) > 0
+        )
+
         abstract = mapping_data.get("abstract", False)
         if abstract:
             print(f"SKIP: api {api} is abstract, skip validations.")
@@ -314,6 +318,7 @@ def check_call_variety(test_data, api_mapping, verbose=True):
             "all kwargs": all_kwargs,
             "kwargs out of order": not_subsequence,
             "all default": all_default,
+            "partial support": is_partial_support,
         }
 
         if verbose:
@@ -422,6 +427,9 @@ if __name__ == "__main__":
                 }
 
                 for api, data in sorted_report.items():
+                    api_title = (
+                        f"{api}" if data["partial support"] is False else f"⚠️ {api}"
+                    )
                     f.write(
-                        f'| {api} | {" | ".join([item2desc_dict[data[k]] for k in columns[1:]])} |\n'
+                        f'| {api_title} | {" | ".join([item2desc_dict[data[k]] for k in columns[1:]])} |\n'
                     )
