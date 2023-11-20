@@ -51,3 +51,13 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([0.2796, 0.9331, 0.6486, 0.1523, 0.6516]).logit()
+        """
+    )
+    obj.run(pytorch_code, ["result"])

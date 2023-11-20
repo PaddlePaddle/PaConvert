@@ -2000,6 +2000,7 @@
     "Matcher": "TensorLongMatcher",
     "min_input_args": 0,
     "args_list": [
+      "*",
       "memory_format"
     ]
   },
