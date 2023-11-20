@@ -76,3 +76,39 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.manual_seed(100)
+        weight = torch.tensor([[2., 4.], [4., 9.]])
+        result = weight.multinomial(num_samples=4, replacement=True, generator=None)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.manual_seed(100)
+        weight = torch.tensor([[2., 4.], [4., 9.]])
+        result = weight.multinomial(4, True)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.manual_seed(100)
+        weight = torch.tensor([[2., 4.], [4., 9.]])
+        result = weight.multinomial(replacement=True, generator=None, num_samples=4)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
