@@ -10191,6 +10191,7 @@
       "label_smoothing"
     ],
     "kwargs_change": {
+      "target": "label",
       "label_smoothing": "soft_label"
     }
   },
