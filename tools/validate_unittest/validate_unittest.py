@@ -204,14 +204,15 @@ def check_call_variety(test_data, api_mapping, verbose=True):
         is_partial_support = (
             "unsupport" in unittest_data and len(unittest_data["unsupport"]) > 0
         )
+        is_overloadable = mapping_data.get("overloadable", False)
 
         abstract = mapping_data.get("abstract", False)
         if abstract:
             print(f"SKIP: api {api} is abstract, skip validations.")
             continue
 
-        if "args_list" not in mapping_data:
-            print(f"WARNING: {api} has no mapping data 'args_list'.")
+        if "Matcher" not in mapping_data:
+            print(f"WARNING: {api} has no mapping data 'Matcher'.")
             continue
 
         min_input_args = mapping_data.get("min_input_args", -1)
@@ -319,6 +320,7 @@ def check_call_variety(test_data, api_mapping, verbose=True):
             "kwargs out of order": not_subsequence,
             "all default": all_default,
             "partial support": is_partial_support,
+            "overloadable": is_overloadable,
         }
 
         if verbose:
@@ -427,9 +429,11 @@ if __name__ == "__main__":
                 }
 
                 for api, data in sorted_report.items():
-                    api_title = (
-                        f"{api}" if data["partial support"] is False else f"⚠️ {api}"
-                    )
+                    api_title = api
+                    if data.get("partial support", False):
+                        api_title = f"❓ {api_title}"
+                    if data.get("overloadable", False):
+                        api_title = f"🔁 {api_title}"
                     f.write(
                         f'| {api_title} | {" | ".join([item2desc_dict[data[k]] for k in columns[1:]])} |\n'
                     )
