@@ -20,7 +20,7 @@ cd /workspace/$1/PaConvert/
 export LD_LIBRARY_PATH=/root/anaconda3/lib:$LD_LIBRARY_PATH
 
 echo "Insalling cpu version torch"
-python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+python -m pip install torch==2.1.0 --index-url https://download.pytorch.org/whl/cpu
 python -c "import torch; print('torch version information:' ,torch.__version__)"
 
 echo "Insalling develop version paddle"
