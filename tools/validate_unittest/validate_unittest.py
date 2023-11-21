@@ -182,7 +182,7 @@ def match_subsequence(pattern, obj):
     return j == len(obj)
 
 
-def check_call_variety(test_data, api_mapping, verbose=True):
+def check_call_variety(test_data, api_mapping, verbose=False):
     report = {}
     for api, unittest_data in test_data.items():
         if api not in api_mapping:

@@ -61,7 +61,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.hub.load(repo_or_dir='lyuwenyu/paddlehub_demo:main', model='MM', force_reload=False, trust_repo=None, verbose=True, skip_validation=False)
+        result = torch.hub.load(repo_or_dir='lyuwenyu/paddlehub_demo:main', model='MM', force_reload=False, trust_repo=None, verbose=False, skip_validation=False)
         """
     )
     obj.run(pytorch_code, ["result"])
