@@ -71,6 +71,10 @@ class RecordAPIRunPlugin:
             assert len(args) > 0
             pytorch_code = args[0]
             unsupport = kwargs.get("unsupport", False)
+            expect_paddle_code = kwargs.get("expect_paddle_code", None)
+            if expect_paddle_code is not None:
+                unsupport = True
+
             update_record(pytorch_api, pytorch_code, unsupport)
             return originapi(self, *args, **kwargs)
 

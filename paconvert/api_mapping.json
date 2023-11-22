@@ -2581,9 +2581,10 @@
   },
   "torch.Tensor.rename": {
     "Matcher": "TensorRenameMatcher",
-    "min_input_args": 1,
+    "min_input_args": 0,
     "args_list": [
-      "columns"
+      "*names",
+      "**rename_map"
     ]
   },
   "torch.Tensor.rename_": {},
