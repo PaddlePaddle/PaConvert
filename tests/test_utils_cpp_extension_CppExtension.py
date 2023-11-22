@@ -19,7 +19,6 @@ from apibase import APIBase
 obj = APIBase("torch.utils.cpp_extension.CppExtension")
 
 
-# The cpp compile not supports
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
@@ -28,6 +27,21 @@ def test_case_1():
         CppExtension(
                 name='cuda_extension',
                 sources=['extension.cpp'],
+                extra_compile_args=['-g'])
+        result = True
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        from torch.utils.cpp_extension import CppExtension
+
+        CppExtension(
+                'cuda_extension',
+                ['extension.cpp'],
                 extra_compile_args=['-g'])
         result = True
         """

@@ -25,14 +25,14 @@ python -c "import torch; print('torch version information:' ,torch.__version__)"
 
 echo "Insalling develop version paddle"
 python -m pip uninstall -y paddlepaddle
+python -m pip uninstall -y paddlepaddle-gpu
 rm -rf /root/anaconda3/lib/python*/site-packages/paddlepaddle-0.0.0.dist-info/
 python -m pip install --no-cache-dir paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
 echo "Checking code unit test by pytest ..."
 python -m pip install pytest-timeout
-
-pytest /workspace/$1/PaConvert/tests;check_error=$?
+python -m pytest /workspace/$1/PaConvert/tests;check_error=$?
 
 echo '************************************************************************************'
 echo "______      _____                          _   "
@@ -46,7 +46,7 @@ if [ ${check_error} != 0 ];then
     echo "Your PR code unit test check failed." 
     echo "Please run the following command." 
     echo "" 
-    echo "    pytest tests" 
+    echo "    python -m pytest tests" 
     echo "" 
     echo "For more information, please refer to our check guide:" 
     echo "https://github.com/PaddlePaddle/PaConvert#readme." 

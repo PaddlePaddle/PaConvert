@@ -31,8 +31,6 @@ def test_case_1():
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="Paddle does not support inplace operation of API",
     )
 
 
@@ -47,8 +45,6 @@ def test_case_2():
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="Paddle does not support inplace operation of API",
     )
 
 
@@ -63,13 +59,25 @@ def test_case_3():
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="Paddle does not support inplace operation of API",
     )
 
 
-# paddle.multiply_ not support type promote and x/y must have same dtype
-def _test_case_4():
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.2015, -0.4255,  2.6087])
+        result = input.multiply_(other=torch.tensor([2., 6., 4.]))
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+    )
+
+
+# paddle not support type promote and x/y must have same dtype
+def _test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -81,5 +89,5 @@ def _test_case_4():
         pytorch_code,
         ["result"],
         unsupport=True,
-        reason="Paddle does not support inplace operation of API",
+        reason="Paddle does not support inplace operation with different dtype",
     )

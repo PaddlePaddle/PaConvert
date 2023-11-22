@@ -28,5 +28,4 @@ dist.reduce_scatter(
     data1, [data1, data2], op=dist.ReduceOp.SUM, group=None, async_op=False
 )
 
-print("out:")
-print(data1)
+common.dump_output(data1)

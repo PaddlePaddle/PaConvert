@@ -15,7 +15,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.round")
+obj = APIBase("torch.Tensor.round", is_aux_api=True)
 
 
 def test_case_1():
@@ -26,7 +26,7 @@ def test_case_1():
         result = a.round()
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -37,7 +37,7 @@ def test_case_2():
         result = a.round(decimals=1)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -48,7 +48,7 @@ def test_case_3():
         result = a.round(decimals=-1)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -59,7 +59,7 @@ def test_case_4():
         result = a.round(decimals=3)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -70,4 +70,4 @@ def test_case_5():
         result = a.round(decimals=-3)
         """
     )
-    obj.run(pytorch_code, ["result"], is_aux_api=True)
+    obj.run(pytorch_code, ["result"])

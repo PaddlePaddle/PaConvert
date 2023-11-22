@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
@@ -24,9 +23,9 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x1 = torch.tensor([[1.4309,  1.2706], [-0.8562,  0.9796]])
-        x2 = torch.ones_like(x1)
-        result = torch.cosine_similarity(x1, x2)
+        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
+        y = torch.tensor([[8., 3., 3.], [2., 3., 4.]])
+        result = torch.cosine_similarity(x, y)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -36,9 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x1 = torch.tensor([[1.4309,  1.2706], [-0.8562,  0.9796]])
-        x2 = torch.ones_like(x1)
-        result = torch.cosine_similarity(x1=x1, x2=x2)
+        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
+        y = torch.tensor([[8., 3., 3.], [2., 3., 4.]])
+        result = torch.cosine_similarity(x, y, 1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -48,9 +47,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x1 = torch.tensor([1.4309,  1.2706, -0.8562,  0.9796])
-        x2 = torch.ones_like(x1)
-        result = torch.cosine_similarity(x1=x1, x2=x2, axis=0)
+        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
+        y = torch.tensor([[8., 3., 3.], [2., 3., 4.]])
+        result = torch.cosine_similarity(x, y, dim=1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -60,9 +59,21 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x1 = torch.tensor([1.4309,  1.2706, -0.8562,  0.9796])
-        x2 = torch.ones_like(x1)
-        result = torch.cosine_similarity(x1=x1, x2=x2, axis=0, eps=0.1)
+        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
+        y = torch.tensor([[8., 3., 3.], [2., 3., 4.]])
+        result = torch.cosine_similarity(x1=x, x2=y, dim=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
+        y = torch.tensor([[8., 3., 3.], [2., 3., 4.]])
+        result = torch.cosine_similarity(x, y, dim=1, eps=1e-5)
         """
     )
     obj.run(pytorch_code, ["result"])

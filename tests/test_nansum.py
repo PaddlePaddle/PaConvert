@@ -57,7 +57,7 @@ def test_case_4():
         """
         import torch
         input = torch.tensor([[1, 2], [3., float("nan")]])
-        result = torch.nansum(input, 1, dtype=torch.float64)
+        result = torch.nansum(input, 1, True, dtype=torch.float64)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -68,8 +68,9 @@ def test_case_5():
         """
         import torch
         input = torch.tensor([[1, 2], [3., float("nan")]])
+        out = torch.tensor([[1, 2], [3., float("nan")]], dtype=torch.float64)
         dim, keepdim = 1, False
-        result = torch.nansum(input, dim, keepdim=keepdim)
+        result = torch.nansum(input, dim, keepdim, dtype=torch.float64, out=out)
         """
     )
     obj.run(pytorch_code, ["result"])

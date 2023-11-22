@@ -135,7 +135,7 @@ class ImportTransformer(BaseTransformer):
 
                 dir_name = os.path.dirname(dir_name)
 
-        # import from torch
+        # import from TORCH_PACKAGE_LIST
         for pkg_name in TORCH_PACKAGE_LIST + ["setuptools"]:
             if f"{pkg_name}." in node.module or pkg_name == node.module:
                 if pkg_name == "setuptools":
@@ -226,6 +226,7 @@ class ImportTransformer(BaseTransformer):
             5. Tensor(2, 3)
             6. isinstance(x, Tensor)
             7. setattr(Tensor, 'add', func)
+            8. {'build_ext': BuildExtension}
         """
         is_torch = False
         if isinstance(
@@ -235,6 +236,7 @@ class ImportTransformer(BaseTransformer):
                 ast.FunctionDef,  # 2. ast.FunctionDef(returns=ast.Name)
                 ast.arg,  # 3. ast.arg(args='x', annotation=ast.Name)
                 ast.arguments,  # 4. ast.arguments(args=[ast.arg(args='dtype'], defaults=[ast.Name])
+                ast.Dict,  # 5. ast.Dict(keys=[ast.Constant], values=[ast.Name])
             ),
         ):
             is_torch = True

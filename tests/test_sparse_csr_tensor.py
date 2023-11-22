@@ -27,7 +27,7 @@ def test_case_1():
         cols = [1, 3, 2, 0, 1]
         values = [1, 2, 3, 4, 5]
         dense_shape = [3, 4]
-        result = torch.sparse_csr_tensor(crows, cols, values, dense_shape, requires_grad=False)
+        result = torch.sparse_csr_tensor(crows, cols, values, dense_shape, dtype=torch.float32, device=torch.device("cpu"))
         result = result.to_dense()
         """
     )
@@ -89,7 +89,7 @@ def test_case_5():
         values = [1, 2, 3, 4, 5]
         dense_shape = [3, 4]
         result = torch.sparse_csr_tensor(crow_indices=crows, col_indices=cols, values=values, size=dense_shape,
-                                         dtype=torch.float32, device=None, requires_grad=False, check_invariants=None)
+                                         dtype=torch.float32, layout=torch.sparse_csr, device=torch.device('cpu'), pin_memory=False, requires_grad=False, check_invariants=None)
         result = result.to_dense()
         """
     )

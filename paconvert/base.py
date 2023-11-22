@@ -18,6 +18,7 @@ import json
 import os
 import re
 import textwrap
+from itertools import groupby
 
 import astor
 
@@ -49,12 +50,13 @@ TORCH_PACKAGE_LIST = [
     "fasttext",
     "pytorch_lightning",
     "jieba",
-    "sentencepiece",
     "NLTK",
     "scikit-learn",
     "fairscale",
     "transformers",
     "datasets",
+    "accelerate",
+    "diffusers",
     "torch_xla",
 ]
 
@@ -131,7 +133,7 @@ class BaseTransformer(ast.NodeTransformer):
                 for index, lines in insert_lines:
                     log_debug(
                         self.logger,
-                        "insert extra {} lines".format(len(lines)),
+                        "insert extra {} lines on finally".format(len(lines)),
                         self.file_name,
                     )
                     for line in lines[::-1]:
@@ -165,7 +167,11 @@ class BaseTransformer(ast.NodeTransformer):
 
     def insert_multi_node(self, node_list):
         if len(node_list) == 0:
-            return
+            return True
+
+        if isinstance(self.parent_node, (ast.DictComp, ast.ListComp)):
+            return False
+
         import_nodes = []
         other_nodes = []
         for node in node_list:
@@ -182,23 +188,27 @@ class BaseTransformer(ast.NodeTransformer):
         if len(other_nodes) > 0:
             self.record_scope(self.scope_body_index(), other_nodes)
 
+        return True
+
     def get_full_attr(self, node):
-        # torch.nn.functional.relu
         if isinstance(node, ast.Attribute):
             return self.get_full_attr(node.value) + "." + node.attr
         # x.abs() -> 'x'
         elif isinstance(node, ast.Name):
-            # array(1.) ...
+            # np.array(1.) -> 'np'
             node_str = astor.to_source(node).replace("\n", "")
             for item in self.black_list:
                 if item == node_str:
                     return "NonTorchClass"
+            # misidentify paddle.rand as x.rand
+            if node_str == "paddle":
+                return "NonTorchClass"
             return node.id
-        # 1. torch.abs(x).transpose(1, 0) -> 'torchClass'
-        # 2. (x == y).transpose(1, 0) -> 'torchClass'
-        # 3. (x + y).transpose(1, 0) -> 'torchClass'
-        # 4. x[0].transpose(1, 0) -> 'torchClass'
-        # 5. (-x).transpose(1, 0) -> 'torchClass'
+        # 1. torch.abs(x).transpose(1, 0) -> 'TorchClass'
+        # 2. (x == y).transpose(1, 0) -> 'TorchClass'
+        # 3. (x + y).transpose(1, 0) -> 'TorchClass'
+        # 4. x[0].transpose(1, 0) -> 'TorchClass'
+        # 5. (-x).transpose(1, 0) -> 'TorchClass'
         elif isinstance(
             node,
             (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript, ast.Assert),
@@ -298,23 +308,35 @@ class BaseMatcher(object):
     def get_aux_dir(self):
         return os.path.dirname(AuxFileHelper().fileName)
 
-    def get_paddle_api(self):
-        if self.paddle_api:
-            return self.paddle_api
-        if "paddle_api" in self.api_mapping:
-            return self.api_mapping["paddle_api"]
-        return None
-
-    def set_paddle_api(self, paddle_api):
-        self.paddle_api = paddle_api
-
     def parse_args_and_kwargs(self, args, kwargs):
         args_list = self.api_mapping.get("args_list") or []
-        # more args, not match torch class method, indicate it is not torch Class
-        if len(args) > len(args_list):
-            return "misidentify"
-
+        min_input_args_num = self.api_mapping.get("min_input_args") or 0
         unsupport_args = self.api_mapping.get("unsupport_args") or []
+
+        group_list = [
+            list(v) for k, v in groupby(args_list, lambda x: x == "*") if not k
+        ]
+        posion_args_list = group_list[0] if len(group_list) > 0 else []
+        force_kwargs_list = group_list[1] if len(group_list) > 1 else []
+        force_kwargs_num = 0
+        for node in kwargs:
+            k = node.arg
+            # not support 'torch.rot90(tensor, **config)'
+            if k is None:
+                return None
+            # not support some API args
+            if k in unsupport_args:
+                return None
+            if k not in args_list:
+                return "misidentify"
+            if k in force_kwargs_list:
+                force_kwargs_num += 1
+
+        posion_args_num = len(args) + len(kwargs) - force_kwargs_num
+        if posion_args_num < min_input_args_num:
+            return "misidentify"
+        if posion_args_num > len(posion_args_list):
+            return "misidentify"
 
         new_kwargs = {}
         for i, node in enumerate(args):
@@ -331,15 +353,6 @@ class BaseMatcher(object):
 
         for node in kwargs:
             k = node.arg
-            # not support 'torch.rot90(tensor, **config)'
-            if k is None:
-                return None
-            # not support some API args
-            if k in unsupport_args:
-                return None
-            # TODO: will open after all args have been add in args_list
-            # if k not in args_list:
-            #    return 'misidentify'
             v = astor.to_source(node.value).replace("\n", "")
             new_kwargs[k] = v
 
@@ -359,6 +372,10 @@ class BaseMatcher(object):
         new_kwargs = {}
         for node in kwargs:
             k = node.arg
+            # not support 'torch.rot90(tensor, **config)'
+            if k is None:
+                return None
+            # not support some API args
             if k in unsupport_args:
                 return None
             v = astor.to_source(node.value).replace("\n", "")
@@ -454,6 +471,21 @@ class BaseMatcher(object):
             )
             self.transformer.insert_multi_node(ast.parse(code).body)
 
+    def set_paddle_api(self, paddle_api):
+        self.paddle_api = paddle_api
+
+    def get_paddle_api(self):
+        if self.paddle_api:
+            return self.paddle_api
+        if "paddle_api" in self.api_mapping:
+            return self.api_mapping["paddle_api"]
+        return None
+
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+        code = "{}".format(self.paddle_api)
+        return ast.parse(code).body
+
     @staticmethod
     def generate_code(self, kwargs):
         return None
@@ -475,6 +507,3 @@ class BaseMatcher(object):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
         return self.get_paddle_nodes(args, kwargs)
-
-    def get_paddle_class_attribute_nodes(self, node):
-        return None

@@ -76,3 +76,23 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([-1.5393, -0.8675, 0.5916, 1.6321]).dist(p=2, other=torch.tensor([ 0.0967]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([-1.5393, -0.8675, 0.5916, 1.6321]).dist(torch.tensor([ 0.0967]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])

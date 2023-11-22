@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 import textwrap
 
 from apibase import APIBase
@@ -32,8 +31,6 @@ def test_case_1():
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="Paddle does not support inplace operation of API",
     )
 
 
@@ -42,15 +39,12 @@ def test_case_2():
         """
         import torch
         input = torch.tensor([0.2015, -0.4255,  2.6087])
-        other = torch.tensor([2, 6, 4])
-        result = input.mul_(other)
+        result = input.mul_(other=5.0)
         """
     )
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="Paddle does not support inplace operation of API",
     )
 
 
@@ -59,14 +53,12 @@ def test_case_3():
         """
         import torch
         input = torch.tensor([0.2015, -0.4255,  2.6087])
-        result = input.mul_(other=5)
+        result = input.mul_(torch.tensor([2., 6., 4.]))
         """
     )
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="Paddle does not support inplace operation of API",
     )
 
 
@@ -74,13 +66,28 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([3, 6, 9])
-        result = input.mul_(other=5)
+        input = torch.tensor([0.2015, -0.4255,  2.6087])
+        result = input.mul_(other=torch.tensor([2., 6., 4.]))
         """
     )
     obj.run(
         pytorch_code,
-        ["result", "input"],
+        ["result"],
+    )
+
+
+# paddle not support type promote and x/y must have same dtype
+def _test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([3, 6, 9])
+        result = input.mul_(other = torch.tensor([0.2015, -0.4255, 2.6087]))
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
         unsupport=True,
-        reason="Paddle does not support inplace operation of API",
+        reason="Paddle does not support inplace operation with different dtype",
     )

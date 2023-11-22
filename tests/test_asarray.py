@@ -91,7 +91,7 @@ def test_case_7():
         """
         import torch
         data = [[0, 1], [2, 3]]
-        result = torch.asarray(obj=data, dtype=torch.float64, device='cpu', requires_grad=True)
+        result = torch.asarray(obj=data, dtype=torch.float64, device='cpu', copy=True, requires_grad=True)
         """
     )
     obj.run(pytorch_code, ["result"])

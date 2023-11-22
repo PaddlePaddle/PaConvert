@@ -30,3 +30,4 @@ dist.scatter(output_tensor, scatter_list, src=0, group=None, async_op=False)
 
 print("out:")
 print(output_tensor)
+common.dump_output(output_tensor)

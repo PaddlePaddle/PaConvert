@@ -24,12 +24,14 @@ from paconvert.converter import Converter
 
 
 class APIBase(object):
-    def __init__(self, pytorch_api) -> None:
+    def __init__(self, pytorch_api, is_aux_api=False) -> None:
         """
         args:
             pytorch_api: The corresponding pytorch api
+            is_aux_api: the bool value for api that need Auxiliary code
         """
         self.pytorch_api = pytorch_api
+        self.is_aux_api = is_aux_api
 
     def run(
         self,
@@ -43,7 +45,6 @@ class APIBase(object):
         atol=0.0,
         unsupport=False,
         reason=None,
-        is_aux_api=False,
     ) -> None:
         """
         args:
@@ -55,7 +56,6 @@ class APIBase(object):
             check_stop_gradient: If false, the stop gradient will not be checked
             unsupport: If true, conversion is not supported
             reason: the reason why it is not supported
-            is_aux_api: the bool value for api that need Auxiliary code
         """
         if unsupport:
             assert (
@@ -70,7 +70,7 @@ class APIBase(object):
             pytorch_result = [loc[name] for name in compared_tensor_names]
 
             paddle_code = self.convert(pytorch_code)
-            if is_aux_api:
+            if self.is_aux_api:
                 paddle_code = (
                     textwrap.dedent(
                         """
@@ -98,8 +98,8 @@ class APIBase(object):
                 )
         if expect_paddle_code:
             convert_paddle_code = self.convert(pytorch_code)
-            assert (
-                convert_paddle_code == expect_paddle_code
+            assert convert_paddle_code == expect_paddle_code.lstrip(
+                "\n"
             ), "[{}]: get unexpected code".format(self.pytorch_api)
 
     def compare(
@@ -123,6 +123,37 @@ class APIBase(object):
             check_dtype: If false, the dtype will not be checked
             check_stop_gradient: If false, the stop gradient will not be checked
         """
+        if isinstance(pytorch_result, dict):
+            assert isinstance(paddle_result, dict), "paddle result should be dict"
+            assert len(pytorch_result) == len(
+                paddle_result
+            ), "paddle result have different length with pytorch"
+            pytorch_result_k = [k for k in pytorch_result.keys()]
+            pytorch_result_v = [v for v in pytorch_result.values()]
+            paddle_result_k = [k for k in paddle_result.keys()]
+            paddle_result_v = [v for v in paddle_result.values()]
+            self.compare(
+                self.pytorch_api,
+                pytorch_result_k,
+                paddle_result_k,
+                check_value,
+                check_dtype,
+                check_stop_gradient,
+                rtol,
+                atol,
+            )
+            self.compare(
+                self.pytorch_api,
+                pytorch_result_v,
+                paddle_result_v,
+                check_value,
+                check_dtype,
+                check_stop_gradient,
+                rtol,
+                atol,
+            )
+            return
+
         if isinstance(pytorch_result, (tuple, list)):
             assert isinstance(
                 paddle_result, (tuple, list)
@@ -143,10 +174,12 @@ class APIBase(object):
                 )
             return
 
-        if isinstance(pytorch_result, (bool, np.number, int, str, type(None))):
-            assert isinstance(
-                paddle_result, (bool, np.number, int, str, type(None))
-            ), "paddle result should be bool/np.number/int/str"
+        if isinstance(pytorch_result, (bool, np.number, int, float, str, type(None))):
+            assert type(paddle_result) == type(
+                pytorch_result
+            ), "paddle result's type [{}] should be the same with pytorch's type [{}]".format(
+                type(paddle_result), type(pytorch_result)
+            )
             if check_value:
                 assert (
                     pytorch_result == paddle_result
@@ -166,6 +199,7 @@ class APIBase(object):
                 paddle_result.numpy(False),
             )
         else:
+            print(pytorch_result, paddle_result)
             (
                 pytorch_numpy,
                 paddle_numpy,

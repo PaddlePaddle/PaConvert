@@ -27,7 +27,12 @@ def test_case_1():
         result = src.bernoulli_(0.5)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle not support this API now",
+    )
 
 
 def test_case_2():
@@ -38,7 +43,12 @@ def test_case_2():
         result = src.bernoulli_(0.5, generator=None)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle not support this API now",
+    )
 
 
 def test_case_3():
@@ -49,4 +59,9 @@ def test_case_3():
         result = src.bernoulli_(p=0.5, generator=None)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle not support this API now",
+    )

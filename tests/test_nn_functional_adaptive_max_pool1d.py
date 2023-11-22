@@ -14,44 +14,9 @@
 
 import textwrap
 
-import numpy as np
 from apibase import APIBase
 
-
-class MaxPoolAPI(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        if isinstance(pytorch_result, (tuple, list)):
-            for i in range(len(pytorch_result)):
-                self.compare(self.pytorch_api, pytorch_result[i], paddle_result[i])
-            return
-
-        pytorch_numpy, paddle_numpy = pytorch_result.numpy(), paddle_result.numpy()
-        assert (
-            pytorch_result.requires_grad != paddle_result.stop_gradient
-        ), "API ({}): requires grad mismatch, torch tensor's requires_grad is {}, paddle tensor's stop_gradient is {}".format(
-            name, pytorch_result.requires_grad, paddle_result.stop_gradient
-        )
-        assert (
-            pytorch_numpy.shape == paddle_numpy.shape
-        ), "API ({}): shape mismatch, torch shape is {}, paddle shape is {}".format(
-            name, pytorch_numpy.shape, paddle_numpy.shape
-        )
-        assert np.allclose(
-            pytorch_numpy, paddle_numpy
-        ), "API ({}): paddle result has diff with pytorch result".format(name)
-
-
-obj = MaxPoolAPI("torch.nn.functional.adaptive_max_pool1d")
+obj = APIBase("torch.nn.functional.adaptive_max_pool1d")
 
 
 def test_case_1():
@@ -103,7 +68,12 @@ def test_case_4():
         result, indices = nn.functional.adaptive_max_pool1d(x, 5, True)
         """
     )
-    obj.run(pytorch_code, ["result", "indices"])
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
+    )
 
 
 def test_case_5():

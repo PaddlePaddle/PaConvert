@@ -19,14 +19,15 @@ export CUDA_VISIBLE_DEVICES=0,1
 
 if [ $# -gt 0 ] ; then
     item=$1
-    torchrun --nproc_per_node=2 ${item}
-    python -m paddle.distributed.launch /tmp/paddle/${item}
+    cmd1="torchrun --nproc_per_node=2 ${item}"
+    cmd2="python -m paddle.distributed.launch /tmp/paddle/${item}"
+    python t_dist.py "$cmd1" "$cmd2"
     exit
 fi
 
-test_list="scatter reduce_scatter scatter_object_list all_to_all"
-for i in $test_list; do
-    test_file="${i}.py"
-    torchrun --nproc_per_node=2 ${test_file}
-    python -m paddle.distributed.launch /tmp/paddle/${test_file}
+test_list=`ls *.py | grep -v common.py | grep -v test_dist.py`
+for item in $test_list; do
+    cmd1="torchrun --nproc_per_node=2 ${item}"
+    cmd2="python -m paddle.distributed.launch /tmp/paddle/${item}"
+    python t_dist.py "$cmd1" "$cmd2"
 done

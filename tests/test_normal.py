@@ -64,7 +64,7 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        out = torch.zeros(5)
+        out = torch.empty(5)
         result = torch.normal(mean=torch.arange(1., 6.), out=out)
         """
     )

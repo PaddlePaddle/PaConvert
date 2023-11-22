@@ -52,7 +52,7 @@ def test_case_3():
         x = torch.tensor([[1.0, 1.0, 1.0],
                         [2.0, 2.0, 2.0],
                         [3.0, 3.0, 3.0]])
-        result = x.cumprod(dim=1)
+        result = x.cumprod(1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -66,6 +66,19 @@ def test_case_4():
                         [2.0, 2.0, 2.0],
                         [3.0, 3.0, 3.0]])
         result = x.cumprod(dim=1, dtype=torch.int32)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, 1.0, 1.0],
+                        [2.0, 2.0, 2.0],
+                        [3.0, 3.0, 3.0]])
+        result = x.cumprod(dtype=torch.int32, dim=1)
         """
     )
     obj.run(pytorch_code, ["result"])

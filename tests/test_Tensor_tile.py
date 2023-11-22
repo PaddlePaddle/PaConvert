@@ -23,8 +23,101 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.tile((1,))
+        x = torch.tensor([1., 2., 3., 4.])
+        result = x.tile(1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1., 2.], [ 3., 4.]])
+        result = x.tile(2, 1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.Tensor([[1., 2.], [3., 4.]])
+        result = x.tile((2, 1))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.Tensor([[1., 2.], [3., 4.]])
+        result = x.tile([2, 1])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# the only corner case, input a variable which is Constant, has no solution
+def _test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.Tensor([1., 2., 3., 4.])
+        dims = 1
+        result = x.tile(dims)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.Tensor([[1., 2.], [3., 4.]])
+        dims = (2, 1)
+        result = x.tile(dims)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.Tensor([[1., 2.], [3., 4.]])
+        dims = (2, 1)
+        result = x.tile(*dims)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.Tensor([[1., 2.], [3., 4.]])
+        dims = (2, 1)
+        result = x.tile(dims=dims)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.Tensor([[1., 2.], [3., 4.]])
+        result = x.tile(dims=(2, 1))
         """
     )
     obj.run(pytorch_code, ["result"])

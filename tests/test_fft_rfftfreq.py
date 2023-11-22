@@ -67,3 +67,14 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        out = torch.tensor([])
+        result = torch.fft.rfftfreq(5, 2, out=out, dtype=torch.float32, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

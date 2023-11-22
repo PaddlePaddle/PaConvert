@@ -69,7 +69,19 @@ def test_case_5():
         import torch
         input = torch.tensor([[1, 2], [3., float("nan")]])
         dim, keepdim = 1, False
-        result = input.nansum(dim, keepdim=keepdim)
+        result = input.nansum(dim, keepdim, dtype=torch.float64)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1, 2], [3., float("nan")]])
+        dim, keepdim = 1, False
+        result = input.nansum(dim=dim, keepdim=keepdim, dtype=torch.float64)
         """
     )
     obj.run(pytorch_code, ["result"])

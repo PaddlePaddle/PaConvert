@@ -59,7 +59,7 @@ def test_case_4():
         import torch
         input = torch.tensor([[1, 2], [3, 4]])
         other = torch.tensor([1, 2])
-        result = torch.maximum(input, other)
+        result = torch.maximum(input=input, other=other)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -72,7 +72,7 @@ def test_case_5():
         input = torch.tensor([[1, 2], [3, 4]])
         other = torch.tensor([[1, 2], [3, 4]])
         out = torch.tensor([1, 2])
-        result = torch.maximum(input, other, out=out)
+        result = torch.maximum(input=input, other=other, out=out)
         """
     )
     obj.run(pytorch_code, ["result", "out"])

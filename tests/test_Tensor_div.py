@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.div")
+obj = APIBase("torch.Tensor.div", is_aux_api=True)
 
 
 def test_case_1():
@@ -34,9 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.5950,-0.0872], [2.3298, -0.2972]])
-        b = torch.tensor([0.1815, -1.0111])
-        result = a.div(other=b)
+        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
+        result = a.div(0.5)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -46,9 +45,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[ 0.5950,-0.0872], [2.3298, -0.2972]])
-        b = torch.tensor([0.1815, -1.0111])
-        result = a.div(other=b, rounding_mode=None)
+        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
+        result = a.div(other=0.5)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -60,7 +58,7 @@ def test_case_4():
         import torch
         a = torch.tensor([[ 0.5950,-0.0872], [2.3298, -0.2972]])
         b = torch.tensor([0.1815, -1.0111])
-        result = a.div(other=b, rounding_mode="trunc")
+        result = a.div(other=b)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -72,7 +70,72 @@ def test_case_5():
         import torch
         a = torch.tensor([[ 0.5950,-0.0872], [2.3298, -0.2972]])
         b = torch.tensor([0.1815, -1.0111])
+        result = a.div(other=b, rounding_mode=None)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[ 0.5950,-0.0872], [2.3298, -0.2972]])
+        b = torch.tensor([0.1815, -1.0111])
+        result = a.div(other=b, rounding_mode="trunc")
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[ 0.5950,-0.0872], [2.3298, -0.2972]])
+        b = torch.tensor([0.1815, -1.0111])
         result = a.div(other=b, rounding_mode="floor")
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# paddle not support type promote
+# torch.div(int, int) return float, but paddle return int
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4, 9, 8]])
+        b = torch.tensor([2, 3, 4])
+        result = a.div(b)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_dtype=False)
+
+
+# paddle not support type promote
+# torch.div(int, int) return float, but paddle return int, when can not divide exactly,
+# paddle result equal to trunc divide, result is wrong
+def _test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4, 3, 8]])
+        b = torch.tensor([3, 2, 5])
+        result = a.div(other=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_dtype=False)
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[ 0.5950,-0.0872], [2.3298, -0.2972]])
+        b = torch.tensor([0.1815, -1.0111])
+        result = a.div(rounding_mode="trunc", other=b)
         """
     )
     obj.run(pytorch_code, ["result"])

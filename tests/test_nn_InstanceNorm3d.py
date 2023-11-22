@@ -96,3 +96,29 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        m = nn.InstanceNorm3d(num_features=100, eps=1e-04, momentum=0.3, affine=True, track_running_stats=True, device=None, dtype=None)
+        input = torch.ones(20, 100, 35, 45, 10)
+        result = m(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        m = nn.InstanceNorm3d(100, 1e-04, 0.3, False, False, None, None)
+        input = torch.ones(20, 100, 35, 45, 10)
+        result = m(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

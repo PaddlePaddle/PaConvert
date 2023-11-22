@@ -200,3 +200,41 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        class SubModel(torch.nn.Module):
+            def __init__(self):
+                super(SubModel, self).__init__()
+                self.register_buffer('buf1', torch.tensor([1.,2.,4.,5.]), persistent=True)
+                self.register_buffer('buf4', persistent=True, tensor=torch.tensor([1.,2.,4.,5.]))
+                self.register_buffer('buf5', torch.tensor([1.,2.,4.,5.]), True)
+
+            def forward(self, x):
+                pass
+
+        class Model(torch.nn.Module):
+            def __init__(self):
+                super(Model, self).__init__()
+                self.submodule = SubModel()
+                self.register_buffer('buf1', torch.tensor([1.,2.,4.,5.]), persistent=False)
+                self.register_buffer('buf2', persistent=False, tensor=torch.tensor([1.,2.,4.,5.]))
+                self.register_buffer('buf3', torch.tensor([1.,2.,4.,5.]), False)
+
+            def forward(self, x):
+                pass
+
+        model = Model()
+        names = []
+        buffers = []
+        for name, buf in model.named_buffers(recurse=True):
+            names.append(name)
+            buffers.append(buf)
+        """
+    )
+    obj.run(pytorch_code, ["names", "buffers"])
