@@ -3118,11 +3118,14 @@
   "torch.Tensor.to": {
     "Matcher": "TensorToMatcher",
     "min_input_args": 0,
+    "overloadable": true,
     "args_list": [
+      "other",
       "device",
       "dtype",
       "non_blocking",
-      "copy"
+      "copy",
+      "memory_format"
     ]
   },
   "torch.Tensor.to_dense": {
