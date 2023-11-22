@@ -4224,6 +4224,7 @@ class Is_PinnedMatcher(BaseMatcher):
     def generate_code(self, kwargs):
 
         code = f"'pinned' in str({self.paddleClass}.place)"
+
         return code
       
 
