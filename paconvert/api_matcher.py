@@ -4378,3 +4378,12 @@ class SetUpMatcher(BaseMatcher):
         return ast.parse(
             "paddle.utils.cpp_extension.setup({})".format(self.kwargs_to_str(kwargs))
         )
+
+
+class FloatPowerMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        input_tensor = kwargs.get("input")
+        exponent = kwargs.get("exponent")
+
+        code = "{}.cast(paddle.float64).pow({})".format(input_tensor, exponent)
+        return code

@@ -5128,6 +5128,13 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "'float64'"
   },
+  "torch.float_power": {
+    "Matcher": "FloatPowerMatcher",
+    "args_list": [
+      "input",
+      "exponent"
+    ]
+  },
   "torch.floor": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.floor",
