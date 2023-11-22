@@ -132,19 +132,3 @@ def test_case_10():
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-def test_case_11():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        geo.repeat(spacing=4.0, repeat_lower=(-1, -1, -1), repeat_higher=(1, 1, 1))
-        """
-    )
-    expect_code = textwrap.dedent(
-        """
-        import paddle
-        geo.repeat(spacing=4.0, repeat_lower=(-1, -1, -1), repeat_higher=(1, 1, 1))
-        """
-    )
-    obj.run(pytorch_code, expect_paddle_code=expect_code)

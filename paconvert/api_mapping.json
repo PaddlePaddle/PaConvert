@@ -2619,10 +2619,7 @@
     "Matcher": "TensorRepeatMatcher",
     "min_input_args": 1,
     "args_list": [
-      "*repeats",
-      "spacing",
-      "repeat_lower",
-      "repeat_higher"
+      "*repeats"
     ]
   },
   "torch.Tensor.repeat_interleave": {
