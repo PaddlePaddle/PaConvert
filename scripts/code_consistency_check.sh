@@ -21,7 +21,7 @@ cd /workspace/$1/PaConvert/
 TORCH_PROJECT_PATH=$2
 
 echo "Insalling cpu version torch"
-python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+python -m pip install torch==2.1.0 --index-url https://download.pytorch.org/whl/cpu
 python -c "import torch; print('torch version information:' ,torch.__version__)"
 
 echo "Insalling develop version paddle"
