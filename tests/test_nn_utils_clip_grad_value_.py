@@ -25,6 +25,7 @@ def test_case_1():
         import torch
         import torch.nn as nn
         x = torch.tensor([[[[-0.4106,  0.1677], [-0.6648, -0.5669]]]])
+        x.grad = torch.tensor([[[[-0.5, 12.343], [-10.4, -0.5669]]]])
 
         nn.utils.clip_grad_value_(x, clip_value=2.0)
         result = x
@@ -39,6 +40,7 @@ def test_case_2():
         import torch
         import torch.nn as nn
         x = torch.tensor([[[[-0.4106,  0.1677], [-0.6648, -0.5669]]]])
+        x.grad = torch.tensor([[[[-0.5, 12.343], [-10.4, -0.5669]]]])
 
         nn.utils.clip_grad_value_(x, clip_value=1.0)
         result = x
