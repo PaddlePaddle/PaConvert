@@ -46,7 +46,7 @@ def test_case_3():
 def test_case_4():
     pytorch_code = textwrap.dedent(
         generate_torch_code(
-            "torch.optim.lr_scheduler.ExponentialLR(optimizer=sgd, gamma=0.5, last_epoch=-1, verbose=False)"
+            "torch.optim.lr_scheduler.ExponentialLR(optimizer=sgd, gamma=0.5, last_epoch=-1, verbose=True)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
@@ -55,7 +55,7 @@ def test_case_4():
 def test_case_5():
     pytorch_code = textwrap.dedent(
         generate_torch_code(
-            "torch.optim.lr_scheduler.ExponentialLR(optimizer=sgd, gamma=0.5, verbose=False)"
+            "torch.optim.lr_scheduler.ExponentialLR(optimizer=sgd, gamma=0.5, verbose=True)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
@@ -77,7 +77,7 @@ def test_case_7():
         generate_torch_code(
             [
                 "torch.optim.lr_scheduler.ExponentialLR(optimizer=sgd, gamma=0.5, last_epoch=-1, verbose=False)",
-                "torch.optim.lr_scheduler.ExponentialLR(optimizer=sgd, gamma=0.5, last_epoch=scheduler_1.last_epoch, verbose=False)",
+                "torch.optim.lr_scheduler.ExponentialLR(optimizer=sgd, gamma=0.5, last_epoch=scheduler_1.last_epoch, verbose=True)",
             ]
         )
     )

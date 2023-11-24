@@ -23,7 +23,7 @@ obj = APIBase("torch.optim.lr_scheduler.StepLR")
 def test_case_1():
     pytorch_code = textwrap.dedent(
         generate_torch_code(
-            "torch.optim.lr_scheduler.StepLR(sgd, step_size=2, verbose=False)"
+            "torch.optim.lr_scheduler.StepLR(sgd, step_size=2, verbose=True)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)

@@ -46,7 +46,7 @@ def test_case_3():
 def test_case_4():
     pytorch_code = textwrap.dedent(
         generate_torch_code(
-            "torch.optim.lr_scheduler.CosineAnnealingLR(optimizer=sgd, T_max=10, eta_min=0.0, last_epoch=-1, verbose=False)"
+            "torch.optim.lr_scheduler.CosineAnnealingLR(optimizer=sgd, T_max=10, eta_min=0.0, last_epoch=-1, verbose=True)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
@@ -55,7 +55,7 @@ def test_case_4():
 def test_case_5():
     pytorch_code = textwrap.dedent(
         generate_torch_code(
-            "torch.optim.lr_scheduler.CosineAnnealingLR(optimizer=sgd, T_max=10, eta_min=0.05, verbose=False)"
+            "torch.optim.lr_scheduler.CosineAnnealingLR(optimizer=sgd, T_max=10, eta_min=0.05, verbose=True)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)

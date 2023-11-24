@@ -52,7 +52,7 @@ def test_case_3():
 def test_case_4():
     pytorch_code = textwrap.dedent(
         generate_torch_code(
-            "torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer=sgd, mode='min',verbose=False)",
+            "torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer=sgd, mode='min',verbose=True)",
             step_with_loss=True,
         )
     )
@@ -95,7 +95,7 @@ def test_case_8():
         generate_torch_code(
             [
                 "torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer=sgd, mode='min',verbose=False)",
-                "torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer=sgd, mode='min',verbose=False)",
+                "torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer=sgd, mode='min',verbose=True)",
             ],
             step_with_loss=True,
         )
