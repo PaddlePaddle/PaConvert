@@ -389,9 +389,11 @@ class BaseMatcher(object):
         if self.get_paddle_api():
             new_paddle_api = re.sub(
                 "paddle.Tensor|paddle.nn.Layer|paddle.optimizer.Optimizer|paddle.distribution.Distribution|paddle.autograd.PyLayerContext|paddle.profiler.Profiler",
-                self.paddleClass,
+                re.escape(self.paddleClass),
                 self.get_paddle_api(),
             )
+            # reverse escape
+            new_paddle_api = re.sub(r"\\(.)", r"\1", new_paddle_api)
             self.set_paddle_api(new_paddle_api)
 
         return new_func
