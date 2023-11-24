@@ -127,8 +127,7 @@ torch.permute
     }
   },
   "unsupport_args": [],
-  "paddle_default_kwargs": {},
-  "overloadable": false
+  "paddle_default_kwargs": {}
 }
 ```
 
@@ -140,7 +139,6 @@ args_list     :必须，根据顺序填写 torch api 的 `全部参数名`，所
 kwargs_change :可选，参数名称的差异，如果是 `GenericMatcher` 且有参数名称差异时，则必须配置。
 unsupport_args:可选，不支持的参数功能，通过该字段配置后，这些参数如果被使用，将直接标记为不支持转换。
 paddle_default_kwargs :可选，当 `paddle 参数更多` 或者 `参数默认值不一致` 时，可以通过该配置，设置参数默认值。
-overloadable  :可选，用于标记函数是否存在多个重载参数列表。仅对单测检查工具生效。
 ```
 
 对于一个待开发API，首先依据步骤1的映射关系，确定其属于哪种分类情况。

@@ -64,6 +64,14 @@ abstract_api_aux_set = {
     "torch.optim.Optimizer.step",
 }
 
+overloadable_api_aux_set = {
+    "torch.min",
+    "torch.Tensor.to",
+    "torch.max",
+    "torch.Tensor.max",
+    "torch.Tensor.min",
+}
+
 
 def get_test_cases(discovery_paths=["tests"]):
     # Collect the test cases
@@ -235,7 +243,8 @@ def check_call_variety(test_data, api_mapping, verbose=False):
         is_partial_support = (
             "unsupport" in unittest_data and len(unittest_data["unsupport"]) > 0
         )
-        is_overloadable = mapping_data.get("overloadable", False)
+
+        is_overloadable = api in overloadable_api_aux_set
 
         abstract = api in abstract_api_aux_set
         if abstract:

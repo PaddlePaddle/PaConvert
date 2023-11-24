@@ -172,7 +172,8 @@
   },
   "torch.Tensor.addr_": {},
   "torch.Tensor.adjoint": {
-    "Matcher": "AdjointMatcher"
+    "Matcher": "AdjointMatcher",
+    "min_input_args": 0
   },
   "torch.Tensor.align_as": {},
   "torch.Tensor.align_to": {},
@@ -1985,8 +1986,7 @@
     ],
     "kwargs_change": {
       "dim": "axis"
-    },
-    "overloadable": true
+    }
   },
   "torch.Tensor.maximum": {
     "Matcher": "GenericMatcher",
@@ -2039,8 +2039,7 @@
     ],
     "kwargs_change": {
       "dim": "axis"
-    },
-    "overloadable": true
+    }
   },
   "torch.Tensor.minimum": {
     "Matcher": "GenericMatcher",
@@ -3118,7 +3117,6 @@
   "torch.Tensor.to": {
     "Matcher": "TensorToMatcher",
     "min_input_args": 0,
-    "overloadable": true,
     "args_list": [
       "other",
       "device",
@@ -7590,8 +7588,7 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axis"
-    },
-    "overloadable": true
+    }
   },
   "torch.max_pool1d": {
     "Matcher": "GenericMatcher",
@@ -7717,8 +7714,7 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axis"
-    },
-    "overloadable": true
+    }
   },
   "torch.minimum": {
     "Matcher": "GenericMatcher",
