@@ -40,6 +40,20 @@ whitelist_pattern = [
     r"^test_utils_data_SequentialSampler\.py",  # 该文件测试时仅将 api 作为基类继承
 ]
 
+var_args_collector_aux_mapping = {
+    "torch.Tensor.new_ones": "size",
+    "torch.Tensor.permute": "dims",
+    "torch.Tensor.repeat": "repeats",
+    "torch.Tensor.reshape": "shape",
+    "torch.Tensor.tile": "dims",
+    "torch.Tensor.view": "size",
+    "torch.empty": "size",
+    "torch.ones": "size",
+    "torch.rand": "size",
+    "torch.randn": "size",
+    "torch.zeros": "size",
+}
+
 
 def get_test_cases(discovery_paths=["tests"]):
     # Collect the test cases
@@ -123,7 +137,7 @@ def extract_params_from_invoking(api, code: str):
 
     # 寻找参数列表的结束位置
     for i, c in enumerate(code):
-        if c == "(" or c == "[":
+        if c == "(" or c == "[" or c == "{":
             pair_stack.append(c)
             if len(pair_stack) == 1 and c == "(":
                 idx = i + 1
@@ -138,7 +152,7 @@ def extract_params_from_invoking(api, code: str):
             elif len(pair_stack) == 1:
                 key = code[idx:i]
                 idx = i + 1
-        elif c == "," or c == ")" or c == "]":
+        elif c == "," or c == ")" or c == "]" or c == "}":
             if len(pair_stack) == 1:
                 value = code[idx:i]
                 if len(value.strip()) > 0:
@@ -160,6 +174,9 @@ def extract_params_from_invoking(api, code: str):
                     break
             elif c == "]":
                 assert pair_stack[-1] == "[", f"Unpaired in {repr(code)}"
+                pair_stack.pop()
+            elif c == "}":
+                assert pair_stack[-1] == "{", f"Unpaired in {repr(code)}"
                 pair_stack.pop()
         elif code[i : i + 7] == "lambda ":
             pair_stack.append("lambda")
@@ -226,11 +243,15 @@ def check_call_variety(test_data, api_mapping, verbose=False):
         var_arg_name = None
         var_kwarg_name = None
 
+        var_args_collector = var_args_collector_aux_mapping.get(api, None)
+
         _args_list_position_end = len(args_list_full)
         args_list_full_keyword = []
+        args_list_full_positional = []
         is_token = lambda x: x.isalpha() or x == "_"
         for i, arg in enumerate(args_list_full):
             if arg.startswith("*"):
+                # 首个星号之前的是位置参数，之后的是关键字参数
                 _args_list_position_end = min(_args_list_position_end, i)
                 if arg.startswith("**"):
                     if len(arg) > 2 and not is_token(arg[2]):
@@ -238,13 +259,27 @@ def check_call_variety(test_data, api_mapping, verbose=False):
                     # 允许匿名可变参数列表，如 **kwargs 或 **
                     var_kwarg_name = arg[2:]
                 else:
-                    var_arg_name = arg[1:]
+                    if var_arg_name is not None:
+                        if len(arg[1:]) > 0:
+                            raise ValueError(
+                                f'api {api} has duplicated var_args_collector "{var_arg_name}" and "{arg[1:]}"'
+                            )
+                    else:
+                        var_arg_name = arg[1:]
+
+                    if var_arg_name == var_args_collector:
+                        args_list_full_keyword.append(var_arg_name)
+                        args_list_full_positional.append(var_arg_name)
             elif is_token(arg[0]):
                 args_list_full_keyword.append(arg)
+                if i < _args_list_position_end:
+                    args_list_full_positional.append(arg)
+
+                if arg == var_args_collector:
+                    args_list_full_positional.append(arg)
+                    var_arg_name = arg
             else:
                 raise ValueError(f'api {api} has unexpected arg "{arg}".')
-
-        args_list_full_positional = args_list_full[:_args_list_position_end]
 
         # 这里只移除了不支持的参数，但是事实上，移除不支持的参数会影响其他检查，如
         # (a, b, c, d) 中移除了 (c)，那么不指定关键字最多只能传入 a、b
@@ -274,22 +309,23 @@ def check_call_variety(test_data, api_mapping, verbose=False):
 
             # 检查 kwargs 是否符合预设的 args_list
             # 条件是，如果没有 **kwargs 参数，那么 kwargs 的 key 必须是 args_list 的子集
-            allowed_keys = args_list_keyword.copy()
-            if var_arg_name is not None and len(var_arg_name) > 0:
-                allowed_keys.append(var_arg_name)
-            if api == "torch.max" or api == "torch.min":
-                # 这个函数居然有重载，单独特判吧先
-                allowed_keys.append("other")
 
             if var_kwarg_name is None and len(kwargs) > 0:
                 for k, v in kwargs:
-                    if k not in allowed_keys:
-                        raise ValueError(
-                            f"{api}(*{args}, **{kwargs}) has unexpected keyword argument '{k}'."
-                        )
+                    if k not in args_list_full_keyword:
+                        if not is_overloadable:
+                            raise ValueError(
+                                f"{api}(*{args}, **{kwargs}) has unexpected keyword argument '{k}'."
+                            )
+                        else:
+                            print(
+                                f"WARNING: {api} has overload keyword argument '{k}'."
+                            )
+                            break
 
             # 如果没有 *arg，args 的长度必须小于等于 args_list_positional 的长度
-            if var_arg_name is None and len(args) > len(args_list_positional):
+            support_var_args = var_arg_name is not None and len(var_arg_name) > 0
+            if not support_var_args and len(args) > len(args_list_positional):
                 raise ValueError(
                     f"{api}(*{args}, **{kwargs}) has too many position arguments, args_list={args_list_keyword}"
                 )

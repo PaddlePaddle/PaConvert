@@ -7590,7 +7590,8 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axis"
-    }
+    },
+    "overloadable": true
   },
   "torch.max_pool1d": {
     "Matcher": "GenericMatcher",
@@ -7716,7 +7717,8 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axis"
-    }
+    },
+    "overloadable": true
   },
   "torch.minimum": {
     "Matcher": "GenericMatcher",
