@@ -54,6 +54,16 @@ var_args_collector_aux_mapping = {
     "torch.zeros": "size",
 }
 
+abstract_api_aux_set = {
+    "torch.autograd.Function.forward",
+    "torch.utils.data.Dataset",
+    "torch.autograd.Function",
+    "torch.utils.data.IterableDataset",
+    "torch.autograd.Function.backward",
+    "torch.nn.Module",
+    "torch.optim.Optimizer.step",
+}
+
 
 def get_test_cases(discovery_paths=["tests"]):
     # Collect the test cases
@@ -227,7 +237,7 @@ def check_call_variety(test_data, api_mapping, verbose=False):
         )
         is_overloadable = mapping_data.get("overloadable", False)
 
-        abstract = mapping_data.get("abstract", False)
+        abstract = api in abstract_api_aux_set
         if abstract:
             print(f"SKIP: api {api} is abstract, skip validations.")
             continue
