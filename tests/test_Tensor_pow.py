@@ -65,3 +65,15 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([2])
+        b = torch.tensor([1, 2, 3, 4])
+        result = a.pow(exponent=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

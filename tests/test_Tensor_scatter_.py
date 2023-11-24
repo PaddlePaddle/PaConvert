@@ -53,3 +53,15 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        index = torch.tensor([[0],[1],[2]])
+        result = torch.ones(3, 5).scatter_(dim=1, index=index, value=1.0, reduce='add')
+
+        """
+    )
+    obj.run(pytorch_code, ["result"])

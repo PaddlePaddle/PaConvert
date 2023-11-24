@@ -61,3 +61,14 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2], [3, 4], [5, 6], [7, 8]])
+        result = x.roll(dims=(0, 1), shifts=(2, 1))
+        """
+    )
+    obj.run(pytorch_code, ["result"])

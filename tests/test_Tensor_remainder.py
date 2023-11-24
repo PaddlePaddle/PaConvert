@@ -75,3 +75,15 @@ def _test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1., 2, 3, 4, 5])
+        b = torch.tensor([1, 0.5, 0.6, 1.2, 2.4])
+        result = a.remainder(divisor=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

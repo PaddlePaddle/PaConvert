@@ -77,3 +77,15 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.ones([15])
+        b = torch.zeros([3, 5])
+        result = a.resize_as_(b+1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

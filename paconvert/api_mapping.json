@@ -238,7 +238,8 @@
   },
   "torch.Tensor.angle": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.angle"
+    "paddle_api": "paddle.Tensor.angle",
+    "min_input_args": 0
   },
   "torch.Tensor.any": {
     "Matcher": "TensorToBoolMatcher",
@@ -2354,6 +2355,7 @@
     "Matcher": "UnchangeMatcher",
     "min_input_args": 0,
     "args_list": [
+      "*",
       "as_tuple"
     ]
   },
@@ -2485,6 +2487,7 @@
     "args_list": [
       "dim",
       "keepdim",
+      "*",
       "dtype"
     ],
     "kwargs_change": {
@@ -2514,17 +2517,11 @@
     "args_list": [
       "q",
       "dim",
-      "keepdim",
-      "*",
-      "interpolation",
-      "out"
+      "keepdim"
     ],
     "kwargs_change": {
       "dim": "axis"
-    },
-    "unsupport_args": [
-      "interpolation "
-    ]
+    }
   },
   "torch.Tensor.rad2deg": {
     "Matcher": "UnchangeMatcher",
@@ -2572,10 +2569,10 @@
     "paddle_api": "paddle.Tensor.remainder_",
     "min_input_args": 1,
     "args_list": [
-      "divisor"
+      "other"
     ],
     "kwargs_change": {
-      "divisor": "y"
+      "other": "y"
     }
   },
   "torch.Tensor.rename": {
@@ -2628,9 +2625,7 @@
     "min_input_args": 1,
     "args_list": [
       "repeats",
-      "dim",
-      "*",
-      "output_size"
+      "dim"
     ],
     "kwargs_change": {
       "dim": "axis"
@@ -2663,6 +2658,7 @@
     "min_input_args": 1,
     "args_list": [
       "the_template",
+      "*",
       "memory_format"
     ],
     "kwargs_change": {
@@ -2755,6 +2751,7 @@
     "args_list": [
       "dim",
       "index",
+      "value",
       "src",
       "*",
       "reduce"
@@ -2824,6 +2821,7 @@
     "Matcher": "TensorShortMatcher",
     "min_input_args": 0,
     "args_list": [
+      "*",
       "memory_format"
     ]
   },
@@ -2901,9 +2899,7 @@
       "dim",
       "descending",
       "*",
-      "stable",
-      "dim",
-      "descending"
+      "stable"
     ],
     "kwargs_change": {
       "dim": "axis",
@@ -3134,7 +3130,7 @@
   "torch.Tensor.to_mkldnn": {},
   "torch.Tensor.to_sparse": {
     "Matcher": "GenericMatcher",
-    "min_input_args": 0,
+    "min_input_args": 1,
     "paddle_api": "paddle.Tensor.to_sparse_coo",
     "args_list": [
       "sparse_dim"
@@ -3229,6 +3225,7 @@
   "torch.Tensor.true_divide_": {
     "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.Tensor.divide_",
+    "min_input_args": 1,
     "args_list": [
       "other"
     ],
@@ -3258,7 +3255,7 @@
     "Matcher": "TensorTypeAsMatcher",
     "min_input_args": 1,
     "args_list": [
-      "tensor"
+      "other"
     ]
   },
   "torch.Tensor.unbind": {
@@ -3288,7 +3285,7 @@
   "torch.Tensor.unfold": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.unfold",
-    "min_input_args": 2,
+    "min_input_args": 3,
     "args_list": [
       "dimension",
       "size",

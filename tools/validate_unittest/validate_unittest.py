@@ -70,6 +70,8 @@ overloadable_api_aux_set = {
     "torch.max",
     "torch.Tensor.max",
     "torch.Tensor.min",
+    "torch.Tensor.scatter_",
+    "torch.Tensor.std",
 }
 
 
@@ -287,7 +289,8 @@ def check_call_variety(test_data, api_mapping, verbose=True):
                         var_arg_name = arg[1:]
 
                     if var_arg_name == var_args_collector:
-                        args_list_full_keyword.append(var_arg_name)
+                        if var_arg_name not in args_list_full_keyword:
+                            args_list_full_keyword.append(var_arg_name)
                         args_list_full_positional.append(var_arg_name)
             elif is_token(arg[0]):
                 args_list_full_keyword.append(arg)
@@ -361,6 +364,7 @@ def check_call_variety(test_data, api_mapping, verbose=True):
                 args_list_keyword, keys
             ):
                 all_kwargs = True
+
             if len(args_list_keyword) <= 1 or not match_subsequence(
                 args_list_keyword, keys
             ):

@@ -102,3 +102,27 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., 3.])
+        data = [[0, 1], [2, 3]]
+        result = x.new_tensor(data=data, dtype=torch.float64, device='cpu', requires_grad=True, layout=torch.strided, pin_memory=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., 3.])
+        data = [[0, 1], [2, 3]]
+        result = x.new_tensor(pin_memory=False, dtype=torch.float64, layout=torch.strided, device='cpu', requires_grad=True, data=data)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

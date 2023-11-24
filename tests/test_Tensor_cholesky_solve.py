@@ -65,3 +65,19 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 2.4112, -0.7486,  1.4551],
+                        [-0.7486,  1.3544,  0.1294],
+                        [ 1.4551,  0.1294,  1.6724]])
+        b = torch.tensor([[-0.6355,  0.9891],
+                        [ 0.1974,  1.4706],
+                        [-0.4115, -0.6225]])
+        result = b.cholesky_solve(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)

@@ -53,3 +53,15 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2, 3], [3, 4, 6]])
+        idx = torch.tensor([[0]])
+        result = x.take_along_dim(dim=1, indices=idx)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

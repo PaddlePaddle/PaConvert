@@ -85,3 +85,15 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1, 2], [3., float("nan")]])
+        dim, keepdim = 1, False
+        result = input.nansum(dim=dim, dtype=torch.float64, keepdim=keepdim)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

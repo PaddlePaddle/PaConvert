@@ -61,3 +61,16 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+# from is built-in keyword, so it must be unpacked from dict
+def _test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.Tensor([[1.,2.], [3.,4.]])
+        parameters = {'from': 0, 'to': 2}
+        result.uniform_(**parameters)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
