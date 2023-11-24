@@ -115,7 +115,7 @@ torch.permute
 
 在 `paconvert/api_mapping.json` 中增加该 API 的各项配置，每个配置字段的定义如下：
 
-```python
+```json
 {
   "torch.permute" : {
     "Matcher": "GenericMatcher",
@@ -158,7 +158,7 @@ paddle_default_kwargs :可选，当 `paddle 参数更多` 或者 `参数默认�
 
 以 `torch.permute` 为例，首先参照 [torch.permute映射关系](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/ops/torch.permute.md)，其属于 **仅参数名不一致** 的情况，符合上述类型。因此可通过`GenericMatcher`来实现，在json中配置必选的 `Matcher` 和 `args_list` 字段，还需配置 `paddle_api` 和 `kwargs_change`。
 
-```python
+```json
 "torch.permute" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.transpose",
@@ -196,7 +196,7 @@ paddle_default_kwargs :可选，当 `paddle 参数更多` 或者 `参数默认�
 
 以 `torch.chain_matmul` 为例，由于其支持可变参数，可以传入任意个矩阵，因此重新 `get_paddle_nodes` 函数，通过`parse_args`、`parse_kwargs`来解析AST形式的参数为字符串，具体代码如下：
 
-```
+```python
 class Chain_MatmulMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         new_args = self.parse_args(args)
@@ -213,7 +213,7 @@ class Chain_MatmulMatcher(BaseMatcher):
 
 对应的json配置为：
 
-```
+```json
 "torch.chain_matmul": {
     "Matcher": "Chain_MatmulMatcher",
 }
@@ -227,7 +227,7 @@ class Chain_MatmulMatcher(BaseMatcher):
 
 由于 `torch.transpose` 不支持可变参数，因此重新 `generate_code` 函数，具体代码如下：
 
-```
+```python
 class TransposeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
@@ -248,7 +248,7 @@ class TransposeMatcher(BaseMatcher):
 
 对应的json配置为：
 
-```
+```json
 "torch.transpose" : {
     "Matcher": "TransposeMatcher",
     "args_list" : [
@@ -279,7 +279,7 @@ class TransposeMatcher(BaseMatcher):
 以 `torch.Tensor.repeat_interleave` 为例，由于该API名称很长，不容易出现误识别；numpy等其他库也没有 `ndarray.repeat_interleave` API，因此符合此标准。参照 [torch.transpose映射关系](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/ops/torch.transpose.md)，其属于 **仅参数名不一致** 的情况，符合 `GenericMatcher` 的适用范围。因此只需配置json字段即可，其中已编写了通用的 `generate_code` 函数。
 
 
-```
+```json
 "torch.Tensor.repeat_interleave": {
   "Matcher": "GenericMatcher",
   "paddle_api": "paddle.Tensor.repeat_interleave",
@@ -306,7 +306,7 @@ class TransposeMatcher(BaseMatcher):
 
 以 `torch.Tensor.tan` 为例：
 
-```
+```json
 "torch.Tensor.tan": {
     "Matcher": "UnchangeMatcher"
 }
@@ -338,7 +338,7 @@ class TransposeMatcher(BaseMatcher):
 
 以 `torch.Tensor.reshape` 为例，其映射关系分类属于 **参数不一致**，是由于torch的shape即可为可变参数，也可为list/tuple，而Paddle仅支持list/tuple，因此我们只需对**可变参数**的用法 `write_aux_code` 。
 
-```
+```python
 class TensorReshapeMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -371,13 +371,13 @@ class TensorReshapeMatcher(BaseMatcher):
 
 对应的json配置为：
 
-```
+```json
 "torch.Tensor.reshape": {
     "Matcher": "TensorReshapeMatcher"
 }
 ```
 
-```
+```python
 转换前：
 x.reshape(2, 3)
 
@@ -414,11 +414,14 @@ x.reshape(2, 3)
 2）由于AST语法分析是静态代码分析，也就是Matcher被执行时的并未到代码的运行期，无法知道某个变量的运行值，要避免对变量运行值的判断，否则可能引入错误。
 
 例如：如果在Matcher里的以下判断形式 `if 'True' == kwargs['pin_memory']` ，对以下Python代码将失效，因为 `kwargs['pin_memory']` 只有到代码运行期其值才为'True'，在AST语法分析期，只能获取 `kwargs['pin_memory']='temp'` ，无法获取具体运行值，所以上述判断将失效。
+
 ```python
 temp = True
 torch.tensor(1., pin_memory=temp)
 ```
+
 因此在Matcher编写时，需格外注意此时为静态语法分析期，避免判断运行期的值；如必须判断，则不要在Matcher中判断，将其挪到转换后的代码也就是在运行期来判断。例如转成以下形式：
+
 ```python
 temp = True
 paddle.to_tensor(1., place=paddle.CUDAPinnedPlace() if temp else None)
@@ -432,6 +435,7 @@ if x:
 ```
 
 其中 `torch.transpose(x, 1, 0)` 会通过5行代码实现:
+
 ```python
 x = x
 perm_0 = list(range(x.ndim))
@@ -439,6 +443,7 @@ perm_0[0] = 1
 prem_0[1] = 0
 paddle.transpose(x=x, perm=perm_0)
 ```
+
 其中前4行将直接插入到该作用域中，第5行将替换原本的ast.Call: `torch.transpose(x, 1, 0)`，转换完该API的中间结果为：
 
 ```python
@@ -487,7 +492,7 @@ if x:
 
 以 `torch.Tensor.new_zeros` 为例，其至少包含12种以上的torch用法case，如下：
 
-```
+```python
 case 1: x.new_zeros(2)
 case 2: x.new_zeros(2, 3)
 case 3: x.new_zeros([2, 3])

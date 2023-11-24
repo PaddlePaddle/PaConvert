@@ -64,7 +64,7 @@ def test_case_5():
         """
         import torch
         shape = 3
-        result = torch.ones(shape)
+        result = torch.zeros(shape)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -75,7 +75,7 @@ def test_case_6():
         """
         import torch
         shape = [4, 4]
-        result = torch.ones(shape)
+        result = torch.zeros(shape)
         """
     )
     obj.run(pytorch_code, ["result"])

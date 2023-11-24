@@ -75,3 +75,15 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([9.7, float('nan'), 3.1])
+        other = torch.tensor([-2.2, 0.5, float('nan')])
+        result = input.fmax(other=other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

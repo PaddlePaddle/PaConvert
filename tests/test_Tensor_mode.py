@@ -74,3 +74,27 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result", "index"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[[1,2,2],[2,3,3]],[[0,5,5],[9,9,0]]])
+        keepdim = True
+        result, index = input.mode(1, keepdim)
+        """
+    )
+    obj.run(pytorch_code, ["result", "index"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[[1,2,2],[2,3,3]],[[0,5,5],[9,9,0]]])
+        keepdim = True
+        result, index = input.mode(keepdim=keepdim, dim=1)
+        """
+    )
+    obj.run(pytorch_code, ["result", "index"])

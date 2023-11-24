@@ -60,3 +60,13 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([[1, 2], [3, 4]]).gather(index=torch.tensor([[0, 0], [1, 0]]), dim=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

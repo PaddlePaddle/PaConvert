@@ -21,7 +21,7 @@ cd /workspace/$1/PaConvert/
 TORCH_PROJECT_PATH=$2
 
 echo "Insalling cpu version torch"
-python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+python -m pip install torch==2.1.0 --index-url https://download.pytorch.org/whl/cpu
 python -c "import torch; print('torch version information:' ,torch.__version__)"
 
 echo "Insalling develop version paddle"
@@ -31,53 +31,56 @@ rm -rf /root/anaconda3/lib/python*/site-packages/paddlepaddle-0.0.0.dist-info/
 python -m pip install --no-cache-dir paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
+echo "Installing dependencies"
+python -m pip install pandas openpyxl
+
 # obtain the model test set
 if [[ "$DOWNLOAD_DATASET_IF" == "ON" ]]; then
     echo '**************************start downloading datasets.....*********************************'
-    mkdir -p torch_project
-    git clone https://github.com/open-mmlab/mmcv.git torch_project/mmcv
-    git clone https://github.com/open-mmlab/mmdetection3d.git torch_project/mmdetection3d
-    git clone https://github.com/facebookresearch/fvcore.git torch_project/fvcore
-    git clone https://github.com/fastai/timmdocs.git torch_project/timmdocs
-    git clone https://github.com/open-mmlab/mmpretrain.git torch_project/mmpretrain
-    git clone https://github.com/facebookresearch/pycls.git torch_project/pycls
-    git clone https://github.com/KevinMusgrave/pytorch-metric-learning.git torch_project/pytorch-metric-learning
-    git clone https://github.com/KaiyangZhou/deep-person-reid.git torch_project/deep-person-reid
-    git clone https://github.com/open-mmlab/mmdetection.git torch_project/mmdetection
-    git clone https://github.com/open-mmlab/mmpose.git torch_project/mmpose
-    git clone https://github.com/facebookresearch/detectron2.git torch_project/detectron
-    git clone https://github.com/IDEA-Research/detrex.git torch_project/detrex
-    git clone https://github.com/WongKinYiu/yolov7.git torch_project/yolov7
-    git clone https://github.com/ultralytics/yolov5.git torch_project/yolov5
-    git clone https://github.com/open-mmlab/mmocr.git torch_project/mmocr
-    git clone https://github.com/hikopensource/DAVAR-Lab-OCR.git torch_project/DAVAR-Lab-OCR
-    git clone https://github.com/open-mmlab/mmsegmentation.git torch_project/mmseg
-    git clone https://github.com/qubvel/segmentation_models.pytorch.git torch_project/segmentation_models
-    git clone https://github.com/CSAILVision/semantic-segmentation-pytorch.git torch_project/semantic-segmentation-pytorch
-    git clone https://github.com/meetps/pytorch-semseg.git torch_project/pytorch-semseg
-    git clone https://github.com/Tramac/awesome-semantic-segmentation-pytorch.git torch_project/awesome-semantic-segmentation-pytorch
-    git clone https://github.com/PeterL1n/BackgroundMattingV2.git torch_project/BackgroundMattingV2
-    git clone https://github.com/PeterL1n/RobustVideoMatting.git torch_project/RobustVideoMatting
-    git clone https://github.com/black0017/MedicalZooPytorch.git torch_project/MedicalZooPytorch
-    git clone https://github.com/MIC-DKFZ/nnUNet.git torch_project/nnUNet
-    git clone https://github.com/SamsungLabs/ritm_interactive_segmentation.git torch_project/ritm_interactive_segmentation
-    git clone https://github.com/allenai/allennlp.git torch_project/allennlp
-    git clone https://github.com/facebookresearch/fairseq.git torch_project/fairseq
-    git clone https://github.com/ZhangGongjie/Meta-DETR.git torch_project/Meta-DETR
-    git clone https://github.com/implus/UM-MAE.git torch_project/UM-MAE
-    git clone https://github.com/ZrrSkywalker/MonoDETR.git torch_project/MonoDETR
-    git clone https://github.com/ViTAE-Transformer/ViTPose.git torch_project/ViTPose
-    git clone https://github.com/xingyizhou/UniDet.git torch_project/UniDet
-    git clone https://github.com/facebookresearch/mae.git torch_project/mae
-    git clone https://github.com/yyliu01/PS-MT.git torch_project/PS-MT
-    git clone https://github.com/charlesCXK/TorchSemiSeg.git torch_project/TorchSemiSeg
-    git clone https://github.com/IDEA-Research/MaskDINO.git torch_project/MaskDINO
-    git clone https://github.com/HuangJunJie2017/BEVDet.git torch_project/BEVDet
-    git clone https://github.com/CASIA-IVA-Lab/Obj2Seq.git torch_project/Obj2Seq
-    git clone https://github.com/yuhangzang/OV-DETR.git torch_project/OV-DETR
-    git clone https://github.com/hikvision-research/opera.git torch_project/opera
-    git clone https://github.com/xingyizhou/CenterTrack.git torch_project/CenterTrack
-    git clone https://github.com/IDEA-Research/DINO.git torch_project/DINO
+    mkdir -p $TORCH_PROJECT_PATH
+    git clone https://github.com/open-mmlab/mmcv.git $TORCH_PROJECT_PATH/mmcv
+    git clone https://github.com/open-mmlab/mmdetection3d.git $TORCH_PROJECT_PATH/mmdetection3d
+    git clone https://github.com/facebookresearch/fvcore.git $TORCH_PROJECT_PATH/fvcore
+    git clone https://github.com/fastai/timmdocs.git $TORCH_PROJECT_PATH/timmdocs
+    git clone https://github.com/open-mmlab/mmpretrain.git $TORCH_PROJECT_PATH/mmpretrain
+    git clone https://github.com/facebookresearch/pycls.git $TORCH_PROJECT_PATH/pycls
+    git clone https://github.com/KevinMusgrave/pytorch-metric-learning.git $TORCH_PROJECT_PATH/pytorch-metric-learning
+    git clone https://github.com/KaiyangZhou/deep-person-reid.git $TORCH_PROJECT_PATH/deep-person-reid
+    git clone https://github.com/open-mmlab/mmdetection.git $TORCH_PROJECT_PATH/mmdetection
+    git clone https://github.com/open-mmlab/mmpose.git $TORCH_PROJECT_PATH/mmpose
+    git clone https://github.com/facebookresearch/detectron2.git $TORCH_PROJECT_PATH/detectron
+    git clone https://github.com/IDEA-Research/detrex.git $TORCH_PROJECT_PATH/detrex
+    git clone https://github.com/WongKinYiu/yolov7.git $TORCH_PROJECT_PATH/yolov7
+    git clone https://github.com/ultralytics/yolov5.git $TORCH_PROJECT_PATH/yolov5
+    git clone https://github.com/open-mmlab/mmocr.git $TORCH_PROJECT_PATH/mmocr
+    git clone https://github.com/hikopensource/DAVAR-Lab-OCR.git $TORCH_PROJECT_PATH/DAVAR-Lab-OCR
+    git clone https://github.com/open-mmlab/mmsegmentation.git $TORCH_PROJECT_PATH/mmseg
+    git clone https://github.com/qubvel/segmentation_models.pytorch.git $TORCH_PROJECT_PATH/segmentation_models
+    git clone https://github.com/CSAILVision/semantic-segmentation-pytorch.git $TORCH_PROJECT_PATH/semantic-segmentation-pytorch
+    git clone https://github.com/meetps/pytorch-semseg.git $TORCH_PROJECT_PATH/pytorch-semseg
+    git clone https://github.com/Tramac/awesome-semantic-segmentation-pytorch.git $TORCH_PROJECT_PATH/awesome-semantic-segmentation-pytorch
+    git clone https://github.com/PeterL1n/BackgroundMattingV2.git $TORCH_PROJECT_PATH/BackgroundMattingV2
+    git clone https://github.com/PeterL1n/RobustVideoMatting.git $TORCH_PROJECT_PATH/RobustVideoMatting
+    git clone https://github.com/black0017/MedicalZooPytorch.git $TORCH_PROJECT_PATH/MedicalZooPytorch
+    git clone https://github.com/MIC-DKFZ/nnUNet.git $TORCH_PROJECT_PATH/nnUNet
+    git clone https://github.com/SamsungLabs/ritm_interactive_segmentation.git $TORCH_PROJECT_PATH/ritm_interactive_segmentation
+    git clone https://github.com/allenai/allennlp.git $TORCH_PROJECT_PATH/allennlp
+    git clone https://github.com/facebookresearch/fairseq.git $TORCH_PROJECT_PATH/fairseq
+    git clone https://github.com/ZhangGongjie/Meta-DETR.git $TORCH_PROJECT_PATH/Meta-DETR
+    git clone https://github.com/implus/UM-MAE.git $TORCH_PROJECT_PATH/UM-MAE
+    git clone https://github.com/ZrrSkywalker/MonoDETR.git $TORCH_PROJECT_PATH/MonoDETR
+    git clone https://github.com/ViTAE-Transformer/ViTPose.git $TORCH_PROJECT_PATH/ViTPose
+    git clone https://github.com/xingyizhou/UniDet.git $TORCH_PROJECT_PATH/UniDet
+    git clone https://github.com/facebookresearch/mae.git $TORCH_PROJECT_PATH/mae
+    git clone https://github.com/yyliu01/PS-MT.git $TORCH_PROJECT_PATH/PS-MT
+    git clone https://github.com/charlesCXK/TorchSemiSeg.git $TORCH_PROJECT_PATH/TorchSemiSeg
+    git clone https://github.com/IDEA-Research/MaskDINO.git $TORCH_PROJECT_PATH/MaskDINO
+    git clone https://github.com/HuangJunJie2017/BEVDet.git $TORCH_PROJECT_PATH/BEVDet
+    git clone https://github.com/CASIA-IVA-Lab/Obj2Seq.git $TORCH_PROJECT_PATH/Obj2Seq
+    git clone https://github.com/yuhangzang/OV-DETR.git $TORCH_PROJECT_PATH/OV-DETR
+    git clone https://github.com/hikvision-research/opera.git $TORCH_PROJECT_PATH/opera
+    git clone https://github.com/xingyizhou/CenterTrack.git $TORCH_PROJECT_PATH/CenterTrack
+    git clone https://github.com/IDEA-Research/DINO.git $TORCH_PROJECT_PATH/DINO
 fi
 
 # Check the grammar mechanism of the test set and other issues

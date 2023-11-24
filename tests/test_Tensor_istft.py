@@ -67,3 +67,111 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        win_length = 4
+        window = torch.ones(win_length)
+        x = torch.tensor([[[ (5.975718021392822+0j)                  ,
+           (5.975718021392822+0j)                  ,
+           (5.341437339782715+0j)                  ,
+           (5.404394626617432+0j)                  ,
+           (5.404394626617432+0j)                  ],
+         [ (0.0629572868347168+0j)                 ,
+           0.0629572868347168j                     ,
+          (-0.0629572868347168-0.6342806816101074j),
+           (0.6342806816101074+0j)                 ,
+           0.6342806816101074j                     ],
+         [(-0.4979677200317383+0j)                 ,
+           (0.4979677200317383+0j)                 ,
+           (0.13631296157836914+0j)                ,
+          (-0.19927024841308594+0j)                ,
+           (0.19927024841308594+0j)                ]]])
+        result = x.istft(n_fft=4, hop_length=1, win_length=win_length, window=window, center=False, normalized=False, onesided=True, length=None, return_complex=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        win_length = 4
+        window = torch.ones(win_length)
+        x = torch.tensor([[[ (5.975718021392822+0j)                  ,
+           (5.975718021392822+0j)                  ,
+           (5.341437339782715+0j)                  ,
+           (5.404394626617432+0j)                  ,
+           (5.404394626617432+0j)                  ],
+         [ (0.0629572868347168+0j)                 ,
+           0.0629572868347168j                     ,
+          (-0.0629572868347168-0.6342806816101074j),
+           (0.6342806816101074+0j)                 ,
+           0.6342806816101074j                     ],
+         [(-0.4979677200317383+0j)                 ,
+           (0.4979677200317383+0j)                 ,
+           (0.13631296157836914+0j)                ,
+          (-0.19927024841308594+0j)                ,
+           (0.19927024841308594+0j)                ]]])
+        result = x.istft(4, 1, win_length, window, False, False, True, None, False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        win_length = 4
+        window = torch.ones(win_length)
+        x = torch.tensor([[[ (5.975718021392822+0j)                  ,
+           (5.975718021392822+0j)                  ,
+           (5.341437339782715+0j)                  ,
+           (5.404394626617432+0j)                  ,
+           (5.404394626617432+0j)                  ],
+         [ (0.0629572868347168+0j)                 ,
+           0.0629572868347168j                     ,
+          (-0.0629572868347168-0.6342806816101074j),
+           (0.6342806816101074+0j)                 ,
+           0.6342806816101074j                     ],
+         [(-0.4979677200317383+0j)                 ,
+           (0.4979677200317383+0j)                 ,
+           (0.13631296157836914+0j)                ,
+          (-0.19927024841308594+0j)                ,
+           (0.19927024841308594+0j)                ]]])
+        result = x.istft(n_fft=4, hop_length=1, center=False, normalized=False, return_complex=False, onesided=True, length=None, win_length=win_length, window=window)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        win_length = 4
+        window = torch.ones(win_length)
+        x = torch.tensor([[[ (5.975718021392822+0j)                  ,
+           (5.975718021392822+0j)                  ,
+           (5.341437339782715+0j)                  ,
+           (5.404394626617432+0j)                  ,
+           (5.404394626617432+0j)                  ],
+         [ (0.0629572868347168+0j)                 ,
+           0.0629572868347168j                     ,
+          (-0.0629572868347168-0.6342806816101074j),
+           (0.6342806816101074+0j)                 ,
+           0.6342806816101074j                     ],
+         [(-0.4979677200317383+0j)                 ,
+           (0.4979677200317383+0j)                 ,
+           (0.13631296157836914+0j)                ,
+          (-0.19927024841308594+0j)                ,
+           (0.19927024841308594+0j)                ]]])
+        result = x.istft(4)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

@@ -61,3 +61,14 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 1., 2., 3.], [ 4., 5., 6.]])
+        result = x.kthvalue(dim=0, k=2, keepdim=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

@@ -67,3 +67,29 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.arange(24)
+        x = torch.reshape(x, (1, 4, 6))
+        a, b = 0, 1
+        result = x.movedim(source=(a, b), destination=(b, a))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.arange(24)
+        x = torch.reshape(x, (1, 4, 6))
+        a, b = 0, 1
+        result = x.movedim(destination=(b, a), source=(a, b))
+        """
+    )
+    obj.run(pytorch_code, ["result"])

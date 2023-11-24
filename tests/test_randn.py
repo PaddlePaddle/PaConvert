@@ -53,7 +53,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.rand([4, 4])
+        result = torch.randn([4, 4])
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)

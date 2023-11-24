@@ -30,3 +30,16 @@ def test_case_1():
         pytorch_code,
         expect_paddle_code="import paddle\nx.rename(columns={'iids': iids})\n",
     )
+
+
+# Fine, convert is not supported
+def _test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        imgs = torch.rand(2, 3, 5, 7, names=('N', 'C', 'H', 'W'))
+        renamed_imgs = imgs.rename(N='batch', C='channels')
+        esult = renamed_imgs.names
+        """
+    )
+    obj.run(pytorch_code, ["result"])

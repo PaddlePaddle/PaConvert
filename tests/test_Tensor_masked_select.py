@@ -52,3 +52,15 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.eye(2, 4)
+        mask = torch.tensor([True, True, True, True])
+        result = x.masked_select(mask=mask)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

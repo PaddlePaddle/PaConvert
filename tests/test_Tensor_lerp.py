@@ -66,3 +66,15 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        start = torch.tensor([1., 2., 3., 4.])
+        end = torch.tensor([10., 10., 10., 10.])
+        result = start.lerp(weight=0.5, end=end)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

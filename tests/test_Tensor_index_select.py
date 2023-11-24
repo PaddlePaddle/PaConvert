@@ -64,3 +64,15 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        indices = torch.tensor([0, 3])
+        dim = 0
+        result = torch.eye(5, 4).index_select(index=indices, dim=dim)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

@@ -61,3 +61,25 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.zeros((5, 3))
+        result = x.fill_diagonal_(5, True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.zeros((5, 3))
+        result = x.fill_diagonal_(wrap=True, fill_value=5)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

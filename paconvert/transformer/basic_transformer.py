@@ -95,7 +95,12 @@ class BasicTransformer(BaseTransformer):
                     self.file_name,
                     node.lineno,
                 )
+
                 matcher = self.get_api_mather(torch_api)
+                # fallback to attribute matcher
+                if matcher is None:
+                    matcher = self.get_attribute_mather(torch_api)
+
                 if matcher:
                     paddle_api = matcher.get_paddle_api()
                     if paddle_api == "delete":
@@ -659,6 +664,17 @@ class BasicTransformer(BaseTransformer):
             if "Matcher" in api_mapping:
                 matcher = api_mapping["Matcher"]
                 return eval(matcher)(self, torch_api, api_mapping, self.logger)
+        return None
+
+    def get_attribute_mather(self, torch_api):
+        if torch_api in ATTRIBUTE_MAPPING:
+            attr_mapping = ATTRIBUTE_MAPPING[torch_api]
+            if "disable" in attr_mapping and eval(attr_mapping["disable"]):
+                return None
+
+            if "Matcher" in attr_mapping:
+                matcher = attr_mapping["Matcher"]
+                return eval(matcher)(self, torch_api, attr_mapping, self.logger)
         return None
 
     def visit_Expr(self, node):

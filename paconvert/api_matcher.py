@@ -1959,7 +1959,7 @@ class TensorIndexCopyMatcher(BaseMatcher):
 
         if kwargs["dim"][1:-1].isdigit() and int(kwargs["dim"][1:-1]) == 0:
             code = "{}.scatter_({}, {})".format(
-                self.paddleClass, kwargs["index"], kwargs["tensor"]
+                self.paddleClass, kwargs["index"], kwargs["source"]
             )
             return code
 
@@ -1981,7 +1981,7 @@ class TensorIndexCopyMatcher(BaseMatcher):
             self.paddleClass,
             self.paddleClass,
             kwargs["dim"],
-            kwargs["tensor"],
+            kwargs["source"],
             kwargs["dim"],
             self.paddleClass,
         )
