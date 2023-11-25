@@ -50,3 +50,14 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, [], reason="torch and paddle where api diff")
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.Tensor([[1.,2.], [3.,4.]])
+        result = a.where(y=0, condition=a>0)
+        """
+    )
+    obj.run(pytorch_code, [], reason="torch and paddle where api diff")

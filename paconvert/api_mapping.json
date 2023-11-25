@@ -9875,6 +9875,7 @@
   "torch.nn.functional.adaptive_avg_pool1d": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.adaptive_avg_pool1d",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "output_size"

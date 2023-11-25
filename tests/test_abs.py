@@ -72,3 +72,27 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [-1, -2, 3]
+        out = torch.tensor(a)
+        result = torch.abs(input=torch.tensor(a), out=out)
+        """
+    )
+    obj.run(pytorch_code, ["out"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [-1, -2, 3]
+        out = torch.tensor(a)
+        result = torch.abs(out=out, input=torch.tensor(a))
+        """
+    )
+    obj.run(pytorch_code, ["out"])
