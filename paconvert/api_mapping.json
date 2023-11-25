@@ -4402,7 +4402,7 @@
   },
   "torch.cuda.get_device_name": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.device.cuda.get_device_properties",
+    "paddle_api": "paddle.device.cuda.get_device_name",
     "args_list": [
       "device"
     ],
