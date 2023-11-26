@@ -56,7 +56,7 @@ def test_case_3():
         import torch
         result = None
         if torch.cuda.is_available():
-            result = torch.cuda.get_device_name(device="cuda:0")
+            result = torch.cuda.get_device_name(0)
         """
     )
     obj.run(
