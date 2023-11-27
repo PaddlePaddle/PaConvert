@@ -78,6 +78,7 @@ overloadable_api_aux_set = {
 
 cornercase_api_aux_dict = {
     "torch.Tensor.uniform_": 'keyword "from" is conflict with python keyword "from"',
+    "torch.Tensor.remainder": "keyword `divisor` or `other` is not supported unexpectedly",
 }
 
 

@@ -2317,9 +2317,7 @@
       "*",
       "dtype",
       "device",
-      "requires_grad",
-      "layout",
-      "pin_memory"
+      "requires_grad"
     ],
     "kwargs_change": {
       "device": "place"
@@ -2752,15 +2750,18 @@
       "dim",
       "index",
       "value",
-      "src",
       "*",
+      "src",
       "reduce"
     ],
     "kwargs_change": {
       "dim": "axis",
       "index": "indices",
-      "src": "values"
-    }
+      "value": "values"
+    },
+    "unsupport_args": [
+      "src"
+    ]
   },
   "torch.Tensor.scatter_add": {
     "Matcher": "GenericMatcher",

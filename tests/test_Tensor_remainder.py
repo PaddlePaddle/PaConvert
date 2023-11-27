@@ -77,7 +77,8 @@ def _test_case_5():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_6():
+# torch.Tensor.remainder neither accept `divisor` nor `other` keyword parameter
+def _test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
