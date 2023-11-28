@@ -70,10 +70,12 @@ overloadable_api_aux_set = {
     "torch.max",
     "torch.Tensor.max",
     "torch.Tensor.min",
+    "torch.Tensor.scatter",
     "torch.Tensor.scatter_",
     "torch.Tensor.std",
     "torch.Tensor.var",
     "torch.Tensor.view",
+    "torch.Tensor.sort",
 }
 
 cornercase_api_aux_dict = {

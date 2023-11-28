@@ -2903,7 +2903,9 @@
       "dim",
       "descending",
       "*",
-      "stable"
+      "stable",
+      "dim",
+      "descending"
     ],
     "kwargs_change": {
       "dim": "axis",
