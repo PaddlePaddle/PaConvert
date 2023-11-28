@@ -2623,10 +2623,13 @@
     "min_input_args": 1,
     "args_list": [
       "repeats",
-      "dim"
+      "dim",
+      "*",
+      "output_size"
     ],
     "kwargs_change": {
-      "dim": "axis"
+      "dim": "axis",
+      "output_size": ""
     }
   },
   "torch.Tensor.requires_grad_": {
@@ -12447,6 +12450,7 @@
   "torch.repeat_interleave": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.repeat_interleave",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "repeats",
@@ -12456,7 +12460,8 @@
     ],
     "kwargs_change": {
       "input": "x",
-      "dim": "axis"
+      "dim": "axis",
+      "output_size": ""
     }
   },
   "torch.reshape": {

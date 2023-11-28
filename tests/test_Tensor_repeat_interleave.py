@@ -69,7 +69,7 @@ def test_case_5():
         """
         import torch
         a = torch.tensor([[4., 9], [23, 2]])
-        result = a.repeat_interleave(repeats=3, dim=0)
+        result = a.repeat_interleave(repeats=3, dim=0, output_size=6)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -80,7 +80,7 @@ def test_case_6():
         """
         import torch
         a = torch.tensor([[4., 9], [23, 2]])
-        result = a.repeat_interleave(dim=0, repeats=3)
+        result = a.repeat_interleave(output_size=6, dim=0, repeats=3)
         """
     )
     obj.run(pytorch_code, ["result"])
