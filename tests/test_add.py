@@ -73,3 +73,25 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["a"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1, 2, 3])
+        result = torch.add(input=a, other=torch.tensor([1, 4, 6]), alpha = 10, out=a)
+        """
+    )
+    obj.run(pytorch_code, ["a"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1, 2, 3])
+        result = torch.add(other=torch.tensor([1, 4, 6]), out=a, input=a, alpha = 10)
+        """
+    )
+    obj.run(pytorch_code, ["a"])

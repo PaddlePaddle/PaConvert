@@ -1186,7 +1186,7 @@ class TensorCdoubleMatcher(BaseMatcher):
 
 class TensorTypeAsMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = f"{self.paddleClass}.astype(dtype={kwargs['tensor']}.dtype)"
+        code = f"{self.paddleClass}.astype(dtype={kwargs['other']}.dtype)"
         return code
 
 

@@ -30,3 +30,16 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        v = torch.tensor([0., 0., 0.], requires_grad=True)
+        h = v.register_hook(hook=lambda grad: grad * 2)  # double the gradient
+        v.backward(torch.tensor([1., 2., 3.]))
+        result = torch.tensor(v.grad)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

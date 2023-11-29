@@ -66,3 +66,14 @@ def test_case_4():
         check_value=False,
         reason="Pytorch return 'torch.FloatTensor' while Paddle rerurn 'paddle.float32' ",
     )
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a =torch.ones(2, 3)
+        result = a.type(non_blocking=True, dtype=torch.float64)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

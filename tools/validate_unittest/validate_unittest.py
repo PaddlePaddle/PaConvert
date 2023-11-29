@@ -70,6 +70,17 @@ overloadable_api_aux_set = {
     "torch.max",
     "torch.Tensor.max",
     "torch.Tensor.min",
+    "torch.Tensor.scatter",
+    "torch.Tensor.scatter_",
+    "torch.Tensor.std",
+    "torch.Tensor.var",
+    "torch.Tensor.view",
+    "torch.Tensor.sort",
+}
+
+cornercase_api_aux_dict = {
+    "torch.Tensor.uniform_": 'keyword "from" is conflict with python keyword "from"',
+    "torch.Tensor.remainder": "keyword `divisor` or `other` is not supported unexpectedly",
 }
 
 
@@ -227,9 +238,9 @@ def check_call_variety(test_data, api_mapping, verbose=True):
         if api not in api_mapping:
             if "code" not in unittest_data:
                 if verbose:
-                    print(f"SKIP: api {api} is not prepared, skip validations.")
+                    print(f"SKIP: {api} is not prepared, skip validations.")
             else:
-                print(f"WARNING: api {api} not found in api_mapping")
+                print(f"WARNING: {api} not found in api_mapping")
             continue
 
         mapping_data = api_mapping[api]
@@ -237,23 +248,28 @@ def check_call_variety(test_data, api_mapping, verbose=True):
         if "code" not in unittest_data:
             "如果 = 0，说明该 api 只是占位符"
             if len(mapping_data) > 0 and "Matcher" in mapping_data:
-                print(f"WARNING: api {api} has no unittest.")
+                print(f"WARNING: {api} has no unittest.")
             continue
 
         is_partial_support = (
             "unsupport" in unittest_data and len(unittest_data["unsupport"]) > 0
         )
 
-        is_overloadable = api in overloadable_api_aux_set
-
         abstract = api in abstract_api_aux_set
         if abstract:
-            print(f"SKIP: api {api} is abstract, skip validations.")
+            print(f"SKIP: {api} is abstract.")
+            continue
+
+        cornercase = cornercase_api_aux_dict.get(api, None)
+        if cornercase:
+            print(f"SKIP: {api} has some corner cases: {cornercase}.")
             continue
 
         if "Matcher" not in mapping_data:
             print(f"WARNING: {api} has no mapping data 'Matcher'.")
             continue
+
+        is_overloadable = api in overloadable_api_aux_set
 
         min_input_args = mapping_data.get("min_input_args", -1)
 
@@ -274,20 +290,21 @@ def check_call_variety(test_data, api_mapping, verbose=True):
                 _args_list_position_end = min(_args_list_position_end, i)
                 if arg.startswith("**"):
                     if len(arg) > 2 and not is_token(arg[2]):
-                        raise ValueError(f'api {api} has unexpected arg "{arg}".')
+                        raise ValueError(f'{api} has unexpected arg "{arg}".')
                     # 允许匿名可变参数列表，如 **kwargs 或 **
                     var_kwarg_name = arg[2:]
                 else:
                     if var_arg_name is not None:
                         if len(arg[1:]) > 0:
                             raise ValueError(
-                                f'api {api} has duplicated var_args_collector "{var_arg_name}" and "{arg[1:]}"'
+                                f'{api} has duplicated var_args_collector "{var_arg_name}" and "{arg[1:]}"'
                             )
                     else:
                         var_arg_name = arg[1:]
 
                     if var_arg_name == var_args_collector:
-                        args_list_full_keyword.append(var_arg_name)
+                        if var_arg_name not in args_list_full_keyword:
+                            args_list_full_keyword.append(var_arg_name)
                         args_list_full_positional.append(var_arg_name)
             elif is_token(arg[0]):
                 args_list_full_keyword.append(arg)
@@ -298,7 +315,7 @@ def check_call_variety(test_data, api_mapping, verbose=True):
                     args_list_full_positional.append(arg)
                     var_arg_name = arg
             else:
-                raise ValueError(f'api {api} has unexpected arg "{arg}".')
+                raise ValueError(f'{api} has unexpected arg "{arg}".')
 
         # 这里只移除了不支持的参数，但是事实上，移除不支持的参数会影响其他检查，如
         # (a, b, c, d) 中移除了 (c)，那么不指定关键字最多只能传入 a、b
@@ -361,6 +378,7 @@ def check_call_variety(test_data, api_mapping, verbose=True):
                 args_list_keyword, keys
             ):
                 all_kwargs = True
+
             if len(args_list_keyword) <= 1 or not match_subsequence(
                 args_list_keyword, keys
             ):

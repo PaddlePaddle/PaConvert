@@ -50,3 +50,27 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["out"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [-1, -2, 3]
+        out = torch.tensor(a)
+        result = torch.absolute(input=torch.tensor(a), out=out)
+        """
+    )
+    obj.run(pytorch_code, ["out"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [-1, -2, 3]
+        out = torch.tensor(a)
+        result = torch.absolute(out=out, input=torch.tensor(a))
+        """
+    )
+    obj.run(pytorch_code, ["out"])

@@ -36,7 +36,7 @@ def test_case_2():
         """
         import torch
         index = torch.tensor([[0],[1],[2]])
-        result = torch.ones(3, 5).scatter_(1, index, 1.0,reduce='multiply')
+        result = torch.ones(3, 5).scatter_(1, index, 1.0, reduce='multiply')
 
         """
     )
@@ -48,8 +48,24 @@ def test_case_3():
         """
         import torch
         index = torch.tensor([[0],[1],[2]])
-        result = torch.ones(3, 5).scatter_(1, index, 1.0,reduce='add')
+        result = torch.ones(3, 5).scatter_(1, index, 1.0, reduce='add')
 
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        index = torch.tensor([[0],[1],[2]])
+        result = torch.ones(3, 5).scatter_(dim=1, index=index, src=torch.rand(3, 5), reduce='add')
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Paddle not support 'src' parameter, which is Tensor",
+    )

@@ -102,3 +102,17 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+# torch.Tensor.new_tensor not support parameters `layout` and `pin_memory`
+# these two keyword parameters value is set to default.
+def _test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., 3.])
+        data = [[0, 1], [2, 3]]
+        result = x.new_tensor(data=data, dtype=torch.float64, device='cpu', requires_grad=True, layout=torch.strided, pin_memory=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

@@ -84,3 +84,14 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4, 9], [23, 2]])
+        result = a.sort(stable=True, dim=1, descending=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

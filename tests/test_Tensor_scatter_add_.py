@@ -42,3 +42,27 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.ones((2, 5))
+        index = torch.tensor([[0, 1, 2, 0, 0], [0, 1, 2, 2, 2]])
+        result = torch.zeros(3, 5, dtype=src.dtype).scatter_add_(dim=0, index=index, src=src)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.ones((2, 5))
+        index = torch.tensor([[0, 1, 2, 0, 0], [0, 1, 2, 2, 2]])
+        result = torch.zeros(3, 5, dtype=src.dtype).scatter_add_(dim=0, src=src, index=index)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

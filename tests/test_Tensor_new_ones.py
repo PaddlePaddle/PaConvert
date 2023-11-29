@@ -118,3 +118,25 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., 3.])
+        result = x.new_ones(size=(2, 3), dtype=torch.float64, device='cpu', requires_grad=True, layout=torch.strided, pin_memory=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., 3.])
+        result = x.new_ones(requires_grad=True, dtype=torch.float64, device='cpu', layout=torch.strided, size=(2, 3), pin_memory=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

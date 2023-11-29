@@ -57,3 +57,16 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 1.,  1.,  1.],
+                            [ 2.,  2.,  2.],
+                            [ 3.,  3.,  3.]])
+        result = x.renorm(maxnorm=5, p=1, dim=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

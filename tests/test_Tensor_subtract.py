@@ -84,3 +84,14 @@ def _test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2, 3])
+        result = x.subtract(alpha=0.8, other=torch.tensor([1., 4, 6]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])

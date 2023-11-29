@@ -72,3 +72,25 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
+        result, inverse_indices, counts = x.unique_consecutive(return_inverse=True, return_counts=True, dim=0)
+        """
+    )
+    obj.run(pytorch_code, ["result", "counts", "inverse_indices"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
+        result, inverse_indices, counts = x.unique_consecutive(True, True, 0)
+        """
+    )
+    obj.run(pytorch_code, ["result", "counts", "inverse_indices"])

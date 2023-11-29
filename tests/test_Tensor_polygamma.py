@@ -62,3 +62,14 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1.02, 2, 3.333], dtype=torch.float64)
+        result = x.polygamma(n=3)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

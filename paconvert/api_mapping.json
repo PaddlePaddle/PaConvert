@@ -238,7 +238,8 @@
   },
   "torch.Tensor.angle": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.angle"
+    "paddle_api": "paddle.Tensor.angle",
+    "min_input_args": 0
   },
   "torch.Tensor.any": {
     "Matcher": "TensorToBoolMatcher",
@@ -2316,9 +2317,7 @@
       "*",
       "dtype",
       "device",
-      "requires_grad",
-      "layout",
-      "pin_memory"
+      "requires_grad"
     ],
     "kwargs_change": {
       "device": "place"
@@ -2354,6 +2353,7 @@
     "Matcher": "UnchangeMatcher",
     "min_input_args": 0,
     "args_list": [
+      "*",
       "as_tuple"
     ]
   },
@@ -2485,6 +2485,7 @@
     "args_list": [
       "dim",
       "keepdim",
+      "*",
       "dtype"
     ],
     "kwargs_change": {
@@ -2514,17 +2515,11 @@
     "args_list": [
       "q",
       "dim",
-      "keepdim",
-      "*",
-      "interpolation",
-      "out"
+      "keepdim"
     ],
     "kwargs_change": {
       "dim": "axis"
-    },
-    "unsupport_args": [
-      "interpolation "
-    ]
+    }
   },
   "torch.Tensor.rad2deg": {
     "Matcher": "UnchangeMatcher",
@@ -2572,10 +2567,10 @@
     "paddle_api": "paddle.Tensor.remainder_",
     "min_input_args": 1,
     "args_list": [
-      "divisor"
+      "other"
     ],
     "kwargs_change": {
-      "divisor": "y"
+      "other": "y"
     }
   },
   "torch.Tensor.rename": {
@@ -2633,7 +2628,8 @@
       "output_size"
     ],
     "kwargs_change": {
-      "dim": "axis"
+      "dim": "axis",
+      "output_size": ""
     }
   },
   "torch.Tensor.requires_grad_": {
@@ -2663,6 +2659,7 @@
     "min_input_args": 1,
     "args_list": [
       "the_template",
+      "*",
       "memory_format"
     ],
     "kwargs_change": {
@@ -2755,15 +2752,19 @@
     "args_list": [
       "dim",
       "index",
-      "src",
+      "value",
       "*",
+      "src",
       "reduce"
     ],
     "kwargs_change": {
       "dim": "axis",
       "index": "indices",
-      "src": "values"
-    }
+      "value": "values"
+    },
+    "unsupport_args": [
+      "src"
+    ]
   },
   "torch.Tensor.scatter_add": {
     "Matcher": "GenericMatcher",
@@ -2824,6 +2825,7 @@
     "Matcher": "TensorShortMatcher",
     "min_input_args": 0,
     "args_list": [
+      "*",
       "memory_format"
     ]
   },
@@ -3134,7 +3136,7 @@
   "torch.Tensor.to_mkldnn": {},
   "torch.Tensor.to_sparse": {
     "Matcher": "GenericMatcher",
-    "min_input_args": 0,
+    "min_input_args": 1,
     "paddle_api": "paddle.Tensor.to_sparse_coo",
     "args_list": [
       "sparse_dim"
@@ -3229,6 +3231,7 @@
   "torch.Tensor.true_divide_": {
     "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.Tensor.divide_",
+    "min_input_args": 1,
     "args_list": [
       "other"
     ],
@@ -3258,7 +3261,7 @@
     "Matcher": "TensorTypeAsMatcher",
     "min_input_args": 1,
     "args_list": [
-      "tensor"
+      "other"
     ]
   },
   "torch.Tensor.unbind": {
@@ -3288,7 +3291,7 @@
   "torch.Tensor.unfold": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.unfold",
-    "min_input_args": 2,
+    "min_input_args": 3,
     "args_list": [
       "dimension",
       "size",
@@ -9878,6 +9881,7 @@
   "torch.nn.functional.adaptive_avg_pool1d": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.adaptive_avg_pool1d",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "output_size"
@@ -12448,6 +12452,7 @@
   "torch.repeat_interleave": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.repeat_interleave",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "repeats",
@@ -12457,7 +12462,8 @@
     ],
     "kwargs_change": {
       "input": "x",
-      "dim": "axis"
+      "dim": "axis",
+      "output_size": ""
     }
   },
   "torch.reshape": {

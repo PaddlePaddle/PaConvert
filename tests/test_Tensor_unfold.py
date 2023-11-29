@@ -64,3 +64,14 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["results"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.arange(1., 8)
+        results = x.unfold(step = 2, size = 2, dimension = 0)
+        """
+    )
+    obj.run(pytorch_code, ["results"])

@@ -62,3 +62,36 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4., 9], [23, 2]])
+        result = a.repeat_interleave(repeats=3, dim=0, output_size=6)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4., 9], [23, 2]])
+        result = a.repeat_interleave(output_size=6, dim=0, repeats=3)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4, 9], [23, 2]])
+        result = a.repeat_interleave(3)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

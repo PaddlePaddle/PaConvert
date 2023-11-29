@@ -62,3 +62,14 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["Q", "R"], rtol=1.0e-5, atol=1.0e-8)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1., -2, 3],[4., 166, 6], [-4, 24, -41]])
+        Q, R = x.qr(False)
+        """
+    )
+    obj.run(pytorch_code, ["Q", "R"], rtol=1.0e-5, atol=1.0e-8)
