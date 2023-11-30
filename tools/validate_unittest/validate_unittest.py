@@ -367,8 +367,20 @@ def check_call_variety(test_data, api_mapping, verbose=True):
                 )
 
             if all_default is False:
-                if len(args) == min_input_args and len(kwargs) == 0:
-                    all_default = True
+                if len(args) == min_input_args:
+                    if len(kwargs) == 0:
+                        all_default = True
+                elif len(args) < min_input_args:
+                    if len(kwargs) + len(args) == min_input_args and len(args) == len(
+                        args_list_positional
+                    ):
+                        all_default = True
+                    elif len(kwargs) + len(args) < min_input_args:
+                        raise ValueError(
+                            f"{api}(*{args}, **{kwargs}) has too few arguments, args_list={args_list_keyword}"
+                        )
+                else:
+                    pass
 
             if len(args) == len(args_list_positional):
                 all_args = True
