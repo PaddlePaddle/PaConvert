@@ -98,3 +98,17 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        input = torch.tensor([[1, 5, 3], [0, 3, 2], [1, 4, 1]]).to(dtype=torch.float32)
+        positive = torch.tensor([[5, 1, 2], [3, 2, 1], [3, -1, 1]]).to(dtype=torch.float32)
+        negative = torch.tensor([[2, 1, -3], [1, 1, -1], [4, -2, 1]]).to(dtype=torch.float32)
+        result = F.triplet_margin_loss(input, positive, negative)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

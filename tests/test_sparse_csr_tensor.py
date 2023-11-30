@@ -94,3 +94,20 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+# paddle not support convert without shape
+def _test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        crow_indices = [0, 2, 4]
+        col_indices = [0, 1, 0, 1]
+        values = [1, 2, 3, 4]
+        result = torch.sparse_csr_tensor(torch.tensor(crow_indices, dtype=torch.int64),
+                                torch.tensor(col_indices, dtype=torch.int64),
+                                torch.tensor(values), dtype=torch.double)
+        result = result.to_dense()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
