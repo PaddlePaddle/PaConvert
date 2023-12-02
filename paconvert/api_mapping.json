@@ -3488,7 +3488,7 @@
   },
   "torch.addcdiv": {
     "Matcher": "AddCDivMatcher",
-    "min_input_args": 2,
+    "min_input_args": 3,
     "args_list": [
       "input",
       "tensor1",
