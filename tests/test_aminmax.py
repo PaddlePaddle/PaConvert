@@ -58,8 +58,32 @@ def test_case_4():
         """
         import torch
         t = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=torch.float)
-        out = tuple([torch.tensor([4.]), torch.tensor([4.])])
+        out = tuple([torch.tensor([-1, -1]), torch.tensor([-1, -1])])
         result = torch.aminmax(t, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["out"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        dim, keepdim = 1, False
+        out = tuple([torch.tensor([-1, -1]), torch.tensor([-1, -1])])
+        torch.aminmax(input=torch.tensor([[1, 2, 3], [3, 4, 6]]), dim=dim, keepdim=keepdim, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["out"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        dim, keepdim = 1, False
+        out = tuple([torch.tensor([-1, -1]), torch.tensor([-1, -1])])
+        torch.aminmax(dim=dim, out=out, keepdim=keepdim, input=torch.tensor([[1, 2, 3], [3, 4, 6]]))
         """
     )
     obj.run(pytorch_code, ["out"])

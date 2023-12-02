@@ -94,3 +94,27 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        dim, keepdim = 1, False
+        out = torch.tensor([1, 3])
+        torch.amin(input=torch.tensor([[1, 2, 3], [3, 4, 6]]), dim=dim, keepdim=keepdim, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["out"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        dim, keepdim = 1, False
+        out = torch.tensor([1, 3])
+        torch.amin(dim=dim, out=out, keepdim=keepdim, input=torch.tensor([[1, 2, 3], [3, 4, 6]]))
+        """
+    )
+    obj.run(pytorch_code, ["out"])

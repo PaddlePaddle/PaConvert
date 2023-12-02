@@ -45,8 +45,32 @@ def test_case_3():
         """
         import torch
         x = torch.tensor([-1 + 1j, -2 + 2j, 3 - 3j])
-        out = torch.tensor([2., 3.])
+        out = torch.tensor([2., 3., 4.])
         result = torch.angle(x, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([-1 + 1j, -2 + 2j, 3 - 3j])
+        out = torch.tensor([2., 3., 4.])
+        result = torch.angle(input=x, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([-1 + 1j, -2 + 2j, 3 - 3j])
+        out = torch.tensor([2., 3., 4.])
+        result = torch.angle(out=out, input=x)
         """
     )
     obj.run(pytorch_code, ["result", "out"])
