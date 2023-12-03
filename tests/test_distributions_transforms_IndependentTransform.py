@@ -24,7 +24,7 @@ def test_case_1():
         """
         import torch
         x = torch.tensor([[1., 2., 3.], [4., 5., 6.]], requires_grad=True)
-        result = torch.distributions.transforms.IndependentTransform(torch.distributions.transforms.Transform(), 0)
+        result = torch.distributions.transforms.IndependentTransform(torch.distributions.transforms.Transform(), 1)
         """
     )
     obj.run(pytorch_code, ["result"])
