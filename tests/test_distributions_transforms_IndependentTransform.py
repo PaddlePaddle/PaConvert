@@ -23,8 +23,8 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1., 2., 3.], [4., 5., 6.]])
-        result = torch.distributions.transforms.IndependentTransform(torch.distributions.transforms.Transform(), 1)
+        x = torch.tensor([[1., 2., 3.], [4., 5., 6.]], requires_grad=True)
+        result = torch.distributions.transforms.IndependentTransform(torch.distributions.transforms.Transform(), 0)
         """
     )
     obj.run(pytorch_code, ["result"])
