@@ -5676,6 +5676,18 @@
     },
     "min_input_args": 2
   },
+  "torch.distributions.transforms.IndependentTransform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.IndependentTransform",
+    "args_list": [
+      "base_transform",
+      "reinterpreted_batch_ndims"
+    ],
+    "kwargs_change": {
+      "base_transform": "base",
+      "reinterpreted_batch_ndims": "reinterpreted_batch_rank"
+    }
+  },
   "torch.divide": {
     "Matcher": "DivideMatcher",
     "paddle_api": "paddle.divide",
