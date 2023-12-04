@@ -10673,7 +10673,7 @@
   "torch.nn.functional.leaky_relu": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.leaky_relu",
-    "min_input_args": 0,
+    "min_input_args": 1,
     "args_list": [
       "input",
       "negative_slope",
@@ -12291,7 +12291,7 @@
   "torch.profiler.schedule": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.profiler.make_scheduler",
-    "min_input_args": 3,
+    "min_input_args": 0,
     "args_list": [
       "*",
       "wait",
