@@ -2767,7 +2767,7 @@ class TriangularSolveMatcher(BaseMatcher):
 
 class TensorTriangularSolveMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs["b"] = self.paddleClass
+        kwargs["input"] = self.paddleClass
         return TriangularSolveMatcher.generate_code(self, kwargs)
 
 
