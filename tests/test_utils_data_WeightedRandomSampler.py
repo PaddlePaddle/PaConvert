@@ -89,3 +89,72 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        from torch.utils.data import WeightedRandomSampler
+        import torch
+        import numpy as np
+        sampler = WeightedRandomSampler(num_samples=5,
+                                        weights=[0.1, 0.3, 0.5, 0.7, 0.2],
+                                        replacement=True)
+        result = []
+        for index in sampler:
+            result.append(index)
+        result = torch.from_numpy(np.array(result).astype("float32"))
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        from torch.utils.data import WeightedRandomSampler
+        import torch
+        import numpy as np
+        sampler = WeightedRandomSampler([0.1, 0.3, 0.5, 0.7, 0.2], 5, True, torch.Generator().manual_seed(42))
+        result = []
+        for index in sampler:
+            result.append(index)
+        result = torch.from_numpy(np.array(result).astype("float32"))
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        from torch.utils.data import WeightedRandomSampler
+        import torch
+        import numpy as np
+        sampler = WeightedRandomSampler(weights=[0.1, 0.3, 0.5, 0.7, 0.2],
+                                        num_samples=5,
+                                        replacement=True,
+                                        generator=torch.Generator().manual_seed(42))
+        result = []
+        for index in sampler:
+            result.append(index)
+        result = torch.from_numpy(np.array(result).astype("float32"))
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        from torch.utils.data import WeightedRandomSampler
+        import torch
+        import numpy as np
+        sampler = WeightedRandomSampler([0.1, 0.3, 0.5, 0.7, 0.2], 10)
+        result = []
+        for index in sampler:
+            result.append(index)
+        result = torch.from_numpy(np.array(result).astype("float32"))
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

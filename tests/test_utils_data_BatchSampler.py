@@ -78,6 +78,18 @@ def _test_case_5():
     obj.run(pytorch_code, ["result"])
 
 
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        from torch.utils.data import BatchSampler
+        from torch.utils.data import SequentialSampler
+        batch_sampler = BatchSampler(batch_size=3, drop_last=True, sampler=SequentialSampler([3, 9, 10, 5, 7, 6, 1]))
+        result = list(batch_sampler)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
 def test_alias_case_1():
     pytorch_code = textwrap.dedent(
         """

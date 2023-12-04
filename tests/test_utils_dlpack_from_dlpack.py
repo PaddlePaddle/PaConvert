@@ -113,3 +113,15 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        t = torch.arange(4).char()
+        capsule = torch.utils.dlpack.to_dlpack(t)
+        result = torch.utils.dlpack.from_dlpack(ext_tensor=capsule)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

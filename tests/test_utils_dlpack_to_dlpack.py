@@ -121,3 +121,14 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        t = torch.randn(3, 3).char()
+        result = torch.utils.dlpack.to_dlpack(tensor=t)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

@@ -13782,6 +13782,7 @@
   "torch.unbind": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.unbind",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "dim"
@@ -13793,6 +13794,7 @@
   "torch.unflatten": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.unflatten",
+    "min_input_args": 3,
     "args_list": [
       "input",
       "dim",
@@ -13807,6 +13809,7 @@
   "torch.unique": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.unique",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "sorted",
@@ -13839,6 +13842,7 @@
   "torch.unsqueeze": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.unsqueeze",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "dim"
@@ -13939,6 +13943,7 @@
   "torch.utils.data.BatchSampler": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.io.BatchSampler",
+    "min_input_args": 3,
     "args_list": [
       "sampler",
       "batch_size",
@@ -13948,6 +13953,7 @@
   "torch.utils.data.ChainDataset": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.io.ChainDataset",
+    "min_input_args": 1,
     "args_list": [
       "datasets"
     ]
@@ -13955,6 +13961,7 @@
   "torch.utils.data.DataLoader": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.io.DataLoader",
+    "min_input_args": 1,
     "args_list": [
       "dataset",
       "batch_size",
@@ -13993,6 +14000,7 @@
   "torch.utils.data.DistributedSampler": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.io.DistributedBatchSampler",
+    "min_input_args": 1,
     "args_list": [
       "dataset",
       "num_replicas",
@@ -14017,6 +14025,7 @@
   "torch.utils.data.RandomSampler": {
     "Matcher": "RandomSamplerMatcher",
     "paddle_api": "paddle.io.RandomSampler",
+    "min_input_args": 1,
     "args_list": [
       "data_source",
       "replacement",
@@ -14041,6 +14050,7 @@
   "torch.utils.data.Subset": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.io.Subset",
+    "min_input_args": 2,
     "args_list": [
       "dataset",
       "indices"
@@ -14059,10 +14069,12 @@
   "torch.utils.data.WeightedRandomSampler": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.io.WeightedRandomSampler",
+    "min_input_args": 2,
     "args_list": [
       "weights",
       "num_samples",
-      "replacement"
+      "replacement",
+      "generator"
     ]
   },
   "torch.utils.data.default_collate": {
@@ -14081,6 +14093,7 @@
   "torch.utils.data.random_split": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.io.random_split",
+    "min_input_args": 2,
     "args_list": [
       "dataset",
       "lengths",
@@ -14090,6 +14103,7 @@
   "torch.utils.dlpack.from_dlpack": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.utils.dlpack.from_dlpack",
+    "min_input_args": 1,
     "args_list": [
       "ext_tensor"
     ],
