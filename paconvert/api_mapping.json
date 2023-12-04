@@ -7256,7 +7256,7 @@
   "torch.linalg.solve_triangular": {
     "Matcher": "LinalgSolveTriangularMatcher",
     "paddle_api": "paddle.linalg.triangular_solve",
-    "min_input_args": 3,
+    "min_input_args": 2,
     "args_list": [
       "input",
       "B",

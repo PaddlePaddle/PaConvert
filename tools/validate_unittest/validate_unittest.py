@@ -81,6 +81,9 @@ overloadable_api_aux_set = {
 cornercase_api_aux_dict = {
     "torch.Tensor.uniform_": 'keyword "from" is conflict with python keyword "from"',
     "torch.Tensor.remainder": "keyword `divisor` or `other` is not supported unexpectedly",
+    "torch.autograd.function.FunctionCtx.mark_non_differentiable": "expect only '*args' as arguments, so check is not supported",
+    "torch.autograd.function.FunctionCtx.save_for_backward": "expect only '*tensors' as arguments, so check is not supported",
+    "torch.linalg.solve_triangular": 'keyword arg "upper" has no default value.',
 }
 
 
@@ -260,10 +263,9 @@ def check_call_variety(test_data, api_mapping, verbose=True):
             print(f"SKIP: {api} is abstract.")
             continue
 
-        cornercase = cornercase_api_aux_dict.get(api, None)
-        if cornercase:
-            print(f"SKIP: {api} has some corner cases: {cornercase}.")
-            continue
+        cornercase_exists = cornercase_api_aux_dict.get(api, None)
+        if cornercase_exists:
+            print(f"SKIP: {api} has some corner cases: {cornercase_exists}.")
 
         if "Matcher" not in mapping_data:
             print(f"WARNING: {api} has no mapping data 'Matcher'.")
@@ -410,6 +412,7 @@ def check_call_variety(test_data, api_mapping, verbose=True):
             "all default": all_default,
             "partial support": is_partial_support,
             "overloadable": is_overloadable,
+            "corner case": cornercase_exists,
         }
 
         if verbose:
@@ -523,6 +526,8 @@ if __name__ == "__main__":
                         api_title = f"❓ {api_title}"
                     if data.get("overloadable", False):
                         api_title = f"🔁 {api_title}"
+                    if data.get("corner case", False):
+                        api_title = f"🟢 {api_title}"
                     f.write(
                         f'| {api_title} | {" | ".join([item2desc_dict[data[k]] for k in columns[1:]])} |\n'
                     )
