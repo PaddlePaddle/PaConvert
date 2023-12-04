@@ -23,10 +23,10 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[ 1.3398,  0.2663, -0.2686,  0.2450],
+        input = torch.tensor([[1.3398, 0.2663, -0.2686, 0.2450],
                             [-0.7401, -0.8805, -0.3402, -1.1936],
-                            [ 0.4907, -1.3948, -1.0691, -0.3132],
-                            [-1.6092,  0.5419, -0.2993,  0.3195]])
+                            [0.4907, -1.3948, -1.0691, -0.3132],
+                            [-1.6092, 0.5419, -0.2993, 0.3195]])
         result = torch.argsort(input)
         """
     )
@@ -37,10 +37,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[ 1.3398,  0.2663, -0.2686,  0.2450],
+        input = torch.tensor([[1.3398, 0.2663, -0.2686, 0.2450],
                             [-0.7401, -0.8805, -0.3402, -1.1936],
-                            [ 0.4907, -1.3948, -1.0691, -0.3132],
-                            [-1.6092,  0.5419, -0.2993,  0.3195]])
+                            [0.4907, -1.3948, -1.0691, -0.3132],
+                            [-1.6092, 0.5419, -0.2993, 0.3195]])
         result = torch.argsort(input, dim = 1)
         """
     )
@@ -51,10 +51,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[ 1.3398,  0.2663, -0.2686,  0.2450],
+        input = torch.tensor([[1.3398, 0.2663, -0.2686, 0.2450],
                             [-0.7401, -0.8805, -0.3402, -1.1936],
-                            [ 0.4907, -1.3948, -1.0691, -0.3132],
-                            [-1.6092,  0.5419, -0.2993,  0.3195]])
+                            [0.4907, -1.3948, -1.0691, -0.3132],
+                            [-1.6092, 0.5419, -0.2993, 0.3195]])
         result = torch.argsort(input, dim = 1, descending=True)
         """
     )
@@ -65,10 +65,10 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[ 1.3398,  0.2663, -0.2686,  0.2450],
+        input = torch.tensor([[1.3398, 0.2663, -0.2686, 0.2450],
                             [-0.7401, -0.8805, -0.3402, -1.1936],
-                            [ 0.4907, -1.3948, -1.0691, -0.3132],
-                            [-1.6092,  0.5419, -0.2993,  0.3195]])
+                            [0.4907, -1.3948, -1.0691, -0.3132],
+                            [-1.6092, 0.5419, -0.2993, 0.3195]])
         dim = 1
         result = torch.argsort(input, dim = dim, descending=False)
         """
@@ -80,10 +80,10 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[ 1.3398,  0.2663, -0.2686,  0.2450],
+        input = torch.tensor([[1.3398, 0.2663, -0.2686, 0.2450],
                             [-0.7401, -0.8805, -0.3402, -1.1936],
-                            [ 0.4907, -1.3948, -1.0691, -0.3132],
-                            [-1.6092,  0.5419, -0.2993,  0.3195]])
+                            [0.4907, -1.3948, -1.0691, -0.3132],
+                            [-1.6092, 0.5419, -0.2993, 0.3195]])
         descending = True
         result = torch.argsort(input=input, dim = 1, descending=descending)
         """
@@ -95,10 +95,10 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[ 1.3398,  0.2663, -0.2686,  0.2450],
+        input = torch.tensor([[1.3398, 0.2663, -0.2686, 0.2450],
                             [-0.7401, -0.8805, -0.3402, -1.1936],
-                            [ 0.4907, -1.3948, -1.0691, -0.3132],
-                            [-1.6092,  0.5419, -0.2993,  0.3195]])
+                            [0.4907, -1.3948, -1.0691, -0.3132],
+                            [-1.6092, 0.5419, -0.2993, 0.3195]])
         descending = True
         result = torch.argsort(input=input, dim=1, descending=descending, stable=True)
         """
@@ -110,10 +110,10 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[ 1.3398,  0.2663, -0.2686,  0.2450],
+        input = torch.tensor([[1.3398, 0.2663, -0.2686, 0.2450],
                             [-0.7401, -0.8805, -0.3402, -1.1936],
-                            [ 0.4907, -1.3948, -1.0691, -0.3132],
-                            [-1.6092,  0.5419, -0.2993,  0.3195]])
+                            [0.4907, -1.3948, -1.0691, -0.3132],
+                            [-1.6092, 0.5419, -0.2993, 0.3195]])
         descending = True
         result = torch.argsort(input, 1, descending)
         """
@@ -125,10 +125,10 @@ def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[ 1.3398,  0.2663, -0.2686,  0.2450],
+        input = torch.tensor([[1.3398, 0.2663, -0.2686, 0.2450],
                             [-0.7401, -0.8805, -0.3402, -1.1936],
-                            [ 0.4907, -1.3948, -1.0691, -0.3132],
-                            [-1.6092,  0.5419, -0.2993,  0.3195]])
+                            [0.4907, -1.3948, -1.0691, -0.3132],
+                            [-1.6092, 0.5419, -0.2993, 0.3195]])
         descending = True
         result = torch.argsort(descending=descending, input=input, dim=1)
         """

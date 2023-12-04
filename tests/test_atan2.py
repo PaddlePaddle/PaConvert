@@ -24,8 +24,8 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([ 0.9041,  0.0196, -0.3108, -2.4423])
-        other = torch.tensor([ 0.2341,  0.2539, -0.6256, -0.6448])
+        input = torch.tensor([0.9041, 0.0196, -0.3108, -2.4423])
+        other = torch.tensor([0.2341, 0.2539, -0.6256, -0.6448])
         result = torch.atan2(input, other)
         """
     )
@@ -36,7 +36,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.atan2(torch.tensor([ 0.9041,  0.0196, -0.3108, -2.4423]), torch.tensor([ 0.2341,  0.2539, -0.6256, -0.6448]))
+        result = torch.atan2(torch.tensor([0.9041, 0.0196, -0.3108, -2.4423]), torch.tensor([0.2341, 0.2539, -0.6256, -0.6448]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -46,8 +46,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([ 0.9041,  0.0196, -0.3108, -2.4423])
-        other = torch.tensor([ 0.2341,  0.2539, -0.6256, -0.6448])
+        input = torch.tensor([0.9041, 0.0196, -0.3108, -2.4423])
+        other = torch.tensor([0.2341, 0.2539, -0.6256, -0.6448])
         out = input.clone().detach()
         result = torch.atan2(input, other, out=out)
         """
@@ -59,8 +59,8 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([ 0.9041,  0.0196, -0.3108, -2.4423])
-        other = torch.tensor([ 0.2341,  0.2539, -0.6256, -0.6448])
+        input = torch.tensor([0.9041, 0.0196, -0.3108, -2.4423])
+        other = torch.tensor([0.2341, 0.2539, -0.6256, -0.6448])
         out = input.clone().detach()
         result = torch.atan2(input=input, other=other, out=out)
         """
@@ -72,8 +72,8 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([ 0.9041,  0.0196, -0.3108, -2.4423])
-        other = torch.tensor([ 0.2341,  0.2539, -0.6256, -0.6448])
+        input = torch.tensor([0.9041, 0.0196, -0.3108, -2.4423])
+        other = torch.tensor([0.2341, 0.2539, -0.6256, -0.6448])
         out = input.clone().detach()
         result = torch.atan2(input=input, out=out, other=other)
         """
