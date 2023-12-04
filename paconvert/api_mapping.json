@@ -13345,6 +13345,8 @@
   },
   "torch.swapdims": {
     "Matcher": "TransposeMatcher",
+    "paddle_api": "paddle.transpose",
+    "min_input_args": 3,
     "args_list": [
       "input",
       "dim0",
