@@ -58,7 +58,7 @@ def test_case_4():
         """
         import torch
         t = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=torch.float)
-        out = tuple([torch.tensor([-1, -1]), torch.tensor([-1, -1])])
+        out = tuple([torch.tensor(-1.), torch.tensor(-1.)])
         result = torch.aminmax(t, out=out)
         """
     )
