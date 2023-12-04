@@ -103,3 +103,37 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"], unsupport=True, reason="paddle unsupport strict")
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        def func(x):
+            return torch.log(x)
+
+        x = torch.tensor([1., 2.])
+        J = torch.autograd.functional.jacobian(func=func, inputs=x)
+        result = J[:]
+        result.requires_grad = False
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        def func(x):
+            return torch.log(x)
+
+        x = torch.tensor([1., 2.])
+        J = torch.autograd.functional.jacobian(inputs=x, func=func)
+        result = J[:]
+        result.requires_grad = False
+        """
+    )
+    obj.run(pytorch_code, ["result"])

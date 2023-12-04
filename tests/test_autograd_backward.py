@@ -75,3 +75,45 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2], [3, 4]], dtype=torch.float32, requires_grad=True)
+        y = torch.tensor([[3, 2], [3, 4]], dtype=torch.float32)
+
+        grad_tensor1 = torch.tensor([[1,2], [2, 3]], dtype=torch.float32)
+        grad_tensor2 = torch.tensor([[1,1], [1, 1]], dtype=torch.float32)
+
+        z1 = torch.matmul(x, y)
+        z2 = torch.matmul(x, y)
+
+        torch.autograd.backward(tensors=[z1, z2], grad_tensors=[grad_tensor1, grad_tensor2], retain_graph=False)
+        x.grad.requires_grad=False
+        result = x.grad
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2], [3, 4]], dtype=torch.float32, requires_grad=True)
+        y = torch.tensor([[3, 2], [3, 4]], dtype=torch.float32)
+
+        grad_tensor1 = torch.tensor([[1,2], [2, 3]], dtype=torch.float32)
+        grad_tensor2 = torch.tensor([[1,1], [1, 1]], dtype=torch.float32)
+
+        z1 = torch.matmul(x, y)
+        z2 = torch.matmul(x, y)
+
+        torch.autograd.backward(grad_tensors=[grad_tensor1, grad_tensor2], tensors=[z1, z2], retain_graph=False)
+        x.grad.requires_grad=False
+        result = x.grad
+        """
+    )
+    obj.run(pytorch_code, ["result"])

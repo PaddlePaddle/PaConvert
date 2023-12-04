@@ -111,3 +111,19 @@ def test_case_6():
         unsupport=True,
         reason="paddle dose not support 'only_inputs' now!",
     )
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1.1, 2.2, 3.3], requires_grad=True)
+        z = torch.tensor([1.1, 2.2, 3.3], requires_grad=True)
+        grad = torch.tensor(2.0)
+        y = x * x + z
+
+        result = torch.autograd.grad(allow_unused=True, inputs=[x, z], grad_outputs=grad, retain_graph=True,
+            create_graph=False, outputs=[y.sum()], is_grads_batched=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
