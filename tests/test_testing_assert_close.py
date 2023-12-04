@@ -51,3 +51,33 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., float('nan')])
+        y = x
+        torch.testing.assert_close(actual=x, expected=y,
+                                   allow_subclasses=True, rtol=1e-5, atol=1e-8, equal_nan=True,
+                                   check_device=True, check_dtype=True, check_layout=True, check_stride=True,
+                                   msg="assert_close test message")
+        """
+    )
+    obj.run(pytorch_code)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., float('nan')])
+        y = x
+        torch.testing.assert_close(actual=x, expected=y,
+                                   allow_subclasses=True, equal_nan=True, rtol=1e-5, atol=1e-8,
+                                   check_layout=True, check_stride=True, check_device=True, check_dtype=True,
+                                   msg="assert_close test message")
+        """
+    )
+    obj.run(pytorch_code)

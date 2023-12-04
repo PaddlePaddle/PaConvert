@@ -425,7 +425,7 @@ class TransposeMatcher(BaseMatcher):
             {} = list(range(x.ndim))
             {}[{}] = {}
             {}[{}] = {}
-            paddle.transpose(x=x, perm={})
+            {}(x=x, perm={})
             """
         )
         perm = get_unique_name("perm")
@@ -438,6 +438,7 @@ class TransposeMatcher(BaseMatcher):
             perm,
             kwargs["dim1"],
             kwargs["dim0"],
+            self.get_paddle_api(),
             perm,
         )
         return code
@@ -2741,7 +2742,7 @@ class TriangularSolveMatcher(BaseMatcher):
         out_v = kwargs.pop("out") if "out" in kwargs else None
         new_kwargs = {}
         new_kwargs["x"] = kwargs.pop("A")
-        new_kwargs["y"] = kwargs.pop("b")
+        new_kwargs["y"] = kwargs.pop("input")
         new_kwargs.update(kwargs)
 
         if out_v:

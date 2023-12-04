@@ -51,3 +51,51 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., float('nan')])
+        y = x
+        torch.testing.assert_allclose(x, y, equal_nan=True)
+        """
+    )
+    obj.run(pytorch_code)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., float('nan')])
+        y = x
+        torch.testing.assert_allclose(actual=x, expected=y, rtol=1e-5, atol=1e-8, equal_nan=True, msg="assert_allclose testing message.")
+        """
+    )
+    obj.run(pytorch_code)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., float('nan')])
+        y = x
+        torch.testing.assert_allclose(x, y, 1e-5, 1e-8, True, "assert_allclose testing message.")
+        """
+    )
+    obj.run(pytorch_code)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., float('nan')])
+        y = x
+        torch.testing.assert_allclose(msg="assert_allclose testing message.", expected=y, rtol=1e-5, atol=1e-8, equal_nan=True, actual=x)
+        """
+    )
+    obj.run(pytorch_code)

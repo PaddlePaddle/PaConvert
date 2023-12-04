@@ -41,3 +41,42 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(60.).reshape(3, 4, 5)
+        b = torch.arange(24.).reshape(4, 3, 2)
+        out = torch.tensor([])
+        result = torch.tensordot(a=a, b=b, dims=([1, 0], [0, 1]), out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(60.).reshape(3, 4, 5)
+        b = torch.arange(24.).reshape(4, 3, 2)
+        out = torch.tensor([])
+        result = torch.tensordot(a, b, ([1, 0], [0, 1]), out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(60.).reshape(3, 4, 5)
+        b = torch.arange(24.).reshape(4, 3, 2)
+        out = torch.tensor([])
+        result = torch.tensordot(out=out, a=a, dims=([1, 0], [0, 1]), b=b)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

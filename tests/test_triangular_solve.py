@@ -73,8 +73,46 @@ def test_case_5():
         import torch
         a = torch.tensor([[ 1.1527, -1.0753], [ 0.0000,  0.7986]])
         b = torch.tensor([[-0.0210,  2.3513, -1.5492], [ 1.5429,  0.7403, -1.0243]])
-        out = (torch.tensor([1.3]), torch.tensor([1.3]))
+        out = (torch.zeros((2, 3)), torch.zeros(2, 2))
         result1, result2 = torch.triangular_solve(b, a, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result1", "result2", "out"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[ 1.1527, -1.0753], [ 0.0000,  0.7986]])
+        b = torch.tensor([[-0.0210,  2.3513, -1.5492], [ 1.5429,  0.7403, -1.0243]])
+        out = (torch.zeros((2, 3)), torch.zeros((2, 2)))
+        result1, result2 = torch.triangular_solve(input=b, A=a, upper=True, transpose=False, unitriangular=False, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result1", "result2", "out"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[ 1.1527, -1.0753], [ 0.0000,  0.7986]])
+        b = torch.tensor([[-0.0210,  2.3513, -1.5492], [ 1.5429,  0.7403, -1.0243]])
+        result1, result2 = torch.triangular_solve(b, a, True, False, False)
+        """
+    )
+    obj.run(pytorch_code, ["result1", "result2"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[ 1.1527, -1.0753], [ 0.0000,  0.7986]])
+        b = torch.tensor([[-0.0210,  2.3513, -1.5492], [ 1.5429,  0.7403, -1.0243]])
+        out = (torch.zeros((2, 3)), torch.zeros((2, 2)))
+        result1, result2 = torch.triangular_solve(input=b, upper=True, transpose=False, unitriangular=False, A=a, out=out)
         """
     )
     obj.run(pytorch_code, ["result1", "result2", "out"])
