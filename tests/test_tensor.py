@@ -80,7 +80,7 @@ def test_case_6():
         data = [2, 3]
         result = None
         if torch.cuda.is_available():
-            result = torch.tensor(data, requires_grad = False, pin_memory=True)
+            result = torch.tensor(data, requires_grad=False, pin_memory=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -102,7 +102,7 @@ def test_case_8():
         """
         import torch
         data = [2, 3]
-        result = torch.tensor(data=data, dtype=torch.float, device=None, requires_grad=False, pin_memory=True)
+        result = torch.tensor(data=data, dtype=torch.float, device=None, requires_grad=False, pin_memory=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -113,7 +113,7 @@ def test_case_9():
         """
         import torch
         data = [2, 3]
-        result = torch.tensor(device=None, dtype=torch.float, pin_memory=True, data=data, requires_grad=False)
+        result = torch.tensor(device=None, dtype=torch.float, pin_memory=False, data=data, requires_grad=False)
         """
     )
     obj.run(pytorch_code, ["result"])
