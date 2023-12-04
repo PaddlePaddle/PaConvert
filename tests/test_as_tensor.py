@@ -74,3 +74,25 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import numpy
+        result = torch.as_tensor(data=[1, 2, 3], dtype=torch.int64, device="cpu")
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import numpy
+        result = torch.as_tensor(device="cpu", data=[1, 2, 3], dtype=torch.int64)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

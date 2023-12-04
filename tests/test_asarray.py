@@ -95,3 +95,14 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        data = [[0, 1], [2, 3]]
+        result = torch.asarray(dtype=torch.float64, copy=True, device='cpu', obj=data, requires_grad=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

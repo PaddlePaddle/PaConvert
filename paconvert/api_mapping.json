@@ -3853,7 +3853,7 @@
   "torch.as_strided": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.as_strided",
-    "min_input_args": 2,
+    "min_input_args": 3,
     "args_list": [
       "input",
       "size",

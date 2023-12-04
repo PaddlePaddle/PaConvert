@@ -51,3 +51,27 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["out", "result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [1.3192, 1.9915, 1.9674, 1.7151]
+        out = torch.tensor(a)
+        result = torch.arcsinh(input=torch.tensor(a), out=out)
+        """
+    )
+    obj.run(pytorch_code, ["out", "result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [1.3192, 1.9915, 1.9674, 1.7151]
+        out = torch.tensor(a)
+        result = torch.arcsinh(out=out, input=torch.tensor(a))
+        """
+    )
+    obj.run(pytorch_code, ["out", "result"])

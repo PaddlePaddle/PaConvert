@@ -87,3 +87,29 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 0.0335,  0.1830, -0.1269],
+        [ 0.1897, -0.1422, -0.4940],
+        [-0.7674, -0.0134, -0.3733]])
+        result = torch.as_strided(input=x, size=(2,2), stride=(2,2), storage_offset=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 0.0335,  0.1830, -0.1269],
+        [ 0.1897, -0.1422, -0.4940],
+        [-0.7674, -0.0134, -0.3733]])
+        result = torch.as_strided(size=(2,2), storage_offset=0, stride=(2,2), input=x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

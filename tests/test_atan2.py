@@ -48,8 +48,34 @@ def test_case_3():
         import torch
         input = torch.tensor([ 0.9041,  0.0196, -0.3108, -2.4423])
         other = torch.tensor([ 0.2341,  0.2539, -0.6256, -0.6448])
-        out = torch.tensor(input)
+        out = input.clone().detach()
         result = torch.atan2(input, other, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([ 0.9041,  0.0196, -0.3108, -2.4423])
+        other = torch.tensor([ 0.2341,  0.2539, -0.6256, -0.6448])
+        out = input.clone().detach()
+        result = torch.atan2(input=input, other=other, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([ 0.9041,  0.0196, -0.3108, -2.4423])
+        other = torch.tensor([ 0.2341,  0.2539, -0.6256, -0.6448])
+        out = input.clone().detach()
+        result = torch.atan2(input=input, out=out, other=other)
         """
     )
     obj.run(pytorch_code, ["result", "out"])

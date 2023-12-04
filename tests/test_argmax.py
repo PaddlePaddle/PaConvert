@@ -89,3 +89,48 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[ 1.3398,  0.2663, -0.2686,  0.2450],
+                            [-0.7401, -0.8805, -0.3402, -1.1936],
+                            [ 0.4907, -1.3948, -1.0691, -0.3132],
+                            [-1.6092,  0.5419, -0.2993,  0.3195]])
+        dim, keepdim = 1, True
+        result = torch.argmax(input, dim, keepdim)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[ 1.3398,  0.2663, -0.2686,  0.2450],
+                            [-0.7401, -0.8805, -0.3402, -1.1936],
+                            [ 0.4907, -1.3948, -1.0691, -0.3132],
+                            [-1.6092,  0.5419, -0.2993,  0.3195]])
+        dim, keepdim = 1, True
+        result = torch.argmax(input=input, dim=dim, keepdim=keepdim)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[ 1.3398,  0.2663, -0.2686,  0.2450],
+                            [-0.7401, -0.8805, -0.3402, -1.1936],
+                            [ 0.4907, -1.3948, -1.0691, -0.3132],
+                            [-1.6092,  0.5419, -0.2993,  0.3195]])
+        dim, keepdim = 1, True
+        result = torch.argmax(dim=dim, input=input, keepdim=keepdim)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
