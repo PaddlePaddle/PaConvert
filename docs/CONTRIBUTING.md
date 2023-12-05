@@ -134,7 +134,7 @@ torch.permute
 ```python
 Matcher       :必须，转换器，亦称为转换规则，表示执行转换时的核心逻辑。每一个API均对应一种转换规则，所有API都需要配置。
 paddle_api    :可选，对应的 Paddle API，如果是 `GenericMatcher` ，则必须配置。
-min_input_args:可选，至少输入的参数个数，如果是类方法API（例如torch.Tensor.*），则必须配置，可用来辅助判断类方法API
+min_input_args:可选，至少输入的位置参数个数，如果是类方法API（例如torch.Tensor.*），则必须配置，可用来辅助判断类方法API
 args_list     :必须，根据顺序填写 torch api 的 `全部参数名`，所有API都需要配置。
 kwargs_change :可选，参数名称的差异，如果是 `GenericMatcher` 且有参数名称差异时，则必须配置。
 unsupport_args:可选，不支持的参数功能，通过该字段配置后，这些参数如果被使用，将直接标记为不支持转换。
