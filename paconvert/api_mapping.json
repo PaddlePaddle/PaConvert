@@ -9662,7 +9662,7 @@
   "torch.nn.Softmax": {
     "Matcher": "SoftmaxMatcher",
     "paddle_api": "paddle.nn.Softmax",
-    "min_input_args": 1,
+    "min_input_args": 0,
     "args_list": [
       "dim"
     ],
