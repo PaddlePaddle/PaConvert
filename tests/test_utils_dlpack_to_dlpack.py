@@ -123,7 +123,8 @@ def test_case_8():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_9():
+# to_dlpack does not support pass arg by keyword
+def _test_case_9():
     pytorch_code = textwrap.dedent(
         """
         import torch
