@@ -59,3 +59,41 @@ def test_case_3():
         unsupport=True,
         reason="The return shape is inconsistent when only pass condition param",
     )
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0.9383, -0.1983, 3.2, -1.2]])
+        y = torch.tensor([[1.0, 1.0, 1.0, 1.0]])
+        result = torch.where(condition=x>0, input=x, other=y)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0.9383, -0.1983, 3.2, -1.2]])
+        y = torch.tensor([[1.0, 1.0, 1.0, 1.0]])
+        out = torch.zeros((1, 4))
+        result = torch.where(condition=x>0, input=x, other=y, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0.9383, -0.1983, 3.2, -1.2]])
+        y = torch.tensor([[1.0, 1.0, 1.0, 1.0]])
+        out = torch.zeros((1, 4))
+        result = torch.where(input=x, other=y, condition=x>0, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

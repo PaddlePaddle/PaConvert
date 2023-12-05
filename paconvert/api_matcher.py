@@ -3671,8 +3671,9 @@ class WhereMatcher(BaseMatcher):
         if len(kwargs) == 1:
             return None
         else:
-            code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-        return code
+            if "self" in kwargs:
+                kwargs["input"] = kwargs.pop("self")
+            return GenericMatcher.generate_code(self, kwargs)
 
 
 class UpsampleMatcher(BaseMatcher):

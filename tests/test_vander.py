@@ -83,3 +83,14 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 2, 3, 5])
+        result = torch.vander(N=5, increasing=True, x=x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

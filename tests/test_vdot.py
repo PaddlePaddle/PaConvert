@@ -61,7 +61,7 @@ def test_case_4():
         import torch
         a = torch.tensor([4., 9., 3.])
         b = torch.tensor([4., 9., 3.])
-        out = torch.tensor([1.])
+        out = torch.tensor(1.)
         result = torch.vdot(input=a, other=b, out=out)
         """
     )
@@ -79,3 +79,16 @@ def _test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([4., 9., 3.])
+        b = torch.tensor([4., 9., 3.])
+        out = torch.tensor(1.)
+        result = torch.vdot(other=b, out=out, input=a)
+        """
+    )
+    obj.run(pytorch_code, ["out"])

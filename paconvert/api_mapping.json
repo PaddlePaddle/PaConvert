@@ -14110,6 +14110,7 @@
   "torch.vander": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.vander",
+    "min_input_args": 1,
     "args_list": [
       "x",
       "N",
@@ -14122,6 +14123,7 @@
   "torch.var": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.var",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "dim",
@@ -14140,6 +14142,7 @@
   },
   "torch.var_mean": {
     "Matcher": "VarMeanMatcher",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "dim",
@@ -14158,6 +14161,7 @@
   "torch.vdot": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.dot",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "other",
@@ -14193,6 +14197,7 @@
   },
   "torch.vstack": {
     "Matcher": "VStackMatcher",
+    "min_input_args": 1,
     "args_list": [
       "tensors",
       "*",
@@ -14202,18 +14207,22 @@
   "torch.where": {
     "Matcher": "WhereMatcher",
     "paddle_api": "paddle.where",
+    "min_input_args": 3,
     "args_list": [
       "condition",
-      "x",
-      "y"
-    ]
+      "input",
+      "other",
+      "*",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "other": "y"
+    }
   },
   "torch.zeros": {
     "Matcher": "CreateMatcher",
     "paddle_api": "paddle.zeros",
-    "kwargs_change": {
-      "dtype": "dtype"
-    },
     "min_input_args": 1,
     "args_list": [
       "*size",
@@ -14223,11 +14232,15 @@
       "device",
       "requires_grad",
       "pin_memory"
-    ]
+    ],
+    "kwargs_change": {
+      "dtype": "dtype"
+    }
   },
   "torch.zeros_like": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.zeros_like",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
