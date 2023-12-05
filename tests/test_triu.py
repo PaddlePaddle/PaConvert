@@ -70,3 +70,31 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[-1.0813, -0.8619,  0.7105],
+                        [ 0.0935,  0.1380,  2.2112],
+                        [-0.3409, -0.9828,  0.0289]])
+        out = torch.tensor([2.])
+        result = torch.triu(input=x, diagonal=1, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[-1.0813, -0.8619,  0.7105],
+                        [ 0.0935,  0.1380,  2.2112],
+                        [-0.3409, -0.9828,  0.0289]])
+        out = torch.tensor([2.])
+        result = torch.triu(diagonal=1, out=out, input=x)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

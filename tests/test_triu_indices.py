@@ -67,3 +67,23 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.triu_indices(row=4, col=3, offset=-1, dtype=torch.int64, device=torch.device('cpu'), layout=torch.strided)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.triu_indices(row=4, device=torch.device('cpu'), offset=-1, dtype=torch.int64, col=3, layout=torch.strided)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

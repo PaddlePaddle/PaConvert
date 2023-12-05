@@ -73,3 +73,27 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.zeros(4, 2)
+        dim = (3, 3, 2, 2)
+        result = torch.tile(input=x, dims=dim)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.zeros(4, 2)
+        dim = (3, 3, 2, 2)
+        result = torch.tile(dims=dim, input=x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

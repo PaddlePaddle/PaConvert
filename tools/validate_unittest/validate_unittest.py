@@ -76,6 +76,8 @@ overloadable_api_aux_set = {
     "torch.Tensor.var",
     "torch.Tensor.view",
     "torch.Tensor.sort",
+    "torch.trapezoid",
+    "torch.trapz",
 }
 
 cornercase_api_aux_dict = {

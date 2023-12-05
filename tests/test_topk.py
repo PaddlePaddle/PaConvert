@@ -69,8 +69,44 @@ def test_case_5():
         """
         import torch
         x = torch.tensor([[1, 2, 3, 4, 5], [2, 5, 6, 2, 3]])
-        out = (torch.tensor(1), torch.tensor(2))
+        out = (torch.zeros(2, 3, dtype=torch.long), torch.zeros(2, 3, dtype=torch.long))
         result, index = torch.topk(x, 3, dim=1, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "index", "out"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2, 3, 4, 5], [2, 5, 6, 2, 3]])
+        out = (torch.zeros(2, 3, dtype=torch.long), torch.zeros(2, 3, dtype=torch.long))
+        result, index = torch.topk(input=x, k=3, dim=1, largest=True, sorted=True, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "index", "out"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2, 3, 4, 5], [2, 5, 6, 2, 3]])
+        out = (torch.zeros(2, 3, dtype=torch.long), torch.zeros(2, 3, dtype=torch.long))
+        result, index = torch.topk(largest=True, k=3, out=out, dim=1, sorted=True, input=x)
+        """
+    )
+    obj.run(pytorch_code, ["result", "index", "out"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2, 3, 4, 5], [2, 5, 6, 2, 3]])
+        out = (torch.tensor(1), torch.tensor(2))
+        result, index = torch.topk(x, 3, 1, True, True)
         """
     )
     obj.run(pytorch_code, ["result", "index", "out"])

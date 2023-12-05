@@ -13401,6 +13401,8 @@
   },
   "torch.swapdims": {
     "Matcher": "TransposeMatcher",
+    "paddle_api": "paddle.transpose",
+    "min_input_args": 3,
     "args_list": [
       "input",
       "dim0",
@@ -13425,6 +13427,7 @@
   "torch.t": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.t",
+    "min_input_args": 1,
     "args_list": [
       "input"
     ]
@@ -13432,6 +13435,7 @@
   "torch.take": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.take",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "index"
@@ -13443,6 +13447,7 @@
   "torch.take_along_dim": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.take_along_axis",
+    "min_input_args": 3,
     "args_list": [
       "input",
       "indices",
@@ -13458,6 +13463,7 @@
   "torch.tan": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.tan",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -13470,8 +13476,10 @@
   "torch.tensor": {
     "Matcher": "TorchTensorMatcher",
     "paddle_api": "paddle.to_tensor",
+    "min_input_args": 1,
     "args_list": [
       "data",
+      "*",
       "dtype",
       "device",
       "requires_grad",
@@ -13481,6 +13489,7 @@
   "torch.tensordot": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.tensordot",
+    "min_input_args": 2,
     "args_list": [
       "a",
       "b",
@@ -13496,6 +13505,7 @@
   "torch.testing.assert_allclose": {
     "Matcher": "Assert_AllcloseMatcher",
     "paddle_api": "paddle.allclose",
+    "min_input_args": 2,
     "args_list": [
       "actual",
       "expected",
@@ -13512,18 +13522,20 @@
   "torch.testing.assert_close": {
     "Matcher": "Assert_AllcloseMatcher",
     "paddle_api": "paddle.allclose",
+    "min_input_args": 2,
     "args_list": [
       "actual",
       "expected",
+      "*",
+      "allow_subclasses",
       "rtol",
       "atol",
       "equal_nan",
-      "msg",
-      "allow_subclasses",
       "check_device",
       "check_dtype",
       "check_layout",
-      "check_stride"
+      "check_stride",
+      "msg"
     ],
     "kwargs_change": {
       "actual": "x",
@@ -13538,6 +13550,7 @@
   "torch.tile": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.tile",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "dims"
@@ -13550,6 +13563,7 @@
   "torch.topk": {
     "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.topk",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "k",
@@ -13576,6 +13590,8 @@
   },
   "torch.transpose": {
     "Matcher": "TransposeMatcher",
+    "paddle_api": "paddle.transpose",
+    "min_input_args": 3,
     "args_list": [
       "input",
       "dim0",
@@ -13598,8 +13614,9 @@
   "torch.triangular_solve": {
     "Matcher": "TriangularSolveMatcher",
     "paddle_api": "paddle.linalg.triangular_solve",
+    "min_input_args": 2,
     "args_list": [
-      "b",
+      "input",
       "A",
       "upper",
       "transpose",
@@ -13608,13 +13625,14 @@
       "out"
     ],
     "kwargs_change": {
-      "b": "y",
+      "input": "y",
       "A": "x"
     }
   },
   "torch.tril": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.tril",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "diagonal",
@@ -13628,6 +13646,7 @@
   "torch.tril_indices": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.tril_indices",
+    "min_input_args": 2,
     "args_list": [
       "row",
       "col",
@@ -13645,6 +13664,7 @@
   "torch.triu": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.triu",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "diagonal",
@@ -13658,6 +13678,7 @@
   "torch.triu_indices": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.triu_indices",
+    "min_input_args": 2,
     "args_list": [
       "row",
       "col",
@@ -13674,6 +13695,7 @@
   "torch.true_divide": {
     "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.divide",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "other",
@@ -13688,6 +13710,7 @@
   "torch.trunc": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.trunc",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",

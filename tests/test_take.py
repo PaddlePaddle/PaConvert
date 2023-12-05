@@ -76,3 +76,17 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        index = torch.tensor([3, 5, 5])
+        x = torch.tensor([[4, 3, 5],
+                          [6, 7, 8],
+                          [10, 14, 13]])
+        result = torch.take(index = index, input = x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

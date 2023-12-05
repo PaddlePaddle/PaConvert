@@ -94,3 +94,29 @@ def _test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"], check_dtype=False)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([4.67, 9.76 , 8.53])
+        b = torch.tensor([3.5, 3.90, 1.83])
+        out = torch.tensor([4.67, 9.76 , 8.53])
+        result = torch.true_divide(input=a, other=b, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([4.67, 9.76 , 8.53])
+        b = torch.tensor([3.5, 3.90, 1.83])
+        out = torch.tensor([4.67, 9.76 , 8.53])
+        result = torch.true_divide(other=b, input=a, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
