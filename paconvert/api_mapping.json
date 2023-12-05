@@ -13111,6 +13111,7 @@
   "torch.special.gammaln": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.lgamma",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -13123,6 +13124,7 @@
   "torch.special.i0": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.i0",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
