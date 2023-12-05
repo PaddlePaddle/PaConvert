@@ -392,6 +392,8 @@ def check_call_variety(test_data, api_mapping, verbose=True):
 
             if len(args) == len(args_list_positional):
                 all_args = True
+            elif len(args) >= len(args_list_positional) and support_var_args:
+                all_args = True
 
             keys = [k[0].strip() for k in kwargs]
             if len(keys) == len(args_list_keyword) and match_subsequence(

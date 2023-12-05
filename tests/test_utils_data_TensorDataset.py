@@ -116,7 +116,7 @@ def test_case_5():
         input2 = torch.from_numpy(input_np2)
         label_np = np.random.random([2, 1]).astype('int32')
         label = torch.from_numpy(label_np)
-        dataset = TensorDataset(input=input, input2=input2, label=label)
+        dataset = TensorDataset(input, input2, label)
         result = []
         for d in dataset:
             result.append(d)
@@ -138,7 +138,7 @@ def test_case_6():
         input2 = torch.from_numpy(input_np2)
         label_np = np.random.random([2, 1]).astype('int32')
         label = torch.from_numpy(label_np)
-        dataset = TensorDataset(input=input, label=label, input2=input2)
+        dataset = TensorDataset(input, label, input2)
         result = []
         for d in dataset:
             result.append(d)

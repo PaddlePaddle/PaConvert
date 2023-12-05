@@ -14061,9 +14061,7 @@
     "paddle_api": "paddle.io.TensorDataset",
     "min_input_args": 1,
     "args_list": [
-      "input",
-      "input2",
-      "label"
+      "*tensors"
     ]
   },
   "torch.utils.data.WeightedRandomSampler": {
