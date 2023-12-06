@@ -94,3 +94,10 @@ def test_case_9():
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        generate_torch_code("torch.optim.lr_scheduler.ConstantLR(sgd)")
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)

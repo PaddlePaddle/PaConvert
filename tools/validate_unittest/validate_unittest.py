@@ -85,7 +85,9 @@ cornercase_api_aux_dict = {
     "torch.Tensor.remainder": "keyword `divisor` or `other` is not supported unexpectedly",
     "torch.autograd.function.FunctionCtx.mark_non_differentiable": "expect only '*args' as arguments, so check is not supported",
     "torch.autograd.function.FunctionCtx.save_for_backward": "expect only '*tensors' as arguments, so check is not supported",
-    "torch.linalg.solve_triangular": 'keyword arg "upper" has no default value.',
+    "torch.linalg.solve_triangular": 'keyword arg "upper" has no default value',
+    "torch.profiler.schedule": "3 keyword args have no default value",
+    "torch.nn.Softmax": "torch and paddle will generate different results when dim is None",
 }
 
 
