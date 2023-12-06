@@ -64,7 +64,7 @@ def test_case_4():
         a = torch.tensor([4., 5., 6.])
         b = torch.tensor([1., 2., 3.])
         input = torch.tensor([1., 2., 3.])
-        out = torch.tensor([[1., 2., 3.] * 3])
+        out = torch.zeros((3, 3))
         result = torch.addr(input=input, vec1=a, vec2=b, beta=3, alpha=3, out=out)
         """
     )
