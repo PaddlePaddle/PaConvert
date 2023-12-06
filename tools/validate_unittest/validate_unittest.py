@@ -92,6 +92,7 @@ cornercase_api_aux_dict = {
     "torch.autograd.function.FunctionCtx.save_for_backward": "expect only '*tensors' as arguments, so check is not supported",
     "torch.linalg.solve_triangular": 'keyword arg "upper" has no default value',
     "torch.profiler.schedule": "3 keyword args have no default value",
+    "torch.nn.Softmax": "torch and paddle will generate different results when dim is None",
 }
 
 
