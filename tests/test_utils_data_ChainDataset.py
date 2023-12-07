@@ -104,3 +104,32 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import numpy as np
+        import math
+        import torch
+        from torch.utils.data import IterableDataset, ChainDataset
+        class MyIterableDataset(torch.utils.data.IterableDataset):
+            def __init__(self, start, end):
+                super(MyIterableDataset).__init__()
+                assert end > start, "this example code only works with end >= start"
+                self.start = start
+                self.end = end
+
+            def __iter__(self):
+                iter_start = self.start
+                iter_end = self.end
+                return iter(range(iter_start, iter_end))
+
+
+        dataset = ChainDataset(datasets=[MyIterableDataset(start=1, end=10), MyIterableDataset(start=1, end=3)])
+        result = []
+        for d in dataset:
+            result.append(d)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

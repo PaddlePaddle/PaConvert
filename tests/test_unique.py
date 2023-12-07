@@ -69,3 +69,16 @@ def test_case_4():
     obj.run(
         pytorch_code, ["result"], unsupport=True, reason="Paddle not support 'sorted' "
     )
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor(
+            [[2, 1, 3], [3, 0, 1], [2, 1, 3]])
+        dim = 1
+        result = torch.unique(return_inverse=True, dim=dim, return_counts=False, input=a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

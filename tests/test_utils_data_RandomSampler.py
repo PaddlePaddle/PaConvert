@@ -254,3 +254,32 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        from torch.utils.data import RandomSampler, Dataset
+        import torch
+        import numpy as np
+
+        class Data(Dataset):
+            def __init__(self):
+                self.x = np.arange(0, 100, 1)
+
+            def __getitem__(self, idx):
+                return self.x[idx]
+
+            def __len__(self):
+                return self.x.shape[0]
+
+        data = Data()
+        g = torch.Generator()
+        s = RandomSampler(data_source=data, replacement=True, num_samples=3, generator=g)
+        result = []
+        for idx, data in enumerate(s):
+            result.append(data)
+        result = torch.tensor(result)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

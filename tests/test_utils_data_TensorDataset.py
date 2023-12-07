@@ -101,3 +101,47 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import numpy as np
+        import torch
+        from torch.utils.data import TensorDataset
+        np.random.seed(0)
+        input_np = np.random.random([2, 3, 4]).astype('float32')
+        input = torch.from_numpy(input_np)
+        input_np2 = np.random.random([2, 5, 5]).astype('float32')
+        input2 = torch.from_numpy(input_np2)
+        label_np = np.random.random([2, 1]).astype('int32')
+        label = torch.from_numpy(label_np)
+        dataset = TensorDataset(input, input2, label)
+        result = []
+        for d in dataset:
+            result.append(d)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import numpy as np
+        import torch
+        from torch.utils.data import TensorDataset
+        np.random.seed(0)
+        input_np = np.random.random([2, 3, 4]).astype('float32')
+        input = torch.from_numpy(input_np)
+        input_np2 = np.random.random([2, 5, 5]).astype('float32')
+        input2 = torch.from_numpy(input_np2)
+        label_np = np.random.random([2, 1]).astype('int32')
+        label = torch.from_numpy(label_np)
+        dataset = TensorDataset(input, label, input2)
+        result = []
+        for d in dataset:
+            result.append(d)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

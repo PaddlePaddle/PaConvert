@@ -183,3 +183,51 @@ def _test_case_7():
         """
     )
     obj.run(pytorch_code, ["results"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        lengths = [3, 3, 4]
+        data = range(10)
+        datasets = torch.utils.data.random_split(dataset=data, lengths=lengths, generator=torch.Generator().manual_seed(42))
+
+        results = []
+        for d in datasets:
+            results.append(d.__len__())
+        """
+    )
+    obj.run(pytorch_code, ["results"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        lengths = [3, 3, 4]
+        data = range(10)
+        datasets = torch.utils.data.random_split(data, lengths, torch.Generator().manual_seed(42))
+
+        results = []
+        for d in datasets:
+            results.append(d.__len__())
+        """
+    )
+    obj.run(pytorch_code, ["results"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        lengths = [3, 3, 4]
+        data = range(10)
+        datasets = torch.utils.data.random_split(lengths=lengths, dataset=data, generator=torch.Generator().manual_seed(42))
+
+        results = []
+        for d in datasets:
+            results.append(d.__len__())
+        """
+    )
+    obj.run(pytorch_code, ["results"])
