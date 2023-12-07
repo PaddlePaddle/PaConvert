@@ -129,7 +129,19 @@ def test_case_11():
         import torch
         a = 3
         out = torch.tensor([2., 3.], dtype=torch.float64)
-        result = torch.zeros(a, a, out=out, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True, pin_memory=False)
+        result = torch.zeros(size=[a, a], out=out, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True, pin_memory=False)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = 3
+        out = torch.tensor([2., 3.], dtype=torch.float64)
+        result = torch.zeros(requires_grad=True, out=out, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), size=[a, a], pin_memory=False)
         """
     )
     obj.run(pytorch_code, ["result", "out"])

@@ -69,3 +69,13 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.zeros_like(input=torch.empty(2, 3), dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True, memory_format=torch.preserve_format)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

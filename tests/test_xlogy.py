@@ -105,3 +105,25 @@ def _test_case_8():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        out = torch.zeros(5)
+        result = torch.xlogy(input=torch.tensor([1., 2., 3., 4., 5.]), other=torch.tensor([1., 2., 3., 4., 5.]), out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        out = torch.zeros(5)
+        result = torch.xlogy(other=torch.tensor([1., 2., 3., 4., 5.]), input=torch.tensor([1., 2., 3., 4., 5.]), out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

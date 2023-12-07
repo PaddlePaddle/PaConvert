@@ -78,6 +78,7 @@ overloadable_api_aux_set = {
     "torch.Tensor.sort",
     "torch.trapezoid",
     "torch.trapz",
+    "torch.var_mean",
 }
 
 cornercase_api_aux_dict = {
@@ -88,6 +89,10 @@ cornercase_api_aux_dict = {
     "torch.utils.cpp_extension.CppExtension": "args_list is configured by python built-in library",
     "torch.utils.dlpack.to_dlpack": 'arg "tensor" only accept position argument',
     "torch.autograd.function.FunctionCtx.mark_non_differentiable": "expect only '*args' as arguments, so check is not supported",
+    "torch.utils.cpp_extension.CUDAExtension": "args_list is configured by python built-in library",
+    "torch.utils.cpp_extension.CppExtension": "args_list is configured by python built-in library",
+    "torch.utils.dlpack.to_dlpack": 'arg "tensor" only accept position argument',
+    "torch.var": "this api has breaking change in pytorch 2.0",
     "torch.autograd.function.FunctionCtx.save_for_backward": "expect only '*tensors' as arguments, so check is not supported",
     "torch.linalg.solve_triangular": 'keyword arg "upper" has no default value',
 }

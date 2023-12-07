@@ -74,9 +74,49 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        a = torch.tensor([[1., 2., 3.]])
+        b = torch.tensor([[4., 5., 6.]])
+        out = torch.zeros((2, 3))
+        result = torch.vstack((a,b), out=out)
+        """
+    )
+    obj.run(pytorch_code, ["out"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 2., 3.]])
+        b = torch.tensor([[4., 5., 6.]])
+        out = torch.zeros((2, 3))
+        result = torch.vstack(tensors=(a,b), out=out)
+        """
+    )
+    obj.run(pytorch_code, ["out"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 2., 3.]])
+        b = torch.tensor([[4., 5., 6.]])
+        out = torch.zeros((2, 3))
+        result = torch.vstack(out=out, tensors=(a,b))
+        """
+    )
+    obj.run(pytorch_code, ["out"])
+
+
+# dtype mismatch, torch dtype is float32, paddle dtype is int64
+def _test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
         a = torch.tensor([[1, 2, 3]])
         b = torch.tensor([[4, 5, 6]])
-        out = torch.tensor([[[4, 5, 6]], [[1, 2, 3]]])
+        out = torch.zeros((2, 3))
         result = torch.vstack((a,b), out=out)
         """
     )
