@@ -88,3 +88,25 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        out = torch.rand([3], dtype=torch.float64)
+        result = torch.arange(start=1, end=2.5, step=0.5, out=out, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        out = torch.rand([3], dtype=torch.float64)
+        result = torch.arange(device=torch.device('cpu'), end=2.5, step=0.5, out=out, dtype=torch.float64, layout=torch.strided, start=1, requires_grad=True)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

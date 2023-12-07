@@ -111,3 +111,57 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"], unsupport=True, reason="paddle unsupport strict")
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        def func(x):
+            return torch.sum(x)
+
+        x = torch.tensor([1.0, 2.0])
+        v = torch.ones(2)
+        h = torch.autograd.functional.jvp(func=func, inputs=x, v=v)
+        result = h[:]
+        for item in result:
+            item.requires_grad = False
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        def func(x):
+            return torch.sum(x)
+
+        x = torch.tensor([1.0, 2.0])
+        v = torch.ones(2)
+        h = torch.autograd.functional.jvp(v=v, inputs=x, func=func)
+        result = h[:]
+        for item in result:
+            item.requires_grad = False
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        def func(x):
+            return torch.sum(x * x)
+        x = torch.tensor(1.)
+        h = torch.autograd.functional.jvp(func, x)
+        result = h[:]
+        for item in result:
+            item.requires_grad = False
+        """
+    )
+    obj.run(pytorch_code, ["result"])

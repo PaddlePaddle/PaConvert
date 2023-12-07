@@ -3488,7 +3488,7 @@
   },
   "torch.addcdiv": {
     "Matcher": "AddCDivMatcher",
-    "min_input_args": 2,
+    "min_input_args": 3,
     "args_list": [
       "input",
       "tensor1",
@@ -3853,7 +3853,7 @@
   "torch.as_strided": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.as_strided",
-    "min_input_args": 2,
+    "min_input_args": 3,
     "args_list": [
       "input",
       "size",
@@ -10058,6 +10058,7 @@
   "torch.nn.functional.avg_pool1d": {
     "Matcher": "AvgPoolMatcher",
     "paddle_api": "paddle.nn.functional.avg_pool1d",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "kernel_size",

@@ -24,7 +24,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.asinh(torch.tensor([ 0.1606, -1.4267, -1.0899, -1.0250 ]))
+        result = torch.asinh(torch.tensor([0.1606, -1.4267, -1.0899, -1.0250]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,7 +34,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([ 0.1606, -1.4267, -1.0899, -1.0250 ])
+        a = torch.tensor([0.1606, -1.4267, -1.0899, -1.0250])
         result = torch.asinh(a)
         """
     )
@@ -45,9 +45,33 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = [ 0.1606, -1.4267, -1.0899, -1.0250 ]
+        a = [0.1606, -1.4267, -1.0899, -1.0250]
         out = torch.tensor(a)
         result = torch.asinh(torch.tensor(a), out=out)
+        """
+    )
+    obj.run(pytorch_code, ["out", "result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [0.1606, -1.4267, -1.0899, -1.0250]
+        out = torch.tensor(a)
+        result = torch.asinh(input=torch.tensor(a), out=out)
+        """
+    )
+    obj.run(pytorch_code, ["out", "result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [0.1606, -1.4267, -1.0899, -1.0250]
+        out = torch.tensor(a)
+        result = torch.asinh(out=out, input=torch.tensor(a))
         """
     )
     obj.run(pytorch_code, ["out", "result"])

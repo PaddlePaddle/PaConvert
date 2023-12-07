@@ -95,3 +95,17 @@ def _test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 2., 3.], [4., 5., 6.]])
+        b = torch.tensor([1., 2., 3.])
+        input = torch.tensor([1., 2.])
+        out = torch.tensor([1., 2.])
+        result = torch.addmv(mat=a, vec=b, beta=3, alpha=3, out=out, input=input)
+        """
+    )
+    obj.run(pytorch_code, ["out"])

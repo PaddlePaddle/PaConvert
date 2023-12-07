@@ -47,3 +47,32 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        from torch.autograd import Function
+
+        # Inherit from Function
+        class cus_tanh(Function):
+            @staticmethod
+            def forward(ctx, x):
+                ctx.set_materialize_grads(value=False)
+                return x+x+x, x+x
+
+            @staticmethod
+            def backward(ctx, grad, grad2):
+                assert grad2==None
+                return grad
+
+        x = torch.ones([1], dtype=torch.float64)
+        x.requires_grad = True
+        cus_tanh.apply(x)[0].backward()
+
+        result = x.grad
+        result.requires_grad = False
+        """
+    )
+    obj.run(pytorch_code, ["result"])

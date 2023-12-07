@@ -83,3 +83,31 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1., 2], [4, 5]])
+        mat1 = torch.tensor([[1., 2], [4, 5]])
+        mat2 = torch.tensor([[1., 2], [4, 5]])
+        out = torch.tensor([[1., 2], [4, 5]])
+        result = torch.addmm(input=x, mat1=mat1, mat2=mat2, beta=0.6, alpha=0.7, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1., 2], [4, 5]])
+        mat1 = torch.tensor([[1., 2], [4, 5]])
+        mat2 = torch.tensor([[1., 2], [4, 5]])
+        out = torch.tensor([[1., 2], [4, 5]])
+        result = torch.addmm(alpha=0.7, input=x, beta=0.6, out=out, mat1=mat1, mat2=mat2)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
