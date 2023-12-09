@@ -11773,6 +11773,7 @@
   "torch.optim.Adadelta": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.optimizer.Adadelta",
+    "min_input_args": 1,
     "args_list": [
       "params",
       "lr",
