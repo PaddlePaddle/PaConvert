@@ -51,3 +51,27 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [1, 0.5]
+        out = torch.tensor(a)
+        result = torch.special.polygamma(n=1, input=torch.tensor(a), out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [1, 0.5]
+        out = torch.tensor(a)
+        result = torch.special.polygamma(input=torch.tensor(a), n=1, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

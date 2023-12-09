@@ -101,3 +101,29 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1., 2., 3., 4., 5.])
+        b = 1.
+        out = torch.tensor([1., 2., 3., 4., 5.])
+        result = torch.special.xlog1py(input=a, other=b, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["out"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1., 2., 3., 4., 5.])
+        b = 1.
+        out = torch.tensor([1., 2., 3., 4., 5.])
+        result = torch.special.xlog1py(other=b, out=out, input=a)
+        """
+    )
+    obj.run(pytorch_code, ["out"])
