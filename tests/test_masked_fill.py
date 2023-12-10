@@ -16,16 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.select_scatter")
+obj = APIBase("torch.masked_fill")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.zeros((2,3,4)).type(torch.float32)
-        values = torch.ones((2,4)).type(torch.float32)
-        result = torch.select_scatter(x, values, 1, 1)
+        x = torch.eye(2, 4)
+        mask = x > 0
+        result = torch.masked_fill(x, mask, 2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,9 +35,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.zeros((2,3,4)).type(torch.float32)
-        values = torch.ones((2,4)).type(torch.float32)
-        result = torch.select_scatter(input=x, src=values, dim=1, index=1)
+        x = torch.ones(2, 4)
+        result = torch.masked_fill(x, x>0, 2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -47,9 +46,32 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.zeros((2,3,4)).type(torch.float32)
-        values = torch.ones((2,4)).type(torch.float32)
-        result = torch.select_scatter(input=x, dim=1, src=values, index=1)
+        x = torch.ones(2, 4)
+        result = torch.masked_fill(mask=x>0, input=x, value=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones(2, 4)
+        mask = x>0
+        result = torch.masked_fill(input=x, mask=mask, value=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones(2, 4)
+        mask = x>0
+        result = torch.masked_fill(x, mask, 2)
         """
     )
     obj.run(pytorch_code, ["result"])

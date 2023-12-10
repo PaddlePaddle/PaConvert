@@ -15,22 +15,91 @@
 import textwrap
 
 from apibase import APIBase
+from lr_scheduler_helper import generate_torch_code
 
 obj = APIBase("torch.optim.lr_scheduler.LinearLR")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
-        """
-        import torch
-        model = torch.nn.Embedding(2, 10)
-        opt = torch.optim.Adam(model.parameters())
-        result = torch.optim.lr_scheduler.LinearLR(opt, start_factor=0.5, total_iters=4)
-        """
+        generate_torch_code("torch.optim.lr_scheduler.LinearLR(sgd, verbose=True)")
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        generate_torch_code(
+            "torch.optim.lr_scheduler.LinearLR(sgd, start_factor=0.05, end_factor=1.0)"
+        )
     )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        generate_torch_code("torch.optim.lr_scheduler.LinearLR(sgd, total_iters=3)")
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        generate_torch_code("torch.optim.lr_scheduler.LinearLR(sgd, 0.05, 1)")
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        generate_torch_code(
+            "torch.optim.lr_scheduler.LinearLR(optimizer=sgd, start_factor=0.05, end_factor=1.0, total_iters=3)"
+        )
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        generate_torch_code(
+            "torch.optim.lr_scheduler.LinearLR(start_factor=0.05, end_factor=1.0, total_iters=3, optimizer=sgd)"
+        )
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        generate_torch_code(
+            "torch.optim.lr_scheduler.LinearLR(sgd, 0.05, 1.0, 3, -1, False)"
+        )
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        generate_torch_code(
+            "torch.optim.lr_scheduler.LinearLR(optimizer=sgd, start_factor=0.05, end_factor=1.0, total_iters=3, last_epoch=-1, verbose=False)"
+        )
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        generate_torch_code(
+            [
+                "torch.optim.lr_scheduler.LinearLR(optimizer=sgd, start_factor=0.05, end_factor=1.0, total_iters=3, last_epoch=-1, verbose=False)",
+                "torch.optim.lr_scheduler.LinearLR(optimizer=sgd, start_factor=0.05, end_factor=1.0, total_iters=3, last_epoch=scheduler_1.last_epoch, verbose=False)",
+            ]
+        )
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        generate_torch_code("torch.optim.lr_scheduler.LinearLR(sgd)")
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)

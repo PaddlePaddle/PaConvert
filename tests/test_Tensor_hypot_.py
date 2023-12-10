@@ -11,69 +11,68 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.diagonal_scatter")
+obj = APIBase("torch.Tensor.hypot_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.arange(6.0).reshape((2, 3))
-        src = torch.ones((2,))
-        result = input.diagonal_scatter(src)
+        a = torch.tensor([1., 2, 3])
+        b = torch.tensor([4., 5, 6])
+        result = a.hypot_(b)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "a"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.arange(6.0).reshape((2, 3))
-        src = torch.ones((2,))
-        result = input.diagonal_scatter(src=src)
+        a = torch.tensor([1., 2, 3])
+        b = torch.tensor([4., 5, 6])
+        result = a.hypot_(other=b)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "a"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.arange(6.0).reshape((2, 3))
-        src = torch.ones((2,))
-        result = input.diagonal_scatter(src=src, offset=0, dim1=-2)
+        a = torch.tensor([-1., 2, 3])
+        b = torch.tensor([4., 5, 6])
+        result = a.hypot_(other=b)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "a"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.arange(6.0).reshape((2, 3))
-        src = torch.ones((2,))
-        result = input.diagonal_scatter(src=src, offset=0, dim1=-2, dim2=1)
+        a = torch.tensor([1., 2, 3])
+        b = torch.tensor([4., 5, 6])
+        result = a.hypot_(other=b+1)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "a"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.arange(6.0).reshape((2, 3))
-        src = torch.ones((2,))
-        result = input.diagonal_scatter(src, 0, -2, 1)
+        a = torch.tensor([1., 2, 3])
+        b = torch.tensor([4., 5, 6])
+        result = a.hypot_(b+1)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "a"])

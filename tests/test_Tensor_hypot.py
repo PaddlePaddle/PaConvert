@@ -64,3 +64,15 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1., 2, 3])
+        b = torch.tensor([4., 5, 6])
+        result = a.hypot(b+1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

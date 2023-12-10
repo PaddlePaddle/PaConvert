@@ -16,64 +16,64 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.diagonal_scatter")
+obj = APIBase("torch.Tensor.masked_fill_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.arange(6.0).reshape((2, 3))
-        src = torch.ones((2,))
-        result = input.diagonal_scatter(src)
+        a = torch.Tensor([[1.0,0.2], [0.3,0.4]])
+        b = torch.Tensor([[1,0], [1,1]]) == 1
+        result = a.masked_fill_(b, 2)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "a"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.arange(6.0).reshape((2, 3))
-        src = torch.ones((2,))
-        result = input.diagonal_scatter(src=src)
+        a = torch.Tensor([[1.0,0.2], [0.3,0.4]])
+        b = torch.Tensor([[1,0], [1,1]]) == 1
+        result = a.masked_fill_(mask=b, value=2)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "a"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.arange(6.0).reshape((2, 3))
-        src = torch.ones((2,))
-        result = input.diagonal_scatter(src=src, offset=0, dim1=-2)
+        a = torch.Tensor([[1.0,0.2], [0.3,0.4]])
+        b = torch.Tensor([[1,0], [1,1]])
+        result = a.masked_fill_(value=0.1, mask=(b==1))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "a"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.arange(6.0).reshape((2, 3))
-        src = torch.ones((2,))
-        result = input.diagonal_scatter(src=src, offset=0, dim1=-2, dim2=1)
+        a = torch.Tensor([[1.0,0.2], [0.3,0.4]])
+        b = torch.Tensor([[1,0], [1,1]])
+        result = a.masked_fill_(mask=b==1, value=0.1)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "a"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.arange(6.0).reshape((2, 3))
-        src = torch.ones((2,))
-        result = input.diagonal_scatter(src, 0, -2, 1)
+        a = torch.Tensor([[1.0,0.2], [0.3,0.4]])
+        b = torch.Tensor([[1,0], [1,1]])
+        result = a.masked_fill_(value=0.1, mask=b==1)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "a"])

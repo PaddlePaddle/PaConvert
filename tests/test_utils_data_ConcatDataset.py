@@ -30,26 +30,20 @@ def test_case_1():
                 self.num_samples = num_samples
 
             def __getitem__(self, idx):
-                image = np.random.random([5]).astype('float32')
-                label = np.random.randint(0, 9, (1, )).astype('int64')
-                return image, label
+                image = np.arange(5).astype('float32')
+                label = np.array([idx]).astype('int64')
+                return torch.tensor(image), torch.tensor(label)
 
             def __len__(self):
                 return self.num_samples
 
-        dataset = ConcatDataset([d1, d2])
+        dataset = ConcatDataset([RandomDataset(2), RandomDataset(2)])
         result = []
         for i in range(len(dataset)):
             result.append(dataset[i])
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -63,9 +57,9 @@ def test_case_2():
                 self.num_samples = num_samples
 
             def __getitem__(self, idx):
-                image = np.random.random([5]).astype('float32')
-                label = np.random.randint(0, 9, (1, )).astype('int64')
-                return image, label
+                image = np.arange(5).astype('float32')
+                label = np.array([idx]).astype('int64')
+                return torch.tensor(image), torch.tensor(label)
 
             def __len__(self):
                 return self.num_samples
@@ -76,10 +70,4 @@ def test_case_2():
             result.append(dataset[i])
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])

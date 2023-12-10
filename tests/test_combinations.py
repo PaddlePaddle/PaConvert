@@ -11,21 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.select_scatter")
+obj = APIBase("torch.combinations")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.zeros((2,3,4)).type(torch.float32)
-        values = torch.ones((2,4)).type(torch.float32)
-        result = torch.select_scatter(x, values, 1, 1)
+        x = torch.tensor([1, 2, 3], dtype=torch.int32)
+        result = torch.combinations(input=x, r=2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,9 +35,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.zeros((2,3,4)).type(torch.float32)
-        values = torch.ones((2,4)).type(torch.float32)
-        result = torch.select_scatter(input=x, src=values, dim=1, index=1)
+        x = torch.tensor([1, 2, 3], dtype=torch.int32)
+        result = torch.combinations(x, r=2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -47,9 +46,30 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.zeros((2,3,4)).type(torch.float32)
-        values = torch.ones((2,4)).type(torch.float32)
-        result = torch.select_scatter(input=x, dim=1, src=values, index=1)
+        x = torch.tensor([1, 2, 3], dtype=torch.int32)
+        result = torch.combinations(r=2, input=x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 2, 3], dtype=torch.int32)
+        result = torch.combinations(input=x, r=2, with_replacement=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 2, 3], dtype=torch.int32)
+        result = torch.combinations(x, 2, False)
         """
     )
     obj.run(pytorch_code, ["result"])

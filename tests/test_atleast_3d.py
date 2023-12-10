@@ -16,33 +16,35 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Module.type")
+obj = APIBase("torch.atleast_3d")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3.])
-        module1 = torch.nn.Module()
-        module1.register_buffer('buffer', x)
-        module1.type(torch.float32)
-        result = module1.buffer
+        result = torch.atleast_3d(torch.tensor(123, dtype=torch.int32))
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# Will match torch.nn.Module, the named parameter "dst_type" cannot be resolved.
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3.])
-        module1 = torch.nn.Module()
-        module1.register_buffer('buffer', x)
-        module1.type(dst_type=torch.float32)
-        result = module1.buffer
+        y = torch.tensor([-1, -2, 3])
+        result = torch.atleast_3d((torch.tensor(123, dtype=torch.int32), y))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.atleast_3d([torch.tensor([-1, -2, 3]), torch.tensor([-1, -2, 3])])
         """
     )
     obj.run(pytorch_code, ["result"])

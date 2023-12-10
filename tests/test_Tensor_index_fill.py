@@ -16,16 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.select_scatter")
+obj = APIBase("torch.Tensor.index_fill")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.zeros((2,3,4)).type(torch.float32)
-        values = torch.ones((2,4)).type(torch.float32)
-        result = torch.select_scatter(x, values, 1, 1)
+        x = torch.eye(2, 4)
+        indices = torch.tensor([0, 1])
+        value = -1
+        result = x.index_fill(0, indices, value)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,9 +36,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.zeros((2,3,4)).type(torch.float32)
-        values = torch.ones((2,4)).type(torch.float32)
-        result = torch.select_scatter(input=x, src=values, dim=1, index=1)
+        indices = torch.tensor([0, 1])
+        value = -1
+        result = torch.eye(3, 4).index_fill(1, indices, value)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -47,9 +48,35 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.zeros((2,3,4)).type(torch.float32)
-        values = torch.ones((2,4)).type(torch.float32)
-        result = torch.select_scatter(input=x, dim=1, src=values, index=1)
+        indices = torch.tensor([0, 1])
+        dim = 0
+        value = -1
+        result = torch.eye(3, 4).index_fill(dim, indices, value)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        indices = torch.tensor([0, 3])
+        dim = 0
+        value = -1
+        result = torch.eye(6, 4).index_fill(dim=dim, index=indices, value=value)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        indices = torch.tensor([0, 3])
+        value = -1
+        result = torch.eye(3, 4).index_fill(1, indices, value)
         """
     )
     obj.run(pytorch_code, ["result"])
