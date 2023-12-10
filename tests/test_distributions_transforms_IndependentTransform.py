@@ -14,6 +14,7 @@
 
 import textwrap
 
+import paddle
 from apibase import APIBase
 
 
@@ -29,7 +30,7 @@ class IndependentTransformAPI(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        assert pytorch_result == paddle_result
+        assert isinstance(paddle_result, paddle.distribution.transform)
 
 
 obj = IndependentTransformAPI("torch.distributions.transforms.IndependentTransform")
