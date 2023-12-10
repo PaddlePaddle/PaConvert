@@ -30,7 +30,7 @@ class IndependentTransformAPI(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        assert isinstance(paddle_result, paddle.distribution.transform)
+        assert isinstance(paddle_result, paddle.distribution.transform.Transform)
 
 
 obj = IndependentTransformAPI("torch.distributions.transforms.IndependentTransform")
