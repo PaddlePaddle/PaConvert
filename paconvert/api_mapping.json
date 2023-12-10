@@ -5688,6 +5688,18 @@
       "reinterpreted_batch_ndims": "reinterpreted_batch_rank"
     }
   },
+  "torch.distributions.transforms.ReshapeTransform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.ReshapeTransform",
+    "args_list": [
+      "in_shape",
+      "out_shape"
+    ],
+    "kwargs_change": {
+      "in_shape": "in_event_shape",
+      "out_shape": "out_event_shape"
+    }
+  },
   "torch.divide": {
     "Matcher": "DivideMatcher",
     "paddle_api": "paddle.divide",
