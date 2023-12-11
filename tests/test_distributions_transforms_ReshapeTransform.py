@@ -25,7 +25,7 @@ def test_case_1():
         import torch
 
         reshape_transform = torch.distributions.transforms.ReshapeTransform((2, 3), (3, 2))
-        print(reshape_transform.forward_shape((1,2,3)))
+        result = reshape_transform.forward_shape((1,2,3))
         """
     )
     obj.run(pytorch_code, ["result"])
