@@ -5676,6 +5676,11 @@
     },
     "min_input_args": 2
   },
+  "torch.distributions.transforms.ExpTransform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.ExpTransform",
+    "args_list": []
+  },
   "torch.distributions.transforms.IndependentTransform": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.IndependentTransform",
@@ -5686,6 +5691,16 @@
     "kwargs_change": {
       "base_transform": "base",
       "reinterpreted_batch_ndims": "reinterpreted_batch_rank"
+    }
+  },
+  "torch.distributions.transforms.PowerTransform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.PowerTransform",
+    "args_list": [
+      "exponent"
+    ],
+    "kwargs_change": {
+      "exponent": "power"
     }
   },
   "torch.distributions.transforms.ReshapeTransform": {
