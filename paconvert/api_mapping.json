@@ -12615,6 +12615,7 @@
   },
   "torch.round": {
     "Matcher": "RoundMatcher",
+    "paddle_api": "paddle.round",
     "args_list": [
       "input",
       "*",
