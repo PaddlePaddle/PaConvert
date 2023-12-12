@@ -11933,6 +11933,7 @@
   "torch.optim.LBFGS": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.optimizer.LBFGS",
+    "min_input_args": 1,
     "args_list": [
       "params",
       "lr",
