@@ -11952,6 +11952,7 @@
   "torch.optim.Optimizer": {
     "Matcher": "OptimOptimizerMatcher",
     "paddle_api": "paddle.optimizer.Optimizer",
+    "min_input_args": 2,
     "args_list": [
       "params",
       "defaults"
