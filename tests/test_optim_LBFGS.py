@@ -48,3 +48,53 @@ def test_case_3():
         )
     )
     obj.run(pytorch_code, ["result"], rtol=1.0e-3)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        generate_optimizer_test_code(
+            "torch.optim.LBFGS(conv.parameters(), max_iter=30)",
+            step_with_closure=True,
+        )
+    )
+    obj.run(pytorch_code, ["result"], rtol=1.0e-3)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        generate_optimizer_test_code(
+            "torch.optim.LBFGS(conv.parameters())",
+            step_with_closure=True,
+        )
+    )
+    obj.run(pytorch_code, ["result"], rtol=1.0e-3)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        generate_optimizer_test_code(
+            "torch.optim.LBFGS(params=conv.parameters(), lr=1, max_iter=20, max_eval=None, tolerance_grad=1e-07, tolerance_change=1e-09, history_size=100, line_search_fn=None)",
+            step_with_closure=True,
+        )
+    )
+    obj.run(pytorch_code, ["result"], rtol=1.0e-3)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        generate_optimizer_test_code(
+            "torch.optim.LBFGS(conv.parameters(), 1, 20, None, 1e-07, 1e-09, 100, None)",
+            step_with_closure=True,
+        )
+    )
+    obj.run(pytorch_code, ["result"], rtol=1.0e-3)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        generate_optimizer_test_code(
+            "torch.optim.LBFGS(lr=1, max_iter=20, params=conv.parameters(), tolerance_grad=1e-07, tolerance_change=1e-09, history_size=100, line_search_fn=None, max_eval=None)",
+            step_with_closure=True,
+        )
+    )
+    obj.run(pytorch_code, ["result"], rtol=1.0e-3)
