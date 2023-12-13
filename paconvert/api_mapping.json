@@ -5404,6 +5404,7 @@
   "torch.distributions.Categorical": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Categorical",
+    "min_input_args": 1,
     "args_list": [
       "probs",
       "logits",
@@ -5419,6 +5420,7 @@
   "torch.distributions.Cauchy": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Cauchy",
+    "min_input_args": 2,
     "args_list": [
       "loc",
       "scale",
@@ -5431,6 +5433,7 @@
   "torch.distributions.ComposeTransform": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.ChainTransform",
+    "min_input_args": 1,
     "args_list": [
       "parts",
       "cache_size"

@@ -67,3 +67,14 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.categorical.Categorical(validate_args=False, logits=torch.tensor([0.25, 0.25, 0.25, 0.25]))
+        result = m.sample([1])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
