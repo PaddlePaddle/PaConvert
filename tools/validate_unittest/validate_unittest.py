@@ -467,6 +467,8 @@ def check_call_variety(test_data, api_mapping, verbose=True):
 def simple_map_api_url(api):
     if api.startswith("torch.distributions."):
         api = api.replace("torch.distributions.", "", 1).lower()
+        if api.endswith("Transform"):
+            api = "torch.distributions.transforms." + api
         return f"https://pytorch.org/docs/stable/distributions.html#{api}"
     return f"https://pytorch.org/docs/stable/generated/{api}.html"
 
