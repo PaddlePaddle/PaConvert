@@ -11964,6 +11964,7 @@
   "torch.optim.Optimizer.load_state_dict": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.optimizer.Optimizer.set_state_dict",
+    "min_input_args": 1,
     "args_list": [
       "state_dict"
     ]
