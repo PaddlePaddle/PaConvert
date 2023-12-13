@@ -101,3 +101,13 @@ def test_case_8():
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        generate_lr_scheduler_test_code(
+            "torch.optim.lr_scheduler.ReduceLROnPlateau(mode='min', verbose=False, factor=0.1, patience=10, threshold=1e-4, threshold_mode='rel', cooldown=0, optimizer=sgd, min_lr=0, eps=1e-8)",
+            step_with_loss=True,
+        )
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)

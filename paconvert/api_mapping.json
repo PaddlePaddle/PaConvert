@@ -12123,6 +12123,7 @@
   "torch.optim.lr_scheduler.MultiStepLR": {
     "Matcher": "Optim2LrSchedulerMatcher",
     "paddle_api": "paddle.optimizer.lr.MultiStepDecay",
+    "min_input_args": 2,
     "args_list": [
       "optimizer",
       "milestones",
@@ -12134,6 +12135,7 @@
   "torch.optim.lr_scheduler.MultiplicativeLR": {
     "Matcher": "Optim2LrSchedulerMatcher",
     "paddle_api": "paddle.optimizer.lr.MultiplicativeDecay",
+    "min_input_args": 2,
     "args_list": [
       "optimizer",
       "lr_lambda",
@@ -12144,6 +12146,7 @@
   "torch.optim.lr_scheduler.OneCycleLR": {
     "Matcher": "OneCycleLRMatcher",
     "paddle_api": "paddle.optimizer.lr.OneCycleLR",
+    "min_input_args": 3,
     "args_list": [
       "optimizer",
       "max_lr",
@@ -12175,6 +12178,7 @@
   "torch.optim.lr_scheduler.ReduceLROnPlateau": {
     "Matcher": "Optim2LrSchedulerMatcher",
     "paddle_api": "paddle.optimizer.lr.ReduceOnPlateau",
+    "min_input_args": 1,
     "args_list": [
       "optimizer",
       "mode",

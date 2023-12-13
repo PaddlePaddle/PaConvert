@@ -126,3 +126,12 @@ def test_case_11():
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5, check_value=False)
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        generate_lr_scheduler_test_code(
+            "torch.optim.lr_scheduler.OneCycleLR(optimizer=sgd, max_lr=0.01, total_steps=None, epochs=10, steps_per_epoch=20, pct_start=0.3, anneal_strategy='linear', div_factor=2.5, final_div_factor=2000.0, three_phase=False, last_epoch=-1, verbose=True)"
+        )
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5, check_value=False)
