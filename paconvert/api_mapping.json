@@ -11977,6 +11977,7 @@
   "torch.optim.RMSprop": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.optimizer.RMSProp",
+    "min_input_args": 1,
     "args_list": [
       "params",
       "lr",
@@ -11985,6 +11986,7 @@
       "weight_decay",
       "momentum",
       "centered",
+      "foreach",
       "maximize",
       "differentiable"
     ],
@@ -11994,6 +11996,11 @@
       "alpha": "rho",
       "eps": "epsilon"
     },
+    "unsupport_args": [
+      "foreach",
+      "maximize",
+      "differentiable"
+    ],
     "paddle_default_kwargs": {
       "weight_decay": 0.0,
       "epsilon": 1e-08,

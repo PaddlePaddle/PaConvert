@@ -75,6 +75,7 @@ def generate_optimizer_test_code(optimizer_init, step_with_closure=False):
         bias = torch.tensor([0.0])
         conv.weight = torch.nn.Parameter(weight)
         conv.bias = torch.nn.Parameter(bias)
+
         out = conv(input_)
         {optimizer_segment}
 
