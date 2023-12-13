@@ -12011,6 +12011,7 @@
   "torch.optim.SGD": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.optimizer.SGD",
+    "min_input_args": 2,
     "args_list": [
       "params",
       "lr",
@@ -12028,6 +12029,7 @@
       "dampening",
       "nesterov",
       "maximize",
+      "foreach",
       "differentiable"
     ],
     "kwargs_change": {
