@@ -12055,6 +12055,7 @@
   "torch.optim.lr_scheduler.CosineAnnealingLR": {
     "Matcher": "Optim2LrSchedulerMatcher",
     "paddle_api": "paddle.optimizer.lr.CosineAnnealingDecay",
+    "min_input_args": 2,
     "args_list": [
       "optimizer",
       "T_max",
@@ -12066,6 +12067,7 @@
   "torch.optim.lr_scheduler.CyclicLR": {
     "Matcher": "LRSchedulerMatcher",
     "paddle_api": "paddle.optimizer.lr.CyclicLR",
+    "min_input_args": 3,
     "args_list": [
       "optimizer",
       "base_lr",
@@ -12099,6 +12101,7 @@
   "torch.optim.lr_scheduler.ExponentialLR": {
     "Matcher": "Optim2LrSchedulerMatcher",
     "paddle_api": "paddle.optimizer.lr.ExponentialDecay",
+    "min_input_args": 2,
     "args_list": [
       "optimizer",
       "gamma",
@@ -12109,6 +12112,7 @@
   "torch.optim.lr_scheduler.LambdaLR": {
     "Matcher": "Optim2LrSchedulerMatcher",
     "paddle_api": "paddle.optimizer.lr.LambdaDecay",
+    "min_input_args": 2,
     "args_list": [
       "optimizer",
       "lr_lambda",
