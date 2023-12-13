@@ -5446,6 +5446,7 @@
   "torch.distributions.Dirichlet": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Dirichlet",
+    "min_input_args": 1,
     "args_list": [
       "concentration",
       "validate_args"
@@ -5457,6 +5458,7 @@
   "torch.distributions.Distribution": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Distribution",
+    "min_input_args": 0,
     "args_list": [
       "batch_shape",
       "event_shape",
