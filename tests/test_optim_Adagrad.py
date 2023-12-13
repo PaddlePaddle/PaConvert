@@ -79,3 +79,16 @@ def _test_case_7():
         )
     )
     obj.run(pytorch_code, ["result"], rtol=1.0e-5)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        generate_optimizer_test_code(
+            "torch.optim.Adagrad(params=conv.parameters(), lr=0.01, lr_decay=0, weight_decay=0, initial_accumulator_value=0, eps=1e-10, foreach=None,  maximize=False, differentiable=False)"
+        )
+    )
+    obj.run(
+        pytorch_code,
+        unsupport=True,
+        reason="`lr_decay`, `foreach`, 'maximize` and `differentiable` is not supported.",
+    )

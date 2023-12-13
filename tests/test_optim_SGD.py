@@ -77,3 +77,16 @@ def test_case_7():
         )
     )
     obj.run(pytorch_code, ["result"], rtol=1.0e-5)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        generate_optimizer_test_code(
+            "torch.optim.SGD(params=conv.parameters(), lr=0.8, momentum=0, dampening=0, weight_decay=0, nesterov=False, maximize=False, foreach=None, differentiable=False)"
+        )
+    )
+    obj.run(
+        pytorch_code,
+        unsupport=True,
+        reason="`momentum`, `dampening`, `nesterov`, `maximize`, `foreach` and `differentiable` is not supported.",
+    )
