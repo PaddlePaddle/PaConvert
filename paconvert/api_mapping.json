@@ -5507,6 +5507,7 @@
   "torch.distributions.ExponentialFamily": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.ExponentialFamily",
+    "min_input_args": 0,
     "args_list": [
       "batch_shape",
       "event_shape",
@@ -5519,6 +5520,7 @@
   "torch.distributions.Geometric": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Geometric",
+    "min_input_args": 1,
     "args_list": [
       "probs",
       "logits",
