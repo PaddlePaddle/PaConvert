@@ -464,6 +464,13 @@ def check_call_variety(test_data, api_mapping, verbose=True):
     return report
 
 
+def simple_map_api_url(api):
+    if api.startswith("torch.distributions."):
+        api = api.replace("torch.distributions.", "", 1).lower()
+        return f"https://pytorch.org/docs/stable/distributions.html#{api}"
+    return f"https://pytorch.org/docs/stable/generated/{api}.html"
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Call Variety Check v0.1")
     parser.add_argument(
@@ -556,9 +563,7 @@ if __name__ == "__main__":
                 for api, data in sorted_report.items():
                     api_title = api
                     if args.richtext:
-                        api_doc_url = (
-                            f"https://pytorch.org/docs/stable/generated/{api}.html"
-                        )
+                        api_doc_url = simple_map_api_url(api)
                         api_title = f"[{api}]({api_doc_url})"
 
                     if data.get("partial support", False):
