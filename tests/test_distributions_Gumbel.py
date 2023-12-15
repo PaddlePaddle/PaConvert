@@ -50,3 +50,25 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.gumbel.Gumbel(torch.tensor([1.0]), torch.tensor([2.0]), False)
+        result = m.sample([100])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.gumbel.Gumbel(loc=torch.tensor([1.0]), validate_args=False, scale=torch.tensor([2.0]))
+        result = m.sample([100])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
