@@ -6638,6 +6638,24 @@
       "out"
     ]
   },
+  "torch.histogramdd": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.histogramdd",
+    "min_input_args": 2,
+    "args_list": [
+      "input",
+      "bins",
+      "*",
+      "range",
+      "weight",
+      "density"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "range": "ranges",
+      "weight": "weights"
+    }
+  },
   "torch.hstack": {
     "Matcher": "HStackMatcher",
     "args_list": [
@@ -12223,6 +12241,7 @@
   "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts": {
     "Matcher": "Optim2LrSchedulerMatcher",
     "paddle_api": "paddle.optimizer.lr.CosineAnnealingWarmRestarts",
+    "min_input_args": 2,
     "args_list": [
       "optimizer",
       "T_0",

@@ -2128,6 +2128,8 @@ class TensorToMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         new_args = self.parse_args(args)
         new_kwargs = self.parse_kwargs(kwargs)
+        if new_kwargs is None:
+            new_kwargs = {}
         if "copy" in new_kwargs:
             new_kwargs.pop("copy")
         if "memory_format" in new_kwargs:
