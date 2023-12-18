@@ -316,6 +316,26 @@ class TensorAddMatcher(BaseMatcher):
         return "unchange"
 
 
+class FunctionalPadMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def _FUNCTIONAL_PAD(x, pad, mode='constant', value=0.0, data_format='NCHW'):
+                if len(x.shape) * 2 == len(pad) and mode == "constant":
+                    pad = paddle.to_tensor(pad, dtype="int32").reshape((-1, 2)).flip([0]).flatten().tolist()
+                return paddle.nn.functional.pad(x, pad, mode, value, data_format)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        if "input" in kwargs:
+            kwargs["x"] = kwargs.pop("input")
+        code = "paddle_aux._FUNCTIONAL_PAD({})".format(self.kwargs_to_str(kwargs))
+        return code
+
+
 class TensorSubtractMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
