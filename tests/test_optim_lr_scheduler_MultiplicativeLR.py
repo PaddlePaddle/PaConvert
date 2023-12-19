@@ -15,14 +15,14 @@
 import textwrap
 
 from apibase import APIBase
-from lr_scheduler_helper import generate_torch_code
+from lr_scheduler_helper import generate_lr_scheduler_test_code
 
 obj = APIBase("torch.optim.lr_scheduler.MultiplicativeLR")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             "torch.optim.lr_scheduler.MultiplicativeLR(sgd, lambda x:0.95**x)"
         )
     )
@@ -31,7 +31,7 @@ def test_case_1():
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             "torch.optim.lr_scheduler.MultiplicativeLR(sgd, lr_lambda=lambda x:0.95**x)"
         )
     )
@@ -40,7 +40,7 @@ def test_case_2():
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             "torch.optim.lr_scheduler.MultiplicativeLR(optimizer=sgd, lr_lambda=lambda x:0.95**x)"
         )
     )
@@ -49,7 +49,7 @@ def test_case_3():
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             "torch.optim.lr_scheduler.MultiplicativeLR(optimizer=sgd, lr_lambda=lambda x:0.95**x, last_epoch=-1, verbose=True)"
         )
     )
@@ -58,7 +58,7 @@ def test_case_4():
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             "torch.optim.lr_scheduler.MultiplicativeLR(optimizer=sgd, lr_lambda=lambda x:0.95**x, verbose=True)"
         )
     )
@@ -67,7 +67,7 @@ def test_case_5():
 
 def test_case_6():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             "torch.optim.lr_scheduler.MultiplicativeLR(sgd, lambda x:0.95**x, -1, False)"
         )
     )
@@ -78,7 +78,7 @@ def test_case_6():
 # paddle result has diff with pytorch result
 def test_case_7():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             [
                 "torch.optim.lr_scheduler.MultiplicativeLR(optimizer=sgd, lr_lambda=lambda x:0.95**x, last_epoch=-1, verbose=False)",
                 "torch.optim.lr_scheduler.MultiplicativeLR(optimizer=sgd, lr_lambda=lambda x:0.95**x, last_epoch=scheduler_1.last_epoch, verbose=True)",
@@ -86,3 +86,12 @@ def test_case_7():
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5, check_value=False)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        generate_lr_scheduler_test_code(
+            "torch.optim.lr_scheduler.MultiplicativeLR(lr_lambda=lambda x:0.95**x, last_epoch=-1, optimizer=sgd, verbose=True)"
+        )
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)

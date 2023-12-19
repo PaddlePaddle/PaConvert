@@ -52,3 +52,38 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([0.2796, 0.9331, 0.6486, 0.1523, 0.6516])
+        out = torch.zeros(5)
+        result = torch.special.logit(input=x, eps=1e-6, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([0.2796, 0.9331, 0.6486, 0.1523, 0.6516])
+        out = torch.zeros(5)
+        result = torch.special.logit(eps=1e-6, input=x, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.2796, 0.9331, 0.6486, 0.1523, 0.6516])
+        result = torch.special.logit(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

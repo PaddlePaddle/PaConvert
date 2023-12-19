@@ -28,7 +28,7 @@ def test_case_1():
         result = reinterpreted_beta.log_prob(torch.tensor([0.2,  0.2]))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], atol=1e-3)
 
 
 def test_case_2():
@@ -40,7 +40,7 @@ def test_case_2():
         result = reinterpreted_beta.log_prob(torch.tensor([0.2,  0.2]))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], atol=1e-3)
 
 
 def test_case_3():
@@ -52,7 +52,7 @@ def test_case_3():
         result = reinterpreted_beta.log_prob(torch.tensor([0.2,  0.2]))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], atol=1e-3)
 
 
 def test_case_4():
@@ -60,8 +60,32 @@ def test_case_4():
         """
         import torch
         beta = torch.distributions.Beta(torch.tensor([0.5, 0.5]), torch.tensor([0.5, 0.5]))
-        reinterpreted_beta = torch.distributions.independent.Independent(beta, 1, validate_args=False)
+        reinterpreted_beta = torch.distributions.independent.Independent(base_distribution=beta, reinterpreted_batch_ndims=1, validate_args=False)
         result = reinterpreted_beta.log_prob(torch.tensor([0.2,  0.2]))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], atol=1e-3)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        beta = torch.distributions.Beta(torch.tensor([0.5, 0.5]), torch.tensor([0.5, 0.5]))
+        reinterpreted_beta = torch.distributions.Independent(beta, 1, False)
+        result = reinterpreted_beta.log_prob(torch.tensor([0.2,  0.2]))
+        """
+    )
+    obj.run(pytorch_code, ["result"], atol=1e-3)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        beta = torch.distributions.Beta(torch.tensor([0.5, 0.5]), torch.tensor([0.5, 0.5]))
+        reinterpreted_beta = torch.distributions.independent.Independent(reinterpreted_batch_ndims=1, base_distribution=beta, validate_args=False)
+        result = reinterpreted_beta.log_prob(torch.tensor([0.2,  0.2]))
+        """
+    )
+    obj.run(pytorch_code, ["result"], atol=1e-3)

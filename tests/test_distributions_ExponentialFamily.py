@@ -74,3 +74,23 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.distributions.exp_family.ExponentialFamily(event_shape=torch.Size([2]), validate_args=False, batch_shape=torch.Size([1]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.distributions.exp_family.ExponentialFamily(torch.Size([1]), torch.Size([2]), False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

@@ -51,3 +51,27 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = [1.0, 2.0, 3.0]
+        out = torch.tensor([])
+        result = torch.special.i1e(input=torch.tensor(x), out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = [1.0, 2.0, 3.0]
+        out = torch.tensor([])
+        result = torch.special.i1e(out=out, input=torch.tensor(x))
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

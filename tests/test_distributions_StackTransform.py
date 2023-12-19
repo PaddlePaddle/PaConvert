@@ -69,3 +69,42 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones((2, 1))
+        tseq = [torch.distributions.SoftmaxTransform()]
+        t = torch.distributions.transforms.StackTransform(tseq=tseq, dim=1, cache_size=0)
+        result = t(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones((2, 1))
+        tseq = [torch.distributions.SoftmaxTransform()]
+        t = torch.distributions.transforms.StackTransform(tseq, 1, 0)
+        result = t(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones((2, 1))
+        tseq = [torch.distributions.SoftmaxTransform()]
+        t = torch.distributions.transforms.StackTransform(dim=1,tseq=tseq, cache_size=0)
+        result = t(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

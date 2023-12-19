@@ -284,6 +284,8 @@ def check_call_variety(test_data, api_mapping, verbose=True):
 
         is_overloadable = api in overloadable_api_aux_set
 
+        position_args_checkable = True
+
         min_input_args = mapping_data.get("min_input_args", -1)
 
         args_list_full = mapping_data.get("args_list", [])
@@ -335,9 +337,15 @@ def check_call_variety(test_data, api_mapping, verbose=True):
         unsupport_args = mapping_data.get("unsupport_args", [])
         args_list = [arg for arg in args_list_full if arg not in unsupport_args]
 
-        args_list_positional = [
-            arg for arg in args_list_full_positional if arg not in unsupport_args
-        ]
+        __pargs_end = len(args_list_full_positional)
+        for i, arg in enumerate(args_list_full_positional):
+            if arg in unsupport_args:
+                __pargs_end = min(__pargs_end, i)
+            elif i > __pargs_end:
+                position_args_checkable = False
+
+        args_list_positional = args_list_full_positional[:__pargs_end]
+
         args_list_keyword = [
             arg for arg in args_list_full_keyword if arg not in unsupport_args
         ]
@@ -411,9 +419,12 @@ def check_call_variety(test_data, api_mapping, verbose=True):
             ):
                 not_subsequence = True
 
-            # if api == 'torch.Tensor.add':
-            #     print(args_list_with_key, keys)
-            #     print(all_args, all_kwargs, not_subsequence, code)
+        # if api == "torch.optim.Adagrad":
+        #     print(position_args_checkable, keys)
+        #     print(all_args, all_kwargs, not_subsequence, code)
+
+        if not position_args_checkable:
+            all_args = None
 
         if all_args and all_kwargs and not_subsequence and all_default is True:
             continue
@@ -429,10 +440,13 @@ def check_call_variety(test_data, api_mapping, verbose=True):
         }
 
         if verbose:
-            if not all_args:
-                print(
-                    f"INFO: {api} has no unittest with all arguments without keyword."
-                )
+            if position_args_checkable:
+                if not all_args:
+                    print(
+                        f"INFO: {api} has no unittest with all arguments without keyword."
+                    )
+            else:
+                print(f"INFO: {api} has some position args is not supported.")
             if not all_kwargs:
                 print(f"INFO: {api} has no unittest with all arguments with keyword.")
             if not not_subsequence and len(args_list) > 1:
@@ -450,6 +464,19 @@ def check_call_variety(test_data, api_mapping, verbose=True):
     return report
 
 
+def simple_map_api_url(api):
+    if api.startswith("torch.distributions."):
+        if api.endswith("Transform"):
+            api = api.replace(
+                "torch.distributions.", "torch.distributions.transforms.", 1
+            )
+        else:
+            api = api.replace("torch.distributions.", "", 1).lower()
+
+        return f"https://pytorch.org/docs/stable/distributions.html#{api}"
+    return f"https://pytorch.org/docs/stable/generated/{api}.html"
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Call Variety Check v0.1")
     parser.add_argument(
@@ -460,6 +487,12 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--report", action="store_true", default=True, help="Generate report"
+    )
+    parser.add_argument(
+        "--richtext",
+        action="store_true",
+        default=False,
+        help="Generate report in richtext format",
     )
 
     args = parser.parse_args()
@@ -535,12 +568,17 @@ if __name__ == "__main__":
 
                 for api, data in sorted_report.items():
                     api_title = api
+                    if args.richtext:
+                        api_doc_url = simple_map_api_url(api)
+                        api_title = f"[{api}]({api_doc_url})"
+
                     if data.get("partial support", False):
                         api_title = f"❓ {api_title}"
                     if data.get("overloadable", False):
                         api_title = f"🔁 {api_title}"
                     if data.get("corner case", False):
                         api_title = f"🟢 {api_title}"
+
                     f.write(
                         f'| {api_title} | {" | ".join([item2desc_dict[data[k]] for k in columns[1:]])} |\n'
                     )

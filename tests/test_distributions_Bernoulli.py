@@ -67,3 +67,25 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Bernoulli(probs=0.3, validate_args=False)
+        result = m.sample([100])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Bernoulli(validate_args=False, probs=0.3)
+        result = m.sample([100])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

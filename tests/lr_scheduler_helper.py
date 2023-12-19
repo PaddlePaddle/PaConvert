@@ -14,7 +14,7 @@
 #
 
 
-def generate_torch_code(scheduler_init, step_with_loss=False):
+def generate_lr_scheduler_test_code(scheduler_init, step_with_loss=False):
     init_segment = """
     import torch
     inp = torch.tensor([[[[ 0.65819663, -1.44500113,  0.03488150, -0.11252647,  0.64591473,

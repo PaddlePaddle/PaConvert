@@ -62,3 +62,27 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0, -1., 10.])
+        out = torch.tensor([0, -1., 10.])
+        result = torch.special.erf(input=a, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0, -1., 10.])
+        out = torch.tensor([0, -1., 10.])
+        result = torch.special.erf(out=out, input=a)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

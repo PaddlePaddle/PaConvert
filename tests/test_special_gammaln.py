@@ -51,3 +51,27 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.34, 1.5, 0.73])
+        out = torch.tensor([0.34, 1.5, 0.73])
+        result = torch.special.gammaln(input=input, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.34, 1.5, 0.73])
+        out = torch.tensor([0.34, 1.5, 0.73])
+        result = torch.special.gammaln(out=out, input=input)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
