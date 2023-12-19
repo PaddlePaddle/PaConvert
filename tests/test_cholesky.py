@@ -70,3 +70,31 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 2.4112, -0.7486,  1.4551],
+                        [-0.7486,  1.3544,  0.1294],
+                        [ 1.4551,  0.1294,  1.6724]])
+        out = torch.tensor([1., 2., 3.])
+        result = torch.cholesky(input=x, upper=True, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 2.4112, -0.7486,  1.4551],
+                        [-0.7486,  1.3544,  0.1294],
+                        [ 1.4551,  0.1294,  1.6724]])
+        out = torch.zeros((3, ))
+        result = torch.cholesky(upper=False, input=x, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

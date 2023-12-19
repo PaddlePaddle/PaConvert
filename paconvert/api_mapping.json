@@ -4296,6 +4296,7 @@
   "torch.cat": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.concat",
+    "min_input_args": 1,
     "args_list": [
       "tensors",
       "dim",
@@ -4310,6 +4311,7 @@
   "torch.cdist": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.cdist",
+    "min_input_args": 2,
     "args_list": [
       "x1",
       "x2",
@@ -4324,6 +4326,7 @@
   "torch.ceil": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.ceil",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -4336,6 +4339,7 @@
   "torch.celu": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.celu",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "alpha"
@@ -4355,6 +4359,7 @@
   "torch.cholesky": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linalg.cholesky",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "upper",
@@ -4367,6 +4372,8 @@
   },
   "torch.cholesky_inverse": {
     "Matcher": "CholeskyInverseMatcher",
+    "paddle_api": "paddle.linalg.inv",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "upper",
@@ -4377,6 +4384,7 @@
   "torch.cholesky_solve": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linalg.cholesky_solve",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "input2",
@@ -4392,6 +4400,7 @@
   "torch.chunk": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.chunk",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "chunks",
@@ -4405,6 +4414,7 @@
   "torch.clamp": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.clip",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "min",
@@ -4419,6 +4429,7 @@
   "torch.clamp_max": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.clip",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "max",
@@ -4432,23 +4443,10 @@
   "torch.clamp_min": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.clip",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "min",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
-  },
-  "torch.clip": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.clip",
-    "args_list": [
-      "input",
-      "min",
-      "max",
       "*",
       "out"
     ],

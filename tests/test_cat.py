@@ -75,3 +75,29 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones(2, 3)
+        y = torch.ones(2, 3)
+        out = torch.zeros(4, 3)
+        result = torch.cat(tensors=[x, y], dim=0, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones(2, 3)
+        y = torch.ones(2, 3)
+        out = torch.zeros(4, 3)
+        result = torch.cat(dim=0, tensors=[x, y], out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

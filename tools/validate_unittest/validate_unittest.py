@@ -94,6 +94,8 @@ cornercase_api_aux_dict = {
     "torch.utils.dlpack.to_dlpack": 'arg "tensor" only accept position argument',
     "torch.var": "this api has breaking change in pytorch 2.0",
     "torch.autograd.function.FunctionCtx.save_for_backward": "expect only '*tensors' as arguments, so check is not supported",
+    "torch.chain_matmul": "this api will be deprecated and has var position args",
+    "torch.clamp": "one of `min` and `max` must be specified.",
     "torch.linalg.solve_triangular": 'keyword arg "upper" has no default value',
 }
 
@@ -246,7 +248,7 @@ def match_subsequence(pattern, obj):
     return j == len(obj)
 
 
-def check_call_variety(test_data, api_mapping, verbose=True):
+def check_call_variety(test_data, api_mapping, *, api_alias={}, verbose=True):
     report = {}
     for api, unittest_data in test_data.items():
         if api not in api_mapping:
@@ -520,7 +522,8 @@ if __name__ == "__main__":
 
     for alias, target in api_alias_mapping.items():
         if target in api_mapping:
-            api_mapping[alias] = api_mapping[target]
+            # api_mapping[alias] = api_mapping[target]
+            pass
         else:
             # 不应该单独配置 alias 的 api_mapping.json
             if alias in api_mapping:
@@ -542,7 +545,12 @@ if __name__ == "__main__":
     print(f"INFO: {test_attribute_count} attribute unittests are removed.")
 
     if not args.no_check:
-        report = check_call_variety(test_data, api_mapping, verbose=(not args.report))
+        report = check_call_variety(
+            test_data,
+            api_mapping,
+            api_alias=api_alias_mapping,
+            verbose=(not args.report),
+        )
         sorted_report = dict(sorted(report.items(), key=lambda x: x[0]))
 
         if args.report:
