@@ -15,14 +15,14 @@
 import textwrap
 
 from apibase import APIBase
-from lr_scheduler_helper import generate_torch_code
+from lr_scheduler_helper import generate_lr_scheduler_test_code
 
 obj = APIBase("torch.optim.lr_scheduler.ReduceLROnPlateau")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             "torch.optim.lr_scheduler.ReduceLROnPlateau(sgd)", step_with_loss=True
         )
     )
@@ -31,7 +31,7 @@ def test_case_1():
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             "torch.optim.lr_scheduler.ReduceLROnPlateau(sgd, 'min')",
             step_with_loss=True,
         )
@@ -41,7 +41,7 @@ def test_case_2():
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             "torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer=sgd, mode='min')",
             step_with_loss=True,
         )
@@ -51,7 +51,7 @@ def test_case_3():
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             "torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer=sgd, mode='min',verbose=True)",
             step_with_loss=True,
         )
@@ -61,7 +61,7 @@ def test_case_4():
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             "torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer=sgd, mode='min', factor=0.1, patience=10, threshold=1e-4, threshold_mode='rel', cooldown=0, min_lr=0, eps=1e-8, verbose=False)",
             step_with_loss=True,
         )
@@ -71,7 +71,7 @@ def test_case_5():
 
 def test_case_6():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             "torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer=sgd, mode='max', factor=0.1, patience=10, threshold=1e-4, threshold_mode='rel', cooldown=0, min_lr=0, eps=1e-8, verbose=False)",
             step_with_loss=True,
         )
@@ -81,7 +81,7 @@ def test_case_6():
 
 def test_case_7():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             "torch.optim.lr_scheduler.ReduceLROnPlateau(sgd, 'max', 0.1, 10, 1e-4, 'rel', 0, 0, 1e-8, False)",
             step_with_loss=True,
         )
@@ -92,11 +92,21 @@ def test_case_7():
 # note: fine, ReduceLROnPlateau does not support `last_epoch`
 def test_case_8():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             [
                 "torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer=sgd, mode='min',verbose=False)",
                 "torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer=sgd, mode='min',verbose=True)",
             ],
+            step_with_loss=True,
+        )
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        generate_lr_scheduler_test_code(
+            "torch.optim.lr_scheduler.ReduceLROnPlateau(mode='min', verbose=False, factor=0.1, patience=10, threshold=1e-4, threshold_mode='rel', cooldown=0, optimizer=sgd, min_lr=0, eps=1e-8)",
             step_with_loss=True,
         )
     )
