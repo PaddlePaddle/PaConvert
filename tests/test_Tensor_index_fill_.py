@@ -80,7 +80,7 @@ def test_case_5():
         x = torch.eye(3, 4)
         indices = torch.tensor([0, 3])
         value = -1
-        result = x.index_fill(1, indices, value)
+        result = x.index_fill_(1, indices, value)
         """
     )
     obj.run(pytorch_code, ["result", "x"])

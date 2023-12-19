@@ -49,7 +49,7 @@ def test_case_3():
         import torch
         input = torch.arange(6.0).reshape((2, 3))
         src = torch.ones((2,))
-        result = input.diagonal_scatter(src=src, offset=0, dim1=-2)
+        result = input.diagonal_scatter(offset=0, src=src, dim2=1, dim1=-2)
         """
     )
     obj.run(pytorch_code, ["result"])

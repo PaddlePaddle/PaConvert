@@ -2906,7 +2906,12 @@
     "min_input_args": 0
   },
   "torch.Tensor.sign_": {},
-  "torch.Tensor.signbit": {},
+  "torch.Tensor.signbit": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.signbit",
+    "min_input_args": 1,
+    "args_list": []
+  },
   "torch.Tensor.sin": {
     "Matcher": "UnchangeMatcher",
     "min_input_args": 0
@@ -13074,6 +13079,19 @@
   "torch.sign": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.sign",
+    "args_list": [
+      "input",
+      "*",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+  "torch.signbit": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.signbit",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",

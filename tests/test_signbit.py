@@ -16,17 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.histogramdd")
+obj = APIBase("torch.signbit")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[0., 1.], [1., 0.], [2.,0.], [2., 2.]])
-        bins = [3,3]
-        weights = torch.tensor([1., 2., 4., 8.])
-        result = torch.histogramdd(x, bins=bins, weight=weights)
+        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype='float32')
+        result = torch.signbit(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -36,10 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[0., 1.], [1., 0.], [2.,0.], [2., 2.]])
-        bins = [3,3]
-        weights = torch.tensor([1., 2., 4., 8.])
-        result = torch.histogramdd(input=x, bins=bins, weight=weights)
+        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype='float32')
+        result = torch.signbit(input=x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -49,36 +45,33 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[0., 1.], [1., 0.], [2.,0.], [2., 2.]])
-        bins = [3,3]
-        weights = torch.tensor([1., 2., 4., 8.])
-        result = torch.histogramdd(range=None, weight=weights, density=True, input=x, bins=bins)
+        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype='float32')
+        out = torch.tensor([])
+        result = torch.signbit(out=out, input=x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[0., 1.], [1., 0.], [2.,0.], [2., 2.]])
-        bins = [3,3]
-        weights = torch.tensor([1., 2., 4., 8.])
-        result = torch.histogramdd(input=x, bins=bins, range=None, weight=weights, density=True)
+        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype='float32')
+        out = torch.tensor([])
+        result = torch.signbit(input=x, out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[0., 1.], [1., 0.], [2.,0.], [2., 2.]])
-        bins = [3,3]
-        weights = torch.tensor([1., 2., 4., 8.])
-        result = torch.histogramdd(x, bins, range=None, weight=weights, density=True)
+        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype='float32')
+        out = torch.tensor([])
+        result = torch.signbit(x, out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])
