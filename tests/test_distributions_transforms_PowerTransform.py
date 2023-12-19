@@ -26,7 +26,7 @@ def test_case_1():
 
         x = torch.tensor([1., 2.])
         power = paddle.distribution.PowerTransform(torch.tensor(2.))
-        result = power.forward(x))
+        result = power.forward_shape(x)
         """
     )
     obj.run(pytorch_code, ["result"])

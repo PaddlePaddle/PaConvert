@@ -25,7 +25,7 @@ def test_case_1():
         import torch
 
         exp = torch.distributions.transforms.ExpTransform()
-        result = exp.forward(torch.tensor([1., 2., 3.]))
+        result = exp.forward_shape(torch.tensor([1., 2., 3.]))
         """
     )
     obj.run(pytorch_code, ["result"])
