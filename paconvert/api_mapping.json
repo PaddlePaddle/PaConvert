@@ -11181,6 +11181,18 @@
       "eps": "epsilon"
     }
   },
+  "torch.nn.functional.pdist": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.pdist",
+    "min_input_args": 1,
+    "args_list": [
+      "input",
+      "p"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.nn.functional.pixel_shuffle": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.pixel_shuffle",
