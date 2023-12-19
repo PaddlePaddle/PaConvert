@@ -50,3 +50,25 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Uniform(high=torch.tensor([5.0]), low=torch.tensor([0.0]), validate_args=None)
+        result = m.sample([10])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Uniform(torch.tensor([0.0]), torch.tensor([5.0]), None)
+        result = m.sample([10])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

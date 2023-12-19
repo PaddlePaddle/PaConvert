@@ -53,3 +53,15 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones((2,3))
+        t = torch.distributions.transforms.SigmoidTransform(0)
+        result = t(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

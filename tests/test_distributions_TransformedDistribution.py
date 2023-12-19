@@ -56,3 +56,42 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        base_distribution = torch.distributions.Normal(torch.tensor([0.0]), torch.tensor([1.0]))
+        transforms = [torch.distributions.SigmoidTransform()]
+        m = torch.distributions.transformed_distribution.TransformedDistribution(base_distribution=base_distribution, transforms=transforms, validate_args=None)
+        result = m.sample([10])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        base_distribution = torch.distributions.Normal(torch.tensor([0.0]), torch.tensor([1.0]))
+        transforms = [torch.distributions.SigmoidTransform()]
+        m = torch.distributions.transformed_distribution.TransformedDistribution(base_distribution, transforms, None)
+        result = m.sample([10])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        base_distribution = torch.distributions.Normal(torch.tensor([0.0]), torch.tensor([1.0]))
+        transforms = [torch.distributions.SigmoidTransform()]
+        m = torch.distributions.transformed_distribution.TransformedDistribution(transforms=transforms, base_distribution=base_distribution, validate_args=None)
+        result = m.sample([10])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

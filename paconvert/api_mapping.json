@@ -5373,6 +5373,7 @@
   "torch.distributions.Bernoulli": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Bernoulli",
+    "min_input_args": 1,
     "args_list": [
       "probs",
       "logits",
@@ -5388,6 +5389,7 @@
   "torch.distributions.Beta": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Beta",
+    "min_input_args": 2,
     "args_list": [
       "concentration1",
       "concentration0",
@@ -5395,12 +5397,14 @@
     ],
     "kwargs_change": {
       "concentration1": "alpha",
-      "concentration0": "beta"
+      "concentration0": "beta",
+      "validate_args": ""
     }
   },
   "torch.distributions.Categorical": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Categorical",
+    "min_input_args": 1,
     "args_list": [
       "probs",
       "logits",
@@ -5416,6 +5420,7 @@
   "torch.distributions.Cauchy": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Cauchy",
+    "min_input_args": 2,
     "args_list": [
       "loc",
       "scale",
@@ -5428,6 +5433,7 @@
   "torch.distributions.ComposeTransform": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.ChainTransform",
+    "min_input_args": 1,
     "args_list": [
       "parts",
       "cache_size"
@@ -5440,6 +5446,7 @@
   "torch.distributions.Dirichlet": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Dirichlet",
+    "min_input_args": 1,
     "args_list": [
       "concentration",
       "validate_args"
@@ -5451,6 +5458,7 @@
   "torch.distributions.Distribution": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Distribution",
+    "min_input_args": 0,
     "args_list": [
       "batch_shape",
       "event_shape",
@@ -5499,6 +5507,7 @@
   "torch.distributions.ExponentialFamily": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.ExponentialFamily",
+    "min_input_args": 0,
     "args_list": [
       "batch_shape",
       "event_shape",
@@ -5511,6 +5520,7 @@
   "torch.distributions.Geometric": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Geometric",
+    "min_input_args": 1,
     "args_list": [
       "probs",
       "logits",
@@ -5526,6 +5536,7 @@
   "torch.distributions.Gumbel": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Gumbel",
+    "min_input_args": 2,
     "args_list": [
       "loc",
       "scale",
@@ -5538,6 +5549,7 @@
   "torch.distributions.Independent": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Independent",
+    "min_input_args": 2,
     "args_list": [
       "base_distribution",
       "reinterpreted_batch_ndims",
@@ -5552,6 +5564,7 @@
   "torch.distributions.Laplace": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Laplace",
+    "min_input_args": 2,
     "args_list": [
       "loc",
       "scale",
@@ -5564,6 +5577,7 @@
   "torch.distributions.LogNormal": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.LogNormal",
+    "min_input_args": 2,
     "args_list": [
       "loc",
       "scale",
@@ -5576,6 +5590,7 @@
   "torch.distributions.Multinomial": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Multinomial",
+    "min_input_args": 2,
     "args_list": [
       "total_count",
       "probs",
@@ -5592,6 +5607,7 @@
   "torch.distributions.Normal": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Normal",
+    "min_input_args": 2,
     "args_list": [
       "loc",
       "scale",
@@ -5604,6 +5620,7 @@
   "torch.distributions.SigmoidTransform": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.SigmoidTransform",
+    "min_input_args": 0,
     "args_list": [
       "cache_size"
     ],
@@ -5614,6 +5631,7 @@
   "torch.distributions.SoftmaxTransform": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.SoftmaxTransform",
+    "min_input_args": 0,
     "args_list": [
       "cache_size"
     ],
@@ -5624,6 +5642,7 @@
   "torch.distributions.StackTransform": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.StackTransform",
+    "min_input_args": 1,
     "args_list": [
       "tseq",
       "dim",
@@ -5638,6 +5657,7 @@
   "torch.distributions.StickBreakingTransform": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.StickBreakingTransform",
+    "min_input_args": 0,
     "args_list": [
       "cache_size"
     ],
@@ -5648,6 +5668,7 @@
   "torch.distributions.Transform": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Transform",
+    "min_input_args": 0,
     "args_list": [
       "cache_size"
     ],
@@ -5658,6 +5679,7 @@
   "torch.distributions.TransformedDistribution": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.TransformedDistribution",
+    "min_input_args": 2,
     "args_list": [
       "base_distribution",
       "transforms",
@@ -5671,6 +5693,7 @@
   "torch.distributions.Uniform": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Uniform",
+    "min_input_args": 2,
     "args_list": [
       "low",
       "high",
@@ -5683,6 +5706,7 @@
   "torch.distributions.kl.kl_divergence": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.kl_divergence",
+    "min_input_args": 2,
     "args_list": [
       "p",
       "q"
@@ -5691,6 +5715,7 @@
   "torch.distributions.kl.register_kl": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.kl.register_kl",
+    "min_input_args": 2,
     "args_list": [
       "type_p",
       "type_q"
@@ -5698,8 +5723,7 @@
     "kwargs_change": {
       "type_p": "cls_p",
       "type_q": "cls_q"
-    },
-    "min_input_args": 2
+    }
   },
   "torch.divide": {
     "Matcher": "DivideMatcher",

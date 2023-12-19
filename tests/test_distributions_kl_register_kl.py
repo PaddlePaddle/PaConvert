@@ -32,3 +32,33 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        @torch.distributions.kl.register_kl(type_p=torch.distributions.beta.Beta, type_q=torch.distributions.beta.Beta)
+        def kl(p,q):
+            return p, q
+
+        result = kl(torch.tensor([0.3, 0.3, 0.3]), torch.tensor([0.4, 0.4, 0.2]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        @torch.distributions.kl.register_kl(type_q=torch.distributions.beta.Beta, type_p=torch.distributions.beta.Beta)
+        def kl(p,q):
+            return p, q
+
+        result = kl(torch.tensor([0.3, 0.3, 0.3]), torch.tensor([0.4, 0.4, 0.2]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
