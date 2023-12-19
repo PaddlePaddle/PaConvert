@@ -51,3 +51,15 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["out"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([ 0.5950,-0.0872, 0, -0.2972])
+        out = torch.tensor([ 0.5950,-0.0872, 0, -0.2972])
+        result = torch.special.sinc(out=out, input=a)
+        """
+    )
+    obj.run(pytorch_code, ["out"])

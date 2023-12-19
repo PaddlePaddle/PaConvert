@@ -12615,6 +12615,7 @@
   },
   "torch.round": {
     "Matcher": "RoundMatcher",
+    "paddle_api": "paddle.round",
     "args_list": [
       "input",
       "*",
@@ -13017,6 +13018,7 @@
   "torch.special.digamma": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.digamma",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -13030,6 +13032,7 @@
   "torch.special.erf": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.erf",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -13041,6 +13044,7 @@
   },
   "torch.special.erfc": {
     "Matcher": "ErfCMatcher",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -13062,6 +13066,7 @@
   "torch.special.erfinv": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.erfinv",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -13073,6 +13078,7 @@
   },
   "torch.special.exp2": {
     "Matcher": "Exp2Matcher",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -13081,6 +13087,7 @@
   },
   "torch.special.expit": {
     "Matcher": "ExpitMatcher",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -13090,6 +13097,7 @@
   "torch.special.expm1": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.expm1",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -13104,6 +13112,7 @@
   "torch.special.gammaln": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.lgamma",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -13116,6 +13125,7 @@
   "torch.special.i0": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.i0",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -13141,6 +13151,7 @@
   "torch.special.i1": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.i1",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -13153,6 +13164,7 @@
   "torch.special.i1e": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.i1e",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -13165,6 +13177,7 @@
   "torch.special.log1p": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.log1p",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -13178,6 +13191,7 @@
   "torch.special.log_softmax": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.log_softmax",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "dim",
@@ -13193,6 +13207,7 @@
   "torch.special.logit": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.logit",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "eps",
@@ -13206,6 +13221,7 @@
   "torch.special.logsumexp": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.logsumexp",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "dim",
@@ -13222,6 +13238,7 @@
   "torch.special.ndtr": {},
   "torch.special.ndtri": {
     "Matcher": "SpecialNdtriMatcher",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -13231,6 +13248,7 @@
   "torch.special.polygamma": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.polygamma",
+    "min_input_args": 2,
     "args_list": [
       "n",
       "input",
@@ -13244,6 +13262,7 @@
   "torch.special.psi": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.digamma",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -13255,8 +13274,11 @@
   },
   "torch.special.round": {
     "Matcher": "RoundMatcher",
+    "paddle_api": "paddle.round",
+    "min_input_args": 1,
     "args_list": [
       "input",
+      "*",
       "decimals",
       "out"
     ]
@@ -13265,6 +13287,7 @@
   "torch.special.scaled_modified_bessel_k1": {},
   "torch.special.sinc": {
     "Matcher": "SincMatcher",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -13290,6 +13313,7 @@
   "torch.special.spherical_bessel_j0": {},
   "torch.special.xlog1py": {
     "Matcher": "SpecialXLog1pYMatcher",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "other",
