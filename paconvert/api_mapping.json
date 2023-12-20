@@ -10217,6 +10217,7 @@
   "torch.nn.functional.conv1d": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.conv1d",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "weight",
@@ -10233,6 +10234,7 @@
   "torch.nn.functional.conv2d": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.conv2d",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "weight",
@@ -10249,6 +10251,7 @@
   "torch.nn.functional.conv3d": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.conv3d",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "weight",
@@ -10265,6 +10268,7 @@
   "torch.nn.functional.conv_transpose1d": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.conv1d_transpose",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "weight",
@@ -10272,8 +10276,8 @@
       "stride",
       "padding",
       "output_padding",
-      "dilation",
-      "groups"
+      "groups",
+      "dilation"
     ],
     "kwargs_change": {
       "input": "x"
@@ -10282,6 +10286,7 @@
   "torch.nn.functional.conv_transpose2d": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.conv2d_transpose",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "weight",
@@ -10289,8 +10294,8 @@
       "stride",
       "padding",
       "output_padding",
-      "dilation",
-      "groups"
+      "groups",
+      "dilation"
     ],
     "kwargs_change": {
       "input": "x"
@@ -10332,6 +10337,7 @@
   "torch.nn.functional.cosine_similarity": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.cosine_similarity",
+    "min_input_args": 2,
     "args_list": [
       "x1",
       "x2",
