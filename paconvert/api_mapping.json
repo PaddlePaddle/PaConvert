@@ -4457,6 +4457,7 @@
   "torch.clone": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.clone",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -4468,6 +4469,7 @@
   },
   "torch.column_stack": {
     "Matcher": "ColumnStackMatcher",
+    "min_input_args": 1,
     "args_list": [
       "tensors",
       "*",
@@ -4477,6 +4479,7 @@
   "torch.complex": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.complex",
+    "min_input_args": 2,
     "args_list": [
       "real",
       "imag",
