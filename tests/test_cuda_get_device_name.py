@@ -63,3 +63,19 @@ def test_case_3():
         pytorch_code,
         ["result"],
     )
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = None
+        if torch.cuda.is_available():
+            current_device = torch.cuda.current_device()
+            result = torch.cuda.get_device_name(device=current_device)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+    )

@@ -33,3 +33,19 @@ def test_case_1():
         pytorch_code,
         ["result"],
     )
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = None
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed(seed=123)
+            result = torch.initial_seed()
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+    )
