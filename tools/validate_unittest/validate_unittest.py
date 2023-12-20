@@ -73,12 +73,16 @@ overloadable_api_aux_set = {
     "torch.Tensor.scatter",
     "torch.Tensor.scatter_",
     "torch.Tensor.std",
+    "torch.std_mean",
+    "torch.std",
+    "torch.sort",
     "torch.Tensor.var",
     "torch.Tensor.view",
     "torch.Tensor.sort",
     "torch.trapezoid",
     "torch.cumulative_trapezoid",
     "torch.trapz",
+    "torch.scatter",
     "torch.var_mean",
 }
 
@@ -306,6 +310,8 @@ def check_call_variety(test_data, api_mapping, *, api_alias={}, verbose=True):
             continue
 
         is_overloadable = api_target in overloadable_api_aux_set
+        if is_overloadable:
+            aux_detailed_data_api["complex"] = True
 
         position_args_checkable = True
 
@@ -356,7 +362,7 @@ def check_call_variety(test_data, api_mapping, *, api_alias={}, verbose=True):
             else:
                 raise ValueError(f'{api} has unexpected arg "{arg}".')
 
-        if var_arg_name is not None and len(var_arg_name) > 0:
+        if var_arg_name is not None and var_args_collector is not None:
             aux_detailed_data_api["complex"] = True
         if var_kwarg_name is not None:
             aux_detailed_data_api["complex"] = True
@@ -441,6 +447,9 @@ def check_call_variety(test_data, api_mapping, *, api_alias={}, verbose=True):
                 all_args = True
             elif len(args) >= len(args_list_positional) and support_var_args:
                 all_args = True
+
+            if len(args) + len(kwargs) == len(args_list_keyword):
+                aux_detailed_case_data[case_name]["all_*args"] = True
 
             keys = [k[0].strip() for k in kwargs]
             if len(keys) == len(args_list_keyword) and match_subsequence(
@@ -539,6 +548,14 @@ def autofix_single_api(file_path, aux_detailed_data):
     api = list(aux_detailed_data.keys())[0]
     data = aux_detailed_data[api]
 
+    if (
+        data["all args"] is True
+        and data["all kwargs"] is True
+        and data["kwargs out of order"] is True
+        and data["all default"] is True
+    ):
+        return
+
     if data.get("complex", False) is True:
         print(f'api {api} in "{file_path}" is too complex to auto fix.')
         return
@@ -568,11 +585,18 @@ def autofix_single_api(file_path, aux_detailed_data):
         else:
             raise ValueError(f"unexpected state {state}.")
 
-    good_casenames = [n for n, d in data["cases"].items() if d.get("all_kwargs", False)]
+    good_casenames = []
+    for n, d in data["cases"].items():
+        # if d.get('all_kwargs', False) is True:
+        #     good_casenames.append(n)
+        # 我只需要位置参数 + 关键字参数总数对就行，
+        # 不需要符合全部关键字参数的需求，这样我更容易自动化修复
+        if d.get("all_*args", False) is True or d.get("all_kwargs", False) is True:
+            good_casenames.append(n)
 
-    if data.get("all kwargs", False) is False or len(good_casenames) == 0:
+    if len(good_casenames) == 0:
         print(
-            f'api {api} in "{file_path}" not meet all kwargs condition, skip auto fix.'
+            f'api {api} in "{file_path}" not has no good cases as template, skip auto fix.'
         )
         return
 
@@ -583,18 +607,33 @@ def autofix_single_api(file_path, aux_detailed_data):
         code = "".join(lines[case_lines[cn][0] : case_lines[cn][1]])
         args, kwargs, invoking_range = extract_params_from_invoking(api, code)
         kwargs_dict = dict(kwargs)
+        assert len(args) + len(kwargs) == len(
+            data["keyword_args_list"]
+        ), "good case must have all args or kwargs."
+        if len(args) > 0:
+            keyed_pargs = zip(data["position_args_list"], args)
+            for k, v in keyed_pargs:
+                assert k not in kwargs_dict, f"duplicated key {k} in {cn}."
+                kwargs_dict[k] = v
+
         new_case_template = (
             f'{code[:invoking_range[0]]}({"{}"}){code[invoking_range[1]:]}'
         )
-        assert len(args) == 0, "good case must be all kwargs."
 
         if data.get("all args", False) is False:
             params = [kwargs_dict[k] for k in data["position_args_list"]]
             case_append(new_case_template.format(", ".join(params)), cn)
 
-        if data.get("kwargs out of order", False) is False and len(kwargs) > 1:
+        if data.get("all kwargs", False) is False:
+            params = [f"{k}={kwargs_dict[k]}" for k in data["keyword_args_list"]]
+            case_append(new_case_template.format(", ".join(params)), cn)
+
+        if (
+            data.get("kwargs out of order", False) is False
+            and len(data["keyword_args_list"]) > 1
+        ):
             # 好吧，乱序我打算直接逆序
-            params = [f"{k}={v}" for k, v in kwargs[::-1]]
+            params = [f"{k}={kwargs_dict[k]}" for k in data["keyword_args_list"][::-1]]
             case_append(new_case_template.format(", ".join(params)), cn)
 
         if (
@@ -608,6 +647,15 @@ def autofix_single_api(file_path, aux_detailed_data):
             case_append(new_case_template.format(", ".join(params)), cn)
 
     if len(append_cases) > 0:
+        print("##############################")
+        print("#  AutoFix")
+        print("#")
+        print(f'#  file: "{file_path}"')
+        print(f"#  {len(append_cases)} cases fixed.")
+        print("#")
+        print("#  please rerun validate tool.")
+        print("##############################")
+
         with open(file_path, "a+") as f:
             for ncdata in append_cases:
                 ac, src = ncdata["code"], ncdata["source"]
@@ -624,10 +672,6 @@ def autofix_single_api(file_path, aux_detailed_data):
                 ] + acl
 
                 f.writelines(acl)
-
-        print(
-            f'INFO: autofix {len(append_cases)} cases into "{file_path}", please rerun validate tool.'
-        )
 
 
 if __name__ == "__main__":
