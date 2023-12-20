@@ -7355,6 +7355,7 @@
     "min_input_args": 1,
     "args_list": [
       "x",
+      "*",
       "N"
     ],
     "kwargs_change": {
@@ -10502,6 +10503,7 @@
     "min_input_args": 1,
     "args_list": [
       "input",
+      "*",
       "approximate"
     ]
   },
@@ -10757,7 +10759,7 @@
   "torch.nn.functional.local_response_norm": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.local_response_norm",
-    "min_input_args": 0,
+    "min_input_args": 2,
     "args_list": [
       "input",
       "size",
