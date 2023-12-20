@@ -41,3 +41,39 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.beta.Beta(concentration0=torch.tensor([0.5]), concentration1=torch.tensor([0.5]), )
+        n = torch.distributions.beta.Beta(torch.tensor([0.3]), torch.tensor([0.7]))
+        result = torch.distributions.kl.kl_divergence(m, n)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.beta.Beta(concentration1=torch.tensor([0.5]), concentration0=torch.tensor([0.5]), validate_args=False)
+        n = torch.distributions.beta.Beta(torch.tensor([0.3]), torch.tensor([0.7]))
+        result = torch.distributions.kl.kl_divergence(m, n)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.beta.Beta(torch.tensor([0.5]), torch.tensor([0.5]), False)
+        n = torch.distributions.beta.Beta(torch.tensor([0.3]), torch.tensor([0.7]))
+        result = torch.distributions.kl.kl_divergence(m, n)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

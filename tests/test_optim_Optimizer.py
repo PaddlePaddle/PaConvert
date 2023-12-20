@@ -47,3 +47,42 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        theta = torch.tensor([1.0,1.0], requires_grad=True)
+        result = torch.optim.Optimizer(params=[theta], defaults={"learning_rate": 1.0})
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        theta = torch.tensor([1.0,1.0], requires_grad=True)
+        result = torch.optim.Optimizer([theta], {"learning_rate": 1.0})
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        theta = torch.tensor([1.0,1.0], requires_grad=True)
+        result = torch.optim.Optimizer(defaults={"learning_rate": 1.0}, params=[theta])
+        """
+    )
+    obj.run(pytorch_code, ["result"])

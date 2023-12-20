@@ -84,3 +84,13 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.distributions.Distribution(torch.Size([]), torch.Size([]), None)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

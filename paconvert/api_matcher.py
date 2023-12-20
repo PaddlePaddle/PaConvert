@@ -3420,19 +3420,23 @@ class RoundMatcher(BaseMatcher):
         if "decimals" in kwargs:
             API_TEMPLATE = textwrap.dedent(
                 """
-                paddle.round((10**{}) * {}) / (10**{})
+                {}((10**{}) * {}) / (10**{})
                 """
             )
             code = API_TEMPLATE.format(
-                kwargs["decimals"], kwargs["input"], kwargs["decimals"]
+                self.get_paddle_api(),
+                kwargs["decimals"],
+                kwargs["input"],
+                kwargs["decimals"],
             )
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
-                paddle.round({})
+                {}({})
                 """
             )
-            code = API_TEMPLATE.format(kwargs["input"])
+            code = API_TEMPLATE.format(self.get_paddle_api(), kwargs["input"])
+
         if "out" in kwargs and kwargs["out"] != "None":
             code = "paddle.assign({}, output={})".format(code, kwargs["out"])
 

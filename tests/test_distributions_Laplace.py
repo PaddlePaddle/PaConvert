@@ -50,3 +50,25 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Laplace(torch.tensor([0.0]), torch.tensor([1.0]), False)
+        result = m.sample([1])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.laplace.Laplace(loc=torch.tensor([0.0]), validate_args=False, scale=torch.tensor([1.0]))
+        result = m.sample([1])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

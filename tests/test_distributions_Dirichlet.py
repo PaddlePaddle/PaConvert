@@ -50,3 +50,25 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.dirichlet.Dirichlet(torch.tensor([0.3]), False)
+        result = m.sample([100])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Dirichlet(validate_args=False, concentration=torch.tensor([0.3]))
+        result = m.sample([100])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

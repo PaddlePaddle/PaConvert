@@ -62,3 +62,27 @@ def _test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
+        out = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
+        result = torch.special.log1p(input=input, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
+        out = torch.tensor([4.7767, 4.3234, 1.2156, 0.2411, 4.5739])
+        result = torch.special.log1p(out=out, input=input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

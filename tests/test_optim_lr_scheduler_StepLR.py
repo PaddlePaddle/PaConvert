@@ -15,14 +15,14 @@
 import textwrap
 
 from apibase import APIBase
-from lr_scheduler_helper import generate_torch_code
+from lr_scheduler_helper import generate_lr_scheduler_test_code
 
 obj = APIBase("torch.optim.lr_scheduler.StepLR")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             "torch.optim.lr_scheduler.StepLR(sgd, step_size=2, verbose=True)"
         )
     )
@@ -31,7 +31,7 @@ def test_case_1():
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             "torch.optim.lr_scheduler.StepLR(sgd, step_size=2, gamma=0.05)"
         )
     )
@@ -40,7 +40,7 @@ def test_case_2():
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             "torch.optim.lr_scheduler.StepLR(sgd, step_size=3, gamma=0.2)"
         )
     )
@@ -49,21 +49,23 @@ def test_case_3():
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
-        generate_torch_code("torch.optim.lr_scheduler.StepLR(sgd, 10, 0.2)")
+        generate_lr_scheduler_test_code("torch.optim.lr_scheduler.StepLR(sgd, 10, 0.2)")
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
-        generate_torch_code("torch.optim.lr_scheduler.StepLR(sgd, 10, 0.2, -1, False)")
+        generate_lr_scheduler_test_code(
+            "torch.optim.lr_scheduler.StepLR(sgd, 10, 0.2, -1, False)"
+        )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
 
 
 def test_case_6():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             "torch.optim.lr_scheduler.StepLR(optimizer=sgd, step_size=3, gamma=0.2)"
         )
     )
@@ -72,7 +74,7 @@ def test_case_6():
 
 def test_case_7():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             "torch.optim.lr_scheduler.StepLR(optimizer=sgd, step_size=3, gamma=0.2, last_epoch=-1, verbose=False)"
         )
     )
@@ -81,7 +83,7 @@ def test_case_7():
 
 def test_case_8():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             "torch.optim.lr_scheduler.StepLR(step_size=3, gamma=0.2, optimizer=sgd)"
         )
     )
@@ -92,7 +94,7 @@ def test_case_8():
 # paddle result has diff with pytorch result
 def test_case_9():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             [
                 "torch.optim.lr_scheduler.StepLR(optimizer=sgd, step_size=3, gamma=0.2, last_epoch=-1, verbose=False)",
                 "torch.optim.lr_scheduler.StepLR(optimizer=sgd, step_size=3, gamma=0.2, last_epoch=scheduler_1.last_epoch, verbose=False)",
@@ -104,6 +106,6 @@ def test_case_9():
 
 def test_case_10():
     pytorch_code = textwrap.dedent(
-        generate_torch_code("torch.optim.lr_scheduler.StepLR(sgd, 2)")
+        generate_lr_scheduler_test_code("torch.optim.lr_scheduler.StepLR(sgd, 2)")
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)

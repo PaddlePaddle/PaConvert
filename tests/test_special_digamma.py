@@ -51,3 +51,27 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1, 0.5])
+        out = torch.tensor([1, 0.5])
+        result = torch.special.digamma(input=a, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1, 0.5])
+        out = torch.tensor([1, 0.5])
+        result = torch.special.digamma(out=out, input=a)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

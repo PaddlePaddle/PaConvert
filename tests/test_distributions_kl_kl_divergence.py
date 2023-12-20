@@ -29,3 +29,27 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.beta.Beta(torch.tensor([0.5]), torch.tensor([0.5]))
+        n = torch.distributions.beta.Beta(torch.tensor([0.3]), torch.tensor([0.7]))
+        result = torch.distributions.kl.kl_divergence(p=m, q=n)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.beta.Beta(torch.tensor([0.5]), torch.tensor([0.5]))
+        n = torch.distributions.beta.Beta(torch.tensor([0.3]), torch.tensor([0.7]))
+        result = torch.distributions.kl.kl_divergence(q=n, p=m)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
