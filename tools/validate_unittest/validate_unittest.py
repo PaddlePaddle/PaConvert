@@ -78,6 +78,7 @@ overloadable_api_aux_set = {
     "torch.sort",
     "torch.Tensor.var",
     "torch.Tensor.view",
+    "torch.searchsorted",
     "torch.Tensor.sort",
     "torch.trapezoid",
     "torch.cumulative_trapezoid",
