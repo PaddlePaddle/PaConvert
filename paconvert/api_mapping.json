@@ -4490,6 +4490,7 @@
   "torch.concat": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.concat",
+    "min_input_args": 1,
     "args_list": [
       "tensors",
       "dim",
@@ -4503,6 +4504,7 @@
   },
   "torch.conj": {
     "Matcher": "GenericMatcher",
+    "min_input_args": 1,
     "paddle_api": "paddle.conj",
     "args_list": [
       "input"
@@ -4514,6 +4516,7 @@
   "torch.conj_physical": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.conj",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
