@@ -76,7 +76,7 @@ def test_case_6():
         """
         import torch
         out = torch.tensor([2., 3.])
-        result = torch.eye(n=3, m=3, out=out, dtype=torch.int64, layout=torch.strided, device=None, requires_grad=False)
+        result = torch.eye(n=3, m=3, out=out, dtype=torch.float, layout=torch.strided, device=None, requires_grad=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -88,7 +88,7 @@ def test_case_7():
         """
         import torch
         out = torch.tensor([2., 3.])
-        result = torch.eye(requires_grad=False, device=None, layout=torch.strided, dtype=torch.int64, out=out, m=3, n=3)
+        result = torch.eye(requires_grad=False, device=None, layout=torch.strided, dtype=torch.float, out=out, m=3, n=3)
         """
     )
     obj.run(pytorch_code, ["result"])

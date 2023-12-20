@@ -12770,7 +12770,7 @@
   "torch.scatter": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.put_along_axis",
-    "min_input_args": 4,
+    "min_input_args": 3,
     "args_list": [
       "input",
       "dim",
@@ -12814,14 +12814,17 @@
     "min_input_args": 2,
     "args_list": [
       "sorted_sequence",
-      "values",
+      "input",
       "*",
       "out_int32",
       "right",
       "side",
-      "out",
-      "sorter"
-    ]
+      "sorter",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "values"
+    }
   },
   "torch.seed": {
     "Matcher": "SeedMatcher",
