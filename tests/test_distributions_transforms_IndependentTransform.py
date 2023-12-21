@@ -14,34 +14,39 @@
 
 import textwrap
 
-import paddle
 from apibase import APIBase
 
-
-class IndependentTransformAPI(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        assert isinstance(paddle_result, paddle.distribution.transform.Transform)
-
-
-obj = IndependentTransformAPI("torch.distributions.transforms.IndependentTransform")
+obj = APIBase("torch.distributions.IndependentTransform")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1., 2., 3.], [4., 5., 6.]], requires_grad=True)
-        result = torch.distributions.transforms.IndependentTransform(torch.distributions.transforms.Transform(), 1)
+        multi_exp = torch.distributions.IndependentTransform(torch.distributions.Transform(), 1)
+        result = multi_exp.forward_shape([1, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        multi_exp = torch.distributions.IndependentTransform(torch.distributions.SoftmaxTransform(), 2)
+        result = multi_exp.forward_shape([1, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        multi_exp = torch.distributions.IndependentTransform(torch.distributions.SoftmaxTransform(), 2)
+        result = multi_exp.forward_shape([1, 2, 3])
         """
     )
     obj.run(pytorch_code, ["result"])

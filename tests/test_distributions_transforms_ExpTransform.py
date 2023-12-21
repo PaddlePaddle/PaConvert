@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.transforms.ExpTransform")
+obj = APIBase("torch.distributions.ExpTransform")
 
 
 def test_case_1():
@@ -24,8 +24,8 @@ def test_case_1():
         """
         import torch
 
-        exp = torch.distributions.transforms.ExpTransform()
-        result = exp.forward_shape(torch.tensor([1., 2., 3.]))
+        exp = torch.distributions.ExpTransform()
+        result = exp.forward_shape([1, 2])
         """
     )
     obj.run(pytorch_code, ["result"])
