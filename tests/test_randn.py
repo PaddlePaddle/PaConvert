@@ -130,7 +130,19 @@ def test_case_11():
         import torch
         a = 3
         out = torch.tensor([2., 3.], dtype=torch.float64)
-        result = torch.randn(a, a, generator=None, out=out, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True, pin_memory=False)
+        result = torch.randn(size=(a, a), generator=None, out=out, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True, pin_memory=False)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"], check_value=False)
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = 3
+        out = torch.tensor([2., 3.], dtype=torch.float64)
+        result = torch.randn(pin_memory=False, dtype=torch.float64, out=out, layout=torch.strided, size=(a, a), generator=None, device=torch.device('cpu'), requires_grad=True)
         """
     )
     obj.run(pytorch_code, ["result", "out"], check_value=False)
