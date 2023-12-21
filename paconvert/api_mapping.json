@@ -3973,7 +3973,7 @@
     "paddle_api": "paddle.atleast_1d",
     "min_input_args": 1,
     "args_list": [
-      "*"
+      "*tensors"
     ]
   },
   "torch.atleast_2d": {
@@ -3981,7 +3981,7 @@
     "paddle_api": "paddle.atleast_2d",
     "min_input_args": 1,
     "args_list": [
-      "*"
+      "*tensors"
     ]
   },
   "torch.atleast_3d": {
@@ -3989,7 +3989,7 @@
     "paddle_api": "paddle.atleast_3d",
     "min_input_args": 1,
     "args_list": [
-      "*"
+      "*tensors"
     ]
   },
   "torch.autocast": {

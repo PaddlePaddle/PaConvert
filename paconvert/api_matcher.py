@@ -2133,7 +2133,7 @@ class TensorToMatcher(BaseMatcher):
         new_args = self.parse_args(args)
         new_kwargs = self.parse_kwargs(kwargs)
         if new_kwargs is None:
-            new_kwargs = {}
+            return None
         if "copy" in new_kwargs:
             new_kwargs.pop("copy")
         if "memory_format" in new_kwargs:
