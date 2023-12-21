@@ -16,16 +16,28 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.transforms.ReshapeTransform")
+obj = APIBase("torch.distributions.TanhTransform")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        x = torch.ones((2,3))
+        t = torch.distributions.TanhTransform()
+        result = t(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
 
-        reshape_transform = torch.distributions.transforms.ReshapeTransform((2, 3), (3, 2))
-        result = reshape_transform.forward_shape((1,2,3))
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones((2,3))
+        t = torch.distributions.TanhTransform(cache_size=0)
+        result = t(x)
         """
     )
     obj.run(pytorch_code, ["result"])

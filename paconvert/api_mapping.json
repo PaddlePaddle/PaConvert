@@ -5345,6 +5345,30 @@
       "tag"
     ]
   },
+  "torch.distributions.AbsTransform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.AbsTransform",
+    "args_list": [
+      "cache_size"
+    ],
+    "kwargs_change": {
+      "cache_size": ""
+    }
+  },
+  "torch.distributions.AffineTransform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.AffineTransform",
+    "args_list": [
+      "loc",
+      "scale",
+      "event_dim",
+      "cache_size"
+    ],
+    "kwargs_change": {
+      "event_dim": "",
+      "cache_size": ""
+    }
+  },
   "torch.distributions.Bernoulli": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Bernoulli",
@@ -5605,6 +5629,18 @@
       "cache_size": ""
     }
   },
+  "torch.distributions.ReshapeTransform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.ReshapeTransform",
+    "args_list": [
+      "in_shape",
+      "out_shape"
+    ],
+    "kwargs_change": {
+      "in_shape": "in_event_shape",
+      "out_shape": "out_event_shape"
+    }
+  },
   "torch.distributions.SigmoidTransform": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.SigmoidTransform",
@@ -5642,6 +5678,16 @@
   "torch.distributions.StickBreakingTransform": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.StickBreakingTransform",
+    "args_list": [
+      "cache_size"
+    ],
+    "kwargs_change": {
+      "cache_size": ""
+    }
+  },
+  "torch.distributions.TanhTransform": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.TanhTransform",
     "args_list": [
       "cache_size"
     ],
@@ -5704,18 +5750,6 @@
       "type_q": "cls_q"
     },
     "min_input_args": 2
-  },
-  "torch.distributions.transforms.ReshapeTransform": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.distribution.ReshapeTransform",
-    "args_list": [
-      "in_shape",
-      "out_shape"
-    ],
-    "kwargs_change": {
-      "in_shape": "in_event_shape",
-      "out_shape": "out_event_shape"
-    }
   },
   "torch.divide": {
     "Matcher": "DivideMatcher",
