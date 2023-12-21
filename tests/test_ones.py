@@ -133,3 +133,27 @@ def test_case_11():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = 3
+        out = torch.tensor([2., 3.], dtype=torch.float64)
+        result = torch.ones(size=(a, a), out=out, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True, pin_memory=False)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = 3
+        out = torch.tensor([2., 3.], dtype=torch.float64)
+        result = torch.ones(dtype=torch.float64, requires_grad=True, layout=torch.strided, device=torch.device('cpu'), size=(a, a), out=out, pin_memory=False)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

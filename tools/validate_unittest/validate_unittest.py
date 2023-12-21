@@ -85,6 +85,8 @@ overloadable_api_aux_set = {
     "torch.trapz",
     "torch.scatter",
     "torch.var_mean",
+    "torch.prod",
+    "torch.normal",
 }
 
 cornercase_api_aux_dict = {
@@ -104,7 +106,8 @@ cornercase_api_aux_dict = {
     "torch.clamp": "one of `min` and `max` must be specified.",
     "torch.linalg.solve_triangular": 'keyword arg "upper" has no default value',
     "torch.sparse_csr_tensor": "paddle must specified arg `shapes`",
-    "torch.nn.Identity": "this api accept any inputs but all is unused.",
+    "torch.nn.Identity": "this api accept any inputs but all is unused",
+    "torch.randint_like": "this api has strange arg list, so `min_input_args` check is not supported",
 }
 
 
@@ -550,10 +553,10 @@ def autofix_single_api(file_path, aux_detailed_data):
     data = aux_detailed_data[api]
 
     if (
-        data["all args"] is True
-        and data["all kwargs"] is True
-        and data["kwargs out of order"] is True
-        and data["all default"] is True
+        data.get("all args", False) is True
+        and data.get("all kwargs", False) is True
+        and data.get("kwargs out of order", False) is True
+        and data.get("all default", False) is True
     ):
         return
 
@@ -587,7 +590,7 @@ def autofix_single_api(file_path, aux_detailed_data):
             raise ValueError(f"unexpected state {state}.")
 
     good_casenames = []
-    for n, d in data["cases"].items():
+    for n, d in data.get("cases", {}).items():
         # if d.get('all_kwargs', False) is True:
         #     good_casenames.append(n)
         # 我只需要位置参数 + 关键字参数总数对就行，
@@ -719,6 +722,14 @@ if __name__ == "__main__":
     if args.files_or_dirs is not None and len(args.files_or_dirs) > 0:
         newtest_data = get_test_cases(args.files_or_dirs)
 
+        test_attribute_count = 0
+        for attribute in attribute_mapping:
+            if attribute in newtest_data:
+                newtest_data.pop(attribute)
+                test_attribute_count += 1
+        if test_attribute_count > 0:
+            print(f"INFO: {test_attribute_count} attribute unittests are removed.")
+
         test_data.update(newtest_data)
         with open(test_data_path, "w") as f:
             json.dump(test_data, f)
@@ -739,13 +750,6 @@ if __name__ == "__main__":
                 raise ValueError(
                     f"alias {alias} is not configured but it's unittest exists."
                 )
-
-    test_attribute_count = 0
-    for attribute in attribute_mapping:
-        if attribute in test_data:
-            test_data.pop(attribute)
-            test_attribute_count += 1
-    print(f"INFO: {test_attribute_count} attribute unittests are removed.")
 
     if not args.no_check:
         report, aux_detailed_data = check_call_variety(
@@ -802,7 +806,8 @@ if __name__ == "__main__":
             and len(args.files_or_dirs) == 1
         ):
             file_path = args.files_or_dirs[0]
+
             selected_aux_data = dict(
-                [(api, aux_detailed_data[api]) for api in newtest_data]
+                [(api, aux_detailed_data.get(api, {})) for api in newtest_data]
             )
             autofix_single_api(file_path, selected_aux_data)
