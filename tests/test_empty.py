@@ -189,3 +189,33 @@ def test_case_11():
         check_value=False,
         reason=" 'empty' get random uninitialized Tensor",
     )
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.empty(size=(4, 4), out=None, dtype=None, layout=torch.strided, device=None, requires_grad=False, pin_memory=False, memory_format=torch.contiguous_format)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        reason=" 'empty' get random uninitialized Tensor",
+    )
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.empty(pin_memory=False, memory_format=torch.contiguous_format, out=None, dtype=None, layout=torch.strided, size=(4, 4), device=None, requires_grad=False)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        reason=" 'empty' get random uninitialized Tensor",
+    )

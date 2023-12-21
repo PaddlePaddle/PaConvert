@@ -3062,6 +3062,14 @@ class SelectMatcher(BaseMatcher):
 
 class SearchsortedMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        kwargs_change = {}
+        if "kwargs_change" in self.api_mapping:
+            kwargs_change = self.api_mapping["kwargs_change"]
+
+        for k in kwargs_change:
+            if k in kwargs:
+                kwargs[kwargs_change[k]] = kwargs.pop(k)
+
         if "side" in kwargs:
             kwargs["right"] = f"{kwargs.pop('side')} == 'right'"
 

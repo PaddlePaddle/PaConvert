@@ -72,3 +72,44 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
+            [-0.6374,  0.6860,  0.0000],
+            [ 1.5858, -1.0314,  2.6615]])
+        out = torch.randn((3, 3))
+        result = torch.cholesky_inverse(input=a, upper=False, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"], rtol=1.0e-5, atol=1.0e-8)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
+            [-0.6374,  0.6860,  0.0000],
+            [ 1.5858, -1.0314,  2.6615]])
+        out = torch.randn((3, 3))
+        result = torch.cholesky_inverse(upper=False, input=a, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"], rtol=1.0e-5, atol=1.0e-8)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[ 0.9967,  0.0000,  0.0000],
+            [-0.6374,  0.6860,  0.0000],
+            [ 1.5858, -1.0314,  2.6615]])
+        result = torch.cholesky_inverse(a, False)
+        """
+    )
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)

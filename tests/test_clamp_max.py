@@ -75,3 +75,15 @@ def _test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([-1.7120,  0.1734, -0.0478, 0.8922])
+        out = torch.ones_like(a)
+        result = torch.clamp_max(out=out, input=a, max=-0.5)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

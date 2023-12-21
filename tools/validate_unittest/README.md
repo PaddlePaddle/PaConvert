@@ -19,6 +19,8 @@ python tools/validate_unittest/validate_unittest.py -r tests
 
 此时默认会生成 `tools/validate_unittest/validation_report.md` 作为多样性检测报告，其中仅包含多样性不符合的 api。
 
+如果添加参数 `--richtext`，则生成的检测报告中，api 携带其 torch 官网文档的链接。
+
 当修改后需要**重新检测**时，用法和 `pytest` 基本一致，支持三种更新方式：
 
 1. 全局重新生成
@@ -40,4 +42,10 @@ python tools/validate_unittest/validate_unittest.py -r tests
     python tools/validate_unittest/validate_unittest.py -r tests/test_Tensor_div*
     # 列表
     python tools/validate_unittest/validate_unittest.py -r tests/test_Tensor_divide.py tests/test_Tensor_div.py
+    ```
+
+4. 对单个单测尝试进行自动补全（需要存在**全部指定关键字**的用例）
+
+    ```bash
+    python tools/validate_unittest/validate_unittest.py --autofix -r tests/test_Tensor_amax.py
     ```

@@ -51,3 +51,27 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([-0.6341, -1.4208, -1.0900,  0.5826])
+        out = torch.tensor([-0.6341, -1.4208, -1.0900,  0.5826])
+        result = torch.ceil(input=input, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([-0.6341, -1.4208, -1.0900,  0.5826])
+        out = torch.tensor([-0.6341, -1.4208, -1.0900,  0.5826])
+        result = torch.ceil(out=out, input=input)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

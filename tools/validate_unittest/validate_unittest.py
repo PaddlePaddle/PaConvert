@@ -73,11 +73,17 @@ overloadable_api_aux_set = {
     "torch.Tensor.scatter",
     "torch.Tensor.scatter_",
     "torch.Tensor.std",
+    "torch.std_mean",
+    "torch.std",
+    "torch.sort",
     "torch.Tensor.var",
     "torch.Tensor.view",
+    "torch.searchsorted",
     "torch.Tensor.sort",
     "torch.trapezoid",
+    "torch.cumulative_trapezoid",
     "torch.trapz",
+    "torch.scatter",
     "torch.var_mean",
 }
 
@@ -94,7 +100,11 @@ cornercase_api_aux_dict = {
     "torch.utils.dlpack.to_dlpack": 'arg "tensor" only accept position argument',
     "torch.var": "this api has breaking change in pytorch 2.0",
     "torch.autograd.function.FunctionCtx.save_for_backward": "expect only '*tensors' as arguments, so check is not supported",
+    "torch.chain_matmul": "this api will be deprecated and has var position args",
+    "torch.clamp": "one of `min` and `max` must be specified.",
     "torch.linalg.solve_triangular": 'keyword arg "upper" has no default value',
+    "torch.sparse_csr_tensor": "paddle must specified arg `shapes`",
+    "torch.nn.Identity": "this api accept any inputs but all is unused.",
 }
 
 
@@ -115,15 +125,18 @@ class RecordAPIRunPlugin:
         self.whitelist_re = [re.compile(p) for p in whitelist_pattern]
         originapi = apibase.APIBase.run
 
-        def update_record(api, code, unsupport=False):
+        def update_record(api, code, *, case_name=None, unsupport=False):
             sub_title = "code" if not unsupport else "unsupport"
             records = self.collected_items.get(api, {})
-            sub_records = records.get(sub_title, [])
-            sub_records.append(code)
+            sub_records = records.get(sub_title, {})
+            sub_records.update({case_name: code})
             records.update({sub_title: sub_records})
             self.collected_items.update({api: records})
 
         def record_and_run(self, *args, **kwargs):
+            caller_frame = traceback.extract_stack()[-2]
+            caller_name = caller_frame.name
+
             pytorch_api = self.pytorch_api
             assert len(args) > 0
             pytorch_code = args[0]
@@ -132,7 +145,9 @@ class RecordAPIRunPlugin:
             if expect_paddle_code is not None:
                 unsupport = True
 
-            update_record(pytorch_api, pytorch_code, unsupport)
+            update_record(
+                pytorch_api, pytorch_code, case_name=caller_name, unsupport=unsupport
+            )
             return originapi(self, *args, **kwargs)
 
         monkeypatch.setattr(apibase.APIBase, "run", record_and_run)
@@ -173,7 +188,9 @@ def extract_params_from_invoking(api, code: str):
     idx = re.search(pattern, code).start()
     assert idx >= 0, f"api_name {api_name} must exists."
 
-    code, idx = code[idx + len(api_name) :], 0
+    invoking_range = [idx + len(api_name), -1]
+
+    code, idx = code[invoking_range[0] :], 0
 
     pair_stack = []
     key = None
@@ -214,6 +231,7 @@ def extract_params_from_invoking(api, code: str):
                 ), f"Unpaired in {repr(code)}"
                 pair_stack.pop()
                 if len(pair_stack) == 0:
+                    invoking_range[1] = i + 1
                     break
             elif c == "]":
                 assert pair_stack[-1] == "[", f"Unpaired in {repr(code)}"
@@ -229,7 +247,9 @@ def extract_params_from_invoking(api, code: str):
     if len(pair_stack) != 0:
         raise ValueError(f"Unpaired in {repr(code)}")
 
-    return args, kwargs
+    invoking_range[1] += invoking_range[0]
+
+    return args, kwargs, invoking_range
 
 
 def match_subsequence(pattern, obj):
@@ -246,10 +266,13 @@ def match_subsequence(pattern, obj):
     return j == len(obj)
 
 
-def check_call_variety(test_data, api_mapping, verbose=True):
+def check_call_variety(test_data, api_mapping, *, api_alias={}, verbose=True):
     report = {}
+    aux_detailed_data = {}
+
     for api, unittest_data in test_data.items():
-        if api not in api_mapping:
+        api_target = api_alias.get(api, api)
+        if api_target not in api_mapping:
             if "code" not in unittest_data:
                 if verbose:
                     print(f"SKIP: {api} is not prepared, skip validations.")
@@ -257,7 +280,12 @@ def check_call_variety(test_data, api_mapping, verbose=True):
                 print(f"WARNING: {api} not found in api_mapping")
             continue
 
-        mapping_data = api_mapping[api]
+        aux_detailed_case_data = {}
+        aux_detailed_data_api = {
+            "complex": False,
+        }
+
+        mapping_data = api_mapping[api_target]
 
         if "code" not in unittest_data:
             "如果 = 0，说明该 api 只是占位符"
@@ -269,12 +297,12 @@ def check_call_variety(test_data, api_mapping, verbose=True):
             "unsupport" in unittest_data and len(unittest_data["unsupport"]) > 0
         )
 
-        abstract = api in abstract_api_aux_set
+        abstract = api_target in abstract_api_aux_set
         if abstract:
             print(f"SKIP: {api} is abstract.")
             continue
 
-        cornercase_exists = cornercase_api_aux_dict.get(api, None)
+        cornercase_exists = cornercase_api_aux_dict.get(api_target, None)
         if cornercase_exists:
             print(f"SKIP: {api} has some corner cases: {cornercase_exists}.")
 
@@ -282,18 +310,21 @@ def check_call_variety(test_data, api_mapping, verbose=True):
             print(f"WARNING: {api} has no mapping data 'Matcher'.")
             continue
 
-        is_overloadable = api in overloadable_api_aux_set
+        is_overloadable = api_target in overloadable_api_aux_set
+        if is_overloadable:
+            aux_detailed_data_api["complex"] = True
 
         position_args_checkable = True
 
         min_input_args = mapping_data.get("min_input_args", -1)
+        aux_detailed_data_api["min_input_args"] = min_input_args
 
         args_list_full = mapping_data.get("args_list", [])
 
         var_arg_name = None
         var_kwarg_name = None
 
-        var_args_collector = var_args_collector_aux_mapping.get(api, None)
+        var_args_collector = var_args_collector_aux_mapping.get(api_target, None)
 
         _args_list_position_end = len(args_list_full)
         args_list_full_keyword = []
@@ -332,9 +363,16 @@ def check_call_variety(test_data, api_mapping, verbose=True):
             else:
                 raise ValueError(f'{api} has unexpected arg "{arg}".')
 
+        if var_arg_name is not None and var_args_collector is not None:
+            aux_detailed_data_api["complex"] = True
+        if var_kwarg_name is not None:
+            aux_detailed_data_api["complex"] = True
+
         # 这里只移除了不支持的参数，但是事实上，移除不支持的参数会影响其他检查，如
         # (a, b, c, d) 中移除了 (c)，那么不指定关键字最多只能传入 a、b
         unsupport_args = mapping_data.get("unsupport_args", [])
+        if len(unsupport_args) > 0:
+            aux_detailed_data_api["complex"] = True
         args_list = [arg for arg in args_list_full if arg not in unsupport_args]
 
         __pargs_end = len(args_list_full_positional)
@@ -345,24 +383,28 @@ def check_call_variety(test_data, api_mapping, verbose=True):
                 position_args_checkable = False
 
         args_list_positional = args_list_full_positional[:__pargs_end]
+        aux_detailed_data_api["position_args_list"] = args_list_positional
 
         args_list_keyword = [
             arg for arg in args_list_full_keyword if arg not in unsupport_args
         ]
+        aux_detailed_data_api["keyword_args_list"] = args_list_keyword
 
         all_args = False
         all_kwargs = False
         not_subsequence = False
         all_default = False if "min_input_args" in mapping_data else None
 
-        for code in unittest_data["code"]:
+        for case_name, code in unittest_data["code"].items():
             try:
                 api_name = extract_api_name(api, code)
-                args, kwargs = extract_params_from_invoking(api, code)
+                args, kwargs, _ = extract_params_from_invoking(api, code)
             except Exception:
                 print(f'Error when extract params from invoking "{api}"')
                 print(traceback.format_exc())
                 exit(-1)
+
+            aux_detailed_case_data[case_name] = {}
 
             # 检查 kwargs 是否符合预设的 args_list
             # 条件是，如果没有 **kwargs 参数，那么 kwargs 的 key 必须是 args_list 的子集
@@ -387,32 +429,35 @@ def check_call_variety(test_data, api_mapping, verbose=True):
                     f"{api}(*{args}, **{kwargs}) has too many position arguments, args_list={args_list_keyword}"
                 )
 
-            if all_default is False:
-                if len(args) == min_input_args:
-                    if len(kwargs) == 0:
-                        all_default = True
-                elif len(args) < min_input_args:
-                    if len(kwargs) + len(args) == min_input_args and len(args) == len(
-                        args_list_positional
-                    ):
-                        all_default = True
-                    elif len(kwargs) + len(args) < min_input_args:
-                        raise ValueError(
-                            f"{api}(*{args}, **{kwargs}) has too few arguments, args_list={args_list_keyword}"
-                        )
-                else:
-                    pass
+            if len(args) == min_input_args:
+                if len(kwargs) == 0:
+                    all_default = True
+                    aux_detailed_case_data[case_name]["all_default"] = True
+            elif len(args) < min_input_args:
+                if len(kwargs) + len(args) == min_input_args and len(args) == len(
+                    args_list_positional
+                ):
+                    all_default = True
+                    aux_detailed_case_data[case_name]["all_default"] = True
+                elif len(kwargs) + len(args) < min_input_args:
+                    raise ValueError(
+                        f"{api}(*{args}, **{kwargs}) has too few arguments, args_list={args_list_keyword}"
+                    )
 
             if len(args) == len(args_list_positional):
                 all_args = True
             elif len(args) >= len(args_list_positional) and support_var_args:
                 all_args = True
 
+            if len(args) + len(kwargs) == len(args_list_keyword):
+                aux_detailed_case_data[case_name]["all_*args"] = True
+
             keys = [k[0].strip() for k in kwargs]
             if len(keys) == len(args_list_keyword) and match_subsequence(
                 args_list_keyword, keys
             ):
                 all_kwargs = True
+                aux_detailed_case_data[case_name]["all_kwargs"] = True
 
             if len(args_list_keyword) <= 1 or not match_subsequence(
                 args_list_keyword, keys
@@ -425,6 +470,17 @@ def check_call_variety(test_data, api_mapping, verbose=True):
 
         if not position_args_checkable:
             all_args = None
+
+        aux_detailed_data_api["cases"] = aux_detailed_case_data
+        aux_detailed_data_api.update(
+            {
+                "all args": all_args,
+                "all kwargs": all_kwargs,
+                "kwargs out of order": not_subsequence,
+                "all default": all_default,
+            }
+        )
+        aux_detailed_data[api] = aux_detailed_data_api
 
         if all_args and all_kwargs and not_subsequence and all_default is True:
             continue
@@ -461,10 +517,11 @@ def check_call_variety(test_data, api_mapping, verbose=True):
                 else:
                     print(f"INFO: {api} do not have configured 'min_input_args'.")
 
-    return report
+    return report, aux_detailed_data
 
 
-def simple_map_api_url(api):
+def simple_map_api_url(api, *, api_alias={}):
+    api = api_alias.get(api, api)
     if api.startswith("torch.distributions."):
         if api.endswith("Transform"):
             api = api.replace(
@@ -475,6 +532,147 @@ def simple_map_api_url(api):
 
         return f"https://pytorch.org/docs/stable/distributions.html#{api}"
     return f"https://pytorch.org/docs/stable/generated/{api}.html"
+
+
+TESTCASE_NAME_PATTERN = re.compile(
+    r"^def (?P<case_name>(?P<hidden>_?)test_case_(?P<case_id>\d+))\(\):.*$"
+)
+TESTCASE_END_PATTERN = re.compile(r"^[ \t]+obj\.run\(.*")
+
+
+# 尝试自动修复单个 api
+def autofix_single_api(file_path, aux_detailed_data):
+    if not os.path.exists(file_path) or not os.path.isfile(file_path):
+        return
+
+    assert len(aux_detailed_data) == 1
+    api = list(aux_detailed_data.keys())[0]
+    data = aux_detailed_data[api]
+
+    if (
+        data["all args"] is True
+        and data["all kwargs"] is True
+        and data["kwargs out of order"] is True
+        and data["all default"] is True
+    ):
+        return
+
+    if data.get("complex", False) is True:
+        print(f'api {api} in "{file_path}" is too complex to auto fix.')
+        return
+
+    with open(file_path, "r") as f:
+        lines = f.readlines()
+
+    case_lines = {}
+    state = 0
+    for i, l in enumerate(lines):
+        if state == 0:
+            matched = TESTCASE_NAME_PATTERN.match(l)
+            if matched:
+                case_id = int(matched["case_id"])
+                case_name = matched["case_name"]
+                case_lines[case_name] = [i, len(lines)]
+                state = 1
+        elif state == 1:
+            if TESTCASE_END_PATTERN.match(l):
+                state = 2
+        elif state == 2:
+            if len(l.rstrip(" \n")) > 0:
+                pass
+            else:
+                case_lines[case_name][1] = i + 1
+                state = 0
+        else:
+            raise ValueError(f"unexpected state {state}.")
+
+    good_casenames = []
+    for n, d in data["cases"].items():
+        # if d.get('all_kwargs', False) is True:
+        #     good_casenames.append(n)
+        # 我只需要位置参数 + 关键字参数总数对就行，
+        # 不需要符合全部关键字参数的需求，这样我更容易自动化修复
+        if d.get("all_*args", False) is True or d.get("all_kwargs", False) is True:
+            good_casenames.append(n)
+
+    if len(good_casenames) == 0:
+        print(
+            f'api {api} in "{file_path}" not has no good cases as template, skip auto fix.'
+        )
+        return
+
+    append_cases = []
+    case_append = lambda c, src: append_cases.append({"code": c, "source": src})
+
+    for cn in good_casenames:
+        code = "".join(lines[case_lines[cn][0] : case_lines[cn][1]])
+        args, kwargs, invoking_range = extract_params_from_invoking(api, code)
+        kwargs_dict = dict(kwargs)
+        assert len(args) + len(kwargs) == len(
+            data["keyword_args_list"]
+        ), "good case must have all args or kwargs."
+        if len(args) > 0:
+            keyed_pargs = zip(data["position_args_list"], args)
+            for k, v in keyed_pargs:
+                assert k not in kwargs_dict, f"duplicated key {k} in {cn}."
+                kwargs_dict[k] = v
+
+        new_case_template = (
+            f'{code[:invoking_range[0]]}({"{}"}){code[invoking_range[1]:]}'
+        )
+
+        if data.get("all args", False) is False:
+            params = [kwargs_dict[k] for k in data["position_args_list"]]
+            case_append(new_case_template.format(", ".join(params)), cn)
+
+        if data.get("all kwargs", False) is False:
+            params = [f"{k}={kwargs_dict[k]}" for k in data["keyword_args_list"]]
+            case_append(new_case_template.format(", ".join(params)), cn)
+
+        if (
+            data.get("kwargs out of order", False) is False
+            and len(data["keyword_args_list"]) > 1
+        ):
+            # 好吧，乱序我打算直接逆序
+            params = [f"{k}={kwargs_dict[k]}" for k in data["keyword_args_list"][::-1]]
+            case_append(new_case_template.format(", ".join(params)), cn)
+
+        if (
+            data.get("all default", False) is False
+            and data.get("min_input_args", -1) >= 0
+        ):
+            params = [
+                kwargs_dict[k]
+                for k in data["position_args_list"][: data["min_input_args"]]
+            ]
+            case_append(new_case_template.format(", ".join(params)), cn)
+
+    if len(append_cases) > 0:
+        print("##############################")
+        print("#  AutoFix")
+        print("#")
+        print(f'#  file: "{file_path}"')
+        print(f"#  {len(append_cases)} cases fixed.")
+        print("#")
+        print("#  please rerun validate tool.")
+        print("##############################")
+
+        with open(file_path, "a+") as f:
+            for ncdata in append_cases:
+                ac, src = ncdata["code"], ncdata["source"]
+                acl = [l.rstrip() + "\n" for l in ac.split("\n")]
+                assert TESTCASE_NAME_PATTERN.match(acl[0])
+                case_id = case_id + 1
+
+                acl[0] = f"def test_case_{case_id}():\n"
+                acl[-1] = acl[-1].rstrip("\n")
+                acl = [
+                    "\n",
+                    "\n",
+                    f"# generated by validate_unittest autofix, based on {src}\n",
+                ] + acl
+
+                f.writelines(acl)
 
 
 if __name__ == "__main__":
@@ -493,6 +691,12 @@ if __name__ == "__main__":
         action="store_true",
         default=False,
         help="Generate report in richtext format",
+    )
+    parser.add_argument(
+        "--autofix",
+        action="store_true",
+        default=False,
+        help="Auto fix the test file when only 1 file is specified.",
     )
 
     args = parser.parse_args()
@@ -514,13 +718,15 @@ if __name__ == "__main__":
 
     if args.files_or_dirs is not None and len(args.files_or_dirs) > 0:
         newtest_data = get_test_cases(args.files_or_dirs)
+
         test_data.update(newtest_data)
         with open(test_data_path, "w") as f:
             json.dump(test_data, f)
 
     for alias, target in api_alias_mapping.items():
         if target in api_mapping:
-            api_mapping[alias] = api_mapping[target]
+            # api_mapping[alias] = api_mapping[target]
+            pass
         else:
             # 不应该单独配置 alias 的 api_mapping.json
             if alias in api_mapping:
@@ -542,7 +748,12 @@ if __name__ == "__main__":
     print(f"INFO: {test_attribute_count} attribute unittests are removed.")
 
     if not args.no_check:
-        report = check_call_variety(test_data, api_mapping, verbose=(not args.report))
+        report, aux_detailed_data = check_call_variety(
+            test_data,
+            api_mapping,
+            api_alias=api_alias_mapping,
+            verbose=(not args.report),
+        )
         sorted_report = dict(sorted(report.items(), key=lambda x: x[0]))
 
         if args.report:
@@ -569,7 +780,9 @@ if __name__ == "__main__":
                 for api, data in sorted_report.items():
                     api_title = api
                     if args.richtext:
-                        api_doc_url = simple_map_api_url(api)
+                        api_doc_url = simple_map_api_url(
+                            api, api_alias=api_alias_mapping
+                        )
                         api_title = f"[{api}]({api_doc_url})"
 
                     if data.get("partial support", False):
@@ -582,3 +795,14 @@ if __name__ == "__main__":
                     f.write(
                         f'| {api_title} | {" | ".join([item2desc_dict[data[k]] for k in columns[1:]])} |\n'
                     )
+
+        if (
+            args.autofix
+            and args.files_or_dirs is not None
+            and len(args.files_or_dirs) == 1
+        ):
+            file_path = args.files_or_dirs[0]
+            selected_aux_data = dict(
+                [(api, aux_detailed_data[api]) for api in newtest_data]
+            )
+            autofix_single_api(file_path, selected_aux_data)

@@ -60,3 +60,13 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.conj(input=torch.tensor([-1, 2, 8]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
