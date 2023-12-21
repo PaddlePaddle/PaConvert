@@ -11,20 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.hypot")
+obj = APIBase("torch.signbit")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2, 3])
-        b = torch.tensor([4., 5, 6])
-        result = a.hypot(b)
+        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype=torch.float32)
+        result = torch.signbit(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,9 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1.])
-        b = torch.tensor([4., 5, 6])
-        result = a.hypot(other=b)
+        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype=torch.float32)
+        result = torch.signbit(input=x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -46,33 +45,33 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([-1.])
-        b = torch.tensor([4., 5, 6])
-        result = a.hypot(other=b)
+        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype=torch.float32)
+        out = torch.tensor([], dtype=torch.bool)
+        result = torch.signbit(out=out, input=x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2, 3])
-        b = torch.tensor([4., 5, 6])
-        result = a.hypot(other=b+1)
+        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype=torch.float32)
+        out = torch.tensor([], dtype=torch.bool)
+        result = torch.signbit(input=x, out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2, 3])
-        b = torch.tensor([4., 5, 6])
-        result = a.hypot(b+1)
+        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype=torch.float32)
+        out = torch.tensor([], dtype=torch.bool)
+        result = torch.signbit(x, out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])

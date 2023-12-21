@@ -23,48 +23,57 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.zeros(2, 2)
-        src = torch.ones(2)
-        result = torch.select_scatter(input, src, 0, 0)
+        x = torch.zeros((2,3,4)).type(torch.float32)
+        values = torch.ones((2,4)).type(torch.float32)
+        result = torch.select_scatter(x, values, dim=1, index=1)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.zeros(2, 2)
-        src = torch.ones(2)
-        result = torch.select_scatter(input, src, dim=0, index=0)
+        x = torch.zeros((2,3,4)).type(torch.float32)
+        values = torch.ones((2,4)).type(torch.float32)
+        result = torch.select_scatter(x, values, 1, index=1)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.zeros(2, 2)
-        src = torch.ones(2)
-        result = torch.select_scatter(input, src, dim=1, index=1)
+        x = torch.zeros((2,3,4)).type(torch.float32)
+        values = torch.ones((2,4)).type(torch.float32)
+        result = torch.select_scatter(input=x, dim=1, src=values, index=1)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.zeros((2,3,4)).type(torch.float32)
+        values = torch.ones((2,4)).type(torch.float32)
+        result = torch.select_scatter(input=x, src=values, dim=1, index=1)
+        """
     )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.zeros((2,3,4)).type(torch.float32)
+        values = torch.ones((2,4)).type(torch.float32)
+        result = torch.select_scatter(x, values, 1, 1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

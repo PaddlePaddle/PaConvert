@@ -49,7 +49,7 @@ def test_case_3():
         a = torch.tensor([1., 2, 3])
         b = torch.tensor([4., 5, 6])
         out = torch.tensor([4., 5, 6])
-        result = torch.hypot(input=a, other=b, out=out)
+        result = torch.hypot(other=b, input=a, out=out)
         """
     )
     obj.run(pytorch_code, ["out"])

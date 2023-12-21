@@ -11,20 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.hypot")
+obj = APIBase("torch.masked_fill")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2, 3])
-        b = torch.tensor([4., 5, 6])
-        result = a.hypot(b)
+        x = torch.eye(2, 4)
+        mask = x > 0
+        result = torch.masked_fill(x, mask, 2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,9 +35,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1.])
-        b = torch.tensor([4., 5, 6])
-        result = a.hypot(other=b)
+        x = torch.ones(2, 4)
+        result = torch.masked_fill(x, x>0, 2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -46,9 +46,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([-1.])
-        b = torch.tensor([4., 5, 6])
-        result = a.hypot(other=b)
+        x = torch.ones(2, 4)
+        result = torch.masked_fill(mask=x>0, input=x, value=2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -58,9 +57,9 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2, 3])
-        b = torch.tensor([4., 5, 6])
-        result = a.hypot(other=b+1)
+        x = torch.ones(2, 4)
+        mask = x>0
+        result = torch.masked_fill(input=x, mask=mask, value=2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -70,9 +69,9 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2, 3])
-        b = torch.tensor([4., 5, 6])
-        result = a.hypot(b+1)
+        x = torch.ones(2, 4)
+        mask = x>0
+        result = torch.masked_fill(x, mask, 2)
         """
     )
     obj.run(pytorch_code, ["result"])

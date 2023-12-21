@@ -11,20 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.hypot")
+obj = APIBase("torch.combinations")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2, 3])
-        b = torch.tensor([4., 5, 6])
-        result = a.hypot(b)
+        x = torch.tensor([1, 2, 3], dtype=torch.int32)
+        result = torch.combinations(input=x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,9 +35,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1.])
-        b = torch.tensor([4., 5, 6])
-        result = a.hypot(other=b)
+        x = torch.tensor([1, 2, 3], dtype=torch.int32)
+        result = torch.combinations(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -46,9 +46,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([-1.])
-        b = torch.tensor([4., 5, 6])
-        result = a.hypot(other=b)
+        x = torch.tensor([1, 2, 3], dtype=torch.int32)
+        result = torch.combinations(r=2, input=x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -58,9 +57,8 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2, 3])
-        b = torch.tensor([4., 5, 6])
-        result = a.hypot(other=b+1)
+        x = torch.tensor([1, 2, 3], dtype=torch.int32)
+        result = torch.combinations(input=x, r=2, with_replacement=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -70,9 +68,8 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2, 3])
-        b = torch.tensor([4., 5, 6])
-        result = a.hypot(b+1)
+        x = torch.tensor([1, 2, 3], dtype=torch.int32)
+        result = torch.combinations(x, 2, False)
         """
     )
     obj.run(pytorch_code, ["result"])

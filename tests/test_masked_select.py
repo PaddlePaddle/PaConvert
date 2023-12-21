@@ -78,3 +78,29 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.arange(4)
+        mask = torch.tensor([[True, False, True, False], [True, False, True, False]])
+        out = torch.tensor([], dtype=x.dtype)
+        result = torch.masked_select(input=x, mask=mask, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.arange(4)
+        mask = torch.tensor([[True, False, True, False], [True, False, True, False]])
+        out = torch.tensor([], dtype=x.dtype)
+        result = torch.masked_select(x, mask, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

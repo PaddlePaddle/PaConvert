@@ -11,20 +11,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.hypot")
+obj = APIBase("torch.atleast_3d")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2, 3])
-        b = torch.tensor([4., 5, 6])
-        result = a.hypot(b)
+        result = torch.atleast_3d(torch.tensor(123, dtype=torch.int32))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,9 +33,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1.])
-        b = torch.tensor([4., 5, 6])
-        result = a.hypot(other=b)
+        y = torch.tensor([-1, -2, 3])
+        result = torch.atleast_3d((torch.tensor(123, dtype=torch.int32), y))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -46,33 +44,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([-1.])
-        b = torch.tensor([4., 5, 6])
-        result = a.hypot(other=b)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([1., 2, 3])
-        b = torch.tensor([4., 5, 6])
-        result = a.hypot(other=b+1)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([1., 2, 3])
-        b = torch.tensor([4., 5, 6])
-        result = a.hypot(b+1)
+        result = torch.atleast_3d([torch.tensor([-1, -2, 3]), torch.tensor([-1, -2, 3])])
         """
     )
     obj.run(pytorch_code, ["result"])

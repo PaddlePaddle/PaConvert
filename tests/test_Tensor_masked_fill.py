@@ -24,11 +24,11 @@ def test_case_1():
         """
         import torch
         a = torch.Tensor([[1.0,0.2], [0.3,0.4]])
-        b = torch.Tensor([[1,0], [1,1]])
-        result = a.masked_fill(b==1, a)
+        b = torch.Tensor([[1,0], [1,1]]) == 1
+        result = a.masked_fill(b, 2)
         """
     )
-    obj.run(pytorch_code, [], reason="torch and paddle where api diff")
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -36,11 +36,11 @@ def test_case_2():
         """
         import torch
         a = torch.Tensor([[1.0,0.2], [0.3,0.4]])
-        b = torch.Tensor([[1,0], [1,1]])
-        result = a.masked_fill(b==1, 1.0)
+        b = torch.Tensor([[1,0], [1,1]]) == 1
+        result = a.masked_fill(mask=b, value=2)
         """
     )
-    obj.run(pytorch_code, [], reason="torch and paddle where api diff")
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -49,10 +49,10 @@ def test_case_3():
         import torch
         a = torch.Tensor([[1.0,0.2], [0.3,0.4]])
         b = torch.Tensor([[1,0], [1,1]])
-        result = a.masked_fill(b==1, 0.1)
+        result = a.masked_fill(value=0.1, mask=(b==1))
         """
     )
-    obj.run(pytorch_code, [], reason="torch and paddle where api diff")
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -64,7 +64,7 @@ def test_case_4():
         result = a.masked_fill(mask=b==1, value=0.1)
         """
     )
-    obj.run(pytorch_code, [], reason="torch and paddle where api diff")
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -73,7 +73,7 @@ def test_case_5():
         import torch
         a = torch.Tensor([[1.0,0.2], [0.3,0.4]])
         b = torch.Tensor([[1,0], [1,1]])
-        result = a.masked_fill(value=0.1, mask=b==1)
+        result = a.masked_fill(b==1, 0.1)
         """
     )
-    obj.run(pytorch_code, [], reason="torch and paddle where api diff")
+    obj.run(pytorch_code, ["result"])

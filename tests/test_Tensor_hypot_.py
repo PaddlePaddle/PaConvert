@@ -15,7 +15,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.hypot")
+obj = APIBase("torch.Tensor.hypot_")
 
 
 def test_case_1():
@@ -24,34 +24,34 @@ def test_case_1():
         import torch
         a = torch.tensor([1., 2, 3])
         b = torch.tensor([4., 5, 6])
-        result = a.hypot(b)
+        result = a.hypot_(b)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "a"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1.])
+        a = torch.tensor([1., 2, 3])
         b = torch.tensor([4., 5, 6])
-        result = a.hypot(other=b)
+        result = a.hypot_(other=b)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "a"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([-1.])
+        a = torch.tensor([-1., 2, 3])
         b = torch.tensor([4., 5, 6])
-        result = a.hypot(other=b)
+        result = a.hypot_(other=b)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "a"])
 
 
 def test_case_4():
@@ -60,10 +60,10 @@ def test_case_4():
         import torch
         a = torch.tensor([1., 2, 3])
         b = torch.tensor([4., 5, 6])
-        result = a.hypot(other=b+1)
+        result = a.hypot_(other=b+1)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "a"])
 
 
 def test_case_5():
@@ -72,7 +72,7 @@ def test_case_5():
         import torch
         a = torch.tensor([1., 2, 3])
         b = torch.tensor([4., 5, 6])
-        result = a.hypot(b+1)
+        result = a.hypot_(b+1)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "a"])

@@ -24,15 +24,12 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.special.multigammaln(torch.tensor([0.34, 1.5, 0.73]), 2)
+        x = torch.tensor([2.5, 3.5, 4, 6.5, 7.8, 10.23, 34.25])
+        p = 2
+        result = torch.special.multigammaln(x, p)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -43,12 +40,7 @@ def test_case_2():
         result = torch.special.multigammaln(input=input, p=2)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -56,13 +48,31 @@ def test_case_3():
         """
         import torch
         input = torch.tensor([0.34, 1.5, 0.73])
-        out = torch.tensor([0.34, 1.5, 0.73])
+        result = torch.special.multigammaln(p=2, input=input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.34, 1.5, 0.73])
+        out = torch.tensor([])
+        result = torch.special.multigammaln(input=input, p=2, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.34, 1.5, 0.73])
+        out = torch.tensor([])
         result = torch.special.multigammaln(input, 2, out=out)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result", "out"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result", "out"])

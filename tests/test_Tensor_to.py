@@ -105,6 +105,7 @@ def test_case_7():
     obj.run(pytorch_code, ["result"])
 
 
+# PR: https://github.com/PaddlePaddle/Paddle/pull/59857
 def test_case_8():
     pytorch_code = textwrap.dedent(
         """

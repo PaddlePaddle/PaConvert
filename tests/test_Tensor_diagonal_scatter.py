@@ -23,48 +23,57 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.zeros(3, 3)
-        src = torch.ones(3)
+        input = torch.arange(6.0).reshape((2, 3))
+        src = torch.ones((2,))
         result = input.diagonal_scatter(src)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.zeros(3, 3)
-        src = torch.ones(3)
+        input = torch.arange(6.0).reshape((2, 3))
+        src = torch.ones((2,))
         result = input.diagonal_scatter(src=src)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.zeros(3, 3)
-        src = torch.ones(3)
-        result = input.diagonal_scatter(src=src, offset=0, dim1=-2)
+        input = torch.arange(6.0).reshape((2, 3))
+        src = torch.ones((2,))
+        result = input.diagonal_scatter(offset=0, src=src, dim2=1, dim1=-2)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.arange(6.0).reshape((2, 3))
+        src = torch.ones((2,))
+        result = input.diagonal_scatter(src=src, offset=0, dim1=-2, dim2=1)
+        """
     )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.arange(6.0).reshape((2, 3))
+        src = torch.ones((2,))
+        result = input.diagonal_scatter(src, 0, -2, 1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

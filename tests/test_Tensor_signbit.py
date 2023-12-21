@@ -16,33 +16,26 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Module.type")
+obj = APIBase("torch.Tensor.signbit")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3.])
-        module1 = torch.nn.Module()
-        module1.register_buffer('buffer', x)
-        module1.type(torch.float32)
-        result = module1.buffer
+        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype=torch.float32)
+        result = x.signbit()
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# Will match torch.Tensor.type to resolve "dst_type" parameter.
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3.])
-        module1 = torch.nn.Module()
-        module1.register_buffer('buffer', x)
-        module1.type(dst_type=torch.float32)
-        result = module1.buffer
+        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype=torch.float64)
+        result = x.signbit()
         """
     )
     obj.run(pytorch_code, ["result"])
