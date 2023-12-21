@@ -11321,6 +11321,17 @@
       "input": "x"
     }
   },
+  "torch.nn.functional.pad": {
+    "Matcher": "FunctionalPadMatcher",
+    "paddle_api": "paddle.nn.functional.pad",
+    "min_input_args": 2,
+    "args_list": [
+      "input",
+      "pad",
+      "mode",
+      "value"
+    ]
+  },
   "torch.nn.functional.pairwise_distance": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.pairwise_distance",
