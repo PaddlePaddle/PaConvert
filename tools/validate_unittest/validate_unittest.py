@@ -85,6 +85,8 @@ overloadable_api_aux_set = {
     "torch.trapz",
     "torch.scatter",
     "torch.var_mean",
+    "torch.prod",
+    "torch.normal",
 }
 
 cornercase_api_aux_dict = {
@@ -104,7 +106,8 @@ cornercase_api_aux_dict = {
     "torch.clamp": "one of `min` and `max` must be specified.",
     "torch.linalg.solve_triangular": 'keyword arg "upper" has no default value',
     "torch.sparse_csr_tensor": "paddle must specified arg `shapes`",
-    "torch.nn.Identity": "this api accept any inputs but all is unused.",
+    "torch.nn.Identity": "this api accept any inputs but all is unused",
+    "torch.randint_like": "this api has strange arg list, so `min_input_args` check is not supported",
 }
 
 
@@ -719,6 +722,14 @@ if __name__ == "__main__":
     if args.files_or_dirs is not None and len(args.files_or_dirs) > 0:
         newtest_data = get_test_cases(args.files_or_dirs)
 
+        test_attribute_count = 0
+        for attribute in attribute_mapping:
+            if attribute in newtest_data:
+                newtest_data.pop(attribute)
+                test_attribute_count += 1
+        if test_attribute_count > 0:
+            print(f"INFO: {test_attribute_count} attribute unittests are removed.")
+
         test_data.update(newtest_data)
         with open(test_data_path, "w") as f:
             json.dump(test_data, f)
@@ -739,13 +750,6 @@ if __name__ == "__main__":
                 raise ValueError(
                     f"alias {alias} is not configured but it's unittest exists."
                 )
-
-    test_attribute_count = 0
-    for attribute in attribute_mapping:
-        if attribute in newtest_data:
-            newtest_data.pop(attribute)
-            test_attribute_count += 1
-    print(f"INFO: {test_attribute_count} attribute unittests are removed.")
 
     if not args.no_check:
         report, aux_detailed_data = check_call_variety(
