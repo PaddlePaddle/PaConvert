@@ -33,8 +33,8 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-# Will match torch.nn.Module, the named parameter "dst_type" cannot be resolved.
-def _test_case_2():
+# Will match torch.Tensor.type to resolve "dst_type" parameter.
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch

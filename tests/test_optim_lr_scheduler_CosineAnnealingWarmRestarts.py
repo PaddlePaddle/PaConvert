@@ -15,14 +15,14 @@
 import textwrap
 
 from apibase import APIBase
-from lr_scheduler_helper import generate_torch_code
+from lr_scheduler_helper import generate_lr_scheduler_test_code
 
 obj = APIBase("torch.optim.lr_scheduler.CosineAnnealingWarmRestarts")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(sgd, 10)"
         )
     )
@@ -31,8 +31,8 @@ def test_case_1():
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
-            "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(sgd, T_0=10)"
+        generate_lr_scheduler_test_code(
+            "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(sgd, T_0=10, T_mult=1)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
@@ -40,8 +40,8 @@ def test_case_2():
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
-            "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer=sgd, T_0=10)"
+        generate_lr_scheduler_test_code(
+            "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(T_mult=1, optimizer=sgd, T_0=10)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
@@ -49,8 +49,8 @@ def test_case_3():
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
-            "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer=sgd, T_0=10, eta_min=0.0, last_epoch=-1, verbose=True)"
+        generate_lr_scheduler_test_code(
+            "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer=sgd, T_0=10, T_mult=1, eta_min=0.0, last_epoch=-1, verbose=True)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
@@ -58,8 +58,8 @@ def test_case_4():
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
-            "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer=sgd, T_0=10, eta_min=0.05, verbose=True)"
+        generate_lr_scheduler_test_code(
+            "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer=sgd, T_0=10, T_mult=1, eta_min=0.05, verbose=True)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
@@ -67,22 +67,19 @@ def test_case_5():
 
 def test_case_6():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(sgd, 10, 1, 1.0, -1, False)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
 
 
-# reference: https://www.paddlepaddle.org.cn/documentation/docs/en/api/paddle/optimizer/lr/CosineAnnealingDecay_en.html
-# note: paddle not support restart
-# paddle result has diff with pytorch result
 def test_case_7():
     pytorch_code = textwrap.dedent(
-        generate_torch_code(
+        generate_lr_scheduler_test_code(
             [
-                "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer=sgd, T_0=10, eta_min=0.0, last_epoch=-1, verbose=False)",
-                "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer=sgd, T_0=10, eta_min=0.0, last_epoch=scheduler_1.last_epoch, verbose=False)",
+                "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer=sgd, T_0=10, T_mult=1, eta_min=0.0, last_epoch=-1, verbose=False)",
+                "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer=sgd, T_0=10, T_mult=2, eta_min=0.0, last_epoch=scheduler_1.last_epoch, verbose=False)",
             ]
         )
     )

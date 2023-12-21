@@ -25,7 +25,7 @@ def test_case_1():
         """
         import torch
         x = torch.tensor([1, 2, 3], dtype=torch.int32)
-        result = torch.combinations(input=x, r=2)
+        result = torch.combinations(input=x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -36,7 +36,7 @@ def test_case_2():
         """
         import torch
         x = torch.tensor([1, 2, 3], dtype=torch.int32)
-        result = torch.combinations(x, r=2)
+        result = torch.combinations(x)
         """
     )
     obj.run(pytorch_code, ["result"])

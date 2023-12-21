@@ -73,7 +73,7 @@ def test_case_5():
         import torch
         a = torch.Tensor([[1.0,0.2], [0.3,0.4]])
         b = torch.Tensor([[1,0], [1,1]])
-        result = a.masked_fill(value=0.1, mask=b==1)
+        result = a.masked_fill(b==1, 0.1)
         """
     )
     obj.run(pytorch_code, ["result"])

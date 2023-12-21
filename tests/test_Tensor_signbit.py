@@ -23,7 +23,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype='float32')
+        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype=torch.float32)
         result = x.signbit()
         """
     )
@@ -34,7 +34,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype='float64')
+        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype=torch.float64)
         result = x.signbit()
         """
     )

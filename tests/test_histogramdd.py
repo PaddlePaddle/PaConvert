@@ -26,7 +26,7 @@ def test_case_1():
         x = torch.tensor([[0., 1.], [1., 0.], [2.,0.], [2., 2.]])
         bins = [3,3]
         weights = torch.tensor([1., 2., 4., 8.])
-        result = torch.histogramdd(x, bins=bins, weight=weights)
+        result = torch.histogramdd(x, bins=bins)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -39,7 +39,7 @@ def test_case_2():
         x = torch.tensor([[0., 1.], [1., 0.], [2.,0.], [2., 2.]])
         bins = [3,3]
         weights = torch.tensor([1., 2., 4., 8.])
-        result = torch.histogramdd(input=x, bins=bins, weight=weights)
+        result = torch.histogramdd(input=x, bins=bins)
         """
     )
     obj.run(pytorch_code, ["result"])

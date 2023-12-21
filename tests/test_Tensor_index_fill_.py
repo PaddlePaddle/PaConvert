@@ -53,7 +53,7 @@ def test_case_3():
         indices = torch.tensor([0, 1])
         dim = 0
         value = -1
-        result = x.index_fill_(dim, indices, value)
+        result = x.index_fill_(index=indices, dim=dim, value=value)
         """
     )
     obj.run(pytorch_code, ["result", "x"])

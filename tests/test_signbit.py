@@ -23,7 +23,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype='float32')
+        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype=torch.float32)
         result = torch.signbit(x)
         """
     )
@@ -34,7 +34,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype='float32')
+        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype=torch.float32)
         result = torch.signbit(input=x)
         """
     )
@@ -45,8 +45,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype='float32')
-        out = torch.tensor([])
+        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype=torch.float32)
+        out = torch.tensor([], dtype=torch.bool)
         result = torch.signbit(out=out, input=x)
         """
     )
@@ -57,8 +57,8 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype='float32')
-        out = torch.tensor([])
+        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype=torch.float32)
+        out = torch.tensor([], dtype=torch.bool)
         result = torch.signbit(input=x, out=out)
         """
     )
@@ -69,8 +69,8 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype='float32')
-        out = torch.tensor([])
+        x = torch.tensor([-0., 1.1, -2.1, 0., 2.5], dtype=torch.float32)
+        out = torch.tensor([], dtype=torch.bool)
         result = torch.signbit(x, out=out)
         """
     )
