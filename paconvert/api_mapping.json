@@ -3321,7 +3321,8 @@
     "min_input_args": 0,
     "args_list": [
       "dtype",
-      "non_blocking"
+      "non_blocking",
+      "dst_type"
     ]
   },
   "torch.Tensor.type_as": {

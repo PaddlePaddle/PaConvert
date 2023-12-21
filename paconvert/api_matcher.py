@@ -1563,7 +1563,11 @@ class TensorTypeMatcher(BaseMatcher):
         if len(kwargs) == 0:
             code = f"str({self.paddleClass}.dtype)"
         else:
-            code = f"{self.paddleClass}.astype({kwargs['dtype']})"
+            # For torch.nn.Module.type, torch.nn.Module.type use torch.Tensor.type
+            if "dst_type" in kwargs:
+                code = f"{self.paddleClass}.astype({kwargs['dst_type']})"
+            else:
+                code = f"{self.paddleClass}.astype({kwargs['dtype']})"
         return code
 
 
