@@ -29,3 +29,15 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        state_list = torch.cuda.get_rng_state_all()
+        torch.cuda.set_rng_state_all(new_states=state_list)
+        result = None
+        """
+    )
+    obj.run(pytorch_code, ["result"])
