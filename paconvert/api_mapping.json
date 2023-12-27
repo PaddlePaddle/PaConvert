@@ -6807,6 +6807,7 @@
   "torch.heaviside": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.heaviside",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "values",
@@ -6822,6 +6823,7 @@
   "torch.histc": {
     "Matcher": "HistcMatcher",
     "paddle_api": "paddle.histogram",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "bins",
@@ -6851,6 +6853,7 @@
   },
   "torch.hstack": {
     "Matcher": "HStackMatcher",
+    "min_input_args": 1,
     "args_list": [
       "tensors",
       "*",
@@ -6953,6 +6956,7 @@
   "torch.imag": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.imag",
+    "min_input_args": 1,
     "args_list": [
       "input"
     ],
@@ -7004,6 +7008,7 @@
   "torch.index_select": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.index_select",
+    "min_input_args": 3,
     "args_list": [
       "input",
       "dim",
@@ -7023,6 +7028,7 @@
   "torch.inner": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.inner",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "other",
@@ -7402,6 +7408,7 @@
   "torch.linalg.inv": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linalg.inv",
+    "min_input_args": 1,
     "args_list": [
       "A",
       "*",
