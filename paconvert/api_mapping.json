@@ -6705,6 +6705,7 @@
   "torch.gather": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.take_along_axis",
+    "min_input_args": 3,
     "args_list": [
       "input",
       "dim",
@@ -6738,6 +6739,7 @@
   "torch.ge": {
     "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.greater_equal",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "other",
@@ -6748,6 +6750,7 @@
   "torch.ger": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.outer",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "vec2",
@@ -6771,6 +6774,7 @@
   "torch.greater": {
     "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.greater_than",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "other",
@@ -6781,6 +6785,7 @@
   "torch.greater_equal": {
     "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.greater_equal",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "other",
@@ -6791,6 +6796,7 @@
   "torch.gt": {
     "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.greater_than",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "other",
