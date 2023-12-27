@@ -6490,6 +6490,7 @@
   "torch.fix": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.trunc",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -6499,6 +6500,7 @@
   "torch.flatten": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.flatten",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "start_dim",
@@ -6554,6 +6556,7 @@
   "torch.floor": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.floor",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -6566,6 +6569,7 @@
   "torch.floor_divide": {
     "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.floor_divide",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "other",
@@ -6576,6 +6580,7 @@
   "torch.fmax": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.fmax",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "other",
@@ -6590,6 +6595,7 @@
   "torch.fmin": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.fmin",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "other",
@@ -6603,6 +6609,7 @@
   },
   "torch.fmod": {
     "Matcher": "FModMatcher",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "other",
@@ -6613,8 +6620,10 @@
   "torch.frac": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.frac",
+    "min_input_args": 1,
     "args_list": [
       "input",
+      "*",
       "out"
     ],
     "kwargs_change": {
@@ -6636,6 +6645,7 @@
   "torch.from_dlpack": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.utils.dlpack.from_dlpack",
+    "min_input_args": 1,
     "args_list": [
       "ext_tensor"
     ],
@@ -6646,6 +6656,7 @@
   "torch.from_numpy": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.to_tensor",
+    "min_input_args": 1,
     "args_list": [
       "ndarray"
     ],
@@ -6656,6 +6667,7 @@
   "torch.full": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.full",
+    "min_input_args": 2,
     "args_list": [
       "size",
       "fill_value",
@@ -6674,6 +6686,7 @@
   "torch.full_like": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.full_like",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "fill_value",
