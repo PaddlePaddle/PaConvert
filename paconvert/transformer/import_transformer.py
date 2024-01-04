@@ -45,6 +45,7 @@ class ImportTransformer(BaseTransformer):
 
             # import from current project
             dir_name = os.path.dirname(self.file)
+            """
             while (
                 len(dir_name) > 1 and dir_name[-2] != ":"
             ):  # the case of dir_name = 'E:/' will happen with windows
@@ -57,6 +58,14 @@ class ImportTransformer(BaseTransformer):
                     break
 
                 dir_name = os.path.dirname(dir_name)
+            """
+            import_path = os.path.join(dir_name, alias_node.name.replace(".", "/"))
+            if os.path.exists(import_path) or os.path.exists(import_path + ".py"):
+                self.insert_other_packages(self.imports_map, alias_node)
+                new_node_names.append(alias_node)
+                has_done = True
+                break
+
             if has_done:
                 continue
 
@@ -88,6 +97,7 @@ class ImportTransformer(BaseTransformer):
                         self.imports_map[self.file][alias_node.name] = alias_node.name
                     has_done = True
                     break
+
             if has_done:
                 continue
 
@@ -124,6 +134,7 @@ class ImportTransformer(BaseTransformer):
             # from yolov3.datasets import xxx
             # from datasets import xxx
             dir_name = os.path.dirname(self.file)
+            """
             while (
                 len(dir_name) > 1 and dir_name[-2] != ":"
             ):  # the case of dir_name = 'E:/' will happen with windows
@@ -134,6 +145,11 @@ class ImportTransformer(BaseTransformer):
                     return node
 
                 dir_name = os.path.dirname(dir_name)
+            """
+            import_path = os.path.join(dir_name, node.module.replace(".", "/"))
+            if os.path.exists(import_path) or os.path.exists(import_path + ".py"):
+                self.insert_other_packages(self.imports_map, node)
+                return node
 
         # import from TORCH_PACKAGE_LIST
         for pkg_name in TORCH_PACKAGE_LIST + ["setuptools"]:
@@ -227,6 +243,8 @@ class ImportTransformer(BaseTransformer):
             6. isinstance(x, Tensor)
             7. setattr(Tensor, 'add', func)
             8. {'build_ext': BuildExtension}
+            9. inputs: Optional[Tensor] = None
+            10. Union[GenerateOutput, torch.LongTensor]
         """
         is_torch = False
         if isinstance(
@@ -247,6 +265,17 @@ class ImportTransformer(BaseTransformer):
                 is_torch = True
             elif self.parent_node.func.id in ["isinstance", "setattr"]:  # 6/7
                 is_torch = True
+        elif (
+            isinstance(self.parent_node, ast.Subscript)
+            and self.parent_node.slice == node
+        ):
+            is_torch = True  # 9. Optional[Tensor] = None
+        elif (
+            isinstance(self.parent_node, ast.Tuple)
+            and len(self.node_stack) >= 3
+            and isinstance(self.node_stack[-3], ast.Subscript)
+        ):
+            is_torch = True  # 10. Union[GenerateOutput, torch.LongTensor]
 
         if is_torch:
             torch_api = self.get_full_api_from_node(node)

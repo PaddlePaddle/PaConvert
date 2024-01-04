@@ -2,6 +2,8 @@ from torch.nn import Module
 from torch import Tensor
 from torch import float32
 
+from transformers.generation.utils import GenerateOutput
+
 import torch.utils.data as data # noqa: F401
 
 class A(Module):
@@ -27,3 +29,6 @@ def func3(dtype=float32):
 isinstance(x, Tensor)
 
 setattr(Tensor, 'add', add_func)
+
+Union[GenerateOutput, torch.LongTensor]
+Optional[Tensor] = None
