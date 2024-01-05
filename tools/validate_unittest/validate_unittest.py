@@ -108,6 +108,8 @@ cornercase_api_aux_dict = {
     "torch.sparse_csr_tensor": "paddle must specified arg `shapes`",
     "torch.nn.Identity": "this api accept any inputs but all is unused",
     "torch.randint_like": "this api has strange arg list, so `min_input_args` check is not supported",
+    "torch.linalg.matrix_rank": "this api has deprecated arg `tol`",
+    "torch.linalg.lstsq": "result shape dismatch",
 }
 
 
@@ -280,7 +282,8 @@ def check_call_variety(test_data, api_mapping, *, api_alias={}, verbose=True):
                 if verbose:
                     print(f"SKIP: {api} is not prepared, skip validations.")
             else:
-                print(f"WARNING: {api} not found in api_mapping")
+                if verbose:
+                    print(f"WARNING: {api} not found in api_mapping")
             continue
 
         aux_detailed_case_data = {}
@@ -293,7 +296,8 @@ def check_call_variety(test_data, api_mapping, *, api_alias={}, verbose=True):
         if "code" not in unittest_data:
             "如果 = 0，说明该 api 只是占位符"
             if len(mapping_data) > 0 and "Matcher" in mapping_data:
-                print(f"WARNING: {api} has no unittest.")
+                if verbose:
+                    print(f"WARNING: {api} has no unittest.")
             continue
 
         is_partial_support = (
@@ -302,15 +306,18 @@ def check_call_variety(test_data, api_mapping, *, api_alias={}, verbose=True):
 
         abstract = api_target in abstract_api_aux_set
         if abstract:
-            print(f"SKIP: {api} is abstract.")
+            if verbose:
+                print(f"SKIP: {api} is abstract.")
             continue
 
         cornercase_exists = cornercase_api_aux_dict.get(api_target, None)
         if cornercase_exists:
-            print(f"SKIP: {api} has some corner cases: {cornercase_exists}.")
+            if verbose:
+                print(f"SKIP: {api} has some corner cases: {cornercase_exists}.")
 
         if "Matcher" not in mapping_data:
-            print(f"WARNING: {api} has no mapping data 'Matcher'.")
+            if verbose:
+                print(f"WARNING: {api} has no mapping data 'Matcher'.")
             continue
 
         is_overloadable = api_target in overloadable_api_aux_set
@@ -420,9 +427,10 @@ def check_call_variety(test_data, api_mapping, *, api_alias={}, verbose=True):
                                 f"{api}(*{args}, **{kwargs}) has unexpected keyword argument '{k}'."
                             )
                         else:
-                            print(
-                                f"WARNING: {api} has overload keyword argument '{k}'."
-                            )
+                            if verbose:
+                                print(
+                                    f"WARNING: {api} has overload keyword argument '{k}'."
+                                )
                             break
 
             # 如果没有 *arg，args 的长度必须小于等于 args_list_positional 的长度
