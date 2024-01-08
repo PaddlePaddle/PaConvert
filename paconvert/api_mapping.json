@@ -7041,6 +7041,19 @@
     }
   },
   "torch.instance_norm": {},
+  "torch.inverse": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.inv",
+    "min_input_args": 1,
+    "args_list": [
+      "input",
+      "*",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.is_complex": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.is_complex",

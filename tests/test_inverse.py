@@ -91,7 +91,7 @@ def test_case_5():
                         [ 0.1193,  0.2829,  0.9037,  0.3957],
                         [-0.8202, -0.6474, -0.1631, -0.6543]])
         out = torch.randn(4, 4)
-        result = torch.inverse(A=x, out=out)
+        result = torch.inverse(input=x, out=out)
         """
     )
     obj.run(pytorch_code, ["result", "out"])
@@ -107,7 +107,7 @@ def test_case_6():
                         [ 0.1193,  0.2829,  0.9037,  0.3957],
                         [-0.8202, -0.6474, -0.1631, -0.6543]])
         out = torch.randn(4, 4)
-        result = torch.inverse(out=out, A=x)
+        result = torch.inverse(out=out, input=x)
         """
     )
     obj.run(pytorch_code, ["result", "out"])

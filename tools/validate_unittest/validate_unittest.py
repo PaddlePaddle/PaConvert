@@ -110,6 +110,7 @@ cornercase_api_aux_dict = {
     "torch.randint_like": "this api has strange arg list, so `min_input_args` check is not supported",
     "torch.linalg.matrix_rank": "this api has deprecated arg `tol`",
     "torch.linalg.lstsq": "result shape dismatch",
+    "torch.from_numpy": "from_numpy() takes no keyword arguments",
 }
 
 
