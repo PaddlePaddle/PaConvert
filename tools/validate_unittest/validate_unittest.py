@@ -74,6 +74,7 @@ overloadable_api_aux_set = {
     "torch.Tensor.scatter_",
     "torch.Tensor.std",
     "torch.std_mean",
+    "torch.mean",
     "torch.std",
     "torch.sort",
     "torch.Tensor.var",

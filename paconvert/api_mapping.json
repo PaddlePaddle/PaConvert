@@ -7796,6 +7796,7 @@
   "torch.logcumsumexp": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.logcumsumexp",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "dim",
@@ -7817,6 +7818,7 @@
   "torch.logical_and": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.logical_and",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "other",
@@ -7831,6 +7833,7 @@
   "torch.logical_not": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.logical_not",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -7843,6 +7846,7 @@
   "torch.logical_or": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.logical_or",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "other",
@@ -7857,6 +7861,7 @@
   "torch.logical_xor": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.logical_xor",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "other",
@@ -7871,6 +7876,7 @@
   "torch.logspace": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.logspace",
+    "min_input_args": 3,
     "args_list": [
       "start",
       "end",
@@ -7893,6 +7899,7 @@
   "torch.lt": {
     "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.less_than",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "other",
@@ -7903,6 +7910,7 @@
   "torch.lu": {
     "Matcher": "LuMatcher",
     "paddle_api": "paddle.linalg.lu",
+    "min_input_args": 1,
     "args_list": [
       "A",
       "pivot",
@@ -7917,6 +7925,7 @@
   "torch.lu_unpack": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linalg.lu_unpack",
+    "min_input_args": 2,
     "args_list": [
       "LU_data",
       "LU_pivots",
@@ -7956,6 +7965,7 @@
   "torch.masked_select": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.masked_select",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "mask",
@@ -7985,6 +7995,7 @@
   "torch.max_pool1d": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.max_pool1d",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "kernel_size",
@@ -8054,6 +8065,7 @@
   "torch.mean": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.mean",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "dim",
@@ -8127,6 +8139,7 @@
   "torch.mm": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.mm",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "mat2",
@@ -8137,6 +8150,7 @@
   "torch.mode": {
     "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.mode",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "dim",
@@ -8152,6 +8166,7 @@
   "torch.moveaxis": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.moveaxis",
+    "min_input_args": 3,
     "args_list": [
       "input",
       "source",
@@ -8164,6 +8179,7 @@
   "torch.movedim": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.moveaxis",
+    "min_input_args": 3,
     "args_list": [
       "input",
       "source",
@@ -8175,6 +8191,7 @@
   },
   "torch.msort": {
     "Matcher": "MSortMatcher",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -8184,6 +8201,7 @@
   "torch.multinomial": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.multinomial",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "num_samples",
@@ -8230,6 +8248,7 @@
   "torch.mv": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.mv",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "vec",
@@ -8259,6 +8278,7 @@
   "torch.nanmean": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nanmean",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "dim",
@@ -8313,6 +8333,7 @@
   "torch.nansum": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nansum",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "dim",
@@ -8352,6 +8373,7 @@
   "torch.ne": {
     "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.not_equal",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "other",
@@ -8366,6 +8388,7 @@
   "torch.neg": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.neg",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -8378,6 +8401,7 @@
   "torch.negative": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.neg",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -8390,6 +8414,7 @@
   "torch.nextafter": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nextafter",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "other",
@@ -12088,6 +12113,7 @@
   "torch.nn.utils.spectral_norm": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.utils.spectral_norm",
+    "min_input_args": 1,
     "args_list": [
       "module",
       "name",
