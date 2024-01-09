@@ -19,222 +19,89 @@ from apibase import APIBase
 obj = APIBase("torch.nn.Module.named_buffers")
 
 
+def generate_torch_code(code_segment):
+    TEMPLATE = f"""
+    import torch
+    import torch.nn as nn
+
+    class SubModel(nn.Module):
+        def __init__(self):
+            super(SubModel, self).__init__()
+            self.register_buffer('buf1', torch.tensor([1.,2.,4.,5.]))
+            self.register_buffer('buf4', torch.tensor([1.,2.,4.,5.]))
+            self.register_buffer('buf5', torch.tensor([1.,2.,4.,5.]))
+
+        def forward(self, x):
+            return x
+
+    class Model(nn.Module):
+        def __init__(self):
+            super(Model, self).__init__()
+            self.sub = SubModel()
+            self.register_buffer('buf1', torch.tensor([1.,2.,4.,5.]))
+            self.register_buffer('buf2', torch.tensor([1.,2.,4.,5.]))
+            self.register_buffer('buf3', torch.tensor([1.,2.,4.,5.]))
+
+        def forward(self, x):
+            return x
+
+    model = Model()
+    result = []
+    for name, buf in {code_segment}:
+        result.append((name, buf))
+    """
+
+    return TEMPLATE
+
+
 def test_case_1():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        import torch.nn as nn
-
-        class SubModel(nn.Module):
-            def __init__(self):
-                super(SubModel, self).__init__()
-                self.register_buffer('buf1', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf4', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf5', torch.tensor([1.,2.,4.,5.]))
-
-            def forward(self, x):
-                return x
-
-        class Model(nn.Module):
-            def __init__(self):
-                super(Model, self).__init__()
-                self.sub = SubModel()
-                self.register_buffer('buf1', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf2', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf3', torch.tensor([1.,2.,4.,5.]))
-
-            def forward(self, x):
-                return x
-
-        model = Model()
-        result = []
-        for name, buf in model.named_buffers():
-            result.append(buf)
-        """
-    )
+    pytorch_code = textwrap.dedent(generate_torch_code("model.named_buffers()"))
     obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
-        """
-        import torch
-        import torch.nn as nn
-
-        class SubModel(torch.nn.Module):
-            def __init__(self):
-                super(SubModel, self).__init__()
-                self.register_buffer('buf1', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf4', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf5', torch.tensor([1.,2.,4.,5.]))
-
-            def forward(self, x):
-                pass
-
-        class Model(torch.nn.Module):
-            def __init__(self):
-                super(Model, self).__init__()
-                self.sub = SubModel()
-                self.register_buffer('buf1', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf2', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf3', torch.tensor([1.,2.,4.,5.]))
-
-            def forward(self, x):
-                pass
-
-        model = Model()
-        result = []
-        for name, buf in model.named_buffers():
-            result.append(name)
-        """
+        generate_torch_code("model.named_buffers(prefix='wfs')")
     )
     obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
-        """
-        import torch
-        import torch.nn as nn
-
-        class SubModel(torch.nn.Module):
-            def __init__(self):
-                super(SubModel, self).__init__()
-                self.register_buffer('buf1', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf4', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf5', torch.tensor([1.,2.,4.,5.]))
-
-            def forward(self, x):
-                pass
-
-        class Model(torch.nn.Module):
-            def __init__(self):
-                super(Model, self).__init__()
-                self.sub = SubModel()
-                self.register_buffer('buf1', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf2', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf3', torch.tensor([1.,2.,4.,5.]))
-
-            def forward(self, x):
-                pass
-
-
-        model = Model()
-        result = []
-        for name, buf in model.named_buffers(prefix='wfs'):
-            result.append(name)
-        """
+        generate_torch_code("model.named_buffers(recurse=False)")
     )
     obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
-        """
-        import torch
-        import torch.nn as nn
-
-        class SubModel(torch.nn.Module):
-            def __init__(self):
-                super(SubModel, self).__init__()
-                self.register_buffer('buf1', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf4', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf5', torch.tensor([1.,2.,4.,5.]))
-
-            def forward(self, x):
-                pass
-
-        class Model(torch.nn.Module):
-            def __init__(self):
-                super(Model, self).__init__()
-                self.sub = SubModel()
-                self.register_buffer('buf1', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf2', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf3', torch.tensor([1.,2.,4.,5.]))
-
-            def forward(self, x):
-                pass
-
-
-        model = Model()
-        result = []
-        for name, buf in model.named_buffers(recurse=False):
-            result.append(buf)
-        """
+        generate_torch_code("model.named_buffers(recurse=True)")
     )
     obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
-        """
-        import torch
-        import torch.nn as nn
-
-        class SubModel(torch.nn.Module):
-            def __init__(self):
-                super(SubModel, self).__init__()
-                self.register_buffer('buf1', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf4', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf5', torch.tensor([1.,2.,4.,5.]))
-
-            def forward(self, x):
-                pass
-
-        class Model(torch.nn.Module):
-            def __init__(self):
-                super(Model, self).__init__()
-                self.sub = SubModel()
-                self.register_buffer('buf1', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf2', torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf3', torch.tensor([1.,2.,4.,5.]))
-
-            def forward(self, x):
-                pass
-
-
-        model = Model()
-        result = []
-        for name, buf in model.named_buffers(recurse=False):
-            result.append(name)
-        """
+        generate_torch_code(
+            "model.named_buffers(prefix='wfs', recurse=True, remove_duplicate=False)"
+        )
     )
     obj.run(pytorch_code, ["result"])
 
 
+# generated by validate_unittest autofix, based on test_case_5
 def test_case_6():
     pytorch_code = textwrap.dedent(
-        """
-        import torch
-        import torch.nn as nn
-
-        class SubModel(torch.nn.Module):
-            def __init__(self):
-                super(SubModel, self).__init__()
-                self.register_buffer('buf1', torch.tensor([1.,2.,4.,5.]), persistent=True)
-                self.register_buffer('buf4', persistent=True, tensor=torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf5', torch.tensor([1.,2.,4.,5.]), True)
-
-            def forward(self, x):
-                pass
-
-        class Model(torch.nn.Module):
-            def __init__(self):
-                super(Model, self).__init__()
-                self.submodule = SubModel()
-                self.register_buffer('buf1', torch.tensor([1.,2.,4.,5.]), persistent=False)
-                self.register_buffer('buf2', persistent=False, tensor=torch.tensor([1.,2.,4.,5.]))
-                self.register_buffer('buf3', torch.tensor([1.,2.,4.,5.]), False)
-
-            def forward(self, x):
-                pass
-
-        model = Model()
-        names = []
-        buffers = []
-        for name, buf in model.named_buffers(recurse=True):
-            names.append(name)
-            buffers.append(buf)
-        """
+        generate_torch_code("model.named_buffers('wfs', True, False)")
     )
-    obj.run(pytorch_code, ["names", "buffers"])
+    obj.run(pytorch_code, ["result"])
+
+
+# generated by validate_unittest autofix, based on test_case_5
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        generate_torch_code(
+            "model.named_buffers(remove_duplicate=False, recurse=True, prefix='wfs')"
+        )
+    )
+    obj.run(pytorch_code, ["result"])

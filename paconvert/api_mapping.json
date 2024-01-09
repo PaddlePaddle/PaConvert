@@ -3342,8 +3342,7 @@
     "min_input_args": 0,
     "args_list": [
       "dtype",
-      "non_blocking",
-      "dst_type"
+      "non_blocking"
     ]
   },
   "torch.Tensor.type_as": {
@@ -9408,7 +9407,7 @@
     "kwargs_change": {
       "eps": "epsilon",
       "elementwise_affine": [
-        "weight_attr",
+        "wei,ght_attr",
         "bias_attr"
       ],
       "device": "",
@@ -9772,11 +9771,13 @@
       "hook",
       "*",
       "prepend",
-      "with_kwargs"
+      "with_kwargs",
+      "always_call"
     ],
     "unsupport_args": [
       "prepend",
-      "with_kwargs"
+      "with_kwargs",
+      "always_call"
     ],
     "min_input_args": 1
   },
@@ -10003,7 +10004,7 @@
       "data",
       "requires_grad"
     ],
-    "min_input_args": 0
+    "min_input_args": 1
   },
   "torch.nn.ParameterList": {
     "Matcher": "GenericMatcher",
@@ -10498,6 +10499,8 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.TripletMarginWithDistanceLoss",
     "args_list": [
+      "*",
+      "distance_function",
       "margin",
       "swap",
       "reduction"
@@ -10898,6 +10901,7 @@
   "torch.nn.functional.conv_transpose3d": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.conv3d_transpose",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "weight",
@@ -10905,8 +10909,8 @@
       "stride",
       "padding",
       "output_padding",
-      "dilation",
-      "groups"
+      "groups",
+      "dilation"
     ],
     "kwargs_change": {
       "input": "x"
@@ -10948,7 +10952,7 @@
     "paddle_api": "paddle.nn.functional.cross_entropy",
     "args_list": [
       "input",
-      "label",
+      "target",
       "weight",
       "size_average",
       "ignore_index",
@@ -10957,6 +10961,7 @@
       "label_smoothing"
     ],
     "kwargs_change": {
+      "target": "label",
       "label_smoothing": "soft_label"
     },
     "min_input_args": 2

@@ -77,3 +77,33 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        result = []
+        class TestForHook(nn.Module):
+            def __init__(self):
+                super().__init__()
+
+                self.linear_1 = nn.Linear(in_features=2, out_features=2)
+            def forward(self, x):
+                x1 = self.linear_1(x)
+                return x, x, x1
+        def hook(module, fea_in, fea_out):
+            result.append(1)
+
+        net = TestForHook()
+        net.register_forward_hook(hook=hook, prepend=False, with_kwargs=False, always_call=False)
+        a = torch.tensor([0.,0.])
+        net(a)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        unsupport=True,
+        reason="prepend, with_kwargs and always_call is not supported",
+    )
