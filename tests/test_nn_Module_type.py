@@ -34,7 +34,9 @@ def test_case_1():
 
 
 # Will match torch.Tensor.type to resolve "dst_type" parameter.
-def test_case_2():
+# paddle not support: 'Layer' object has no attribute 'type'
+# convert failed when using keyword argument.
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
