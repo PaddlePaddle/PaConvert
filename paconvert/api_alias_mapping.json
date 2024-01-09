@@ -99,7 +99,6 @@
   "torch.i0": "torch.special.i0",
   "torch.igamma": "torch.special.gammainc",
   "torch.igammac": "torch.special.gammaincc",
-  "torch.inverse": "torch.linalg.inv",
   "torch.layer_norm": "torch.nn.functional.layer_norm",
   "torch.logit": "torch.special.logit",
   "torch.logsumexp": "torch.special.logsumexp",

@@ -65,3 +65,59 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+# `mmap` is not supported in paddle
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import pickle
+
+        result = torch.tensor([0., 1., 2., 3., 4.])
+        torch.save(result, 'tensor.pt', pickle_protocol=4)
+        result = torch.load('tensor.pt', map_location=torch.device('cpu'), pickle_module=pickle, weights_only=False, mmap=None)
+        """
+    )
+    obj.run(pytorch_code, unsupport=True, reason="`mmap` is not supported in paddle")
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import pickle
+
+        result = torch.tensor([0., 1., 2., 3., 4.])
+        torch.save(result, 'tensor.pt', pickle_protocol=4)
+        result = torch.load('tensor.pt', torch.device('cpu'), pickle)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import pickle
+
+        result = torch.tensor([0., 1., 2., 3., 4.])
+        torch.save(result, 'tensor.pt', pickle_protocol=4)
+        result = torch.load('tensor.pt', weights_only=False, map_location=torch.device('cpu'), pickle_module=pickle)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        result = torch.tensor([0., 1., 2., 3., 4.])
+        torch.save(result, 'tensor.pt', pickle_protocol=4)
+        result = torch.load('tensor.pt')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
