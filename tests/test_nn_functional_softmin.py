@@ -68,4 +68,4 @@ def test_case_4():
         result = F.softmin(input=input, dim=-1, _stacklevel=3, dtype=torch.float64)
         """
     )
-    obj.run(pytorch_code, unsupport=True, reason="_stacklevel is not supported")
+    obj.run(pytorch_code, ["result"])

@@ -12026,9 +12026,6 @@
       "_stacklevel": "",
       "dtype": "dtype"
     },
-    "unsupport_args": [
-      "_stacklevel"
-    ],
     "min_input_args": 1
   },
   "torch.nn.functional.softplus": {
