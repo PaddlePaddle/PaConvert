@@ -94,6 +94,9 @@ cornercase_api_aux_dict = {
     "torch.Tensor.uniform_": 'keyword "from" is conflict with python keyword "from"',
     "torch.Tensor.remainder": "keyword `divisor` or `other` is not supported unexpectedly",
     "torch.profiler.schedule": "3 keyword args have no default value",
+    "torch.nn.functional.upsample": "only one of size or scale_factor should be defined",
+    "torch.nn.functional.upsample_bilinear": "only one of size or scale_factor should be defined",
+    "torch.nn.functional.upsample_nearest": "only one of size or scale_factor should be defined",
     "torch.utils.cpp_extension.CUDAExtension": "args_list is configured by python built-in library",
     "torch.utils.cpp_extension.CppExtension": "args_list is configured by python built-in library",
     "torch.utils.dlpack.to_dlpack": 'arg "tensor" only accept position argument',
@@ -114,9 +117,6 @@ cornercase_api_aux_dict = {
     "torch.linalg.matrix_rank": "this api has deprecated arg `tol`",
     "torch.linalg.lstsq": "result shape dismatch",
     "torch.from_numpy": "from_numpy() takes no keyword arguments",
-    "torch.nn.functional.upsample": "only one of size or scale_factor should be defined",
-    "torch.nn.functional.upsample_bilinear": "only one of size or scale_factor should be defined",
-    "torch.nn.functional.upsample_nearest": "only one of size or scale_factor should be defined",
 }
 
 
