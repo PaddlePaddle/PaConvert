@@ -2749,6 +2749,7 @@
     "paddle_api": "paddle.Tensor.retain_grads",
     "min_input_args": 0
   },
+  "torch.Tensor.retains_grad": {},
   "torch.Tensor.roll": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.roll",
