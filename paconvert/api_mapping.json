@@ -11312,6 +11312,9 @@
       "reduction",
       "log_target"
     ],
+    "unsupport_args": [
+      "log_target"
+    ],
     "min_input_args": 2
   },
   "torch.nn.functional.l1_loss": {
@@ -11920,6 +11923,9 @@
       "_stacklevel": "",
       "dtype": "dtype"
     },
+    "unsupport_args": [
+      "_stacklevel"
+    ],
     "min_input_args": 1
   },
   "torch.nn.functional.softplus": {
@@ -12009,6 +12015,7 @@
       "anchor",
       "positive",
       "negative",
+      "*",
       "distance_function",
       "margin",
       "swap",
@@ -12051,6 +12058,9 @@
     "kwargs_change": {
       "input": "x"
     },
+    "unsupport_args": [
+      "align_corners"
+    ],
     "min_input_args": 1
   },
   "torch.nn.functional.upsample_bilinear": {

@@ -111,6 +111,12 @@ cornercase_api_aux_dict = {
     "torch.nn.LSTMCell": "paddle result has diff with pytorch result when all parameters use default value",
     "torch.nn.GRUCell": "paddle result has diff with pytorch result when all parameters use default value",
     "torch.randint_like": "this api has strange arg list, so `min_input_args` check is not supported",
+    "torch.linalg.matrix_rank": "this api has deprecated arg `tol`",
+    "torch.linalg.lstsq": "result shape dismatch",
+    "torch.from_numpy": "from_numpy() takes no keyword arguments",
+    "torch.nn.functional.upsample": "only one of size or scale_factor should be defined",
+    "torch.nn.functional.upsample_bilinear": "only one of size or scale_factor should be defined",
+    "torch.nn.functional.upsample_nearest": "only one of size or scale_factor should be defined",
 }
 
 
