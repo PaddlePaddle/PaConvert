@@ -9408,7 +9408,7 @@
     "kwargs_change": {
       "eps": "epsilon",
       "elementwise_affine": [
-        "wei,ght_attr",
+        "weight_attr",
         "bias_attr"
       ],
       "device": "",
