@@ -56,61 +56,65 @@ var_args_collector_aux_mapping = {
 
 abstract_api_aux_set = {
     "torch.autograd.Function.forward",
+    "torch.autograd.Function.backward",
+    "torch.optim.Optimizer.step",
     "torch.utils.data.Dataset",
+    "torch.nn.Module",
     "torch.autograd.Function",
     "torch.utils.data.IterableDataset",
-    "torch.autograd.Function.backward",
-    "torch.nn.Module",
-    "torch.optim.Optimizer.step",
 }
 
 overloadable_api_aux_set = {
-    "torch.min",
-    "torch.Tensor.to",
-    "torch.max",
+    "torch.mean",
     "torch.Tensor.max",
-    "torch.Tensor.min",
-    "torch.Tensor.scatter",
-    "torch.Tensor.scatter_",
-    "torch.Tensor.std",
-    "torch.std_mean",
-    "torch.std",
-    "torch.sort",
-    "torch.Tensor.var",
-    "torch.Tensor.view",
-    "torch.searchsorted",
-    "torch.Tensor.sort",
-    "torch.trapezoid",
-    "torch.cumulative_trapezoid",
+    "torch.Tensor.to",
     "torch.trapz",
-    "torch.scatter",
-    "torch.var_mean",
     "torch.prod",
+    "torch.Tensor.var",
+    "torch.Tensor.min",
+    "torch.Tensor.sort",
+    "torch.Tensor.std",
+    "torch.trapezoid",
     "torch.normal",
+    "torch.var_mean",
+    "torch.std_mean",
+    "torch.min",
+    "torch.sort",
+    "torch.max",
+    "torch.searchsorted",
+    "torch.cumulative_trapezoid",
+    "torch.std",
+    "torch.Tensor.scatter_",
+    "torch.Tensor.scatter",
+    "torch.scatter",
+    "torch.Tensor.view",
 }
 
 cornercase_api_aux_dict = {
-    "torch.Tensor.uniform_": 'keyword "from" is conflict with python keyword "from"',
     "torch.Tensor.remainder": "keyword `divisor` or `other` is not supported unexpectedly",
-    "torch.profiler.schedule": "3 keyword args have no default value",
-    "torch.utils.cpp_extension.CUDAExtension": "args_list is configured by python built-in library",
-    "torch.utils.cpp_extension.CppExtension": "args_list is configured by python built-in library",
-    "torch.utils.dlpack.to_dlpack": 'arg "tensor" only accept position argument',
+    "torch.Tensor.type": "reserve dst_type arg for torch.nn.Module.type",
+    "torch.Tensor.uniform_": 'keyword "from" is conflict with python keyword "from"',
     "torch.autograd.function.FunctionCtx.mark_non_differentiable": "expect only '*args' as arguments, so check is not supported",
+    "torch.autograd.function.FunctionCtx.save_for_backward": "expect only '*tensors' as arguments, so check is not supported",
+    "torch.chain_matmul": "this api will be deprecated and has var position args",
+    "torch.clamp": "one of `min` and `max` must be specified.",
+    "torch.from_numpy": "from_numpy() takes no keyword arguments",
+    "torch.linalg.lstsq": "result shape dismatch",
+    "torch.linalg.matrix_rank": "this api has deprecated arg `tol`",
+    "torch.linalg.solve_triangular": 'keyword arg "upper" has no default value',
+    "torch.nn.GRUCell": "paddle result has diff with pytorch result when all parameters use default value",
+    "torch.nn.Identity": "this api accept any inputs but all is unused",
+    "torch.nn.LSTMCell": "paddle result has diff with pytorch result when all parameters use default value",
+    "torch.nn.functional.upsample": "only one of size or scale_factor should be defined",
+    "torch.nn.functional.upsample_bilinear": "only one of size or scale_factor should be defined",
+    "torch.nn.functional.upsample_nearest": "only one of size or scale_factor should be defined",
+    "torch.profiler.schedule": "3 keyword args have no default value",
+    "torch.randint_like": "this api has strange arg list, so `min_input_args` check is not supported",
+    "torch.sparse_csr_tensor": "paddle must specified arg `shapes`",
     "torch.utils.cpp_extension.CUDAExtension": "args_list is configured by python built-in library",
     "torch.utils.cpp_extension.CppExtension": "args_list is configured by python built-in library",
     "torch.utils.dlpack.to_dlpack": 'arg "tensor" only accept position argument',
     "torch.var": "this api has breaking change in pytorch 2.0",
-    "torch.autograd.function.FunctionCtx.save_for_backward": "expect only '*tensors' as arguments, so check is not supported",
-    "torch.chain_matmul": "this api will be deprecated and has var position args",
-    "torch.clamp": "one of `min` and `max` must be specified.",
-    "torch.linalg.solve_triangular": 'keyword arg "upper" has no default value',
-    "torch.sparse_csr_tensor": "paddle must specified arg `shapes`",
-    "torch.nn.Identity": "this api accept any inputs but all is unused",
-    "torch.randint_like": "this api has strange arg list, so `min_input_args` check is not supported",
-    "torch.linalg.matrix_rank": "this api has deprecated arg `tol`",
-    "torch.linalg.lstsq": "result shape dismatch",
-    "torch.from_numpy": "from_numpy() takes no keyword arguments",
 }
 
 
@@ -303,7 +307,7 @@ def check_call_variety(test_data, api_mapping, *, api_alias={}, verbose=True):
 
         is_partial_support = (
             "unsupport" in unittest_data and len(unittest_data["unsupport"]) > 0
-        )
+        ) or "unsupport_args" in mapping_data
 
         abstract = api_target in abstract_api_aux_set
         if abstract:
@@ -598,16 +602,44 @@ def autofix_single_api(file_path, aux_detailed_data):
         else:
             raise ValueError(f"unexpected state {state}.")
 
-    good_casenames = []
-    for n, d in data.get("cases", {}).items():
+    good_cases = {}
+    for cn, d in data.get("cases", {}).items():
+        if cn not in case_lines:
+            continue
+
+        code = "".join(lines[case_lines[cn][0] : case_lines[cn][1]])
+        args, kwargs, invoking_range = extract_params_from_invoking(api, code)
         # if d.get('all_kwargs', False) is True:
         #     good_casenames.append(n)
         # 我只需要位置参数 + 关键字参数总数对就行，
         # 不需要符合全部关键字参数的需求，这样我更容易自动化修复
-        if d.get("all_*args", False) is True or d.get("all_kwargs", False) is True:
-            good_casenames.append(n)
+        # if d.get("all_*args", False) is True or d.get("all_kwargs", False) is True:
+        #     good_cases[n] = d
+        #     continue
 
-    if len(good_casenames) == 0:
+        kwargs_dict = dict(kwargs)
+        if len(args) > 0:
+            keyed_pargs = zip(data["position_args_list"], args)
+            for k, v in keyed_pargs:
+                assert k not in kwargs_dict, f"duplicated key {k} in {cn}."
+                kwargs_dict[k] = v
+
+        wanted_args = set(
+            [k for k in data["keyword_args_list"] if k not in kwargs_dict]
+        )
+
+        # 有些参数可以我预先指定默认值啊
+        if "device" in wanted_args:
+            wanted_args.remove("device")
+            kwargs_dict["device"] = "'cpu'"
+        if "dtype" in wanted_args:
+            wanted_args.remove("dtype")
+            kwargs_dict["dtype"] = "torch.float32"
+
+        if len(kwargs_dict) == len(data["keyword_args_list"]):
+            good_cases[cn] = kwargs_dict
+
+    if len(good_cases) == 0:
         print(
             f'api {api} in "{file_path}" not has no good cases as template, skip auto fix.'
         )
@@ -616,18 +648,9 @@ def autofix_single_api(file_path, aux_detailed_data):
     append_cases = []
     case_append = lambda c, src: append_cases.append({"code": c, "source": src})
 
-    for cn in good_casenames:
+    for cn, kwargs_dict in good_cases.items():
         code = "".join(lines[case_lines[cn][0] : case_lines[cn][1]])
         args, kwargs, invoking_range = extract_params_from_invoking(api, code)
-        kwargs_dict = dict(kwargs)
-        assert len(args) + len(kwargs) == len(
-            data["keyword_args_list"]
-        ), "good case must have all args or kwargs."
-        if len(args) > 0:
-            keyed_pargs = zip(data["position_args_list"], args)
-            for k, v in keyed_pargs:
-                assert k not in kwargs_dict, f"duplicated key {k} in {cn}."
-                kwargs_dict[k] = v
 
         new_case_template = (
             f'{code[:invoking_range[0]]}({"{}"}){code[invoking_range[1]:]}'

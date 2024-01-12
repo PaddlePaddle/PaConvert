@@ -65,7 +65,46 @@ def test_case_4():
         input = torch.tensor([[[ 1.1524,  0.4714,  0.2857, 0.4586, 0.9876, 0.5487],
             [-1.2533, -0.9829, -1.0981, 0.7655, 0.8541, 0.9873],
             [ 0.1507, -1.1431, -2.0361, 0.2344, 0.5675, 0.1546]]])
-        result = torch.max_pool1d(input , 5, stride=2, padding=2, ceil_mode=True)
+        result = torch.max_pool1d(input, 5, stride=2, padding=2, ceil_mode=True)
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857, 0.4586, 0.9876, 0.5487],
+            [-1.2533, -0.9829, -1.0981, 0.7655, 0.8541, 0.9873],
+            [ 0.1507, -1.1431, -2.0361, 0.2344, 0.5675, 0.1546]]])
+        result = torch.max_pool1d(input=input, kernel_size=5, stride=2, padding=2, ceil_mode=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857, 0.4586, 0.9876, 0.5487],
+            [-1.2533, -0.9829, -1.0981, 0.7655, 0.8541, 0.9873],
+            [ 0.1507, -1.1431, -2.0361, 0.2344, 0.5675, 0.1546]]])
+        result = torch.max_pool1d(input=input, padding=2, kernel_size=5, stride=2, ceil_mode=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857, 0.4586, 0.9876, 0.5487],
+            [-1.2533, -0.9829, -1.0981, 0.7655, 0.8541, 0.9873],
+            [ 0.1507, -1.1431, -2.0361, 0.2344, 0.5675, 0.1546]]])
+        result = torch.max_pool1d(input=input, kernel_size=5, stride=2, padding=2, dilation=1, ceil_mode=True)
+        """
+    )
+    obj.run(pytorch_code, unsupport=True, reason="Not support dilation")
