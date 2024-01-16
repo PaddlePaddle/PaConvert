@@ -2797,6 +2797,7 @@
   },
   "torch.Tensor.round": {
     "Matcher": "TensorRoundMatcher",
+    "paddle_api": "paddle.Tensor.round",
     "min_input_args": 0,
     "args_list": [
       "*",
@@ -2805,6 +2806,7 @@
   },
   "torch.Tensor.round_": {
     "Matcher": "TensorRound_Matcher",
+    "paddle_api": "paddle.Tensor.round_",
     "min_input_args": 0,
     "args_list": [
       "*",
