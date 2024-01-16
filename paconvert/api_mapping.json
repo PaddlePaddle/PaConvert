@@ -6981,13 +6981,17 @@
     }
   },
   "torch.hstack": {
-    "Matcher": "HStackMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.hstack",
     "min_input_args": 1,
     "args_list": [
       "tensors",
       "*",
       "out"
-    ]
+    ],
+    "kwargs_change": {
+      "tensors": "x"
+    }
   },
   "torch.hub.download_url_to_file": {
     "Matcher": "GenericMatcher",

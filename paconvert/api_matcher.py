@@ -1928,32 +1928,6 @@ class VStackMatcher(BaseMatcher):
         return code
 
 
-class HStackMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "out" in kwargs and kwargs["out"] != "None":
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {} = 0 if {}[0].ndim == 1 else 1
-                paddle.assign(paddle.concat({}, axis={}), output={})
-                """
-            )
-            axis = get_unique_name("axis")
-            code = API_TEMPLATE.format(
-                axis, kwargs["tensors"], kwargs["tensors"], axis, kwargs["out"]
-            )
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {} = 0 if {}[0].ndim == 1 else 1
-                paddle.concat({}, axis={})
-                """
-            )
-            axis = get_unique_name("axis")
-            code = API_TEMPLATE.format(axis, kwargs["tensors"], kwargs["tensors"], axis)
-
-        return code
-
-
 # will implenment by aux_code
 class TensorIndexCopyMatcher(BaseMatcher):
     def generate_code(self, kwargs):
