@@ -2660,29 +2660,14 @@ class TensorTriangularSolveMatcher(BaseMatcher):
 
 class IndexAddMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "input" not in kwargs:
-            kwargs["input"] = self.paddleClass
-
         if "alpha" not in kwargs:
-            kwargs["alpha"] = 1.0
+            kwargs["value"] = kwargs.pop("source")
+        else:
+            kwargs["value"] = "{} * {}".format(
+                kwargs.pop("source"), kwargs.pop("alpha")
+            )
 
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {}({}, index={}, axis={}, value={} * {})
-            """
-        )
-        code = API_TEMPLATE.format(
-            self.get_paddle_api(),
-            kwargs["input"],
-            kwargs["index"],
-            kwargs["dim"],
-            kwargs["alpha"],
-            kwargs["source"],
-        )
-
-        if "out" in kwargs and kwargs["out"] != "None":
-            code = "paddle.assign({}, output={})".format(code, kwargs["out"])
-        return code
+        return GenericMatcher.generate_code(self, kwargs)
 
 
 class AMinMaxMatcher(BaseMatcher):

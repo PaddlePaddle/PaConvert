@@ -50,12 +50,21 @@ def check_unchange_matcher(paconvert_item, doc_item):
     torch_api = doc_item["torch_api"]
     paddle_api = doc_item["paddle_api"]
 
-    mapped_api = re.sub(r"^torch\.optim\.", "paddle.optimizer.", torch_api)
-    mapped_api = re.sub(r"^torch\.", "paddle.", mapped_api)
+    api_mapping_rules = {
+        "torch.optim.": "paddle.optimizer.",
+        "torch.nn.Module.": "paddle.nn.Layer.",
+        "torch.autograd.function.FunctionCtx.": "paddle.autograd.PyLayerContext.",
+        "torch.": "paddle.",
+    }
+
+    rules_key = sorted(api_mapping_rules.keys(), key=lambda k: len(k), reverse=True)
+    mapped_api = torch_api
+    for key in rules_key:
+        mapped_api = re.sub(f"^{re.escape(key)}", api_mapping_rules[key], mapped_api)
 
     if mapped_api != paddle_api:
         raise ValidateError(
-            f"{torch_api}: `paddle_api` is not equal: {torch_api} != {paddle_api}"
+            f"{torch_api}: `paddle_api` with UnchangeMatcher is not equal: {mapped_api} != {paddle_api}"
         )
 
 
@@ -113,9 +122,43 @@ def check_api_mapping(paconvert_item, doc_item):
             )
         return
 
+    mapping_type_3 = [
+        "返回参数类型不一致",
+        "参数不一致",
+        "参数用法不一致",
+    ]
+    if mapping_type in mapping_type_3:
+        if "paddle_api" not in doc_item:
+            raise DocDataError(
+                f"{torch_api}: `paddle_api` is not in doc_item: {doc_item}"
+            )
+
+        # 不用检查的特例
+        if matcher == "UnchangeMatcher":
+            return check_unchange_matcher(paconvert_item, doc_item)
+
+        if "paddle_api" not in paconvert_item:
+            raise PaConvertDataError(
+                f"{torch_api}: `paddle_api` is not in paconvert_item: {paconvert_item}, but doc `paddle_api` is {doc_item['paddle_api']}"
+            )
+        if doc_item["paddle_api"] != paconvert_item["paddle_api"]:
+            raise ValidateError(
+                f'{torch_api}: `paddle_api` not match: doc is `{doc_item["paddle_api"]}`, but paconvert is `{paconvert_item["paddle_api"]}`'
+            )
+        return
+
+    mapping_type_4 = ["组合替代实现"]
+    if mapping_type in mapping_type_4:
+        # TODO: check
+        return
+
+    mapping_type_delete = ["可删除"]
+    if mapping_type in mapping_type_delete:
+        return
+
     else:
         raise NotImplementedError(
-            f"{torch_api}: `mapping_type` not found: {mapping_type}"
+            f"{torch_api}: `mapping_type` not found or not implemented: {mapping_type}"
         )
 
 

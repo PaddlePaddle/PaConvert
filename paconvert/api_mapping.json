@@ -1488,7 +1488,7 @@
   "torch.Tensor.igammac_": {},
   "torch.Tensor.index_add": {
     "Matcher": "IndexAddMatcher",
-    "paddle_api": "paddle.index_add",
+    "paddle_api": "paddle.Tensor.index_add",
     "min_input_args": 3,
     "args_list": [
       "dim",
@@ -1496,11 +1496,14 @@
       "source",
       "*",
       "alpha"
-    ]
+    ],
+    "kwargs_change": {
+      "dim": "axis"
+    }
   },
   "torch.Tensor.index_add_": {
     "Matcher": "IndexAddMatcher",
-    "paddle_api": "paddle.index_add_",
+    "paddle_api": "paddle.Tensor.index_add_",
     "min_input_args": 3,
     "args_list": [
       "dim",
@@ -1508,7 +1511,10 @@
       "source",
       "*",
       "alpha"
-    ]
+    ],
+    "kwargs_change": {
+      "dim": "axis"
+    }
   },
   "torch.Tensor.index_copy": {},
   "torch.Tensor.index_copy_": {
@@ -5228,7 +5234,7 @@
   },
   "torch.diag_embed": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.diag_embed",
+    "paddle_api": "paddle.diag_embed",
     "min_input_args": 1,
     "args_list": [
       "input",
@@ -6073,7 +6079,7 @@
   },
   "torch.distributions.kl.register_kl": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.distribution.kl.register_kl",
+    "paddle_api": "paddle.distribution.register_kl",
     "min_input_args": 2,
     "args_list": [
       "type_p",
@@ -7110,7 +7116,11 @@
       "*",
       "alpha",
       "out"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axis"
+    }
   },
   "torch.index_copy": {
     "Matcher": "IndexCopyMatcher",
@@ -12871,7 +12881,7 @@
   },
   "torch.optim.Optimizer.load_state_dict": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.optimizer.Optimizer.set_state_dict",
+    "paddle_api": "paddle.optimizer.Optimizer.load_state_dict",
     "min_input_args": 1,
     "args_list": [
       "state_dict"
@@ -13725,7 +13735,7 @@
   },
   "torch.scatter_add": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.put_along_axis",
+    "paddle_api": "paddle.put_along_axis",
     "min_input_args": 4,
     "args_list": [
       "input",
