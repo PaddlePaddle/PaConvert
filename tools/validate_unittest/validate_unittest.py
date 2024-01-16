@@ -104,6 +104,7 @@ cornercase_api_aux_dict = {
     "torch.linalg.solve_triangular": 'keyword arg "upper" has no default value',
     "torch.nn.GRUCell": "paddle result has diff with pytorch result when all parameters use default value",
     "torch.nn.Identity": "this api accept any inputs but all is unused",
+    "torch.nn.LSTMCell": "paddle result has diff with pytorch result when all parameters use default value",
     "torch.nn.functional.upsample": "only one of size or scale_factor should be defined",
     "torch.nn.functional.upsample_bilinear": "only one of size or scale_factor should be defined",
     "torch.nn.functional.upsample_nearest": "only one of size or scale_factor should be defined",
