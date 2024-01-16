@@ -156,10 +156,9 @@ def check_api_mapping(paconvert_item, doc_item):
     if mapping_type in mapping_type_delete:
         return
 
-    else:
-        raise NotImplementedError(
-            f"{torch_api}: `mapping_type` not found or not implemented: {mapping_type}"
-        )
+    raise NotImplementedError(
+        f"{torch_api}: `mapping_type` not found or not implemented: {mapping_type}"
+    )
 
 
 if __name__ == "__main__":
