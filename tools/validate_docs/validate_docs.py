@@ -97,7 +97,7 @@ def check_api_mapping(paconvert_item, doc_item):
             )
         if "paddle_api" not in paconvert_item:
             raise PaConvertDataError(
-                f"{torch_api}: `paddle_api` is not in paconvert_item: {paconvert_item}"
+                f"{torch_api}: `paddle_api` is not in paconvert_item: {paconvert_item}, but doc `paddle_api` is {doc_item['paddle_api']}"
             )
         if doc_item["paddle_api"] != paconvert_item["paddle_api"]:
             raise ValidateError(

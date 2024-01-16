@@ -1491,10 +1491,12 @@ class TensorCopy_Matcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle.assign({}, output={})
+            {}({}, output={})
             """
         )
-        code = API_TEMPLATE.format(kwargs["other"], self.paddleClass)
+        code = API_TEMPLATE.format(
+            self.get_paddle_api(), kwargs["other"], self.paddleClass
+        )
         return code
 
 
@@ -4220,3 +4222,14 @@ class Is_PinnedMatcher(BaseMatcher):
         code = f"'pinned' in str({self.paddleClass}.place)"
 
         return code
+
+
+class TensorCudaMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        new_kwargs = {}
+        if "non_blocking" in kwargs:
+            new_kwargs["blocking"] = f"not {kwargs.pop('non_blocking')}"
+        else:
+            new_kwargs["blocking"] = "True"
+        new_kwargs.update(kwargs)
+        return GenericMatcher.generate_code(self, new_kwargs)

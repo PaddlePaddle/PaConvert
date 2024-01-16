@@ -431,6 +431,7 @@
   "torch.Tensor.bernoulli_": {},
   "torch.Tensor.bfloat16": {
     "Matcher": "TensorBF16Matcher",
+    "paddle_api": "paddle.Tensor.astype",
     "min_input_args": 0,
     "args_list": [
       "*",
@@ -539,6 +540,7 @@
   },
   "torch.Tensor.bool": {
     "Matcher": "TensorBoolMatcher",
+    "paddle_api": "paddle.Tensor.astype",
     "min_input_args": 0,
     "args_list": [
       "*",
@@ -558,6 +560,7 @@
   },
   "torch.Tensor.byte": {
     "Matcher": "TensorByteMatcher",
+    "paddle_api": "paddle.Tensor.astype",
     "min_input_args": 0,
     "args_list": [
       "*",
@@ -567,6 +570,7 @@
   "torch.Tensor.cauchy_": {},
   "torch.Tensor.cdouble": {
     "Matcher": "TensorCdoubleMatcher",
+    "paddle_api": "paddle.Tensor.astype",
     "min_input_args": 0,
     "args_list": [
       "*",
@@ -584,6 +588,7 @@
   },
   "torch.Tensor.cfloat": {
     "Matcher": "TensorCfloatMatcher",
+    "paddle_api": "paddle.Tensor.astype",
     "min_input_args": 0,
     "args_list": [
       "*",
@@ -593,6 +598,7 @@
   "torch.Tensor.chalf": {},
   "torch.Tensor.char": {
     "Matcher": "TensorCharMatcher",
+    "paddle_api": "paddle.Tensor.astype",
     "min_input_args": 0,
     "args_list": [
       "*",
@@ -703,11 +709,15 @@
   },
   "torch.Tensor.copy_": {
     "Matcher": "TensorCopy_Matcher",
+    "paddle_api": "paddle.assign",
     "min_input_args": 1,
     "args_list": [
       "other",
       "non_blocking"
-    ]
+    ],
+    "kwargs_change": {
+      "non_blocking": ""
+    }
   },
   "torch.Tensor.copysign": {},
   "torch.Tensor.copysign_": {},
@@ -780,13 +790,19 @@
     }
   },
   "torch.Tensor.cuda": {
-    "Matcher": "TensorSkipMatcher",
+    "Matcher": "TensorCudaMatcher",
+    "paddle_api": "paddle.Tensor.cuda",
     "min_input_args": 0,
     "args_list": [
       "device",
       "non_blocking",
       "memory_format"
-    ]
+    ],
+    "kwargs_change": {
+      "device": "device_id",
+      "non_blocking": "blocking",
+      "memory_format": ""
+    }
   },
   "torch.Tensor.cummax": {
     "Matcher": "DoubleAssignMatcher",
@@ -1013,6 +1029,7 @@
   },
   "torch.Tensor.double": {
     "Matcher": "TensorDoubleMatcher",
+    "paddle_api": "paddle.Tensor.astype",
     "min_input_args": 0,
     "args_list": [
       "*",
@@ -1201,6 +1218,7 @@
   },
   "torch.Tensor.float": {
     "Matcher": "TensorFloatMatcher",
+    "paddle_api": "paddle.Tensor.astype",
     "min_input_args": 0,
     "args_list": [
       "*",
@@ -1391,6 +1409,7 @@
   },
   "torch.Tensor.half": {
     "Matcher": "TensorFP16Matcher",
+    "paddle_api": "paddle.Tensor.astype",
     "min_input_args": 0,
     "args_list": [
       "*",
@@ -1585,6 +1604,7 @@
   },
   "torch.Tensor.int": {
     "Matcher": "TensorIntMatcher",
+    "paddle_api": "paddle.Tensor.astype",
     "min_input_args": 0,
     "args_list": [
       "*",
@@ -1980,6 +2000,7 @@
   },
   "torch.Tensor.long": {
     "Matcher": "TensorLongMatcher",
+    "paddle_api": "paddle.Tensor.astype",
     "min_input_args": 0,
     "args_list": [
       "*",
@@ -2901,6 +2922,7 @@
   },
   "torch.Tensor.short": {
     "Matcher": "TensorShortMatcher",
+    "paddle_api": "paddle.Tensor.astype",
     "min_input_args": 0,
     "args_list": [
       "*",
