@@ -8425,13 +8425,20 @@
     }
   },
   "torch.msort": {
-    "Matcher": "MSortMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.sort",
     "min_input_args": 1,
     "args_list": [
       "input",
       "*",
       "out"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x"
+    },
+    "paddle_default_kwargs": {
+      "axis": 0
+    }
   },
   "torch.multinomial": {
     "Matcher": "GenericMatcher",
