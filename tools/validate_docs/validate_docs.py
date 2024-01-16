@@ -50,7 +50,10 @@ def check_unchange_matcher(paconvert_item, doc_item):
     torch_api = doc_item["torch_api"]
     paddle_api = doc_item["paddle_api"]
 
-    if re.sub(r"^torch\.", "paddle.", torch_api) != paddle_api:
+    mapped_api = re.sub(r"^torch\.optim\.", "paddle.optimizer.", torch_api)
+    mapped_api = re.sub(r"^torch\.", "paddle.", mapped_api)
+
+    if mapped_api != paddle_api:
         raise ValidateError(
             f"{torch_api}: `paddle_api` is not equal: {torch_api} != {paddle_api}"
         )
@@ -95,6 +98,11 @@ def check_api_mapping(paconvert_item, doc_item):
             raise DocDataError(
                 f"{torch_api}: `paddle_api` is not in doc_item: {doc_item}"
             )
+
+        # 不用检查的特例
+        if matcher == "UnchangeMatcher":
+            return check_unchange_matcher(paconvert_item, doc_item)
+
         if "paddle_api" not in paconvert_item:
             raise PaConvertDataError(
                 f"{torch_api}: `paddle_api` is not in paconvert_item: {paconvert_item}, but doc `paddle_api` is {doc_item['paddle_api']}"

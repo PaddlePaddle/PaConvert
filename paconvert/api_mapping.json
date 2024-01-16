@@ -12636,6 +12636,7 @@
   },
   "torch.numel": {
     "Matcher": "NumelMatcher",
+    "paddle_api": "paddle.Tensor.size",
     "min_input_args": 1,
     "args_list": [
       "input"
@@ -13621,13 +13622,17 @@
     ]
   },
   "torch.row_stack": {
-    "Matcher": "VStackMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.row_stack",
     "min_input_args": 1,
     "args_list": [
       "tensors",
       "*",
       "out"
-    ]
+    ],
+    "kwargs_change": {
+      "tensors": "x"
+    }
   },
   "torch.rrelu": {
     "Matcher": "GenericMatcher",
