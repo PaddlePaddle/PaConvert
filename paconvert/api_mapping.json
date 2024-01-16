@@ -2977,6 +2977,7 @@
   },
   "torch.Tensor.size": {
     "Matcher": "TensorSizeMatcher",
+    "paddle_api": "paddle.Tensor.shape",
     "min_input_args": 0,
     "args_list": [
       "dim"
@@ -3231,6 +3232,7 @@
   },
   "torch.Tensor.to": {
     "Matcher": "TensorToMatcher",
+    "paddle_api": "paddle.Tensor.to",
     "min_input_args": 1,
     "args_list": [
       "other",
@@ -4636,13 +4638,17 @@
     }
   },
   "torch.column_stack": {
-    "Matcher": "ColumnStackMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.column_stack",
     "min_input_args": 1,
     "args_list": [
       "tensors",
       "*",
       "out"
-    ]
+    ],
+    "kwargs_change": {
+      "tensors": "x"
+    }
   },
   "torch.combinations": {
     "Matcher": "GenericMatcher",

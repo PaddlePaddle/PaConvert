@@ -1954,46 +1954,6 @@ class HStackMatcher(BaseMatcher):
         return code
 
 
-class ColumnStackMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "out" in kwargs and kwargs["out"] != "None":
-            API_TEMPLATE = textwrap.dedent(
-                """
-                if {}[0].ndim == 1:
-                    {} = paddle.stack({}, axis=1)
-                else:
-                    {} = paddle.concat({}, axis=1)
-                paddle.assign({}, output={})
-                """
-            )
-            out = get_unique_name("out")
-            code = API_TEMPLATE.format(
-                kwargs["tensors"],
-                out,
-                kwargs["tensors"],
-                out,
-                kwargs["tensors"],
-                out,
-                kwargs["out"],
-            )
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                if {}[0].ndim == 1:
-                    {} = paddle.stack({}, axis=1)
-                else:
-                    {} = paddle.concat({}, axis=1)
-                {}
-                """
-            )
-            out = get_unique_name("out")
-            code = API_TEMPLATE.format(
-                kwargs["tensors"], out, kwargs["tensors"], out, kwargs["tensors"], out
-            )
-
-        return code
-
-
 # will implenment by aux_code
 class TensorIndexCopyMatcher(BaseMatcher):
     def generate_code(self, kwargs):
