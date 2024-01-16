@@ -1888,46 +1888,6 @@ class IsNonzeroMatcher(BaseMatcher):
         return code
 
 
-class VStackMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "out" in kwargs and kwargs["out"] != "None":
-            API_TEMPLATE = textwrap.dedent(
-                """
-                if {}[0].ndim == 1:
-                    {} = paddle.stack({})
-                else:
-                    {} = paddle.concat({})
-                paddle.assign({}, output={})
-                """
-            )
-            out = get_unique_name("out")
-            code = API_TEMPLATE.format(
-                kwargs["tensors"],
-                out,
-                kwargs["tensors"],
-                out,
-                kwargs["tensors"],
-                out,
-                kwargs["out"],
-            )
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                if {}[0].ndim == 1:
-                    {} = paddle.stack({})
-                else:
-                    {} = paddle.concat({})
-                {}
-                """
-            )
-            out = get_unique_name("out")
-            code = API_TEMPLATE.format(
-                kwargs["tensors"], out, kwargs["tensors"], out, kwargs["tensors"], out
-            )
-
-        return code
-
-
 # will implenment by aux_code
 class TensorIndexCopyMatcher(BaseMatcher):
     def generate_code(self, kwargs):

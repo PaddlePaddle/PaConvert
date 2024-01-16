@@ -15339,13 +15339,17 @@
     }
   },
   "torch.vstack": {
-    "Matcher": "VStackMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vstack",
     "min_input_args": 1,
     "args_list": [
       "tensors",
       "*",
       "out"
-    ]
+    ],
+    "kwargs_change": {
+      "tensors": "x"
+    }
   },
   "torch.where": {
     "Matcher": "WhereMatcher",
