@@ -9,11 +9,11 @@
   },
   "torch.ByteTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.to_tensor"
   },
   "torch.DoubleTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.to_tensor"
   },
   "torch.FloatTensor": {
     "Matcher": "TensorMatcher",
@@ -28,19 +28,19 @@
   },
   "torch.HalfTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.to_tensor"
   },
   "torch.IntTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.to_tensor"
   },
   "torch.LongTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.to_tensor"
   },
   "torch.ShortTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.to_tensor"
   },
   "torch.Size": {
     "Matcher": "SizeMatcher",
@@ -4788,15 +4788,15 @@
   "torch.ctc_loss": {},
   "torch.cuda.BoolTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.to_tensor"
   },
   "torch.cuda.ByteTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.to_tensor"
   },
   "torch.cuda.DoubleTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.to_tensor"
   },
   "torch.cuda.Event": {
     "Matcher": "GenericMatcher",
@@ -4810,23 +4810,23 @@
   },
   "torch.cuda.FloatTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.to_tensor"
   },
   "torch.cuda.HalfTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.to_tensor"
   },
   "torch.cuda.IntTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.to_tensor"
   },
   "torch.cuda.LongTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.to_tensor"
   },
   "torch.cuda.ShortTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.to_tensor"
   },
   "torch.cuda.Stream": {
     "Matcher": "CudaStreamMatcher",
