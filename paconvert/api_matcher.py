@@ -2978,14 +2978,6 @@ class SelectMatcher(BaseMatcher):
 
 class SearchsortedMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs_change = {}
-        if "kwargs_change" in self.api_mapping:
-            kwargs_change = self.api_mapping["kwargs_change"]
-
-        for k in kwargs_change:
-            if k in kwargs:
-                kwargs[kwargs_change[k]] = kwargs.pop(k)
-
         if "side" in kwargs:
             kwargs["right"] = f"{kwargs.pop('side')} == 'right'"
 
@@ -2994,14 +2986,7 @@ class SearchsortedMatcher(BaseMatcher):
                 "sorted_sequence"
             ] = f"{kwargs['sorted_sequence']}.take_along_axis(axis=-1, indices={kwargs.pop('sorter')})"
 
-        code = "paddle.searchsorted({})".format(self.kwargs_to_str(kwargs))
-        if "out" in kwargs and kwargs["out"] != "None":
-            out_v = kwargs.pop("out")
-            code = "paddle.assign(paddle.searchsorted({}), output={})".format(
-                self.kwargs_to_str(kwargs), out_v
-            )
-
-        return code
+        return GenericMatcher.generate_code(self, kwargs)
 
 
 class SincMatcher(BaseMatcher):

@@ -13745,6 +13745,7 @@
   },
   "torch.searchsorted": {
     "Matcher": "SearchsortedMatcher",
+    "paddle_api": "paddle.searchsorted",
     "min_input_args": 2,
     "args_list": [
       "sorted_sequence",
