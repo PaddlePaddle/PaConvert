@@ -6736,7 +6736,8 @@
     }
   },
   "torch.fmod": {
-    "Matcher": "FModMatcher",
+    "Matcher": "Num2TensorBinaryMatcher",
+    "paddle_api": "paddle.mod",
     "min_input_args": 2,
     "args_list": [
       "input",
