@@ -87,6 +87,28 @@ def check_api_mapping(paconvert_item, doc_item):
             raise ValidateError(
                 f'{torch_api}: `paddle_api` not match: doc is `{doc_item["paddle_api"]}`, but paconvert is `{paconvert_item["paddle_api"]}`'
             )
+        return
+
+    mapping_type_2 = ["torch 参数更多"]
+    if mapping_type in mapping_type_2:
+        if "paddle_api" not in doc_item:
+            raise DocDataError(
+                f"{torch_api}: `paddle_api` is not in doc_item: {doc_item}"
+            )
+        if "paddle_api" not in paconvert_item:
+            raise PaConvertDataError(
+                f"{torch_api}: `paddle_api` is not in paconvert_item: {paconvert_item}"
+            )
+        if doc_item["paddle_api"] != paconvert_item["paddle_api"]:
+            raise ValidateError(
+                f'{torch_api}: `paddle_api` not match: doc is `{doc_item["paddle_api"]}`, but paconvert is `{paconvert_item["paddle_api"]}`'
+            )
+        return
+
+    else:
+        raise NotImplementedError(
+            f"{torch_api}: `mapping_type` not found: {mapping_type}"
+        )
 
 
 if __name__ == "__main__":
@@ -150,6 +172,8 @@ if __name__ == "__main__":
                 paconvert_errors.append(e)
             except ValidateError as e:
                 validate_errors.append(e)
+            except NotImplementedError as e:
+                validate_errors.append(e)
             except Exception as e:
                 verbose_print(f"ERROR: {api} {e}")
                 sys.exit(1)
@@ -168,6 +192,7 @@ if __name__ == "__main__":
                 for pe in paconvert_errors:
                     print(pe, file=f)
                     verbose_print(f"INFO: {pe}", v_level=3)
+        validate_errors.sort(key=lambda e: f"{type(e)}", reverse=True)
         if len(validate_errors) > 0:
             verbose_print(f"ERROR: {len(validate_errors)} api validate error.")
             with open(os.path.join(tool_dir, "validate_error_list.log"), "w") as f:
