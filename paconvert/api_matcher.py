@@ -1646,14 +1646,7 @@ class SetPrintOptionsMatcher(BaseMatcher):
 
             kwargs.pop("profile")
 
-        kwargs = self.set_paddle_default_kwargs(kwargs)
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle.set_printoptions({})
-            """
-        )
-        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
-        return code
+        return GenericMatcher.generate_code(self, kwargs)
 
 
 class RandLikeMatcher(BaseMatcher):

@@ -13819,6 +13819,7 @@
   },
   "torch.set_printoptions": {
     "Matcher": "SetPrintOptionsMatcher",
+    "paddle_api": "paddle.set_printoptions",
     "min_input_args": 0,
     "args_list": [
       "precision",
