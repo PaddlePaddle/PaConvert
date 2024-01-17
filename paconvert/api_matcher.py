@@ -2181,28 +2181,14 @@ class ExpitMatcher(BaseMatcher):
         return code
 
 
-class FModMatcher(BaseMatcher):
+class Num2TensorBinaryConvertTypeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "out" in kwargs and kwargs["out"] != "None":
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.assign(paddle.mod({}, paddle.to_tensor({}, dtype={}.dtype)), output={})
-                """
-            )
-            code = API_TEMPLATE.format(
-                kwargs["input"], kwargs["other"], kwargs["input"], kwargs["out"]
-            )
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.mod({}, paddle.to_tensor({}, dtype={}.dtype))
-                """
-            )
-            code = API_TEMPLATE.format(
-                kwargs["input"], kwargs["other"], kwargs["input"]
-            )
+        if "other" in kwargs:
+            kwargs[
+                "y"
+            ] = f"paddle.to_tensor({kwargs.pop('other')}, dtype={kwargs['input']}.dtype)"
 
-        return code
+        return GenericMatcher.generate_code(self, kwargs)
 
 
 class LdExpMatcher(BaseMatcher):

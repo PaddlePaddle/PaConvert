@@ -6742,7 +6742,7 @@
     }
   },
   "torch.fmod": {
-    "Matcher": "Num2TensorBinaryMatcher",
+    "Matcher": "Num2TensorBinaryConvertTypeMatcher",
     "paddle_api": "paddle.mod",
     "min_input_args": 2,
     "args_list": [
@@ -6750,7 +6750,11 @@
       "other",
       "*",
       "out"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "other": "y"
+    }
   },
   "torch.frac": {
     "Matcher": "GenericMatcher",
