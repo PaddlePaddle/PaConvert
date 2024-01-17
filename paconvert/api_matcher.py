@@ -906,7 +906,7 @@ class TensorMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         kwargs = self.parse_kwargs(kwargs)
         if kwargs is None:
-            return None
+            return "paddle.Tensor"
 
         if "size" in kwargs:
             shape = kwargs.pop("size")
