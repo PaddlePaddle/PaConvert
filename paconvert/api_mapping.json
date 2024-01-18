@@ -800,7 +800,6 @@
     ],
     "kwargs_change": {
       "device": "device_id",
-      "non_blocking": "blocking",
       "memory_format": ""
     }
   },
