@@ -4903,6 +4903,16 @@
       "device": "device"
     }
   },
+  "torch.cuda.device": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.CUDAPlace",
+    "args_list": [
+      "device"
+    ],
+    "kwargs_change": {
+      "device": "id"
+    }
+  },
   "torch.cuda.device_count": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.device_count",
