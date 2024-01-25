@@ -4878,15 +4878,6 @@
       "cache_enabled": ""
     }
   },
-  "torch.cuda.comm.broadcast": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.distributed.broadcast",
-    "args_list": [
-      "tensor",
-      "devices",
-      "out"
-    ]
-  },
   "torch.cuda.current_device": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.framework._current_expected_place",
@@ -12439,6 +12430,15 @@
       "static_graph"
     ],
     "min_input_args": 1
+  },
+  "torch.nn.parallel.comm.broadcast": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.broadcast",
+    "args_list": [
+      "tensor",
+      "devices",
+      "out"
+    ]
   },
   "torch.nn.utils.clip_grad_norm_": {
     "Matcher": "GenericMatcher",

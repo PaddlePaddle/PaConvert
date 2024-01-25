@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.cuda.comm.broadcast")
+obj = APIBase("torch.nn.parallel.comm.broadcast")
 
 
 def test_case_1():
@@ -24,7 +24,8 @@ def test_case_1():
         """
         import torch
         input = torch.tensor([1., 2.])
-        result = torch.cuda.comm.broadcast(input)
+        device = ['cuda:0']
+        result = torch.nn.parallel.comm.broadcast(input, device)
         """
     )
     obj.run(pytorch_code, ["result"])
