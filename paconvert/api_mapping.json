@@ -2317,6 +2317,7 @@
   },
   "torch.Tensor.narrow": {
     "Matcher": "NarrowMatcher",
+    "paddle_api": "paddle.slice",
     "min_input_args": 3,
     "args_list": [
       "dim",
@@ -2714,6 +2715,7 @@
   },
   "torch.Tensor.repeat": {
     "Matcher": "TensorRepeatMatcher",
+    "paddle_api": "paddle.Tensor.tile",
     "min_input_args": 1,
     "args_list": [
       "*repeats"
@@ -2743,6 +2745,7 @@
   },
   "torch.Tensor.reshape": {
     "Matcher": "TensorReshapeMatcher",
+    "paddle_api": "paddle.Tensor.reshape",
     "min_input_args": 1,
     "args_list": [
       "*shape"
@@ -3158,6 +3161,7 @@
   },
   "torch.Tensor.swapaxes": {
     "Matcher": "SwapAxesMatcher",
+    "paddle_api": "paddle.transpose",
     "min_input_args": 2,
     "args_list": [
       "axis0",
@@ -3166,6 +3170,7 @@
   },
   "torch.Tensor.swapdims": {
     "Matcher": "SwapAxesMatcher",
+    "paddle_api": "paddle.transpose",
     "min_input_args": 2,
     "args_list": [
       "dim0",
@@ -3520,6 +3525,7 @@
   },
   "torch.Tensor.view": {
     "Matcher": "TensorViewMatcher",
+    "paddle_api": "paddle.Tensor.view",
     "min_input_args": 1,
     "args_list": [
       "*size",
@@ -6906,7 +6912,7 @@
   },
   "torch.get_rng_state": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.get_cuda_rng_state",
+    "paddle_api": "paddle.get_rng_state",
     "min_input_args": 0
   },
   "torch.greater": {
@@ -8605,6 +8611,7 @@
   },
   "torch.narrow": {
     "Matcher": "NarrowMatcher",
+    "paddle_api": "paddle.slice",
     "min_input_args": 4,
     "args_list": [
       "input",
@@ -13848,7 +13855,7 @@
   },
   "torch.set_rng_state": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.set_cuda_rng_state",
+    "paddle_api": "paddle.set_rng_state",
     "min_input_args": 1,
     "args_list": [
       "new_state"
@@ -14573,6 +14580,7 @@
   },
   "torch.swapaxes": {
     "Matcher": "SwapAxesMatcher",
+    "paddle_api": "paddle.transpose",
     "min_input_args": 3,
     "args_list": [
       "input",
