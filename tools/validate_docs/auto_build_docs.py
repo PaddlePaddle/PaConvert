@@ -47,6 +47,11 @@ not_supported_matcher = {
     "TensorNewFullMatcher",
     "TensorNewTensorMatcher",
     "TensorRenameMatcher",
+    "DeviceMatcher",
+}
+
+not_supported_api_list = {
+    "torch.distributed.rpc.init_rpc",
 }
 
 
@@ -65,7 +70,11 @@ def get_mapping_type(api_mapping):
         else:
             print(args_list)
             raise ValueError("UnchangeMatcher should not have args_list.")
-    elif matcher == "GenericMatcher":
+    elif matcher in {
+        "GenericMatcher",
+        "Num2TensorBinaryWithAlphaMatcher",
+        "Num2TensorBinaryMatcher",
+    }:
         if len(args_list) == 0:
             return "无参数"
 
@@ -174,7 +183,11 @@ please check whether signature correct.
 
 
 def get_output_file_path(output_dir, api_name):
-    prefix2subdir = {"torch.Tensor": "Tensor"}
+    prefix2subdir = {
+        "torch.Tensor": "Tensor",
+        "torch.distributions": "distributions",
+        "torch.fft": "fft",
+    }
 
     for prefix in prefix2subdir:
         if api_name.startswith(prefix):
@@ -209,10 +222,23 @@ if __name__ == "__main__":
     with open(os.path.join(project_dir, "paconvert/api_alias_mapping.json"), "r") as f:
         api_alias_mapping = json.load(f)
 
+        api_alias_backward_mapping = dict()
+        for k, v in api_alias_mapping.items():
+            if v not in api_alias_backward_mapping:
+                api_alias_backward_mapping[v] = [k]
+            else:
+                api_alias_backward_mapping[v].append(k)
+        for k in api_alias_backward_mapping:
+            api_alias_backward_mapping[k] = sorted(
+                api_alias_backward_mapping[k], key=lambda x: len(x)
+            )
+        # 允许有多个原 api，但只有一个目标 api
+
     with open(os.path.join(tool_dir, "docs_mappings.json"), "r") as f:
         docs_mapping_data = json.load(f)
         docs_mapping = dict([(i["torch_api"], i) for i in docs_mapping_data])
 
+    founded_count = 0
     missing_docs = []
 
     for api in api_mapping:
@@ -224,8 +250,23 @@ if __name__ == "__main__":
         matcher = api_mapping[api]["Matcher"]
         if matcher in not_supported_matcher:
             continue
+        if api in not_supported_api_list:
+            continue
 
-        if api not in docs_mapping:
+        docs_api = api
+        if api in docs_mapping:
+            docs_api = api
+            # 反查时先直接查 target，找不到再从短到长匹配
+        else:
+            for n in api_alias_backward_mapping.get(api, []):
+                if n in docs_mapping:
+                    docs_api = n
+                    break
+            else:
+                missing_docs.append(api)
+                print(api)
+
+        if docs_api not in docs_mapping:
             doc_content = auto_build_mapping_doc(api, api_mapping[api])
             print(doc_content)
             target_path = get_output_file_path(output_path, api)
@@ -238,3 +279,7 @@ if __name__ == "__main__":
 
             print(f'auto build doc for {api} success, output to "{target_path}"')
             exit(0)
+        else:
+            founded_count += 1
+
+    print(f"found {founded_count} api exists.")

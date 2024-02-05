@@ -94,6 +94,22 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "'complex64'"
   },
+  "torch.distributed.ReduceOp.MAX": {
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.distributed.ReduceOp.MAX"
+  },
+  "torch.distributed.ReduceOp.MIN": {
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.distributed.ReduceOp.MIN"
+  },
+  "torch.distributed.ReduceOp.PRODUCT": {
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.distributed.ReduceOp.PROD"
+  },
+  "torch.distributed.ReduceOp.SUM": {
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.distributed.ReduceOp.SUM"
+  },
   "torch.distributions.Distribution.batch_shape": {},
   "torch.distributions.Distribution.event_shape": {},
   "torch.distributions.Distribution.mean": {},
