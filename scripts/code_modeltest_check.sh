@@ -19,7 +19,7 @@ export FLAGS_set_to_1d=0
 cd /workspace/$1/PaConvert/
 
 echo "Insalling cpu version torch"
-python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+python -m pip install torch==2.1.0 --index-url https://download.pytorch.org/whl/cpu
 python -c "import torch; print('torch version information:' ,torch.__version__)"
 
 echo "Insalling develop version paddle"
