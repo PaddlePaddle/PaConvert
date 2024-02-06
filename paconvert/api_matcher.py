@@ -1075,7 +1075,7 @@ class TensorSizeMatcher(BaseMatcher):
         if "dim" in kwargs:
             code = "tuple({}.shape[{}])".format(self.paddleClass, kwargs["dim"])
         else:
-            code = "tuple({}.shape.tuple())".format(self.paddleClass)
+            code = "tuple({}.shape)".format(self.paddleClass)
         return code
 
 
@@ -4114,12 +4114,9 @@ class OuterMatcher(BaseMatcher):
                     'INT64FP32':'float64',
                     'INT64FP64':'float64',
                 }
-                promote_flag = False
                 if x.dtype.name + y.dtype.name in TYPE_PROMOTE_DICT:
-                    promote_flag = True
                     promote_type = TYPE_PROMOTE_DICT[x.dtype.name + y.dtype.name]
                 elif y.dtype.name + x.dtype.name in TYPE_PROMOTE_DICT:
-                    promote_flag = True
                     promote_type = TYPE_PROMOTE_DICT[y.dtype.name + x.dtype.name]
                 else:
                     return paddle.outer(x,y)
