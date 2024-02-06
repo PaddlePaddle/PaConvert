@@ -169,6 +169,137 @@ class DeleteMatcher(BaseMatcher):
         return "delete"
 
 
+class FSInitializeModelParallelMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "pipeline_length" not in kwargs:
+            kwargs["pipeline_length"] = 1
+
+        world_size = get_unique_name("world_size")
+        rank = get_unique_name("rank")
+        model_parallel_size = get_unique_name("model_parallel_size")
+        data_parallel_size = get_unique_name("data_parallel_size")
+        hc_dict = get_unique_name("hc_dict")
+        strategy = get_unique_name("strategy")
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {} = paddle.distributed.get_world_size()
+            {} = paddle.distributed.get_rank()
+            {} = int(min({},{}))
+            {} = int({}/ ({} * {}))
+            {} = paddle.distributed.fleet.DistributedStrategy()
+            {} = dict()
+            {}["dp_degree"] = {}
+            {}["mp_degree"] = {}
+            {}["pp_degree"] = {}
+            {}.hybrid_configs = {}
+            paddle.distributed.fleet.init(is_collective=True, strategy={})
+            """
+        )
+        code = API_TEMPLATE.format(
+            world_size,
+            rank,
+            model_parallel_size,
+            world_size,
+            kwargs["model_parallel_size_"],
+            data_parallel_size,
+            world_size,
+            model_parallel_size,
+            kwargs["pipeline_length"],
+            strategy,
+            hc_dict,
+            hc_dict,
+            data_parallel_size,
+            hc_dict,
+            model_parallel_size,
+            hc_dict,
+            kwargs["pipeline_length"],
+            strategy,
+            hc_dict,
+            strategy,
+        )
+        return code
+
+
+class FSModelParallelIsInitializedMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = (
+            "paddle.distributed.fleet.base.topology._HYBRID_PARALLEL_GROUP is not None"
+        )
+        return code
+
+
+class FSColumnParallelLinearMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "bias" not in kwargs:
+            kwargs["bias"] = True
+        if "gather_output" not in kwargs:
+            kwargs["gather_output"] = True
+
+        code = "paddle.distributed.fleet.meta_parallel.\
+                ColumnParallelLinear(in_features={}, out_features={},has_bias={},\
+                gather_output={}, weight_attr=paddle.nn.initializer.Constant(0))".format(
+            kwargs["in_features"],
+            kwargs["out_features"],
+            kwargs["bias"],
+            kwargs["gather_output"],
+        )
+        return code
+
+
+class FSRowParallelLinearMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "bias" not in kwargs:
+            kwargs["bias"] = True
+        if "input_is_parallel" not in kwargs:
+            kwargs["input_is_parallel"] = False
+
+        code = "paddle.distributed.fleet.meta_parallel.\
+                RowParallelLinear(in_features={}, out_features={},has_bias={},\
+                input_is_parallel={}, weight_attr=paddle.nn.initializer.Constant(0))".format(
+            kwargs["in_features"],
+            kwargs["out_features"],
+            kwargs["bias"],
+            kwargs["input_is_parallel"],
+        )
+        return code
+
+
+class FSParallelEmbeddingMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "paddle.distributed.fleet.meta_parallel.\
+                VocabParallelEmbedding(num_embeddings={},\
+                embedding_dim={},weight_attr=paddle.nn.initializer.Constant(0))".format(
+            kwargs["num_embeddings"], kwargs["embedding_dim"]
+        )
+        return code
+
+
+class InferenceModeMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def empty_decorator(func):
+                return func
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        if "mode" in kwargs:
+            print(kwargs["mode"])
+            if kwargs["mode"] == "(False)":
+                self.write_aux_code()
+                code = "paddle_aux.empty_decorator"
+            elif kwargs["mode"] == "(True)":
+                code = "paddle.no_grad()"
+            else:
+                code = "paddle.no_grad({})".format(kwargs["mode"])
+        else:
+            code = "paddle.no_grad()"
+        return code
+
+
 class AtleastMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         new_args = self.parse_args(args)
