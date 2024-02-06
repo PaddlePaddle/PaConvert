@@ -13822,6 +13822,13 @@
       "d"
     ]
   },
+  "torch.set_default_tensor_type": {
+    "paddle_api": "paddle.set_default_dtype",
+    "Matcher": "SetDefaultTensorTypeMatcher",
+    "args_list": [
+      "d"
+    ]
+  },
   "torch.set_grad_enabled": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.set_grad_enabled",
