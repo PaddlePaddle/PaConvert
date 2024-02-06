@@ -1073,9 +1073,9 @@ class TensorTransposeMatcher(BaseMatcher):
 class TensorSizeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "dim" in kwargs:
-            code = "{}.shape[{}]".format(self.paddleClass, kwargs["dim"])
+            code = "tuple({}.shape[{}])".format(self.paddleClass, kwargs["dim"])
         else:
-            code = "{}.shape".format(self.paddleClass)
+            code = "tuple({}.shape.tuple())".format(self.paddleClass)
         return code
 
 
@@ -2030,9 +2030,9 @@ class RandomSamplerMatcher(BaseMatcher):
 class SizeMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         if len(args) == 0:
-            code = "list([])"
+            code = "tuple([])"
         else:
-            code = "list({})".format(astor.to_source(args[0]).strip("\n"))
+            code = "tuple({})".format(astor.to_source(args[0]).strip("\n"))
 
         return ast.parse(code).body
 
@@ -2822,44 +2822,11 @@ class Chain_MatmulMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
-class TensorViewMatcher(BaseMatcher):
-    def generate_aux_code(self):
-        CODE_TEMPLATE = textwrap.dedent(
-            """
-            def view(self, *args, **kwargs):
-                if args:
-                    if len(args)==1 and isinstance(args[0], (tuple, list, str)):
-                        return paddle.view(self, args[0])
-                    else:
-                        return paddle.view(self, list(args))
-                elif kwargs:
-                    key = [k for k in kwargs.keys()]
-                    return paddle.view(self, shape_or_dtype = kwargs[key[0]])
-
-            setattr(paddle.Tensor, 'view', view)
-            """
-        )
-        return CODE_TEMPLATE
-
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        if kwargs:
-            if len(kwargs) == 1:
-                self.write_aux_code()
-                return "unchange"
-
-        if args:
-            if len(args) == 1:
-                if isinstance(args[0], (ast.Tuple, ast.List)):
-                    return "unchange"
-                if isinstance(args[0], (ast.Constant)) and isinstance(
-                    args[0].value, str
-                ):
-                    return "unchange"
-
-            self.write_aux_code()
-            return "unchange"
-
-        return "misidentify"
+class TensorShapeMatcher(BaseMatcher):
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+        code = "tuple({}.shape)".format(self.paddleClass)
+        return ast.parse(code).body
 
 
 class TensorReshapeMatcher(BaseMatcher):
@@ -4076,3 +4043,91 @@ class TensorCudaMatcher(BaseMatcher):
             new_kwargs["blocking"] = "True"
         new_kwargs.update(kwargs)
         return GenericMatcher.generate_code(self, new_kwargs)
+
+
+class TensorViewMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def view(self, *args, **kwargs):
+                print(args)
+                if args:
+                    if len(args)==1:
+                        if isinstance(args[0], (tuple, list)):
+                            return paddle.reshape(self, args[0]) # To change reshape => view
+                        elif isinstance(args[0], str):
+                            return paddle.view(self, args[0])
+                        else:
+                            return paddle.reshape(self, list(args)) # To change reshape => view
+                    else:
+                        return paddle.reshape(self, list(args)) # To change reshape => view
+                elif kwargs:
+                    key = [k for k in kwargs.keys()]
+                    if 'dtype' in kwargs:
+                        return paddle.view(self, shape_or_dtype = kwargs[key[0]])
+                    else:
+                        return paddle.reshape(self, shape = kwargs[key[0]]) # To change reshape => view
+
+            setattr(paddle.Tensor, 'view', view)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        if kwargs:
+            if len(kwargs) == 1:
+                self.write_aux_code()
+                return "unchange"
+
+        if args:
+            if len(args) == 1:
+                if isinstance(args[0], (ast.Tuple, ast.List)):
+                    self.write_aux_code()  # To remove
+                    return "unchange"
+                if isinstance(args[0], (ast.Constant)) and isinstance(
+                    args[0].value, str
+                ):
+                    self.write_aux_code()  # To remove
+                    return "unchange"
+
+            self.write_aux_code()
+            return "unchange"
+
+        return "misidentify"
+
+
+class OuterMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def outer(x, y):
+                TYPE_PROMOTE_DICT ={
+                    'INT16FP16':'float16',
+                    'INT16FP32':'float32',
+                    'INT16FP64':'float64',
+
+                    'INT32FP16':'float32',
+                    'INT32FP32':'float32',
+                    'INT32FP64':'float64',
+
+                    'INT64FP16':'float64',
+                    'INT64FP32':'float64',
+                    'INT64FP64':'float64',
+                }
+                promote_flag = False
+                if x.dtype.name + y.dtype.name in TYPE_PROMOTE_DICT:
+                    promote_flag = True
+                    promote_type = TYPE_PROMOTE_DICT[x.dtype.name + y.dtype.name]
+                elif y.dtype.name + x.dtype.name in TYPE_PROMOTE_DICT:
+                    promote_flag = True
+                    promote_type = TYPE_PROMOTE_DICT[y.dtype.name + x.dtype.name]
+                else:
+                    return paddle.outer(x,y)
+                return paddle.outer(x.astype(promote_type),y.astype(promote_type))
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        return "paddle_aux.outer(x={},y={})".format(kwargs["input"], kwargs["vec2"])

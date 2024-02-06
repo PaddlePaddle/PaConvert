@@ -50,7 +50,7 @@
     "paddle_api": "paddle.Tensor.stop_gradient"
   },
   "torch.Tensor.shape": {
-    "Matcher": "UnchangeMatcher"
+    "Matcher": "TensorShapeMatcher"
   },
   "torch.__version__": {
     "Matcher": "GenericMatcher",
