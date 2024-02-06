@@ -1073,7 +1073,7 @@ class TensorTransposeMatcher(BaseMatcher):
 class TensorSizeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "dim" in kwargs:
-            code = "tuple({}.shape[{}])".format(self.paddleClass, kwargs["dim"])
+            code = "{}.shape[{}]".format(self.paddleClass, kwargs["dim"])
         else:
             code = "tuple({}.shape)".format(self.paddleClass)
         return code
