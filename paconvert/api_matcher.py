@@ -1372,7 +1372,8 @@ class TorchTensorMatcher(BaseMatcher):
 
         if "device" in kwargs:
             kwargs["place"] = kwargs.pop("device")
-
+            if kwargs["place"] == '"""cuda"""':
+                kwargs["place"] = '"""gpu"""'
         if "requires_grad" in kwargs:
             kwargs["stop_gradient"] = "not " + kwargs.pop("requires_grad").strip("()")
 
