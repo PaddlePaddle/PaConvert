@@ -180,6 +180,18 @@ if __name__ == "__main__":
     with open(os.path.join(project_dir, "paconvert/api_alias_mapping.json"), "r") as f:
         api_alias_mapping = json.load(f)
 
+        api_alias_backward_mapping = dict()
+        for k, v in api_alias_mapping.items():
+            if v not in api_alias_backward_mapping:
+                api_alias_backward_mapping[v] = [k]
+            else:
+                api_alias_backward_mapping[v].append(k)
+        for k in api_alias_backward_mapping:
+            api_alias_backward_mapping[k] = sorted(
+                api_alias_backward_mapping[k], key=lambda x: len(x)
+            )
+        # 允许有多个原 api，但只有一个目标 api
+
     with open(os.path.join(tool_dir, "docs_mappings.json"), "r") as f:
         docs_mapping_data = json.load(f)
         docs_mapping = dict([(i["torch_api"], i) for i in docs_mapping_data])
@@ -193,10 +205,19 @@ if __name__ == "__main__":
         if "Matcher" not in api_mapping[api]:
             continue
 
-        if api not in docs_mapping:
-            missing_docs.append(api)
+        if api in docs_mapping:
+            docs_api = api
+            # 反查时先直接查 target，找不到再从短到长匹配
         else:
-            validated_apis.append(api)
+            for n in api_alias_backward_mapping.get(api, []):
+                if n in docs_mapping:
+                    docs_api = n
+                    break
+            else:
+                missing_docs.append(api)
+                continue
+
+        validated_apis.append((api, docs_api))
 
     if len(missing_docs) > 0:
         verbose_print(
@@ -213,9 +234,9 @@ if __name__ == "__main__":
         paconvert_errors = []
         validate_errors = []
 
-        for api in validated_apis:
+        for api, docs_api in validated_apis:
             try:
-                check_api_mapping(api_mapping[api], docs_mapping[api])
+                check_api_mapping(api_mapping[api], docs_mapping[docs_api])
             except DocDataError as e:
                 doc_errors.append(e)
             except PaConvertDataError as e:
@@ -225,7 +246,7 @@ if __name__ == "__main__":
             except NotImplementedError as e:
                 validate_errors.append(e)
             except Exception as e:
-                verbose_print(f"ERROR: {api} {e}")
+                verbose_print(f"ERROR: {api} raised {e}")
                 sys.exit(1)
 
         if len(doc_errors) > 0:

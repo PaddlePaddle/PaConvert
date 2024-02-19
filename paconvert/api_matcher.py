@@ -1749,7 +1749,7 @@ class NarrowMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             {} = ({}.shape[{}] + {}) if {} < 0 else {}
-            paddle.slice({}, [{}], [{}], [{} + {}])
+            {}({}, [{}], [{}], [{} + {}])
             """
         )
         start = get_unique_name("start")
@@ -1760,6 +1760,7 @@ class NarrowMatcher(BaseMatcher):
             kwargs["start"],
             kwargs["start"],
             kwargs["start"],
+            self.get_paddle_api(),
             kwargs["input"],
             kwargs["dim"],
             start,
