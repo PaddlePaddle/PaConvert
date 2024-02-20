@@ -59,6 +59,10 @@ TORCH_PACKAGE_LIST = [
     "diffusers",
     "torch_xla",
 ]
+MAY_TORCH_PACKAGE_LIST = [
+    "setuptools",
+    "os",
+]
 
 
 class BaseTransformer(ast.NodeTransformer):
@@ -197,7 +201,7 @@ class BaseTransformer(ast.NodeTransformer):
         elif isinstance(node, ast.Name):
             # np.array(1.) -> 'np'
             node_str = astor.to_source(node).replace("\n", "")
-            for item in self.black_list:
+            for item in set(self.black_list):
                 if item == node_str:
                     return "NonTorchClass"
             # misidentify paddle.rand as x.rand

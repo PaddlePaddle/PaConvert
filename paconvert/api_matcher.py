@@ -4076,3 +4076,17 @@ class TensorCudaMatcher(BaseMatcher):
             new_kwargs["blocking"] = "True"
         new_kwargs.update(kwargs)
         return GenericMatcher.generate_code(self, new_kwargs)
+
+
+class OsEnvironGetMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "key" in kwargs:
+            if kwargs["key"] == '"""WORLD_SIZE"""':
+                code = "paddle.distributed.get_world_size()"
+            elif kwargs["key"] == '"""LOCAL_RANK"""':
+                code = "padlde.distributed.get_rank()"
+            else:
+                code = "misidentify"
+        else:
+            code = "misidentify"
+        return code
