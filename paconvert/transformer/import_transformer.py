@@ -295,8 +295,8 @@ class ImportTransformer(BaseTransformer):
         if self.import_paddle:
             log_info(self.logger, "add 'import paddle' in line 1", self.file_name)
             self.record_scope((self.root, "body", 0), ast.parse("import paddle").body)
-        line_NO = 2
         if len(self.import_MAY_TORCH_PACKAGE_SET) > 0:
+            line_NO = 2
             for package in self.import_MAY_TORCH_PACKAGE_SET:
                 log_info(
                     self.logger,
@@ -306,3 +306,4 @@ class ImportTransformer(BaseTransformer):
                 self.record_scope(
                     (self.root, "body", 0), ast.parse(f"import {package}").body
                 )
+                line_NO += 1
