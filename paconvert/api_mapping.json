@@ -7675,7 +7675,7 @@
   "torch.linalg.matrix_exp": {},
   "torch.linalg.matrix_norm": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.linalg.norm",
+    "paddle_api": "paddle.linalg.matrix_norm",
     "min_input_args": 1,
     "args_list": [
       "input",
@@ -7894,7 +7894,7 @@
   "torch.linalg.vecdot": {},
   "torch.linalg.vector_norm": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.linalg.norm",
+    "paddle_api": "paddle.linalg.vector_norm",
     "min_input_args": 1,
     "args_list": [
       "x",
