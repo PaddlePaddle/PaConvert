@@ -25,6 +25,7 @@ from paconvert.base import (
     ATTRIBUTE_MAPPING,
     ALIAS_MAPPING,
     BaseTransformer,
+    MAY_TORCH_PACKAGE_LIST,
 )
 from paconvert.utils import log_debug, log_info
 
@@ -51,6 +52,11 @@ class BasicTransformer(BaseTransformer):
             "ndarray",
             "args",
             "arg",
+        ]
+        self.MAY_TORCH_METHOD_LIST = [
+            key
+            for key in API_MAPPING.keys()
+            if any(key.startswith("%s." % item) for item in MAY_TORCH_PACKAGE_LIST)
         ]
 
     def visit_Attribute(self, node):
@@ -374,7 +380,7 @@ class BasicTransformer(BaseTransformer):
         for torch_package in self.imports_map[self.file]["torch_packages"]:
             if (
                 full_attr.startswith("%s." % torch_package)
-                or "setuptools.setup" == full_attr
+                or full_attr in self.MAY_TORCH_METHOD_LIST
             ):
                 torch_api = full_attr
                 self.torch_api_count += 1
@@ -395,7 +401,6 @@ class BasicTransformer(BaseTransformer):
                 for k_node in node.keywords:
                     if k_node.arg is None:
                         support = False
-
                 if support:
                     node_list = matcher.get_paddle_nodes(node.args, node.keywords)
                     if node_list == "delete":

@@ -1,4 +1,11 @@
 {
+  "os.environ.get": {
+    "Matcher": "OsEnvironGetMatcher",
+    "args_list": [
+      "key",
+      "value"
+    ]
+  },
   "setuptools.setup": {
     "Matcher": "SetUpMatcher",
     "min_input_args": 0

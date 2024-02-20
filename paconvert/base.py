@@ -59,6 +59,10 @@ TORCH_PACKAGE_LIST = [
     "diffusers",
     "torch_xla",
 ]
+MAY_TORCH_PACKAGE_LIST = [
+    "setuptools",
+    "os",
+]
 
 
 class BaseTransformer(ast.NodeTransformer):
