@@ -4088,7 +4088,6 @@ class TensorViewMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def view(self, *args, **kwargs):
-                print(args)
                 if args:
                     if len(args)==1:
                         if isinstance(args[0], (tuple, list)):
