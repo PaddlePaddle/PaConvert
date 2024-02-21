@@ -57,11 +57,11 @@ class AuxFileHelper(object):
             with open(self.fileName, "w") as file:
                 file.write(CODE_CONTENT)
 
-        if self.ids[torch_api] == 0:
+        if self.ids[code] == 0:
             with open(self.fileName, "a") as file:
                 file.write(code)
 
-        self.ids[torch_api] += 1
+        self.ids[code] += 1
 
     def __new__(cls, fileName=None, *args, **kwargs):
         if cls._instance is None:

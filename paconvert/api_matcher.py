@@ -25,6 +25,32 @@ from paconvert.base import BaseMatcher
 from paconvert.transformer.custom_op_transformer import CPP_EXTENSION_LIST  # noqa: F401
 from paconvert.utils import get_unique_name, process_reduce_and_size_average
 
+TypePromoteFunc = textwrap.dedent(
+    """
+    def TypePromote(x, y):
+        TYPE_PROMOTE_DICT ={
+            'INT16FP16':'float16',
+            'INT16FP32':'float32',
+            'INT16FP64':'float64',
+
+            'INT32FP16':'float32',
+            'INT32FP32':'float32',
+            'INT32FP64':'float64',
+
+            'INT64FP16':'float64',
+            'INT64FP32':'float64',
+            'INT64FP64':'float64',
+        }
+        if x.dtype.name + y.dtype.name in TYPE_PROMOTE_DICT:
+            promote_type = TYPE_PROMOTE_DICT[x.dtype.name + y.dtype.name]
+        elif y.dtype.name + x.dtype.name in TYPE_PROMOTE_DICT:
+            promote_type = TYPE_PROMOTE_DICT[y.dtype.name + x.dtype.name]
+        else:
+            return x,y
+        return x.astype(promote_type),y.astype(promote_type)
+    """
+)
+
 
 class GenericMatcher(BaseMatcher):
     def get_paddle_api(self):
@@ -2031,7 +2057,7 @@ class RandomSamplerMatcher(BaseMatcher):
 class SizeMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         if len(args) == 0:
-            code = "tuple([])"
+            code = "()"
         else:
             code = "tuple({})".format(astor.to_source(args[0]).strip("\n"))
 
@@ -4084,6 +4110,9 @@ class TensorViewMatcher(BaseMatcher):
     #         return "unchange"
 
     #     return "misidentify"
+
+    # TODO: After fixing the Infermeta mechanism of the view operator,
+    # remove the code below and uncomment the code above
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
@@ -4133,45 +4162,9 @@ class TensorViewMatcher(BaseMatcher):
         return "misidentify"
 
 
-class TypePromoteMatcher:
-    _init_flag = 0
-
-    @staticmethod
-    def set_type_promote_func():
-        CODE_TEMPLATE = None
-        if TypePromoteMatcher._init_flag == 0:
-            CODE_TEMPLATE = textwrap.dedent(
-                """
-            def TypePromote(x, y):
-                TYPE_PROMOTE_DICT ={
-                    'INT16FP16':'float16',
-                    'INT16FP32':'float32',
-                    'INT16FP64':'float64',
-
-                    'INT32FP16':'float32',
-                    'INT32FP32':'float32',
-                    'INT32FP64':'float64',
-
-                    'INT64FP16':'float64',
-                    'INT64FP32':'float64',
-                    'INT64FP64':'float64',
-                }
-                if x.dtype.name + y.dtype.name in TYPE_PROMOTE_DICT:
-                    promote_type = TYPE_PROMOTE_DICT[x.dtype.name + y.dtype.name]
-                elif y.dtype.name + x.dtype.name in TYPE_PROMOTE_DICT:
-                    promote_type = TYPE_PROMOTE_DICT[y.dtype.name + x.dtype.name]
-                else:
-                    return x,y
-                return x.astype(promote_type),y.astype(promote_type)
-            """
-            )
-        TypePromoteMatcher._init_flag += 1
-        return CODE_TEMPLATE
-
-
 class OuterMatcher(BaseMatcher):
     def generate_aux_code(self):
-        CODE_TEMPLATE = TypePromoteMatcher.set_type_promote_func()
+        CODE_TEMPLATE = TypePromoteFunc
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
