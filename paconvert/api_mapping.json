@@ -1,4 +1,11 @@
 {
+  "os.environ.get": {
+    "Matcher": "OsEnvironGetMatcher",
+    "args_list": [
+      "key",
+      "value"
+    ]
+  },
   "setuptools.setup": {
     "Matcher": "SetUpMatcher",
     "min_input_args": 0
@@ -2317,6 +2324,7 @@
   },
   "torch.Tensor.narrow": {
     "Matcher": "NarrowMatcher",
+    "paddle_api": "paddle.slice",
     "min_input_args": 3,
     "args_list": [
       "dim",
@@ -2714,6 +2722,7 @@
   },
   "torch.Tensor.repeat": {
     "Matcher": "TensorRepeatMatcher",
+    "paddle_api": "paddle.Tensor.tile",
     "min_input_args": 1,
     "args_list": [
       "*repeats"
@@ -2743,6 +2752,7 @@
   },
   "torch.Tensor.reshape": {
     "Matcher": "TensorReshapeMatcher",
+    "paddle_api": "paddle.Tensor.reshape",
     "min_input_args": 1,
     "args_list": [
       "*shape"
@@ -3158,6 +3168,7 @@
   },
   "torch.Tensor.swapaxes": {
     "Matcher": "SwapAxesMatcher",
+    "paddle_api": "paddle.transpose",
     "min_input_args": 2,
     "args_list": [
       "axis0",
@@ -3166,6 +3177,7 @@
   },
   "torch.Tensor.swapdims": {
     "Matcher": "SwapAxesMatcher",
+    "paddle_api": "paddle.transpose",
     "min_input_args": 2,
     "args_list": [
       "dim0",
@@ -5324,22 +5336,6 @@
     "Matcher": "Func2Attribute",
     "paddle_api": "paddle.distributed.ReduceOp"
   },
-  "torch.distributed.ReduceOp.MAX": {
-    "Matcher": "UnchangeMatcher",
-    "paddle_api": "paddle.distributed.ReduceOp.MAX"
-  },
-  "torch.distributed.ReduceOp.MIN": {
-    "Matcher": "UnchangeMatcher",
-    "paddle_api": "paddle.distributed.ReduceOp.MIN"
-  },
-  "torch.distributed.ReduceOp.PRODUCT": {
-    "Matcher": "UnchangeMatcher",
-    "paddle_api": "paddle.distributed.ReduceOp.PROD"
-  },
-  "torch.distributed.ReduceOp.SUM": {
-    "Matcher": "UnchangeMatcher",
-    "paddle_api": "paddle.distributed.ReduceOp.SUM"
-  },
   "torch.distributed.all_gather": {
     "Matcher": "ScatterMatcher",
     "paddle_api": "paddle.distributed.all_gather",
@@ -6907,7 +6903,7 @@
   },
   "torch.get_rng_state": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.get_cuda_rng_state",
+    "paddle_api": "paddle.get_rng_state",
     "min_input_args": 0
   },
   "torch.greater": {
@@ -7686,7 +7682,7 @@
   "torch.linalg.matrix_exp": {},
   "torch.linalg.matrix_norm": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.linalg.norm",
+    "paddle_api": "paddle.linalg.matrix_norm",
     "min_input_args": 1,
     "args_list": [
       "input",
@@ -7905,7 +7901,7 @@
   "torch.linalg.vecdot": {},
   "torch.linalg.vector_norm": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.linalg.norm",
+    "paddle_api": "paddle.linalg.vector_norm",
     "min_input_args": 1,
     "args_list": [
       "x",
@@ -8606,6 +8602,7 @@
   },
   "torch.narrow": {
     "Matcher": "NarrowMatcher",
+    "paddle_api": "paddle.slice",
     "min_input_args": 4,
     "args_list": [
       "input",
@@ -13849,7 +13846,7 @@
   },
   "torch.set_rng_state": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.set_cuda_rng_state",
+    "paddle_api": "paddle.set_rng_state",
     "min_input_args": 1,
     "args_list": [
       "new_state"
@@ -14574,6 +14571,7 @@
   },
   "torch.swapaxes": {
     "Matcher": "SwapAxesMatcher",
+    "paddle_api": "paddle.transpose",
     "min_input_args": 3,
     "args_list": [
       "input",

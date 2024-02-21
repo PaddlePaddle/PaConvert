@@ -1749,7 +1749,7 @@ class NarrowMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             {} = ({}.shape[{}] + {}) if {} < 0 else {}
-            paddle.slice({}, [{}], [{}], [{} + {}])
+            {}({}, [{}], [{}], [{} + {}])
             """
         )
         start = get_unique_name("start")
@@ -1760,6 +1760,7 @@ class NarrowMatcher(BaseMatcher):
             kwargs["start"],
             kwargs["start"],
             kwargs["start"],
+            self.get_paddle_api(),
             kwargs["input"],
             kwargs["dim"],
             start,
@@ -4046,6 +4047,43 @@ class TensorCudaMatcher(BaseMatcher):
 
 
 class TensorViewMatcher(BaseMatcher):
+
+    # def generate_aux_code(self):
+    #     CODE_TEMPLATE = textwrap.dedent(
+    #         """
+    #         def view(self, *args, **kwargs):
+    #             if args:
+    #                 if len(args)==1 and isinstance(args[0], (tuple, list, str)):
+    #                     return paddle.view(self, args[0])
+    #                 else:
+    #                     return paddle.view(self, list(args))
+    #             elif kwargs:
+    #                 key = [k for k in kwargs.keys()]
+    #                 return paddle.view(self, shape_or_dtype = kwargs[key[0]])
+
+    #         setattr(paddle.Tensor, 'view', view)
+    #         """
+    #     )
+    #     return CODE_TEMPLATE
+    # def get_paddle_class_nodes(self, func, args, kwargs):
+    #     if kwargs:
+    #         if len(kwargs) == 1:
+    #             self.write_aux_code()
+    #             return "unchange"
+
+    #     if args:
+    #         if len(args) == 1:
+    #             if isinstance(args[0], (ast.Tuple, ast.List)):
+    #                 return "unchange"
+    #             if isinstance(args[0], (ast.Constant)) and isinstance(
+    #                 args[0].value, str
+    #             ):
+    #                 return "unchange"
+
+    #         self.write_aux_code()
+    #         return "unchange"
+
+    #     return "misidentify"
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
@@ -4096,11 +4134,16 @@ class TensorViewMatcher(BaseMatcher):
         return "misidentify"
 
 
-class OuterMatcher(BaseMatcher):
-    def generate_aux_code(self):
-        CODE_TEMPLATE = textwrap.dedent(
-            """
-            def outer(x, y):
+class TypePromoteMatcher(BaseMatcher):
+    _init_flag = 0
+
+    @staticmethod
+    def set_type_promote_func():
+        CODE_TEMPLATE = None
+        if TypePromoteMatcher._init_flag == 0:
+            CODE_TEMPLATE = textwrap.dedent(
+                """
+            def TypePromote(x, y):
                 TYPE_PROMOTE_DICT ={
                     'INT16FP16':'float16',
                     'INT16FP32':'float32',
@@ -4119,12 +4162,35 @@ class OuterMatcher(BaseMatcher):
                 elif y.dtype.name + x.dtype.name in TYPE_PROMOTE_DICT:
                     promote_type = TYPE_PROMOTE_DICT[y.dtype.name + x.dtype.name]
                 else:
-                    return paddle.outer(x,y)
-                return paddle.outer(x.astype(promote_type),y.astype(promote_type))
+                    return x,y
+                return x.astype(promote_type),y.astype(promote_type)
             """
-        )
+            )
+        TypePromoteMatcher._init_flag += 1
+        return CODE_TEMPLATE
+
+
+class OuterMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = TypePromoteMatcher.set_type_promote_func()
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
         self.write_aux_code()
-        return "paddle_aux.outer(x={},y={})".format(kwargs["input"], kwargs["vec2"])
+        return "paddle.outer(paddle_aux.TypePromote({},{}))".format(
+            kwargs["input"], kwargs["vec2"]
+        )
+
+
+class OsEnvironGetMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "key" in kwargs:
+            if kwargs["key"] == '"""WORLD_SIZE"""':
+                code = "paddle.distributed.get_world_size()"
+            elif kwargs["key"] == '"""LOCAL_RANK"""':
+                code = "padlde.distributed.get_rank()"
+            else:
+                code = "misidentify"
+        else:
+            code = "misidentify"
+        return code
