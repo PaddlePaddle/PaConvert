@@ -32,7 +32,7 @@ class ImportTransformer(BaseTransformer):
         self.imports_map[self.file]["other_packages"] = []
         self.imports_map[self.file]["torch_packages"] = []
         self.import_paddle = False
-        self.import_MAY_TORCH_PACKAGE_SET = set()
+        self.import_MAY_TORCH_PACKAGE_LIST = []
 
     def visit_Import(self, node):
         """
@@ -74,7 +74,7 @@ class ImportTransformer(BaseTransformer):
             for pkg_name in TORCH_PACKAGE_LIST + MAY_TORCH_PACKAGE_LIST:
                 if f"{pkg_name}." in alias_node.name or pkg_name == alias_node.name:
                     if pkg_name in MAY_TORCH_PACKAGE_LIST:
-                        self.import_MAY_TORCH_PACKAGE_SET.add(pkg_name)
+                        self.import_MAY_TORCH_PACKAGE_LIST.append(pkg_name)
                     else:
                         self.imports_map[self.file]["torch_packages"].append(pkg_name)
                         self.import_paddle = True
@@ -159,7 +159,7 @@ class ImportTransformer(BaseTransformer):
                     self.imports_map[self.file]["torch_packages"].append(pkg_name)
                     self.import_paddle = True
                 else:
-                    self.import_MAY_TORCH_PACKAGE_SET.add(pkg_name)
+                    self.import_MAY_TORCH_PACKAGE_LIST.append(pkg_name)
                 for alias_node in node.names:
                     if alias_node.asname:
                         log_info(
@@ -295,9 +295,9 @@ class ImportTransformer(BaseTransformer):
         if self.import_paddle:
             log_info(self.logger, "add 'import paddle' in line 1", self.file_name)
             self.record_scope((self.root, "body", 0), ast.parse("import paddle").body)
-        if len(self.import_MAY_TORCH_PACKAGE_SET) > 0:
+        if len(self.import_MAY_TORCH_PACKAGE_LIST) > 0:
             line_NO = 2
-            for package in self.import_MAY_TORCH_PACKAGE_SET:
+            for package in self.import_MAY_TORCH_PACKAGE_LIST:
                 log_info(
                     self.logger,
                     f"add 'import {package}' in line {line_NO}",
