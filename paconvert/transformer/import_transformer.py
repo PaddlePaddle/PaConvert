@@ -74,7 +74,8 @@ class ImportTransformer(BaseTransformer):
             for pkg_name in TORCH_PACKAGE_LIST + MAY_TORCH_PACKAGE_LIST:
                 if f"{pkg_name}." in alias_node.name or pkg_name == alias_node.name:
                     if pkg_name in MAY_TORCH_PACKAGE_LIST:
-                        self.import_MAY_TORCH_PACKAGE_LIST.append(pkg_name)
+                        if pkg_name not in self.import_MAY_TORCH_PACKAGE_LIST:
+                            self.import_MAY_TORCH_PACKAGE_LIST.append(pkg_name)
                     else:
                         self.imports_map[self.file]["torch_packages"].append(pkg_name)
                         self.import_paddle = True
@@ -159,7 +160,8 @@ class ImportTransformer(BaseTransformer):
                     self.imports_map[self.file]["torch_packages"].append(pkg_name)
                     self.import_paddle = True
                 else:
-                    self.import_MAY_TORCH_PACKAGE_LIST.append(pkg_name)
+                    if pkg_name not in self.import_MAY_TORCH_PACKAGE_LIST:
+                        self.import_MAY_TORCH_PACKAGE_LIST.append(pkg_name)
                 for alias_node in node.names:
                     if alias_node.asname:
                         log_info(
