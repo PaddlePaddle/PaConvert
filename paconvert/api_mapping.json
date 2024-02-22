@@ -12,19 +12,19 @@
   },
   "torch.BoolTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.bool"
   },
   "torch.ByteTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.uint8"
   },
   "torch.DoubleTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.float64"
   },
   "torch.FloatTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.float32"
   },
   "torch.Generator": {
     "Matcher": "GeneratorMatcher",
@@ -35,19 +35,19 @@
   },
   "torch.HalfTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.float16"
   },
   "torch.IntTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.int32"
   },
   "torch.LongTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.int64"
   },
   "torch.ShortTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.int16"
   },
   "torch.Size": {
     "Matcher": "SizeMatcher",
@@ -4836,15 +4836,15 @@
   "torch.ctc_loss": {},
   "torch.cuda.BoolTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.bool"
   },
   "torch.cuda.ByteTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.uint8"
   },
   "torch.cuda.DoubleTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.float64"
   },
   "torch.cuda.Event": {
     "Matcher": "GenericMatcher",
@@ -4858,23 +4858,23 @@
   },
   "torch.cuda.FloatTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.float32"
   },
   "torch.cuda.HalfTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.float16"
   },
   "torch.cuda.IntTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.int32"
   },
   "torch.cuda.LongTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.int64"
   },
   "torch.cuda.ShortTensor": {
     "Matcher": "TensorMatcher",
-    "paddle_api": "paddle.Tensor"
+    "paddle_api": "paddle.int16"
   },
   "torch.cuda.Stream": {
     "Matcher": "CudaStreamMatcher",
@@ -13816,6 +13816,13 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.set_default_dtype",
     "min_input_args": 1,
+    "args_list": [
+      "d"
+    ]
+  },
+  "torch.set_default_tensor_type": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.set_default_dtype",
     "args_list": [
       "d"
     ]

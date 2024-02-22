@@ -34,3 +34,6 @@ a = torch.tensor(
     requires_grad=flag,
     pin_memory=True,
 )
+print("#########################case2#########################")
+# case 3:
+a = torch.tensor([2, 3, 4],device="cuda")
