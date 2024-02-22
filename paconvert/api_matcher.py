@@ -1650,12 +1650,6 @@ class SetPrintOptionsMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-class SetDefaultTensorTypeMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        code = "{}({})".format(self.get_paddle_api(), kwargs["d"])
-        return code
-
-
 class RandLikeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         stop_gradient_v = None
