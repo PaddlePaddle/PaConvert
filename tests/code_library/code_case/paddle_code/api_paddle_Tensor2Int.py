@@ -2,7 +2,7 @@ import paddle
 print('#########################case1#########################')
 
 
-def a(x: paddle.Tensor):
+def a(x: paddle.int32):
     pass
 
 
