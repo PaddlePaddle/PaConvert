@@ -1652,13 +1652,6 @@ class SetPrintOptionsMatcher(BaseMatcher):
 
 class SetDefaultTensorTypeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        dtype_dict = {
-            '"""torch.DoubleTensor"""': "paddle.float64",
-            '"""torch.FloatTensor"""': "paddle.float32",
-            '"""torch.HalfTensor"""': "paddle.float16",
-        }
-        if kwargs["d"] in dtype_dict:
-            kwargs["d"] = dtype_dict[kwargs["d"]]
         code = "{}({})".format(self.get_paddle_api(), kwargs["d"])
         return code
 
