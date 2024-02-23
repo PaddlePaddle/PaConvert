@@ -28,7 +28,8 @@
     "Matcher": "FSModelParallelIsInitializedMatcher"
   },
   "fairscale.nn.model_parallel.layers.ColumnParallelLinear": {
-    "Matcher": "FSColumnParallelLinearMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.fleet.meta_parallel.ColumnParallelLinear",
     "args_list": [
       "in_features",
       "out_features",
@@ -37,14 +38,24 @@
       "init_method",
       "stride",
       "keep_master_weight_for_test"
-    ]
+    ],
+    "unsupport_args": [
+      "stride"
+    ],
+    "kwargs_change": {
+      "bias": "has_bias",
+      "init_method": "",
+      "keep_master_weight_for_test": ""
+    },
+    "paddle_default_kwargs": {
+      "has_bias": "True"
+    }
   },
   "fairscale.nn.model_parallel.layers.ParallelEmbedding": {
     "Matcher": "FSParallelEmbeddingMatcher",
     "args_list": [
       "num_embeddings",
       "embedding_dim",
-      "padding_idx",
       "padding_idx",
       "norm_type",
       "scale_grad_by_freq",
@@ -54,7 +65,8 @@
     ]
   },
   "fairscale.nn.model_parallel.layers.RowParallelLinear": {
-    "Matcher": "FSRowParallelLinearMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.fleet.meta_parallel.RowParallelLinear",
     "args_list": [
       "in_features",
       "out_features",
@@ -63,7 +75,18 @@
       "init_method",
       "stride",
       "keep_master_weight_for_test"
-    ]
+    ],
+    "unsupport_args": [
+      "stride"
+    ],
+    "kwargs_change": {
+      "bias": "has_bias",
+      "init_method": "",
+      "keep_master_weight_for_test": ""
+    },
+    "paddle_default_kwargs": {
+      "has_bias": "True"
+    }
   },
   "os.environ.get": {
     "Matcher": "OsEnvironGetMatcher",
@@ -7230,6 +7253,12 @@
       "input": "x",
       "dim": "axis"
     }
+  },
+  "torch.inference_mode": {
+    "Matcher": "InferenceModeMatcher",
+    "args_list": [
+      "mode"
+    ]
   },
   "torch.initial_seed": {
     "Matcher": "SeedMatcher",
