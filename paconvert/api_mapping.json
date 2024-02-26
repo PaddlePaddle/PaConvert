@@ -64,6 +64,10 @@
       "init_method",
       "keep_master_weight_for_test"
     ],
+    "kwargs_change": {
+      "init_method": "",
+      "keep_master_weight_for_test": ""
+    },
     "unsupport_args": [
       "padding_idx",
       "norm_type",
