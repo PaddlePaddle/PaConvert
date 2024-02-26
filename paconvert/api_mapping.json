@@ -1,4 +1,109 @@
 {
+  "fairscale.nn.model_parallel.initialize.get_model_parallel_rank": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.get_rank",
+    "args_list": [
+      "group"
+    ]
+  },
+  "fairscale.nn.model_parallel.initialize.get_model_parallel_world_size": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.get_world_size",
+    "args_list": [
+      "group"
+    ]
+  },
+  "fairscale.nn.model_parallel.initialize.initialize_model_parallel": {
+    "Matcher": "FSInitializeModelParallelMatcher",
+    "args_list": [
+      "model_parallel_size_",
+      "pipeline_length",
+      "*",
+      "model_parallel_backend",
+      "pipeline_backend",
+      "ddp_backend"
+    ],
+    "kwargs_change": {
+      "model_parallel_backend": "",
+      "pipeline_backend": "",
+      "ddp_backend": ""
+    },
+    "min_input_args": 1
+  },
+  "fairscale.nn.model_parallel.initialize.model_parallel_is_initialized": {
+    "Matcher": "FSModelParallelIsInitializedMatcher"
+  },
+  "fairscale.nn.model_parallel.layers.ColumnParallelLinear": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.fleet.meta_parallel.ColumnParallelLinear",
+    "args_list": [
+      "in_features",
+      "out_features",
+      "bias",
+      "gather_output",
+      "init_method",
+      "stride",
+      "keep_master_weight_for_test"
+    ],
+    "unsupport_args": [
+      "stride"
+    ],
+    "kwargs_change": {
+      "bias": "has_bias",
+      "init_method": "",
+      "keep_master_weight_for_test": ""
+    },
+    "paddle_default_kwargs": {
+      "has_bias": "True"
+    }
+  },
+  "fairscale.nn.model_parallel.layers.ParallelEmbedding": {
+    "Matcher": "FSParallelEmbeddingMatcher",
+    "args_list": [
+      "num_embeddings",
+      "embedding_dim",
+      "padding_idx",
+      "norm_type",
+      "scale_grad_by_freq",
+      "sparse",
+      "init_method",
+      "keep_master_weight_for_test"
+    ],
+    "kwargs_change": {
+      "init_method": "",
+      "keep_master_weight_for_test": ""
+    },
+    "unsupport_args": [
+      "padding_idx",
+      "norm_type",
+      "scale_grad_by_freq",
+      "sparse"
+    ]
+  },
+  "fairscale.nn.model_parallel.layers.RowParallelLinear": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.fleet.meta_parallel.RowParallelLinear",
+    "args_list": [
+      "in_features",
+      "out_features",
+      "bias",
+      "input_is_parallel",
+      "init_method",
+      "stride",
+      "keep_master_weight_for_test"
+    ],
+    "unsupport_args": [
+      "stride"
+    ],
+    "kwargs_change": {
+      "bias": "has_bias",
+      "init_method": "",
+      "keep_master_weight_for_test": ""
+    },
+    "paddle_default_kwargs": {
+      "has_bias": "True"
+    }
+  },
   "os.environ.get": {
     "Matcher": "OsEnvironGetMatcher",
     "args_list": [
@@ -7164,6 +7269,12 @@
       "input": "x",
       "dim": "axis"
     }
+  },
+  "torch.inference_mode": {
+    "Matcher": "InferenceModeMatcher",
+    "args_list": [
+      "mode"
+    ]
   },
   "torch.initial_seed": {
     "Matcher": "SeedMatcher",

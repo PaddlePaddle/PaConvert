@@ -195,6 +195,90 @@ class DeleteMatcher(BaseMatcher):
         return "delete"
 
 
+class FSInitializeModelParallelMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "pipeline_length" not in kwargs:
+            kwargs["pipeline_length"] = 1
+
+        model_parallel_size = get_unique_name("model_parallel_size")
+        data_parallel_size = get_unique_name("data_parallel_size")
+        strategy = get_unique_name("strategy")
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {} = int(min(paddle.distributed.get_world_size(),{}))
+            {} = int(paddle.distributed.get_world_size()/ ({} * {}))
+            {} = paddle.distributed.fleet.DistributedStrategy()
+            {}.hybrid_configs = dict(dp_degree={}, mp_degree={}, pp_degree={})
+            paddle.distributed.fleet.init(is_collective=True, strategy={})
+            """
+        )
+        code = API_TEMPLATE.format(
+            model_parallel_size,
+            kwargs["model_parallel_size_"],
+            data_parallel_size,
+            model_parallel_size,
+            kwargs["pipeline_length"],
+            strategy,
+            strategy,
+            data_parallel_size,
+            model_parallel_size,
+            kwargs["pipeline_length"],
+            strategy,
+        )
+        return code
+
+
+class FSModelParallelIsInitializedMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = (
+            "paddle.distributed.fleet.base.topology._HYBRID_PARALLEL_GROUP is not None"
+        )
+        return code
+
+
+# TODO: why use Constant(0) ？When using constant initialization,
+# regardless of whether it is initialized to 0, 0.01, or 1,
+# there is no difference in the generated results. But when using
+# random initialization, the generation effect of the model is
+# semantically inferior. The reasons behind this phenomenon
+# require further analysis.
+
+# NOTE: The difference between ParallelEmbedding and VocaParallelEmbedding
+# is the direction of segmentation. This mapping is not equivalent and
+# requires additional consideration when converting its parameters.
+class FSParallelEmbeddingMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "paddle.distributed.fleet.meta_parallel.\
+                VocabParallelEmbedding(num_embeddings={},\
+                embedding_dim={},weight_attr=paddle.nn.initializer.Constant(0))".format(
+            kwargs["num_embeddings"], kwargs["embedding_dim"]
+        )
+        return code
+
+
+class InferenceModeMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def empty_decorator(func):
+                return func
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        if "mode" in kwargs:
+            if kwargs["mode"] == "(False)":
+                self.write_aux_code()
+                code = "paddle_aux.empty_decorator"
+            else:
+                code = "paddle.no_grad()"
+        else:
+            code = "paddle.no_grad()"
+        return code
+
+
 class AtleastMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         new_args = self.parse_args(args)
