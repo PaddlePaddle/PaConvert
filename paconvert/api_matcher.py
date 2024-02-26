@@ -243,6 +243,10 @@ class FSModelParallelIsInitializedMatcher(BaseMatcher):
 # random initialization, the generation effect of the model is
 # semantically inferior. The reasons behind this phenomenon
 # require further analysis.
+
+# NOTE: The difference between ParallelEmbedding and VocaParallelEmbedding
+# is the direction of segmentation. This mapping is not equivalent and
+# requires additional consideration when converting its parameters.
 class FSParallelEmbeddingMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         code = "paddle.distributed.fleet.meta_parallel.\
