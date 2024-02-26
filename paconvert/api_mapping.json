@@ -23,6 +23,11 @@
       "pipeline_backend",
       "ddp_backend"
     ],
+    "kwargs_change": {
+      "model_parallel_backend": "",
+      "pipeline_backend": "",
+      "ddp_backend": ""
+    },
     "min_input_args": 1
   },
   "fairscale.nn.model_parallel.initialize.model_parallel_is_initialized": {
