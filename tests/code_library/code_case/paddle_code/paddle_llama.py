@@ -1,22 +1,33 @@
 import paddle
 print('#########################case1#########################')
-model_parallel_size = paddle.distributed.get_world_size()
+model_parallel_size_0 = paddle.distributed.get_world_size()
+model_parallel_size_1 = paddle.distributed.get_world_size(group=group)
 print('#########################case2#########################')
-wq = paddle.distributed.fleet.meta_parallel.ColumnParallelLinear(in_features
-    =args.dim, out_features=args.n_heads * self.head_dim, has_bias=False,
-    gather_output=False)
+wq_0 = paddle.distributed.fleet.meta_parallel.ColumnParallelLinear(in_features
+    =dim, out_features=n_heads * head_dim, has_bias=False, gather_output=False)
+wq_1 = paddle.distributed.fleet.meta_parallel.ColumnParallelLinear(in_features
+    =dim, out_features=n_heads * head_dim, gather_output=True, has_bias=True)
+wq_2 = paddle.distributed.fleet.meta_parallel.ColumnParallelLinear(in_features
+    =dim, out_features=n_heads * head_dim, has_bias=True, gather_output=False)
 print('#########################case3#########################')
-wo = paddle.distributed.fleet.meta_parallel.RowParallelLinear(in_features=
-    args.n_heads * self.head_dim, out_features=args.dim, has_bias=False,
+wo_0 = paddle.distributed.fleet.meta_parallel.RowParallelLinear(in_features
+    =n_heads * head_dim, out_features=dim, has_bias=False,
     input_is_parallel=True)
+wo_1 = paddle.distributed.fleet.meta_parallel.RowParallelLinear(in_features
+    =n_heads * head_dim, out_features=dim, input_is_parallel=False,
+    has_bias=True)
+wo_2 = paddle.distributed.fleet.meta_parallel.RowParallelLinear(in_features
+    =n_heads * head_dim, out_features=dim, has_bias=True, input_is_parallel
+    =True)
 print('#########################case4#########################')
-tok_embeddings = paddle.distributed.fleet.meta_parallel.VocabParallelEmbedding(
-    num_embeddings=params.vocab_size, embedding_dim=params.dim, weight_attr
-    =paddle.nn.initializer.Constant(0))
+tok_embeddings_0 = (paddle.distributed.fleet.meta_parallel.
+    VocabParallelEmbedding(num_embeddings=params.vocab_size, embedding_dim=
+    params.dim, weight_attr=paddle.nn.initializer.Constant(0)))
+>>>>>>tok_embeddings_1 = fairscale.nn.model_parallel.layers.ParallelEmbedding(params
+    .vocab_size, params.dim, padding_idx=0)
 print('#########################case5#########################')
 if not paddle.distributed.fleet.base.topology._HYBRID_PARALLEL_GROUP is not None:
-    if model_parallel_size is None:
-        model_parallel_size = int(paddle.distributed.get_world_size())
+    initialized_flag = False
 print('#########################case6#########################')
 model_parallel_size_0 = int(min(paddle.distributed.get_world_size(),
     model_parallel_size))
@@ -26,10 +37,22 @@ strategy_0 = paddle.distributed.fleet.DistributedStrategy()
 strategy_0.hybrid_configs = dict(dp_degree=data_parallel_size_0, mp_degree=
     model_parallel_size_0, pp_degree=1)
 paddle.distributed.fleet.init(is_collective=True, strategy=strategy_0)
+model_parallel_size_1 = int(min(paddle.distributed.get_world_size(),
+    model_parallel_size))
+data_parallel_size_1 = int(paddle.distributed.get_world_size() / (
+    model_parallel_size_1 * pipeline_length))
+strategy_1 = paddle.distributed.fleet.DistributedStrategy()
+strategy_1.hybrid_configs = dict(dp_degree=data_parallel_size_1, mp_degree=
+    model_parallel_size_1, pp_degree=pipeline_length)
+paddle.distributed.fleet.init(is_collective=True, strategy=strategy_1)
+model_parallel_size_2 = int(min(paddle.distributed.get_world_size(),
+    model_parallel_size))
+data_parallel_size_2 = int(paddle.distributed.get_world_size() / (
+    model_parallel_size_2 * 1))
+strategy_2 = paddle.distributed.fleet.DistributedStrategy()
+strategy_2.hybrid_configs = dict(dp_degree=data_parallel_size_2, mp_degree=
+    model_parallel_size_2, pp_degree=1)
+paddle.distributed.fleet.init(is_collective=True, strategy=strategy_2)
 print('#########################case7#########################')
-ckpt_path = checkpoints[paddle.distributed.get_rank()]
-print('#########################case8#########################')
-out_0 = paddle.ones(shape=[1, 2, 3])
-out_0.stop_gradient = not True
-x = out_0
-y = paddle.add(x=x, y=paddle.to_tensor(1))
+ckpt_path_0 = checkpoints[paddle.distributed.get_rank()]
+ckpt_path_1 = checkpoints[paddle.distributed.get_rank(group=group)]

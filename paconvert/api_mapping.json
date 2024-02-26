@@ -22,7 +22,8 @@
       "model_parallel_backend",
       "pipeline_backend",
       "ddp_backend"
-    ]
+    ],
+    "min_input_args": 1
   },
   "fairscale.nn.model_parallel.initialize.model_parallel_is_initialized": {
     "Matcher": "FSModelParallelIsInitializedMatcher"
@@ -62,6 +63,12 @@
       "sparse",
       "init_method",
       "keep_master_weight_for_test"
+    ],
+    "unsupport_args": [
+      "padding_idx",
+      "norm_type",
+      "scale_grad_by_freq",
+      "sparse"
     ]
   },
   "fairscale.nn.model_parallel.layers.RowParallelLinear": {

@@ -28,7 +28,7 @@ def test_case_1():
         @torch.inference_mode()
         def doubler(x):
             return x * 2
-        result = doubler(x).requires_grad
+        result = (doubler(x).requires_grad, doubler(x))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -42,7 +42,7 @@ def test_case_2():
         @torch.inference_mode(True)
         def doubler(x):
             return x * 2
-        result = doubler(x).requires_grad
+        result = (doubler(x).requires_grad, doubler(x))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -56,7 +56,7 @@ def test_case_3():
         @torch.inference_mode(False)
         def doubler(x):
             return x * 2
-        result = doubler(x).requires_grad
+        result = (doubler(x).requires_grad, doubler(x))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -69,7 +69,7 @@ def test_case_4():
         x = torch.ones(1, 2, 3, requires_grad=True)
         with torch.inference_mode():
             y = x * 2
-        result = y.requires_grad
+        result = (y.requires_grad, y)
         """
     )
     obj.run(pytorch_code, ["result"])
