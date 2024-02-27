@@ -1,4 +1,5 @@
 import paddle
+import paddlenlp
 
 
 class A(paddle.nn.Layer):

@@ -58,6 +58,7 @@ TORCH_PACKAGE_LIST = [
     "accelerate",
     "diffusers",
     "torch_xla",
+    "flash_attn",
 ]
 MAY_TORCH_PACKAGE_LIST = [
     "setuptools",
