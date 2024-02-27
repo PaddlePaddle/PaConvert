@@ -15,9 +15,10 @@
 import ast
 import os
 
-from paconvert.base import (ALIAS_MAPPING, MAY_TORCH_PACKAGE_LIST,
-                            TORCH_PACKAGE_LIST, BaseTransformer)
+from paconvert.base import ALIAS_MAPPING, BaseTransformer
 from paconvert.utils import log_info
+
+from ..base import MAY_TORCH_PACKAGE_LIST, TORCH_PACKAGE_LIST
 
 
 class ImportTransformer(BaseTransformer):
@@ -32,6 +33,7 @@ class ImportTransformer(BaseTransformer):
         self.imports_map[self.file]["other_packages"] = []
         self.imports_map[self.file]["torch_packages"] = []
         self.import_paddle = False
+        self.import_paddlenlp = False
         self.import_MAY_TORCH_PACKAGE_LIST = []
 
     def visit_Import(self, node):
@@ -79,6 +81,8 @@ class ImportTransformer(BaseTransformer):
                     else:
                         self.imports_map[self.file]["torch_packages"].append(pkg_name)
                         self.import_paddle = True
+                        if pkg_name == "transformers":
+                            self.import_paddlenlp = True
                     if alias_node.asname:
                         log_info(
                             self.logger,
@@ -159,6 +163,8 @@ class ImportTransformer(BaseTransformer):
                 if pkg_name in TORCH_PACKAGE_LIST:
                     self.imports_map[self.file]["torch_packages"].append(pkg_name)
                     self.import_paddle = True
+                    if pkg_name == "transformers":
+                        self.import_paddlenlp = True
                 else:
                     if pkg_name not in self.import_MAY_TORCH_PACKAGE_LIST:
                         self.import_MAY_TORCH_PACKAGE_LIST.append(pkg_name)
@@ -293,12 +299,22 @@ class ImportTransformer(BaseTransformer):
         add import paddle
         """
         super(ImportTransformer, self).generic_visit(node)
-
+        line_NO = 1
         if self.import_paddle:
-            log_info(self.logger, "add 'import paddle' in line 1", self.file_name)
+            log_info(
+                self.logger, f"add 'import paddle' in line {line_NO}", self.file_name
+            )
             self.record_scope((self.root, "body", 0), ast.parse("import paddle").body)
+            line_NO += 1
+        if self.import_paddlenlp:
+            log_info(
+                self.logger, f"add 'import paddlenlp' in line {line_NO}", self.file_name
+            )
+            self.record_scope(
+                (self.root, "body", 0), ast.parse("import paddlenlp").body
+            )
+            line_NO += 1
         if len(self.import_MAY_TORCH_PACKAGE_LIST) > 0:
-            line_NO = 2
             for package in self.import_MAY_TORCH_PACKAGE_LIST:
                 log_info(
                     self.logger,
