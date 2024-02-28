@@ -5,6 +5,7 @@ from torch import float32
 from transformers.generation.utils import GenerateOutput
 
 import torch.utils.data as data # noqa: F401
+import torch.add as TorchAdd # noqa: F401
 
 class A(Module):
     def __init__(self, data: Tensor):
@@ -32,3 +33,5 @@ setattr(Tensor, 'add', add_func)
 
 Union[GenerateOutput, torch.LongTensor]
 Optional[Tensor] = None
+
+my_add = TorchAdd

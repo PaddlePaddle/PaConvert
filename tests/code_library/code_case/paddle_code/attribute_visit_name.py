@@ -29,3 +29,4 @@ isinstance(x, paddle.Tensor)
 setattr(paddle.Tensor, 'add', add_func)
 >>>>>>Union[transformers.generation.utils.GenerateOutput, paddle.int64]
 Optional[paddle.Tensor] = None
+my_add = paddle.add
