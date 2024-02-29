@@ -243,6 +243,7 @@ class ImportTransformer(BaseTransformer):
             from torch.nn import Module
             from torch import Tensor
             from torch import float32
+            import torch.add as TorchAdd
 
             1. class A(Module):
             2. def func() -> Tensor:
@@ -254,7 +255,7 @@ class ImportTransformer(BaseTransformer):
             8. {'build_ext': BuildExtension}
             9. inputs: Optional[Tensor] = None
             10. Union[GenerateOutput, torch.LongTensor]
-            11. import torch.add as xyz  my_add = xyz（as rvalue）
+            11. my_add = TorchAdd
         """
         is_torch = False
         if isinstance(
@@ -289,9 +290,9 @@ class ImportTransformer(BaseTransformer):
         elif (
             isinstance(self.parent_node, ast.Assign)
             and isinstance(node, ast.Name)
-            and node == self.parent_node.value
+            and node == self.parent_node.value  # as rvalue
         ):
-            is_torch = True  # 11. import torch.add as xyz  my_add = xyz（as rvalue）
+            is_torch = True  # 11. my_add = TorchAdd
 
         if is_torch:
             torch_api = self.get_full_api_from_node(node)

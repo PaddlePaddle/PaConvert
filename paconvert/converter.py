@@ -244,10 +244,22 @@ class Converter:
             self.success_api_count += trans.success_api_count
 
     def mark_unsupport(self, code, file):
+        self.count_bracket = 0
         lines = code.split("\n")
         mark_next_line = False
         in_str = False
+
+        def caluate_bracket(str):
+            self.count_bracket = (
+                self.count_bracket + str.count("(") + str.count("[") + str.count("{")
+            )
+            self.count_bracket = (
+                self.count_bracket - str.count(")") - str.count("]") - str.count("}")
+            )
+
         for i, line in enumerate(lines):
+            if i != 0:
+                caluate_bracket(lines[i - 1])
             # torch.* in __doc__
             # torch.* in str
             if line.count('"""') % 2 != 0:
@@ -273,11 +285,12 @@ class Converter:
 
             # model_torch.npy
             for torch_package in self.imports_map[file]["torch_packages"]:
+                if not self.count_bracket == 0:
+                    break
                 if tmp_line.startswith("%s." % torch_package):
                     lines[i] = ">>>>>>" + line
                     break
-
-                if re.match(r".*[^A-Za-z_]{1}%s\." % torch_package, tmp_line):
+                if re.match(r".*[^\w\.]{1}%s\." % torch_package, tmp_line):
                     lines[i] = ">>>>>>" + line
 
         return "\n".join(lines)
