@@ -68,6 +68,7 @@ add_to_dict("class_method_static_call.py", "class_method_static_call.py")
 add_to_dict("import_analysis.py", "import_analysis.py")
 add_to_dict("torch_llama.py", "paddle_llama.py")
 add_to_dict("may_torch_package_list.py", "may_paddle_package_list.py")
+add_to_dict("torch_mark_unsupport.py", "paddle_mark_unsupport.py")
 
 # this part is about attribute mapping file
 
