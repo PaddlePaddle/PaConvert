@@ -289,7 +289,6 @@ class ImportTransformer(BaseTransformer):
             is_torch = True  # 10. Union[GenerateOutput, torch.LongTensor]
         elif (
             isinstance(self.parent_node, ast.Assign)
-            and isinstance(node, ast.Name)
             and node == self.parent_node.value  # as rvalue
         ):
             is_torch = True  # 11. my_add = TorchAdd

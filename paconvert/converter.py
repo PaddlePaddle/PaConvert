@@ -244,26 +244,33 @@ class Converter:
             self.success_api_count += trans.success_api_count
 
     def mark_unsupport(self, code, file):
-        self.count_bracket = 0
+        count_bracket = 0
         lines = code.split("\n")
         mark_next_line = False
-        in_str = False
-
-        def caluate_bracket(str):
-            self.count_bracket = (
-                self.count_bracket + str.count("(") + str.count("[") + str.count("{")
-            )
-            self.count_bracket = (
-                self.count_bracket - str.count(")") - str.count("]") - str.count("}")
-            )
+        # torch.* in __doc__
+        # torch.* in str
+        in_str = False  # indicate whether the previous line is in a string
+        prev_include_three_quotations = (
+            False  # indicate whether the previous line include three quotations
+        )
 
         for i, line in enumerate(lines):
-            if i != 0:
-                caluate_bracket(lines[i - 1])
-            # torch.* in __doc__
-            # torch.* in str
+            if not in_str and not prev_include_three_quotations and i != 0:
+                pre_line = re.sub(r"[\'\"]{1}[^\'\"]+[\'\"]{1}", "", lines[i - 1])
+                count_bracket += (
+                    pre_line.count("(")
+                    + pre_line.count("[")
+                    + pre_line.count("{")
+                    - pre_line.count(")")
+                    - pre_line.count("]")
+                    - pre_line.count("}")
+                )
             if line.count('"""') % 2 != 0:
                 in_str = not in_str
+            if line.count('"""') > 0:
+                prev_include_three_quotations = True
+            else:
+                prev_include_three_quotations = False
 
             tmp_line = re.sub(r"[\'\"]{1}[^\'\"]+[\'\"]{1}", "", line)
             if in_str:
@@ -285,7 +292,7 @@ class Converter:
 
             # model_torch.npy
             for torch_package in self.imports_map[file]["torch_packages"]:
-                if not self.count_bracket == 0:
+                if count_bracket != 0:
                     break
                 if tmp_line.startswith("%s." % torch_package):
                     lines[i] = ">>>>>>" + line
