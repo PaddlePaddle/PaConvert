@@ -249,7 +249,7 @@ class Converter:
         mark_next_line = False
         # torch.* in __doc__
         # torch.* in str
-        in_str = False  # indicate whether the previous line is in a string
+        in_str = False
         prev_include_three_quotations = (
             False  # indicate whether the previous line include three quotations
         )
