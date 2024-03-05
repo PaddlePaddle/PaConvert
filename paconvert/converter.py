@@ -249,13 +249,17 @@ class Converter:
         mark_next_line = False
         # torch.* in __doc__
         # torch.* in str
-        in_str = False  # indicate whether the previous line is in a string
-        prev_include_three_quotations = (
-            False  # indicate whether the previous line include three quotations
-        )
+        in_str = False  # indicate the line is in a string
 
         for i, line in enumerate(lines):
-            if not in_str and not prev_include_three_quotations and i != 0:
+            if in_str:
+                if line.count('"""') % 2 != 0:
+                    in_str = False
+                continue
+            if line.count('"""') % 2 != 0:
+                in_str = True
+                continue
+            if not in_str and i != 0:
                 pre_line = re.sub(r"[\'\"]{1}[^\'\"]+[\'\"]{1}", "", lines[i - 1])
                 count_bracket += (
                     pre_line.count("(")
@@ -268,16 +272,7 @@ class Converter:
             if count_bracket != 0:
                 continue
 
-            if line.count('"""') % 2 != 0:
-                in_str = not in_str
-            if line.count('"""') > 0:
-                prev_include_three_quotations = True
-            else:
-                prev_include_three_quotations = False
-
             tmp_line = re.sub(r"[\'\"]{1}[^\'\"]+[\'\"]{1}", "", line)
-            if in_str:
-                continue
 
             if (
                 "Class Method:" in line
