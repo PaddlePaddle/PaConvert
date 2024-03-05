@@ -265,6 +265,9 @@ class Converter:
                     - pre_line.count("]")
                     - pre_line.count("}")
                 )
+            if count_bracket != 0:
+                continue
+
             if line.count('"""') % 2 != 0:
                 in_str = not in_str
             if line.count('"""') > 0:
@@ -292,8 +295,6 @@ class Converter:
 
             # model_torch.npy
             for torch_package in self.imports_map[file]["torch_packages"]:
-                if count_bracket != 0:
-                    break
                 if tmp_line.startswith("%s." % torch_package):
                     lines[i] = ">>>>>>" + line
                     break
