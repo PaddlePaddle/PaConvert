@@ -130,7 +130,7 @@ class Converter:
         if faild_api_count > 0:
             log_info(
                 self.logger,
-                "\nFor these {} Pytorch APIs that do not support to Convert now, which have been marked by >>> before the line, \nplease refer to "
+                "\nFor these {} Pytorch APIs that currently do not support to convert, which have been marked by >>> before the line, \nplease refer to "
                 "https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html"
                 " \nand convert it by yourself manually. In addition, these APIs will be supported in future.".format(
                     faild_api_count
