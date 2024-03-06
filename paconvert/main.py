@@ -32,7 +32,7 @@ def main():
     )
     parser.add_argument(
         "--in_dir",
-        default="./tests/test_transpose.py",
+        default=None,
         type=str,
         help="the input PyTorch file or directory.",
     )
