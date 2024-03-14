@@ -248,12 +248,18 @@ class Converter:
         mark_next_line = False
         in_str = False
         for i, line in enumerate(lines):
-            # torch.* in __doc__
-            # torch.* in str
+            # """
+            # 1. torch.*
+            # """
+
             if line.count('"""') % 2 != 0:
                 in_str = not in_str
 
-            tmp_line = re.sub(r"[\'\"]{1}[^\'\"]+[\'\"]{1}", "", line)
+            # 2. "torch.*"
+            # 3. 'torch.*'
+            # just replace the string with ""
+            rm_str_line = re.sub(r"[\"]{1}[^\"]+[\"]{1}", "", line)
+            rm_str_line = re.sub(r"[\']{1}[^\']+[\']{1}", "", rm_str_line)
             if in_str:
                 continue
 
@@ -273,11 +279,11 @@ class Converter:
 
             # model_torch.npy
             for torch_package in self.imports_map[file]["torch_packages"]:
-                if tmp_line.startswith("%s." % torch_package):
+                if rm_str_line.startswith("%s." % torch_package):
                     lines[i] = ">>>>>>" + line
                     break
 
-                if re.match(r".*[^A-Za-z_]{1}%s\." % torch_package, tmp_line):
+                if re.match(r".*[^A-Za-z_]{1}%s\." % torch_package, rm_str_line):
                     lines[i] = ">>>>>>" + line
 
         return "\n".join(lines)
