@@ -131,7 +131,8 @@ def test_case_6():
                                 [-0.0087, 0.1098, 0.1783, -0.6953, 0.5519],
                                 [0.3789, -0.0560, -0.4090, -0.1070, -1.0139],
                                 [0.9204, 1.0817, -2.6126, 0.4244, 0.3272]]])
-        result = torch.avg_pool1d(kernel_size=3, stride=2, input=input, padding=1, count_include_pad=False, ceil_mode=True)
+        count_include_pad = False
+        result = torch.avg_pool1d(kernel_size=3, stride=2, input=input, padding=1, count_include_pad=count_include_pad, ceil_mode=True)
         """
     )
     obj.run(pytorch_code, ["result"])

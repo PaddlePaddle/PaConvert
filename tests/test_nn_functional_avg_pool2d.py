@@ -183,7 +183,8 @@ def test_case_7():
             [-0.0313,  0.8284, -0.3588,  1.3522],
             [-0.0991, -0.5112, -0.1785,  2.0903],
             [-1.3286, -0.9333, -0.1404,  1.2582]]]])
-        result = F.avg_pool2d(divisor_override=None, count_include_pad=False, ceil_mode=True, padding=1, stride=2, kernel_size=2, input=input)
+        count_include_pad = False
+        result = F.avg_pool2d(divisor_override=None, count_include_pad=count_include_pad, ceil_mode=True, padding=1, stride=2, kernel_size=2, input=input)
         """
     )
     obj.run(pytorch_code, ["result"])

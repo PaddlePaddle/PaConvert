@@ -2670,7 +2670,7 @@ class AvgPoolMatcher(BaseMatcher):
             kwargs["x"] = kwargs.pop("input")
 
         if "count_include_pad" in kwargs:
-            kwargs["exclusive"] = "not" + kwargs.pop("count_include_pad")
+            kwargs["exclusive"] = "not " + kwargs.pop("count_include_pad")
         else:
             kwargs["exclusive"] = "False"
         API_TEMPLATE = textwrap.dedent(
