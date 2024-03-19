@@ -247,20 +247,23 @@ class Converter:
         lines = code.split("\n")
         mark_next_line = False
         in_str = False
+        bracket_num = 0
         for i, line in enumerate(lines):
             # """
-            # 1. torch.*
+            # torch.*
             # """
-
+            pre_in_str = in_str
             if line.count('"""') % 2 != 0:
                 in_str = not in_str
+            if pre_in_str:
+                continue
 
-            # 2. "torch.*"
-            # 3. 'torch.*'
-            # just replace the string with ""
-            rm_str_line = re.sub(r"[\"]{1}[^\"]+[\"]{1}", "", line)
-            rm_str_line = re.sub(r"[\']{1}[^\']+[\']{1}", "", rm_str_line)
-            if in_str:
+            # torch.fake_api(paddlenlp.
+            #   transformers.BertTokenizer
+            pre_bracket_num = bracket_num
+            bracket_num += line.count("(")
+            bracket_num -= line.count(")")
+            if pre_bracket_num > 0:
                 continue
 
             if (
@@ -277,13 +280,21 @@ class Converter:
                     mark_next_line = False
                     continue
 
-            # model_torch.npy
+            # "torch.*"
+            # 'torch.*'
+            # just replace the string with ""
+            rm_str_line = re.sub(r"[\"]{1}[^\"]+[\"]{1}", "", line)
+            rm_str_line = re.sub(r"[\']{1}[^\']+[\']{1}", "", rm_str_line)
             for torch_package in self.imports_map[file]["torch_packages"]:
                 if rm_str_line.startswith("%s." % torch_package):
                     lines[i] = ">>>>>>" + line
                     break
 
-                if re.match(r".*[^A-Za-z_]{1}%s\." % torch_package, rm_str_line):
+                # model_torch.npy
+                # modeltorch.npy
+                # 1torch.npy
+                # paddlenlp.transformers.*
+                if re.match(r".*[^\w\.]{1}%s\." % torch_package, rm_str_line):
                     lines[i] = ">>>>>>" + line
 
         return "\n".join(lines)
