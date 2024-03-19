@@ -588,6 +588,7 @@ class BasicTransformer(BaseTransformer):
                 )
                 return node
             elif node_list == "misidentify":
+                self.torch_api_count -= 1
                 # This API usage indicate that it is not this class method
                 log_debug(
                     self.logger,
