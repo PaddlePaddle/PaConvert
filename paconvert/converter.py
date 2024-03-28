@@ -249,23 +249,6 @@ class Converter:
         in_str = False
         bracket_num = 0
         for i, line in enumerate(lines):
-            # """
-            # torch.*
-            # """
-            pre_in_str = in_str
-            if line.count('"""') % 2 != 0:
-                in_str = not in_str
-            if pre_in_str:
-                continue
-
-            # torch.fake_api(paddlenlp.
-            #   transformers.BertTokenizer
-            pre_bracket_num = bracket_num
-            bracket_num += line.count("(")
-            bracket_num -= line.count(")")
-            if pre_bracket_num > 0:
-                continue
-
             if (
                 "Class Method:" in line
                 or "Class Attribute:" in line
@@ -280,11 +263,33 @@ class Converter:
                     mark_next_line = False
                     continue
 
-            # "torch.*"
-            # 'torch.*'
-            # just replace the string with ""
-            rm_str_line = re.sub(r"[\"]{1}[^\"]+[\"]{1}", "", line)
+            # """ torch.* """
+            # " torch.* "
+            # ' torch.* '
+            # " (torch "
+            # " torch) "
+            # just remove the str, avoid str influence the torch api recognize
+            rm_str_line = re.sub(r"[\"]{3}[^\"]+[\"]{3}", "", line)
+            rm_str_line = re.sub(r"[\"]{1}[^\"]+[\"]{1}", "", rm_str_line)
             rm_str_line = re.sub(r"[\']{1}[^\']+[\']{1}", "", rm_str_line)
+
+            # """
+            # torch.*
+            # """
+            pre_in_str = in_str
+            if rm_str_line.count('"""') % 2 != 0:
+                in_str = not in_str
+            if pre_in_str or in_str:
+                continue
+
+            # paddle.add(paddlenlp.
+            #   transformers.BertTokenizer
+            pre_bracket_num = bracket_num
+            bracket_num += rm_str_line.count("(")
+            bracket_num -= rm_str_line.count(")")
+            if pre_bracket_num > 0:
+                continue
+
             for torch_package in self.imports_map[file]["torch_packages"]:
                 if rm_str_line.startswith("%s." % torch_package):
                     lines[i] = ">>>>>>" + line
