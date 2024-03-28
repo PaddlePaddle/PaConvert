@@ -36,6 +36,7 @@ json_file = os.path.dirname(__file__) + "/api_alias_mapping.json"
 with open(json_file, "r") as file:
     ALIAS_MAPPING = json.load(file)
 
+# Abbreviation after annotation as the prefix for corresponding matcher
 TORCH_PACKAGE_LIST = [
     "torch",
     "mmseg",
@@ -52,13 +53,13 @@ TORCH_PACKAGE_LIST = [
     "jieba",
     "NLTK",
     "scikit-learn",
-    "fairscale",
-    "transformers",
+    "fairscale",  # FS
+    "transformers",  # TRFM
     "datasets",
     "accelerate",
     "diffusers",
     "torch_xla",
-    "flash_attn",
+    "flash_attn",  # FA
 ]
 MAY_TORCH_PACKAGE_LIST = [
     "setuptools",

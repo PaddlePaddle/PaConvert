@@ -256,6 +256,7 @@ class ImportTransformer(BaseTransformer):
             9. inputs: Optional[Tensor] = None
             10. Union[GenerateOutput, torch.LongTensor]
             11. my_add = TorchAdd
+            12. Union[List[str], List[AddedToken]],
         """
         is_torch = False
         if isinstance(
@@ -290,7 +291,9 @@ class ImportTransformer(BaseTransformer):
         elif (
             isinstance(self.parent_node, ast.Assign) and node == self.parent_node.value
         ):
-            is_torch = True
+            is_torch = True  # 11. my_add = TorchAdd
+        elif isinstance(self.parent_node, ast.Index) and self.parent_node.value == node:
+            is_torch = True  # 12. Union[List[str], List[AddedToken]]
 
         if is_torch:
             torch_api = self.get_full_api_from_node(node)
