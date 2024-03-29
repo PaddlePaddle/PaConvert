@@ -181,6 +181,7 @@
   "torch.threshold_": "torch.nn.functional.threshold_",
   "torch.torch.Tensor": "torch.Tensor",
   "torch.torch.finfo": "torch.finfo",
+  "torch.torch.int32": "torch.int32",
   "torch.trapz": "torch.trapezoid",
   "torch.utils.data._utils.collate.default_collate": "torch.utils.data.default_collate",
   "torch.utils.data.dataloader.DataLoader": "torch.utils.data.DataLoader",
@@ -194,5 +195,8 @@
   "torch.utils.data.sampler.SequentialSampler": "torch.utils.data.SequentialSampler",
   "torch.utils.data.sampler.SubsetRandomSampler": "torch.utils.data.SubsetRandomSampler",
   "torch.utils.data.sampler.WeightedRandomSampler": "torch.utils.data.WeightedRandomSampler",
-  "torch.xlogy": "torch.special.xlogy"
+  "torch.xlogy": "torch.special.xlogy",
+  "transformers.generation.logits_process.LogitsProcessorList": "transformers.generation.LogitsProcessorList",
+  "transformers.modeling_utils.PreTrainedModel": "transformers.PreTrainedModel",
+  "transformers.utils.logging.get_logger": "transformers.logging.get_logger"
 }

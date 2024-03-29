@@ -1012,6 +1012,55 @@ class EqualMatcher(BaseMatcher):
         return code.strip("\n")
 
 
+class FAFlashAttnFuncMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}({})
+            """
+        )
+        if "softmax_scale" in kwargs:
+            Assert_TEMPLATE = textwrap.dedent(
+                """
+            paddle.utils.try_import("math")
+            assert {} is None or {} is math.sqrt({}.shape[-1]),"Fault: Not support parameter scale"
+            """
+            )
+            return Assert_TEMPLATE.format(
+                kwargs["softmax_scale"],
+                kwargs.pop("softmax_scale"),
+                kwargs["query"],
+            ) + API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class TRFMGetLoggerMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.utils.try_import("logging")
+            logging.getLogger({})
+            """
+        )
+        return API_TEMPLATE.format(self.kwargs_to_str(kwargs))
+
+
+class TRFMGenerationConfigMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        greedy_search_flag = False
+        num_beans_value = 1
+        if "do_sample" in kwargs:
+            do_sample_value = kwargs["do_sample"]
+            if do_sample_value != '"""False"""':
+                greedy_search_flag = True
+        if greedy_search_flag and "num_beans" in kwargs:
+            num_beans_value = kwargs["num_beans"]
+        if greedy_search_flag:
+            greedy_search = f'"greedy_search" if {do_sample_value} else "sampling" if {num_beans_value} == 1 else "beam_search"'
+            kwargs["greedy_search"] = greedy_search
+        return f"{self.get_paddle_api()}({self.kwargs_to_str(kwargs)})"
+
+
 class TensorMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         kwargs = self.parse_kwargs(kwargs)

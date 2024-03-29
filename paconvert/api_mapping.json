@@ -104,6 +104,65 @@
       "has_bias": "True"
     }
   },
+  "flash_attn.flash_attn_interface.flash_attn_func": {
+    "Matcher": "FAFlashAttnFuncMatcher",
+    "paddle_api": "paddle.nn.functional.flash_attention",
+    "args_list": [
+      "q",
+      "k",
+      "v",
+      "dropout_p",
+      "softmax_scale",
+      "causal",
+      "window_size",
+      "alibi_slopes",
+      "deterministic",
+      "return_attn_probs"
+    ],
+    "unsupport_args": [
+      "window_size",
+      "alibi_slopes",
+      "deterministic",
+      "return_attn_probs"
+    ],
+    "kwargs_change": {
+      "q": "query",
+      "k": "key",
+      "v": "value"
+    }
+  },
+  "flash_attn.flash_attn_interface.flash_attn_unpadded_func": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.flash_attn_unpadded",
+    "args_list": [
+      "q",
+      "k",
+      "v",
+      "cu_seqlens_q",
+      "cu_seqlens_k",
+      "max_seqlen_q",
+      "max_seqlen_k",
+      "dropout_p",
+      "softmax_scale",
+      "casul",
+      "window_size",
+      "alibi_slopes",
+      "deterministic",
+      "return_attn_probs"
+    ],
+    "unsupport_args": [
+      "window_size",
+      "alibi_slopes",
+      "deterministic",
+      "return_attn_probs"
+    ],
+    "kwargs_change": {
+      "q": "query",
+      "k": "key",
+      "v": "value",
+      "softmax_scale": "scale"
+    }
+  },
   "os.environ.get": {
     "Matcher": "OsEnvironGetMatcher",
     "args_list": [
@@ -15533,5 +15592,130 @@
       "input": "x",
       "dtype": "dtype"
     }
+  },
+  "transformers.AddedToken": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddlenlp.transformers.AddedToken",
+    "args_list": [
+      "content",
+      "single_word",
+      "lstrip",
+      "rstrip",
+      "normalized"
+    ]
+  },
+  "transformers.GenerationConfig": {
+    "Matcher": "TRFMGenerationConfigMatcher",
+    "paddle_api": "paddlenlp.generation.GenerationConfig",
+    "args_list": [
+      "*",
+      "max_length",
+      "max_new_tokens",
+      "min_length",
+      "min_new_tokens",
+      "early_stopping",
+      "max_time",
+      "do_sample",
+      "num_beams",
+      "num_beam_groups",
+      "penalty_alpha",
+      "use_cache",
+      "temperature",
+      "top_k",
+      "top_p",
+      "typical_p",
+      "epsilon_cutoff",
+      "eta_cutoff",
+      "diversity_penalty",
+      "repetition_penalty",
+      "encoder_repetition_penalty",
+      "length_penalty",
+      "no_repeat_ngram_size",
+      "bad_words_ids",
+      "force_words_ids",
+      "renormalize_logits",
+      "constraints",
+      "forced_bos_token_id",
+      "forced_eos_token_id",
+      "remove_invalid_values",
+      "exponential_decay_length_penalty",
+      "suppress_tokens",
+      "begin_suppress_tokens",
+      "forced_decoder_ids",
+      "sequence_bias ",
+      "guidance_scale",
+      "low_memory",
+      "num_return_sequences",
+      "output_attentions",
+      "output_hidden_states",
+      "output_scores",
+      "return_dict_in_generate",
+      "pad_token_id",
+      "bos_token_id",
+      "eos_token_id",
+      "encoder_no_repeat_ngram_size",
+      "decoder_start_token_id",
+      "num_assistant_tokens",
+      "num_assistant_tokens_schedule"
+    ],
+    "unsupport_args": [
+      "max_new_tokens",
+      "min_new_tokens",
+      "max_time",
+      "penalty_alpha",
+      "typical_p",
+      "epsilon_cutoff",
+      "eta_cutoff",
+      "diversity_penalty",
+      "encoder_repetition_penalty",
+      "no_repeat_ngram_size",
+      "bad_words_ids",
+      "force_words_ids",
+      "renormalize_logits",
+      "constraints",
+      "remove_invalid_values",
+      "exponential_decay_length_penalty",
+      "suppress_tokens",
+      "begin_suppress_tokens",
+      "forced_decoder_ids",
+      "sequence_bias ",
+      "guidance_scale",
+      "low_memory",
+      "num_return_sequences",
+      "output_attentions",
+      "output_hidden_states",
+      "output_scores",
+      "return_dict_in_generate",
+      "encoder_no_repeat_ngram_size",
+      "num_assistant_tokens",
+      "num_assistant_tokens_schedule"
+    ]
+  },
+  "transformers.logging.get_logger": {
+    "Matcher": "TRFMGetLoggerMatcher",
+    "args_list": [
+      "name"
+    ]
+  },
+  "transformers.modeling_outputs.BaseModelOutputWithPast": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddlenlp.transformers.model_outputs.BaseModelOutputWithPast",
+    "args_list": [
+      "last_hidden_state",
+      "past_key_values",
+      "hidden_states",
+      "attentions"
+    ]
+  },
+  "transformers.modeling_outputs.CausalLMOutputWithPast": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddlenlp.transformers.model_outputs.CausalLMOutputWithPast",
+    "args_list": [
+      "loss",
+      "logits",
+      "past_key_values",
+      "hidden_states",
+      "attentions"
+    ]
   }
 }
