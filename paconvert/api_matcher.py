@@ -1027,7 +1027,7 @@ class FAFlashAttnFuncMatcher(BaseMatcher):
             """
             )
             return Assert_TEMPLATE.format(
-                kwargs.pop("softmax_scale"),
+                kwargs["softmax_scale"],
                 kwargs.pop("softmax_scale"),
                 kwargs["query"],
             ) + API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
