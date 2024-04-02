@@ -2466,10 +2466,7 @@
     ],
     "kwargs_change": {
       "dim": "axis"
-    },
-    "unsupport_args": [
-      "interpolation"
-    ]
+    }
   },
   "torch.Tensor.nansum": {
     "Matcher": "GenericMatcher",
@@ -2785,7 +2782,9 @@
     "args_list": [
       "q",
       "dim",
-      "keepdim"
+      "keepdim",
+      "*",
+      "interpolation"
     ],
     "kwargs_change": {
       "dim": "axis"
@@ -8747,10 +8746,7 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axis"
-    },
-    "unsupport_args": [
-      "interpolation "
-    ]
+    }
   },
   "torch.nansum": {
     "Matcher": "GenericMatcher",
@@ -13500,10 +13496,7 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axis"
-    },
-    "unsupport_args": [
-      "interpolation "
-    ]
+    }
   },
   "torch.rad2deg": {
     "Matcher": "GenericMatcher",

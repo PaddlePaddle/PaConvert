@@ -132,13 +132,12 @@ def test_case_10():
     obj.run(pytorch_code, ["result"])
 
 
-# torch.Tensor.quantile not support interpolation
-def _test_case_11():
+def test_case_11():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[ 0.0795, -1.2117,  0.9765], [ 1.1707,  0.6706,  0.4884]],dtype=torch.float64)
-        result=x.quantile(q=0.6, dim=1, keepdim=False, interpolation='linear')
+        x = torch.tensor([[ 0.0795, -1.2117,  0.9765], [ 1.1707,  0.6706,  0.4884]], dtype=torch.float64)
+        result = x.quantile(q=0.6, dim=1, keepdim=False, interpolation='linear')
         """
     )
     obj.run(pytorch_code, ["result"])
