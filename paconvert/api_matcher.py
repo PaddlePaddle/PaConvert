@@ -3305,6 +3305,12 @@ class DoubleAssignMatcher(BaseMatcher):
             if k in kwargs:
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
 
+        paddle_default_kwargs = self.api_mapping.get("paddle_default_kwargs", {})
+
+        for k in paddle_default_kwargs:
+            if k not in kwargs:
+                kwargs[k] = paddle_default_kwargs[k]
+
         if "out" in kwargs:
             out_v = kwargs.pop("out")
             API_TEMPLATE = textwrap.dedent(
@@ -3335,6 +3341,12 @@ class TripleAssignMatcher(BaseMatcher):
                     kwargs[kwargs_change[k]] = kwargs.pop(k)
                 else:
                     kwargs.pop(k)
+
+        paddle_default_kwargs = self.api_mapping.get("paddle_default_kwargs", {})
+
+        for k in paddle_default_kwargs:
+            if k not in kwargs:
+                kwargs[k] = paddle_default_kwargs[k]
 
         if "out" in kwargs:
             out_v = kwargs.pop("out")
@@ -4328,11 +4340,3 @@ class OsEnvironGetMatcher(BaseMatcher):
         else:
             code = "misidentify"
         return code
-
-
-class MedianMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if kwargs.get("dim", -1) != "-1":
-            kwargs["mode"] = "'min'"
-
-        return GenericMatcher.generate_code(self, kwargs)

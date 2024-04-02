@@ -8494,7 +8494,7 @@
     }
   },
   "torch.median": {
-    "Matcher": "MedianMatcher",
+    "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.median",
     "args_list": [
       "input",
@@ -8506,6 +8506,9 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axis"
+    },
+    "paddle_default_kwargs": {
+      "mode": "'min'"
     }
   },
   "torch.meshgrid": {
@@ -8711,7 +8714,7 @@
     }
   },
   "torch.nanmedian": {
-    "Matcher": "MedianMatcher",
+    "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.nanmedian",
     "args_list": [
       "input",
@@ -8723,6 +8726,9 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axis"
+    },
+    "paddle_default_kwargs": {
+      "mode": "'min'"
     }
   },
   "torch.nanquantile": {

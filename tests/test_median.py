@@ -72,7 +72,7 @@ def test_case_4():
     )
 
 
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -81,7 +81,7 @@ def _test_case_5():
         result = torch.median(input, dim=1, keepdim=True, out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])
 
 
 def test_case_6():
@@ -96,3 +96,14 @@ def test_case_6():
         pytorch_code,
         ["result"],
     )
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = torch.median(input, dim=1, keepdim=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
