@@ -11462,6 +11462,22 @@
     },
     "min_input_args": 2
   },
+  "torch.nn.functional.group_norm": {
+    "Matcher": "GenericMatcher",
+    "min_input_args": 2,
+    "paddle_api": "paddle.nn.functional.group_norm",
+    "args_list": [
+      "input",
+      "num_groups",
+      "weight",
+      "bias",
+      "eps"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "eps": "epsilon"
+    }
+  },
   "torch.nn.functional.gumbel_softmax": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.gumbel_softmax",
