@@ -8711,7 +8711,7 @@
     }
   },
   "torch.nanmedian": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "MedianMatcher",
     "paddle_api": "paddle.nanmedian",
     "args_list": [
       "input",
@@ -8723,10 +8723,7 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axis"
-    },
-    "unsupport_args": [
-      "dim"
-    ]
+    }
   },
   "torch.nanquantile": {
     "Matcher": "GenericMatcher",
