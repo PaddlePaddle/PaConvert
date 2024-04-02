@@ -4328,3 +4328,11 @@ class OsEnvironGetMatcher(BaseMatcher):
         else:
             code = "misidentify"
         return code
+
+
+class MedianMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if kwargs.get("dim", -1) != "-1":
+            kwargs["mode"] = "'min'"
+
+        return GenericMatcher.generate_code(self, kwargs)

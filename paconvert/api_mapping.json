@@ -8494,7 +8494,7 @@
     }
   },
   "torch.median": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "MedianMatcher",
     "paddle_api": "paddle.median",
     "args_list": [
       "input",
@@ -8506,10 +8506,7 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axis"
-    },
-    "unsupport_args": [
-      "dim"
-    ]
+    }
   },
   "torch.meshgrid": {
     "Matcher": "MeshgridMatcher",
