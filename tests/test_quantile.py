@@ -126,3 +126,63 @@ def test_case_9():
         pytorch_code,
         ["result", "out"],
     )
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 0.0795, -1.2117,  0.9765], [ 1.1707,  0.6706,  0.4884]], dtype=torch.float64)
+        out = torch.tensor([], dtype=torch.float64)
+        result = torch.quantile(input=x, q=0.3, dim=1, keepdim=True, interpolation='linear', out=out)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result", "out"],
+    )
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 0.0795, -1.2117,  0.9765], [ 1.1707,  0.6706,  0.4884]], dtype=torch.float64)
+        out = torch.tensor([], dtype=torch.float64)
+        result = torch.quantile(input=x, q=0.3, dim=1, keepdim=True, interpolation='lower', out=out)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result", "out"],
+    )
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 0.0795, -1.2117,  0.9765], [ 1.1707,  0.6706,  0.4884]], dtype=torch.float64)
+        out = torch.tensor([], dtype=torch.float64)
+        result = torch.quantile(input=x, q=0.3, dim=1, keepdim=True, interpolation='nearest', out=out)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result", "out"],
+    )
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 0.0795, -1.2117,  0.9765], [ 1.1707,  0.6706,  0.4884]], dtype=torch.float64)
+        out = torch.tensor([], dtype=torch.float64)
+        result = torch.quantile(input=x, q=0.3, dim=1, keepdim=True, interpolation='midpoint', out=out)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result", "out"],
+    )

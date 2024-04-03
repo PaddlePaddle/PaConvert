@@ -132,3 +132,51 @@ def test_case_10():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0]], dtype=torch.float64)
+        out = torch.tensor([[1]], dtype=torch.float64)
+        result = torch.nanquantile(input=x, q=0.3, dim=1, keepdim=True, interpolation='linear', out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0]], dtype=torch.float64)
+        out = torch.tensor([[1]], dtype=torch.float64)
+        result = torch.nanquantile(input=x, q=0.3, dim=1, keepdim=True, interpolation='lower', out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0]], dtype=torch.float64)
+        out = torch.tensor([[1]], dtype=torch.float64)
+        result = torch.nanquantile(input=x, q=0.3, dim=1, keepdim=True, interpolation='nearest', out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0]], dtype=torch.float64)
+        out = torch.tensor([[1]], dtype=torch.float64)
+        result = torch.nanquantile(input=x, q=0.3, dim=1, keepdim=True, interpolation='midpoint', out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
