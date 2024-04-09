@@ -3297,19 +3297,15 @@ class FunctionalSmoothL1LossMatcher(BaseMatcher):
 
 class DoubleAssignMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs_change = {}
-        if "kwargs_change" in self.api_mapping:
-            kwargs_change = self.api_mapping["kwargs_change"]
+        kwargs = self.set_paddle_default_kwargs(kwargs)
+        kwargs_change = self.api_mapping.get("kwargs_change", {})
 
         for k in kwargs_change:
             if k in kwargs:
-                kwargs[kwargs_change[k]] = kwargs.pop(k)
-
-        paddle_default_kwargs = self.api_mapping.get("paddle_default_kwargs", {})
-
-        for k in paddle_default_kwargs:
-            if k not in kwargs:
-                kwargs[k] = paddle_default_kwargs[k]
+                if kwargs[k]:
+                    kwargs[kwargs_change[k]] = kwargs.pop(k)
+                else:
+                    kwargs.pop(k)
 
         if "out" in kwargs:
             out_v = kwargs.pop("out")
@@ -3331,9 +3327,7 @@ class DoubleAssignMatcher(BaseMatcher):
 class TripleAssignMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs = self.set_paddle_default_kwargs(kwargs)
-        kwargs_change = {}
-        if "kwargs_change" in self.api_mapping:
-            kwargs_change = self.api_mapping["kwargs_change"]
+        kwargs_change = self.api_mapping.get("kwargs_change", {})
 
         for k in kwargs_change:
             if k in kwargs:
@@ -3341,12 +3335,6 @@ class TripleAssignMatcher(BaseMatcher):
                     kwargs[kwargs_change[k]] = kwargs.pop(k)
                 else:
                     kwargs.pop(k)
-
-        paddle_default_kwargs = self.api_mapping.get("paddle_default_kwargs", {})
-
-        for k in paddle_default_kwargs:
-            if k not in kwargs:
-                kwargs[k] = paddle_default_kwargs[k]
 
         if "out" in kwargs:
             out_v = kwargs.pop("out")
