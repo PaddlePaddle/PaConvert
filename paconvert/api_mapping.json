@@ -8494,7 +8494,7 @@
     }
   },
   "torch.median": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.median",
     "args_list": [
       "input",
@@ -8507,9 +8507,9 @@
       "input": "x",
       "dim": "axis"
     },
-    "unsupport_args": [
-      "dim"
-    ]
+    "paddle_default_kwargs": {
+      "mode": "'min'"
+    }
   },
   "torch.meshgrid": {
     "Matcher": "MeshgridMatcher",
@@ -8714,7 +8714,7 @@
     }
   },
   "torch.nanmedian": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.nanmedian",
     "args_list": [
       "input",
@@ -8727,9 +8727,9 @@
       "input": "x",
       "dim": "axis"
     },
-    "unsupport_args": [
-      "dim"
-    ]
+    "paddle_default_kwargs": {
+      "mode": "'min'"
+    }
   },
   "torch.nanquantile": {
     "Matcher": "GenericMatcher",
@@ -10747,7 +10747,6 @@
       "dtype": ""
     },
     "unsupport_args": [
-      "layer_norm_eps",
       "batch_first"
     ],
     "paddle_default_kwargs": {
@@ -10792,7 +10791,6 @@
       "dtype": ""
     },
     "unsupport_args": [
-      "layer_norm_eps",
       "batch_first"
     ],
     "paddle_default_kwargs": {
@@ -11467,6 +11465,22 @@
       "input": "x"
     },
     "min_input_args": 2
+  },
+  "torch.nn.functional.group_norm": {
+    "Matcher": "GenericMatcher",
+    "min_input_args": 2,
+    "paddle_api": "paddle.nn.functional.group_norm",
+    "args_list": [
+      "input",
+      "num_groups",
+      "weight",
+      "bias",
+      "eps"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "eps": "epsilon"
+    }
   },
   "torch.nn.functional.gumbel_softmax": {
     "Matcher": "GenericMatcher",

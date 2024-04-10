@@ -86,12 +86,7 @@ def test_case_5():
         result = model(tgt)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle unsupport layer_norm_eps args",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_6():
