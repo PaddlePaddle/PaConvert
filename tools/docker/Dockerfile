@@ -6,4 +6,4 @@ RUN apt-get update && \
 
 RUN python3 -m pip install astor
 
-RUN python3 -m pip install install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+RUN pip3 install install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
