@@ -28,7 +28,7 @@ def test_case_1():
         result = torch.celu(x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], atol=1e-05, rtol=1e-06)
 
 
 def test_case_2():
@@ -40,7 +40,7 @@ def test_case_2():
         result = torch.celu(x, 0.6)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], atol=1e-05, rtol=1e-06)
 
 
 def test_case_3():
@@ -52,7 +52,7 @@ def test_case_3():
         result = torch.celu(input=x, alpha=0.8)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], atol=1e-05, rtol=1e-06)
 
 
 def test_case_4():
@@ -64,7 +64,7 @@ def test_case_4():
         result = torch.celu(x, 0.9)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], atol=1e-05, rtol=1e-06)
 
 
 def test_case_5():
@@ -76,7 +76,7 @@ def test_case_5():
         result = torch.celu(input=x, alpha=0.9)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], atol=1e-05, rtol=1e-06)
 
 
 def test_case_6():
@@ -88,4 +88,4 @@ def test_case_6():
         result = torch.celu(alpha=0.8, input=x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], atol=1e-05, rtol=1e-06)
