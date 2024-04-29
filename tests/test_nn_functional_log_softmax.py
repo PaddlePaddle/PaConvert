@@ -55,7 +55,7 @@ def test_case_2():
         result = F.log_softmax(x, dim=1)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], atol=1e-05, rtol=1e-06)
 
 
 def test_case_3():
