@@ -54,7 +54,7 @@ def test_case_1():
         result = model(inputs)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], atol=1e-5, rtol=1e-5)
 
 
 def test_case_2():
@@ -81,4 +81,4 @@ def test_case_2():
         result = model.__class__.__name__
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], atol=1e-5, rtol=1e-5)

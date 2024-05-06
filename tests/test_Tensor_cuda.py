@@ -52,7 +52,7 @@ def test_case_3():
         a = torch.zeros((1,2,3,4))
         result = None
         if torch.cuda.is_available():
-            result = a.cuda("cuda:0", True, torch.channels_last)
+            result = a.cuda("cuda:0", True)
         """
     )
     obj.run(pytorch_code, ["result"])

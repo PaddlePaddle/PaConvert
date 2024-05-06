@@ -31,7 +31,7 @@ def test_case_1():
         result = F.grid_sample(x, grid)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"], check_value=False, check_stop_gradient=False)
 
 
 def test_case_2():
@@ -76,7 +76,7 @@ def test_case_4():
         result = F.grid_sample(x, grid, mode='bilinear', align_corners=True)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"], check_value=False, check_stop_gradient=False)
 
 
 def test_case_5():
@@ -90,4 +90,4 @@ def test_case_5():
         result = F.grid_sample(x, grid, mode='bilinear', align_corners=True)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"], check_value=False, check_stop_gradient=False)

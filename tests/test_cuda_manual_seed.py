@@ -26,7 +26,7 @@ def test_case_1():
         result = None
         if torch.cuda.is_available():
             torch.cuda.manual_seed(123)
-            result = torch.initial_seed()
+            result = torch.cuda.initial_seed()
         """
     )
     obj.run(
@@ -42,7 +42,7 @@ def test_case_2():
         result = None
         if torch.cuda.is_available():
             torch.cuda.manual_seed(seed=123)
-            result = torch.initial_seed()
+            result = torch.cuda.initial_seed()
         """
     )
     obj.run(

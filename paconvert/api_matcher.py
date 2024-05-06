@@ -145,6 +145,7 @@ class GenericMatcher(BaseMatcher):
                 """
             )
             code = API_TEMPLATE.format(code, out_v)
+        print(code)
 
         return code
 
@@ -714,11 +715,35 @@ class CreateMatcher(BaseMatcher):
 class DeviceMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if len(kwargs) == 1:
-            code = f'str({kwargs["type"]}).replace("cuda", "gpu")'
-
+            # NOTE: kwargs["type"] is """cuda:0""" , not cuda:0
+            if "cuda" in kwargs["type"]:
+                place_no = int(kwargs["type"].split(":")[1][0:-3])
+                code = "paddle.CUDAPlace({place_no})"
+            elif "cpu" in kwargs["type"]:
+                code = "paddle.CPUPlace()"
+            else:
+                code = str(kwargs["type"])
         if len(kwargs) == 2:
-            code = f'":".join([{kwargs["type"]}.replace("cuda", "gpu"), str({kwargs["index"]})])'
+            place_no = kwargs["index"]
+            if "cuda" in kwargs["type"]:
+                code = f"paddle.CUDAPlace({place_no})"
+            elif "cpu" in kwargs["type"]:
+                code = "paddle.CPUPlace()"
+            else:
+                code = f'":".join([{kwargs["type"]}, str({kwargs["index"]})])'
         return code
+
+
+class GetDevicePropertiesMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}(device={})
+            """
+        )
+        return API_TEMPLATE.format(
+            self.get_paddle_api(), kwargs["device"].replace("cuda", "gpu")
+        )
 
 
 class GeluMatcher(BaseMatcher):
@@ -3900,6 +3925,22 @@ class CudaStreamMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class SetStreamMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "stream" not in kwargs or "None" in kwargs["stream"]:
+            kwargs["stream"] = "paddle.device.Stream()"
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}(stream = paddle.device.Stream(stream_base={}) if isinstance ({},(paddle.base.core.CUDAStream, paddle.base.core.CustomDeviceStream)) else {})
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.get_paddle_api(), kwargs["stream"], kwargs["stream"], kwargs["stream"]
+        )
+
+        return code
+
+
 class CudaNvtxRangePushMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         code = "{}({})".format(self.get_paddle_api(), kwargs["msg"])
@@ -4209,8 +4250,25 @@ class TensorCudaMatcher(BaseMatcher):
             new_kwargs["blocking"] = f"not {kwargs.pop('non_blocking')}"
         else:
             new_kwargs["blocking"] = "True"
+        if "device" in kwargs:
+            new_kwargs["device"] = int(kwargs.pop("device").split(":")[1][0:-3])
         new_kwargs.update(kwargs)
         return GenericMatcher.generate_code(self, new_kwargs)
+
+
+class SetDeviceMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if kwargs["device"][1:-1].isdigit():
+            kwargs["device"] = """'gpu:{}'""".format(int(kwargs["device"][1:-1]))
+        else:
+            kwargs["device"] = kwargs["device"].replace("cuda", "gpu")
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}(device={})
+            """
+        )
+
+        return API_TEMPLATE.format(self.get_paddle_api(), kwargs["device"])
 
 
 class TensorViewMatcher(BaseMatcher):

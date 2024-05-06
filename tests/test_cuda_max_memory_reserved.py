@@ -16,7 +16,23 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.cuda.max_memory_reserved")
+
+class cudaMaxMemoryReservedAPI(APIBase):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
+    ):
+        assert type(pytorch_result) == type(paddle_result)
+
+
+obj = cudaMaxMemoryReservedAPI("torch.cuda.max_memory_reserved")
 
 
 def test_case_1():

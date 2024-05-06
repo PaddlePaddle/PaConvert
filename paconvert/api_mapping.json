@@ -5138,15 +5138,12 @@
     }
   },
   "torch.cuda.get_device_properties": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "GetDevicePropertiesMatcher",
     "paddle_api": "paddle.device.cuda.get_device_properties",
     "min_input_args": 1,
     "args_list": [
       "device"
-    ],
-    "kwargs_change": {
-      "device": "device"
-    }
+    ]
   },
   "torch.cuda.get_rng_state_all": {
     "Matcher": "GenericMatcher",
@@ -5161,6 +5158,10 @@
     "Matcher": "CudaIsAvailableMatcher",
     "paddle_api": "paddle.device.cuda.device_count",
     "min_input_args": 0
+  },
+  "torch.cuda.is_bf16_supported": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.amp.is_bfloat16_supported"
   },
   "torch.cuda.manual_seed": {
     "Matcher": "GenericMatcher",
@@ -5236,15 +5237,12 @@
     ]
   },
   "torch.cuda.set_device": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "SetDeviceMatcher",
     "paddle_api": "paddle.device.set_device",
     "min_input_args": 1,
     "args_list": [
       "device"
-    ],
-    "kwargs_change": {
-      "device": "device"
-    }
+    ]
   },
   "torch.cuda.set_rng_state_all": {
     "Matcher": "GenericMatcher",
@@ -5258,7 +5256,7 @@
     }
   },
   "torch.cuda.set_stream": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "SetStreamMatcher",
     "paddle_api": "paddle.device.set_stream",
     "min_input_args": 0,
     "args_list": [
@@ -5385,7 +5383,6 @@
   },
   "torch.device": {
     "Matcher": "DeviceMatcher",
-    "paddle_api": "str",
     "min_input_args": 1,
     "args_list": [
       "type",
