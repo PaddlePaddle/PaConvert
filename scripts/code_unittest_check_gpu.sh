@@ -32,7 +32,7 @@ python -c "import paddle; print('paddle version information:' , paddle.__version
 
 echo "Checking code unit test by pytest ..."
 python -m pip install pytest-timeout
-python -m pytest /workspace/PaConvert/tests;check_error=$?
+python -m pytest ./tests;check_error=$?
 
 echo '************************************************************************************'
 echo "______      _____                          _   "
