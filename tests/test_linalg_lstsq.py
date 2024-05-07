@@ -98,8 +98,11 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[10, 2, 3], [3, 10, 5], [5, 6, 12.]]).cuda()
-        y = torch.tensor([[4, 2, 9], [2, 0, 3], [2, 5, 3.]]).cuda()
+        x = torch.tensor([[10, 2, 3], [3, 10, 5], [5, 6, 12.]])
+        y = torch.tensor([[4, 2, 9], [2, 0, 3], [2, 5, 3.]])
+        if torch.cuda.is_available():
+            x = x.cuda()
+            y = y.cuda()
         result = torch.linalg.lstsq(x, y, None)
         """
     )
@@ -137,8 +140,11 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[10, 2, 3], [3, 10, 5], [5, 6, 12.]]).cuda()
-        y = torch.tensor([[4, 2, 9], [2, 0, 3], [2, 5, 3.]]).cuda()
+        x = torch.tensor([[10, 2, 3], [3, 10, 5], [5, 6, 12.]])
+        y = torch.tensor([[4, 2, 9], [2, 0, 3], [2, 5, 3.]])
+        if torch.cuda.is_available():
+            x = x.cuda()
+            y = y.cuda()
         result = torch.linalg.lstsq(x, y)
         """
     )
