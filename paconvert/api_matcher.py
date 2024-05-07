@@ -717,13 +717,13 @@ class DeviceMatcher(BaseMatcher):
             # NOTE: kwargs["type"] is """cuda:0""" , not cuda:0
             if "cuda" == kwargs["type"]:
                 code = "paddle.CUDAPlace()"
-            elif "cuda:" in kwargs["type"]:
+            elif "cuda:" in kwargs["type"] and "if" not in kwargs["type"]:
                 code = "paddle.CUDAPlace({})".format(
                     int(kwargs["type"].split(":")[1][0:-3])
                 )
             elif "cpu" == kwargs["type"]:
                 code = "paddle.CPUPlace()"
-            elif "cpu:" in kwargs["type"]:
+            elif "cpu:" in kwargs["type"] and "if" not in kwargs["type"]:
                 code = "paddle.CPUPlace()({})".format(
                     int(kwargs["type"].split(":")[1][0:-3])
                 )
