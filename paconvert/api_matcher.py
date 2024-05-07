@@ -145,7 +145,6 @@ class GenericMatcher(BaseMatcher):
                 """
             )
             code = API_TEMPLATE.format(code, out_v)
-        print(code)
 
         return code
 
@@ -716,21 +715,28 @@ class DeviceMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if len(kwargs) == 1:
             # NOTE: kwargs["type"] is """cuda:0""" , not cuda:0
-            if "cuda" in kwargs["type"]:
-                place_no = int(kwargs["type"].split(":")[1][0:-3])
-                code = "paddle.CUDAPlace({place_no})"
-            elif "cpu" in kwargs["type"]:
+            if "cuda" == kwargs["type"]:
+                code = "paddle.CUDAPlace()"
+            elif "cuda:" in kwargs["type"]:
+                code = "paddle.CUDAPlace({})".format(
+                    int(kwargs["type"].split(":")[1][0:-3])
+                )
+            elif "cpu" == kwargs["type"]:
                 code = "paddle.CPUPlace()"
+            elif "cpu:" in kwargs["type"]:
+                code = "paddle.CPUPlace()({})".format(
+                    int(kwargs["type"].split(":")[1][0:-3])
+                )
             else:
-                code = str(kwargs["type"])
+                code = f'str({kwargs["type"]}).replace("cuda", "gpu")'
+
         if len(kwargs) == 2:
-            place_no = kwargs["index"]
-            if "cuda" in kwargs["type"]:
-                code = f"paddle.CUDAPlace({place_no})"
-            elif "cpu" in kwargs["type"]:
-                code = "paddle.CPUPlace()"
+            if "cuda" == kwargs["type"]:
+                code = "paddle.CUDAPlace({})".format(kwargs["index"])
+            elif "cpu" == kwargs["type"]:
+                code = "paddle.CPUPlace({})".format(kwargs["index"])
             else:
-                code = f'":".join([{kwargs["type"]}, str({kwargs["index"]})])'
+                code = f'":".join([{kwargs["type"]}.replace("cuda", "gpu"), str({kwargs["index"]})])'
         return code
 
 

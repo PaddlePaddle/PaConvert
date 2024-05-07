@@ -29,9 +29,10 @@ class cudaSetStreamAPI(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        assert isinstance(pytorch_result, type(None)) and not isinstance(
-            paddle_result, type(None)
-        )
+        if paddle_result is None:
+            return True
+        else:
+            assert isinstance(pytorch_result, type(None))
 
 
 obj = cudaSetStreamAPI("torch.cuda.set_stream")

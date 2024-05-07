@@ -29,7 +29,17 @@ class DeviceAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        assert str(pytorch_result).replace("cuda", "gpu") == str(paddle_result)
+        if isinstance(paddle_result, bool):
+            assert pytorch_result == paddle_result
+        elif isinstance(paddle_result, str):
+            assert str(pytorch_result).replace("cuda", "gpu") == paddle_result
+        elif not hasattr(paddle_result, "get_device_id"):
+            print(paddle_result)
+            assert "cpu" in str(pytorch_result)
+        else:
+            assert str(pytorch_result).replace("cuda", "gpu") == "gpu:" + str(
+                paddle_result.get_device_id()
+            )
 
 
 obj = DeviceAPIBase("torch.device")

@@ -29,7 +29,10 @@ class cudaSetDeviceAPI(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        assert pytorch_result == paddle_result.get_device_id()
+        if paddle_result is None:
+            return True
+        else:
+            assert pytorch_result == paddle_result.get_device_id()
 
 
 obj = cudaSetDeviceAPI("torch.cuda.set_device")

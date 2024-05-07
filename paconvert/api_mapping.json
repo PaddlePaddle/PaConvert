@@ -5383,6 +5383,7 @@
   },
   "torch.device": {
     "Matcher": "DeviceMatcher",
+    "paddle_api": "(paddle.CPUPlace, paddle.CUDAPlace, str)",
     "min_input_args": 1,
     "args_list": [
       "type",
