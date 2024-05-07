@@ -69,3 +69,43 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.zeros((1,2,3,4))
+        result = None
+        if torch.cuda.is_available():
+            result = a.cuda(device = 0 if 1 > 0 else 1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.zeros((1,2,3,4))
+        result = None
+        if torch.cuda.is_available():
+            result = a.cuda(device = "cuda:0" if 1 > 0 else "cuda:1")
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.zeros((1,2,3,4))
+        num = 0
+        result = None
+        if torch.cuda.is_available():
+            result = a.cuda(device = num)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

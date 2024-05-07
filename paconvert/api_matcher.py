@@ -4253,13 +4253,20 @@ class TensorCudaMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         new_kwargs = {}
         if "non_blocking" in kwargs:
-            new_kwargs["blocking"] = f"not {kwargs.pop('non_blocking')}"
+            new_kwargs["blocking"] = f"not {kwargs['non_blocking']}"
         else:
             new_kwargs["blocking"] = "True"
         if "device" in kwargs:
-            new_kwargs["device"] = int(kwargs.pop("device").split(":")[1][0:-3])
-        new_kwargs.update(kwargs)
-        return GenericMatcher.generate_code(self, new_kwargs)
+            if ":" in kwargs["device"] and "if" not in kwargs["device"]:
+                new_kwargs["device"] = int(kwargs["device"].split(":")[1][0:-3])
+            elif isinstance(kwargs["device"], int):
+                pass
+            else:
+                new_kwargs[
+                    "device"
+                ] = f'{kwargs["device"]} if isinstance({kwargs["device"]}, int) else int(str({kwargs["device"]}).split(":")[1])'
+        kwargs.update(new_kwargs)
+        return GenericMatcher.generate_code(self, kwargs)
 
 
 class SetDeviceMatcher(BaseMatcher):
