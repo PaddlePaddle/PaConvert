@@ -714,18 +714,19 @@ class CreateMatcher(BaseMatcher):
 class DeviceMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if len(kwargs) == 1:
+
             # NOTE: kwargs["type"] is """cuda:0""" , not cuda:0
             if "cuda" == kwargs["type"]:
                 code = "paddle.CUDAPlace()"
             elif "cuda:" in kwargs["type"] and "if" not in kwargs["type"]:
                 code = "paddle.CUDAPlace({})".format(
-                    int(kwargs["type"].split(":")[1][0:-3])
+                    f'int(str({kwargs["type"]}).replace("cuda:",""))'
                 )
             elif "cpu" == kwargs["type"]:
                 code = "paddle.CPUPlace()"
             elif "cpu:" in kwargs["type"] and "if" not in kwargs["type"]:
                 code = "paddle.CPUPlace()({})".format(
-                    int(kwargs["type"].split(":")[1][0:-3])
+                    f'int(str({kwargs["type"]}).replace("cuda:",""))'
                 )
             else:
                 code = f'str({kwargs["type"]}).replace("cuda", "gpu")'
@@ -4258,7 +4259,9 @@ class TensorCudaMatcher(BaseMatcher):
             new_kwargs["blocking"] = "True"
         if "device" in kwargs:
             if ":" in kwargs["device"] and "if" not in kwargs["device"]:
-                new_kwargs["device"] = int(kwargs["device"].split(":")[1][0:-3])
+                new_kwargs[
+                    "device"
+                ] = f'int(str({kwargs["device"]}).replace("cuda:",""))'
             elif isinstance(kwargs["device"], int):
                 pass
             else:

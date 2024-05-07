@@ -88,3 +88,17 @@ def test_case_2():
 #         """
 #     )
 #     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = None
+        if torch.cuda.is_available():
+            num = 1
+            torch.cuda.set_device(device=f"cuda:{num}")
+            result = torch.cuda.current_device()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
