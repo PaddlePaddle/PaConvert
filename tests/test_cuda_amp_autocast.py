@@ -87,6 +87,7 @@ def test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
+# Note: The result of torch.cuda.is_bf16_supported on CI(V100) is true, so we use torch.cuda.get_device_properties instead.
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
@@ -95,7 +96,7 @@ def test_case_5():
         x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                             [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
         result = None
-        if torch.cuda.is_available() and torch.cuda.is_bf16_supported():
+        if torch.cuda.is_available() and torch.cuda.get_device_properties(0).major >= 8:
             with torch.cuda.amp.autocast(enabled=True, dtype=torch.bfloat16, cache_enabled=True):
                 result = x*x
 
@@ -113,7 +114,7 @@ def test_case_6():
         x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                             [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
         result = None
-        if torch.cuda.is_available() and torch.cuda.is_bf16_supported():
+        if torch.cuda.is_available() and torch.cuda.get_device_properties(0).major >= 8:
             with torch.cuda.amp.autocast(True, torch.bfloat16, True):
                 result = x*x
 
@@ -131,7 +132,7 @@ def test_case_7():
         x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                             [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
         result = None
-        if torch.cuda.is_available() and torch.cuda.is_bf16_supported():
+        if torch.cuda.is_available() and torch.cuda.get_device_properties(0).major >= 8:
             with torch.cuda.amp.autocast(cache_enabled=True, dtype=torch.bfloat16, enabled=True):
                 result = x*x
 

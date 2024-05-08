@@ -18,10 +18,6 @@ export FLAGS_set_to_1d=0
 
 export LD_LIBRARY_PATH=/root/anaconda3/lib:$LD_LIBRARY_PATH
 
-echo "Insalling gpu version torch"
-python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-python -c "import torch; print('torch version information:' ,torch.__version__)"
-
 echo "Insalling develop version paddle"
 python -m pip uninstall -y paddlepaddle
 python -m pip uninstall -y paddlepaddle-gpu
@@ -30,8 +26,8 @@ python -m pip install --no-cache-dir paddlepaddle-gpu==0.0.0.post118 -f https://
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
 echo "Checking code unit test by pytest ..."
-python -m pip install pytest-timeout
-python -m pytest ./tests;check_error=$?
+python -m pip install pytest-timeout pytest-xdist pytest-rerunfailures
+python -m pytest -n 1 --reruns=5 --reruns-delay=5 ./tests;check_error=$?
 
 echo '************************************************************************************'
 echo "______      _____                          _   "
