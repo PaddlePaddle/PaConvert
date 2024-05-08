@@ -3,7 +3,3 @@ FROM registry.baidubce.com/paddlepaddle/paddle:latest-dev-cuda11.8-cudnn8.6-trt8
 
 RUN apt-get update && \
     apt-get install -y net-tools
-
-RUN python3 -m pip install astor
-
-RUN python3 -m pip install install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
