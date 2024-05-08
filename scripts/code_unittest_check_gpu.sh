@@ -27,7 +27,7 @@ python -c "import paddle; print('paddle version information:' , paddle.__version
 
 echo "Checking code unit test by pytest ..."
 python -m pip install pytest-timeout pytest-xdist pytest-rerunfailures
-python -m pytest -n 1 --reruns=5 --reruns-delay=5 ./tests;check_error=$?
+python -m pytest -n 1 --reruns=3 ./tests;check_error=$?
 
 echo '************************************************************************************'
 echo "______      _____                          _   "
