@@ -14,6 +14,8 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 
@@ -38,6 +40,9 @@ class cudaSetDeviceAPI(APIBase):
 obj = cudaSetDeviceAPI("torch.cuda.set_device")
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(), reason="skip cuda case"
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
@@ -51,6 +56,9 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(), reason="skip cuda case"
+)
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -67,6 +75,7 @@ def test_case_2():
 # NOTE why not run?
 # paddle.device.set_device should support CUDAPlace/CPUPlace, but not supported currently.
 
+# @pytest.mark.skipif(condition=not paddle.device.is_compiled_with_cuda(), reason="skip cuda case")
 # def test_case_3():
 #     pytorch_code = textwrap.dedent(
 #         """
@@ -80,6 +89,7 @@ def test_case_2():
 #     obj.run(pytorch_code, ["result"], unsupport=True, reason="paddle.device.set_device only recive string")
 
 
+# @pytest.mark.skipif(condition=not paddle.device.is_compiled_with_cuda(), reason="skip cuda case")
 # def test_case_4():
 #     pytorch_code = textwrap.dedent(
 #         """
@@ -93,6 +103,9 @@ def test_case_2():
 #     obj.run(pytorch_code, ["result"], unsupport=True, reason="paddle.device.set_device only recive string")
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(), reason="skip cuda case"
+)
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """

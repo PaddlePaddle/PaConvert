@@ -14,11 +14,16 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.cuda.manual_seed")
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(), reason="skip cuda case"
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
@@ -35,6 +40,9 @@ def test_case_1():
     )
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(), reason="skip cuda case"
+)
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
