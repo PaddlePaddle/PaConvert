@@ -712,32 +712,37 @@ class CreateMatcher(BaseMatcher):
 
 
 class DeviceMatcher(BaseMatcher):
+    # NOTE: There is no completely equivalent API in Paddle. Matcher may need to be rewritten in the future.
     def generate_code(self, kwargs):
         if len(kwargs) == 1:
-
             # NOTE: kwargs["type"] is """cuda:0""" , not cuda:0
-            if "cuda" == kwargs["type"]:
+            if """cuda""" == kwargs["type"]:
+                # case1: torch.device("cuda")
                 code = "paddle.CUDAPlace()"
             elif "cuda:" in kwargs["type"] and "if" not in kwargs["type"]:
+                # case2: torch.device("cuda:0")
                 code = "paddle.CUDAPlace({})".format(
                     f'int(str({kwargs["type"]}).replace("cuda:",""))'
                 )
-            elif "cpu" == kwargs["type"]:
+            elif "cpu" in kwargs["type"] and "if" not in kwargs["type"]:
+                # Int cannot be used as input of paddle.CPUPlace()
+                # case3: torch.device("cpu")
+                # case4: torch.device("cpu:0")
                 code = "paddle.CPUPlace()"
-            elif "cpu:" in kwargs["type"] and "if" not in kwargs["type"]:
-                code = "paddle.CPUPlace()({})".format(
-                    f'int(str({kwargs["type"]}).replace("cuda:",""))'
-                )
             else:
+                # case5: torch.device("cpu:0" if condition else "cuda:0")
+                # case6: dev = xx, torch.device(dev)
                 code = f'str({kwargs["type"]}).replace("cuda", "gpu")'
-
         if len(kwargs) == 2:
-            if "cuda" == kwargs["type"]:
+            if "cuda" in kwargs["type"]:
+                # case7: torch.device("cuda",0)
                 code = "paddle.CUDAPlace({})".format(kwargs["index"])
-            elif "cpu" == kwargs["type"]:
-                code = "paddle.CPUPlace({})".format(kwargs["index"])
+            elif "cpu" in kwargs["type"]:
+                # case8: torch.device("cpu",0)
+                code = "paddle.CPUPlace()"
             else:
-                code = f'":".join([{kwargs["type"]}.replace("cuda", "gpu"), str({kwargs["index"]})])'
+                # case9: torch.device("xpu",0)
+                code = f'":".join([{kwargs["type"]}, str({kwargs["index"]})])'
         return code
 
 
@@ -3936,6 +3941,8 @@ class SetStreamMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "stream" not in kwargs or "None" in kwargs["stream"]:
             kwargs["stream"] = "paddle.device.Stream()"
+        # NOTE: Because paddle.base.core.CUDAStream does not have attribute "stream_base".
+        # So kwargs["stream"] must be paddle.device.Stream, not paddle.base.core.CUDAStream.
         API_TEMPLATE = textwrap.dedent(
             """
             {}(stream = paddle.device.Stream(stream_base={}) if isinstance ({},(paddle.base.core.CUDAStream, paddle.base.core.CustomDeviceStream)) else {})
@@ -4259,12 +4266,15 @@ class TensorCudaMatcher(BaseMatcher):
             new_kwargs["blocking"] = "True"
         if "device" in kwargs:
             if ":" in kwargs["device"] and "if" not in kwargs["device"]:
+                # case1: tensor.cuda(device="cuda:0")
                 new_kwargs[
                     "device"
                 ] = f'int(str({kwargs["device"]}).replace("cuda:",""))'
-            elif isinstance(kwargs["device"], int):
-                pass
             else:
+                # case2: tensor.cuda(device=0)
+                # case3: tensor.cuda(device=0 if cond else 2)
+                # case4: tensor.cuda(device="cuda:0" if cond else "cuda;1")
+                # case5: var = 2   tensor.cuda(device=var)
                 new_kwargs[
                     "device"
                 ] = f'{kwargs["device"]} if isinstance({kwargs["device"]}, int) else int(str({kwargs["device"]}).split(":")[1])'
@@ -4274,17 +4284,14 @@ class TensorCudaMatcher(BaseMatcher):
 
 class SetDeviceMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if kwargs["device"][1:-1].isdigit():
-            kwargs["device"] = """'gpu:{}'""".format(int(kwargs["device"][1:-1]))
-        else:
-            kwargs["device"] = kwargs["device"].replace("cuda", "gpu")
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {}(device={})
-            """
-        )
-
-        return API_TEMPLATE.format(self.get_paddle_api(), kwargs["device"])
+        # NOTE :paddle.device.set_device only recevice str type
+        # case 1: torch.set_device(0) => paddle.device.set_device("gpu:0")
+        # case 2: torch.set_device("cuda:0") => paddle.device.set_device("gpu:0")
+        # case 3: num=2 torch.set_device(num) => paddle.device.set_device("gpu:2")
+        kwargs[
+            "device"
+        ] = f'"gpu:"+str({kwargs["device"]}) if isinstance({kwargs["device"]}, int) else str({kwargs["device"]}).replace("cuda", "gpu")'
+        return """{}(device={})""".format(self.get_paddle_api(), kwargs["device"])
 
 
 class TensorViewMatcher(BaseMatcher):

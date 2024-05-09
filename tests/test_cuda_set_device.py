@@ -64,6 +64,9 @@ def test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
+# NOTE why not run?
+# paddle.device.set_device should support CUDAPlace/CPUPlace, but not supported currently.
+
 # def test_case_3():
 #     pytorch_code = textwrap.dedent(
 #         """
@@ -74,7 +77,7 @@ def test_case_2():
 #             result = torch.cuda.set_device(torch.device("cuda:0"))
 #         """
 #     )
-#     obj.run(pytorch_code, ["result"], reason="paddle.device.set_device only recive string")
+#     obj.run(pytorch_code, ["result"], unsupport=True, reason="paddle.device.set_device only recive string")
 
 
 # def test_case_4():
@@ -87,7 +90,7 @@ def test_case_2():
 #             result = torch.cuda.set_device(device=torch.device("cuda:0"))
 #         """
 #     )
-#     obj.run(pytorch_code, ["result"])
+#     obj.run(pytorch_code, ["result"], unsupport=True, reason="paddle.device.set_device only recive string")
 
 
 def test_case_5():

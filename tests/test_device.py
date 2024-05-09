@@ -34,7 +34,6 @@ class DeviceAPIBase(APIBase):
         elif isinstance(paddle_result, str):
             assert str(pytorch_result).replace("cuda", "gpu") == paddle_result
         elif not hasattr(paddle_result, "get_device_id"):
-            print(paddle_result)
             assert "cpu" in str(pytorch_result)
         else:
             assert str(pytorch_result).replace("cuda", "gpu") == "gpu:" + str(
