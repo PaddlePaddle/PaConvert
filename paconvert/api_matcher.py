@@ -725,7 +725,7 @@ class DeviceMatcher(BaseMatcher):
                     f'int(str({kwargs["type"]}).replace("cuda:",""))'
                 )
             elif "cpu" in kwargs["type"] and "if" not in kwargs["type"]:
-                # Int cannot be used as input of paddle.CPUPlace()
+                # paddle.CPUPlace() does not accept input.
                 # case3: torch.device("cpu")
                 # case4: torch.device("cpu:0")
                 code = "paddle.CPUPlace()"
@@ -4265,11 +4265,11 @@ class TensorCudaMatcher(BaseMatcher):
         else:
             new_kwargs["blocking"] = "True"
         if "device" in kwargs:
-            if ":" in kwargs["device"] and "if" not in kwargs["device"]:
+            if "cuda:" in kwargs["device"] and "if" not in kwargs["device"]:
                 # case1: tensor.cuda(device="cuda:0")
-                new_kwargs[
-                    "device"
-                ] = f'int(str({kwargs["device"]}).replace("cuda:",""))'
+                new_kwargs["device"] = int(
+                    kwargs["device"].replace("cuda:", "").replace('"""', "")
+                )
             else:
                 # case2: tensor.cuda(device=0)
                 # case3: tensor.cuda(device=0 if cond else 2)

@@ -35,25 +35,26 @@ class DownloadAPIBase(APIBase):
 
 obj = DownloadAPIBase("torch.hub.download_url_to_file")
 
-# NOTE: Due to network limits, only test case 3
-# def test_case_1():
-#     pytorch_code = textwrap.dedent(
-#         """
-#         import torch
-#         result = torch.hub.download_url_to_file('https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth', '/tmp/temporary_file')
-#         """
-#     )
-#     obj.run(pytorch_code, ["result"], reason = "network limits, skip it")
+
+# NOTE: Due to network limits, only test case 3.
+def _test_case_1():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.hub.download_url_to_file('https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth', '/tmp/temporary_file')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
 
 
-# def test_case_2():
-#     pytorch_code = textwrap.dedent(
-#         """
-#         import torch
-#         result = torch.hub.download_url_to_file(url='https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth', dst='/tmp/temporary_file')
-#         """
-#     )
-#     obj.run(pytorch_code, ["result"], reason = "network limits, skip it")
+def _test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.hub.download_url_to_file(url='https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth', dst='/tmp/temporary_file')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
