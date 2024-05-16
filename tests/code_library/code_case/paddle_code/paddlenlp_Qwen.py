@@ -28,3 +28,14 @@ paddlenlp.transformers.model_outputs.CausalLMOutputWithPast(loss=loss,
     logits=lm_logits, past_key_values=transformer_outputs.past_key_values,
     hidden_states=transformer_outputs.hidden_states, attentions=
     transformer_outputs.attentions)
+print('#########################case6#########################')
+if attention_mask is None:
+    paddle.utils.try_import('math')
+    assert None is None or None is math.sqrt(q.shape[-1]
+        ), 'Fault: Not support parameter scale'
+    output = paddle.nn.functional.flash_attention(query=q, key=k, value=v,
+        dropout_p=0.0, causal=True)
+print('#########################case7#########################')
+if attention_mask is None:
+    output = paddle.nn.functional.flash_attention(query=q, key=k, value=v,
+        dropout_p=0.0, causal=True)
