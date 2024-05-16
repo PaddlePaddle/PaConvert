@@ -39,8 +39,8 @@ CausalLMOutputWithPast(
                     )
 print('#########################case6#########################')
 if attention_mask is None:
-    output = flash_attn_func(q, k, v, 0.0, softmax_scale=None, causal=True).view(bsz, q_len, -1)
+    output = flash_attn_func(q, k, v, 0.0, softmax_scale=None, causal=True)
 
 print('#########################case7#########################')
 if attention_mask is None:
-    output = flash_attn_func(q, k, v, 0.0, causal=True).view(bsz, q_len, -1)
+    output = flash_attn_func(q, k, v, 0.0, causal=True)
