@@ -41,32 +41,30 @@ obj = cudaSetDeviceAPI("torch.cuda.set_device")
 
 
 @pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(), reason="skip cuda case"
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
 )
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            torch.cuda.set_device(0)
-            result = torch.cuda.current_device()
+        torch.cuda.set_device(0)
+        result = torch.cuda.current_device()
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
 @pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(), reason="skip cuda case"
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
 )
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            torch.cuda.set_device(device=1)
-            result = torch.cuda.current_device()
+        torch.cuda.set_device(device=1)
+        result = torch.cuda.current_device()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -75,49 +73,76 @@ def test_case_2():
 # NOTE: why not run?
 # paddle.device.set_device should support CUDAPlace/CPUPlace, but not supported currently.
 @pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(), reason="skip cuda case"
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
 )
 def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.set_device(torch.device("cuda:0"))
+        t = torch.tensor([1,2,3]).cuda()
+        result = torch.cuda.set_device(torch.device("cuda:0"))
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
 @pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(), reason="skip cuda case"
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
 )
 def _test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.set_device(device=torch.device("cuda:0"))
+        t = torch.tensor([1,2,3]).cuda()
+        result = torch.cuda.set_device(device=torch.device("cuda:0"))
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
 @pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(), reason="skip cuda case"
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
 )
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            num = 1
-            torch.cuda.set_device(device=f"cuda:{num}")
-            result = torch.cuda.current_device()
+        num = 1
+        torch.cuda.set_device(device=f"cuda:{num}")
+        result = torch.cuda.current_device()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.cuda.set_device(device=0 if 2 > 1 else 1)
+        result = torch.cuda.current_device()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.cuda.set_device(device="cuda:0" if 2 > 1 else "cuda:1")
+        result = torch.cuda.current_device()
         """
     )
     obj.run(pytorch_code, ["result"])
