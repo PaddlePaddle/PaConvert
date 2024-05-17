@@ -1015,10 +1015,11 @@ class EqualMatcher(BaseMatcher):
 class FAFlashAttnFuncMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         new_kwargs = {}
-        for k, v in self.api_mapping["kwargs_change"].items():
-            if k in kwargs:
-                new_kwargs[v] = kwargs.pop(k)
-        new_kwargs.update(kwargs)
+        for k in kwargs:
+            if k in self.api_mapping["kwargs_change"]:
+                new_kwargs[self.api_mapping["kwargs_change"][k]] = kwargs[k]
+            else:
+                new_kwargs[k] = kwargs[k]
 
         API_TEMPLATE = textwrap.dedent(
             """
