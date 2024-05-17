@@ -1014,6 +1014,13 @@ class EqualMatcher(BaseMatcher):
 
 class FAFlashAttnFuncMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        new_kwargs = {}
+        for k in kwargs:
+            if k in self.api_mapping["kwargs_change"]:
+                new_kwargs[self.api_mapping["kwargs_change"][k]] = kwargs[k]
+            else:
+                new_kwargs[k] = kwargs[k]
+
         API_TEMPLATE = textwrap.dedent(
             """
             {}({})
@@ -1027,11 +1034,15 @@ class FAFlashAttnFuncMatcher(BaseMatcher):
             """
             )
             return Assert_TEMPLATE.format(
-                kwargs["softmax_scale"],
-                kwargs.pop("softmax_scale"),
-                kwargs["query"],
-            ) + API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+                new_kwargs["softmax_scale"],
+                new_kwargs.pop("softmax_scale"),
+                new_kwargs["query"],
+            ) + API_TEMPLATE.format(
+                self.get_paddle_api(), self.kwargs_to_str(new_kwargs)
+            )
+        return API_TEMPLATE.format(
+            self.get_paddle_api(), self.kwargs_to_str(new_kwargs)
+        )
 
 
 class TRFMGetLoggerMatcher(BaseMatcher):

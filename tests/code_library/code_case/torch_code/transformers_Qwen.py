@@ -5,6 +5,8 @@ from transformers.modeling_outputs import (
     BaseModelOutputWithPast,
     CausalLMOutputWithPast,
 )
+from flash_attn.flash_attn_interface import flash_attn_func
+
 print('#########################case1#########################')
 def _add_tokens(
         self,
@@ -35,3 +37,10 @@ CausalLMOutputWithPast(
                         hidden_states=transformer_outputs.hidden_states,
                         attentions=transformer_outputs.attentions,
                     )
+print('#########################case6#########################')
+if attention_mask is None:
+    output = flash_attn_func(q, k, v, 0.0, softmax_scale=None, causal=True)
+
+print('#########################case7#########################')
+if attention_mask is None:
+    output = flash_attn_func(q, k, v, 0.0, causal=True)
