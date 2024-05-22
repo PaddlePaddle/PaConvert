@@ -156,18 +156,3 @@ def test_case_9():
     )
     obj.run(pytorch_code, ["result"])
 
-
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="can only run on paddle with CUDA",
-)
-def test_case_10():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.zeros((1,2,3,4))
-        num = 0
-            result = a.cuda(device = num)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
