@@ -3934,7 +3934,7 @@ class CudaStreamMatcher(BaseMatcher):
                 kwargs["device"] = kwargs["device"].replace("cuda", "gpu")
             else:
                 # case 3: num=2 torch.cuda.Stream(device=num)
-                # case 4: device = "cuda:0" if cond else "cuda;1"
+                # case 4: device = "cuda:0" if cond else "cuda:1"
                 # case 5: device = 0 if cond else 1
                 kwargs[
                     "device"
