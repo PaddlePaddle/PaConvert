@@ -60,9 +60,7 @@ def test_case_3():
         """
         import torch
         a = torch.zeros((1,2,3,4))
-        result = None
-        if torch.cuda.is_available():
-            result = a.cuda("cuda:0", True)
+        result = a.cuda("cuda:0", True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -138,9 +136,7 @@ def test_case_8():
         """
         import torch
         a = torch.zeros((1,2,3,4))
-        result = None
-        if torch.cuda.is_available():
-            result = a.cuda(device = 0 if 1 > 0 else 1)
+        result = a.cuda(device = 0 if 1 > 0 else 1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -155,9 +151,7 @@ def test_case_9():
         """
         import torch
         a = torch.zeros((1,2,3,4))
-        result = None
-        if torch.cuda.is_available():
-            result = a.cuda(device = "cuda:0" if 1 > 0 else "cuda:1")
+        result = a.cuda(device = "cuda:0" if 1 > 0 else "cuda:1")
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -173,8 +167,6 @@ def test_case_10():
         import torch
         a = torch.zeros((1,2,3,4))
         num = 0
-        result = None
-        if torch.cuda.is_available():
             result = a.cuda(device = num)
         """
     )
