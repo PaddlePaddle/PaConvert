@@ -722,7 +722,7 @@ class DeviceMatcher(BaseMatcher):
             elif "cuda:" in kwargs["type"] and "if" not in kwargs["type"]:
                 # case2: torch.device("cuda:0")
                 code = "paddle.CUDAPlace({})".format(
-                    f'int(str({kwargs["type"]}).replace("cuda:",""))'
+                    f'int({kwargs["type"]}.replace("cuda:",""))'
                 )
             elif "cpu" in kwargs["type"] and "if" not in kwargs["type"]:
                 # paddle.CPUPlace() does not accept input.
