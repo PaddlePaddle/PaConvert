@@ -14,44 +14,69 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
-obj = APIBase("torch.cuda.set_stream")
+
+class cudaSetStreamAPI(APIBase):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
+    ):
+
+        assert isinstance(pytorch_result, type(None))
 
 
+obj = cudaSetStreamAPI("torch.cuda.set_stream")
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            result = torch.cuda.set_stream()
+        result = torch.cuda.set_stream(None)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            stream = torch.cuda.Stream(0)
-            result = torch.cuda.set_stream(stream=stream)
+        stream = torch.cuda.Stream(0)
+        result = torch.cuda.set_stream(stream=stream)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            stream = torch.cuda.Stream(torch.device("cuda:0"))
-            result = torch.cuda.set_stream(stream)
+        stream = torch.cuda.Stream(torch.device("cuda:0"))
+        result = torch.cuda.set_stream(stream)
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -35,7 +35,10 @@ class LstsqAPI(APIBase):
                 self.compare(self.pytorch_api, pytorch_result[i], paddle_result[i])
             return
 
-        pytorch_numpy, paddle_numpy = pytorch_result.numpy(), paddle_result.numpy()
+        pytorch_numpy, paddle_numpy = (
+            pytorch_result.cpu().numpy(),
+            paddle_result.numpy(),
+        )
         assert (
             pytorch_result.requires_grad != paddle_result.stop_gradient
         ), "API ({}): requires grad mismatch, torch tensor's requires_grad is {}, paddle tensor's stop_gradient is {}".format(
@@ -97,6 +100,9 @@ def test_case_4():
         import torch
         x = torch.tensor([[10, 2, 3], [3, 10, 5], [5, 6, 12.]])
         y = torch.tensor([[4, 2, 9], [2, 0, 3], [2, 5, 3.]])
+        if torch.cuda.is_available():
+            x = x.cuda()
+            y = y.cuda()
         result = torch.linalg.lstsq(x, y, None)
         """
     )
@@ -136,6 +142,9 @@ def test_case_7():
         import torch
         x = torch.tensor([[10, 2, 3], [3, 10, 5], [5, 6, 12.]])
         y = torch.tensor([[4, 2, 9], [2, 0, 3], [2, 5, 3.]])
+        if torch.cuda.is_available():
+            x = x.cuda()
+            y = y.cuda()
         result = torch.linalg.lstsq(x, y)
         """
     )

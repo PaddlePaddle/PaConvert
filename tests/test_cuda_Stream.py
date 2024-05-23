@@ -14,12 +14,18 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.cuda.Stream")
 
 
-def _test_case_1():
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -30,7 +36,11 @@ def _test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_2():
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -41,7 +51,11 @@ def _test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_3():
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -52,7 +66,11 @@ def _test_case_3():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_4():
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -63,7 +81,11 @@ def _test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_5():
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -74,7 +96,11 @@ def _test_case_5():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_6():
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -85,11 +111,31 @@ def _test_case_6():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_7():
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
         stream = torch.cuda.Stream(device='cuda',priority=-1)
+        result = stream.query()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        num = 1
+        stream = torch.cuda.Stream(device=num,priority=-1)
         result = stream.query()
         """
     )
