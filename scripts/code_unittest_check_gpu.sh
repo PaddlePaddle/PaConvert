@@ -27,7 +27,24 @@ python -c "import paddle; print('paddle version information:' , paddle.__version
 
 echo "Checking code unit test by pytest ..."
 python -m pip install pytest-timeout pytest-xdist pytest-rerunfailures
-python -m pytest -n 1 --reruns=3 ./tests;check_error=$?
+CUDA_VISIBLE_DEVICES=0 python -m pytest -m gpu0 -n 1 --reruns=3 ./tests &
+pid1=$!  
+
+CUDA_VISIBLE_DEVICES=1 python -m pytest -m gpu1 -n 1 --reruns=3 ./tests &
+pid2=$!  
+
+# 等待第一个命令完成并获取其退出码  
+wait $pid1  
+exit_code1=$?  
+  
+# 等待第二个命令完成并获取其退出码  
+wait $pid2  
+exit_code2=$?  
+
+if [ $exit_code1 != 0 ] || [ $exit_code2 != 0 ];then
+    check_error=1
+else
+    check_error=0
 
 echo '************************************************************************************'
 echo "______      _____                          _   "
@@ -52,5 +69,4 @@ echo '**************************************************************************
 
 exit ${check_error}
 
-                                             
                                              
