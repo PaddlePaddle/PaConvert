@@ -25,9 +25,24 @@ if [ $# -gt 0 ] ; then
     exit
 fi
 
-test_list=`ls *.py | grep -v common.py | grep -v test_dist.py`
+check_error=0
+
+failed_tests=()
+
+test_list=`ls *.py | grep -v common.py | grep -v t_dist.py`
 for item in $test_list; do
     cmd1="torchrun --nproc_per_node=2 ${item}"
     cmd2="python -m paddle.distributed.launch /tmp/paddle/${item}"
-    python t_dist.py "$cmd1" "$cmd2"
+    python t_dist.py "$cmd1" "$cmd2"; tmp_check_error=$?
+    if [ $tmp_check_error -ne 0 ]; then
+        check_error=1
+        failed_tests+=("$item")
+    fi
 done
+
+echo "Failed tests:"
+for item in $my_list; do
+    echo "$item"
+done
+echo "Exit code:" $check_error
+exit $check_error
