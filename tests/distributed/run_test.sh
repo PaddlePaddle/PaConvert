@@ -13,6 +13,14 @@
 # limitations under the License.
 # 
 
+
+echo "Insalling develop version paddle"
+python -m pip uninstall -y paddlepaddle
+python -m pip uninstall -y paddlepaddle-gpu
+rm -rf /root/anaconda3/lib/python*/site-packages/paddlepaddle-0.0.0.dist-info/
+python -m pip install --no-cache-dir paddlepaddle-gpu==0.0.0.post118 -f https://www.paddlepaddle.org.cn/whl/linux/gpu/develop.html
+python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
+
 python ../../paconvert/main.py --in_dir . --out_dir /tmp/paddle --log_level "DEBUG"
 
 export CUDA_VISIBLE_DEVICES=0,1
