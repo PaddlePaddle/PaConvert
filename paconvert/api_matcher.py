@@ -149,6 +149,64 @@ class GenericMatcher(BaseMatcher):
         return code
 
 
+class TensorSlice_scatterMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            x = {}
+            shape = x.shape            
+            axes, starts, strides = [0], [0], [1]
+            ends = shape[axes[0]]
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.paddleClass,
+        )
+        if 'dim' in kwargs.keys():
+            API_TEMPLATE = textwrap.dedent(
+                """
+                axes = [{}]
+                """
+            )
+            code += API_TEMPLATE.format(
+                kwargs['dim'],  
+            )
+        if 'start' in kwargs.keys():
+            API_TEMPLATE = textwrap.dedent(
+                """
+                starts = [{}]
+                """
+            )
+            code += API_TEMPLATE.format(
+                kwargs['start'],  
+            )
+        if 'end' in kwargs.keys():
+            API_TEMPLATE = textwrap.dedent(
+                """
+                ends = [{}]
+                """
+            )
+            code += API_TEMPLATE.format(
+                kwargs['end'],  
+            )
+        if 'step' in kwargs.keys():
+            API_TEMPLATE = textwrap.dedent(
+                """
+                strides = [{}]
+                """
+            )
+            code += API_TEMPLATE.format(
+                kwargs['step'],  
+            )
+        API_TEMPLATE = textwrap.dedent(
+            """
+            x.slice_scatter(b, axes, starts, ends, strides)
+            """
+        )
+        code += API_TEMPLATE
+        return code
+
+
 class TensorFunc2PaddleFunc(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs_change = {}
