@@ -32,18 +32,22 @@
       "step": "steps"
     }
   },
+
+
   "torch.tensor_split": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.tensor_split",
     "min_input_args": 2,
     "args_list": [
       "input",
-      "indices_or_sections",
+      "indices",
+      "sections",
       "dim"
     ],
     "kwargs_change": {
       "input": "x",
-      "indices_or_sections": "num_or_indices",
+      "indices": "num_or_indices",
+      "sections": "num_or_indices",
       "dim": "axis"
     }
   },
@@ -52,14 +56,65 @@
     "paddle_api": "paddle.Tensor.tensor_split",
     "min_input_args": 1,
     "args_list": [
-      "indices_or_sections",
+      "indices",
+      "sections",
       "dim"
     ],
     "kwargs_change": {
-      "indices_or_sections": "num_or_indices",
+      "indices": "num_or_indices",
+      "sections": "num_or_indices",
       "dim": "axis"
     }
   },
+
+
+  "torch.hsplit": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.hsplit",
+    "args_list" : ["input", "indices", "sections"],
+    "kwargs_change": {
+        "input": "x",
+        "indices": "num_or_indices",
+        "sections": "num_or_indices"
+    }
+  },
+  "torch.Tensor.hsplit": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.hsplit",
+    "min_input_args": 1,
+    "args_list" : ["indices", "sections"],
+    "kwargs_change": {
+      "indices": "num_or_indices",
+      "sections": "num_or_indices"
+    }
+  },
+
+
+  "torch.dsplit" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.dsplit",
+    "args_list" : ["input", "indices", "sections"],
+    "kwargs_change": {
+      "input": "x",
+      "indices": "num_or_indices",
+      "sections": "num_or_indices"
+    }
+  },
+  "torch.Tensor.dsplit" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.dsplit",
+    "args_list" : ["indices", "sections"],
+    "kwargs_change": {
+      "indices": "num_or_indices",
+      "sections": "num_or_indices"
+    }
+  },
+  
+  
+
+
+
+  
   "fairscale.nn.model_parallel.initialize.get_model_parallel_rank": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.get_rank",
