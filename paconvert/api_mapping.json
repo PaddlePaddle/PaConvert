@@ -32,8 +32,6 @@
       "step": "steps"
     }
   },
-
-
   "torch.tensor_split": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.tensor_split",
@@ -66,8 +64,6 @@
       "dim": "axis"
     }
   },
-
-
   "torch.hsplit": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.hsplit",
@@ -88,8 +84,6 @@
       "sections": "num_or_indices"
     }
   },
-
-
   "torch.dsplit" : {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.dsplit",
@@ -108,13 +102,7 @@
       "indices": "num_or_indices",
       "sections": "num_or_indices"
     }
-  },
-  
-  
-
-
-
-  
+  },  
   "fairscale.nn.model_parallel.initialize.get_model_parallel_rank": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.get_rank",
