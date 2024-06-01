@@ -1,4 +1,4 @@
-import textwrap, os
+import textwrap
 
 from apibase import APIBase
 
