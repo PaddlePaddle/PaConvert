@@ -5512,7 +5512,7 @@
     "min_input_args": 2
   },
   "torch.distributed.all_gather_object": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "AllGatherObjectMatcher",
     "paddle_api": "paddle.distributed.all_gather_object",
     "args_list": [
       "object_list",

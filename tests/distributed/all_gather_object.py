@@ -12,25 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import textwrap
+import common
+import torch.distributed as dist
 
-from apibase import APIBase
+common.init_env()
 
-obj = APIBase("torch.distributed.all_gather_object")
-
-
-def test_case_1():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        import torch.distributed as dist
-        result = None
-        if torch.cuda.is_available():
-            dist.init_process_group("nccl", init_method='tcp://127.0.0.1:23456', rank=0, world_size=3)
-            gather_objects = ["foo", 12, {1: 2}]
-            output = [None for _ in gather_objects]
-            dist.all_gather_object(output, gather_objects[dist.get_rank()])
-            result = True
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+gather_objects = ["foo", 12]
+output = [None for _ in gather_objects]
+dist.all_gather_object(output, gather_objects[dist.get_rank()])
+if dist.get_rank() == 0:
+    common.dump_output(output)

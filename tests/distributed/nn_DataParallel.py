@@ -16,7 +16,7 @@ import torch
 
 common.init_env()
 
-model = torch.nn.Linear(1, 1, bias=False).cuda()
+model = torch.nn.Linear(10, 10, bias=False)
 model = torch.nn.DataParallel(model)
 print(model)
 common.dump_output("finish")
