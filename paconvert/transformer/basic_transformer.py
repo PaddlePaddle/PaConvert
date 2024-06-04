@@ -198,7 +198,8 @@ class BasicTransformer(BaseTransformer):
                     # x.T.add
                     is_tensor_api = True
                 if ".data" in full_attr or ".real" in full_attr:
-                    # x.T.add
+                    # module.weight.data
+                    # module.weight.real
                     is_tensor_api = True
             elif len(attr_list) == 2:
                 if "self." in full_attr:
