@@ -28,3 +28,14 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        Linear = torch.nn.Linear(5, 5)
+        result = Linear.weight.data.zero_()
+       """
+    )
+    obj.run(pytorch_code, ["result"])

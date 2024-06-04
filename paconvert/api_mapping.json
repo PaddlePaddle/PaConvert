@@ -2638,7 +2638,11 @@
       "dim": "axis"
     }
   },
-  "torch.Tensor.normal_": {},
+  "torch.Tensor.normal_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.normal_",
+    "min_input_args": 0
+  },
   "torch.Tensor.not_equal": {
     "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.Tensor.not_equal",

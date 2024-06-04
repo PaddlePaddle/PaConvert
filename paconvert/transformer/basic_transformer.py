@@ -75,7 +75,13 @@ class BasicTransformer(BaseTransformer):
             super(BasicTransformer, self).generic_visit(node)
 
         # 6.torch.tensor(features_A).T.cuda()
-        if isinstance(node.value, ast.Attribute) and node.value.attr == "T":
+        if isinstance(node.value, ast.Attribute) and node.value.attr in [
+            "T",
+            "real",
+            "data",
+            "weight",
+            "bias",
+        ]:
             super(BasicTransformer, self).generic_visit(node)
 
         # should be handled by visit_Call
@@ -189,6 +195,9 @@ class BasicTransformer(BaseTransformer):
                     # self.weight.device
                     is_tensor_api = True
                 if ".T." in full_attr:
+                    # x.T.add
+                    is_tensor_api = True
+                if ".data" in full_attr or ".real" in full_attr:
                     # x.T.add
                     is_tensor_api = True
             elif len(attr_list) == 2:
@@ -468,6 +477,7 @@ class BasicTransformer(BaseTransformer):
         # Torch Class call
         #   such as : x.add(y) / x.abs().add / sgd.step() / model.to(torch.device('cuda'))
         if "NonTorchClass" not in full_attr:
+
             is_tensor_api = False
             is_module_api = False
             is_optim_api = False
@@ -478,6 +488,7 @@ class BasicTransformer(BaseTransformer):
 
             # when len(attr_list)> 2, need to more strict
             attr_list = full_attr.split(".")
+
             if len(attr_list) > 2:
                 if "self." in full_attr:
                     # can be owned by other class
@@ -490,6 +501,15 @@ class BasicTransformer(BaseTransformer):
                 if ".T." in full_attr:
                     # x.T.add
                     is_tensor_api = True
+                if ".data" in full_attr:
+                    # x.weight.data[index].zero_()
+                    # x.weight.data.zero_()
+                    # x.bias.data.zero_()
+                    # x.bias.data.add()
+                    # x.bias.data
+
+                    is_tensor_api = True
+
             elif len(attr_list) == 2:
                 if "self." in full_attr:
                     # can be inherit by users
