@@ -502,13 +502,11 @@ class BasicTransformer(BaseTransformer):
                 if ".T." in full_attr:
                     # x.T.add
                     is_tensor_api = True
-                if ".data" in full_attr:
-                    # x.weight.data[index].zero_()
+                if ".data" in full_attr or ".real" in full_attr:
                     # x.weight.data.zero_()
+                    # x.weight.data[index].zero_()
                     # x.bias.data.zero_()
-                    # x.bias.data.add()
-                    # x.bias.data
-
+                    # x.real.normal_()
                     is_tensor_api = True
 
             elif len(attr_list) == 2:
