@@ -28,3 +28,25 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([6], dtype=torch.complex128)
+        result =  x.imag.T
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([6], dtype=torch.complex128)
+        result =  x.T.imag
+        """
+    )
+    obj.run(pytorch_code, ["result"])
