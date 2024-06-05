@@ -81,6 +81,7 @@ class BasicTransformer(BaseTransformer):
             "data",
             "weight",
             "bias",
+            "imag",
         ]:
             super(BasicTransformer, self).generic_visit(node)
 
@@ -194,13 +195,18 @@ class BasicTransformer(BaseTransformer):
                     # can be owned by other class
                     # self.weight.device
                     is_tensor_api = True
-                if ".T." in full_attr:
-                    # x.T.add
-                    is_tensor_api = True
-                if ".data" in full_attr or ".real" in full_attr:
-                    # module.weight.data
-                    # module.weight.real
-                    is_tensor_api = True
+
+                # NOTE: Most Derived classes of torch.nn.Module have these attributes,
+                # but "weight" and "bias" are not the attribute of torch.nn.Module.
+                # so there is no matcher named torch.nn.Module.weight/bias, and we handle
+                # them in the following way.
+                for key in [".T.", ".data.", ".real.", ".imag.", ".weight.", ".bias."]:
+                    if key in full_attr:
+                        # x.T.add
+                        # x.weight.data
+                        # x.weight.data.real
+                        is_tensor_api = True
+
             elif len(attr_list) == 2:
                 if "self." in full_attr:
                     # can be inherit by users
@@ -222,7 +228,6 @@ class BasicTransformer(BaseTransformer):
                 torch_class_apis.append(
                     ".".join(["torch.distributions.Distribution", attr_list[-1]])
                 )
-
             for torch_class_api in torch_class_apis:
                 if torch_class_api in ALIAS_MAPPING:
                     torch_class_api = ALIAS_MAPPING[torch_class_api]
@@ -489,7 +494,6 @@ class BasicTransformer(BaseTransformer):
 
             # when len(attr_list)> 2, need to more strict
             attr_list = full_attr.split(".")
-
             if len(attr_list) > 2:
                 if "self." in full_attr:
                     # can be owned by other class
@@ -499,14 +503,19 @@ class BasicTransformer(BaseTransformer):
                     is_tensor_api = True
                     is_module_api = True
                     is_optim_api = True
-                if ".T." in full_attr:
-                    # x.T.add
-                    is_tensor_api = True
-                if ".data" in full_attr or ".real" in full_attr:
-                    # x.weight.data.zero_()
-                    # x.weight.data[index].zero_()
-                    # x.bias.data.zero_()
-                    # x.real.normal_()
+
+                # NOTE: Most Derived classes of torch.nn.Module have these attributes,
+                # but "weight" and "bias" are not the attribute of torch.nn.Module.
+                # so there is no matcher named torch.nn.Module.weight/bias, and we handle
+                # them in the following way.
+                if (
+                    ".T." in full_attr
+                    or ".weight." in full_attr
+                    or ".bias." in full_attr
+                ):
+                    # x.T.zero_()
+                    # x.weight.zero_()
+                    # x.bias.zero_()
                     is_tensor_api = True
 
             elif len(attr_list) == 2:

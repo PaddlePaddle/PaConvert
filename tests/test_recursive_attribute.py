@@ -17,23 +17,7 @@ import textwrap
 
 from apibase import APIBase
 
-
-class RecursiveAttribute(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        assert list(pytorch_result.shape) == paddle_result.shape
-
-
-obj = RecursiveAttribute("torch.attribute")
+obj = APIBase("torch.attribute")
 
 
 def test_case_1():
@@ -44,7 +28,7 @@ def test_case_1():
         result = Linear.weight
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
@@ -55,7 +39,7 @@ def test_case_2():
         result = Linear.bias
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
@@ -66,7 +50,7 @@ def test_case_3():
         result = Linear.weight.data
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_4():
@@ -77,7 +61,7 @@ def test_case_4():
         result = Linear.weight.data
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_5():
@@ -88,7 +72,7 @@ def test_case_5():
         result = Linear.weight.data.T
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_6():
@@ -99,4 +83,4 @@ def test_case_6():
         result = Linear.weight.T.data
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)

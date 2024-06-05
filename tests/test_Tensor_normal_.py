@@ -16,24 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-
-class TensorNormal_API(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-
-        assert list(pytorch_result.shape) == paddle_result.shape
-
-
-obj = TensorNormal_API("torch.Tensor.norm_")
+obj = APIBase("torch.Tensor.normal_")
 
 
 def test_case_1():
@@ -41,10 +24,10 @@ def test_case_1():
         """
         import torch
         result = torch.Tensor([[1.,2.], [3.,4.]])
-        result = result.normal_()
+        result.normal_()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
@@ -52,10 +35,10 @@ def test_case_2():
         """
         import torch
         result = torch.Tensor([[1.,2.], [3.,4.]])
-        result = result.normal_(mean=0)
+        result.normal_(0, 1)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
@@ -63,10 +46,10 @@ def test_case_3():
         """
         import torch
         result = torch.Tensor([[1.,2.], [3.,4.]])
-        result = result.normal_(mean=0, std=1)
+        result.normal_(0,1)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_4():
@@ -74,7 +57,7 @@ def test_case_4():
         """
         import torch
         result = torch.Tensor([[1.,2.], [3.,4.]])
-        result = result.normal_(mean=0, std=2)
+        result.normal_(0, 2)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
