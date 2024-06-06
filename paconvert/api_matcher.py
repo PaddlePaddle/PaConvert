@@ -4294,6 +4294,27 @@ class Func2Attribute(BaseMatcher):
         return code
 
 
+class AllGatherObjectMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "group" not in kwargs:
+            kwargs["group"] = None
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+                {}=[]
+                {}(object_list={}, obj={}, group={})
+            """
+        )
+        return API_TEMPLATE.format(
+            kwargs["object_list"],
+            self.get_paddle_api(),
+            kwargs["object_list"],
+            kwargs["obj"],
+            kwargs["group"],
+            self.kwargs_to_str(kwargs),
+        )
+
+
 class SetUpMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         is_torch_cpp_extension = False
