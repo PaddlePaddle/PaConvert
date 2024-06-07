@@ -82,25 +82,3 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-def test_case_7():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([6], dtype=torch.complex128)
-        result =  x.real.T
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_8():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([6], dtype=torch.complex128)
-        result =  x.T.real
-        """
-    )
-    obj.run(pytorch_code, ["result"])

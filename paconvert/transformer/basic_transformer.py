@@ -196,15 +196,14 @@ class BasicTransformer(BaseTransformer):
                     # self.weight.device
                     is_tensor_api = True
 
-                # NOTE: Most Derived classes of torch.nn.Module have these attributes,
-                # but "weight" and "bias" are not the attribute of torch.nn.Module.
-                # so there is no matcher named torch.nn.Module.weight/bias, and we handle
-                # them in the following way.
                 for key in [".T.", ".data.", ".real.", ".imag.", ".weight.", ".bias."]:
                     if key in full_attr:
-                        # x.T.add
-                        # x.weight.data
-                        # x.weight.data.real
+                        # x.T.device
+                        # x.data.device
+                        # x.real.device
+                        # x.imag.device
+                        # module.weight.device
+                        # module.bias.device
                         is_tensor_api = True
 
             elif len(attr_list) == 2:
@@ -504,10 +503,6 @@ class BasicTransformer(BaseTransformer):
                     is_module_api = True
                     is_optim_api = True
 
-                # NOTE: Most Derived classes of torch.nn.Module have these attributes,
-                # but "weight" and "bias" are not the attribute of torch.nn.Module.
-                # so there is no matcher named torch.nn.Module.weight/bias, and we handle
-                # them in the following way.
                 if (
                     ".T." in full_attr
                     or ".weight." in full_attr

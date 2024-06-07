@@ -34,8 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        Linear = torch.nn.Linear(5, 5)
-        result = Linear.weight.data.zero_()
+        linear = torch.nn.Linear(5, 5)
+        result = linear.weight.data.zero_()
        """
     )
     obj.run(pytorch_code, ["result"])
