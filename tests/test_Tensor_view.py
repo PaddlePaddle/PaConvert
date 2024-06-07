@@ -234,3 +234,70 @@ def test_case_18():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+# add Infermeta test case
+def test_case_19():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(2*3*4*5)
+        result = a.view(-1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_20():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(2*3*4*5)
+        result = a.view(2,-1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_21():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(2*3*4*5)
+        result = a.view(2,3,-1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_22():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(2*3*4*5)
+        result = a.view(2,3,4,-1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_23():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(2*3*4*5)
+        result = a.view(2*3,-1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_24():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(2*3*4*5)
+        result = a.view(3*4,-1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
