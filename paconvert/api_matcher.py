@@ -4321,8 +4321,7 @@ class TensorViewMatcher(BaseMatcher):
                     else:
                         return paddle.view(self, list(args))
                 elif kwargs:
-                    key = [k for k in kwargs.keys()]
-                    return paddle.view(self, shape_or_dtype = kwargs[key[0]])
+                    return paddle.view(self, shape_or_dtype = list(kwargs.values())[0])
 
             setattr(paddle.Tensor, 'view', view)
             """
