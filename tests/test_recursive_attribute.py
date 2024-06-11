@@ -29,7 +29,7 @@ def test_case_1():
         result = x.T.requires_grad
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -40,7 +40,7 @@ def test_case_2():
         result = x.data.requires_grad
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -51,7 +51,7 @@ def test_case_3():
         result = x.real.requires_grad
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -62,7 +62,7 @@ def test_case_4():
         result = x.imag.requires_grad
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -73,7 +73,7 @@ def test_case_5():
         result = linear.weight.requires_grad
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_6():
@@ -84,7 +84,7 @@ def test_case_6():
         result = linear.bias.requires_grad
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 # call
@@ -96,7 +96,7 @@ def test_case_7():
         result = x.T.abs()
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_8():
@@ -107,7 +107,7 @@ def test_case_8():
         result = x.data.abs()
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_9():
@@ -118,7 +118,7 @@ def test_case_9():
         result = x.real.abs()
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_10():
@@ -129,7 +129,7 @@ def test_case_10():
         result = x.imag.abs()
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_11():
@@ -163,7 +163,7 @@ def test_case_13():
         result = torch.tan(x).T.abs()
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_14():
@@ -174,7 +174,7 @@ def test_case_14():
         result = torch.tan(x).data.abs()
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_15():
@@ -185,7 +185,7 @@ def test_case_15():
         result = torch.tan(x).real.abs()
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_16():
@@ -196,7 +196,7 @@ def test_case_16():
         result = torch.tan(x).imag.abs()
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_17():
