@@ -5,6 +5,10 @@
   "torch.Tensor.T": {
     "Matcher": "UnchangeMatcher"
   },
+  "torch.Tensor.data": {
+    "Matcher": "Attribute2Func",
+    "paddle_api": "paddle.Tensor.detach"
+  },
   "torch.Tensor.device": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.place"
