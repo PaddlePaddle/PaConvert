@@ -49,8 +49,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        data1 = torch.ones(size=[60])
-        data2 = torch.ones(size=[60])
+        data1 = torch.ones(size=[20])
+        data2 = torch.ones(size=[20])
 
         context = torch.cuda.stream(stream=None)
         with context:
