@@ -32,9 +32,11 @@ class ImportTransformer(BaseTransformer):
         )
         self.imports_map[self.file]["other_packages"] = []
         self.imports_map[self.file]["torch_packages"] = []
+        self.imports_map[self.file]["alias_call_map"] = {}
         self.import_paddle = False
         self.import_paddlenlp = False
         self.import_MAY_TORCH_PACKAGE_LIST = []
+        self.ast_if_List = []
 
     def visit_Import(self, node):
         """
@@ -84,6 +86,12 @@ class ImportTransformer(BaseTransformer):
                         if pkg_name == "transformers":
                             self.import_paddlenlp = True
                     if alias_node.asname:
+                        if (
+                            isinstance(self.parent_node, ast.If)
+                            and self.parent_node not in self.ast_if_List
+                        ):
+                            self.insert_multi_node([ast.parse("pass")])
+                            self.ast_if_List.append(self.parent_node)
                         log_info(
                             self.logger,
                             "remove 'import {} as {}' ".format(
@@ -94,6 +102,12 @@ class ImportTransformer(BaseTransformer):
                         )
                         self.imports_map[self.file][alias_node.asname] = alias_node.name
                     else:
+                        if (
+                            isinstance(self.parent_node, ast.If)
+                            and self.parent_node not in self.ast_if_List
+                        ):
+                            self.insert_multi_node([ast.parse("pass")])
+                            self.ast_if_List.append(self.parent_node)
                         log_info(
                             self.logger,
                             "remove 'import {}' ".format(alias_node.name),
@@ -170,6 +184,12 @@ class ImportTransformer(BaseTransformer):
                         self.import_MAY_TORCH_PACKAGE_LIST.append(pkg_name)
                 for alias_node in node.names:
                     if alias_node.asname:
+                        if (
+                            isinstance(self.parent_node, ast.If)
+                            and self.parent_node not in self.ast_if_List
+                        ):
+                            self.insert_multi_node([ast.parse("pass")])
+                            self.ast_if_List.append(self.parent_node)
                         log_info(
                             self.logger,
                             "remove 'from {} import {} as {}' ".format(
@@ -182,6 +202,12 @@ class ImportTransformer(BaseTransformer):
                             [node.module, alias_node.name]
                         )
                     else:
+                        if (
+                            isinstance(self.parent_node, ast.If)
+                            and self.parent_node not in self.ast_if_List
+                        ):
+                            self.insert_multi_node([ast.parse("pass")])
+                            self.ast_if_List.append(self.parent_node)
                         log_info(
                             self.logger,
                             "remove 'from {} import {}' ".format(
@@ -257,8 +283,10 @@ class ImportTransformer(BaseTransformer):
             10. Union[GenerateOutput, torch.LongTensor]
             11. my_add = TorchAdd
             12. Union[List[str], List[AddedToken]],
+            13. hasattr(torch, 'version')
         """
         is_torch = False
+        is_alias_call = False
         if isinstance(
             self.parent_node,
             (
@@ -275,7 +303,11 @@ class ImportTransformer(BaseTransformer):
         ):
             if self.parent_node.func == node:  # 5
                 is_torch = True
-            elif self.parent_node.func.id in ["isinstance", "setattr"]:  # 6/7
+            elif self.parent_node.func.id in [
+                "isinstance",
+                "setattr",
+                "hasattr",
+            ]:  # 6/7/13
                 is_torch = True
         elif (
             isinstance(self.parent_node, ast.Subscript)
@@ -292,6 +324,8 @@ class ImportTransformer(BaseTransformer):
             isinstance(self.parent_node, ast.Assign) and node == self.parent_node.value
         ):
             is_torch = True  # 11. my_add = TorchAdd
+            # When the parent node is a ast.Assign, we need to check if the lvalue is an alias call
+            is_alias_call = True
         elif isinstance(self.parent_node, ast.Index) and self.parent_node.value == node:
             is_torch = True  # 12. Union[List[str], List[AddedToken]]
 
@@ -300,6 +334,13 @@ class ImportTransformer(BaseTransformer):
             if torch_api:
                 if torch_api in ALIAS_MAPPING:
                     torch_api = ALIAS_MAPPING[torch_api]
+                # When use is_alias_call, is_torch must be True
+                if is_alias_call:
+                    # node.targets is a list
+                    if len(self.parent_node.targets) == 1:
+                        self.imports_map[self.file]["alias_call_map"][
+                            self.parent_node.targets[0].id
+                        ] = torch_api
                 return ast.parse(torch_api).body[0].value
         return node
 
@@ -334,3 +375,14 @@ class ImportTransformer(BaseTransformer):
                     (self.root, "body", 0), ast.parse(f"import {package}").body
                 )
                 line_NO += 1
+
+    def visit_Call(self, node):
+        # modify the alias call to the full api
+
+        # Use Postorder traversal
+        super(BaseTransformer, self).generic_visit(node)
+
+        full_attr = self.get_full_attr(node.func)
+        if full_attr in self.imports_map[self.file]["alias_call_map"]:
+            node.func.id = self.imports_map[self.file]["alias_call_map"][node.func.id]
+        return node

@@ -66,6 +66,13 @@ MAY_TORCH_PACKAGE_LIST = [
     "os",
 ]
 
+MAY_TORCH_PACKAGE_LIST = [
+    "setuptools",
+    "os",
+]
+
+MAY_TORCH_METHOD_LIST = ["hasattr"]
+
 
 class BaseTransformer(ast.NodeTransformer):
     def __init__(self, root, file, imports_map, logger, unsupport_map=None):
@@ -318,7 +325,6 @@ class BaseMatcher(object):
         args_list = self.api_mapping.get("args_list") or []
         min_input_args_num = self.api_mapping.get("min_input_args") or 0
         unsupport_args = self.api_mapping.get("unsupport_args") or []
-
         group_list = [
             list(v) for k, v in groupby(args_list, lambda x: x == "*") if not k
         ]
@@ -483,11 +489,18 @@ class BaseMatcher(object):
         self.paddle_api = paddle_api
 
     def get_paddle_api(self):
+        paddle_api = None
         if self.paddle_api:
-            return self.paddle_api
+            paddle_api = self.paddle_api
         if "paddle_api" in self.api_mapping:
-            return self.api_mapping["paddle_api"]
-        return None
+            paddle_api = self.api_mapping["paddle_api"]
+        if (
+            paddle_api
+            and self.api_mapping.get("abstract")
+            and self.generate_aux_code() is not None
+        ):
+            self.write_aux_code()
+        return paddle_api
 
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)

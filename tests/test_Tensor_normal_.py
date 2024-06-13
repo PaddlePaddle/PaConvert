@@ -27,9 +27,7 @@ def test_case_1():
         result.normal_()
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="Paddle not support this API"
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
@@ -37,12 +35,10 @@ def test_case_2():
         """
         import torch
         result = torch.Tensor([[1.,2.], [3.,4.]])
-        result.normal_(mean=0)
+        result.normal_(0, 1)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="Paddle not support this API"
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
@@ -50,12 +46,10 @@ def test_case_3():
         """
         import torch
         result = torch.Tensor([[1.,2.], [3.,4.]])
-        result.normal_(mean=0, std=1)
+        result.normal_(0,1)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="Paddle not support this API"
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_4():
@@ -63,9 +57,7 @@ def test_case_4():
         """
         import torch
         result = torch.Tensor([[1.,2.], [3.,4.]])
-        result.normal_(mean=0, std=2)
+        result.normal_(0, 2)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="Paddle not support this API"
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)

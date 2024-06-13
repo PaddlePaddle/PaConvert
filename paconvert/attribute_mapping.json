@@ -5,6 +5,10 @@
   "torch.Tensor.T": {
     "Matcher": "UnchangeMatcher"
   },
+  "torch.Tensor.data": {
+    "Matcher": "Attribute2Func",
+    "paddle_api": "paddle.Tensor.detach"
+  },
   "torch.Tensor.device": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.place"
@@ -167,6 +171,10 @@
   "torch.long": {
     "Matcher": "GenericMatcher",
     "paddle_api": "'int64'"
+  },
+  "torch.nn": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn"
   },
   "torch.optim.Optimizer.state_dict": {
     "Matcher": "UnchangeMatcher"

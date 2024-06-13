@@ -11,20 +11,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.view", is_aux_api=True)
+obj = APIBase("torch.attribute")
 
 
+# Attribute
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(4.)
-        result = a.view(2, 2)
+        x = torch.tensor([1.0,2.0])
+        result = x.T.requires_grad
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +36,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(4.)
-        result = a.view((2, 2))
+        x = torch.tensor([1.0,2.0])
+        result = x.data.requires_grad
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,8 +47,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(9.)
-        result = a.view([3, 3])
+        x = torch.tensor([4, 6], dtype=torch.cfloat)
+        result = x.real.requires_grad
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -56,9 +58,8 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(9)
-        shape = (3, 3)
-        result = a.view(shape)
+        x = torch.tensor([4, 6], dtype=torch.cfloat)
+        result = x.imag.requires_grad
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -68,9 +69,8 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(9)
-        shape = (3, 3)
-        result = a.view(*shape)
+        linear = torch.nn.Linear(4, 4)
+        result = linear.weight.requires_grad
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -80,44 +80,31 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(4.)
-        k = 2
-        result = a.view((k, k))
+        linear = torch.nn.Linear(4, 4)
+        result = linear.bias.requires_grad
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
+# call
 def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(2.)
-        k = 2
-        result = a.view(k)
+        x = torch.tensor([1.0,2.0])
+        result = x.T.abs()
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-# # Because the current paddle.view does not support tensors without a shape, this case cannot run properly.
-# def test_case_9():
-#     pytorch_code = textwrap.dedent(
-#         """
-#         import torch
-#         a = torch.tensor(1.)
-#         result = a.view(1)
-#         """
-#     )
-#     obj.run(pytorch_code, ["result"])
 
 
 def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(6.)
-        result = a.view((2, 3))
+        x = torch.tensor([1.0,2.0])
+        result = x.data.abs()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -127,8 +114,8 @@ def test_case_9():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(6.)
-        result = a.view(torch.int32)
+        x = torch.tensor([4, 6], dtype=torch.cfloat)
+        result = x.real.abs()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -138,9 +125,8 @@ def test_case_10():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(6.)
-        k = torch.int32
-        result = a.view(k)
+        x = torch.tensor([4, 6], dtype=torch.cfloat)
+        result = x.imag.abs()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -150,31 +136,31 @@ def test_case_11():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(6.)
-        k = torch.int32
-        result = a.view(dtype = k)
+        linear = torch.nn.Linear(4, 4)
+        result = linear.weight.abs()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_12():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(6)
-        result = a.view(dtype = torch.int32)
+        linear = torch.nn.Linear(4, 4)
+        result = linear.bias.abs()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
+# recursive call
 def test_case_13():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(6)
-        result = a.view(dtype = torch.float32)
+        x = torch.tensor([1.0,2.0])
+        result = torch.tan(x).T.abs()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -184,8 +170,8 @@ def test_case_14():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(6)
-        result = a.view(dtype = torch.cfloat)
+        x = torch.tensor([1.0,2.0])
+        result = torch.tan(x).data.abs()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -195,8 +181,8 @@ def test_case_15():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(6)
-        result = a.view(dtype = torch.half)
+        x = torch.tensor([4, 6], dtype=torch.cfloat)
+        result = torch.tan(x).real.abs()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -206,8 +192,8 @@ def test_case_16():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(6)
-        result = a.view(dtype = torch.bool)
+        x = torch.tensor([4, 6], dtype=torch.cfloat)
+        result = torch.tan(x).imag.abs()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -217,87 +203,51 @@ def test_case_17():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(6)
-        result = a.view(size = [2,3])
+        result = torch.nn.Linear(4, 4).weight.abs()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_18():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(6)
-        k = (2,3)
-        result = a.view(size = k)
+        result = torch.nn.Linear(4, 4).bias.abs()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
-# add Infermeta test case
+# random combination
 def test_case_19():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(2*3*4*5)
-        result = a.view(-1)
+        linear = torch.nn.Linear(4, 4)
+        result = linear.weight.data.T
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_20():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(2*3*4*5)
-        result = a.view(2,-1)
+        linear = torch.nn.Linear(4, 4)
+        result = linear.weight.T.data
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_21():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(2*3*4*5)
-        result = a.view(2,3,-1)
+        linear = torch.nn.Linear(4, 4)
+        result = linear.weight.T.T.data.T
         """
     )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_22():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(2*3*4*5)
-        result = a.view(2,3,4,-1)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_23():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(2*3*4*5)
-        result = a.view(2*3,-1)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_24():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(2*3*4*5)
-        result = a.view(3*4,-1)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)

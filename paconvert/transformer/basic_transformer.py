@@ -26,6 +26,7 @@ from paconvert.base import (
     ALIAS_MAPPING,
     BaseTransformer,
     MAY_TORCH_PACKAGE_LIST,
+    MAY_TORCH_METHOD_LIST,
 )
 from paconvert.utils import log_debug, log_info
 
@@ -57,9 +58,10 @@ class BasicTransformer(BaseTransformer):
             key
             for key in API_MAPPING.keys()
             if any(key.startswith("%s." % item) for item in MAY_TORCH_PACKAGE_LIST)
-        ]
+        ] + MAY_TORCH_METHOD_LIST
 
     def visit_Attribute(self, node):
+
         """
         torch api is not used by function call, so only match api name and not need to handle params.
         """
@@ -75,7 +77,14 @@ class BasicTransformer(BaseTransformer):
             super(BasicTransformer, self).generic_visit(node)
 
         # 6.torch.tensor(features_A).T.cuda()
-        if isinstance(node.value, ast.Attribute) and node.value.attr == "T":
+        if isinstance(node.value, ast.Attribute) and node.value.attr in [
+            "T",
+            "real",
+            "data",
+            "weight",
+            "bias",
+            "imag",
+        ]:
             super(BasicTransformer, self).generic_visit(node)
 
         # should be handled by visit_Call
@@ -101,7 +110,6 @@ class BasicTransformer(BaseTransformer):
                     self.file_name,
                     node.lineno,
                 )
-
                 matcher = self.get_api_mather(torch_api)
                 # fallback to attribute matcher
                 if matcher is None:
@@ -188,9 +196,17 @@ class BasicTransformer(BaseTransformer):
                     # can be owned by other class
                     # self.weight.device
                     is_tensor_api = True
-                if ".T." in full_attr:
-                    # x.T.add
-                    is_tensor_api = True
+
+                for key in [".T.", ".data.", ".real.", ".imag.", ".weight.", ".bias."]:
+                    if key in full_attr:
+                        # x.T.device
+                        # x.data.device
+                        # x.real.device
+                        # x.imag.device
+                        # module.weight.device
+                        # module.bias.device
+                        is_tensor_api = True
+
             elif len(attr_list) == 2:
                 if "self." in full_attr:
                     # can be inherit by users
@@ -212,7 +228,6 @@ class BasicTransformer(BaseTransformer):
                 torch_class_apis.append(
                     ".".join(["torch.distributions.Distribution", attr_list[-1]])
                 )
-
             for torch_class_api in torch_class_apis:
                 if torch_class_api in ALIAS_MAPPING:
                     torch_class_api = ALIAS_MAPPING[torch_class_api]
@@ -382,6 +397,7 @@ class BasicTransformer(BaseTransformer):
                 full_attr.startswith("%s." % torch_package)
                 or full_attr in self.MAY_TORCH_METHOD_LIST
             ):
+
                 torch_api = full_attr
                 self.torch_api_count += 1
                 log_debug(
@@ -468,6 +484,7 @@ class BasicTransformer(BaseTransformer):
         # Torch Class call
         #   such as : x.add(y) / x.abs().add / sgd.step() / model.to(torch.device('cuda'))
         if "NonTorchClass" not in full_attr:
+
             is_tensor_api = False
             is_module_api = False
             is_optim_api = False
@@ -487,9 +504,17 @@ class BasicTransformer(BaseTransformer):
                     is_tensor_api = True
                     is_module_api = True
                     is_optim_api = True
-                if ".T." in full_attr:
-                    # x.T.add
+
+                if (
+                    ".T." in full_attr
+                    or ".weight." in full_attr
+                    or ".bias." in full_attr
+                ):
+                    # x.T.zero_()
+                    # x.weight.zero_()
+                    # x.bias.zero_()
                     is_tensor_api = True
+
             elif len(attr_list) == 2:
                 if "self." in full_attr:
                     # can be inherit by users

@@ -21,7 +21,7 @@ import textwrap
 
 import astor
 
-from paconvert.base import BaseMatcher
+from paconvert.base import BaseMatcher, TORCH_PACKAGE_LIST
 from paconvert.transformer.custom_op_transformer import CPP_EXTENSION_LIST  # noqa: F401
 from paconvert.utils import get_unique_name, process_reduce_and_size_average
 
@@ -50,6 +50,19 @@ TypePromoteFunc = textwrap.dedent(
         return x.astype(promote_type),y.astype(promote_type)
     """
 )
+
+type_mapping_dict = {
+    '"""int32"""': "paddle.int32",
+    '"""uint8"""': "paddle.uint8",
+    '"""int8"""': "paddle.int8",
+    '"""int16"""': "paddle.int16",
+    '"""int32"""': "paddle.int32",
+    '"""int64"""': "paddle.int64",
+    '"""float16"""': "paddle.float16",
+    '"""float32"""': "paddle.float32",
+    '"""float64"""': "paddle.float64",
+    '"""bfloat16"""': "paddle.bfloat16",
+}
 
 
 class GenericMatcher(BaseMatcher):
@@ -372,6 +385,97 @@ class InitEyeMatcher(InitMatcher):
         return super().generate_code(kwargs)
 
 
+class TRFMPreTrainedTokenizerMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            import paddlenlp
+            original_encode = paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase.encode
+            def encode(self, *args, **kwargs):
+                return original_encode(self, *args, **kwargs)["input_ids"]
+            setattr(paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase, 'encode', encode)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class TRFMPreTrainedModelMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            from typing import Optional
+            import paddlenlp
+            def _convert_head_mask_to_5d(head_mask, num_hidden_layers):
+                if head_mask.dim() == 1:
+
+                    head_mask = head_mask.unsqueeze(0).unsqueeze(0).unsqueeze(-1).unsqueeze(-1)
+                    head_mask = head_mask.expand(num_hidden_layers, -1, -1, -1, -1)
+                elif head_mask.dim() == 2:
+                    head_mask = head_mask.unsqueeze(1).unsqueeze(-1).unsqueeze(-1)  # We can specify head_mask for each layer
+                assert head_mask.dim() == 5, f"head_mask.dim != 5, instead {head_mask.dim()}"
+                head_mask = head_mask.to(dtype=paddle.get_default_dtype())  # switch to float if need + fp16 compatibility
+                return head_mask
+            def get_head_mask(
+                self,
+                head_mask: Optional[paddle.Tensor],
+                num_hidden_layers: int,
+                is_attention_chunked: bool = False,
+            ):
+                if head_mask is not None:
+                    head_mask = _convert_head_mask_to_5d(head_mask, num_hidden_layers)
+                    if is_attention_chunked is True:
+                        head_mask = head_mask.unsqueeze(-1)
+                else:
+                    head_mask = [None] * num_hidden_layers
+
+                return head_mask
+            setattr(paddlenlp.transformers.model_utils.PretrainedModel, 'get_head_mask', get_head_mask)
+
+            original_generate = paddlenlp.generation.utils.GenerationMixin.generate
+            def generate(self, *args, **kwargs):
+                return original_generate(self, *args, **kwargs)[0]
+            setattr(paddlenlp.generation.utils.GenerationMixin, 'generate', generate)
+
+            setattr(paddlenlp.transformers.model_utils.PretrainedModel, 'device', None)
+
+            def post_init(self):
+                if hasattr(self, 'init_weights'):
+                    self.init_weights()
+                elif hasattr(self, '_init_weights'):
+                    self._init_weights()
+            setattr(paddlenlp.transformers.model_utils.PretrainedModel, 'post_init', post_init)
+
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class EmbeddingMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            original_init = paddle.nn.Embedding.__init__
+            def Embedding_init(self, *args, **kwargs):
+                original_init(self,*args, **kwargs)
+                self.padding_idx = self._padding_idx
+            setattr(paddle.nn.Embedding, '__init__', Embedding_init)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        return GenericMatcher.generate_code(self, kwargs)
+
+
 class InitKaimingMatcher(InitMatcher):
     def generate_code(self, kwargs):
         if "mode" in kwargs:
@@ -634,10 +738,12 @@ class IInfoMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
         type = kwargs.pop("type")
-        return "{}(paddle_aux._STR_2_PADDLE_DTYPE({}))".format(
-            self.get_paddle_api(), type
+        if type in type_mapping_dict:
+            return "{}({})".format(self.get_paddle_api(), type_mapping_dict[type])
+        self.write_aux_code()
+        return "{}(paddle_aux._STR_2_PADDLE_DTYPE({}) if isinstance({},str) else {})".format(
+            self.get_paddle_api(), type, type, type
         )
 
 
@@ -709,6 +815,27 @@ class CreateMatcher(BaseMatcher):
 
         code = GenericMatcher.generate_code(self, kwargs)
         return ast.parse(code).body
+
+
+class CheckpointMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        new_kwargs = self.parse_kwargs(kwargs)
+        new_args = self.parse_args(args)
+
+        code = "{}({},{})".format(
+            self.get_paddle_api(),
+            self.args_to_str(new_args),
+            self.kwargs_to_str(new_kwargs),
+        )
+
+        return ast.parse(code).body
+
+
+class HasattrMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if kwargs["object"] in TORCH_PACKAGE_LIST:
+            kwargs["object"] = "paddle"
+        return "hasattr({},{})".format(kwargs["object"], kwargs["name"])
 
 
 class DeviceMatcher(BaseMatcher):
@@ -1060,14 +1187,15 @@ class FAFlashAttnFuncMatcher(BaseMatcher):
 
         API_TEMPLATE = textwrap.dedent(
             """
+            assert paddle.device.cuda.get_device_capability()[0] >= 8, "Fault: Your device computational capabilities less 8"
             {}({})
             """
         )
         if "softmax_scale" in kwargs:
             Assert_TEMPLATE = textwrap.dedent(
                 """
-            paddle.utils.try_import("math")
-            assert {} is None or {} is math.sqrt({}.shape[-1]),"Fault: Not support parameter scale"
+            import math
+            assert {} is None or {} is math.sqrt({}.shape[-1]),"Fault: Not support parameter softmax_scale"
             """
             )
             return Assert_TEMPLATE.format(
@@ -1086,8 +1214,7 @@ class TRFMGetLoggerMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle.utils.try_import("logging")
-            logging.getLogger({})
+            paddle.utils.try_import("logging").getLogger({})
             """
         )
         return API_TEMPLATE.format(self.kwargs_to_str(kwargs))
@@ -3643,9 +3770,89 @@ class TensorRound_Matcher(BaseMatcher):
 
 class NonzeroMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "as_tuple" in kwargs and kwargs["as_tuple"] != "(False)":
-            return None
-        return GenericMatcher.generate_code(self, kwargs)
+        out_flag = False
+        if "out" in kwargs:
+            out_val = kwargs.pop("out")
+            out_flag = True
+        code = GenericMatcher.generate_code(self, kwargs)
+        if out_flag:
+            code = f"paddle.assign({code},{out_val})"
+        return code
+
+
+class FAApplyRotaryEmbFuncMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def apply_rotary_emb_func(x, cos, sin):
+                if not isinstance(cos, paddle.Tensor):
+                    cos = paddle.to_tensor(cos)
+                if not isinstance(sin, paddle.Tensor):
+                    sin = paddle.to_tensor(sin)
+
+                def _rotate_half(x):
+                    from einops import rearrange
+
+                    x = rearrange(x, "... (j d) -> ... j d", j=2)
+                    x1, x2 = x.unbind(axis=-2)
+                    return paddle.concat((-x2, x1), axis=-1)
+                # [seq_len,rotary_dim/2] ==>[seq_len, rotary_dim]
+                cos = paddle.concat([cos,cos],axis=-1)
+                # [seq_len, rotary_dim] ==>[1,seq_len, 1,rotary_dim]
+                cos=cos.unsqueeze(axis=1).unsqueeze(axis=0)
+                # [seq_len,rotary_dim/2] ==>[seq_len, rotary_dim]
+                sin = paddle.concat([sin,sin],axis=-1)
+                # [seq_len, rotary_dim] ==>[1,seq_len, 1,rotary_dim]
+                sin=sin.unsqueeze(axis=1).unsqueeze(axis=0)
+                t_rot, t_pass = x[..., :cos.shape[-1]], x[..., cos.shape[-1]:]
+                t_rot = (t_rot * cos) + (_rotate_half(t_rot) * sin)
+
+                return paddle.concat(x=(t_rot, t_pass), axis=-1)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        print("hello")
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.apply_rotary_emb_func({})
+            """
+        )
+        return API_TEMPLATE.format(self.kwargs_to_str(kwargs))
+
+    def get_paddle_api(self, parent_node=None):
+        self.write_aux_code()
+        return "paddle_aux.apply_rotary_emb_func"
+
+
+class FARmsNorm(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def rms_norm(x, weight, epsilon):
+                x_dtype = x.dtype
+                x = x.astype(paddle.float32)
+                output = x * paddle.rsqrt(x.pow(2).mean(-1, keepdim=True) + epsilon)
+                output = output.astype(x_dtype)
+                return output * weight
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.rms_norm({})
+            """
+        )
+        return API_TEMPLATE.format(self.kwargs_to_str(kwargs))
+
+    def get_paddle_api(self):
+        self.write_aux_code()
+        return "paddle_aux.rms_norm"
 
 
 class NormMatcher(BaseMatcher):
@@ -4236,6 +4443,27 @@ class Func2Attribute(BaseMatcher):
         return code
 
 
+class AllGatherObjectMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "group" not in kwargs:
+            kwargs["group"] = None
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+                {}=[]
+                {}(object_list={}, obj={}, group={})
+            """
+        )
+        return API_TEMPLATE.format(
+            kwargs["object_list"],
+            self.get_paddle_api(),
+            kwargs["object_list"],
+            kwargs["obj"],
+            kwargs["group"],
+            self.kwargs_to_str(kwargs),
+        )
+
+
 class SetUpMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         is_torch_cpp_extension = False
@@ -4252,6 +4480,34 @@ class SetUpMatcher(BaseMatcher):
         return ast.parse(
             "paddle.utils.cpp_extension.setup({})".format(self.kwargs_to_str(kwargs))
         )
+
+
+class SDPAttnMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        scale_val = None
+        code = None
+        Assert_TEMPLATE = textwrap.dedent(
+            """
+            paddle.utils.try_import("math")
+            assert {} is None or {} is math.sqrt({}.shape[-1]),"Fault: Not support parameter scale"
+            """
+        )
+        if "scale" in kwargs:
+            scale_val = kwargs.pop("scale")
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}({})
+            """
+        )
+        if scale_val:
+            code = Assert_TEMPLATE.format(
+                scale_val, scale_val, kwargs["query"]
+            ) + API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        else:
+            code = API_TEMPLATE.format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs)
+            )
+        return code
 
 
 class Is_PinnedMatcher(BaseMatcher):
@@ -4311,66 +4567,17 @@ class SetDeviceMatcher(BaseMatcher):
 
 
 class TensorViewMatcher(BaseMatcher):
-
-    # def generate_aux_code(self):
-    #     CODE_TEMPLATE = textwrap.dedent(
-    #         """
-    #         def view(self, *args, **kwargs):
-    #             if args:
-    #                 if len(args)==1 and isinstance(args[0], (tuple, list, str)):
-    #                     return paddle.view(self, args[0])
-    #                 else:
-    #                     return paddle.view(self, list(args))
-    #             elif kwargs:
-    #                 key = [k for k in kwargs.keys()]
-    #                 return paddle.view(self, shape_or_dtype = kwargs[key[0]])
-
-    #         setattr(paddle.Tensor, 'view', view)
-    #         """
-    #     )
-    #     return CODE_TEMPLATE
-    # def get_paddle_class_nodes(self, func, args, kwargs):
-    #     if kwargs:
-    #         if len(kwargs) == 1:
-    #             self.write_aux_code()
-    #             return "unchange"
-
-    #     if args:
-    #         if len(args) == 1:
-    #             if isinstance(args[0], (ast.Tuple, ast.List)):
-    #                 return "unchange"
-    #             if isinstance(args[0], (ast.Constant)) and isinstance(
-    #                 args[0].value, str
-    #             ):
-    #                 return "unchange"
-
-    #         self.write_aux_code()
-    #         return "unchange"
-
-    #     return "misidentify"
-
-    # TODO: After fixing the Infermeta mechanism of the view operator,
-    # remove the code below and uncomment the code above
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def view(self, *args, **kwargs):
                 if args:
-                    if len(args)==1:
-                        if isinstance(args[0], (tuple, list)):
-                            return paddle.reshape(self, args[0]) # To change reshape => view
-                        elif isinstance(args[0], str):
-                            return paddle.view(self, args[0])
-                        else:
-                            return paddle.reshape(self, list(args)) # To change reshape => view
+                    if len(args)==1 and isinstance(args[0], (tuple, list, str)):
+                        return paddle.view(self, args[0])
                     else:
-                        return paddle.reshape(self, list(args)) # To change reshape => view
+                        return paddle.view(self, list(args))
                 elif kwargs:
-                    key = [k for k in kwargs.keys()]
-                    if 'dtype' in kwargs:
-                        return paddle.view(self, shape_or_dtype = kwargs[key[0]])
-                    else:
-                        return paddle.reshape(self, shape = kwargs[key[0]]) # To change reshape => view
+                    return paddle.view(self, shape_or_dtype = list(kwargs.values())[0])
 
             setattr(paddle.Tensor, 'view', view)
             """
@@ -4386,12 +4593,10 @@ class TensorViewMatcher(BaseMatcher):
         if args:
             if len(args) == 1:
                 if isinstance(args[0], (ast.Tuple, ast.List)):
-                    self.write_aux_code()  # To remove
                     return "unchange"
                 if isinstance(args[0], (ast.Constant)) and isinstance(
                     args[0].value, str
                 ):
-                    self.write_aux_code()  # To remove
                     return "unchange"
 
             self.write_aux_code()
