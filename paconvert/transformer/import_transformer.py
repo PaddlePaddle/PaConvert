@@ -304,10 +304,13 @@ class ImportTransformer(BaseTransformer):
             if torch_api:
                 if torch_api in ALIAS_MAPPING:
                     torch_api = ALIAS_MAPPING[torch_api]
-                # When use is_alias_call, is_torch must be True
+                # When use is_alias_call, is_torch should be True
                 if is_alias_call:
-                    # node.targets is a list
-                    if len(self.parent_node.targets) == 1:
+                    # the length of node.targets should be 1,
+                    # and parent_node.targets[0] should be a ast.Name
+                    if len(self.parent_node.targets) == 1 and isinstance(
+                        self.parent_node.targets[0], ast.Name
+                    ):
                         self.imports_map[self.file]["alias_call_map"][
                             self.parent_node.targets[0].id
                         ] = torch_api
