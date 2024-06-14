@@ -35,6 +35,7 @@ class ImportTransformer(BaseTransformer):
         self.import_paddle = False
         self.import_paddlenlp = False
         self.import_MAY_TORCH_PACKAGE_LIST = []
+        self.ast_if_List = []
 
     def visit_Import(self, node):
         """
@@ -84,6 +85,7 @@ class ImportTransformer(BaseTransformer):
                         if pkg_name == "transformers":
                             self.import_paddlenlp = True
                     if alias_node.asname:
+                        self.insert_pass_in_ast_if()
                         log_info(
                             self.logger,
                             "remove 'import {} as {}' ".format(
@@ -94,6 +96,7 @@ class ImportTransformer(BaseTransformer):
                         )
                         self.imports_map[self.file][alias_node.asname] = alias_node.name
                     else:
+                        self.insert_pass_in_ast_if()
                         log_info(
                             self.logger,
                             "remove 'import {}' ".format(alias_node.name),
@@ -169,6 +172,7 @@ class ImportTransformer(BaseTransformer):
                     if pkg_name not in self.import_MAY_TORCH_PACKAGE_LIST:
                         self.import_MAY_TORCH_PACKAGE_LIST.append(pkg_name)
                 for alias_node in node.names:
+                    self.insert_pass_in_ast_if()
                     if alias_node.asname:
                         log_info(
                             self.logger,
@@ -182,6 +186,7 @@ class ImportTransformer(BaseTransformer):
                             [node.module, alias_node.name]
                         )
                     else:
+                        self.insert_pass_in_ast_if()
                         log_info(
                             self.logger,
                             "remove 'from {} import {}' ".format(
@@ -217,6 +222,14 @@ class ImportTransformer(BaseTransformer):
                 self.imports_map[self.file]["other_packages"].append(node.asname)
             else:
                 self.imports_map[self.file]["other_packages"].append(node.name)
+
+    def insert_pass_in_ast_if(self):
+        if (
+            isinstance(self.parent_node, ast.If)
+            and self.parent_node not in self.ast_if_List
+        ):
+            self.insert_multi_node([ast.parse("pass")])
+            self.ast_if_List.append(self.parent_node)
 
     def visit_Attribute(self, node):
         """
