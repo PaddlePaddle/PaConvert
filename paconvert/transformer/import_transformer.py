@@ -257,6 +257,7 @@ class ImportTransformer(BaseTransformer):
             10. Union[GenerateOutput, torch.LongTensor]
             11. my_add = TorchAdd
             12. Union[List[str], List[AddedToken]],
+            13. hasattr(Tensor, add)
         """
         is_torch = False
         if isinstance(
@@ -275,7 +276,11 @@ class ImportTransformer(BaseTransformer):
         ):
             if self.parent_node.func == node:  # 5
                 is_torch = True
-            elif self.parent_node.func.id in ["isinstance", "setattr"]:  # 6/7
+            elif self.parent_node.func.id in [
+                "isinstance",
+                "setattr",
+                "hasattr",
+            ]:  # 6/7/13
                 is_torch = True
         elif (
             isinstance(self.parent_node, ast.Subscript)

@@ -32,6 +32,8 @@ isinstance(x, Tensor)
 
 setattr(Tensor, 'add', add_func)
 
+hasattr(Tensor, 'add')
+
 Union[GenerateOutput, torch.LongTensor]
 Optional[Tensor] = None
 

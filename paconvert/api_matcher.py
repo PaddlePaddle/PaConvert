@@ -21,7 +21,7 @@ import textwrap
 
 import astor
 
-from paconvert.base import BaseMatcher
+from paconvert.base import BaseMatcher, TORCH_PACKAGE_LIST
 from paconvert.transformer.custom_op_transformer import CPP_EXTENSION_LIST  # noqa: F401
 from paconvert.utils import get_unique_name, process_reduce_and_size_average
 
@@ -3043,6 +3043,16 @@ class TensorShapeMatcher(BaseMatcher):
         self.parse_func(node)
         code = "tuple({}.shape)".format(self.paddleClass)
         return ast.parse(code).body
+
+
+class HasattrMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if kwargs["object"] in TORCH_PACKAGE_LIST:
+            if kwargs["object"] == "transformers":
+                kwargs["object"] = "paddlenlp"
+            else:
+                kwargs["object"] = "paddle"
+        return "hasattr({},{})".format(kwargs["object"], kwargs["name"])
 
 
 class TensorReshapeMatcher(BaseMatcher):
