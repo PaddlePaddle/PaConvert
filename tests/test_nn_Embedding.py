@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Embedding")
+obj = APIBase("torch.nn.Embedding", is_aux_api=True)
 
 
 def test_case_1():
@@ -81,3 +81,15 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, unsupport=True, reason="paddle unsupport")
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        padding_idx = 0
+        embedding = torch.nn.Embedding(4, 3,padding_idx=padding_idx,max_norm=2.0)
+        result = embedding.padding_idx
+        """
+    )
+    obj.run(pytorch_code)

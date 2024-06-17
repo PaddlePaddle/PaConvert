@@ -9377,8 +9377,9 @@
     ]
   },
   "torch.nn.Embedding": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "EmbeddingMatcher",
     "paddle_api": "paddle.nn.Embedding",
+    "abstract": true,
     "args_list": [
       "num_embeddings",
       "embedding_dim",

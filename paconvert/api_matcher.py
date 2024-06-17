@@ -4380,6 +4380,24 @@ class TensorViewMatcher(BaseMatcher):
         return "misidentify"
 
 
+class EmbeddingMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            class Embedding(paddle.nn.Embedding):
+                def __init__(self, *args, **kwargs):
+                    super().__init__(*args, **kwargs)
+                    self.padding_idx = self._padding_idx
+            setattr(paddle.nn, 'Embedding', Embedding)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        return GenericMatcher.generate_code(self, kwargs)
+
+
 class OuterMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = TypePromoteFunc
