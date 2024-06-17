@@ -483,11 +483,18 @@ class BaseMatcher(object):
         self.paddle_api = paddle_api
 
     def get_paddle_api(self):
+        paddle_api = None
         if self.paddle_api:
-            return self.paddle_api
+            paddle_api = self.paddle_api
         if "paddle_api" in self.api_mapping:
-            return self.api_mapping["paddle_api"]
-        return None
+            paddle_api = self.api_mapping["paddle_api"]
+        if (
+            paddle_api
+            and self.api_mapping.get("abstract")
+            and self.generate_aux_code() is not None
+        ):
+            self.write_aux_code()
+        return paddle_api
 
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
