@@ -283,7 +283,8 @@ class ImportTransformer(BaseTransformer):
             if (
                 node.id in self.imports_map[self.file]["simplified_name_map"]
             ):  # 12. myadd(tensor_1,tensor_2)
-                node.id = self.imports_map[self.file]["simplified_name_map"][node.id]
+                torch_api = self.imports_map[self.file]["simplified_name_map"][node.id]
+                return ast.parse(torch_api).body[0].value
 
             elif self.parent_node.func.id in ["isinstance", "setattr"]:  # 7/8
                 maybe_torch = True
