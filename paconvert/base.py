@@ -66,8 +66,6 @@ MAY_TORCH_PACKAGE_LIST = [
     "os",
 ]
 
-MAY_TORCH_METHOD_LIST = ["hasattr"]
-
 
 class BaseTransformer(ast.NodeTransformer):
     def __init__(self, root, file, imports_map, logger, unsupport_map=None):

@@ -26,7 +26,6 @@ from paconvert.base import (
     ALIAS_MAPPING,
     BaseTransformer,
     MAY_TORCH_PACKAGE_LIST,
-    MAY_TORCH_METHOD_LIST,
 )
 from paconvert.utils import log_debug, log_info
 
@@ -58,7 +57,7 @@ class BasicTransformer(BaseTransformer):
             key
             for key in API_MAPPING.keys()
             if any(key.startswith("%s." % item) for item in MAY_TORCH_PACKAGE_LIST)
-        ] + MAY_TORCH_METHOD_LIST
+        ]
 
     def visit_Attribute(self, node):
         """

@@ -72,6 +72,7 @@ add_to_dict("mark_unsupport.py", "mark_unsupport.py")
 add_to_dict("transformers_Qwen.py", "paddlenlp_Qwen.py")
 add_to_dict("insert_pass_in_ast_if.py", "insert_pass_in_ast_if.py")
 add_to_dict("type_hinting.py", "type_hinting.py")
+add_to_dict("simplified_name_call.py", "simplified_name_call.py")
 
 
 # this part is about attribute mapping file

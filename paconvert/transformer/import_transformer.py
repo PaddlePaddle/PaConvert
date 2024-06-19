@@ -85,7 +85,6 @@ class ImportTransformer(BaseTransformer):
                         if pkg_name == "transformers":
                             self.import_paddlenlp = True
                     if alias_node.asname:
-                        self.insert_pass_in_ast_if()
                         log_info(
                             self.logger,
                             "remove 'import {} as {}' ".format(
@@ -96,7 +95,6 @@ class ImportTransformer(BaseTransformer):
                         )
                         self.imports_map[self.file][alias_node.asname] = alias_node.name
                     else:
-                        self.insert_pass_in_ast_if()
                         log_info(
                             self.logger,
                             "remove 'import {}' ".format(alias_node.name),
@@ -117,6 +115,12 @@ class ImportTransformer(BaseTransformer):
         if len(new_node_names) > 0:
             node.names = new_node_names
             return node
+        elif(
+            isinstance(self.parent_node, ast.If)
+            and self.parent_node not in self.ast_if_List
+        ):
+            self.ast_if_List.append(self.parent_node)
+            return ast.parse("pass").body[0]
         else:
             return None
 
@@ -172,7 +176,6 @@ class ImportTransformer(BaseTransformer):
                     if pkg_name not in self.import_MAY_TORCH_PACKAGE_LIST:
                         self.import_MAY_TORCH_PACKAGE_LIST.append(pkg_name)
                 for alias_node in node.names:
-                    self.insert_pass_in_ast_if()
                     if alias_node.asname:
                         log_info(
                             self.logger,
@@ -186,7 +189,6 @@ class ImportTransformer(BaseTransformer):
                             [node.module, alias_node.name]
                         )
                     else:
-                        self.insert_pass_in_ast_if()
                         log_info(
                             self.logger,
                             "remove 'from {} import {}' ".format(
@@ -198,7 +200,14 @@ class ImportTransformer(BaseTransformer):
                         self.imports_map[self.file][alias_node.name] = ".".join(
                             [node.module, alias_node.name]
                         )
-                return None
+                if (
+                    isinstance(self.parent_node, ast.If)
+                    and self.parent_node not in self.ast_if_List
+                ):
+                    self.ast_if_List.append(self.parent_node)
+                    return ast.parse("pass").body[0]
+                else:
+                    return None
 
         # other_packages
         self.insert_other_packages(self.imports_map, node)
@@ -222,14 +231,7 @@ class ImportTransformer(BaseTransformer):
                 self.imports_map[self.file]["other_packages"].append(node.asname)
             else:
                 self.imports_map[self.file]["other_packages"].append(node.name)
-
-    def insert_pass_in_ast_if(self):
-        if (
-            isinstance(self.parent_node, ast.If)
-            and self.parent_node not in self.ast_if_List
-        ):
-            self.insert_multi_node([ast.parse("pass")])
-            self.ast_if_List.append(self.parent_node)
+                self.imports_map[self.file]["other_packages"].append(node.name)
 
     def visit_Attribute(self, node):
         """
@@ -269,8 +271,9 @@ class ImportTransformer(BaseTransformer):
             9. inputs: Optional[Tensor] = None
             10. Union[GenerateOutput, torch.LongTensor]
             11. my_add = TorchAdd
-            12. Union[List[str], List[AddedToken]],
-            13. hasattr(Tensor, add)
+            12. myadd(tensor_1,tensor_2)
+            13. Union[List[str], List[AddedToken]],
+            14. hasattr(Tensor, add)
         """
         is_torch = False
         if isinstance(
@@ -293,7 +296,7 @@ class ImportTransformer(BaseTransformer):
                 "isinstance",
                 "setattr",
                 "hasattr",
-            ]:  # 6/7/13
+            ]:  # 6/7/14
                 is_torch = True
         elif (
             isinstance(self.parent_node, ast.Subscript)
