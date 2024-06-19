@@ -66,6 +66,12 @@ MAY_TORCH_PACKAGE_LIST = [
     "os",
 ]
 
+PACKAGE_MAPPING = {
+    "torch": "paddle",
+    "transformers": "paddlenlp",
+    "flash_attn": "paddle",
+}
+
 
 class BaseTransformer(ast.NodeTransformer):
     def __init__(self, root, file, imports_map, logger, unsupport_map=None):

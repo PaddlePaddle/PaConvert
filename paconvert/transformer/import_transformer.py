@@ -15,7 +15,7 @@
 import ast
 import os
 
-from paconvert.base import ALIAS_MAPPING, BaseTransformer
+from paconvert.base import ALIAS_MAPPING, PACKAGE_MAPPING, BaseTransformer
 from paconvert.utils import log_info
 
 from ..base import MAY_TORCH_PACKAGE_LIST, TORCH_PACKAGE_LIST
@@ -115,7 +115,7 @@ class ImportTransformer(BaseTransformer):
         if len(new_node_names) > 0:
             node.names = new_node_names
             return node
-        elif(
+        elif (
             isinstance(self.parent_node, ast.If)
             and self.parent_node not in self.ast_if_List
         ):
@@ -298,6 +298,8 @@ class ImportTransformer(BaseTransformer):
                 "hasattr",
             ]:  # 6/7/14
                 is_torch = True
+                if node.id in PACKAGE_MAPPING:
+                    return ast.parse(PACKAGE_MAPPING[node.id]).body[0].value
         elif (
             isinstance(self.parent_node, ast.Subscript)
             and self.parent_node.slice == node
