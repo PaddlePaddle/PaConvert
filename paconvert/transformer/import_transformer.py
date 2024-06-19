@@ -15,10 +15,10 @@
 import ast
 import os
 
-from paconvert.base import ALIAS_MAPPING, PACKAGE_MAPPING, BaseTransformer
+from paconvert.base import ALIAS_MAPPING, BaseTransformer
 from paconvert.utils import log_info
 
-from ..base import MAY_TORCH_PACKAGE_LIST, TORCH_PACKAGE_LIST
+from ..base import MAY_TORCH_PACKAGE_LIST, PACKAGE_MAPPING, TORCH_PACKAGE_LIST
 
 
 class ImportTransformer(BaseTransformer):
@@ -32,6 +32,7 @@ class ImportTransformer(BaseTransformer):
         )
         self.imports_map[self.file]["other_packages"] = []
         self.imports_map[self.file]["torch_packages"] = []
+        self.imports_map[self.file]["simplified_name_map"] = {}
         self.import_paddle = False
         self.import_paddlenlp = False
         self.import_MAY_TORCH_PACKAGE_LIST = []
@@ -231,7 +232,6 @@ class ImportTransformer(BaseTransformer):
                 self.imports_map[self.file]["other_packages"].append(node.asname)
             else:
                 self.imports_map[self.file]["other_packages"].append(node.name)
-                self.imports_map[self.file]["other_packages"].append(node.name)
 
     def visit_Attribute(self, node):
         """
@@ -259,23 +259,24 @@ class ImportTransformer(BaseTransformer):
             from torch import Tensor
             from torch import float32
             import torch.add as TorchAdd
+            from torch.utils.cpp_extension import BuildExtension
 
             1. class A(Module):
             2. def func() -> Tensor:
             3. def func(x: Tensor):
             4. def func(dtype=float32):
-            5. Tensor(2, 3)
-            6. isinstance(x, Tensor)
-            7. setattr(Tensor, 'add', func)
-            8. {'build_ext': BuildExtension}
+            5. {'build_ext': BuildExtension}
+            6. Tensor(2, 3)
+            7. isinstance(x, Tensor)
+            8. setattr(Tensor, 'add', func)
             9. inputs: Optional[Tensor] = None
             10. Union[GenerateOutput, torch.LongTensor]
             11. my_add = TorchAdd
             12. myadd(tensor_1,tensor_2)
             13. Union[List[str], List[AddedToken]],
-            14. hasattr(Tensor, add)
         """
-        is_torch = False
+        maybe_torch = False
+        maybe_simplified_name = False
         if isinstance(
             self.parent_node,
             (
@@ -286,43 +287,62 @@ class ImportTransformer(BaseTransformer):
                 ast.Dict,  # 5. ast.Dict(keys=[ast.Constant], values=[ast.Name])
             ),
         ):
-            is_torch = True
+            maybe_torch = True
         elif isinstance(self.parent_node, ast.Call) and isinstance(
             self.parent_node.func, ast.Name
         ):
-            if self.parent_node.func == node:  # 5
-                is_torch = True
+            if self.parent_node.func == node:  # 6. Tensor(2, 3)
+                maybe_torch = True
+            # modify the simplified name to the original api name
+            if (
+                node.id in self.imports_map[self.file]["simplified_name_map"]
+            ):  # 12. myadd(tensor_1,tensor_2)
+                torch_api = self.imports_map[self.file]["simplified_name_map"][node.id]
+                return ast.parse(torch_api).body[0].value
+
             elif self.parent_node.func.id in [
                 "isinstance",
                 "setattr",
                 "hasattr",
-            ]:  # 6/7/14
-                is_torch = True
+            ]:  # 7/8
+                maybe_torch = True
                 if node.id in PACKAGE_MAPPING:
                     return ast.parse(PACKAGE_MAPPING[node.id]).body[0].value
         elif (
             isinstance(self.parent_node, ast.Subscript)
             and self.parent_node.slice == node
         ):
-            is_torch = True  # 9. Optional[Tensor] = None
+            maybe_torch = True  # 9. Optional[Tensor] = None
         elif (
             isinstance(self.parent_node, ast.Tuple)
             and len(self.node_stack) >= 3
             and isinstance(self.node_stack[-3], ast.Subscript)
         ):
-            is_torch = True  # 10. Union[GenerateOutput, torch.LongTensor]
+            maybe_torch = True  # 10. Union[GenerateOutput, torch.LongTensor]
         elif (
             isinstance(self.parent_node, ast.Assign) and node == self.parent_node.value
         ):
-            is_torch = True  # 11. my_add = TorchAdd
+            maybe_torch = True  # 11. my_add = TorchAdd
+            maybe_simplified_name = (
+                True  # my_add is anoher simplified name of torch.add
+            )
         elif isinstance(self.parent_node, ast.Index) and self.parent_node.value == node:
-            is_torch = True  # 12. Union[List[str], List[AddedToken]]
+            maybe_torch = True  # 13. Union[List[str], List[AddedToken]]
 
-        if is_torch:
+        if maybe_torch:
             torch_api = self.get_full_api_from_node(node)
             if torch_api:
                 if torch_api in ALIAS_MAPPING:
                     torch_api = ALIAS_MAPPING[torch_api]
+                if maybe_simplified_name:
+                    # the length of node.targets should be 1,
+                    # and parent_node.targets[0] should be a ast.Name
+                    if len(self.parent_node.targets) == 1 and isinstance(
+                        self.parent_node.targets[0], ast.Name
+                    ):
+                        self.imports_map[self.file]["simplified_name_map"][
+                            self.parent_node.targets[0].id
+                        ] = torch_api
                 return ast.parse(torch_api).body[0].value
         return node
 

@@ -163,15 +163,6 @@
       "softmax_scale": "scale"
     }
   },
-  "hasattr": {
-    "Matcher": "HasattrMatcher",
-    "paddle_api": "hasattr",
-    "min_input_args": 1,
-    "args_list": [
-      "object",
-      "name"
-    ]
-  },
   "os.environ.get": {
     "Matcher": "OsEnvironGetMatcher",
     "args_list": [
