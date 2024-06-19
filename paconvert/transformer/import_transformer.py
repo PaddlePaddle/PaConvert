@@ -274,6 +274,7 @@ class ImportTransformer(BaseTransformer):
             11. my_add = TorchAdd
             12. myadd(tensor_1,tensor_2)
             13. Union[List[str], List[AddedToken]],
+            14. hasattr(Tensor, add)
         """
         maybe_torch = False
         maybe_simplified_name = False
@@ -304,7 +305,7 @@ class ImportTransformer(BaseTransformer):
                 "isinstance",
                 "setattr",
                 "hasattr",
-            ]:  # 7/8
+            ]:  # 7/8/14
                 maybe_torch = True
                 if node.id in PACKAGE_MAPPING:
                     return ast.parse(PACKAGE_MAPPING[node.id]).body[0].value
