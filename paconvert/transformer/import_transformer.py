@@ -308,8 +308,6 @@ class ImportTransformer(BaseTransformer):
                 "hasattr",
             ]:  # 7/8/14
                 maybe_torch = True
-                if node.id in TORCH_PACKAGE_MAPPING:
-                    return ast.parse(TORCH_PACKAGE_MAPPING[node.id]).body[0].value
         elif (
             isinstance(self.parent_node, ast.Subscript)
             and self.parent_node.slice == node

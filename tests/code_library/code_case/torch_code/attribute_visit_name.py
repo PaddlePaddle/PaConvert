@@ -35,6 +35,8 @@ isinstance(x, Tensor)
 
 setattr(Tensor, 'add', add_func)
 
+setattr(torch, 'nn', nn_mymodule)
+
 hasattr(Tensor, 'add')
 
 hasattr(torch, "nn")

@@ -27,6 +27,7 @@ def func3(dtype='float32'):
 
 isinstance(x, paddle.Tensor)
 setattr(paddle.Tensor, 'add', add_func)
+setattr(paddle, 'nn', nn_mymodule)
 hasattr(paddle.Tensor, 'add')
 hasattr(paddle, 'nn')
 hasattr(paddle, '__version__')
