@@ -122,6 +122,9 @@ class ImportTransformer(BaseTransformer):
             isinstance(self.parent_node, ast.If)
             and self.parent_node not in self.ast_if_List
         ):
+            # import numpy,torch  ==> import numpy
+            # import torch \n import transformers ==> pass
+            # import torch \n import numpy  ==> pass \n import numpy
             self.ast_if_List.append(self.parent_node)
             return ast.parse("pass").body[0]
         else:
@@ -206,6 +209,9 @@ class ImportTransformer(BaseTransformer):
                     isinstance(self.parent_node, ast.If)
                     and self.parent_node not in self.ast_if_List
                 ):
+                    # from torch import randn  ==> pass
+                    # from torch import randn \n from torch import matmul ==> pass
+                    # from torch import randn \n import numpy  ==> pass \n import numpy
                     self.ast_if_List.append(self.parent_node)
                     return ast.parse("pass").body[0]
                 else:

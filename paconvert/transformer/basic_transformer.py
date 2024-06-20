@@ -723,10 +723,10 @@ class BasicTransformer(BaseTransformer):
             import torch
             import transformers
 
-            class nn():
+            class nn_mymodule():
                 ...
 
-            1. setattr(torch,"nn", nn)
+            1. setattr(torch,"nn", nn_mymodule)
             2. hasattr(torch, "nn")
             3. hasattr(transformers,"__version__")
         """
