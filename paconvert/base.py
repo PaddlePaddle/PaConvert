@@ -37,40 +37,34 @@ with open(json_file, "r") as file:
     ALIAS_MAPPING = json.load(file)
 
 # Abbreviation after annotation as the prefix for corresponding matcher
-TORCH_PACKAGE_LIST = [
-    "torch",
-    "mmseg",
-    "mmcv",
-    "mmdet",
-    "mmdet3d",
-    "mmengine",
-    "detectron",
-    "timm",
-    "torchvision",
-    "kornia",
-    "fasttext",
-    "pytorch_lightning",
-    "jieba",
-    "NLTK",
-    "scikit-learn",
-    "fairscale",  # FS
-    "transformers",  # TRFM
-    "datasets",
-    "accelerate",
-    "diffusers",
-    "torch_xla",
-    "flash_attn",  # FA
-]
+TORCH_PACKAGE_MAPPING = {
+    "torch": "paddle",
+    "mmseg": "paddle",
+    "mmcv": "paddle",
+    "mmdet": "paddle",
+    "mmdet3d": "paddle",
+    "mmengine": "paddle",
+    "detectron": "paddle",
+    "timm": "paddle",
+    "torchvision": "paddle",
+    "kornia": "paddle",
+    "fasttext": "paddle",
+    "pytorch_lightning": "paddle",
+    "jieba": "paddle",
+    "NLTK": "paddle",
+    "scikit-learn": "paddle",
+    "fairscale": "paddle",  # FS
+    "transformers": "paddlenlp",  # TRFM
+    "datasets": "paddle",
+    "accelerate": "paddle",
+    "diffusers": "paddle",
+    "torch_xla": "paddle",
+    "flash_attn": "paddle",  # FA
+}
 MAY_TORCH_PACKAGE_LIST = [
     "setuptools",
     "os",
 ]
-
-PACKAGE_MAPPING = {
-    "torch": "paddle",
-    "transformers": "paddlenlp",
-    "flash_attn": "paddle",
-}
 
 
 class BaseTransformer(ast.NodeTransformer):
