@@ -4135,10 +4135,7 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axis"
-    },
-    "unsupport_args": [
-      "stable"
-    ]
+    }
   },
   "torch.argwhere": {
     "Matcher": "GenericMatcher",
@@ -14155,8 +14152,7 @@
     ],
     "kwargs_change": {
       "input": "x",
-      "dim": "axis",
-      "stable": ""
+      "dim": "axis"
     }
   },
   "torch.sparse.addmm": {
