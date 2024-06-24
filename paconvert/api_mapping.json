@@ -9686,9 +9686,6 @@
       "device": "",
       "dtype": ""
     },
-    "unsupport_args": [
-      "proj_size"
-    ],
     "min_input_args": 0
   },
   "torch.nn.LSTMCell": {
