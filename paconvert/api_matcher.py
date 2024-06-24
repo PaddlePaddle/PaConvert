@@ -2233,16 +2233,6 @@ class GeneratorMatcher(BaseMatcher):
         return code
 
 
-class RandomSamplerMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if (
-            kwargs.get("replacement") == "(False)"
-            and kwargs.get("num_samples") != "None"
-        ):
-            return None
-        return GenericMatcher.generate_code(self, kwargs)
-
-
 class SizeMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         if len(args) == 0:
