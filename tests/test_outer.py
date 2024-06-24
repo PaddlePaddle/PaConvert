@@ -43,7 +43,7 @@ def test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
-# The paddle input does not support integer type
+# The paddle result is float64,  but the pytorch result is float32
 def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
@@ -79,8 +79,7 @@ def test_case_5():
     obj.run(pytorch_code, ["result"])
 
 
-# The paddle input does not support integer type
-def _test_case_6():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
