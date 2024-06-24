@@ -1126,7 +1126,7 @@
     }
   },
   "torch.Tensor.diff": {
-    "Matcher": "DiffMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.diff",
     "min_input_args": 0,
     "args_list": [
@@ -5467,7 +5467,7 @@
     }
   },
   "torch.diff": {
-    "Matcher": "DiffMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.diff",
     "args_list": [
       "input",

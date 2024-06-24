@@ -3496,13 +3496,6 @@ class LinalgSvdvalsMatcher(BaseMatcher):
         return code
 
 
-class DiffMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "n" in kwargs and kwargs["n"] != "(1)":
-            return None
-        return GenericMatcher.generate_code(self, kwargs)
-
-
 class Tuple2ListMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         new_kwargs = {}
