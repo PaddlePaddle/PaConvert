@@ -48,8 +48,6 @@ def test_case_1():
         pytorch_code,
         ["result"],
         check_value=False,
-        unsupport=True,
-        reason="paddle does not support assign num_samples when replacement is False",
     )
 
 
@@ -194,8 +192,6 @@ def test_case_6():
         pytorch_code,
         ["result"],
         check_value=False,
-        unsupport=True,
-        reason="paddle does not support assign num_samples when replacement is False",
     )
 
 

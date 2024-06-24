@@ -15371,7 +15371,7 @@
     "min_input_args": 0
   },
   "torch.utils.data.RandomSampler": {
-    "Matcher": "RandomSamplerMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.io.RandomSampler",
     "min_input_args": 1,
     "args_list": [
