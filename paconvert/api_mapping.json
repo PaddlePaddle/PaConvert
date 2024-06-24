@@ -9652,9 +9652,6 @@
       "reduction",
       "log_target"
     ],
-    "unsupport_args": [
-      "log_target"
-    ],
     "min_input_args": 0
   },
   "torch.nn.L1Loss": {
@@ -11653,9 +11650,6 @@
       "size_average",
       "reduce",
       "reduction",
-      "log_target"
-    ],
-    "unsupport_args": [
       "log_target"
     ],
     "min_input_args": 2
