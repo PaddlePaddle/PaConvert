@@ -137,6 +137,4 @@ def test_case_8():
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="the param label_smoothing of torch is not supported by paddle",
     )
