@@ -151,6 +151,4 @@ def test_case_9():
         result = loss(input,target)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="paddle not support log_target"
-    )
+    obj.run(pytorch_code, ["result"])
