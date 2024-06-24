@@ -9295,9 +9295,6 @@
       "reduction",
       "label_smoothing"
     ],
-    "unsupport_args": [
-      "label_smoothing"
-    ],
     "min_input_args": 0
   },
   "torch.nn.DataParallel": {
@@ -11292,8 +11289,7 @@
       "label_smoothing"
     ],
     "kwargs_change": {
-      "target": "label",
-      "label_smoothing": "soft_label"
+      "target": "label"
     },
     "min_input_args": 2
   },
