@@ -10883,7 +10883,7 @@
     "min_input_args": 0
   },
   "torch.nn.UpsamplingBilinear2d": {
-    "Matcher": "UpsampleMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.UpsamplingBilinear2D",
     "args_list": [
       "size",
@@ -10892,7 +10892,7 @@
     "min_input_args": 0
   },
   "torch.nn.UpsamplingNearest2d": {
-    "Matcher": "UpsampleMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.UpsamplingNearest2D",
     "args_list": [
       "size",

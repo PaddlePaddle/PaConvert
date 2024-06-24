@@ -3682,13 +3682,6 @@ class WhereMatcher(BaseMatcher):
             return GenericMatcher.generate_code(self, kwargs)
 
 
-class UpsampleMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "size" in kwargs and "," not in kwargs["size"]:
-            return None
-        return GenericMatcher.generate_code(self, kwargs)
-
-
 class NTupleMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
