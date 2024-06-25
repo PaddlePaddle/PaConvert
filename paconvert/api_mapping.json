@@ -12562,9 +12562,6 @@
     "args_list": [
       "tensor",
       "gain"
-    ],
-    "unsupport_args": [
-      "gain"
     ]
   },
   "torch.nn.init.xavier_uniform_": {
@@ -12573,9 +12570,6 @@
     "min_input_args": 1,
     "args_list": [
       "tensor",
-      "gain"
-    ],
-    "unsupport_args": [
       "gain"
     ]
   },

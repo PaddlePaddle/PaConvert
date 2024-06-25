@@ -52,4 +52,4 @@ def test_case_3():
         result = conv.weight
         """
     )
-    obj.run(pytorch_code, ["result"], unsupport=True, reason="gain is not supported")
+    obj.run(pytorch_code, ["result"], check_value=False)
