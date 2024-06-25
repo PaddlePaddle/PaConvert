@@ -103,7 +103,7 @@ def test_case_6():
     obj.run(pytorch_code, ["model_args"])
 
 
-def test_unsupport_case_1():
+def test_mode_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -117,12 +117,10 @@ def test_unsupport_case_1():
     obj.run(
         pytorch_code,
         ["model_args"],
-        unsupport=True,
-        reason="paddle RNNBase not support RNN_TANH mode",
     )
 
 
-def test_unsupport_case_2():
+def test_mode_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -136,6 +134,4 @@ def test_unsupport_case_2():
     obj.run(
         pytorch_code,
         ["model_args"],
-        unsupport=True,
-        reason="paddle RNNBase not support RNN_RELU mode",
     )

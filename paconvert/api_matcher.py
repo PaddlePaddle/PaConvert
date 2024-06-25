@@ -3464,13 +3464,6 @@ class RNNBaseMatcher(BaseMatcher):
             batch_first = False
         kwargs["time_major"] = f"not {batch_first}"
 
-        if "mode" in kwargs:
-            # RNN is not supported, because RNN need activation
-            if "LSTM" in kwargs["mode"] or "GRU" in kwargs["mode"]:
-                pass
-            else:
-                return None
-
         direction = "'forward'"
         if "bidirectional" in kwargs:
             if "True" in kwargs["bidirectional"]:
