@@ -12538,6 +12538,18 @@
       "gain"
     ]
   },
+  "torch.nn.init.trunc_normal_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.TruncatedNormal",
+    "min_input_args": 1,
+    "args_list": [
+      "tensor",
+      "mean",
+      "std",
+      "a",
+      "b"
+    ]
+  },
   "torch.nn.init.uniform_": {
     "Matcher": "InitMatcher",
     "paddle_api": "paddle.nn.initializer.Uniform",
