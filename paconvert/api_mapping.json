@@ -14769,6 +14769,20 @@
       "compute_uv"
     ]
   },
+  "torch.svd_lowrank": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.svd_lowrank",
+    "min_input_args": 1,
+    "args_list": [
+      "A",
+      "q",
+      "niter",
+      "M"
+    ],
+    "kwargs_change": {
+      "A": "x"
+    }
+  },
   "torch.swapaxes": {
     "Matcher": "SwapAxesMatcher",
     "paddle_api": "paddle.transpose",
