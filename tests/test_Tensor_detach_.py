@@ -19,8 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.Tensor.detach_")
 
 
-# Tensor.detach_ throws unexpected exception, refer to: https://github.com/PaddlePaddle/Paddle/issues/57303
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -32,10 +31,10 @@ def _test_case_1():
         y.detach_()
         """
     )
-    obj.run(pytorch_code, ["y"])
+    obj.run(pytorch_code, ["y"], check_value=False)
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
