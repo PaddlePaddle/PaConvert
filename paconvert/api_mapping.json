@@ -10207,7 +10207,12 @@
     "min_input_args": 0
   },
   "torch.nn.Module.zero_grad": {
-    "min_input_args": 0
+    "Mathcer": "ZeroGradMatcher",
+    "paddle_api": "paddle.nn.Layer.clear_gradients",
+    "min_input_args": 0,
+    "paddle_default_kwargs": {
+      "set_to_zero": "False"
+    }
   },
   "torch.nn.ModuleDict": {
     "Matcher": "GenericMatcher",

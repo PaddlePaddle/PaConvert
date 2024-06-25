@@ -4395,3 +4395,12 @@ class OsEnvironGetMatcher(BaseMatcher):
         else:
             code = "misidentify"
         return code
+
+
+class ZeroGradMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "set_to_none" in kwargs:
+            set_to_none = kwargs.pop("set_to_none")
+            kwargs["set_to_zero"] = f"(not {set_to_none})"
+
+        return GenericMatcher.generate_code(self, kwargs)
