@@ -104,9 +104,17 @@
       "has_bias": "True"
     }
   },
+  "flash_attn.__version__.split": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.__version__.split",
+    "args_list": [
+      "sep",
+      "maxsplit"
+    ]
+  },
   "flash_attn.flash_attn_interface.flash_attn_func": {
     "Matcher": "FAFlashAttnFuncMatcher",
-    "paddle_api": "paddle.nn.functional.flash_attention",
+    "paddle_api": "paddle.nn.functional.flash_attention.flash_attention",
     "args_list": [
       "q",
       "k",
@@ -133,7 +141,7 @@
   },
   "flash_attn.flash_attn_interface.flash_attn_unpadded_func": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.flash_attn_unpadded",
+    "paddle_api": "paddle.nn.functional.flash_attention.flash_attn_unpadded",
     "args_list": [
       "q",
       "k",
@@ -144,7 +152,7 @@
       "max_seqlen_k",
       "dropout_p",
       "softmax_scale",
-      "casul",
+      "causal",
       "window_size",
       "alibi_slopes",
       "deterministic",
@@ -162,6 +170,27 @@
       "v": "value",
       "softmax_scale": "scale"
     }
+  },
+  "flash_attn.layers.rotary.apply_rotary_emb_func": {
+    "Matcher": "FAApplyRotaryEmbFuncMatcher",
+    "args_list": [
+      "x",
+      "cos",
+      "sin",
+      "interleaved",
+      "inplace",
+      "seqlen_offsets",
+      "cu_seqlens",
+      "max_seqlen"
+    ]
+  },
+  "flash_attn.ops.rms_norm.rms_norm": {
+    "Matcher": "FARmsNorm",
+    "args_list": [
+      "x",
+      "weight",
+      "epsilon"
+    ]
   },
   "os.environ.get": {
     "Matcher": "OsEnvironGetMatcher",
@@ -875,7 +904,7 @@
   },
   "torch.Tensor.conj_physical_": {},
   "torch.Tensor.contiguous": {
-    "Matcher": "TensorSkipMatcher",
+    "Matcher": "UnchangeMatcher",
     "min_input_args": 0
   },
   "torch.Tensor.copy_": {
@@ -3736,6 +3765,14 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.zero_",
     "min_input_args": 0
+  },
+  "torch.__version__.split": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.__version__.split",
+    "args_list": [
+      "sep",
+      "maxsplit"
+    ]
   },
   "torch.abs": {
     "Matcher": "GenericMatcher",
@@ -12167,6 +12204,20 @@
       "input": "x"
     }
   },
+  "torch.nn.functional.scaled_dot_product_attention": {
+    "Matcher": "SDPAttnMatcher",
+    "paddle_api": "paddle.nn.functional.scaled_dot_product_attention",
+    "min_input_args": 1,
+    "args_list": [
+      "query",
+      "key",
+      "value",
+      "attn_mask",
+      "dropout_p",
+      "is_causal",
+      "scale"
+    ]
+  },
   "torch.nn.functional.selu": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.selu",
@@ -15162,6 +15213,16 @@
       "dim": "axis"
     }
   },
+  "torch.utils.checkpoint.checkpoint": {
+    "Matcher": "CheckpointMatcher",
+    "paddle_api": "paddle.distributed.fleet.utils.recompute",
+    "min_input_args": 1,
+    "args_list": [
+      "function",
+      "*args",
+      "**kwargs"
+    ]
+  },
   "torch.utils.cpp_extension.BuildExtension": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.utils.cpp_extension.BuildExtension",
@@ -15702,6 +15763,133 @@
       "encoder_no_repeat_ngram_size",
       "num_assistant_tokens",
       "num_assistant_tokens_schedule"
+    ]
+  },
+  "transformers.PreTrainedModel": {
+    "Matcher": "TRFMPreTrainedModelMatcher",
+    "paddle_api": "paddlenlp.transformers.PretrainedModel",
+    "abstract": true,
+    "args_list": [
+      "config",
+      "*args",
+      "**kwargs"
+    ]
+  },
+  "transformers.PreTrainedTokenizer": {
+    "Matcher": "TRFMPreTrainedTokenizerMatcher",
+    "paddle_api": "paddlenlp.transformers.PretrainedTokenizer",
+    "abstract": true,
+    "args_list": [
+      "*",
+      "model_max_length",
+      "padding_side",
+      "truncation_side",
+      "chat_template",
+      "model_input_names",
+      "bos_token",
+      "eos_token",
+      "unk_token",
+      "sep_token",
+      "pad_token",
+      "cls_token",
+      "mask_token",
+      "additional_special_tokens",
+      "clean_up_tokenization_spaces",
+      "split_special_tokens"
+    ]
+  },
+  "transformers.PretrainedConfig": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddlenlp.transformers.PretrainedConfig",
+    "abstract": true,
+    "args_list": [
+      "*",
+      "name_or_path",
+      "output_hidden_states",
+      "output_attentions",
+      "return_dict",
+      "is_encoder_decoder",
+      "is_decoder",
+      "cross_attention_hidden_size",
+      "add_cross_attention",
+      "tie_encoder_decoder",
+      "prune_heads",
+      "chunk_size_feed_forward",
+      "max_length",
+      "min_length",
+      "do_sample",
+      "early_stopping",
+      "num_beams",
+      "num_beam_groups",
+      "diversity_penalty",
+      "temperature",
+      "top_k",
+      "top_p",
+      "typical_p",
+      "repetition_penalty",
+      "length_penalty",
+      "no_repeat_ngram_size",
+      "encoder_no_repeat_ngram_size",
+      "bad_words_ids",
+      "num_return_sequences",
+      "output_scores",
+      "return_dict_in_generate",
+      "forced_bos_token_id",
+      "forced_eos_token_id",
+      "remove_invalid_values",
+      "architectures",
+      "finetuning_task ",
+      "id2label",
+      "label2id",
+      "num_labels",
+      "task_specific_params",
+      "problem_type",
+      "tokenizer_class",
+      "prefix",
+      "bos_token_id",
+      "pad_token_id",
+      "eos_token_id",
+      "decoder_start_token_id",
+      "sep_token_id",
+      "torchscript",
+      "tie_word_embeddings",
+      "torch_dtype",
+      "attn_implementation"
+    ],
+    "unsupport_args": [
+      "typical_p",
+      "torchscript",
+      "attn_implementation"
+    ]
+  },
+  "transformers.StoppingCriteriaList": {
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddlenlp.generation.StoppingCriteriaList"
+  },
+  "transformers.generation.LogitsProcessor": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddlenlp.generation.LogitsProcessor",
+    "args_list": [
+      "input_ids",
+      "scores"
+    ],
+    "kwargs_change": {
+      "scores": "logits"
+    }
+  },
+  "transformers.generation.LogitsProcessorList": {
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddlenlp.generation.LogitsProcessorList"
+  },
+  "transformers.generation.utils.GenerateOutput": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddlenlp.transformers.model_outputs.BaseModelOutput",
+    "abstract": true,
+    "args_list": [
+      "last_hidden_state",
+      "past_key_values",
+      "hidden_states",
+      "attentions"
     ]
   },
   "transformers.logging.get_logger": {
