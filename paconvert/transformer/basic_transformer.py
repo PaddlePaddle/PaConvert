@@ -26,6 +26,7 @@ from paconvert.base import (
     ALIAS_MAPPING,
     BaseTransformer,
     MAY_TORCH_PACKAGE_LIST,
+    TORCH_PACKAGE_MAPPING,
 )
 from paconvert.utils import log_debug, log_info
 
@@ -713,4 +714,32 @@ class BasicTransformer(BaseTransformer):
                 return None
             else:
                 setattr(node, field, new_node)
+        return node
+
+    def visit_Name(self, node):
+        """
+        The torch api is a torch-related package name, rather than an attribute.
+
+        eg.
+            import torch
+            import transformers
+
+            class nn_mymodule():
+                ...
+
+            1. setattr(torch,"nn", nn_mymodule)
+            2. hasattr(torch, "nn")
+            3. hasattr(transformers,"__version__")
+        """
+        if (
+            isinstance(self.parent_node, ast.Call)
+            and isinstance(self.parent_node.func, ast.Name)
+            and self.parent_node.func.id
+            in [
+                "setattr",
+                "hasattr",
+            ]
+        ):
+            if node.id in TORCH_PACKAGE_MAPPING:
+                return ast.parse(TORCH_PACKAGE_MAPPING[node.id]).body[0].value
         return node

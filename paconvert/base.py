@@ -37,30 +37,30 @@ with open(json_file, "r") as file:
     ALIAS_MAPPING = json.load(file)
 
 # Abbreviation after annotation as the prefix for corresponding matcher
-TORCH_PACKAGE_LIST = [
-    "torch",
-    "mmseg",
-    "mmcv",
-    "mmdet",
-    "mmdet3d",
-    "mmengine",
-    "detectron",
-    "timm",
-    "torchvision",
-    "kornia",
-    "fasttext",
-    "pytorch_lightning",
-    "jieba",
-    "NLTK",
-    "scikit-learn",
-    "fairscale",  # FS
-    "transformers",  # TRFM
-    "datasets",
-    "accelerate",
-    "diffusers",
-    "torch_xla",
-    "flash_attn",  # FA
-]
+TORCH_PACKAGE_MAPPING = {
+    "torch": "paddle",
+    "mmseg": "paddle",
+    "mmcv": "paddle",
+    "mmdet": "paddle",
+    "mmdet3d": "paddle",
+    "mmengine": "paddle",
+    "detectron": "paddle",
+    "timm": "paddle",
+    "torchvision": "paddle",
+    "kornia": "paddle",
+    "fasttext": "paddle",
+    "pytorch_lightning": "paddle",
+    "jieba": "paddle",
+    "NLTK": "paddle",
+    "scikit-learn": "paddle",
+    "fairscale": "paddle",  # FS
+    "transformers": "paddlenlp",  # TRFM
+    "datasets": "paddle",
+    "accelerate": "paddle",
+    "diffusers": "paddle",
+    "torch_xla": "paddle",
+    "flash_attn": "paddle",  # FA
+}
 MAY_TORCH_PACKAGE_LIST = [
     "setuptools",
     "os",
@@ -483,11 +483,18 @@ class BaseMatcher(object):
         self.paddle_api = paddle_api
 
     def get_paddle_api(self):
+        paddle_api = None
         if self.paddle_api:
-            return self.paddle_api
-        if "paddle_api" in self.api_mapping:
-            return self.api_mapping["paddle_api"]
-        return None
+            paddle_api = self.paddle_api
+        elif "paddle_api" in self.api_mapping:
+            paddle_api = self.api_mapping["paddle_api"]
+        if (
+            paddle_api
+            and self.api_mapping.get("abstract")
+            and self.generate_aux_code() is not None
+        ):
+            self.write_aux_code()
+        return paddle_api
 
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)

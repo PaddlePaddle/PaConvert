@@ -18,7 +18,7 @@ import os
 from paconvert.base import ALIAS_MAPPING, BaseTransformer
 from paconvert.utils import log_info
 
-from ..base import MAY_TORCH_PACKAGE_LIST, TORCH_PACKAGE_LIST
+from ..base import MAY_TORCH_PACKAGE_LIST, TORCH_PACKAGE_MAPPING
 
 
 class ImportTransformer(BaseTransformer):
@@ -33,9 +33,8 @@ class ImportTransformer(BaseTransformer):
         self.imports_map[self.file]["other_packages"] = []
         self.imports_map[self.file]["torch_packages"] = []
         self.imports_map[self.file]["simplified_name_map"] = {}
-        self.import_paddle = False
-        self.import_paddlenlp = False
-        self.import_MAY_TORCH_PACKAGE_LIST = []
+        self.import_PACKAGE_LIST = []
+        self.ast_if_List = []
 
     def visit_Import(self, node):
         """
@@ -74,16 +73,20 @@ class ImportTransformer(BaseTransformer):
                 continue
 
             # import from torch
-            for pkg_name in TORCH_PACKAGE_LIST + MAY_TORCH_PACKAGE_LIST:
+            for pkg_name in list(TORCH_PACKAGE_MAPPING.keys()) + MAY_TORCH_PACKAGE_LIST:
                 if f"{pkg_name}." in alias_node.name or pkg_name == alias_node.name:
                     if pkg_name in MAY_TORCH_PACKAGE_LIST:
-                        if pkg_name not in self.import_MAY_TORCH_PACKAGE_LIST:
-                            self.import_MAY_TORCH_PACKAGE_LIST.append(pkg_name)
+                        if pkg_name not in self.import_PACKAGE_LIST:
+                            self.import_PACKAGE_LIST.append(pkg_name)
                     else:
                         self.imports_map[self.file]["torch_packages"].append(pkg_name)
-                        self.import_paddle = True
-                        if pkg_name == "transformers":
-                            self.import_paddlenlp = True
+                        if (
+                            TORCH_PACKAGE_MAPPING[pkg_name]
+                            not in self.import_PACKAGE_LIST
+                        ):
+                            self.import_PACKAGE_LIST.append(
+                                TORCH_PACKAGE_MAPPING[pkg_name]
+                            )
                     if alias_node.asname:
                         log_info(
                             self.logger,
@@ -115,6 +118,24 @@ class ImportTransformer(BaseTransformer):
         if len(new_node_names) > 0:
             node.names = new_node_names
             return node
+        elif (
+            isinstance(self.parent_node, ast.If)
+            and self.parent_node not in self.ast_if_List
+        ):
+            # case 1:
+            # if cond:               ==> if cond:
+            #   import numpy,torch   ==>    import numpy
+            # case 2:
+            # if cond:               ==> if cond:
+            #   import torch         ==>    pass
+            #   import transformers  ==>
+            # case 3:
+            # if cond:               ==> if cond:
+            #   import torch         ==>    pass
+            #   import numpy         ==>    import numpy
+
+            self.ast_if_List.append(self.parent_node)
+            return ast.parse("pass").body[0]
         else:
             return None
 
@@ -158,17 +179,16 @@ class ImportTransformer(BaseTransformer):
                 self.insert_other_packages(self.imports_map, node)
                 return node
 
-        # import from TORCH_PACKAGE_LIST
-        for pkg_name in TORCH_PACKAGE_LIST + MAY_TORCH_PACKAGE_LIST:
+        # import from TORCH_PACKAGE_MAPPING
+        for pkg_name in list(TORCH_PACKAGE_MAPPING.keys()) + MAY_TORCH_PACKAGE_LIST:
             if f"{pkg_name}." in node.module or pkg_name == node.module:
-                if pkg_name in TORCH_PACKAGE_LIST:
-                    self.imports_map[self.file]["torch_packages"].append(pkg_name)
-                    self.import_paddle = True
-                    if pkg_name == "transformers":
-                        self.import_paddlenlp = True
+                if pkg_name in MAY_TORCH_PACKAGE_LIST:
+                    if pkg_name not in self.import_PACKAGE_LIST:
+                        self.import_PACKAGE_LIST.append(pkg_name)
                 else:
-                    if pkg_name not in self.import_MAY_TORCH_PACKAGE_LIST:
-                        self.import_MAY_TORCH_PACKAGE_LIST.append(pkg_name)
+                    self.imports_map[self.file]["torch_packages"].append(pkg_name)
+                    if TORCH_PACKAGE_MAPPING[pkg_name] not in self.import_PACKAGE_LIST:
+                        self.import_PACKAGE_LIST.append(TORCH_PACKAGE_MAPPING[pkg_name])
                 for alias_node in node.names:
                     if alias_node.asname:
                         log_info(
@@ -194,7 +214,26 @@ class ImportTransformer(BaseTransformer):
                         self.imports_map[self.file][alias_node.name] = ".".join(
                             [node.module, alias_node.name]
                         )
-                return None
+                if (
+                    isinstance(self.parent_node, ast.If)
+                    and self.parent_node not in self.ast_if_List
+                ):
+                    # case 1:
+                    # if cond:                    ==> if cond:
+                    #   from torch import randn   ==>    pass
+                    # case 2:
+                    # if cond:                    ==> if cond:
+                    #   from torch import randn   ==>    pass
+                    #   from torch import matmul  ==>
+                    # case 3:
+                    # if cond:                    ==> if cond:
+                    #   from torch import randn   ==>    pass
+                    #   import numpy              ==>    import numpy
+
+                    self.ast_if_List.append(self.parent_node)
+                    return ast.parse("pass").body[0]
+                else:
+                    return None
 
         # other_packages
         self.insert_other_packages(self.imports_map, node)
@@ -260,6 +299,7 @@ class ImportTransformer(BaseTransformer):
             11. my_add = TorchAdd
             12. myadd(tensor_1,tensor_2)
             13. Union[List[str], List[AddedToken]],
+            14. hasattr(Tensor, add)
         """
         maybe_torch = False
         maybe_simplified_name = False
@@ -286,7 +326,11 @@ class ImportTransformer(BaseTransformer):
                 torch_api = self.imports_map[self.file]["simplified_name_map"][node.id]
                 return ast.parse(torch_api).body[0].value
 
-            elif self.parent_node.func.id in ["isinstance", "setattr"]:  # 7/8
+            elif self.parent_node.func.id in [
+                "isinstance",
+                "setattr",
+                "hasattr",
+            ]:  # 7/8/14
                 maybe_torch = True
         elif (
             isinstance(self.parent_node, ast.Subscript)
@@ -332,28 +376,14 @@ class ImportTransformer(BaseTransformer):
         """
         super(ImportTransformer, self).generic_visit(node)
         line_NO = 1
-        if self.import_paddle:
+
+        for package in self.import_PACKAGE_LIST:
             log_info(
-                self.logger, f"add 'import paddle' in line {line_NO}", self.file_name
-            )
-            self.record_scope((self.root, "body", 0), ast.parse("import paddle").body)
-            line_NO += 1
-        if self.import_paddlenlp:
-            log_info(
-                self.logger, f"add 'import paddlenlp' in line {line_NO}", self.file_name
+                self.logger,
+                f"add 'import {package}' in line {line_NO}",
+                self.file_name,
             )
             self.record_scope(
-                (self.root, "body", 0), ast.parse("import paddlenlp").body
+                (self.root, "body", 0), ast.parse(f"import {package}").body
             )
             line_NO += 1
-        if len(self.import_MAY_TORCH_PACKAGE_LIST) > 0:
-            for package in self.import_MAY_TORCH_PACKAGE_LIST:
-                log_info(
-                    self.logger,
-                    f"add 'import {package}' in line {line_NO}",
-                    self.file_name,
-                )
-                self.record_scope(
-                    (self.root, "body", 0), ast.parse(f"import {package}").body
-                )
-                line_NO += 1
