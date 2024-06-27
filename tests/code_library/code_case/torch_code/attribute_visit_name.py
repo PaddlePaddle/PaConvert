@@ -8,7 +8,6 @@ import torch.utils.data as data # noqa: F401
 
 import torch.add as TorchAdd # noqa: F401
 
-
 class A(Module):
     def __init__(self, data: Tensor):
         pass
@@ -27,6 +26,7 @@ def func2(data) -> Tensor:
 
 def func3(dtype=float32):
     pass
+
 
 isinstance(x, Tensor)
 

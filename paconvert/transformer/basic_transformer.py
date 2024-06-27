@@ -718,7 +718,7 @@ class BasicTransformer(BaseTransformer):
 
     def visit_Name(self, node):
         """
-        The torch api is a torch-related package name, rather than an attribute name.
+        The torch api is a torch-related package name, rather than an attribute.
 
         eg.
             import torch
