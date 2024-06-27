@@ -8,8 +8,6 @@ import torch.utils.data as data # noqa: F401
 
 import torch.add as TorchAdd # noqa: F401
 
-import flash_attn
-import transformers
 
 class A(Module):
     def __init__(self, data: Tensor):
@@ -30,20 +28,11 @@ def func2(data) -> Tensor:
 def func3(dtype=float32):
     pass
 
-
 isinstance(x, Tensor)
 
 setattr(Tensor, 'add', add_func)
 
-setattr(torch, 'nn', nn_mymodule)
-
 hasattr(Tensor, 'add')
-
-hasattr(torch, "nn")
-
-hasattr(flash_attn, "__version__")
-
-hasattr(transformers, "__version__")
 
 Union[GenerateOutput, torch.LongTensor]
 Optional[Tensor] = None

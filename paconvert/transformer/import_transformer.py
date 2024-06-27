@@ -122,9 +122,18 @@ class ImportTransformer(BaseTransformer):
             isinstance(self.parent_node, ast.If)
             and self.parent_node not in self.ast_if_List
         ):
-            # import numpy,torch  ==> import numpy
-            # import torch \n import transformers ==> pass
-            # import torch \n import numpy  ==> pass \n import numpy
+            # case 1:
+            # if cond:               ==> if cond:
+            #   import numpy,torch   ==>    import numpy
+            # case 2:
+            # if cond:               ==> if cond:
+            #   import torch         ==>    pass
+            #   import transformers  ==>
+            # case 3:
+            # if cond:               ==> if cond:
+            #   import torch         ==>    pass
+            #   import numpy         ==>    import numpy
+
             self.ast_if_List.append(self.parent_node)
             return ast.parse("pass").body[0]
         else:
@@ -209,9 +218,18 @@ class ImportTransformer(BaseTransformer):
                     isinstance(self.parent_node, ast.If)
                     and self.parent_node not in self.ast_if_List
                 ):
-                    # from torch import randn  ==> pass
-                    # from torch import randn \n from torch import matmul ==> pass
-                    # from torch import randn \n import numpy  ==> pass \n import numpy
+                    # case 1:
+                    # if cond:                    ==> if cond:
+                    #   from torch import randn   ==>    pass
+                    # case 2:
+                    # if cond:                    ==> if cond:
+                    #   from torch import randn   ==>    pass
+                    #   from torch import matmul  ==>
+                    # case 3:
+                    # if cond:                    ==> if cond:
+                    #   from torch import randn   ==>    pass
+                    #   import numpy              ==>    import numpy
+
                     self.ast_if_List.append(self.parent_node)
                     return ast.parse("pass").body[0]
                 else:

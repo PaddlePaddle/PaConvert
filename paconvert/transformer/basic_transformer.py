@@ -718,7 +718,8 @@ class BasicTransformer(BaseTransformer):
 
     def visit_Name(self, node):
         """
-        change torch api name to full api according to import info.
+        The torch api is a torch-related package name, rather than an attribute name.
+
         eg.
             import torch
             import transformers
