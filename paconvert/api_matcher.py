@@ -1169,8 +1169,7 @@ class FAFlashAttnFuncMatcher(BaseMatcher):
         if "softmax_scale" in kwargs:
             Assert_TEMPLATE = textwrap.dedent(
                 """
-            import math
-            assert {} is None or {} is math.sqrt({}.shape[-1]),"Fault: Not support parameter softmax_scale"
+            assert {} is None or {} is paddle.utils.try_import("math").sqrt({}.shape[-1]),"Fault: Not support parameter softmax_scale"
             """
             )
             return Assert_TEMPLATE.format(
@@ -3745,14 +3744,15 @@ class TensorRound_Matcher(BaseMatcher):
 
 class NonzeroMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        out_flag = False
-        if "out" in kwargs:
-            out_val = kwargs.pop("out")
-            out_flag = True
-        code = GenericMatcher.generate_code(self, kwargs)
-        if out_flag:
-            code = f"paddle.assign({code},{out_val})"
-        return code
+        if "as_tuple" in kwargs and kwargs["as_tuple"] != "(False)":
+            WARNING_TEMPLATE = textwrap.dedent(
+                """
+            paddle.utils.try_import("warnings").warn("Now, the return shape is inconsistent with torch when as_tuple is True")
+            """
+            )
+            return WARNING_TEMPLATE + GenericMatcher.generate_code(self, kwargs)
+
+        return GenericMatcher.generate_code(self, kwargs)
 
 
 class FAApplyRotaryEmbFuncMatcher(BaseMatcher):
@@ -4463,8 +4463,7 @@ class SDPAttnMatcher(BaseMatcher):
         code = None
         Assert_TEMPLATE = textwrap.dedent(
             """
-            paddle.utils.try_import("math")
-            assert {} is None or {} is math.sqrt({}.shape[-1]),"Fault: Not support parameter scale"
+            assert {} is None or {} is paddle.utils.try_import("math").sqrt({}.shape[-1]),"Fault: Not support parameter scale"
             """
         )
         if "scale" in kwargs:

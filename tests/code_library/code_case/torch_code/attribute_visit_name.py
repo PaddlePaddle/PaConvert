@@ -1,6 +1,7 @@
 from torch.nn import Module
 from torch import Tensor
 from torch import float32
+from torch import nn
 
 from transformers.generation.utils import GenerateOutput
 
@@ -38,3 +39,5 @@ Union[GenerateOutput, torch.LongTensor]
 Optional[Tensor] = None
 
 my_add = TorchAdd
+
+setattr(nn, 'functional', my_functional_module)
