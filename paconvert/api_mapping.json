@@ -1206,7 +1206,13 @@
       "memory_format"
     ]
   },
-  "torch.Tensor.dsplit": {},
+  "torch.Tensor.dsplit": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.dsplit",
+    "args_list" : ["split_size_or_sections"],
+    "kwargs_change": {
+      "split_size_or_sections": "num_or_indices"
+  },
   "torch.Tensor.eig": {
     "min_input_args": 0
   },
@@ -6293,6 +6299,15 @@
     "kwargs_change": {
       "input": "x",
       "train": "training"
+    }
+  },
+  "torch.dsplit" : {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.dsplit",
+    "args_list" : ["input", "indices_or_sections"],
+    "kwargs_change": {
+      "input": "x",
+      "dims": "num_or_indices"
     }
   },
   "torch.eig": {
