@@ -3755,6 +3755,9 @@ class NonzeroMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+# This auxiliary function is not a completely equivalent transformation,
+# which only implements the functional usage used by Qwen，not a complete
+# implementation of flash_attn.layers.rotary.apply_rotary_emb_func.
 class FAApplyRotaryEmbFuncMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
