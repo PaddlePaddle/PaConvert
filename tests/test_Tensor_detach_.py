@@ -26,12 +26,13 @@ def test_case_1():
         x = torch.tensor([[1.0, 1.0, 1.0],
                         [2.0, 2.0, 2.0],
                         [3.0, 3.0, 3.0]], requires_grad=True)
-        linear = torch.nn.Linear(3, 4)
+        linear = torch.nn.Linear(3, 4, bias=False)
+        linear.weight.data.fill_(0.1)
         y = linear(x)
         y.detach_()
         """
     )
-    obj.run(pytorch_code, ["y"], check_value=False)
+    obj.run(pytorch_code, ["y"])
 
 
 def test_case_2():
