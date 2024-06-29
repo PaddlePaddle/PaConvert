@@ -1,17 +1,14 @@
 import torch
-from transformers import AddedToken, GenerationConfig, PreTrainedTokenizer, PretrainedConfig, StoppingCriteriaList
+from transformers import AddedToken, GenerationConfig, StoppingCriteriaList
 from transformers.utils import logging
 from transformers.modeling_outputs import (
     BaseModelOutputWithPast,
     CausalLMOutputWithPast,
 )
-from transformers.modeling_utils import PreTrainedModel
 from transformers.generation import LogitsProcessor
 from transformers.generation.utils import GenerateOutput
 from transformers.generation.logits_process import LogitsProcessorList
 from flash_attn.flash_attn_interface import flash_attn_func, flash_attn_unpadded_func
-from flash_attn.layers.rotary import apply_rotary_emb_func
-from flash_attn.ops.rms_norm import rms_norm
 
 
 print('#########################case1#########################')
@@ -73,28 +70,13 @@ output = flash_attn_unpadded_func(
             softmax_scale=self.softmax_scale,
             causal=is_causal,
         )
-
 print('#########################case11#########################')
-apply_rotary_emb_func(x, cos, sin)
-
-print('#########################case12#########################')
-rms_norm(x, weight, eps)
-
-print('#########################case13#########################')
 outputs = torch.utils.checkpoint.checkpoint(block,args1,args2,args3)
 
-print('#########################case14#########################')
-class QWenPreTrainedModel(PreTrainedModel):
-    pass
-
-print('#########################case15#########################')
-class QWenTokenizer(PreTrainedTokenizer):
-    pass
-
-print('#########################case16#########################')
+print('#########################case12#########################')
 class QWenConfig(PretrainedConfig):
     pass
 
-print('#########################case18#########################')
+print('#########################case13#########################')
 class StopWordsLogitsProcessor(LogitsProcessor):
     pass

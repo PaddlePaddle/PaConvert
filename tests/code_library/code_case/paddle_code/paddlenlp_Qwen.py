@@ -1,6 +1,3 @@
-import sys
-sys.path.append('tests/code_library/code_case/convert_paddle_code/utils')
-import paddle_aux
 import paddle
 import paddlenlp
 print('#########################case1#########################')
@@ -58,33 +55,15 @@ output = paddle.nn.functional.flash_attention.flash_attn_unpadded(query=q,
     max_seqlen_q=seqlen_q, max_seqlen_k=seqlen_k, dropout_p=dropout_p,
     scale=self.softmax_scale, causal=is_causal)
 print('#########################case11#########################')
-paddle_aux.apply_rotary_emb_func(x=x, cos=cos, sin=sin)
-print('#########################case12#########################')
-paddle_aux.rms_norm(x=x, weight=weight, epsilon=eps)
-print('#########################case13#########################')
 outputs = paddle.distributed.fleet.utils.recompute(block, args1, args2, args3)
-print('#########################case14#########################')
+print('#########################case12#########################')
 
 
-class QWenPreTrainedModel(paddlenlp.transformers.PretrainedModel):
+class QWenConfig(PretrainedConfig):
     pass
 
 
-print('#########################case15#########################')
-
-
-class QWenTokenizer(paddlenlp.transformers.PretrainedTokenizer):
-    pass
-
-
-print('#########################case16#########################')
-
-
-class QWenConfig(paddlenlp.transformers.PretrainedConfig):
-    pass
-
-
-print('#########################case18#########################')
+print('#########################case13#########################')
 
 
 class StopWordsLogitsProcessor(paddlenlp.generation.LogitsProcessor):

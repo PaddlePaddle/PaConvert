@@ -35,7 +35,8 @@ def test_case_2():
         """
         import torch
         src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.view(2, 3).contiguous()
+        src.contiguous()
+        result = src.is_contiguous()
         """
     )
     obj.run(pytorch_code, ["result"])
