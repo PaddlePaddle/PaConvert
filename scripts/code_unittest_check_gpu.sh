@@ -22,7 +22,8 @@ echo "Insalling develop version paddle"
 python -m pip uninstall -y paddlepaddle
 python -m pip uninstall -y paddlepaddle-gpu
 rm -rf /root/anaconda3/lib/python*/site-packages/paddlepaddle-0.0.0.dist-info/
-python -m pip install --no-cache-dir paddlepaddle-gpu==0.0.0.post118 -f https://www.paddlepaddle.org.cn/whl/linux/gpu/develop.html
+
+python -m pip install --no-cache-dir --pre paddlepaddle-gpu -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
 echo "Checking code unit test by pytest ..."
