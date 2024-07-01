@@ -40,7 +40,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.hub.download_url_to_file('https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth', '/tmp/temporary_file')
+        result = torch.hub.download_url_to_file('https://paddle-paconvert.bj.bcebos.com/model.params', '/tmp/temporary_file')
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -50,7 +50,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.hub.download_url_to_file(url='https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth', dst='/tmp/temporary_file')
+        result = torch.hub.download_url_to_file(url='https://paddle-paconvert.bj.bcebos.com/model.params', dst='/tmp/temporary_file')
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -60,8 +60,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.hub.download_url_to_file(url='https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth', dst='/tmp/temporary_file',
-                hash_prefix="5c106cde386e87d4033832f2996f5493238eda96ccf559d1d62760c4de0613f8")
+        result = torch.hub.download_url_to_file(url='https://paddle-paconvert.bj.bcebos.com/model.params', dst='/tmp/temporary_file',
+                hash_prefix="e1bf0a03102811bb2168e9952fe4edfa09cceb3343278bd4e5876b33b6889e9b")
         """
     )
     obj.run(pytorch_code, ["result"])
