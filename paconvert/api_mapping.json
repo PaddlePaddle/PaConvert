@@ -10208,9 +10208,12 @@
     "min_input_args": 0
   },
   "torch.nn.Module.zero_grad": {
-    "Mathcer": "ZeroGradMatcher",
+    "Matcher": "ZeroGradMatcher",
     "paddle_api": "paddle.nn.Layer.clear_gradients",
     "min_input_args": 0,
+    "args_list": [
+      "set_to_none"
+    ],
     "paddle_default_kwargs": {
       "set_to_zero": "False"
     }
@@ -13130,7 +13133,7 @@
   "torch.optim.SGD": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.optimizer.SGD",
-    "min_input_args": 2,
+    "min_input_args": 1,
     "args_list": [
       "params",
       "lr",
