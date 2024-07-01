@@ -44,9 +44,116 @@ def test_case_1():
         result = model.conv1.weight.grad
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="class method `zero_grad` is not supported",
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        class Model(torch.nn.Module):
+            def __init__(self):
+                super(Model, self).__init__()
+                self.conv1 = torch.nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1)
+
+            def forward(self, x):
+                x = self.conv1(x)
+                x = torch.sum(x)
+                return x
+
+        model = Model()
+
+        data_input = torch.randn(64, 1, 28, 28)
+        data_output = model(data_input)
+        data_output.backward()
+
+        model.zero_grad(True)
+
+        result = model.conv1.weight.grad
+        """
     )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        class Model(torch.nn.Module):
+            def __init__(self):
+                super(Model, self).__init__()
+                self.conv1 = torch.nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1)
+
+            def forward(self, x):
+                x = self.conv1(x)
+                x = torch.sum(x)
+                return x
+
+        model = Model()
+
+        data_input = torch.randn(64, 1, 28, 28)
+        data_output = model(data_input)
+        data_output.backward()
+
+        model.zero_grad(False)
+
+        result = model.conv1.weight.grad
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_stop_gradient=False)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        class Model(torch.nn.Module):
+            def __init__(self):
+                super(Model, self).__init__()
+                self.conv1 = torch.nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1)
+
+            def forward(self, x):
+                x = self.conv1(x)
+                x = torch.sum(x)
+                return x
+
+        model = Model()
+
+        data_input = torch.randn(64, 1, 28, 28)
+        data_output = model(data_input)
+        data_output.backward()
+
+        model.zero_grad(set_to_none=False)
+
+        result = model.conv1.weight.grad
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_stop_gradient=False)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        class Model(torch.nn.Module):
+            def __init__(self):
+                super(Model, self).__init__()
+                self.conv1 = torch.nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1)
+
+            def forward(self, x):
+                x = self.conv1(x)
+                x = torch.sum(x)
+                return x
+
+        model = Model()
+
+        data_input = torch.randn(64, 1, 28, 28)
+        data_output = model(data_input)
+        data_output.backward()
+
+        model.zero_grad(set_to_none=True)
+
+        result = model.conv1.weight.grad
+        """
+    )
+    obj.run(pytorch_code, ["result"])

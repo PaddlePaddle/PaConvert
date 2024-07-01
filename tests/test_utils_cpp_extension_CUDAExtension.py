@@ -14,11 +14,17 @@
 
 import textwrap
 
+import pytest
+import torch
 from apibase import APIBase
 
 obj = APIBase("torch.utils.cpp_extension.CUDAExtension")
 
 
+@pytest.mark.skipif(
+    condition=not torch.backends.cuda.is_built(),
+    reason="can only run on torch with CUDA",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
@@ -35,6 +41,10 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skipif(
+    condition=not torch.backends.cuda.is_built(),
+    reason="can only run on torch with CUDA",
+)
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """

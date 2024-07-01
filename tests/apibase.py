@@ -62,7 +62,7 @@ class APIBase(object):
                 reason is not None
             ), "Please explain the reason why it is not supported"
             paddle_code = self.convert(pytorch_code)
-            assert ">>>" in paddle_code
+            assert ">>>>>>" in paddle_code
             return
         if compared_tensor_names:
             loc = locals()
