@@ -3464,13 +3464,6 @@ class RNNBaseMatcher(BaseMatcher):
             batch_first = False
         kwargs["time_major"] = f"not {batch_first}"
 
-        if "mode" in kwargs:
-            # RNN is not supported, because RNN need activation
-            if "LSTM" in kwargs["mode"] or "GRU" in kwargs["mode"]:
-                pass
-            else:
-                return None
-
         direction = "'forward'"
         if "bidirectional" in kwargs:
             if "True" in kwargs["bidirectional"]:
@@ -4420,3 +4413,12 @@ class OsEnvironGetMatcher(BaseMatcher):
         else:
             code = "misidentify"
         return code
+
+
+class ZeroGradMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "set_to_none" in kwargs:
+            set_to_none = kwargs.pop("set_to_none")
+            kwargs["set_to_zero"] = f"(not {set_to_none})"
+
+        return GenericMatcher.generate_code(self, kwargs)

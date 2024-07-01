@@ -48,7 +48,6 @@ def test_case_2():
     obj.run(pytorch_code, ["x1", "x2", "result"])
 
 
-# result is difference when set full=True
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
@@ -60,7 +59,7 @@ def test_case_3():
         result = torch.nn.functional.poisson_nll_loss(x1, x2, full=True)
         """
     )
-    obj.run(pytorch_code, ["x1", "x2", "result"], check_value=False)
+    obj.run(pytorch_code, ["x1", "x2", "result"])
 
 
 def test_case_4():
@@ -91,7 +90,6 @@ def test_case_5():
     obj.run(pytorch_code, ["x1", "x2", "result"])
 
 
-# result is difference when set full=True
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """
@@ -103,7 +101,7 @@ def test_case_6():
         result = torch.nn.functional.poisson_nll_loss(input=x1, target=x2, log_input=False, full=True, reduction="sum")
         """
     )
-    obj.run(pytorch_code, ["x1", "x2", "result"], check_value=False)
+    obj.run(pytorch_code, ["x1", "x2", "result"])
 
 
 def test_case_7():

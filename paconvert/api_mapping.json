@@ -10208,7 +10208,12 @@
     "min_input_args": 0
   },
   "torch.nn.Module.zero_grad": {
-    "min_input_args": 0
+    "Mathcer": "ZeroGradMatcher",
+    "paddle_api": "paddle.nn.Layer.clear_gradients",
+    "min_input_args": 0,
+    "paddle_default_kwargs": {
+      "set_to_zero": "False"
+    }
   },
   "torch.nn.ModuleDict": {
     "Matcher": "GenericMatcher",
@@ -12534,6 +12539,18 @@
       "gain"
     ]
   },
+  "torch.nn.init.trunc_normal_": {
+    "Matcher": "InitMatcher",
+    "paddle_api": "paddle.nn.initializer.TruncatedNormal",
+    "min_input_args": 1,
+    "args_list": [
+      "tensor",
+      "mean",
+      "std",
+      "a",
+      "b"
+    ]
+  },
   "torch.nn.init.uniform_": {
     "Matcher": "InitMatcher",
     "paddle_api": "paddle.nn.initializer.Uniform",
@@ -12558,9 +12575,6 @@
     "args_list": [
       "tensor",
       "gain"
-    ],
-    "unsupport_args": [
-      "gain"
     ]
   },
   "torch.nn.init.xavier_uniform_": {
@@ -12569,9 +12583,6 @@
     "min_input_args": 1,
     "args_list": [
       "tensor",
-      "gain"
-    ],
-    "unsupport_args": [
       "gain"
     ]
   },
@@ -14758,6 +14769,20 @@
     "unsupport_args": [
       "compute_uv"
     ]
+  },
+  "torch.svd_lowrank": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.svd_lowrank",
+    "min_input_args": 1,
+    "args_list": [
+      "A",
+      "q",
+      "niter",
+      "M"
+    ],
+    "kwargs_change": {
+      "A": "x"
+    }
   },
   "torch.swapaxes": {
     "Matcher": "SwapAxesMatcher",

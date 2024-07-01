@@ -23,37 +23,30 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3.])
-        module1 = torch.nn.Module()
-        module1.register_buffer('buffer', x)
-        module1.zero_grad()
-        module1.buffer.pow(2).sum().backward()
-        result = module1.buffer.grad
+        class Model(torch.nn.Module):
+            def __init__(self):
+                super(Model, self).__init__()
+                self.conv1 = torch.nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1)
+
+            def forward(self, x):
+                x = self.conv1(x)
+                x = torch.sum(x)
+                return x
+
+        model = Model()
+
+        data_input = torch.randn(64, 1, 28, 28)
+        data_output = model(data_input)
+        data_output.backward()
+
+        model.zero_grad()
+
+        result = model.conv1.weight.grad
         """
     )
     obj.run(
         pytorch_code,
         ["result"],
         unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1., 2., 3.])
-        module1 = torch.nn.Module()
-        module1.register_buffer('buffer', x)
-        module1.zero_grad(set_to_none=True)
-        module1.buffer.pow(2).sum().backward()
-        result = module1.buffer.grad
-        """
-    )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
+        reason="class method `zero_grad` is not supported",
     )

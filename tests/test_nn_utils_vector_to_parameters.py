@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.utils.parameters_to_vector")
+obj = APIBase("torch.nn.utils.vector_to_parameters")
 
 
 def test_case_1():

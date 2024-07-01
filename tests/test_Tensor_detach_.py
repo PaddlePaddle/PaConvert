@@ -19,15 +19,15 @@ from apibase import APIBase
 obj = APIBase("torch.Tensor.detach_")
 
 
-# Tensor.detach_ throws unexpected exception, refer to: https://github.com/PaddlePaddle/Paddle/issues/57303
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
         x = torch.tensor([[1.0, 1.0, 1.0],
                         [2.0, 2.0, 2.0],
                         [3.0, 3.0, 3.0]], requires_grad=True)
-        linear = torch.nn.Linear(3, 4)
+        linear = torch.nn.Linear(3, 4, bias=False)
+        linear.weight.data.fill_(0.1)
         y = linear(x)
         y.detach_()
         """
@@ -35,7 +35,7 @@ def _test_case_1():
     obj.run(pytorch_code, ["y"])
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
