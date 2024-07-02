@@ -467,7 +467,7 @@ class BaseMatcher(object):
             CODE_TEMPLATE = textwrap.dedent(
                 """
                 import sys
-                sys.path.append('{}')
+                sys.path.append(r'{}')
                 import paddle_aux
                 """
             )
