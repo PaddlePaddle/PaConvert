@@ -1,11 +1,12 @@
-# PaConvert ![](https://img.shields.io/badge/version-v0.2.0-brightgreen) ![](https://img.shields.io/badge/docs-latest-brightgreen) ![](https://img.shields.io/badge/PRs-welcome-brightgreen) ![](https://img.shields.io/badge/pre--commit-Yes-brightgreen)
+# PaConvert代码自动转换工具 ![](https://img.shields.io/badge/version-v0.2.0-brightgreen) ![](https://img.shields.io/badge/docs-latest-brightgreen) ![](https://img.shields.io/badge/PRs-welcome-brightgreen) ![](https://img.shields.io/badge/pre--commit-Yes-brightgreen)
 
-**Pa**ddlePaddle Code **Convert** Toolkits
+**Pa**ddlePaddle Code **Convert** Toolkits（[代码自动转换工具](https://github.com/PaddlePaddle/PaConvert)）
 
-# 重要
-- 本工具由Paddle团队官方维护与建设，所有转换代码均已经过测试，欢迎大家使用与反馈
+#  🤗 公告 🤗
+- 本工具由Paddle团队官方维护与建设，所有转换代码均已经过测试，欢迎使用，高效迁移Pytorch代码到PaddlePaddle
 - 当前共支持约1300+个Pytorch API的一键转换，我们通过300+个Pytorch模型测试，代码行数平均转换率约为 **90+%**
 - 本工具基于 [PyTorch 最新 release 与 Paddle develop API 映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html) 实现，表中API均经过详细对比分析，欢迎查阅
+- 有任何使用问题和建议欢迎在 [GitHub Issues](https://github.com/PaddlePaddle/PaConvert/issues) 中提出
 
 # 概述
 PaConvert全称是 **代码转换工具**，能自动将其它深度学习框架训练或推理的**代码**，转换为PaddlePaddle的**代码**，方便快速自动地 **模型代码迁移**。
@@ -42,7 +43,7 @@ y = paddle.transpose(x=x, perm=perm_0)
 
 # 安装与使用
 
-由于使用了一些较新的Python语法树特性，你需要使用>=python3.8的解释器。
+由于使用了一些较新的Python语法树特性，你需要使用 `>=python3.8` 的解释器。
 1. 使用pip安装
 
 ```bash
@@ -119,13 +120,16 @@ class MyNet(paddle.nn.Layer):
         x = self._fc1(x)
         x = self._fc2(x)
         x = self._fc3(x)
-        y = paddle.add(x=x, y=x)
+        y = paddle.add(x=x, y=paddle.to_tensor(x))
         return paddle.nn.functional.relu(x=y)
 
 
 net = MyNet()
 >>>>>>sgd = torch.optim.SGD(net.parameters(), lr=0.1, momentum=0.9)
->>>>>>lr = torch.optim.lr_scheduler.MultiStepLR(sgd, milestones=[2, 4, 6], gamma=0.8)
+tmp_lr = paddle.optimizer.lr.MultiStepDecay(milestones=[2, 4, 6], gamma=0.8,
+    learning_rate=sgd.get_lr())
+sgd.set_lr_scheduler(tmp_lr)
+lr = tmp_lr
 ```
 
 打印信息如下：
@@ -134,43 +138,62 @@ net = MyNet()
 ===========================================
 PyTorch to Paddle Convert Start ------>:
 ===========================================
-Start convert /workspace/test_code.py --> /workspace/PaConvert/paddle_project/test_code.py
+Start convert file: /workspace/PaConvert/test_code.py --> /workspace/PaConvert/paddle_project/test_code.py
 [test_code.py:1] remove 'import torch'
 [test_code.py:2] remove 'import torch.nn as nn'
 [test_code.py:3] remove 'import torch.optim as optim'
 [test_code.py:4] remove 'import torch.nn.Linear as Linear'
 [test_code.py:5] remove 'import torch.nn.functional as F'
-[test_code.py] add 'import paddle' in first line
+[test_code.py] add 'import paddle' in line 1
+[test_code.py:1] [Success] Convert torch.nn.Module to Paddle
+[test_code.py:11] [Success] Convert torch.nn.Linear to Paddle
+[test_code.py:12] [Success] Convert torch.nn.Linear to Paddle
+[test_code.py:13] [Success] Convert torch.nn.Linear to Paddle
+[test_code.py:20] [Success] Convert torch.add to Paddle
+[test_code.py:21] [Success] Convert torch.nn.functional.relu to Paddle
+[test_code.py:15] [Success] Convert torch.no_grad to Paddle
+[test_code.py:25] [Success] Convert Class Method: torch.nn.Module.parameters to Paddle
 [test_code.py:25] [Not Support] convert torch.optim.SGD to Paddle is not supported currently
-[test_code.py:26] [Not Support] convert torch.optim.lr_scheduler.MultiStepLR to Paddle is not supported currently
-Finish convert /workspace/test_code.py --> /workspace/PaConvert/paddle_project/test_code.py
+[test_code.py:26] [Success] Convert torch.optim.lr_scheduler.MultiStepLR to Paddle
+Finish convert /workspace/PaConvert/test_code.py --> /workspace/PaConvert/paddle_project/test_code.py
 
 
-========================================
+===========================================
 Convert Summary:
-========================================
+===========================================
 There are 10 Pytorch APIs in this Project:
- 8  Pytorch APIs have been converted to Paddle successfully!
- 2  Pytorch APIs are not supported to convert to Paddle currently!
- Convert Rate is: 80.000%
+ 9  Pytorch APIs have been converted to Paddle successfully!
+ 1  Pytorch APIs are not supported to convert to Paddle currently!
+ Convert Rate is: 90.000%
 
-For these 2 Pytorch APIs that currently do not support to convert, which have been marked by >>>>>> before the line,
-please refer to https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html
+For these 1 Pytorch APIs that currently do not support to convert, which have been marked by >>> before the line,
+please refer to [https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html]
 and convert it by yourself manually. In addition, these APIs will be supported in future.
 
-Thank you to use Paddle Code Convert Tool. You can make any suggestions to us.
+Thank you to use Paddle Code Convert Tool. You can make any suggestions
+to us by submitting issues to [https://github.com/PaddlePaddle/PaConvert].
+
+****************************************************************
+______      _____                          _
+| ___ \    / ____|                        | |
+| |_/ /_ _| |     ___  _ ____   _____ _ __| |_
+|  __/ _  | |    / _ \| \_ \ \ / / _ \ \__| __|
+| | | (_| | |___| (_) | | | \ V /  __/ |  | |_
+\_|  \__,_|\_____\___/|_| |_|\_/ \___|_|   \__|
+
+***************************************************************
 
 ```
 
-转换完成后，会打印 **转换总结** ，包含 **API总数、转换成功数、未转换数、转换率** 。如未指定 `out_dir` ，则会在当前目录下 `./paddle_project/` 并输出到此目录。如未指定 `log_dir` ，则会在终端打印日志。
+转换完成后，会打印 **转换总结** ，包含 **总API数、成功转换API数、不支持转换API数** 。如未指定 `out_dir` ，默认新建并保存在当前目录下`paddle_project/` 。
 
-例如，上述代码里一共有10个Pytorch API，其中8个被成功转换，因此转换率为 `80.00%` ，如果项目中有多个python文件，则会统计所有文件的累计数据。
+例如，上述代码里一共有10个Pytorch API，其中9个被成功转换，因此转换率为 `90.00%` ，如果项目中有多个python文件，则会统计所有文件的累计数据。
 
-**对于转换成功的API**：代码风格上会略有变化，会 **补全API全名、补全参数关键字、移除注释、移除多余空行** 。因为在 `源码->语法树->源码` 的过程中，会采用标准写法来生成代码，而 `注释、空行` 等代码无法被语法树识别，将被移除。
+**对于成功转换的API**：代码风格上会略有变化，会 **补全API全名、补全参数关键字、移除注释、移除多余空行** 。因为在 `源码->语法树->源码` 的过程中，会采用Python标准写法来生成代码。
 
-**对于不支持转换的API**：将 **补全为Pytorch API全名**，同时在行前通过 `>>>>>>` 的形式加以标记，用户必须对该API进行人工手动转换，然后删除标记，否则代码无法运行。
+**对于不支持转换的API**：将 **补全为Pytorch API全名**，同时在行前通过 `>>>>>>` 的形式加以标记，需要用户对该API进行人工手动转换，然后删除 `>>>>>>` 标记，否则代码无法运行。
 
 
 # 贡献代码
 
-欢迎你向我们贡献代码，详细开发步骤请参考 [贡献代码教程](docs/CONTRIBUTING.md)
+[代码自动转换工具](https://github.com/PaddlePaddle/PaConvert)为开源贡献形式，欢迎你向我们贡献代码，详细开发步骤请参考 [贡献代码教程](docs/CONTRIBUTING.md)
