@@ -28,6 +28,7 @@ def func3(dtype='float32'):
 isinstance(x, paddle.Tensor)
 setattr(paddle.Tensor, 'add', add_func)
 hasattr(paddle.Tensor, 'add')
->>>>>>Union[transformers.generation.utils.GenerateOutput, paddle.Tensor]
+Union[paddlenlp.transformers.model_outputs.BaseModelOutput, paddle.Tensor]
 Optional[paddle.Tensor] = None
 my_add = paddle.add
+setattr(paddle.nn, 'functional', my_functional_module)

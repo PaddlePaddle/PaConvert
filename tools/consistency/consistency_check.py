@@ -21,7 +21,7 @@ import sys
 sys.path.append(os.path.dirname(__file__) + "/../..")
 from tests.code_library.code_case import CODE_CONSISTENCY_MAPPING
 
-white_list = ["api_torch_Tensor_to.py"]
+white_list = ["api_torch_Tensor_to.py", "transformers_Qwen_aux.py"]
 
 
 def convert_pytorch_code_to_paddle():

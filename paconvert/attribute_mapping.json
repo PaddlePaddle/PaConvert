@@ -172,6 +172,10 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "'int64'"
   },
+  "torch.nn": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn"
+  },
   "torch.optim.Optimizer.state_dict": {
     "Matcher": "UnchangeMatcher"
   },
