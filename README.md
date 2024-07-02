@@ -1,22 +1,25 @@
-# 代码自动转换工具 ![](https://img.shields.io/badge/version-v0.2.0-brightgreen) ![](https://img.shields.io/badge/docs-latest-brightgreen) ![](https://img.shields.io/badge/PRs-welcome-brightgreen) ![](https://img.shields.io/badge/pre--commit-Yes-brightgreen)
+# 代码自动转换工具 ![](https://img.shields.io/badge/version-v2.0-brightgreen) ![](https://img.shields.io/badge/docs-latest-brightgreen) ![](https://img.shields.io/badge/PRs-welcome-brightgreen) ![](https://img.shields.io/badge/pre--commit-Yes-brightgreen)
 
-**Pa**ddlePaddle Code **Convert** Toolkits（**[PaConvert代码自动转换工具](https://github.com/PaddlePaddle/PaConvert)**）
+**Pa**ddlePaddle Code **Convert** Toolkits
 
 #  🤗 公告 🤗
-- 本工具由Paddle团队官方维护与建设，所有转换代码均已经过测试，欢迎使用，高效迁移Pytorch代码到PaddlePaddle
-- 当前共支持约1300+个Pytorch API的一键转换，我们通过300+个Pytorch模型测试，代码行数平均转换率约为 **90+%**
-- 本工具基于 [PyTorch 最新 release 与 Paddle develop API 映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html) 实现，表中API均经过详细对比分析，欢迎查阅
-- 有任何使用问题和建议欢迎在 [GitHub Issues](https://github.com/PaddlePaddle/PaConvert/issues) 中提出
+- 本工具由 Paddle 团队官方维护与建设，所有转换代码均已经过测试，欢迎使用，高效迁移 Pytorch 模型到 PaddlePaddle
+
+- 当前共支持约 1300+个 Pytorch API 的一键转换，我们通过 300+个 Pytorch 模型测试，代码行数平均转换率约为 **90+%**
+
+- 本工具基于 [PyTorch 最新 release 与 Paddle develop API 映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html) 实现，表中 API 均经过详细对比分析，欢迎查阅
+
+- 有使用问题和建议欢迎在 [GitHub Issues](https://github.com/PaddlePaddle/PaConvert/issues) 中提出
 
 # 概述
 
-**PaConvert代码自动转换工具**，能自动将其它深度学习框架训练或推理的**代码**，转换为PaddlePaddle的**代码**，方便快速自动地 **模型代码迁移**。
+**代码自动转换工具**，能自动将其它深度学习框架训练或推理的**代码**，转换为 PaddlePaddle 的**代码**，方便快速自动地 **模型代码迁移**。
 
-目前支持自动转换Pytorch代码，其它深度学习框架的支持后续新增中，其原理是通过Python AST语法树分析，将输入代码生成为抽象语法树，对其进行解析、遍历、匹配、编辑、替换、插入等各种操作，然后得到基于PaddlePaddle的抽象语法树，最后生成Paddle的代码。
+目前支持自动转换 Pytorch 代码，其它深度学习框架的支持后续新增中，其原理是通过 Python AST 语法树分析，将输入代码生成为抽象语法树，对其进行解析、遍历、匹配、编辑、替换、插入等各种操作，然后得到基于 PaddlePaddle 的抽象语法树，最后生成 Paddle 的代码。
 
-转换会尽量保持原代码的风格与结构，将代码中其它深度学习框架的接口转换为调用PaddlePaddle的接口。
+转换会尽量保持原代码的风格与结构，将代码中其它深度学习框架的接口转换为调用 PaddlePaddle 的接口。
 
-转换时会尽可能保证原代码的行数不变，但某些情形下原来的1行代码会转换成多行。例如：
+转换时会尽可能保证原代码的行数不变，但某些情形下原来的 1 行代码会转换成多行。例如：
 
 转换前：
 ```
@@ -34,18 +37,18 @@ perm_0[0] = 1
 y = paddle.transpose(x=x, perm=perm_0)
 ```
 
-这是由于两者API的用法差异，无法通过一行代码来完成，需要增加若干辅助行来实现相同功能。
+这是由于两者 API 的用法差异，无法通过一行代码来完成，需要增加若干辅助行来实现相同功能。
 
 转换过程中不会改动原文件，会将原项目文件一一转换到 `out_dir` 指定的文件夹中，方便前后对比。对不同类型的文件的处理逻辑分别为：
 
-- Python代码文件：识别代码中调用其它深度学习框架的接口并转换
+- Python 代码文件：识别代码中调用其它深度学习框架的接口并转换
 - requirements.txt： 替换其中的安装依赖为 `paddlepaddle-gpu`
 - 其他文件：原样拷贝
 
 # 安装与使用
 
-由于使用了一些较新的Python语法树特性，你需要使用 `>=python3.8` 的解释器。
-1. 使用pip安装
+由于使用了一些较新的 Python 语法树特性，你需要使用 `>=python3.8` 的解释器。
+1. 使用 pip 安装
 
 ```bash
 python3.8 -m pip install -U paconvert
@@ -62,18 +65,18 @@ python3.8 paconvert/main.py --in_dir torch_project [--out_dir paddle_project] [-
 **参数介绍**
 
 ```
---in_dir        输入torch项目文件，可以为单个文件或文件夹
---out_dir       可选，输出paddle项目文件，可以为单个文件或文件夹，默认在当前目录下创建./paddle_project/
+--in_dir        输入 torch 项目文件，可以为单个文件或文件夹
+--out_dir       可选，输出 paddle 项目文件，可以为单个文件或文件夹，默认在当前目录下创建./paddle_project/
 --exclude_dirs  可选，排除转换的文件或文件夹，排除多项时请用逗号分隔，默认不排除
 --log_dir       可选，输出日志的路径，默认会在终端上打印日志
---log_level     可选，打印log等级，仅支持"INFO" "DEBUG"，默认"INFO"
+--log_level     可选，打印 log 等级，仅支持"INFO" "DEBUG"，默认"INFO"
 --run_check     可选，工具自检
 ```
 
 
 # 转换示例
 
-以下面Pytorch代码为例，转换前：
+以下面 Pytorch 代码为例，转换前：
 ```
 import torch
 import torch.nn as nn
@@ -186,15 +189,15 @@ ______      _____                          _
 
 ```
 
-转换完成后，会打印 **转换总结** ，包含 **总API数、成功转换API数、不支持转换API数** 。如未指定 `out_dir` ，默认新建并保存在当前目录下`paddle_project/` 。
+转换完成后，会打印 **转换总结** ，包含 **总 API 数、成功转换 API 数、不支持转换 API 数** 。如未指定 `out_dir` ，默认新建并保存在当前目录下`paddle_project/` 。
 
-例如，上述代码里一共有10个Pytorch API，其中9个被成功转换，因此转换率为 `90.00%` ，如果项目中有多个python文件，则会统计所有文件的累计数据。
+例如，上述代码里一共有 10 个 Pytorch API，其中 9 个被成功转换，因此转换率为 `90.00%` ，如果项目中有多个 python 文件，则会统计所有文件的累计数据。
 
-**对于成功转换的API**：代码风格上会略有变化，会 **补全API全名、补全参数关键字、移除注释、移除多余空行** 。因为在 `源码->语法树->源码` 的过程中，会采用Python标准写法来生成代码。
+**对于成功转换的 API**：代码风格上会略有变化，会 **补全 API 全名、补全参数关键字、移除注释、移除多余空行** 。因为在 `源码->语法树->源码` 的过程中，会采用 Python 标准写法来生成代码。
 
-**对于不支持转换的API**：将 **补全为Pytorch API全名**，同时在行前通过 `>>>>>>` 的形式加以标记，需要用户对该API进行人工手动转换，然后删除 `>>>>>>` 标记，否则代码无法运行。
+**对于不支持转换的 API**：将 **补全为 Pytorch API 全名**，同时在行前通过 `>>>>>>` 的形式加以标记，需要用户对该 API 进行人工手动转换，然后删除 `>>>>>>` 标记，否则代码无法运行。
 
 
 # 贡献代码
 
-[代码自动转换工具](https://github.com/PaddlePaddle/PaConvert)为开源贡献形式，欢迎你向我们贡献代码，详细开发步骤请参考 [贡献代码教程](docs/CONTRIBUTING.md)
+[代码自动转换工具](https://github.com/PaddlePaddle/PaConvert) 为开源贡献形式，欢迎你向我们贡献代码，详细开发步骤请参考 [贡献代码教程](docs/CONTRIBUTING.md)
