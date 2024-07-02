@@ -15,43 +15,22 @@
 
 **代码自动转换工具**，能自动将其它深度学习框架训练或推理的**代码**，转换为 PaddlePaddle 的**代码**，方便快速自动地 **模型代码迁移**。
 
-目前支持自动转换 Pytorch 代码，其它深度学习框架的支持后续新增中，其原理是通过 Python AST 语法树分析，将输入代码生成为抽象语法树，对其进行解析、遍历、匹配、编辑、替换、插入等各种操作，然后得到基于 PaddlePaddle 的抽象语法树，最后生成 Paddle 的代码。
+目前仅支持自动转换 Pytorch 代码，其它深度学习框架的支持后续新增中，转换时会尽量保持原代码的风格与结构，将其它深度学习框架的API接口 转换为 PaddlePaddle 的API接口。
 
-转换会尽量保持原代码的风格与结构，将代码中其它深度学习框架的接口转换为调用 PaddlePaddle 的接口。
+转换过程中不会改动原文件，会将原项目中的文件一一转换到 `out_dir` 文件夹中（如不指定`out_dir`，则默认在当前目录下新建`paddle_project/`）。对不同类型的文件的处理逻辑分别为：
 
-转换时会尽可能保证原代码的行数不变，但某些情形下原来的 1 行代码会转换成多行。例如：
-
-转换前：
-```
-import torch
-y = torch.transpose(image, 1, 0)
-```
-
-转换后：
-```
-import paddle
-x = image
-perm_0 = list(range(x.ndim))
-perm_0[1] = 0
-perm_0[0] = 1
-y = paddle.transpose(x=x, perm=perm_0)
-```
-
-这是由于两者 API 的用法差异，无法通过一行代码来完成，需要增加若干辅助行来实现相同功能。
-
-转换过程中不会改动原文件，会将原项目文件一一转换到 `out_dir` 指定的文件夹中，方便前后对比。对不同类型的文件的处理逻辑分别为：
-
-- Python 代码文件：识别代码中调用其它深度学习框架的接口并转换
+- Python 代码文件：识别代码中调用其它深度学习框架的接口并转换为PaddlePaddle的接口
 - requirements.txt： 替换其中的安装依赖为 `paddlepaddle-gpu`
 - 其他文件：原样拷贝
 
 # 安装与使用
 
-由于使用了一些较新的 Python 语法树特性，你需要使用 `>=python3.8` 的解释器。
+由于使用了一些较新的 Python 功能特性，你需要使用 `>=python3.8` 的解释器。
+
 1. 使用 pip 安装
 
 ```bash
-python3.8 -m pip install -U paconvert
+pip install -U paconvert
 paconvert --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "DEBUG"] [--run_check 1]
 ```
 
@@ -59,7 +38,7 @@ paconvert --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs excl
 
 ```bash
 git clone https://github.com/PaddlePaddle/PaConvert.git
-python3.8 paconvert/main.py --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "DEBUG"] [--run_check 1]
+python paconvert/main.py --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "DEBUG"] [--run_check 1]
 ```
 
 **参数介绍**
@@ -189,13 +168,11 @@ ______      _____                          _
 
 ```
 
-转换完成后，会打印 **转换总结** ，包含 **总 API 数、成功转换 API 数、不支持转换 API 数** 。如未指定 `out_dir` ，默认新建并保存在当前目录下`paddle_project/` 。
+转换完成后，会打印 **转换总结** ，包含 **总 API 数、成功转换 API 数、不支持转换 API 数、转化率** 。例如，上述代码里一共有 10 个 Pytorch API，其中 9 个被成功转换，1个不支持转换，因此转换率为 `90.00%` 。
 
-例如，上述代码里一共有 10 个 Pytorch API，其中 9 个被成功转换，因此转换率为 `90.00%` ，如果项目中有多个 python 文件，则会统计所有文件的累计数据。
+**对于成功转换的 API**：代码风格会略有变化，会 **补全 API 全名、补全参数关键字、移除注释、移除多余空行** 。因为在代码识别的过程中，**注释、空行** 等无法识别。
 
-**对于成功转换的 API**：代码风格上会略有变化，会 **补全 API 全名、补全参数关键字、移除注释、移除多余空行** 。因为在 `源码->语法树->源码` 的过程中，会采用 Python 标准写法来生成代码。
-
-**对于不支持转换的 API**：将 **补全为 Pytorch API 全名**，同时在行前通过 `>>>>>>` 的形式加以标记，需要用户对该 API 进行人工手动转换，然后删除 `>>>>>>` 标记，否则代码无法运行。
+**对于不支持转换的 API**：将 **补全为 Pytorch API 全名**，同时在行前通过 `>>>>>>` 的形式加以标记，用户需要对该 API 进行人工手动转换，然后删除 `>>>>>>` 标记，否则代码无法运行。
 
 
 # 贡献代码
