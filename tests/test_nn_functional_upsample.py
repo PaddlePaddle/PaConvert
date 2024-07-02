@@ -71,8 +71,7 @@ def test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
-# When input is 3D or 5D, data_format does not change to `NCW` or `NCWHD` automatically.
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch

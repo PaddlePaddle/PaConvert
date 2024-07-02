@@ -103,7 +103,7 @@ def test_case_6():
         result = torch.argsort(input=input, dim=1, descending=descending, stable=True)
         """
     )
-    obj.run(pytorch_code, ["result"], unsupport=True, reason="stable is not supported")
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_7():
