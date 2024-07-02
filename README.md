@@ -3,7 +3,7 @@
 **Pa**ddlePaddle Code **Convert** Toolkits
 
 #  🤗 公告 🤗
-- 本工具由 Paddle 团队官方维护与建设，所有转换代码均已经过测试，欢迎使用，高效迁移 Pytorch 代码到 PaddlePaddle
+- 本工具由 Paddle 官方团队维护与建设，所有转换代码均已经过测试，欢迎使用，高效迁移 Pytorch 代码到 PaddlePaddle
 
 - 当前共支持约 1300+个 Pytorch API 的一键转换，我们通过 300+个 Pytorch 模型测试，代码行数平均转换率约为 **90+%**
 
