@@ -1,6 +1,6 @@
-# PaConvert代码自动转换工具 ![](https://img.shields.io/badge/version-v0.2.0-brightgreen) ![](https://img.shields.io/badge/docs-latest-brightgreen) ![](https://img.shields.io/badge/PRs-welcome-brightgreen) ![](https://img.shields.io/badge/pre--commit-Yes-brightgreen)
+# 代码自动转换工具 ![](https://img.shields.io/badge/version-v0.2.0-brightgreen) ![](https://img.shields.io/badge/docs-latest-brightgreen) ![](https://img.shields.io/badge/PRs-welcome-brightgreen) ![](https://img.shields.io/badge/pre--commit-Yes-brightgreen)
 
-**Pa**ddlePaddle Code **Convert** Toolkits（[代码自动转换工具](https://github.com/PaddlePaddle/PaConvert)）
+**Pa**ddlePaddle Code **Convert** Toolkits（**[PaConvert代码自动转换工具](https://github.com/PaddlePaddle/PaConvert)**）
 
 #  🤗 公告 🤗
 - 本工具由Paddle团队官方维护与建设，所有转换代码均已经过测试，欢迎使用，高效迁移Pytorch代码到PaddlePaddle
@@ -9,7 +9,8 @@
 - 有任何使用问题和建议欢迎在 [GitHub Issues](https://github.com/PaddlePaddle/PaConvert/issues) 中提出
 
 # 概述
-PaConvert全称是 **代码转换工具**，能自动将其它深度学习框架训练或推理的**代码**，转换为PaddlePaddle的**代码**，方便快速自动地 **模型代码迁移**。
+
+**PaConvert代码自动转换工具**，能自动将其它深度学习框架训练或推理的**代码**，转换为PaddlePaddle的**代码**，方便快速自动地 **模型代码迁移**。
 
 目前支持自动转换Pytorch代码，其它深度学习框架的支持后续新增中，其原理是通过Python AST语法树分析，将输入代码生成为抽象语法树，对其进行解析、遍历、匹配、编辑、替换、插入等各种操作，然后得到基于PaddlePaddle的抽象语法树，最后生成Paddle的代码。
 
