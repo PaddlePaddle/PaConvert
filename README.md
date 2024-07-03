@@ -1,29 +1,29 @@
 # 代码自动转换工具 ![](https://img.shields.io/badge/version-v2.0-brightgreen) ![](https://img.shields.io/badge/docs-latest-brightgreen) ![](https://img.shields.io/badge/PRs-welcome-brightgreen) ![](https://img.shields.io/badge/pre--commit-Yes-brightgreen)
 
-**Pa**ddlePaddle Code **Convert** Toolkits
+**Pa**ddlePaddle Code **Convert** Toolkits - **[PaConvert Github](https://github.com/PaddlePaddle/PaConvert)**
 
-#  🤗 公告 🤗
+##  🤗 公告 🤗
 - 本工具由 Paddle 官方团队维护与建设，所有转换代码均已经过测试，欢迎使用，高效迁移 Pytorch 代码到 PaddlePaddle
 
 - 当前共支持约 1300+个 Pytorch API 的一键转换，我们通过 300+个 Pytorch 模型测试，代码行数平均转换率约为 **90+%**
 
 - 本工具基于 [PyTorch 最新 release 与 Paddle develop API 映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html) 实现，表中 API 均经过详细对比分析，欢迎查阅
 
-- 有使用问题和建议欢迎在 [GitHub Issues](https://github.com/PaddlePaddle/PaConvert/issues) 中提出
+- 有使用问题和建议欢迎在 [PaConvert GitHub Issues](https://github.com/PaddlePaddle/PaConvert/issues) 中提出
 
-# 概述
+## 概述
 
 **代码自动转换工具**，能自动将其它深度学习框架训练或推理的**代码**，转换为 PaddlePaddle 的**代码**，方便快速自动地 **模型代码迁移**。
 
-目前仅支持自动转换 Pytorch 代码，其它深度学习框架的支持后续新增中，转换时会尽量保持原代码的风格与结构，将其它深度学习框架的API接口 转换为 PaddlePaddle 的API接口。
+目前仅支持自动转换 Pytorch 代码，其它深度学习框架的支持后续新增中，转换时会尽量保持原代码的风格与结构，将其它深度学习框架的 API 接口 转换为 PaddlePaddle 的 API 接口。
 
 转换过程中不会改动原文件，会将原项目中的文件一一转换到 `out_dir` 文件夹中（如不指定`out_dir`，则默认在当前目录下新建`paddle_project/`）。对不同类型的文件的处理逻辑分别为：
 
-- Python 代码文件：识别代码中调用其它深度学习框架的接口并转换为PaddlePaddle的接口
+- Python 代码文件：识别代码中调用其它深度学习框架的接口并转换为 PaddlePaddle 的接口
 - requirements.txt： 替换其中的安装依赖为 `paddlepaddle-gpu`
 - 其他文件：原样拷贝
 
-# 安装与使用
+## 安装与使用
 
 由于使用了一些较新的 Python 功能特性，你需要使用 `>=python3.8` 的解释器。
 
@@ -53,7 +53,7 @@ python paconvert/main.py --in_dir torch_project [--out_dir paddle_project] [--ex
 ```
 
 
-# 转换示例
+## 转换示例
 
 以下面 Pytorch 代码为例，转换前：
 ```
@@ -168,13 +168,13 @@ ______      _____                          _
 
 ```
 
-转换完成后，会打印 **转换总结** ，包含 **总 API 数、成功转换 API 数、不支持转换 API 数、转化率** 。例如，上述代码里一共有 10 个 Pytorch API，其中 9 个被成功转换，1个不支持转换，因此转换率为 `90.00%` 。
+转换完成后，会打印 **转换总结** ，包含 **总 API 数、成功转换 API 数、不支持转换 API 数、转化率** 。例如，上述代码里一共有 10 个 Pytorch API，其中 9 个被成功转换，1 个不支持转换，因此转换率为 `90.00%` 。
 
 **对于成功转换的 API**：代码风格会略有变化，会 **补全 API 全名、补全参数关键字、移除注释、移除多余空行** 。因为在代码识别的过程中，**注释、空行** 等无法识别。
 
 **对于不支持转换的 API**：将 **补全为 Pytorch API 全名**，同时在行前通过 `>>>>>>` 的形式加以标记，用户需要对该 API 进行人工手动转换，然后删除 `>>>>>>` 标记，否则代码无法运行。
 
 
-# 贡献代码
+## 贡献代码
 
-[代码自动转换工具](https://github.com/PaddlePaddle/PaConvert) 为开源贡献形式，欢迎你向我们贡献代码，详细开发步骤请参考 [贡献代码教程](docs/CONTRIBUTING.md)
+代码自动转换工具（[PaConvert](https://github.com/PaddlePaddle/PaConvert)）为开源贡献形式，欢迎你向我们贡献代码，详细开发步骤请参考 [贡献代码教程](docs/CONTRIBUTING.md)
