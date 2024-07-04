@@ -28,12 +28,7 @@ def test_case_1():
         result = input.select_scatter(src, 0, 0)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -45,12 +40,7 @@ def test_case_2():
         result = input.select_scatter(src, dim=0, index=0)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -62,9 +52,28 @@ def test_case_3():
         result = input.select_scatter(src, dim=1, index=1)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.zeros(2, 2)
+        src = torch.ones(2)
+        result = input.select_scatter(src=src, dim=1, index=1)
+        """
     )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.zeros(2, 2)
+        src = torch.ones(2)
+        result = input.select_scatter(index=1, src=src, dim=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
