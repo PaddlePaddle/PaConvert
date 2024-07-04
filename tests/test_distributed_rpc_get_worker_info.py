@@ -15,6 +15,7 @@
 import textwrap
 
 import paddle
+import pytest
 from apibase import APIBase
 
 
@@ -36,6 +37,10 @@ class RpcAPIBase(APIBase):
 obj = RpcAPIBase("torch.distributed.rpc.shutdown")
 
 
+@pytest.mark.skipif(
+    condition=paddle.is_compiled_with_cinn(),
+    reason="WITH_RPC = OFF, if WITH_CINN = ON.",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
