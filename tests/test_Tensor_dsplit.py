@@ -20,6 +20,7 @@ from apibase import APIBase
 obj = APIBase("torch.Tensor.dsplit")
 
 
+
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
@@ -28,12 +29,7 @@ def test_case_1():
         result = t.dsplit(2)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -44,12 +40,7 @@ def test_case_2():
         result = t.dsplit([2, 3])
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -60,9 +51,15 @@ def test_case_3():
         result = t.dsplit(indices=[1, 1])
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        t = torch.arange(16.0).reshape(2, 2, 4)
+        result = t.dsplit(sections=2)
+        """
     )
+    obj.run(pytorch_code, ["result"])
