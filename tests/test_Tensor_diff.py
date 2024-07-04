@@ -61,12 +61,7 @@ def test_case_4():
         result = x.diff(2, dim=1)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="param n of paddle only support 1, not support other values",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
