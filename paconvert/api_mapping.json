@@ -598,14 +598,14 @@
       "gradient",
       "retain_graph",
       "create_graph",
-      "input"
+      "inputs"
     ],
     "kwargs_change": {
       "gradient": "grad_tensor"
     },
     "unsupport_args": [
       "create_graph",
-      "input"
+      "inputs"
     ]
   },
   "torch.Tensor.baddbmm": {
@@ -911,7 +911,11 @@
   "torch.Tensor.conj_physical_": {},
   "torch.Tensor.contiguous": {
     "Matcher": "UnchangeMatcher",
-    "min_input_args": 0
+    "min_input_args": 0,
+    "args_list": [
+      "*",
+      "memory_format"
+    ]
   },
   "torch.Tensor.copy_": {
     "Matcher": "TensorCopy_Matcher",
@@ -922,6 +926,7 @@
       "non_blocking"
     ],
     "kwargs_change": {
+      "other": "x",
       "non_blocking": ""
     }
   },
@@ -980,7 +985,10 @@
   "torch.Tensor.cpu": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.cpu",
-    "min_input_args": 0
+    "min_input_args": 0,
+    "args_list": [
+      "memory_format"
+    ]
   },
   "torch.Tensor.cross": {
     "Matcher": "GenericMatcher",
@@ -1006,6 +1014,7 @@
     ],
     "kwargs_change": {
       "device": "device_id",
+      "non_blocking": "blocking",
       "memory_format": ""
     }
   },
@@ -1209,7 +1218,10 @@
       "other",
       "*",
       "rounding_mode"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.divide_": {
     "Matcher": "TensorDivideWithRoundingModeMatcher",
@@ -1219,7 +1231,10 @@
       "other",
       "*",
       "rounding_mode"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.dot": {
     "Matcher": "GenericMatcher",
@@ -1284,7 +1299,10 @@
     ],
     "args_list": [
       "other"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.equal": {
     "Matcher": "EqualMatcher",
@@ -1334,7 +1352,14 @@
   },
   "torch.Tensor.expand": {
     "Matcher": "TensorExpandMatcher",
-    "paddle_api": "paddle.Tensor.expand"
+    "paddle_api": "paddle.Tensor.expand",
+    "min_input_args": 0,
+    "args_list": [
+      "*size"
+    ],
+    "kwargs_change": {
+      "size": "shape"
+    }
   },
   "torch.Tensor.expand_as": {
     "Matcher": "GenericMatcher",
@@ -1473,7 +1498,10 @@
     "min_input_args": 1,
     "args_list": [
       "other"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.floor_divide_": {
     "Matcher": "Num2TensorBinaryMatcher",
@@ -1481,7 +1509,10 @@
     "min_input_args": 1,
     "args_list": [
       "other"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.fmax": {
     "Matcher": "GenericMatcher",
@@ -1591,7 +1622,10 @@
     "min_input_args": 1,
     "args_list": [
       "other"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.greater_": {
     "Matcher": "TensorInplaceReserveTypeMatcher",
@@ -1602,7 +1636,10 @@
     ],
     "args_list": [
       "other"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.greater_equal": {
     "Matcher": "Num2TensorBinaryMatcher",
@@ -1624,7 +1661,10 @@
     ],
     "args_list": [
       "other"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.half": {
     "Matcher": "TensorFP16Matcher",
@@ -1717,7 +1757,8 @@
       "alpha"
     ],
     "kwargs_change": {
-      "dim": "axis"
+      "dim": "axis",
+      "source": "value"
     }
   },
   "torch.Tensor.index_add_": {
@@ -1732,7 +1773,8 @@
       "alpha"
     ],
     "kwargs_change": {
-      "dim": "axis"
+      "dim": "axis",
+      "source": "value"
     }
   },
   "torch.Tensor.index_copy": {},
@@ -1851,7 +1893,10 @@
   "torch.Tensor.is_conj": {},
   "torch.Tensor.is_contiguous": {
     "Matcher": "SetTrueMatcher",
-    "min_input_args": 0
+    "min_input_args": 0,
+    "args_list": [
+      "memory_format"
+    ]
   },
   "torch.Tensor.is_floating_point": {
     "Matcher": "GenericMatcher",
@@ -2009,7 +2054,10 @@
     "min_input_args": 1,
     "args_list": [
       "other"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.less_": {
     "Matcher": "TensorInplaceReserveTypeMatcher",
@@ -2020,7 +2068,10 @@
     ],
     "args_list": [
       "other"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.less_equal": {
     "Matcher": "Num2TensorBinaryMatcher",
@@ -2028,7 +2079,10 @@
     "min_input_args": 1,
     "args_list": [
       "other"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.less_equal_": {
     "Matcher": "TensorInplaceReserveTypeMatcher",
@@ -2039,7 +2093,10 @@
     ],
     "args_list": [
       "other"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.lgamma": {
     "Matcher": "GenericMatcher",
