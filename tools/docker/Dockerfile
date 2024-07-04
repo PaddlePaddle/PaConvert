@@ -4,9 +4,9 @@ FROM registry.baidubce.com/paddlepaddle/paddle:latest-dev-cuda11.8-cudnn8.6-trt8
 RUN apt-get update && \
     apt-get install -y net-tools
 
-RUN ln -sf `which python3.9` /usr/bin/python
+RUN ln -sf `which python3.10` /usr/bin/python
 
-RUN ln -sf `which pip3.9` /usr/local/bin/pip
+RUN ln -sf `which pip3.10` /usr/local/bin/pip
 
 RUN python -m pip install astor 
 
