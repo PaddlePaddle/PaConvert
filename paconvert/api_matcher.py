@@ -2233,16 +2233,6 @@ class GeneratorMatcher(BaseMatcher):
         return code
 
 
-class RandomSamplerMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if (
-            kwargs.get("replacement") == "(False)"
-            and kwargs.get("num_samples") != "None"
-        ):
-            return None
-        return GenericMatcher.generate_code(self, kwargs)
-
-
 class SizeMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         if len(args) == 0:
@@ -3496,13 +3486,6 @@ class LinalgSvdvalsMatcher(BaseMatcher):
         return code
 
 
-class DiffMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "n" in kwargs and kwargs["n"] != "(1)":
-            return None
-        return GenericMatcher.generate_code(self, kwargs)
-
-
 class Tuple2ListMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         new_kwargs = {}
@@ -3687,13 +3670,6 @@ class WhereMatcher(BaseMatcher):
             if "self" in kwargs:
                 kwargs["input"] = kwargs.pop("self")
             return GenericMatcher.generate_code(self, kwargs)
-
-
-class UpsampleMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "size" in kwargs and "," not in kwargs["size"]:
-            return None
-        return GenericMatcher.generate_code(self, kwargs)
 
 
 class NTupleMatcher(BaseMatcher):

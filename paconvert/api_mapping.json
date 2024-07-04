@@ -1126,7 +1126,7 @@
     }
   },
   "torch.Tensor.diff": {
-    "Matcher": "DiffMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.diff",
     "min_input_args": 0,
     "args_list": [
@@ -4135,10 +4135,7 @@
     "kwargs_change": {
       "input": "x",
       "dim": "axis"
-    },
-    "unsupport_args": [
-      "stable"
-    ]
+    }
   },
   "torch.argwhere": {
     "Matcher": "GenericMatcher",
@@ -5470,7 +5467,7 @@
     }
   },
   "torch.diff": {
-    "Matcher": "DiffMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.diff",
     "args_list": [
       "input",
@@ -9298,9 +9295,6 @@
       "reduction",
       "label_smoothing"
     ],
-    "unsupport_args": [
-      "label_smoothing"
-    ],
     "min_input_args": 0
   },
   "torch.nn.DataParallel": {
@@ -9658,9 +9652,6 @@
       "reduction",
       "log_target"
     ],
-    "unsupport_args": [
-      "log_target"
-    ],
     "min_input_args": 0
   },
   "torch.nn.L1Loss": {
@@ -9696,9 +9687,6 @@
       "device": "",
       "dtype": ""
     },
-    "unsupport_args": [
-      "proj_size"
-    ],
     "min_input_args": 0
   },
   "torch.nn.LSTMCell": {
@@ -10886,7 +10874,7 @@
     "min_input_args": 0
   },
   "torch.nn.UpsamplingBilinear2d": {
-    "Matcher": "UpsampleMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.UpsamplingBilinear2D",
     "args_list": [
       "size",
@@ -10895,7 +10883,7 @@
     "min_input_args": 0
   },
   "torch.nn.UpsamplingNearest2d": {
-    "Matcher": "UpsampleMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.UpsamplingNearest2D",
     "args_list": [
       "size",
@@ -11295,8 +11283,7 @@
       "label_smoothing"
     ],
     "kwargs_change": {
-      "target": "label",
-      "label_smoothing": "soft_label"
+      "target": "label"
     },
     "min_input_args": 2
   },
@@ -11660,9 +11647,6 @@
       "size_average",
       "reduce",
       "reduction",
-      "log_target"
-    ],
-    "unsupport_args": [
       "log_target"
     ],
     "min_input_args": 2
@@ -14170,8 +14154,7 @@
     ],
     "kwargs_change": {
       "input": "x",
-      "dim": "axis",
-      "stable": ""
+      "dim": "axis"
     }
   },
   "torch.sparse.addmm": {
@@ -15375,7 +15358,7 @@
     "min_input_args": 0
   },
   "torch.utils.data.RandomSampler": {
-    "Matcher": "RandomSamplerMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.io.RandomSampler",
     "min_input_args": 1,
     "args_list": [

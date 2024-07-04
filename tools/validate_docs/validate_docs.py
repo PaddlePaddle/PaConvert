@@ -124,8 +124,8 @@ def check_api_mapping(paconvert_item, doc_item):
 
     mapping_type_3 = [
         "返回参数类型不一致",
-        "参数不一致",
-        "参数用法不一致",
+        "输入参数用法不一致",
+        "输入参数类型不一致",
     ]
     if mapping_type in mapping_type_3:
         if "paddle_api" not in doc_item:
