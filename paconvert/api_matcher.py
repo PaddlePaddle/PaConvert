@@ -457,15 +457,18 @@ class InitKaimingMatcher(InitMatcher):
 
 class Num2TensorBinaryWithAlphaMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "input" in kwargs:
-            kwargs["x"] = kwargs.pop("input")
-        if "other" in kwargs:
+        kwargs_change = self.api_mapping.get("kwargs_change", {})
+        for k in kwargs_change:
+            if k in kwargs:
+                kwargs[kwargs_change[k]] = kwargs.pop(k)
+
+        if "y" in kwargs:
             if "alpha" in kwargs:
                 kwargs["y"] = "paddle.to_tensor({}*{})".format(
-                    kwargs.pop("alpha"), kwargs.pop("other")
+                    kwargs.pop("alpha"), kwargs.pop("y")
                 )
             else:
-                kwargs["y"] = "paddle.to_tensor({})".format(kwargs.pop("other"))
+                kwargs["y"] = "paddle.to_tensor({})".format(kwargs.pop("y"))
 
         if "out" in kwargs and kwargs["out"] != "None":
             out_v = kwargs.pop("out")

@@ -267,7 +267,10 @@
       "other",
       "*",
       "alpha"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.add_": {
     "Matcher": "Num2TensorBinaryWithAlphaMatcher",
@@ -277,7 +280,10 @@
       "other",
       "*",
       "alpha"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.addbmm": {
     "Matcher": "AddBmmMatcher",
@@ -556,7 +562,9 @@
     "min_input_args": 0,
     "args_list": [
       "dim",
-      "descending"
+      "descending",
+      "*",
+      "stable"
     ],
     "kwargs_change": {
       "dim": "axis"
