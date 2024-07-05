@@ -20,7 +20,6 @@ from apibase import APIBase
 obj = APIBase("torch.Tensor.dsplit")
 
 
-
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
