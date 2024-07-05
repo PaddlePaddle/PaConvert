@@ -2487,7 +2487,10 @@
     "min_input_args": 1,
     "args_list": [
       "other"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.multiply_": {
     "Matcher": "Num2TensorBinaryMatcher",
