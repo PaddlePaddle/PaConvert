@@ -1382,7 +1382,7 @@ class TensorPermuteMatcher(BaseMatcher):
             return None
 
         if "dims" in kwargs:
-            kwargs = {"perm": kwargs.pop("dims")}
+            kwargs["perm"] = kwargs.pop("dims")
         else:
             if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
                 perm = self.parse_args(args)
@@ -1550,7 +1550,7 @@ class TensorNew_Matcher(BaseMatcher):
         if kwargs is None:
             return None
         if "size" in kwargs:
-            kwargs = {"shape": kwargs.pop("size"), **kwargs}
+            kwargs["shape"] = kwargs.pop("size")
         else:
             if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
                 shape = self.parse_args(args)
@@ -2045,10 +2045,11 @@ class NarrowMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             {} = ({}.shape[{}] + {}) if {} < 0 else {}
-            {}({}, [{}], [{}], [{} + {}])
+            {}({}, [{}], [{}], [{}])
             """
         )
         start = get_unique_name("start")
+        end = f"{start} + {kwargs['length']}"
         code = API_TEMPLATE.format(
             start,
             kwargs["input"],
@@ -2060,8 +2061,7 @@ class NarrowMatcher(BaseMatcher):
             kwargs["input"],
             kwargs["dim"],
             start,
-            start,
-            kwargs["length"],
+            end,
         )
         return code
 
