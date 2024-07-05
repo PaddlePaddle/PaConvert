@@ -154,7 +154,7 @@ class TensorSlice_scatterMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             x = {}
-            shape = x.shape            
+            shape = x.shape
             axes, starts, strides = [0], [0], [1]
             ends = shape[axes[0]]
             """
@@ -162,41 +162,41 @@ class TensorSlice_scatterMatcher(BaseMatcher):
         code = API_TEMPLATE.format(
             self.paddleClass,
         )
-        if 'dim' in kwargs.keys():
+        if "dim" in kwargs.keys():
             API_TEMPLATE = textwrap.dedent(
                 """
                 axes = [{}]
                 """
             )
             code += API_TEMPLATE.format(
-                kwargs['dim'],
+                kwargs["dim"],
             )
-        if 'start' in kwargs.keys():
+        if "start" in kwargs.keys():
             API_TEMPLATE = textwrap.dedent(
                 """
                 starts = [{}]
                 """
             )
             code += API_TEMPLATE.format(
-                kwargs['start'],
+                kwargs["start"],
             )
-        if 'end' in kwargs.keys():
+        if "end" in kwargs.keys():
             API_TEMPLATE = textwrap.dedent(
                 """
                 ends = [{}]
                 """
             )
             code += API_TEMPLATE.format(
-                kwargs['end'],
+                kwargs["end"],
             )
-        if 'step' in kwargs.keys():
+        if "step" in kwargs.keys():
             API_TEMPLATE = textwrap.dedent(
                 """
                 strides = [{}]
                 """
             )
             code += API_TEMPLATE.format(
-                kwargs['step'],
+                kwargs["step"],
             )
         API_TEMPLATE = textwrap.dedent(
             """
