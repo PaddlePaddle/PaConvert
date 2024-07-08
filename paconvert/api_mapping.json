@@ -3942,7 +3942,11 @@
       "*",
       "alpha",
       "out"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "other": "y"
+    }
   },
   "torch.addbmm": {
     "Matcher": "AddBmmMatcher",
