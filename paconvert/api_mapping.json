@@ -3527,11 +3527,8 @@
     "paddle_api": "paddle.Tensor.take",
     "min_input_args": 1,
     "args_list": [
-      "indices"
-    ],
-    "kwargs_change": {
-      "indices": "index"
-    }
+      "index"
+    ]
   },
   "torch.Tensor.take_along_dim": {
     "Matcher": "GenericMatcher",
