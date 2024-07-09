@@ -1169,7 +1169,7 @@ class FAFlashAttnFuncMatcher(BaseMatcher):
         if "softmax_scale" in kwargs:
             Assert_TEMPLATE = textwrap.dedent(
                 """
-            assert {} is None or {} is paddle.utils.try_import("math").sqrt({}.shape[-1]),"Fault: Not support parameter softmax_scale"
+            assert {} is None or {} == paddle.utils.try_import("math").sqrt({}.shape[-1]),"Fault: The softmax_scale parameter defaults to the square root of the last dimension of query, not allowed manually set"
             """
             )
             return Assert_TEMPLATE.format(
@@ -4466,7 +4466,7 @@ class SDPAttnMatcher(BaseMatcher):
         code = None
         Assert_TEMPLATE = textwrap.dedent(
             """
-            assert {} is None or {} is paddle.utils.try_import("math").sqrt({}.shape[-1]),"Fault: Not support parameter scale"
+            assert {} is None or {} == paddle.utils.try_import("math").sqrt({}.shape[-1]),"Fault: The scale parameter defaults to the square root of the last dimension of query, not allowed manually set"
             """
         )
         if "scale" in kwargs:
