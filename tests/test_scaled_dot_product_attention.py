@@ -21,11 +21,6 @@ from apibase import APIBase
 obj = APIBase("torch.nn.functional.scaled_dot_product_attention")
 
 
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda()
-    or not paddle.device.cuda.get_device_properties(0).major >= 8,
-    reason="computational capabilities less 8",
-)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """

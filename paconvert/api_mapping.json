@@ -187,7 +187,9 @@
     ]
   },
   "flash_attn.ops.rms_norm.rms_norm": {
+    "paddle_api": "paddle.incubate.nn.functional.fused_rms_norm",
     "Matcher": "FARmsNorm",
+    "min_input_args": 3,
     "args_list": [
       "x",
       "weight",
@@ -15216,14 +15218,9 @@
     }
   },
   "torch.utils.checkpoint.checkpoint": {
-    "Matcher": "CheckpointMatcher",
+    "Matcher": "UnchangeMatcher",
     "paddle_api": "paddle.distributed.fleet.utils.recompute",
-    "min_input_args": 1,
-    "args_list": [
-      "function",
-      "*args",
-      "**kwargs"
-    ]
+    "min_input_args": 1
   },
   "torch.utils.cpp_extension.BuildExtension": {
     "Matcher": "GenericMatcher",

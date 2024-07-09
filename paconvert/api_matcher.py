@@ -3823,7 +3823,6 @@ class FAApplyRotaryEmbFuncMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.write_aux_code()
-        print("hello")
         API_TEMPLATE = textwrap.dedent(
             """
             paddle_aux.apply_rotary_emb_func({})
@@ -3837,31 +3836,20 @@ class FAApplyRotaryEmbFuncMatcher(BaseMatcher):
 
 
 class FARmsNorm(BaseMatcher):
-    def generate_aux_code(self):
-        CODE_TEMPLATE = textwrap.dedent(
-            """
-            def rms_norm(x, weight, epsilon):
-                x_dtype = x.dtype
-                x = x.astype(paddle.float32)
-                output = x * paddle.rsqrt(x.pow(2).mean(-1, keepdim=True) + epsilon)
-                output = output.astype(x_dtype)
-                return output * weight
-            """
-        )
-        return CODE_TEMPLATE
-
     def generate_code(self, kwargs):
-        self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.rms_norm({})
+            paddle.incubate.nn.functional.fused_rms_norm({}, {}, paddle.zeros({}.shape).astype({}.dtype), {},len({}.shape)-1)[0]
             """
         )
-        return API_TEMPLATE.format(self.kwargs_to_str(kwargs))
-
-    def get_paddle_api(self):
-        self.write_aux_code()
-        return "paddle_aux.rms_norm"
+        return API_TEMPLATE.format(
+            kwargs["x"],
+            kwargs["weight"],
+            kwargs["weight"],
+            kwargs["weight"],
+            kwargs["epsilon"],
+            kwargs["x"],
+        )
 
 
 class NormMatcher(BaseMatcher):
