@@ -33,27 +33,30 @@ paddlenlp.transformers.model_outputs.CausalLMOutputWithPast(loss=loss,
     transformer_outputs.attentions)
 print('#########################case6#########################')
 if attention_mask is None:
-    assert None is None or None is paddle.utils.try_import('math').sqrt(q.
-        shape[-1]), 'Fault: Not support parameter softmax_scale'
+    assert None is None or None == paddle.utils.try_import('math').sqrt(q.
+        shape[-1]
+        ), 'Fault: The softmax_scale parameter defaults to the square root of the last dimension of query, not allowed manually set'
     assert paddle.device.cuda.get_device_capability()[0
         ] >= 8, 'Fault: Your device computational capabilities less 8'
     output = paddle.nn.functional.flash_attention.flash_attention(query=q,
-        key=k, value=v, dropout_p=0.0, causal=True)
+        key=k, value=v, dropout=0.0, causal=True)[0]
 print('#########################case7#########################')
 if attention_mask is None:
     assert paddle.device.cuda.get_device_capability()[0
         ] >= 8, 'Fault: Your device computational capabilities less 8'
     output = paddle.nn.functional.flash_attention.flash_attention(query=q,
-        key=k, value=v, dropout_p=0.0, causal=True)
+        key=k, value=v, dropout=0.0, causal=True)[0]
 print('#########################case8#########################')
 paddle.__version__.split(sep='.')
 print('#########################case9#########################')
 paddle.__version__.split(sep='.')
 print('#########################case10########################')
+assert paddle.device.cuda.get_device_capability()[0
+    ] >= 8, 'Fault: Your device computational capabilities less 8'
 output = paddle.nn.functional.flash_attention.flash_attn_unpadded(query=q,
     key=k, value=v, cu_seqlens_q=cu_seqlens_q, cu_seqlens_k=cu_seqlens_k,
-    max_seqlen_q=seqlen_q, max_seqlen_k=seqlen_k, dropout_p=dropout_p,
-    scale=self.softmax_scale, causal=is_causal)
+    max_seqlen_q=seqlen_q, max_seqlen_k=seqlen_k, dropout=dropout_p, scale=
+    paddle.utils.try_import('math').sqrt(q.shape[-1]), causal=is_causal)[0]
 print('#########################case11#########################')
 outputs = paddle.distributed.fleet.utils.recompute(block, args1, args2, args3)
 print('#########################case12#########################')
