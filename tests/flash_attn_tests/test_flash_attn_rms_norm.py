@@ -46,6 +46,12 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda()
+    or not paddle.device.cuda.get_device_properties(0).major >= 8
+    or not float(paddle.version.cuda_version) >= 11.6,
+    reason="computational capabilities less 8 or cuda_version less 11.6",
+)
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -63,6 +69,12 @@ def test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda()
+    or not paddle.device.cuda.get_device_properties(0).major >= 8
+    or not float(paddle.version.cuda_version) >= 11.6,
+    reason="computational capabilities less 8 or cuda_version less 11.6",
+)
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
