@@ -1163,7 +1163,7 @@ class FAFlashAttnFuncMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             assert paddle.device.cuda.get_device_capability()[0] >= 8, "Fault: Your device computational capabilities less 8"
-            {}({})
+            {}({})[0]
             """
         )
         if "softmax_scale" in kwargs:
@@ -1179,6 +1179,37 @@ class FAFlashAttnFuncMatcher(BaseMatcher):
             ) + API_TEMPLATE.format(
                 self.get_paddle_api(), self.kwargs_to_str(new_kwargs)
             )
+        return API_TEMPLATE.format(
+            self.get_paddle_api(), self.kwargs_to_str(new_kwargs)
+        )
+
+
+class FAFlashAttnUnpaddedFuncMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        unsupport_args = self.api_mapping.get("unsupport_args", [])
+        for k in unsupport_args:
+            if k in kwargs:
+                return None
+        new_kwargs = {}
+        for k in kwargs:
+            if k in self.api_mapping["kwargs_change"]:
+                new_kwargs[self.api_mapping["kwargs_change"][k]] = kwargs[k]
+            else:
+                new_kwargs[k] = kwargs[k]
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            assert paddle.device.cuda.get_device_capability()[0] >= 8, "Fault: Your device computational capabilities less 8"
+            {}({})[0]
+            """
+        )
+        if "scale" not in kwargs:
+            new_kwargs[
+                "scale"
+            ] = 'paddle.utils.try_import("math").sqrt({}.shape[-1])'.format(
+                new_kwargs["query"]
+            )
+
         return API_TEMPLATE.format(
             self.get_paddle_api(), self.kwargs_to_str(new_kwargs)
         )

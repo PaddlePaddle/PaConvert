@@ -32,12 +32,11 @@ obj = APIBase("flash_attn.flash_attn_interface.flash_attn_func")
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
-        # q.shape [2,2,4]
-        q = torch.tensor([
-            [[3.4742,  0.5466, -0.8008, -0.9079],[3.4742,  0.5466, -0.8008, -0.9079]],
-            [[3.4742,  0.5466, -0.8008, -0.9079],[3.4742,  0.5466, -0.8008, -0.9079]]
-            ])
-        result = flash_attn.flash_attn_interface.flash_attn_func(q,q,q,0.9,False,False)
+        import torch
+        import flash_attn
+        # q.shape [1,2,2,4]
+        q = torch.ones([1,8,8,8],dtype=torch.float16).cuda()
+        result = flash_attn.flash_attn_interface.flash_attn_func(q,q,q,0,None,False)
         """
     )
     obj.run(pytorch_code, ["result"])

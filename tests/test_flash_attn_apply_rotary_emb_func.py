@@ -19,7 +19,7 @@ import paddle
 import pytest
 from apibase import APIBase
 
-obj = APIBase("flash_attn.layers.rotary.test_flash_attn_apply_rotary_emb_func")
+obj = APIBase("flash_attn.layers.rotary.apply_rotary_emb_func")
 
 
 # Note: FlashAttention only supports Ampere GPUs or newer and CUDA 11.6 or above
@@ -32,19 +32,23 @@ obj = APIBase("flash_attn.layers.rotary.test_flash_attn_apply_rotary_emb_func")
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
+        import torch
+        from flash_attn.layers.rotary import apply_rotary_emb_func
         # x.shape [1,2,2,4]
         x = torch.tensor([[
             [[3.4742,  0.5466, -0.8008, -0.9079],[3.4742,  0.5466, -0.8008, -0.9079]],
             [[3.4742,  0.5466, -0.8008, -0.9079],[3.4742,  0.5466, -0.8008, -0.9079]]
-            ]])
+            ]]).cuda()
         # cos.shape [1,2,1,4]
         cos = torch.tensor([[
-            [[0.4742,  -0.5466, 0.8008, 0.9079]],
-            [[0.4742,  -0.5466, 0.8008, 0.9079]]
-            ]])
+            [[0.4742,  -0.5466, 0.4742,  -0.5466]],
+            [[0.4742,  -0.5466, 0.4742,  -0.5466]]
+            ]]).cuda()
         # sin.shape [1,2,1,4]
+        cos = cos.squeeze(0).squeeze(1)[:, : cos.shape[-1] // 2]
         sin = cos
-        result = flash_attn.layers.rotary.test_flash_attn_apply_rotary_emb_func(x,cos,sin)
+        result = apply_rotary_emb_func(x,cos,sin)
+
         """
     )
     obj.run(pytorch_code, ["result"])

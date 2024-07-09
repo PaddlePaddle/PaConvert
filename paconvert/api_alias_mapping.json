@@ -1,4 +1,5 @@
 {
+  "flash_attn.flash_attn_interface.flash_attn_varlen_func": "flash_attn.flash_attn_interface.flash_attn_unpadded_func",
   "torch.Tensor.absolute": "torch.Tensor.abs",
   "torch.Tensor.absolute_": "torch.Tensor.abs_",
   "torch.Tensor.acos": "torch.Tensor.arccos",

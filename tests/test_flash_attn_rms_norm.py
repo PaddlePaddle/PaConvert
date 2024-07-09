@@ -32,13 +32,15 @@ obj = APIBase("flash_attn.ops.rms_norm.rms_norm")
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
-        # x.shape [2,2,4]
+        import torch
+        from flash_attn.ops.rms_norm import rms_norm
+        # x.shape [2,1,8]
         x = torch.tensor([
-            [[3.4742,  0.5466, -0.8008, -0.9079],[3.4742,  0.5466, -0.8008, -0.9079]],
-            [[3.4742,  0.5466, -0.8008, -0.9079],[3.4742,  0.5466, -0.8008, -0.9079]]
-            ])
-        weight = torch.ones(4)
-        result = flash_attn.ops.rms_norm.rms_norm(x, weight,1e-6)
+            [[3.4742,  0.5466, -0.8008, -0.9079, 3.4742,  0.5466, -0.8008, -0.9079]],
+            [[3.4742,  0.5466, -0.8008, -0.9079, 3.4742,  0.5466, -0.8008, -0.9079]]
+            ]).cuda()
+        weight = torch.ones(8).cuda()
+        result = rms_norm(x, weight,1e-6)
         """
     )
     obj.run(pytorch_code, ["result"])

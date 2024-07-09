@@ -13,29 +13,30 @@
 # limitations under the License.
 #
 
-# import textwrap
+import textwrap
 
-# from apibase import APIBase
+import paddle
+import pytest
+from apibase import APIBase
 
-# obj = APIBase("flash_attn.flash_attn_interface.flash_attn_unpadded_func")
+obj = APIBase("flash_attn.flash_attn_interface.flash_attn_unpadded_func")
 
 
-# def test_case_1():
-#     pytorch_code = textwrap.dedent(
-#         """
-#         import torch
-#         import flash_attn
-#         # q.shape [2,2,4]
-#         q = torch.tensor([
-#             [[3.4742,  0.5466, -0.8008, -0.9079],[3.4742,  0.5466, -0.8008, -0.9079]],
-#             [[3.4742,  0.5466, -0.8008, -0.9079],[3.4742,  0.5466, -0.8008, -0.9079]]
-#             ])
-#         result = flash_attn.flash_attn_interface.flash_attn_unpadded_func(q,q,q,q,q,4,4,0.25)
-#         """
-#     )
-#     obj.run(
-#         pytorch_code,
-#         ["result"],
-#         unsupport=True,
-#         reason="FlashAttention only supports Ampere GPUs or newer and CUDA 11.6 or above",
-#     )
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda()
+    or not paddle.device.cuda.get_device_properties(0).major >= 8
+    or not float(paddle.version.cuda_version) >= 11.6,
+    reason="computational capabilities less 8 or cuda_version less 11.6",
+)
+def test_case_1():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        from flash_attn.flash_attn_interface import flash_attn_varlen_func as flash_attn_unpadded_func
+        # q.shape [2,2,4]
+        q = torch.ones([8,8,8],dtype=torch.float16).cuda()
+        cu_seqlens_q = torch.ones([8],dtype=torch.int32).cuda()
+        result = flash_attn_unpadded_func(q,q,q,cu_seqlens_q,cu_seqlens_q,4,4,0.25)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

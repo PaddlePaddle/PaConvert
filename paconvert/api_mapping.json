@@ -136,11 +136,12 @@
     "kwargs_change": {
       "q": "query",
       "k": "key",
-      "v": "value"
+      "v": "value",
+      "dropout_p": "dropout"
     }
   },
   "flash_attn.flash_attn_interface.flash_attn_unpadded_func": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "FAFlashAttnUnpaddedFuncMatcher",
     "paddle_api": "paddle.nn.functional.flash_attention.flash_attn_unpadded",
     "args_list": [
       "q",
@@ -168,6 +169,7 @@
       "q": "query",
       "k": "key",
       "v": "value",
+      "dropout_p": "dropout",
       "softmax_scale": "scale"
     }
   },
