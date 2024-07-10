@@ -3154,18 +3154,16 @@
       "dim",
       "index",
       "value",
-      "*",
       "src",
+      "*",
       "reduce"
     ],
     "kwargs_change": {
       "dim": "axis",
       "index": "indices",
-      "value": "values"
-    },
-    "unsupport_args": [
-      "src"
-    ]
+      "value": "values",
+      "src": "values"
+    }
   },
   "torch.Tensor.scatter_": {
     "Matcher": "GenericMatcher",
