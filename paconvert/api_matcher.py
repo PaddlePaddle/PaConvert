@@ -196,7 +196,7 @@ class DeleteMatcher(BaseMatcher):
 
 
 class FSGetModelParallelRankMatcher(BaseMatcher):
-    def generate_code(self):
+    def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
                 assert paddle.distributed.fleet.base.topology._HYBRID_PARALLEL_GROUP is not None

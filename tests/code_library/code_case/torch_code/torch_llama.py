@@ -11,8 +11,7 @@ from fairscale.nn.model_parallel.initialize import (
 )
 
 print("#########################case1#########################")
-model_parallel_size_0 = fs_init.get_model_parallel_world_size()
-model_parallel_size_1 = fs_init.get_model_parallel_world_size(group=group)     
+model_parallel_size_0 = fs_init.get_model_parallel_world_size()    
 print("#########################case2#########################")
 wq_0 = ColumnParallelLinear(
     dim,
@@ -75,5 +74,4 @@ initialize_model_parallel(model_parallel_size,model_parallel_backend=model_paral
       pipeline_backend=pipeline_backend,
       ddp_backend=pipeline_backend)
 print("#########################case7#########################")
-ckpt_path_0 = checkpoints[get_model_parallel_rank()]
-ckpt_path_1 = checkpoints[get_model_parallel_rank(group=group)]   
+ckpt_path_0 = checkpoints[get_model_parallel_rank()] 
