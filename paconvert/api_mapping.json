@@ -987,6 +987,7 @@
     "paddle_api": "paddle.Tensor.cpu",
     "min_input_args": 0,
     "args_list": [
+      "*",
       "memory_format"
     ]
   },
@@ -1014,7 +1015,6 @@
     ],
     "kwargs_change": {
       "device": "device_id",
-      "non_blocking": "blocking",
       "memory_format": ""
     }
   },
@@ -2712,7 +2712,6 @@
     ],
     "kwargs_change": {
       "device": "place",
-      "requires_grad": "stop_gradient",
       "layout": ""
     }
   },
@@ -5685,10 +5684,7 @@
       "tensor",
       "group",
       "async_op"
-    ],
-    "kwargs_change": {
-      "async_op": "sync_op"
-    }
+    ]
   },
   "torch.distributed.all_gather_object": {
     "Matcher": "AllGatherObjectMatcher",
@@ -5709,10 +5705,7 @@
       "op",
       "group",
       "async_op"
-    ],
-    "kwargs_change": {
-      "async_op": "sync_op"
-    }
+    ]
   },
   "torch.distributed.all_to_all": {
     "Matcher": "GenericMatcher",
@@ -15089,8 +15082,7 @@
       "pin_memory"
     ],
     "kwargs_change": {
-      "device": "place",
-      "requires_grad": "stop_gradient"
+      "device": "place"
     }
   },
   "torch.tensordot": {
