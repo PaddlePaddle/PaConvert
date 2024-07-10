@@ -92,3 +92,16 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+# Paddle broadcast have bug, so skip this case
+def _test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.arange(15).reshape([3, 5]).type(torch.float32)
+        index = torch.tensor([[0], [1], [2]])
+        result = torch.scatter(x, 1, index, src=torch.rand(3, 5), reduce='add')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
