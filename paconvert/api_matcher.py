@@ -203,7 +203,7 @@ class FSGetModelParallelRankMatcher(BaseMatcher):
                 paddle.distributed.fleet.base.topology._HYBRID_PARALLEL_GROUP.get_model_parallel_rank()
                 """
         )
-        return API_TEMPLATE.format()
+        return API_TEMPLATE
 
 
 class FSGetModelParallelWorldSizeMatcher(BaseMatcher):
@@ -214,7 +214,7 @@ class FSGetModelParallelWorldSizeMatcher(BaseMatcher):
                 paddle.distributed.fleet.base.topology._HYBRID_PARALLEL_GROUP._mp_degree
                 """
         )
-        return API_TEMPLATE.format()
+        return API_TEMPLATE
 
 
 class FSInitializeModelParallelMatcher(BaseMatcher):
