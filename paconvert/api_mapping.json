@@ -15883,13 +15883,7 @@
   "transformers.generation.utils.GenerateOutput": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddlenlp.transformers.model_outputs.BaseModelOutput",
-    "abstract": true,
-    "args_list": [
-      "last_hidden_state",
-      "past_key_values",
-      "hidden_states",
-      "attentions"
-    ]
+    "abstract": true
   },
   "transformers.logging.get_logger": {
     "Matcher": "TRFMGetLoggerMatcher",
