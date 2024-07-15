@@ -27,6 +27,8 @@
 - requirements.txt： 替换其中的安装依赖为 `paddlepaddle-gpu`
 - 其他文件：原样拷贝
 
+但其他文件中，部分LLM(Large Lanuange Model)的config配置文件可能需要手动修改以适配PaddlePaddle。如：PaddlePaddle的config文件需包含`dtype`项指明实际模型参数类型，但Pytorch的config文件可能不包含此项。
+
 ## 安装与使用
 
 由于使用了一些较新的 Python 功能特性，你需要使用 `>=python3.8` 的解释器。
