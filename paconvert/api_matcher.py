@@ -51,19 +51,6 @@ TypePromoteFunc = textwrap.dedent(
     """
 )
 
-type_mapping_dict = {
-    '"""int32"""': "paddle.int32",
-    '"""uint8"""': "paddle.uint8",
-    '"""int8"""': "paddle.int8",
-    '"""int16"""': "paddle.int16",
-    '"""int32"""': "paddle.int32",
-    '"""int64"""': "paddle.int64",
-    '"""float16"""': "paddle.float16",
-    '"""float32"""': "paddle.float32",
-    '"""float64"""': "paddle.float64",
-    '"""bfloat16"""': "paddle.bfloat16",
-}
-
 
 class GenericMatcher(BaseMatcher):
     def get_paddle_api(self):
@@ -698,35 +685,8 @@ class BroadcastShapesMatcher(BaseMatcher):
 
 
 class IInfoMatcher(BaseMatcher):
-    def generate_aux_code(self):
-        CODE_TEMPLATE = textwrap.dedent(
-            """
-            def _STR_2_PADDLE_DTYPE(type):
-                type_map = {
-                        "int32": paddle.int32,
-                        "uint8": paddle.uint8,
-                        "int8": paddle.int8,
-                        "int16": paddle.int16,
-                        "int32": paddle.int32,
-                        "int64": paddle.int64,
-                        "float16": paddle.float16,
-                        "float32": paddle.float32,
-                        "float64": paddle.float64,
-                        "bfloat16": paddle.bfloat16,
-                        }
-                return type_map.get(type)
-            """
-        )
-        return CODE_TEMPLATE
-
     def generate_code(self, kwargs):
-        type = kwargs.pop("type")
-        if type in type_mapping_dict:
-            return "{}({})".format(self.get_paddle_api(), type_mapping_dict[type])
-        self.write_aux_code()
-        return "{}(paddle_aux._STR_2_PADDLE_DTYPE({}) if isinstance({},str) else {})".format(
-            self.get_paddle_api(), type, type, type
-        )
+        return "{}(dtype={})".format(self.get_paddle_api(), kwargs["type"])
 
 
 class SmoothL1LossMatcher(BaseMatcher):
@@ -796,20 +756,6 @@ class CreateMatcher(BaseMatcher):
             kwargs = {"shape": str(shape).replace("'", ""), **kwargs}
 
         code = GenericMatcher.generate_code(self, kwargs)
-        return ast.parse(code).body
-
-
-class CheckpointMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        new_kwargs = self.parse_kwargs(kwargs)
-        new_args = self.parse_args(args)
-
-        code = "{}({},{})".format(
-            self.get_paddle_api(),
-            self.args_to_str(new_args),
-            self.kwargs_to_str(new_kwargs),
-        )
-
         return ast.parse(code).body
 
 
@@ -3830,7 +3776,7 @@ class FAApplyRotaryEmbFuncMatcher(BaseMatcher):
         )
         return API_TEMPLATE.format(self.kwargs_to_str(kwargs))
 
-    def get_paddle_api(self, parent_node=None):
+    def get_paddle_api(self):
         self.write_aux_code()
         return "paddle_aux.apply_rotary_emb_func"
 
@@ -3839,7 +3785,7 @@ class FARmsNorm(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle.incubate.nn.functional.fused_rms_norm({}, {}, paddle.zeros({}.shape).astype({}.dtype), {},len({}.shape)-1)[0]
+            paddle.incubate.nn.functional.fused_rms_norm({}, {}, paddle.zeros_like({},dtype={}.dtype), {},len({}.shape)-1)[0]
             """
         )
         return API_TEMPLATE.format(
@@ -4481,28 +4427,22 @@ class SetUpMatcher(BaseMatcher):
 
 class SDPAttnMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        scale_val = None
         code = None
-        Assert_TEMPLATE = textwrap.dedent(
-            """
-            assert {} is None or {} == paddle.utils.try_import("math").sqrt({}.shape[-1]),"Fault: The scale parameter defaults to the square root of the last dimension of query, not allowed manually set"
-            """
-        )
-        if "scale" in kwargs:
-            scale_val = kwargs.pop("scale")
         API_TEMPLATE = textwrap.dedent(
             """
             {}({})
             """
         )
-        if scale_val:
-            code = Assert_TEMPLATE.format(
-                scale_val, scale_val, kwargs["query"]
-            ) + API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-        else:
-            code = API_TEMPLATE.format(
-                self.get_paddle_api(), self.kwargs_to_str(kwargs)
+        if "scale" in kwargs:
+            Assert_TEMPLATE = textwrap.dedent(
+                """
+            assert {} is None or {} == paddle.utils.try_import("math").sqrt({}.shape[-1]),"Fault: The scale parameter defaults to the square root of the last dimension of query, not allowed manually set"
+            """
             )
+            code = Assert_TEMPLATE.format(
+                kwargs["scale"], kwargs.pop("scale"), kwargs["query"]
+            )
+        code += API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
         return code
 
 

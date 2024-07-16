@@ -187,8 +187,8 @@
     ]
   },
   "flash_attn.ops.rms_norm.rms_norm": {
-    "paddle_api": "paddle.incubate.nn.functional.fused_rms_norm",
     "Matcher": "FARmsNorm",
+    "paddle_api": "paddle.incubate.nn.functional.fused_rms_norm",
     "min_input_args": 3,
     "args_list": [
       "x",
