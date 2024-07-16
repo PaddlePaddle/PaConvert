@@ -1206,7 +1206,21 @@
       "memory_format"
     ]
   },
-  "torch.Tensor.dsplit": {},
+  "torch.Tensor.dsplit": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.dsplit",
+    "min_input_args": 1,
+    "args_list": [
+      "indices"
+    ],
+    "overload_args_list": [
+      "sections"
+    ],
+    "kwargs_change": {
+      "indices": "num_or_indices",
+      "sections": "num_or_indices"
+    }
+  },
   "torch.Tensor.eig": {
     "min_input_args": 0
   },
