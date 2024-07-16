@@ -1,9 +1,11 @@
 {
   "fairscale.nn.model_parallel.initialize.get_model_parallel_rank": {
-    "Matcher": "FSGetModelParallelRankMatcher"
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.fleet.base.topology._HYBRID_PARALLEL_GROUP.get_model_parallel_rank"
   },
   "fairscale.nn.model_parallel.initialize.get_model_parallel_world_size": {
-    "Matcher": "FSGetModelParallelWorldSizeMatcher"
+    "Matcher": "Func2Attribute",
+    "paddle_api": "paddle.distributed.fleet.base.topology._HYBRID_PARALLEL_GROUP._mp_degree"
   },
   "fairscale.nn.model_parallel.initialize.initialize_model_parallel": {
     "Matcher": "FSInitializeModelParallelMatcher",

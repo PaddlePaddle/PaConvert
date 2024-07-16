@@ -1,6 +1,5 @@
 import paddle
 print('#########################case1#########################')
-assert paddle.distributed.fleet.base.topology._HYBRID_PARALLEL_GROUP is not None
 model_parallel_size_0 = (paddle.distributed.fleet.base.topology.
     _HYBRID_PARALLEL_GROUP._mp_degree)
 print('#########################case2#########################')
@@ -62,6 +61,5 @@ strategy_2.hybrid_configs = dict(dp_degree=data_parallel_size_2, mp_degree=
     model_parallel_size_2, pp_degree=1)
 paddle.distributed.fleet.init(is_collective=True, strategy=strategy_2)
 print('#########################case7#########################')
-assert paddle.distributed.fleet.base.topology._HYBRID_PARALLEL_GROUP is not None
 ckpt_path_0 = checkpoints[paddle.distributed.fleet.base.topology.
     _HYBRID_PARALLEL_GROUP.get_model_parallel_rank()]
