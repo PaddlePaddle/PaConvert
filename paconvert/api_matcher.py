@@ -195,28 +195,6 @@ class DeleteMatcher(BaseMatcher):
         return "delete"
 
 
-class FSGetModelParallelRankMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        API_TEMPLATE = textwrap.dedent(
-            """
-                assert paddle.distributed.fleet.base.topology._HYBRID_PARALLEL_GROUP is not None
-                paddle.distributed.fleet.base.topology._HYBRID_PARALLEL_GROUP.get_model_parallel_rank()
-                """
-        )
-        return API_TEMPLATE
-
-
-class FSGetModelParallelWorldSizeMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        API_TEMPLATE = textwrap.dedent(
-            """
-                assert paddle.distributed.fleet.base.topology._HYBRID_PARALLEL_GROUP is not None
-                paddle.distributed.fleet.base.topology._HYBRID_PARALLEL_GROUP._mp_degree
-                """
-        )
-        return API_TEMPLATE
-
-
 class FSInitializeModelParallelMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "pipeline_length" not in kwargs:
