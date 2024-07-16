@@ -316,6 +316,8 @@ class BaseMatcher(object):
 
     def parse_args_and_kwargs(self, args, kwargs):
         args_list = self.api_mapping.get("args_list") or []
+        # torch.dsplit has overload args
+        overload_args_list = self.api_mapping.get("overload_args_list") or []
         min_input_args_num = self.api_mapping.get("min_input_args") or 0
         unsupport_args = self.api_mapping.get("unsupport_args") or []
 
@@ -333,7 +335,7 @@ class BaseMatcher(object):
             # not support some API args
             if k in unsupport_args:
                 return None
-            if k not in args_list:
+            if k not in args_list + overload_args_list:
                 return "misidentify"
             if k in force_kwargs_list:
                 force_kwargs_num += 1
