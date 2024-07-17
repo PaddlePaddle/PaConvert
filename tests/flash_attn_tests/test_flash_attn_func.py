@@ -11,32 +11,32 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.contiguous")
+obj = APIBase("flash_attn.flash_attn_interface.flash_attn_func")
 
 
+# Note: FlashAttention only supports Ampere GPUs or newer and CUDA 11.6 or above
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda()
+    or not paddle.device.cuda.get_device_properties(0).major >= 8
+    or not float(paddle.version.cuda_version) >= 11.6,
+    reason="computational capabilities less 8 or cuda_version less 11.6",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.contiguous()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        src.contiguous()
-        result = src.is_contiguous()
+        import flash_attn
+        # q.shape [1,2,2,4]
+        q = torch.ones([1,8,8,8],dtype=torch.float16).cuda()
+        result = flash_attn.flash_attn_interface.flash_attn_func(q,q,q,0,None,False)
         """
     )
     obj.run(pytorch_code, ["result"])
