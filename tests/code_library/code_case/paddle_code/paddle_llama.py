@@ -1,7 +1,7 @@
 import paddle
 print('#########################case1#########################')
-model_parallel_size_0 = paddle.distributed.get_world_size()
-model_parallel_size_1 = paddle.distributed.get_world_size(group=group)
+model_parallel_size_0 = (paddle.distributed.fleet.base.topology.
+    _HYBRID_PARALLEL_GROUP._mp_degree)
 print('#########################case2#########################')
 wq_0 = paddle.distributed.fleet.meta_parallel.ColumnParallelLinear(in_features
     =dim, out_features=n_heads * head_dim, has_bias=False, gather_output=False)
@@ -61,5 +61,5 @@ strategy_2.hybrid_configs = dict(dp_degree=data_parallel_size_2, mp_degree=
     model_parallel_size_2, pp_degree=1)
 paddle.distributed.fleet.init(is_collective=True, strategy=strategy_2)
 print('#########################case7#########################')
-ckpt_path_0 = checkpoints[paddle.distributed.get_rank()]
-ckpt_path_1 = checkpoints[paddle.distributed.get_rank(group=group)]
+ckpt_path_0 = checkpoints[paddle.distributed.fleet.base.topology.
+    _HYBRID_PARALLEL_GROUP.get_model_parallel_rank()]
