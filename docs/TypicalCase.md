@@ -72,3 +72,10 @@ response, history = model.chat(tokenizer, "给我讲一个年轻人奋斗创业�
 response, history = model.chat(tokenizer, "给这个故事起一个标题", history=history)
 # 《从失败到成功：李晓明的创业经历》
 ```
+
+# 支持转换的模型列表
+
+| 模型名    | 模型地址                           | 支持类型  |
+| -------- | ------------------------------ | -------- |
+| Qwen     | https://huggingface.co/Qwen/Qwen-7B-Chat  | 推理 |
+| llama    | https://github.com/meta-llama/llama.git  | 推理 |

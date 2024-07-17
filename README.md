@@ -214,6 +214,9 @@ torch.save(state_dict, "pytorch_model.bin")
 更多细节可参考 [模型格式转换](https://github.com/PaddlePaddle/PaddleNLP/blob/develop/docs/community/contribute_models/convert_pytorch_to_paddle.rst)
 
 
+## 典型案例展示
+[典型案例展示--Qwen大模型的转换](https://github.com/PaddlePaddle/PaConvert/blob/master/docs/TypicalCase.md)
+
 ## 贡献代码
 
 代码自动转换工具（[PaConvert](https://github.com/PaddlePaddle/PaConvert)）为开源贡献形式，欢迎你向我们贡献代码，详细开发步骤请参考 [贡献代码教程](docs/CONTRIBUTING.md)
