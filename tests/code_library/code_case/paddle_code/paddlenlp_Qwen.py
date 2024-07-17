@@ -1,3 +1,6 @@
+import sys
+sys.path.append('/workspace/PaConvert/paddle_project/utils')
+import paddle_aux
 import paddle
 import paddlenlp
 print('#########################case1#########################')
@@ -33,7 +36,7 @@ paddlenlp.transformers.model_outputs.CausalLMOutputWithPast(loss=loss,
     transformer_outputs.attentions)
 print('#########################case6#########################')
 if attention_mask is None:
-    assert None is None or None == paddle.utils.try_import('math').sqrt(q.
+    assert None == None or None == paddle.utils.try_import('math').sqrt(q.
         shape[-1]
         ), 'Fault: The softmax_scale parameter defaults to the square root of the last dimension of query, not allowed manually set'
     assert paddle.device.cuda.get_device_capability()[0
@@ -71,3 +74,24 @@ print('#########################case13#########################')
 
 class StopWordsLogitsProcessor(paddlenlp.generation.LogitsProcessor):
     pass
+
+
+print('#########################case14#########################')
+
+
+class QWenPreTrainedModel(paddlenlp.transformers.PretrainedModel):
+    pass
+
+
+print('#########################case15#########################')
+
+
+class QWenTokenizer(paddlenlp.transformers.PretrainedTokenizer):
+    pass
+
+
+print('#########################case16#########################')
+paddle_aux.apply_rotary_emb_func(x=x, cos=cos, sin=sin)
+print('#########################case17#########################')
+paddle.incubate.nn.functional.fused_rms_norm(x, weight, paddle.zeros_like(
+    weight), eps, len(x.shape) - 1)[0]

@@ -17,6 +17,7 @@
 """
 import os
 import sys
+import re
 
 sys.path.append(os.path.dirname(__file__) + "/../..")
 from tests.code_library.code_case import CODE_CONSISTENCY_MAPPING
@@ -44,7 +45,15 @@ def _compare_content(actual_dir, expect_dir):
         with open(actual_dir, "r") as f1, open(expect_dir, "r") as f2:
             content1 = f1.read()
             content2 = f2.read()
+            # 对随机的辅助代码路径进行处理，使用正则表达式匹配并替换
+            pattern = re.compile(r"sys\.path\.append\((.*?)utils\'(.*?)\)", re.DOTALL)
+            content1 = re.sub(
+                pattern,
+                "sys.path.append('/workspace/PaConvert/paddle_project/utils')",
+                content1,
+            )
             if content1 != content2:
+
                 return False
     elif os.path.isdir(actual_dir):
         assert os.path.isdir(expect_dir), f"{expect_dir} shoule be a dir!"

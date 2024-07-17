@@ -300,7 +300,7 @@ class UnchangeMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         new_args = self.parse_args(args)
         new_kwargs = self.parse_kwargs(kwargs)
-        if new_kwargs is not None:
+        if new_kwargs is not None or new_args is not None:
             code = "{}({})".format(
                 self.get_paddle_api(), self.args_and_kwargs_to_str(new_args, new_kwargs)
             )
@@ -440,9 +440,9 @@ class TRFMPreTrainedModelMatcher(BaseMatcher):
         )
         return CODE_TEMPLATE
 
-    def generate_code(self, kwargs):
+    def get_paddle_nodes(self, args, kwargs):
         self.write_aux_code()
-        return GenericMatcher.generate_code(self, kwargs)
+        return UnchangeMatcher.get_paddle_nodes(self, args, kwargs)
 
 
 class InitKaimingMatcher(InitMatcher):
@@ -1115,7 +1115,7 @@ class FAFlashAttnFuncMatcher(BaseMatcher):
         if "softmax_scale" in kwargs:
             Assert_TEMPLATE = textwrap.dedent(
                 """
-            assert {} is None or {} == paddle.utils.try_import("math").sqrt({}.shape[-1]),"Fault: The softmax_scale parameter defaults to the square root of the last dimension of query, not allowed manually set"
+            assert {} == None or {} == paddle.utils.try_import("math").sqrt({}.shape[-1]),"Fault: The softmax_scale parameter defaults to the square root of the last dimension of query, not allowed manually set"
             """
             )
             return Assert_TEMPLATE.format(
@@ -3785,12 +3785,11 @@ class FARmsNorm(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle.incubate.nn.functional.fused_rms_norm({}, {}, paddle.zeros_like({},dtype={}.dtype), {},len({}.shape)-1)[0]
+            paddle.incubate.nn.functional.fused_rms_norm({}, {}, paddle.zeros_like({}), {},len({}.shape)-1)[0]
             """
         )
         return API_TEMPLATE.format(
             kwargs["x"],
-            kwargs["weight"],
             kwargs["weight"],
             kwargs["weight"],
             kwargs["epsilon"],
@@ -4427,7 +4426,7 @@ class SetUpMatcher(BaseMatcher):
 
 class SDPAttnMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = None
+        code = ""
         API_TEMPLATE = textwrap.dedent(
             """
             {}({})
@@ -4436,7 +4435,7 @@ class SDPAttnMatcher(BaseMatcher):
         if "scale" in kwargs:
             Assert_TEMPLATE = textwrap.dedent(
                 """
-            assert {} is None or {} == paddle.utils.try_import("math").sqrt({}.shape[-1]),"Fault: The scale parameter defaults to the square root of the last dimension of query, not allowed manually set"
+            assert {} == None or {} == paddle.utils.try_import("math").sqrt({}.shape[-1]),"Fault: The scale parameter defaults to the square root of the last dimension of query, not allowed manually set"
             """
             )
             code = Assert_TEMPLATE.format(

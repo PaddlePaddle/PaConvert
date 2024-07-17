@@ -9,7 +9,10 @@ from transformers.generation import LogitsProcessor
 from transformers.generation.utils import GenerateOutput
 from transformers.generation.logits_process import LogitsProcessorList
 from flash_attn.flash_attn_interface import flash_attn_func, flash_attn_unpadded_func
-
+from transformers import PreTrainedTokenizer
+from transformers.modeling_utils import PreTrainedModel
+from flash_attn.layers.rotary import apply_rotary_emb_func
+from flash_attn.ops.rms_norm import rms_norm
 
 print('#########################case1#########################')
 def _add_tokens(
@@ -80,3 +83,17 @@ class QWenConfig(PretrainedConfig):
 print('#########################case13#########################')
 class StopWordsLogitsProcessor(LogitsProcessor):
     pass
+
+print('#########################case14#########################')
+class QWenPreTrainedModel(PreTrainedModel):
+    pass
+
+print('#########################case15#########################')
+class QWenTokenizer(PreTrainedTokenizer):
+    pass
+
+print('#########################case16#########################')
+apply_rotary_emb_func(x, cos, sin)
+
+print('#########################case17#########################')
+rms_norm(x, weight, eps)

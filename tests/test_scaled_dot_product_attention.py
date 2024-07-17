@@ -55,3 +55,22 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda()
+    or not paddle.device.cuda.get_device_properties(0).major >= 8,
+    reason="computational capabilities less 8",
+)
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import math
+        query = torch.ones(32, 8, 128, 64, dtype=torch.float16, device="cuda")
+        key = torch.ones(32, 8, 128, 64, dtype=torch.float16, device="cuda")
+        value = torch.ones(32, 8, 128, 64, dtype=torch.float16, device="cuda")
+        result = torch.nn.functional.scaled_dot_product_attention(query,key,value,scale=8)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

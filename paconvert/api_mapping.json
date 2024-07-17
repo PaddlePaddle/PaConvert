@@ -15767,12 +15767,7 @@
   "transformers.PreTrainedModel": {
     "Matcher": "TRFMPreTrainedModelMatcher",
     "paddle_api": "paddlenlp.transformers.PretrainedModel",
-    "abstract": true,
-    "args_list": [
-      "config",
-      "*args",
-      "**kwargs"
-    ]
+    "abstract": true
   },
   "transformers.PreTrainedTokenizer": {
     "Matcher": "TRFMPreTrainedTokenizerMatcher",
