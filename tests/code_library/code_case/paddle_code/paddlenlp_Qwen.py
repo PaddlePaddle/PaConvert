@@ -83,6 +83,9 @@ class QWenPreTrainedModel(paddlenlp.transformers.PretrainedModel):
     pass
 
 
+paddlenlp.transformers.PretrainedModel(config)
+paddlenlp.transformers.PretrainedModel(config=config)
+paddlenlp.transformers.PretrainedModel(config, key1=value1, key2=value2)
 print('#########################case15#########################')
 
 

@@ -88,6 +88,10 @@ print('#########################case14#########################')
 class QWenPreTrainedModel(PreTrainedModel):
     pass
 
+PreTrainedModel(config)
+PreTrainedModel(config=config)
+PreTrainedModel(config,key1=value1,key2=value2)
+
 print('#########################case15#########################')
 class QWenTokenizer(PreTrainedTokenizer):
     pass
