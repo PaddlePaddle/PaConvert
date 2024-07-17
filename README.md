@@ -215,7 +215,7 @@ torch.save(state_dict, "pytorch_model.bin")
 
 
 ## 典型案例展示
-[典型案例展示--Qwen大模型的转换](https://github.com/PaddlePaddle/PaConvert/blob/master/docs/TypicalCase.md)
+[Qwen大模型的转换](https://github.com/PaddlePaddle/PaConvert/blob/master/docs/TypicalCase.md)
 
 ## 贡献代码
 

@@ -27,7 +27,7 @@ Qwen模型已实现一键转换，故无需手动编写转换规则，只需指�
 
 ### Qwen模型参数转换：
 1. 参考[Readme.md](https://github.com/PaddlePaddle/PaConvert/blob/master/README.md)的模型参数转换命令，将模型参数转换为Paddle格式。
-2. 直接从[AI Studio](https://aistudio.baidu.com/modelsdetail/636/space)下载Qwen模型参数.
+2. 直接从[AI Studio](https://aistudio.baidu.com/modelsdetail/636/space)下载Qwen模型参数。
 
 ## 步骤3：手动转换部分配置文件
 当前，部分LLM(Large Lanuange Model)的config配置文件可能需要手动修改以适配PaddlePaddle。
