@@ -1,12 +1,9 @@
-import sys
-sys.path.append('tests/code_library/code_case/convert_paddle_code/utils')
-import paddle_aux
 import paddle
 print('#########################case1#########################')
-cpu = str('cpu'.replace('cuda', 'gpu'))
+cpu = paddle.CPUPlace()
 a = paddle.randn(shape=[2, 3])
 c = paddle.randn(shape=[2, 3], dtype='float64')
-b = a.to(cpu, non_blocking=False, copy=False)
+b = a.to(cpu, blocking=not False)
 print('#########################case2#########################')
 b = a.to('cpu')
 print('#########################case3#########################')
@@ -25,10 +22,10 @@ b = a.to(table.place)
 print('#########################case9#########################')
 b = a.to('float32')
 print('#########################case10#########################')
-device = str('cpu'.replace('cuda', 'gpu'))
+device = paddle.CPUPlace()
 b = paddle.to_tensor(data=[-1]).to('bool')
 print('#########################case11#########################')
 dtype = 'float32'
 b = a.to(dtype=dtype)
 print('#########################case12#########################')
-b = a.to(str('cpu'.replace('cuda', 'gpu')))
+b = a.to(paddle.CPUPlace())

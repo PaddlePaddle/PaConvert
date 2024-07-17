@@ -22,8 +22,6 @@ import re
 sys.path.append(os.path.dirname(__file__) + "/../..")
 from tests.code_library.code_case import CODE_CONSISTENCY_MAPPING
 
-white_list = ["api_torch_Tensor_to.py", "transformers_Qwen_aux.py"]
-
 
 def convert_pytorch_code_to_paddle():
     convert_fail_list = []
@@ -70,8 +68,6 @@ def compare_code_consistency():
     for pytorch_dir, paddle_dir in CODE_CONSISTENCY_MAPPING.items():
 
         pytorch_file_name = pytorch_dir.split("/")[-1]
-        if pytorch_file_name in white_list:
-            continue
 
         convert_paddle_dir = pytorch_dir.replace("torch_code", "convert_paddle_code")
         if not _compare_content(convert_paddle_dir, paddle_dir):
