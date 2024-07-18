@@ -4568,3 +4568,20 @@ class ZeroGradMatcher(BaseMatcher):
             kwargs["set_to_zero"] = f"(not {set_to_none})"
 
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class SetDefaultTensorTypeMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        print(kwargs["t"])
+        if kwargs["t"] in ['"""torch.DoubleTensor"""', '"""torch.cuda.DoubleTensor"""']:
+            kwargs["t"] = '"""float64"""'
+        elif kwargs["t"] in ['"""torch.FloatTensor"""', '"""torch.cuda.FloatTensor"""']:
+            kwargs["t"] = '"""float32"""'
+        elif kwargs["t"] in ['"""torch.HalfTensor"""', '"""torch.cuda.HalfTensor"""']:
+            kwargs["t"] = '"""float16"""'
+        elif kwargs["t"] in [
+            '"""torch.BFloat16Tensor"""',
+            '"""torch.cuda.BFloat16Tensor"""',
+        ]:
+            kwargs["t"] = '"""bfloat16"""'
+        return GenericMatcher.generate_code(self, kwargs)
