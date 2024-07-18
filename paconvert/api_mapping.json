@@ -8293,7 +8293,7 @@
     }
   },
   "torch.load": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "LoadMatcher",
     "paddle_api": "paddle.load",
     "min_input_args": 1,
     "args_list": [
@@ -8303,7 +8303,7 @@
       "*",
       "weights_only",
       "mmap",
-      "**pickle_load_args"
+      "pickle_load_args"
     ],
     "kwargs_change": {
       "f": "path",

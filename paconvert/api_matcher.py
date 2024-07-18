@@ -1789,23 +1789,14 @@ class TensorRequiresGrad_Matcher(BaseMatcher):
 
 class LoadMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        unsupported_params = [
-            "map_location",
-            "pickle_module",
-            "weights_only",
-            "pickle_load_args",
-        ]
-        for param in unsupported_params:
-            if param in kwargs:
-                kwargs.pop(param)
-
+        if "mmap" in kwargs:
+            return None
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle.load(path={})
+            {}(path=str({}))
             """
         )
-        code = API_TEMPLATE.format(kwargs["f"])
-        return code
+        return API_TEMPLATE.format(self.get_paddle_api(), kwargs["f"])
 
 
 class TensorTypeMatcher(BaseMatcher):
