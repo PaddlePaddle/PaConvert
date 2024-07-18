@@ -378,6 +378,9 @@ def check_call_variety(test_data, api_mapping, *, api_alias={}, verbose=True):
                 if arg == var_args_collector:
                     args_list_full_positional.append(arg)
                     var_arg_name = arg
+            elif arg == "/":
+                position_args_checkable = True
+                aux_detailed_data_api["complex"] = True
             else:
                 raise ValueError(f'{api} has unexpected arg "{arg}".')
 

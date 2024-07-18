@@ -4306,6 +4306,7 @@
       "input",
       "dim",
       "descending",
+      "*",
       "stable"
     ],
     "kwargs_change": {
@@ -7167,7 +7168,8 @@
     "paddle_api": "paddle.to_tensor",
     "min_input_args": 1,
     "args_list": [
-      "ndarray"
+      "ndarray",
+      "/"
     ],
     "kwargs_change": {
       "ndarray": "data"
