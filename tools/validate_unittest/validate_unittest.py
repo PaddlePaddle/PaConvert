@@ -90,6 +90,7 @@ overloadable_api_aux_set = {
     "torch.Tensor.scatter",
     "torch.scatter",
     "torch.Tensor.view",
+    "torch.Tensor.dsplit",
 }
 
 cornercase_api_aux_dict = {
@@ -720,7 +721,7 @@ def autofix_single_api(file_path, aux_detailed_data):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Call Variety Check v0.1")
+    parser = argparse.ArgumentParser(description="Call Variety Check v0.2")
     parser.add_argument(
         "--rerun", "-r", dest="files_or_dirs", nargs="+", help="Rerun tests"
     )
