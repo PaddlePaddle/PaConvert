@@ -4406,14 +4406,10 @@
     }
   },
   "torch.autograd.Function": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "UnchangeMatcher",
     "paddle_api": "paddle.autograd.PyLayer",
     "abstract": true,
-    "min_input_args": 0,
-    "args_list": [
-      "*args",
-      "**kwargs"
-    ]
+    "min_input_args": 0
   },
   "torch.autograd.Function.backward": {
     "abstract": true,
@@ -10364,7 +10360,6 @@
     },
     "unsupport_args": [
       "destination",
-      "prefix",
       "keep_vars"
     ]
   },
