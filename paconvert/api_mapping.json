@@ -1895,6 +1895,7 @@
     "Matcher": "SetTrueMatcher",
     "min_input_args": 0,
     "args_list": [
+      "*",
       "memory_format"
     ]
   },
@@ -3478,10 +3479,7 @@
     ],
     "unsupport_args": [
       "compute_uv"
-    ],
-    "kwargs_change": {
-      "some": "full_matrics"
-    }
+    ]
   },
   "torch.Tensor.swapaxes": {
     "Matcher": "SwapAxesMatcher",
@@ -14957,8 +14955,7 @@
       "out"
     ],
     "kwargs_change": {
-      "input": "x",
-      "some": "full_matrics"
+      "input": "x"
     },
     "unsupport_args": [
       "compute_uv"

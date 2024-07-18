@@ -129,6 +129,7 @@ PRESET_MATCHER_KWARGS_CHANGE_PAIRS = {
     "IndexAddMatcher": {"source": "value"},
     "IInfoMatcher": {"type": "dtype"},
     "ZeroGradMatcher": {"set_to_none": "set_to_zero"},
+    "SvdMatcher": {"some": "full_matrics"},
 }
 
 
