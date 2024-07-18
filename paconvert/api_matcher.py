@@ -457,15 +457,18 @@ class InitKaimingMatcher(InitMatcher):
 
 class Num2TensorBinaryWithAlphaMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "input" in kwargs:
-            kwargs["x"] = kwargs.pop("input")
-        if "other" in kwargs:
+        kwargs_change = self.api_mapping.get("kwargs_change", {})
+        for k in kwargs_change:
+            if k in kwargs:
+                kwargs[kwargs_change[k]] = kwargs.pop(k)
+
+        if "y" in kwargs:
             if "alpha" in kwargs:
                 kwargs["y"] = "paddle.to_tensor({}*{})".format(
-                    kwargs.pop("alpha"), kwargs.pop("other")
+                    kwargs.pop("alpha"), kwargs.pop("y")
                 )
             else:
-                kwargs["y"] = "paddle.to_tensor({})".format(kwargs.pop("other"))
+                kwargs["y"] = "paddle.to_tensor({})".format(kwargs.pop("y"))
 
         if "out" in kwargs and kwargs["out"] != "None":
             out_v = kwargs.pop("out")
@@ -659,17 +662,6 @@ class TransposeMatcher(BaseMatcher):
             perm,
         )
         return code
-
-
-class BroadcastTensorsMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        if len(args) == 1 and isinstance(args[0], ast.Starred):
-            star_var = astor.to_source(args[0].value).strip("\n")
-            code = "{}({})".format(self.get_paddle_api(), star_var)
-        else:
-            new_args = self.parse_args(args)
-            code = "{}([{}])".format(self.get_paddle_api(), ",".join(new_args))
-        return ast.parse(code).body
 
 
 class BroadcastShapesMatcher(BaseMatcher):
@@ -1371,29 +1363,6 @@ class TensorSizeMatcher(BaseMatcher):
         return code
 
 
-class TensorPermuteMatcher(BaseMatcher):
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        self.parse_func(func)
-        kwargs = self.parse_kwargs(kwargs)
-        if kwargs is None:
-            return None
-
-        if "dims" in kwargs:
-            kwargs = {"perm": kwargs.pop("dims")}
-        else:
-            if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
-                perm = self.parse_args(args)
-            elif isinstance(args[0], ast.Starred):
-                perm = astor.to_source(args[0].value).strip("\n")
-            else:
-                perm = self.parse_args(args)[0]
-
-            kwargs = {"perm": str(perm).replace("'", "")}
-
-        code = "{}.transpose({})".format(self.paddleClass, self.kwargs_to_str(kwargs))
-        return ast.parse(code).body
-
-
 class TensorRenameMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         kwargs = self.parse_kwargs(kwargs)
@@ -1403,40 +1372,6 @@ class TensorRenameMatcher(BaseMatcher):
             return "misidentify"
 
         return None
-
-
-class TensorRepeatMatcher(BaseMatcher):
-    def generate_aux_code(self):
-        CODE_TEMPLATE = textwrap.dedent(
-            """
-            def repeat(self, *args, **kwargs):
-                if args:
-                    if len(args)==1 and isinstance(args[0], (tuple, list)):
-                        return paddle.tile(self, args[0])
-                    else:
-                        return paddle.tile(self, list(args))
-                elif kwargs:
-                    assert 'repeats' in kwargs
-                    return paddle.tile(self, repeat_times=kwargs['repeats'])
-
-            setattr(paddle.Tensor, 'repeat', repeat)
-            """
-        )
-        return CODE_TEMPLATE
-
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        if kwargs:
-            if len(kwargs) == 1 and "repeats" in kwargs:
-                self.write_aux_code()
-                return "unchange"
-            else:
-                return "misidentify"
-
-        if args:
-            self.write_aux_code()
-            return "unchange"
-
-        return "misidentify"
 
 
 class TensorBF16Matcher(BaseMatcher):
@@ -1547,7 +1482,7 @@ class TensorNew_Matcher(BaseMatcher):
         if kwargs is None:
             return None
         if "size" in kwargs:
-            kwargs = {"shape": kwargs.pop("size"), **kwargs}
+            kwargs["shape"] = kwargs.pop("size")
         else:
             if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
                 shape = self.parse_args(args)
@@ -2042,10 +1977,11 @@ class NarrowMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             {} = ({}.shape[{}] + {}) if {} < 0 else {}
-            {}({}, [{}], [{}], [{} + {}])
+            {}({}, [{}], [{}], [{}])
             """
         )
         start = get_unique_name("start")
+        end = f"{start} + {kwargs['length']}"
         code = API_TEMPLATE.format(
             start,
             kwargs["input"],
@@ -2057,8 +1993,7 @@ class NarrowMatcher(BaseMatcher):
             kwargs["input"],
             kwargs["dim"],
             start,
-            start,
-            kwargs["length"],
+            end,
         )
         return code
 
@@ -4585,3 +4520,67 @@ class SetDefaultTensorTypeMatcher(BaseMatcher):
         ]:
             kwargs["t"] = '"""bfloat16"""'
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class ScalableVarMatcher(BaseMatcher):
+    def get_scalable_var(self):
+        args_list = self.api_mapping.get("args_list", [])
+        if len(args_list) != 1:
+            return None
+        arg_name = args_list[0]
+        if not (arg_name.startswith("*") and len(arg_name) > 1):
+            return None
+        return arg_name[1:]
+
+    def get_paddle_nodes(self, args, kwargs):
+        var_arg_name = self.get_scalable_var()
+        if var_arg_name is None:
+            return None
+
+        dest_var_arg_name = self.api_mapping.get("kwargs_change", {}).get(
+            var_arg_name, var_arg_name
+        )
+
+        if var_arg_name in kwargs:
+            kwargs[dest_var_arg_name] = kwargs.pop(var_arg_name)
+        else:
+            if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
+                dest_var_arg_value = self.parse_args(args)
+            elif len(args) == 1 and isinstance(args[0], ast.Starred):
+                dest_var_arg_value = astor.to_source(args[0].value).strip("\n")
+            else:
+                dest_var_arg_value = self.parse_args(args)[0]
+
+            kwargs = {dest_var_arg_name: str(dest_var_arg_value).replace("'", "")}
+
+        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        return ast.parse(code).body
+
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        kwargs = self.parse_kwargs(kwargs)
+        if kwargs is None:
+            return None
+
+        var_arg_name = self.get_scalable_var()
+        if var_arg_name is None:
+            return None
+
+        dest_var_arg_name = self.api_mapping.get("kwargs_change", {}).get(
+            var_arg_name, var_arg_name
+        )
+
+        if var_arg_name in kwargs:
+            kwargs[dest_var_arg_name] = kwargs.pop(var_arg_name)
+        else:
+            if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
+                dest_var_arg_value = self.parse_args(args)
+            elif len(args) == 1 and isinstance(args[0], ast.Starred):
+                dest_var_arg_value = astor.to_source(args[0].value).strip("\n")
+            else:
+                dest_var_arg_value = self.parse_args(args)[0]
+
+            kwargs = {dest_var_arg_name: str(dest_var_arg_value).replace("'", "")}
+
+        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        return ast.parse(code).body
