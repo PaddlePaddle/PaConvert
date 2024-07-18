@@ -18,6 +18,7 @@ import json
 import os
 import re
 import sys
+import traceback
 
 project_dir = os.path.join(os.path.dirname(__file__), "../..")
 tool_dir = os.path.dirname(__file__)
@@ -68,6 +69,162 @@ def check_unchange_matcher(paconvert_item, doc_item):
         )
 
 
+DOC_ARG_PATTERN = re.compile(
+    r"<\s*font[^>]*\s*>(?P<arg_name>.*?)<\s*/\s*font\s*>", re.IGNORECASE
+)
+
+
+def extract_doc_arg(arg_str, remove_star=True):
+    arg_name = arg_str
+    m = DOC_ARG_PATTERN.match(arg_name)
+    if m:
+        arg_name = m["arg_name"].strip()
+    else:
+        pass
+
+    arg_name = arg_name.strip()
+
+    if remove_star and arg_name != "*":
+        arg_name = arg_name.lstrip("*")
+
+    return arg_name
+
+
+def get_kwargs_mapping_from_doc(doc_item):
+    args_mapping = doc_item.get("args_mapping", [])
+    kwargs_change = {}
+
+    for am in args_mapping:
+        at = extract_doc_arg(am["torch_arg"])
+        ap = extract_doc_arg(am["paddle_arg"])
+        note = am["note"]
+
+        if at == "-":
+            continue
+        elif ap == "-":
+            continue
+        elif at == "返回值":
+            continue
+        elif "," in at:
+            continue
+        elif "," in ap:
+            continue
+        else:
+            kwargs_change[at] = ap
+
+    return kwargs_change
+
+
+IGNORE_KWARGS_CHANGE_PAIRS = {
+    ("non_blocking", "blocking"),
+    ("requires_grad", "stop_gradient"),
+    ("some", "mode"),
+    ("self", "x"),
+}
+
+PRESET_MATCHER_KWARGS_CHANGE_PAIRS = {
+    "CreateMatcher": {"size": "shape"},
+    "Num2TensorBinaryMatcher": {"input": "x", "other": "y"},
+    "DivideMatcher": {"input": "x", "other": "y"},
+    "IndexAddMatcher": {"source": "value"},
+    "IInfoMatcher": {"type": "dtype"},
+    "ZeroGradMatcher": {"set_to_none": "set_to_zero"},
+}
+
+
+overloadable_api_aux_set = {
+    "torch.mean",
+    "torch.Tensor.max",
+    "torch.Tensor.to",
+    "torch.trapz",
+    "torch.prod",
+    "torch.Tensor.var",
+    "torch.Tensor.min",
+    "torch.Tensor.sort",
+    "torch.Tensor.std",
+    "torch.trapezoid",
+    "torch.normal",
+    "torch.var_mean",
+    "torch.std_mean",
+    "torch.min",
+    "torch.sort",
+    "torch.max",
+    "torch.searchsorted",
+    "torch.cumulative_trapezoid",
+    "torch.std",
+    "torch.Tensor.scatter_",
+    "torch.Tensor.scatter",
+    "torch.scatter",
+    "torch.Tensor.view",
+    "torch.sum",
+    "torch.nansum",
+    "torch.linalg.matrix_rank",
+}
+
+cornercase_api_aux_dict = {
+    "torch.Tensor.type": "torch.Tensor.type with TensorTypeMatcher need support torch.nn.Module.type and torch.nn.Module.type",
+    "torch.Tensor.triangular_solve": "torch.Tensor.triangular_solve with TriangularSolveMatcher is too complex",
+    "torch.utils.cpp_extension.CUDAExtension": "torch.utils.cpp_extension.CUDAExtension with CUDAExtensionMatcher list some kwargs",
+    "torch.utils.cpp_extension.CppExtension": "torch.utils.cpp_extension.CppExtension with CUDAExtensionMatcher list some kwargs",
+}
+
+
+def check_mapping_args(paconvert_item, doc_item):
+    if doc_item["mapping_type"] == "组合替代实现":
+        return
+
+    matcher = paconvert_item["Matcher"]
+
+    args_list = [
+        extract_doc_arg(a["arg_name"], remove_star=False)
+        for a in doc_item["torch_signature"].get("args", [])
+    ]
+    if args_list == []:
+        assert (
+            len(paconvert_item.get("args_list", [])) == 0
+        ), "`args_list` should not be in paconvert_item."
+        # assert 'args_mapping' not in doc_item, f'`args_mapping` should not be in doc_item.'
+
+    # compare kwargs_change from doc and api_mapping.json
+    kwargs_change = get_kwargs_mapping_from_doc(doc_item)
+
+    pc_kwargs_change = paconvert_item.get("kwargs_change", {})
+    preset_kwargs_change = PRESET_MATCHER_KWARGS_CHANGE_PAIRS.get(matcher, {})
+    for k, v in preset_kwargs_change.items():
+        if k in pc_kwargs_change:
+            continue
+        pc_kwargs_change[k] = v
+
+    kwargs_change_equal = True
+    for k, v in kwargs_change.items():
+        if (k, v) in IGNORE_KWARGS_CHANGE_PAIRS:
+            continue
+        if pc_kwargs_change.get(k, k) != v:
+            kwargs_change_equal = False
+            break
+
+    if not kwargs_change_equal:
+        raise ValidateError(
+            f'{doc_item["torch_api"]} {matcher}: `kwargs_change` not match: doc is {kwargs_change}, but paconvert is {paconvert_item.get("kwargs_change", {})}'
+        )
+
+    pc_args_list = paconvert_item.get("args_list", [])
+    for pa in pc_args_list:
+        if pa == "*":
+            continue
+        if pa not in args_list:
+            raise ValidateError(
+                f'{doc_item["torch_api"]} {matcher}: `args_list` not match: paconvert is {pc_args_list}, but doc is {args_list}'
+            )
+    for da in args_list:
+        if da == "*args" or da == "**kwargs":
+            continue
+        if da not in pc_args_list:
+            raise ValidateError(
+                f'{doc_item["torch_api"]} {matcher}: `args_list` not match: paconvert is {pc_args_list}, but doc is {args_list}'
+            )
+
+
 def check_api_mapping(paconvert_item, doc_item):
     matcher = paconvert_item["Matcher"]
     torch_api = doc_item["torch_api"]
@@ -76,9 +233,9 @@ def check_api_mapping(paconvert_item, doc_item):
     mapping_type_1 = [
         "无参数",
         "参数完全一致",
-        "仅 paddle 参数更多",
         "仅参数名不一致",
-        "仅参数默认值不一致",
+        "参数默认值不一致",
+        "paddle 参数更多",
     ]
 
     if mapping_type in mapping_type_1:
@@ -162,7 +319,13 @@ def check_api_mapping(paconvert_item, doc_item):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Call Variety Check v0.1")
+    parser = argparse.ArgumentParser(description="Docs Bidirectional Check v0.1")
+    parser.add_argument(
+        "--unittest_validation",
+        type=str,
+        default=None,
+        help="Specify the unittest validation file path.",
+    )
     parser.add_argument(
         "--verbose_level",
         type=int,
@@ -172,6 +335,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     context_verbose_level = args.verbose_level
+
+    if args.unittest_validation is not None:
+        with open(args.unittest_validation, "r") as f:
+            unittest_validation_data = json.load(f)
+    else:
+        unittest_validation_data = None
 
     with open(os.path.join(project_dir, "paconvert/api_mapping.json"), "r") as f:
         api_mapping = json.load(f)
@@ -232,21 +401,23 @@ if __name__ == "__main__":
         verbose_print(f"INFO: {len(validated_apis)} api will be validate by docs data.")
         doc_errors = []
         paconvert_errors = []
-        validate_errors = []
+        validate_errors = {}
 
         for api, docs_api in validated_apis:
             try:
                 check_api_mapping(api_mapping[api], docs_mapping[docs_api])
+                check_mapping_args(api_mapping[api], docs_mapping[docs_api])
             except DocDataError as e:
                 doc_errors.append(e)
             except PaConvertDataError as e:
                 paconvert_errors.append(e)
             except ValidateError as e:
-                validate_errors.append(e)
+                validate_errors[api] = e
             except NotImplementedError as e:
-                validate_errors.append(e)
+                validate_errors[api] = e
             except Exception as e:
                 verbose_print(f"ERROR: {api} raised {e}")
+                traceback.print_exc()
                 sys.exit(1)
 
         if len(doc_errors) > 0:
@@ -263,10 +434,28 @@ if __name__ == "__main__":
                 for pe in paconvert_errors:
                     print(pe, file=f)
                     verbose_print(f"INFO: {pe}", v_level=3)
-        validate_errors.sort(key=lambda e: f"{type(e)}", reverse=True)
+
+        validate_errors = [(api, e) for api, e in validate_errors.items()]
+        validate_errors.sort(key=lambda e: (api, f"{type(e[1])}"))
+        # validate_errors.sort(key=lambda e: f"{type(e)}", reverse=True)
         if len(validate_errors) > 0:
             verbose_print(f"ERROR: {len(validate_errors)} api validate error.")
             with open(os.path.join(tool_dir, "validate_error_list.log"), "w") as f:
-                for ve in validate_errors:
+                for api, ve in validate_errors:
+                    if unittest_validation_data is not None:
+                        if api not in unittest_validation_data:
+                            print("INFO: NO-UNITTEST", ve, file=f)
+                            verbose_print(f"INFO: NO-UNITTEST {ve}", v_level=3)
+                            continue
+                    if api in overloadable_api_aux_set:
+                        print("INFO: OVERLOADABLE", ve, file=f)
+                        verbose_print(f"INFO: OVERLOADABLE {ve}", v_level=3)
+                        continue
+                    if api in cornercase_api_aux_dict:
+                        print("INFO: CORNERCASE", ve, file=f)
+                        print("INFO: REASON", cornercase_api_aux_dict[api], file=f)
+                        verbose_print(f"INFO: CORNERCASE {ve}", v_level=3)
+                        continue
+
                     print(ve, file=f)
                     verbose_print(f"INFO: {ve}", v_level=3)
