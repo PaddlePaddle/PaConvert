@@ -53,8 +53,7 @@ AutoModelForCausalLM.from_pretrained("/path/to/pytorch/model", convert_from_torc
 
 ## 步骤4：运行转换后代码
 
-[可选] example_chat_completion.py 中输入的对话列表 `dialogs` 有多条对话，若机器显存有限，可删除部分对话，以节省显存。
-
+使用如下命令运行转换后的代码：
 ```python
 CUDA_VISIBLE_DEVICES=0 python -m paddle.distributed.launch --devices=0 /example_chat_completion/path/example_chat_completion.py --ckpt_dir /model_param/path --tokenizer_path /tokenizer/path/tokenizer.model --max_seq_len 64
 
@@ -63,3 +62,4 @@ CUDA_VISIBLE_DEVICES=0 python -m paddle.distributed.launch --devices=0 /example_
 # ...
 
 ```
+[可选] example_chat_completion.py 中输入的对话列表 `dialogs` 有多条对话，若机器显存有限，可删除部分对话，以节省显存。

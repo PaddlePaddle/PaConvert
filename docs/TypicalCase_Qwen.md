@@ -37,7 +37,7 @@ PaddleNLP 提供了可自动将 PyTorch 相关的权重转化为 Paddle 权重�
 ```python
 from paddlenlp.transformers import AutoModelForCausalLM
 
-AutoModelForCausalLM.from_pretrained("/path/to/pytorch/model", convert_from_torch=True, dtype="float16")
+AutoModelForCausalLM.from_pretrained("/path/to/pytorch/model", convert_from_torch=True, dtype="bfloat16")
 ```
 
 > dtype 为转化权重的真实 dtype 数据类型，通常为：float16, bloat16 和 float32。
@@ -72,14 +72,17 @@ SUPPORT_TORCH2 = False
 
 ## 步骤5：运行转换后代码
 
+### 1. 新建python文件
+在转换后的 Qwen-7B-Chat 目录下，创建一个名为 `run_qwen.py` 的文件，内容如下：
+
 ```python
 import paddle
-from Qwen_paddle.modeling_qwen import QWenLMHeadModel
-from Qwen_paddle.tokenization_qwen import QWenTokenizer
+from modeling_qwen import QWenLMHeadModel
+from tokenization_qwen import QWenTokenizer
 
-tokenizer = QWenTokenizer.from_pretrained("/workspace/AAA_Qwen/Qwen_paddle",fp16=True)
+tokenizer = QWenTokenizer.from_pretrained("/Qwen-7B-Chat/path")
 
-model = QWenLMHeadModel.from_pretrained("/workspace/AAA_Qwen/Qwen_paddle")
+model = QWenLMHeadModel.from_pretrained("/Qwen-7B-Chat/path")
 
 # 第一轮对话 1st dialogue turn
 response, history = model.chat(tokenizer, "你好", history=None)
@@ -92,4 +95,10 @@ response, history = model.chat(tokenizer, "给我讲一个年轻人奋斗创业�
 # 第三轮对话 3rd dialogue turn
 response, history = model.chat(tokenizer, "给这个故事起一个标题", history=history)
 # 《从失败到成功：李晓明的创业经历》
+```
+### 2. 运行代码
+
+```python
+python -m paddle.distributed.launch /Qwen-7B-Chat/path/run_qwen.py
+
 ```
