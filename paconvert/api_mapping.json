@@ -5441,7 +5441,7 @@
   },
   "torch.cuda.stream": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.device.cuda.stream_guard",
+    "paddle_api": "paddle.device.stream_guard",
     "min_input_args": 1,
     "args_list": [
       "stream"
