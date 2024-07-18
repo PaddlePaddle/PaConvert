@@ -4409,7 +4409,11 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.autograd.PyLayer",
     "abstract": true,
-    "min_input_args": 0
+    "min_input_args": 0,
+    "args_list": [
+      "*args",
+      "**kwargs"
+    ]
   },
   "torch.autograd.Function.backward": {
     "abstract": true,
@@ -5402,12 +5406,15 @@
     "min_input_args": 0
   },
   "torch.cuda.nvtx.range_push": {
-    "Matcher": "CudaNvtxRangePushMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.framework.core.nvprof_nvtx_push",
     "min_input_args": 1,
     "args_list": [
       "msg"
-    ]
+    ],
+    "kwargs_change": {
+      "msg": "name"
+    }
   },
   "torch.cuda.set_device": {
     "Matcher": "SetDeviceMatcher",
@@ -5441,7 +5448,7 @@
   },
   "torch.cuda.stream": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.device.stream_guard",
+    "paddle_api": "paddle.device.cuda.stream_guard",
     "min_input_args": 1,
     "args_list": [
       "stream"
@@ -5927,7 +5934,11 @@
   "torch.distributed.rpc.shutdown": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.rpc.shutdown",
-    "min_input_args": 0
+    "min_input_args": 0,
+    "args_list": [
+      "graceful",
+      "timeout"
+    ]
   },
   "torch.distributed.scatter": {
     "Matcher": "ScatterMatcher",
@@ -10351,6 +10362,9 @@
       "prefix",
       "keep_vars"
     ],
+    "kwargs_change": {
+      "prefix": "structured_name_prefix"
+    },
     "unsupport_args": [
       "destination",
       "prefix",
@@ -12962,7 +12976,13 @@
   "torch.no_grad": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.no_grad",
-    "min_input_args": 0
+    "min_input_args": 0,
+    "args_list": [
+      "orig_func"
+    ],
+    "kwargs_change": {
+      "orig_func": "func"
+    }
   },
   "torch.nonzero": {
     "Matcher": "NonzeroMatcher",
@@ -13276,7 +13296,13 @@
   "torch.optim.Optimizer.step": {
     "Matcher": "UnchangeMatcher",
     "abstract": true,
-    "min_input_args": 0
+    "min_input_args": 0,
+    "args_list": [
+      "closure"
+    ],
+    "unsupport_args": [
+      "closure"
+    ]
   },
   "torch.optim.Optimizer.zero_grad": {
     "min_input_args": 0
@@ -13739,6 +13765,7 @@
     "min_input_args": 1,
     "args_list": [
       "*size",
+      "*",
       "generator",
       "out",
       "dtype",
@@ -14463,8 +14490,8 @@
       "col_indices": "cols",
       "size": "shape",
       "dtype": "dtype",
+      "layout": "",
       "device": "place",
-      "pin_memory": "",
       "check_invariants": ""
     }
   },
