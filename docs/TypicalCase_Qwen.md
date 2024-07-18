@@ -5,7 +5,7 @@
 ### 安装依赖项
 
 在开发本项目之前，请确保已经安装了以下依赖项：
-- PaConvert
+- paconvert
 - Python 3.8+
 - paddlepaddle-gpu 2.6+ (建议: develop)
 - paddlenlp
@@ -17,20 +17,43 @@ Qwen源码下载命令
  git clone https://huggingface.co/Qwen/Qwen-7B-Chat
 ```
 
-## 步骤2: 代码转换与模型参数转换
+## 步骤2: 模型代码转换
 
-### Qwen模型代码转换命令：
+模型代码转换使用如下命令：
+
 ```python
-python paconvert/main.py --in_dir /Qwen-7B-Chat/path --output_dir output/path --log_dir my_log/path
+paconvert --in_dir /Qwen-7B-Chat/path --output_dir output/path --log_dir my_log/path
 ```
 Qwen模型已实现一键转换，故无需手动编写转换规则，只需指定输入路径和输出路径即可。但对于其他待转模型可能存在未转换情形，欢迎参考[贡献手册](https://github.com/PaddlePaddle/PaConvert/blob/master/docs/CONTRIBUTING.md)向本项目贡献代码。
 
-### Qwen模型参数转换：
-1. 参考[Readme.md](https://github.com/PaddlePaddle/PaConvert/blob/master/README.md)的模型参数转换命令，将模型参数转换为Paddle格式。
-2. 直接从[AI Studio](https://aistudio.baidu.com/modelsdetail/636/space)下载Qwen模型参数。
+## 步骤3: 模型参数转换：
 
-## 步骤3：手动转换部分配置文件
+Pytorch 的模型参数与 Paddle 的模型参数无法共用，本案例中有两种方式获取适用于 Paddle 的模型参数。
+
+### 使用 Pytorch 权重进行转化
+
+PaddleNLP 提供了可自动将 PyTorch 相关的权重转化为 Paddle 权重的接口，代码如下：
+
+```python
+from paddlenlp.transformers import AutoModelForCausalLM
+
+AutoModelForCausalLM.from_pretrained("/path/to/pytorch/model", convert_from_torch=True, dtype="float16")
+```
+
+> dtype 为转化权重的真实 dtype 数据类型，通常为：float16, bloat16 和 float32。
+
+以上代码可自动加载 pytorch 权重并转化为对应 paddle 权重保存在 `/path/to/pytorch/model` 目录下。
+
+更多细节可参考 [模型格式转换](https://github.com/PaddlePaddle/PaddleNLP/blob/develop/docs/community/contribute_models/convert_pytorch_to_paddle.rst)
+
+### 直接下载权重
+
+从[AI Studio](https://aistudio.baidu.com/modelsdetail/666/space)下载Qwen模型参数。
+
+## 步骤4：手动转换部分配置文件
+
 当前，部分LLM(Large Lanuange Model)的config配置文件可能需要手动修改以适配PaddlePaddle。
+
 ### 1. 修改config文件
 
 在`config.json`中新增配置项`"dtype"`用于指明当前模型参数类型，帮助内存分配器合理的分配合适空间。本例中需增加如下配置：
@@ -38,6 +61,7 @@ Qwen模型已实现一键转换，故无需手动编写转换规则，只需指�
 ```json
 "dtype": "bfloat16"
 ```
+
 ### [可选] 2.修改转换后的代码
 
 `torch.nn.functional.scaled_dot_product_attention` 对应 `paddle.nn.functional.scaled_dot_product_attention`，但paddle的后端实现要求GPU计算能力不低于8.0，但torch并无此要求，当GPU计算能力低于8.0时，需手动转换部分代码。本例中可将`SUPPORT_TORCH2`设置为`False`，避免使用`torch.nn.functional.scaled_dot_product_attention`分支。
@@ -46,10 +70,7 @@ Qwen模型已实现一键转换，故无需手动编写转换规则，只需指�
 SUPPORT_TORCH2 = False
 ```
 
-
-## 运行转换后代码
-
-### 快速使用（Quickstart）
+## 步骤5：运行转换后代码
 
 ```python
 import paddle
@@ -72,10 +93,3 @@ response, history = model.chat(tokenizer, "给我讲一个年轻人奋斗创业�
 response, history = model.chat(tokenizer, "给这个故事起一个标题", history=history)
 # 《从失败到成功：李晓明的创业经历》
 ```
-
-# 支持转换的模型列表
-
-| 模型名    | 模型地址                           | 支持类型  |
-| -------- | ------------------------------ | -------- |
-| Qwen     | https://huggingface.co/Qwen/Qwen-7B-Chat  | 推理 |
-| llama    | https://github.com/meta-llama/llama.git  | 推理 |
