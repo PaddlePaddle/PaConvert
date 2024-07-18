@@ -5406,15 +5406,12 @@
     "min_input_args": 0
   },
   "torch.cuda.nvtx.range_push": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "CudaNvtxRangePushMatcher",
     "paddle_api": "paddle.framework.core.nvprof_nvtx_push",
     "min_input_args": 1,
     "args_list": [
       "msg"
-    ],
-    "kwargs_change": {
-      "msg": "arg0"
-    }
+    ]
   },
   "torch.cuda.set_device": {
     "Matcher": "SetDeviceMatcher",
