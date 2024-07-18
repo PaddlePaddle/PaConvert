@@ -49,3 +49,15 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+# Convert torch.contiguous_format to Paddle is not supported currently
+def _test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4, 9], [23, 2]], dtype=torch.complex128)
+        result = a.is_contiguous(memory_format=torch.contiguous_format)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

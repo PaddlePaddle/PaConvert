@@ -49,3 +49,13 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([1,2,3]).T.cpu(memory_format=torch.preserve_format)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
