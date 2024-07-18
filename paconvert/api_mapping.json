@@ -5218,7 +5218,7 @@
   },
   "torch.cuda.Stream": {
     "Matcher": "CudaStreamMatcher",
-    "paddle_api": "paddle.device.Stream",
+    "paddle_api": "paddle.device.cuda.Stream",
     "args_list": [
       "device",
       "priority"
