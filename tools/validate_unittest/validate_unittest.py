@@ -52,6 +52,8 @@ var_args_collector_aux_mapping = {
     "torch.rand": "size",
     "torch.randn": "size",
     "torch.zeros": "size",
+    "torch.Tensor.new_empty": "size",
+    "torch.Tensor.new_zeros": "size",
 }
 
 abstract_api_aux_set = {
