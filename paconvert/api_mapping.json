@@ -8309,7 +8309,8 @@
       "f": "path",
       "map_location": "",
       "pickle_module": "",
-      "weights_only": ""
+      "weights_only": "",
+      "pickle_load_args": ""
     },
     "unsupport_args": [
       "mmap"
@@ -16032,7 +16033,10 @@
       "typical_p",
       "torchscript",
       "attn_implementation"
-    ]
+    ],
+    "kwargs_change": {
+      "torch_dtype": "dtype"
+    }
   },
   "transformers.StoppingCriteriaList": {
     "Matcher": "UnchangeMatcher",
