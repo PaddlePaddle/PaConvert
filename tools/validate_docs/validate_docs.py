@@ -160,6 +160,7 @@ overloadable_api_aux_set = {
     "torch.sum",
     "torch.nansum",
     "torch.linalg.matrix_rank",
+    "torch.Tensor.dsplit",
 }
 
 cornercase_api_aux_dict = {

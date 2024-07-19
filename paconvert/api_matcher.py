@@ -2840,19 +2840,25 @@ class TriangularSolveMatcher(BaseMatcher):
         if out_v:
             API_TEMPLATE = textwrap.dedent(
                 """
-                paddle.assign(paddle.linalg.triangular_solve({}), {}[0]), paddle.assign({}, {}[1])
+                paddle.assign({}({}), {}[0]), paddle.assign({}, {}[1])
                 """
             )
             code = API_TEMPLATE.format(
-                self.kwargs_to_str(new_kwargs), out_v, new_kwargs["x"], out_v
+                self.get_paddle_api(),
+                self.kwargs_to_str(new_kwargs),
+                out_v,
+                new_kwargs["x"],
+                out_v,
             )
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
-                paddle.linalg.triangular_solve({}), {}
+                {}({}), {}
                 """
             )
-            code = API_TEMPLATE.format(self.kwargs_to_str(new_kwargs), new_kwargs["x"])
+            code = API_TEMPLATE.format(
+                self.get_paddle_api(), self.kwargs_to_str(new_kwargs), new_kwargs["x"]
+            )
 
         return code
 
