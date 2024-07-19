@@ -4507,7 +4507,6 @@ class ZeroGradMatcher(BaseMatcher):
 
 class SetDefaultTensorTypeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        print(kwargs["t"])
         if kwargs["t"] in ['"""torch.DoubleTensor"""', '"""torch.cuda.DoubleTensor"""']:
             kwargs["t"] = '"""float64"""'
         elif kwargs["t"] in ['"""torch.FloatTensor"""', '"""torch.cuda.FloatTensor"""']:
