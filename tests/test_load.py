@@ -121,3 +121,18 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        from pathlib import PosixPath
+
+        result = torch.tensor([0., 1., 2., 3., 4.])
+        torch.save(result, 'tensor.pt', pickle_protocol=4)
+        new_path = PosixPath('tensor.pt')
+        result = torch.load(new_path)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
