@@ -33,7 +33,7 @@ def test_case_1():
 
 
 # paddle broadcast indices && values to arr, while pytorch not
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
