@@ -1182,7 +1182,7 @@ class TRFMGenerationConfigMatcher(BaseMatcher):
 class TensorMatcher(BaseMatcher):
     def get_paddle_api(self):
         if isinstance(
-            self.transformer.parent_node, (ast.Tuple, ast.arg, ast.Subscript)
+            self.transformer.parent_node, (ast.Tuple, ast.Index, ast.arg, ast.Subscript)
         ):
             return "paddle.Tensor"
         return super().get_paddle_api()
