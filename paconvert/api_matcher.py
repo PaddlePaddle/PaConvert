@@ -4502,6 +4502,22 @@ class ZeroGradMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class SetDefaultTensorTypeMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if kwargs["t"] in ['"""torch.DoubleTensor"""', '"""torch.cuda.DoubleTensor"""']:
+            kwargs["t"] = '"""float64"""'
+        elif kwargs["t"] in ['"""torch.FloatTensor"""', '"""torch.cuda.FloatTensor"""']:
+            kwargs["t"] = '"""float32"""'
+        elif kwargs["t"] in ['"""torch.HalfTensor"""', '"""torch.cuda.HalfTensor"""']:
+            kwargs["t"] = '"""float16"""'
+        elif kwargs["t"] in [
+            '"""torch.BFloat16Tensor"""',
+            '"""torch.cuda.BFloat16Tensor"""',
+        ]:
+            kwargs["t"] = '"""bfloat16"""'
+        return GenericMatcher.generate_code(self, kwargs)
+
+
 class ScalableVarMatcher(BaseMatcher):
     def get_scalable_var(self):
         args_list = self.api_mapping.get("args_list", [])

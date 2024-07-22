@@ -201,6 +201,10 @@
     "Matcher": "SetUpMatcher",
     "min_input_args": 0
   },
+  "torch.BFloat16Tensor": {
+    "Matcher": "TensorMatcher",
+    "paddle_api": "paddle.bfloat16"
+  },
   "torch.BoolTensor": {
     "Matcher": "TensorMatcher",
     "paddle_api": "paddle.bool"
@@ -5170,6 +5174,10 @@
     }
   },
   "torch.ctc_loss": {},
+  "torch.cuda.BFloat16Tensor": {
+    "Matcher": "TensorMatcher",
+    "paddle_api": "paddle.bfloat16"
+  },
   "torch.cuda.BoolTensor": {
     "Matcher": "TensorMatcher",
     "paddle_api": "paddle.bool"
@@ -5813,6 +5821,10 @@
     },
     "min_input_args": 0
   },
+  "torch.distributed.initialized": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.initialized"
+  },
   "torch.distributed.irecv": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.irecv",
@@ -5826,6 +5838,10 @@
       "tag"
     ],
     "min_input_args": 1
+  },
+  "torch.distributed.is_initialized": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.is_initialized"
   },
   "torch.distributed.isend": {
     "Matcher": "GenericMatcher",
@@ -10189,7 +10205,7 @@
       "strict"
     ],
     "kwargs_change": {
-      "strict": "use_structured_name"
+      "strict": ""
     },
     "min_input_args": 1
   },
@@ -14223,11 +14239,14 @@
     ]
   },
   "torch.set_default_tensor_type": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "SetDefaultTensorTypeMatcher",
     "paddle_api": "paddle.set_default_dtype",
     "args_list": [
-      "d"
-    ]
+      "t"
+    ],
+    "kwargs_change": {
+      "t": "d"
+    }
   },
   "torch.set_grad_enabled": {
     "Matcher": "GenericMatcher",
