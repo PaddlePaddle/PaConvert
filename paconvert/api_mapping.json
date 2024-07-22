@@ -2973,10 +2973,10 @@
     "paddle_api": "paddle.Tensor.remainder",
     "min_input_args": 1,
     "args_list": [
-      "divisor"
+      "other"
     ],
     "kwargs_change": {
-      "divisor": "y"
+      "other": "y"
     }
   },
   "torch.Tensor.remainder_": {
@@ -14507,6 +14507,7 @@
       "dtype": "dtype",
       "layout": "",
       "device": "place",
+      "pin_memory": "",
       "check_invariants": ""
     }
   },
