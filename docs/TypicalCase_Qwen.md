@@ -22,33 +22,21 @@ Qwen源码下载命令
 模型代码转换使用如下命令：
 
 ```python
-paconvert --in_dir /Qwen-7B-Chat/path --output_dir output/path --log_dir my_log/path
+paconvert --in_dir ./Qwen-7B-Chat --out_dir ./convert_model/Qwen-7B-Chat
 ```
 Qwen模型已实现一键转换，故无需手动编写转换规则，只需指定输入路径和输出路径即可。但对于其他待转模型可能存在未转换情形，欢迎参考[贡献手册](https://github.com/PaddlePaddle/PaConvert/blob/master/docs/CONTRIBUTING.md)向本项目贡献代码。
 
-## 步骤3: 模型参数转换：
+## 步骤3: 模型参数获取：
 
-Pytorch 的模型参数与 Paddle 的模型参数无法共用，本案例中有两种方式获取适用于 Paddle 的模型参数。
+Pytorch 的模型参数与 Paddle 的模型参数无法共用，[AI Studio](https://aistudio.baidu.com/modelsdetail/666/space) 提供了Qwen模型参数的下载入口，相关命令如下：
 
-### 使用 Pytorch 权重进行转化
-
-PaddleNLP 提供了可自动将 PyTorch 相关的权重转化为 Paddle 权重的接口，代码如下：
-
-```python
-from paddlenlp.transformers import AutoModelForCausalLM
-
-AutoModelForCausalLM.from_pretrained("/path/to/pytorch/model", convert_from_torch=True, dtype="bfloat16")
+```bash
+git lfs install
+git clone http://git.aistudio.baidu.com/aistudio/qwen-7b-chat.git
+# 使用 model.safetensors.index.json, model-0000x-of-00004.safetensors 替换 ./convert_model/Qwen-7B-Chat 目录下的 model.safetensors.index.json, model-0000x-of-00008.safetensors。
 ```
 
-> dtype 为转化权重的真实 dtype 数据类型，通常为：float16, bloat16 和 float32。
-
-以上代码可自动加载 pytorch 权重并转化为对应 paddle 权重保存在 `/path/to/pytorch/model` 目录下。
-
-更多细节可参考 [模型格式转换](https://github.com/PaddlePaddle/PaddleNLP/blob/develop/docs/community/contribute_models/convert_pytorch_to_paddle.rst)
-
-### 直接下载权重
-
-从[AI Studio](https://aistudio.baidu.com/modelsdetail/666/space)下载Qwen模型参数。
+如需手动转换原始 Pytorch 权重可参考[模型格式转换](https://github.com/PaddlePaddle/PaddleNLP/blob/develop/docs/community/contribute_models/convert_pytorch_to_paddle.rst)。
 
 ## 步骤4：手动转换部分配置文件
 
@@ -73,16 +61,16 @@ SUPPORT_TORCH2 = False
 ## 步骤5：运行转换后代码
 
 ### 1. 新建python文件
-在转换后的 Qwen-7B-Chat 目录下，创建一个名为 `run_qwen.py` 的文件，内容如下：
+在 ./convert_model/Qwen-7B-Chat 目录下，创建一个名为 `run_qwen.py` 的文件，内容如下：
 
 ```python
 import paddle
 from modeling_qwen import QWenLMHeadModel
 from tokenization_qwen import QWenTokenizer
 
-tokenizer = QWenTokenizer.from_pretrained("/Qwen-7B-Chat/path")
+tokenizer = QWenTokenizer.from_pretrained("./")
 
-model = QWenLMHeadModel.from_pretrained("/Qwen-7B-Chat/path")
+model = QWenLMHeadModel.from_pretrained("./")
 
 # 第一轮对话 1st dialogue turn
 response, history = model.chat(tokenizer, "你好", history=None)
@@ -99,6 +87,6 @@ response, history = model.chat(tokenizer, "给这个故事起一个标题", hist
 ### 2. 运行代码
 
 ```python
-python -m paddle.distributed.launch /Qwen-7B-Chat/path/run_qwen.py
+python -m paddle.distributed.launch ./convert_model/Qwen-7B-Chat/run_qwen.py
 
 ```
