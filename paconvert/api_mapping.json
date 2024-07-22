@@ -14150,6 +14150,9 @@
       "index": "indices",
       "value": "values",
       "src": "values"
+    },
+    "paddle_default_kwargs": {
+      "broadcast": "False"
     }
   },
   "torch.scatter_add": {
