@@ -2774,7 +2774,13 @@
   "torch.Tensor.normal_": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.normal_",
-    "min_input_args": 0
+    "min_input_args": 0,
+    "args_list": [
+      "mean",
+      "std",
+      "*",
+      "generator"
+    ]
   },
   "torch.Tensor.not_equal": {
     "Matcher": "Num2TensorBinaryMatcher",
@@ -3274,7 +3280,7 @@
   "torch.Tensor.signbit": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.signbit",
-    "min_input_args": 1,
+    "min_input_args": 0,
     "args_list": []
   },
   "torch.Tensor.sin": {
@@ -4300,6 +4306,7 @@
       "input",
       "dim",
       "descending",
+      "*",
       "stable"
     ],
     "kwargs_change": {
@@ -7161,7 +7168,8 @@
     "paddle_api": "paddle.to_tensor",
     "min_input_args": 1,
     "args_list": [
-      "ndarray"
+      "ndarray",
+      "/"
     ],
     "kwargs_change": {
       "ndarray": "data"

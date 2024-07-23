@@ -90,6 +90,7 @@ overloadable_api_aux_set = {
     "torch.Tensor.scatter",
     "torch.scatter",
     "torch.Tensor.view",
+    "torch.Tensor.dsplit",
 }
 
 cornercase_api_aux_dict = {
@@ -377,6 +378,9 @@ def check_call_variety(test_data, api_mapping, *, api_alias={}, verbose=True):
                 if arg == var_args_collector:
                     args_list_full_positional.append(arg)
                     var_arg_name = arg
+            elif arg == "/":
+                position_args_checkable = True
+                aux_detailed_data_api["complex"] = True
             else:
                 raise ValueError(f'{api} has unexpected arg "{arg}".')
 
@@ -720,7 +724,7 @@ def autofix_single_api(file_path, aux_detailed_data):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Call Variety Check v0.1")
+    parser = argparse.ArgumentParser(description="Call Variety Check v0.2")
     parser.add_argument(
         "--rerun", "-r", dest="files_or_dirs", nargs="+", help="Rerun tests"
     )

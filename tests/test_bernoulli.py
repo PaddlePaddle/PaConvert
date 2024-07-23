@@ -103,3 +103,15 @@ def test_case_7():
         unsupport=True,
         reason="Paddle not support 'p' argument",
     )
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.ones(3, 3)
+        out = torch.ones(3, 3)
+        result = torch.bernoulli(a, out=out, generator=torch.Generator())
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

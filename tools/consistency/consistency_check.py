@@ -19,6 +19,8 @@ import os
 import sys
 import re
 
+from difflib import context_diff
+
 sys.path.append(os.path.dirname(__file__) + "/../..")
 from tests.code_library.code_case import CODE_CONSISTENCY_MAPPING
 
@@ -51,7 +53,15 @@ def _compare_content(actual_dir, expect_dir):
                 content1,
             )
             if content1 != content2:
-
+                # print inconsistent content
+                diff = context_diff(
+                    content2.split("\n"),
+                    content1.split("\n"),
+                    fromfile=expect_dir,
+                    tofile=actual_dir,
+                )
+                for line in diff:
+                    print(line)
                 return False
     elif os.path.isdir(actual_dir):
         assert os.path.isdir(expect_dir), f"{expect_dir} shoule be a dir!"
