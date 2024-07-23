@@ -11,20 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.is_contiguous")
+obj = APIBase("torch.Tensor.arctan")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4, 9], [23, 2]])
-        result = a.is_contiguous()
+        result = torch.tensor([0.34, -0.56, 0.73]).arctan()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,30 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([[4, 9], [23, 2]], dtype=torch.complex64).is_contiguous()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([[4, 9], [23, 2]], dtype=torch.complex128)
-        result = a.is_contiguous()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-# Convert torch.contiguous_format to Paddle is not supported currently
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([[4, 9], [23, 2]], dtype=torch.complex128)
-        result = a.is_contiguous(memory_format=torch.contiguous_format)
+        a = torch.tensor([0.34, -0.56, 0.73])
+        result = a.arctan()
         """
     )
     obj.run(pytorch_code, ["result"])

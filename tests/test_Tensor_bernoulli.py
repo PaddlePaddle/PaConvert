@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.bernoulli")
+obj = APIBase("torch.Tensor.bernoulli")
 
 
 def test_case_1():
@@ -24,7 +24,7 @@ def test_case_1():
         """
         import torch
         a = torch.tensor([0.8, 0.1, 0.4])
-        result = torch.bernoulli(a)
+        result = a.bernoulli()
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -35,7 +35,7 @@ def test_case_2():
         """
         import torch
         a = torch.ones(3, 3)
-        result = torch.bernoulli(a)
+        result = a.bernoulli()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,7 +45,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.bernoulli(torch.ones(3, 3))
+        result = torch.ones(3, 3).bernoulli()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,7 +55,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.bernoulli(torch.zeros(3, 3))
+        result = torch.zeros(3, 3).bernoulli()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -65,20 +65,8 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.ones(3, 3)
-        out = torch.zeros(3, 3)
-        result = torch.bernoulli(a, out=out)
-        """
-    )
-    obj.run(pytorch_code, ["result", "out"])
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
         a = torch.rand(3, 3)
-        result = torch.bernoulli(a, 1.0)
+        result = a.bernoulli(1.0)
         """
     )
     obj.run(
@@ -89,7 +77,7 @@ def test_case_6():
     )
 
 
-def test_case_7():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -105,13 +93,13 @@ def test_case_7():
     )
 
 
-def test_case_8():
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
         a = torch.ones(3, 3)
         out = torch.zeros(3, 3)
-        result = torch.bernoulli(a, out=out, generator=torch.Generator())
+        result = a.bernoulli(generator=torch.Generator())
         """
     )
-    obj.run(pytorch_code, ["result", "out"])
+    obj.run(pytorch_code, ["result"])
