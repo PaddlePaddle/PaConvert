@@ -91,7 +91,6 @@ class GenericMatcher(BaseMatcher):
                     "async",
                 ]:
                     new_kwargs.pop(k)
-                    continue
 
         new_kwargs = self.set_paddle_default_kwargs(new_kwargs)
 
@@ -329,11 +328,6 @@ class SetFalseMatcher(BaseMatcher):
 
 class InitMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        unsupport_args = self.api_mapping.get("unsupport_args", [])
-        for k in unsupport_args:
-            if k in kwargs:
-                return None
-
         kwargs_change = self.api_mapping.get("kwargs_change", {})
         for k in kwargs_change:
             if k in kwargs:
@@ -1124,10 +1118,6 @@ class FAFlashAttnFuncMatcher(BaseMatcher):
 
 class FAFlashAttnUnpaddedFuncMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        unsupport_args = self.api_mapping.get("unsupport_args", [])
-        for k in unsupport_args:
-            if k in kwargs:
-                return None
         new_kwargs = {}
         for k in kwargs:
             if k in self.api_mapping["kwargs_change"]:
@@ -3861,11 +3851,6 @@ class OptimAdamMatcher(BaseMatcher):
 class LRSchedulerMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         optimizer = kwargs.pop("optimizer")
-
-        unsupport_args = self.api_mapping.get("unsupport_args", [])
-        for k in unsupport_args:
-            if k in kwargs:
-                return None
 
         kwargs_change = self.api_mapping.get("kwargs_change", {})
         for k in kwargs_change:

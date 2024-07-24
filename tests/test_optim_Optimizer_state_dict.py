@@ -46,12 +46,12 @@ def test_case_1():
         result = optim.state_dict()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-    )
+    obj.run(pytorch_code, ["result"])
 
 
+# pytorch_result = {'param_groups': [{'dampening': 0, 'differentiable': False, 'foreach': None, 'fused': None, ...}], 'state': {0: {'momentum_buffer': None}, 1: {'momentum_buffer': None}}}
+# paddle_result = {}
+# AssertionError: {0: {'momentum_buffer': None}, 1: {'momentum_buffer': None}} != {}
 def _test_case_2():
     pytorch_code = textwrap.dedent(
         """

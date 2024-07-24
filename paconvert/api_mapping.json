@@ -487,7 +487,8 @@
     "min_input_args": 0
   },
   "torch.Tensor.arcsin": {
-    "Matcher": "UnchangeMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.asin",
     "min_input_args": 0
   },
   "torch.Tensor.arcsin_": {
@@ -506,7 +507,8 @@
     "min_input_args": 0
   },
   "torch.Tensor.arctan": {
-    "Matcher": "UnchangeMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.atan",
     "min_input_args": 0
   },
   "torch.Tensor.arctan2": {
@@ -626,14 +628,17 @@
   },
   "torch.Tensor.baddbmm_": {},
   "torch.Tensor.bernoulli": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.bernoulli",
-    "min_input_args": 0,
+    "Matcher": "TensorFunc2PaddleFunc",
+    "paddle_api": "paddle.bernoulli",
     "args_list": [
       "p",
       "*",
       "generator"
     ],
+    "kwargs_change": {
+      "generator": "",
+      "input": "x"
+    },
     "unsupport_args": [
       "p"
     ]
@@ -914,7 +919,8 @@
   },
   "torch.Tensor.conj_physical_": {},
   "torch.Tensor.contiguous": {
-    "Matcher": "UnchangeMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.contiguous",
     "min_input_args": 0,
     "args_list": [
       "*",
@@ -1102,8 +1108,9 @@
   "torch.Tensor.dense_dim": {},
   "torch.Tensor.dequantize": {},
   "torch.Tensor.det": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.det"
+    "Matcher": "TensorFunc2PaddleFunc",
+    "paddle_api": "paddle.linalg.det",
+    "min_input_args": 0
   },
   "torch.Tensor.detach": {
     "Matcher": "GenericMatcher",
@@ -9597,6 +9604,15 @@
     ],
     "min_input_args": 2
   },
+  "torch.nn.FeatureAlphaDropout": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.FeatureAlphaDropout",
+    "min_input_args": 0,
+    "args_list": [
+      "p",
+      "inplace"
+    ]
+  },
   "torch.nn.Flatten": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Flatten",
@@ -12248,7 +12264,7 @@
   },
   "torch.nn.functional.pdist": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.pdist",
+    "paddle_api": "paddle.pdist",
     "min_input_args": 1,
     "args_list": [
       "input",
@@ -13309,6 +13325,11 @@
     "args_list": [
       "state_dict"
     ]
+  },
+  "torch.optim.Optimizer.state_dict": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.optimizer.Optimizer.state_dict",
+    "min_input_args": 0
   },
   "torch.optim.Optimizer.step": {
     "Matcher": "UnchangeMatcher",
