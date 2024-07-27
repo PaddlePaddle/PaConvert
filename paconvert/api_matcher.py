@@ -153,8 +153,10 @@ class TensorSlice_scatterMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            shape = {}.shape
-            axes, starts, strides, ends = [0], [0], [1], shape[axes[0]]
+            x = {}
+            shape = x.shape
+            axes, starts, strides = [0], [0], [1]
+            ends = shape[axes[0]]
             """
         )
         code = API_TEMPLATE.format(
