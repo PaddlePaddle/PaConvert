@@ -77,3 +77,51 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.zeros(8, 8)
+        b = torch.ones(8, 6)
+        result = a.slice_scatter(dim=1, src=b, start=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.zeros(8, 8)
+        b = torch.ones(8, 6)
+        result = a.slice_scatter(dim=1, src=b, end=6)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.zeros(8, 8)
+        b = torch.ones(8, 8)
+        result = a.slice_scatter(src=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.zeros(8, 8)
+        b = torch.ones(6, 8)
+        result = a.slice_scatter(src=b, start=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

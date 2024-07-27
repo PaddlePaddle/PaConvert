@@ -1211,7 +1211,9 @@
     "paddle_api": "paddle.Tensor.dsplit",
     "min_input_args": 1,
     "args_list": [
-      "indices",
+      "indices"
+    ],
+    "overload_args_list": [
       "sections"
     ],
     "kwargs_change": {
@@ -1636,7 +1638,9 @@
     "paddle_api": "paddle.Tensor.hsplit",
     "min_input_args": 1,
     "args_list": [
-      "indices",
+      "indices"
+    ],
+    "overload_args_list": [
       "sections"
     ],
     "kwargs_change": {
@@ -3466,13 +3470,15 @@
     "min_input_args": 1,
     "args_list": [
       "indices",
-      "sections",
       "dim"
+    ],
+    "overload_args_list": [
+      "sections"
     ],
     "kwargs_change": {
       "indices": "num_or_indices",
-      "sections": "num_or_indices",
-      "dim": "axis"
+      "dim": "axis",
+      "sections": "num_or_indices"
     }
   },
   "torch.Tensor.tile": {
@@ -6369,7 +6375,9 @@
     "paddle_api": "paddle.dsplit",
     "args_list": [
       "input",
-      "indices",
+      "indices"
+    ],
+    "overload_args_list": [
       "sections"
     ],
     "kwargs_change": {
@@ -7242,7 +7250,9 @@
     "paddle_api": "paddle.hsplit",
     "args_list": [
       "input",
-      "indices",
+      "indices"
+    ],
+    "overload_args_list": [
       "sections"
     ],
     "kwargs_change": {
@@ -14988,14 +14998,16 @@
     "args_list": [
       "input",
       "indices",
-      "sections",
       "dim"
+    ],
+    "overload_args_list": [
+      "sections"
     ],
     "kwargs_change": {
       "input": "x",
       "indices": "num_or_indices",
-      "sections": "num_or_indices",
-      "dim": "axis"
+      "dim": "axis",
+      "sections": "num_or_indices"
     }
   },
   "torch.tensordot": {

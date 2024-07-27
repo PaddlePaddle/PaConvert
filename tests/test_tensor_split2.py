@@ -106,3 +106,14 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(14).reshape(2, 7)
+        result = torch.tensor_split(a, 3, 1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
