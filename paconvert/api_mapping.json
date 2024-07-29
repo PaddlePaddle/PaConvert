@@ -1719,7 +1719,21 @@
     ]
   },
   "torch.Tensor.histogram": {},
-  "torch.Tensor.hsplit": {},
+  "torch.Tensor.hsplit": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.hsplit",
+    "min_input_args": 1,
+    "args_list": [
+      "indices"
+    ],
+    "overload_args_list": [
+      "sections"
+    ],
+    "kwargs_change": {
+      "indices": "num_or_indices",
+      "sections": "num_or_indices"
+    }
+  },
   "torch.Tensor.hypot": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.hypot",
@@ -3249,7 +3263,20 @@
       "index"
     ]
   },
-  "torch.Tensor.select_scatter": {},
+  "torch.Tensor.select_scatter": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.select_scatter",
+    "min_input_args": 3,
+    "args_list": [
+      "src",
+      "dim",
+      "index"
+    ],
+    "kwargs_change": {
+      "src": "values",
+      "dim": "axis"
+    }
+  },
   "torch.Tensor.set_": {},
   "torch.Tensor.sgn": {
     "Matcher": "GenericMatcher",
@@ -3321,7 +3348,25 @@
       "dim"
     ]
   },
-  "torch.Tensor.slice_scatter": {},
+  "torch.Tensor.slice_scatter": {
+    "Matcher": "TensorSlice_scatterMatcher",
+    "paddle_api": "paddle.Tensor.slice_scatter",
+    "min_input_args": 1,
+    "args_list": [
+      "src",
+      "dim",
+      "start",
+      "end",
+      "step"
+    ],
+    "kwargs_change": {
+      "src": "values",
+      "dim": "axes",
+      "start": "starts",
+      "end": "ends",
+      "step": "steps"
+    }
+  },
   "torch.Tensor.slogdet": {
     "Matcher": "SLogDetMatcher",
     "paddle_api": "paddle.linalg.slogdet",
@@ -3573,7 +3618,23 @@
     "paddle_api": "paddle.Tensor.tanh_",
     "min_input_args": 0
   },
-  "torch.Tensor.tensor_split": {},
+  "torch.Tensor.tensor_split": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.tensor_split",
+    "min_input_args": 1,
+    "args_list": [
+      "indices",
+      "dim"
+    ],
+    "overload_args_list": [
+      "sections"
+    ],
+    "kwargs_change": {
+      "indices": "num_or_indices",
+      "dim": "axis",
+      "sections": "num_or_indices"
+    }
+  },
   "torch.Tensor.tile": {
     "Matcher": "ScalableVarMatcher",
     "paddle_api": "paddle.Tensor.tile",
@@ -6509,6 +6570,22 @@
       "train": "training"
     }
   },
+  "torch.dsplit": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.dsplit",
+    "args_list": [
+      "input",
+      "indices"
+    ],
+    "overload_args_list": [
+      "sections"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "indices": "num_or_indices",
+      "sections": "num_or_indices"
+    }
+  },
   "torch.eig": {
     "min_input_args": 0
   },
@@ -7367,6 +7444,22 @@
       "input": "x",
       "range": "ranges",
       "weight": "weights"
+    }
+  },
+  "torch.hsplit": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.hsplit",
+    "args_list": [
+      "input",
+      "indices"
+    ],
+    "overload_args_list": [
+      "sections"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "indices": "num_or_indices",
+      "sections": "num_or_indices"
     }
   },
   "torch.hstack": {
@@ -15152,6 +15245,25 @@
     ],
     "kwargs_change": {
       "device": "place"
+    }
+  },
+  "torch.tensor_split": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.tensor_split",
+    "min_input_args": 2,
+    "args_list": [
+      "input",
+      "indices",
+      "dim"
+    ],
+    "overload_args_list": [
+      "sections"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "indices": "num_or_indices",
+      "dim": "axis",
+      "sections": "num_or_indices"
     }
   },
   "torch.tensordot": {
