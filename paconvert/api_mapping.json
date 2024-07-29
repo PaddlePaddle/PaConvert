@@ -8435,7 +8435,7 @@
       "*",
       "weights_only",
       "mmap",
-      "pickle_load_args"
+      "**pickle_load_args"
     ],
     "kwargs_change": {
       "f": "path",
@@ -10326,7 +10326,7 @@
       "strict"
     ],
     "kwargs_change": {
-      "strict": ""
+      "strict": "use_structured_name"
     },
     "min_input_args": 1
   },
@@ -11768,7 +11768,10 @@
       "input",
       "*",
       "approximate"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
   },
   "torch.nn.functional.glu": {
     "Matcher": "GenericMatcher",
@@ -12046,7 +12049,10 @@
       "input",
       "weight",
       "bias"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
   },
   "torch.nn.functional.local_response_norm": {
     "Matcher": "GenericMatcher",
@@ -13197,6 +13203,7 @@
     "min_input_args": 1,
     "args_list": [
       "*size",
+      "*",
       "out",
       "dtype",
       "layout",
@@ -13970,11 +13977,13 @@
     "Matcher": "CreateMatcher",
     "paddle_api": "paddle.randn",
     "kwargs_change": {
+      "generator": "",
       "dtype": "dtype"
     },
     "min_input_args": 1,
     "args_list": [
       "*size",
+      "*",
       "generator",
       "out",
       "dtype",

@@ -858,9 +858,6 @@ class GetDevicePropertiesMatcher(BaseMatcher):
 
 class GeluMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "input" in kwargs:
-            kwargs["x"] = kwargs.pop("input")
-
         if "approximate" in kwargs:
             approximate_v = kwargs.pop("approximate")
             if "none" in approximate_v:
@@ -868,8 +865,7 @@ class GeluMatcher(BaseMatcher):
             elif "tanh" in approximate_v:
                 kwargs["approximate"] = "True"
 
-        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-        return code
+        return GenericMatcher.generate_code(self, kwargs)
 
 
 class SequentialMatcher(BaseMatcher):
@@ -3993,10 +3989,7 @@ class FunctionalLinearMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs["weight"] = "{}.T".format(kwargs["weight"])
 
-        if "input" in kwargs:
-            kwargs["x"] = kwargs.pop("input")
-
-        return "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        return GenericMatcher.generate_code(self, kwargs)
 
 
 class FunctionalBilinearMatcher(BaseMatcher):
