@@ -148,61 +148,67 @@ class GenericMatcher(BaseMatcher):
         return code
 
 
-class TensorSlice_scatterMatcher(BaseMatcher):
+class SliceScatterMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        if "input" in kwargs:
+            kwargs["x"] = kwargs.pop("input")
+            x = kwargs["x"]
+        else:
+            x = self.paddleClass
+        kwargs["value"] = kwargs.pop("src")
+
         API_TEMPLATE = textwrap.dedent(
             """
-            x = {}
-            shape = x.shape
-            axes, starts, strides = [0], [0], [1]
-            ends = shape[axes[0]]
+            shape = {}.shape
+            axes, starts, ends, strides  = [0], [0], shape[0], [1]
             """
         )
-        code = API_TEMPLATE.format(
-            self.paddleClass,
-        )
+        code = API_TEMPLATE.format(x)
         if "dim" in kwargs.keys():
-            API_TEMPLATE = textwrap.dedent(
-                """
-                axes = [{}]
-                """
-            )
-            code += API_TEMPLATE.format(
-                kwargs["dim"],
-            )
+            if "end" not in kwargs.keys():
+                API_TEMPLATE = textwrap.dedent(
+                    """
+                    axes, ends = [{}], shape[{}]
+                    """
+                )
+                code += API_TEMPLATE.format(kwargs["dim"], kwargs.pop("dim"))
+            else:
+                API_TEMPLATE = textwrap.dedent(
+                    """
+                    axes, ends = [{}], [{}]
+                    """
+                )
+                code += API_TEMPLATE.format(kwargs.pop("dim"), kwargs.pop("end"))
+        else:
+            if "end" in kwargs.keys():
+                API_TEMPLATE = textwrap.dedent(
+                    """
+                    ends = [{}]
+                    """
+                )
+                code += API_TEMPLATE.format(kwargs.pop("end"))
+
         if "start" in kwargs.keys():
             API_TEMPLATE = textwrap.dedent(
                 """
                 starts = [{}]
                 """
             )
-            code += API_TEMPLATE.format(
-                kwargs["start"],
-            )
-        if "end" in kwargs.keys():
-            API_TEMPLATE = textwrap.dedent(
-                """
-                ends = [{}]
-                """
-            )
-            code += API_TEMPLATE.format(
-                kwargs["end"],
-            )
+            code += API_TEMPLATE.format(kwargs.pop("start"))
         if "step" in kwargs.keys():
             API_TEMPLATE = textwrap.dedent(
                 """
                 strides = [{}]
                 """
             )
-            code += API_TEMPLATE.format(
-                kwargs["step"],
-            )
+            code += API_TEMPLATE.format(kwargs.pop("step"))
+
         API_TEMPLATE = textwrap.dedent(
             """
-            x.slice_scatter(b, axes, starts, ends, strides)
+            {}({}, axes=axes, starts=starts, ends=ends, strides=strides)
             """
         )
-        code += API_TEMPLATE
+        code += API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
         return code
 
 

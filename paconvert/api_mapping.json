@@ -3349,7 +3349,7 @@
     ]
   },
   "torch.Tensor.slice_scatter": {
-    "Matcher": "TensorSlice_scatterMatcher",
+    "Matcher": "SliceScatterMatcher",
     "paddle_api": "paddle.Tensor.slice_scatter",
     "min_input_args": 1,
     "args_list": [
@@ -3360,11 +3360,11 @@
       "step"
     ],
     "kwargs_change": {
-      "src": "values",
+      "src": "value",
       "dim": "axes",
       "start": "starts",
       "end": "ends",
-      "step": "steps"
+      "step": "strides"
     }
   },
   "torch.Tensor.slogdet": {
@@ -14471,6 +14471,27 @@
     ],
     "kwargs_change": {
       "input": "x"
+    }
+  },
+  "torch.slice_scatter": {
+    "Matcher": "SliceScatterMatcher",
+    "paddle_api": "paddle.slice_scatter",
+    "min_input_args": 2,
+    "args_list": [
+      "input",
+      "src",
+      "dim",
+      "start",
+      "end",
+      "step"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "src": "value",
+      "dim": "axes",
+      "start": "starts",
+      "end": "ends",
+      "step": "strides"
     }
   },
   "torch.slogdet": {
