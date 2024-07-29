@@ -3376,14 +3376,12 @@ class FunctionalKLDivMatcher(BaseMatcher):
 
         if "target" in kwargs:
             kwargs["label"] = kwargs.pop("target")
-        log_target = kwargs.pop("log_target", False)
-        API_TEMPLATE = "paddle.nn.functional.kl_div(input={}, label={}, reduction={})"
+        API_TEMPLATE = "paddle.nn.functional.kl_div(input={}, label={}, reduction={}, log_target={})"
         code = API_TEMPLATE.format(
             kwargs.get("input"),
-            kwargs.get("label")
-            if log_target is False
-            else f"paddle.exp({kwargs.get('label')})",
+            kwargs.get("label"),
             kwargs.pop("reduction", '"""mean"""'),
+            kwargs.get("log_target"),
         )
         return code
 

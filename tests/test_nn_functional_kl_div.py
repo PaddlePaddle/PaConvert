@@ -136,8 +136,7 @@ def test_case_9():
     obj.run(pytorch_code, ["result"])
 
 
-# result dismatch
-def _test_case_10():
+def test_case_10():
     pytorch_code = textwrap.dedent(
         """
         import torch.nn.functional as F
