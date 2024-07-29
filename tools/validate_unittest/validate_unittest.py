@@ -90,7 +90,11 @@ overloadable_api_aux_set = {
     "torch.Tensor.scatter",
     "torch.scatter",
     "torch.Tensor.view",
+    "torch.tensor_split",
     "torch.Tensor.dsplit",
+    "torch.dsplit",
+    "torch.Tensor.hsplit",
+    "torch.hsplit",
 }
 
 cornercase_api_aux_dict = {

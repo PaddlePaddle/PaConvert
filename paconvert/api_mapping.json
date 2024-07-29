@@ -6320,11 +6320,13 @@
     "paddle_api": "paddle.distribution.IndependentTransform",
     "args_list": [
       "base_transform",
-      "reinterpreted_batch_ndims"
+      "reinterpreted_batch_ndims",
+      "cache_size"
     ],
     "kwargs_change": {
       "base_transform": "base",
-      "reinterpreted_batch_ndims": "reinterpreted_batch_rank"
+      "reinterpreted_batch_ndims": "reinterpreted_batch_rank",
+      "cache_size": ""
     },
     "min_input_args": 2
   },
@@ -6402,11 +6404,13 @@
     "paddle_api": "paddle.distribution.ReshapeTransform",
     "args_list": [
       "in_shape",
-      "out_shape"
+      "out_shape",
+      "cache_size"
     ],
     "kwargs_change": {
       "in_shape": "in_event_shape",
-      "out_shape": "out_event_shape"
+      "out_shape": "out_event_shape",
+      "cache_size": ""
     },
     "min_input_args": 2
   },

@@ -25,6 +25,10 @@ tool_dir = os.path.dirname(__file__)
 
 context_verbose_level = 1
 
+validate_whitelist = [
+    r"^torch\.(cuda\.)?(\w*)Tensor$",
+]
+
 
 def verbose_print(*args, v_level=1, **kwargs):
     if context_verbose_level >= v_level:
@@ -62,6 +66,8 @@ def check_unchange_matcher(paconvert_item, doc_item):
     mapped_api = torch_api
     for key in rules_key:
         mapped_api = re.sub(f"^{re.escape(key)}", api_mapping_rules[key], mapped_api)
+    if "paddle_api" in paconvert_item:
+        mapped_api = paconvert_item.get("paddle_api")
 
     if mapped_api != paddle_api:
         raise ValidateError(
@@ -115,12 +121,23 @@ def get_kwargs_mapping_from_doc(doc_item):
     return kwargs_change
 
 
+# 如果参数映射在这个里面，则忽略检查，因为不是对应关系
 IGNORE_KWARGS_CHANGE_PAIRS = {
     ("non_blocking", "blocking"),
     ("requires_grad", "stop_gradient"),
     ("some", "mode"),
     ("self", "x"),
 }
+
+
+# 如果参数映射在这个里面，则进行参数映射的转换
+KWARGS_CHANGE_CHANGE_DICT = {
+    "split_size_or_sections:num_or_indices": {
+        "indices": "num_or_indices",
+        "sections": "num_or_indices",
+    }
+}
+
 
 PRESET_MATCHER_KWARGS_CHANGE_PAIRS = {
     "CreateMatcher": {"size": "shape"},
@@ -130,6 +147,7 @@ PRESET_MATCHER_KWARGS_CHANGE_PAIRS = {
     "IInfoMatcher": {"type": "dtype"},
     "ZeroGradMatcher": {"set_to_none": "set_to_zero"},
     "SvdMatcher": {"some": "full_matrics"},
+    "AtleastMatcher": {"tensors": "inputs"},
 }
 
 
@@ -160,12 +178,18 @@ overloadable_api_aux_set = {
     "torch.sum",
     "torch.nansum",
     "torch.linalg.matrix_rank",
+    # *split kwargs is processed through KWARGS_CHANGE_CHANGE_DICT,
+    # but overload `args_list` is not supported, so ignore it.
+    # (int sections) or (tuple of ints indices)
     "torch.Tensor.dsplit",
+    "torch.Tensor.hsplit",
+    "torch.Tensor.tensor_split",
 }
 
 cornercase_api_aux_dict = {
     "torch.Tensor.type": "torch.Tensor.type with TensorTypeMatcher need support torch.nn.Module.type and torch.nn.Module.type",
     "torch.Tensor.triangular_solve": "torch.Tensor.triangular_solve with TriangularSolveMatcher is too complex",
+    "torch.cuda.nvtx.range_push": "paddle api only support position args, so kwargs_change not works.",
     "torch.utils.cpp_extension.CUDAExtension": "torch.utils.cpp_extension.CUDAExtension with CUDAExtensionMatcher list some kwargs",
     "torch.utils.cpp_extension.CppExtension": "torch.utils.cpp_extension.CppExtension with CUDAExtensionMatcher list some kwargs",
 }
@@ -196,6 +220,17 @@ def check_mapping_args(paconvert_item, doc_item):
         if k in pc_kwargs_change:
             continue
         pc_kwargs_change[k] = v
+
+    # 用副本作为检查来源，避免 inplace 修改出现问题
+    for k, v in kwargs_change.copy().items():
+        index = f"{k}:{v}"
+
+        if index in KWARGS_CHANGE_CHANGE_DICT:
+            kwargs_change.pop(k)
+            for new_k, new_v in KWARGS_CHANGE_CHANGE_DICT[index].items():
+                # 如果有设置同名项，就不更新了
+                if new_k not in kwargs_change:
+                    kwargs_change[new_k] = new_v
 
     kwargs_change_equal = True
     for k, v in kwargs_change.items():
@@ -376,6 +411,14 @@ if __name__ == "__main__":
         if "Matcher" not in api_mapping[api]:
             continue
 
+        whitelist_skip = False
+        for wl in validate_whitelist:
+            if re.match(wl, api):
+                whitelist_skip = True
+                break
+        if whitelist_skip:
+            continue
+
         if api in docs_mapping:
             docs_api = api
             # 反查时先直接查 target，找不到再从短到长匹配
@@ -454,8 +497,11 @@ if __name__ == "__main__":
                         verbose_print(f"INFO: OVERLOADABLE {ve}", v_level=3)
                         continue
                     if api in cornercase_api_aux_dict:
-                        print("INFO: CORNERCASE", ve, file=f)
-                        print("INFO: REASON", cornercase_api_aux_dict[api], file=f)
+                        print(
+                            f"INFO: CORNERCASE {ve}, REASON {cornercase_api_aux_dict[api]}",
+                            ve,
+                            file=f,
+                        )
                         verbose_print(f"INFO: CORNERCASE {ve}", v_level=3)
                         continue
 
