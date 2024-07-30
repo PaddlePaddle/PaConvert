@@ -16,49 +16,56 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.symeig", is_aux_api=True)
+obj = APIBase("torch.BFloat16Tensor")
 
-# This function was deprecated since version 1.9 and is now removed.
+
+# Paddle not support bfloat16
 def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, -2], [2, 5]])
-        result = x.symeig()
+        a = torch.tensor([1.1, 2.5, 3.6, 4.8], dtype=torch.bfloat16)
+        result = a
         """
     )
-    obj.run(pytorch_code, ["result"])
-
+    obj.run(pytorch_code, ["result"], unsupport=True, reason="Paddle not support bfloat16")
 
 def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, -2j], [2j, 5]])
-        result = x.symeig(eigenvectors=False)
+        result = torch.tensor([0.1, -1.5, -2.3, 3.8], dtype=torch.bfloat16)
         """
     )
-    obj.run(pytorch_code, ["result"])
-
+    obj.run(pytorch_code, ["result"], unsupport=True, reason="Paddle not support bfloat16")
 
 def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, -2j], [2j, 5]])
-        result = x.symeig(False, True)
+        a = torch.tensor([[1.2, 2.3], [-3.4, -4.5]], dtype=torch.bfloat16)
+        result = a
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], unsupport=True, reason="Paddle not support bfloat16")
 
 
 def _test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, -2j], [2j, 5]])
-        result = x.symeig(True, True)
-        result = [result[0], torch.abs(result[1])]
+        abc = torch.tensor([1.999, 2.0001, -3.999, -4.0001], dtype=torch.bfloat16)
+        result = a
         """
     )
-    obj.run(pytorch_code, ["result"], atol=1e-7)
+    obj.run(pytorch_code, ["result"], unsupport=True, reason="Paddle not support bfloat16")
+
+def _test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([-0.1, 0.0, 1.0, 1.1], dtype=torch.bfloat16)
+        result = a
+        """
+    )
+    obj.run(pytorch_code, ["result"], unsupport=True, reason="Paddle not support bfloat16")

@@ -18,9 +18,7 @@ from apibase import APIBase
 
 obj = APIBase("torch.Tensor.less_")
 
-
-# `paddle.Tensor.cast_` has bug when continuous inplace on cpu
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -31,7 +29,7 @@ def _test_case_1():
     obj.run(pytorch_code, ["x"])
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -42,7 +40,7 @@ def _test_case_2():
     obj.run(pytorch_code, ["x"])
 
 
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -54,7 +52,7 @@ def _test_case_3():
     obj.run(pytorch_code, ["x"])
 
 
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -66,7 +64,7 @@ def _test_case_4():
     obj.run(pytorch_code, ["x"])
 
 
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -77,7 +75,7 @@ def _test_case_5():
     obj.run(pytorch_code, ["x"])
 
 
-def _test_case_6():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -88,7 +86,7 @@ def _test_case_6():
     obj.run(pytorch_code, ["x"])
 
 
-def _test_case_7():
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -99,7 +97,7 @@ def _test_case_7():
     obj.run(pytorch_code, ["x"])
 
 
-def _test_case_8():
+def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -110,7 +108,7 @@ def _test_case_8():
     obj.run(pytorch_code, ["x"])
 
 
-def _test_case_9():
+def test_case_9():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -122,7 +120,7 @@ def _test_case_9():
     obj.run(pytorch_code, ["x"])
 
 
-def _test_case_10():
+def test_case_10():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -134,7 +132,7 @@ def _test_case_10():
     obj.run(pytorch_code, ["x"])
 
 
-def _test_case_11():
+def test_case_11():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -145,7 +143,7 @@ def _test_case_11():
     obj.run(pytorch_code, ["x"])
 
 
-def _test_case_12():
+def test_case_12():
     pytorch_code = textwrap.dedent(
         """
         import torch
