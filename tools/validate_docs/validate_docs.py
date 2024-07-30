@@ -217,6 +217,7 @@ cornercase_api_aux_dict = {
     "torch.utils.cpp_extension.BuildExtension": "torch.utils.cpp_extension.BuildExtension only list some kwargs.",
     "torch.nn.Sequential": "var_arg `arg` is processed by SequentialMatcher.",
     # bad case, need fix
+    "torch.cuda.stream": "`paddle.device.cuda.stream_guard` args is not as same as `paddle.device.stream_guard`",
     "torch.nn.Module.named_buffers": "remove_duplicate arg is not supported in paddle.",
     "torch.nn.Module.named_modules": "remove_duplicate arg is not supported in paddle.",
     "torch.nn.Module.named_parameters": "remove_duplicate arg is not supported in paddle.",
