@@ -59,13 +59,12 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        import numpy as np
+        np.random.seed(10)
+        src_np = np.random.randn(3, 5).astype('float32')
         index = torch.tensor([[0],[1],[2]])
-        result = torch.ones(3, 5).scatter_(dim=1, index=index, src=torch.rand(3, 5), reduce='add')
+        src = torch.tensor(src_np)
+        result = torch.ones(3, 5).scatter_(dim=1, index=index, src=src, reduce='add')
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="Paddle not support 'src' parameter, which is Tensor",
-    )
+    obj.run(pytorch_code, ["result"])
