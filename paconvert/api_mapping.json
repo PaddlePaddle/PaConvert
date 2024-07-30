@@ -10326,7 +10326,7 @@
       "strict"
     ],
     "kwargs_change": {
-      "strict": "use_structured_name"
+      "strict": ""
     },
     "min_input_args": 1
   },
