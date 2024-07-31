@@ -19,7 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.BFloat16Tensor")
 
 
-# Paddle not support Bfloat16
+# Paddle to_Tensor not support Bfloat16
 def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
