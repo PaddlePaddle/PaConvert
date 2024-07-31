@@ -25,6 +25,10 @@ tool_dir = os.path.dirname(__file__)
 
 context_verbose_level = 1
 
+validate_whitelist = [
+    r"^torch\.(cuda\.)?(\w*)Tensor$",
+]
+
 
 def verbose_print(*args, v_level=1, **kwargs):
     if context_verbose_level >= v_level:
@@ -62,6 +66,8 @@ def check_unchange_matcher(paconvert_item, doc_item):
     mapped_api = torch_api
     for key in rules_key:
         mapped_api = re.sub(f"^{re.escape(key)}", api_mapping_rules[key], mapped_api)
+    if "paddle_api" in paconvert_item:
+        mapped_api = paconvert_item.get("paddle_api")
 
     if mapped_api != paddle_api:
         raise ValidateError(
@@ -77,10 +83,15 @@ DOC_ARG_PATTERN = re.compile(
 def extract_doc_arg(arg_str, remove_star=True):
     arg_name = arg_str
     m = DOC_ARG_PATTERN.match(arg_name)
+
     if m:
         arg_name = m["arg_name"].strip()
     else:
         pass
+
+    # 支持类型标注
+    if ":" in arg_name:
+        arg_name = arg_name.split(":")[0]
 
     arg_name = arg_name.strip()
 
@@ -115,12 +126,29 @@ def get_kwargs_mapping_from_doc(doc_item):
     return kwargs_change
 
 
+# 如果参数映射在这个里面，则忽略检查，因为不是对应关系
 IGNORE_KWARGS_CHANGE_PAIRS = {
+    ("self", "x"),
+    ("some", "mode"),
     ("non_blocking", "blocking"),
     ("requires_grad", "stop_gradient"),
-    ("some", "mode"),
-    ("self", "x"),
+    ("track_running_stats", "use_global_stats"),
 }
+
+
+# 如果参数映射在这个里面，则进行参数映射的转换
+KWARGS_CHANGE_CHANGE_DICT = {
+    # for *split
+    "split_size_or_sections:num_or_indices": {
+        "indices": "num_or_indices",
+        "sections": "num_or_indices",
+    },
+    "indices_or_sections:num_or_indices": {
+        "indices": "num_or_indices",
+        "sections": "num_or_indices",
+    },
+}
+
 
 PRESET_MATCHER_KWARGS_CHANGE_PAIRS = {
     "CreateMatcher": {"size": "shape"},
@@ -130,6 +158,15 @@ PRESET_MATCHER_KWARGS_CHANGE_PAIRS = {
     "IInfoMatcher": {"type": "dtype"},
     "ZeroGradMatcher": {"set_to_none": "set_to_zero"},
     "SvdMatcher": {"some": "full_matrics"},
+    "AtleastMatcher": {"tensors": "inputs"},
+    "SLogDetMatcher": {"A": "x", "input": "x"},
+    "MeshgridMatcher": {"tensors": "args"},
+    "RNNBaseMatcher": {"batch_first": "time_major", "bidirectional": "direction"},
+    "AvgPoolMatcher": {"input": "x", "count_include_pad": "exclusive"},
+    "RoundMatcher": {"input": "x"},
+    "FunctionalPadMatcher": {"input": "x"},
+    "FunctionalSmoothL1LossMatcher": {"beta": "delta"},
+    "OptimOptimizerMatcher": {"params": "parameters"},
 }
 
 
@@ -160,14 +197,30 @@ overloadable_api_aux_set = {
     "torch.sum",
     "torch.nansum",
     "torch.linalg.matrix_rank",
+    # *split kwargs is processed through KWARGS_CHANGE_CHANGE_DICT,
+    # but overload `args_list` is not supported, so ignore it.
+    # (int sections) or (tuple of ints indices)
     "torch.Tensor.dsplit",
+    "torch.Tensor.hsplit",
+    "torch.Tensor.tensor_split",
+    "torch.dsplit",
+    "torch.hsplit",
+    "torch.tensor_split",
 }
 
 cornercase_api_aux_dict = {
-    "torch.Tensor.type": "torch.Tensor.type with TensorTypeMatcher need support torch.nn.Module.type and torch.nn.Module.type",
-    "torch.Tensor.triangular_solve": "torch.Tensor.triangular_solve with TriangularSolveMatcher is too complex",
-    "torch.utils.cpp_extension.CUDAExtension": "torch.utils.cpp_extension.CUDAExtension with CUDAExtensionMatcher list some kwargs",
-    "torch.utils.cpp_extension.CppExtension": "torch.utils.cpp_extension.CppExtension with CUDAExtensionMatcher list some kwargs",
+    "torch.Tensor.type": "torch.Tensor.type with TensorTypeMatcher need support torch.nn.Module.type and torch.nn.Module.type.",
+    "torch.Tensor.triangular_solve": "torch.Tensor.triangular_solve with TriangularSolveMatcher is too complex.",
+    "torch.cuda.nvtx.range_push": "paddle api only support position args, so kwargs_change not works.",
+    "torch.utils.cpp_extension.CUDAExtension": "torch.utils.cpp_extension.CUDAExtension with CUDAExtensionMatcher list some kwargs.",
+    "torch.utils.cpp_extension.CppExtension": "torch.utils.cpp_extension.CppExtension with CUDAExtensionMatcher list some kwargs.",
+    "torch.utils.cpp_extension.BuildExtension": "torch.utils.cpp_extension.BuildExtension only list some kwargs.",
+    "torch.nn.Sequential": "var_arg `arg` is processed by SequentialMatcher.",
+    # bad case, need fix
+    "torch.cuda.stream": "`paddle.device.cuda.stream_guard` args is not as same as `paddle.device.stream_guard`",
+    "torch.nn.Module.named_buffers": "remove_duplicate arg is not supported in paddle.",
+    "torch.nn.Module.named_modules": "remove_duplicate arg is not supported in paddle.",
+    "torch.nn.Module.named_parameters": "remove_duplicate arg is not supported in paddle.",
 }
 
 
@@ -197,6 +250,17 @@ def check_mapping_args(paconvert_item, doc_item):
             continue
         pc_kwargs_change[k] = v
 
+    # 用副本作为检查来源，避免 inplace 修改出现问题
+    for k, v in kwargs_change.copy().items():
+        index = f"{k}:{v}"
+
+        if index in KWARGS_CHANGE_CHANGE_DICT:
+            kwargs_change.pop(k)
+            for new_k, new_v in KWARGS_CHANGE_CHANGE_DICT[index].items():
+                # 如果有设置同名项，就不更新了
+                if new_k not in kwargs_change:
+                    kwargs_change[new_k] = new_v
+
     kwargs_change_equal = True
     for k, v in kwargs_change.items():
         if (k, v) in IGNORE_KWARGS_CHANGE_PAIRS:
@@ -212,7 +276,7 @@ def check_mapping_args(paconvert_item, doc_item):
 
     pc_args_list = paconvert_item.get("args_list", [])
     for pa in pc_args_list:
-        if pa == "*":
+        if pa == "*" or pa == "/":
             continue
         if pa not in args_list:
             raise ValidateError(
@@ -376,6 +440,14 @@ if __name__ == "__main__":
         if "Matcher" not in api_mapping[api]:
             continue
 
+        whitelist_skip = False
+        for wl in validate_whitelist:
+            if re.match(wl, api):
+                whitelist_skip = True
+                break
+        if whitelist_skip:
+            continue
+
         if api in docs_mapping:
             docs_api = api
             # 反查时先直接查 target，找不到再从短到长匹配
@@ -442,6 +514,7 @@ if __name__ == "__main__":
         # validate_errors.sort(key=lambda e: f"{type(e)}", reverse=True)
         if len(validate_errors) > 0:
             verbose_print(f"ERROR: {len(validate_errors)} api validate error.")
+            api_count_to_check = 0
             with open(os.path.join(tool_dir, "validate_error_list.log"), "w") as f:
                 for api, ve in validate_errors:
                     if unittest_validation_data is not None:
@@ -454,10 +527,21 @@ if __name__ == "__main__":
                         verbose_print(f"INFO: OVERLOADABLE {ve}", v_level=3)
                         continue
                     if api in cornercase_api_aux_dict:
-                        print("INFO: CORNERCASE", ve, file=f)
-                        print("INFO: REASON", cornercase_api_aux_dict[api], file=f)
+                        print(
+                            f"INFO: CORNERCASE {ve}, REASON {cornercase_api_aux_dict[api]}",
+                            ve,
+                            file=f,
+                        )
                         verbose_print(f"INFO: CORNERCASE {ve}", v_level=3)
                         continue
 
-                    print(ve, file=f)
-                    verbose_print(f"INFO: {ve}", v_level=3)
+                    api_count_to_check += 1
+                    print(f"WARNING: {ve}", file=f)
+                    verbose_print(f"WARNING: {ve}", v_level=3)
+
+            if api_count_to_check > 0:
+                verbose_print(
+                    f"ERROR: {api_count_to_check} api need to be check manually."
+                )
+            else:
+                verbose_print("INFO: ALL validate error api has been checked.")

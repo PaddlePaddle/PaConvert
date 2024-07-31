@@ -29,16 +29,16 @@ import apibase
 project_dir = os.path.join(os.path.dirname(__file__), "../..")
 output_dir = os.path.dirname(__file__)
 
-whitelist_pattern = [
-    r"^test_distributed_all_gather_object\.py",  # 分布式，本地没跑完，先跳过
-    r"^test_hub_download_url_to_file\.py",  # 要下载，费时间，先跳过了
-    r"^test_(\w*)Tensor\.py",  # 特殊类构造函数，api_mapping.json 不合用，跳过
-    r"^test_Size\.py",  # api_mapping.json 不合用
-    r"^test_nn_ParameterList\.py",  # 该文件没有测试 torch.nn.ParameterLisaa
-    r"^test_utils_cpp_extension_BuildExtension\.py",  # 该文件测试的 api 没有调用
-    r"^test_utils_data_Sampler\.py",  # 该文件测试时仅将 api 作为基类继承
-    r"^test_utils_data_SequentialSampler\.py",  # 该文件测试时仅将 api 作为基类继承
+validate_whitelist = [
+    r"^torch\.(cuda\.)?(\w*)Tensor",  # 特殊类构造函数，api_mapping.json 不合用，跳过
+    r"^torch\.Size",  # api_mapping.json 不合用
+    r"^torch\.nn\.ParameterList",  # 该文件没有测试 torch.nn.ParameterLisaa
+    r"^torch\.utils\.cpp_extension\.BuildExtension",  # 该文件测试的 api 没有调用
+    r"^torch\.utils\.data\.Sampler",  # 该文件测试时仅将 api 作为基类继承
+    r"^torch\.utils\.data\.SequentialSampler",  # 该文件测试时仅将 api 作为基类继承
 ]
+
+validate_whitelist_re = [re.compile(p) for p in validate_whitelist]
 
 var_args_collector_aux_mapping = {
     "torch.Tensor.new_ones": "size",
@@ -90,7 +90,11 @@ overloadable_api_aux_set = {
     "torch.Tensor.scatter",
     "torch.scatter",
     "torch.Tensor.view",
+    "torch.tensor_split",
     "torch.Tensor.dsplit",
+    "torch.dsplit",
+    "torch.Tensor.hsplit",
+    "torch.hsplit",
 }
 
 cornercase_api_aux_dict = {
@@ -126,7 +130,8 @@ def get_test_cases(discovery_paths=["tests"]):
     monkeypatch = pytest.MonkeyPatch()
     unittest_data = {}
     pytest.main(
-        discovery_paths + [], plugins=[RecordAPIRunPlugin(monkeypatch, unittest_data)]
+        discovery_paths + [],
+        plugins=[RecordAPIRunPlugin(monkeypatch, unittest_data)],
     )
     return unittest_data
 
@@ -135,7 +140,6 @@ class RecordAPIRunPlugin:
     def __init__(self, monkeypatch, data):
         self.monkeypatch = monkeypatch
         self.collected_items = data
-        self.whitelist_re = [re.compile(p) for p in whitelist_pattern]
         originapi = apibase.APIBase.run
 
         def update_record(api, code, *, case_name=None, unsupport=False):
@@ -172,11 +176,7 @@ class RecordAPIRunPlugin:
         # Mount the monkeypatch
         collected = []
         for item in items:
-            for w_pat in self.whitelist_re:
-                if w_pat.match(item.nodeid):
-                    break
-            else:
-                collected.append(item)
+            collected.append(item)
 
         items[:] = collected
 
@@ -284,6 +284,16 @@ def check_call_variety(test_data, api_mapping, *, api_alias={}, verbose=True):
     aux_detailed_data = {}
 
     for api, unittest_data in test_data.items():
+        whitelist_skip = False
+        for item in validate_whitelist_re:
+            if item.match(api):
+                whitelist_skip = True
+                break
+        if whitelist_skip:
+            if verbose:
+                print(f"SKIP: {api} is in whitelist, skip validations.")
+            continue
+
         api_target = api_alias.get(api, api)
         if api_target not in api_mapping:
             if "code" not in unittest_data:
@@ -777,7 +787,17 @@ if __name__ == "__main__":
 
         test_data.update(newtest_data)
         with open(test_data_path, "w") as f:
-            json.dump(test_data, f)
+            json.dump(test_data, f, indent=2)
+
+    missing_unittest_list = []
+    for api, data in api_mapping.items():
+        if "Matcher" not in data:
+            continue
+        if api not in test_data:
+            missing_unittest_list.append(api)
+    with open(os.path.join(output_dir, "missing_unittest_list.log"), "w") as f:
+        for api in missing_unittest_list:
+            print(api, file=f)
 
     for alias, target in api_alias_mapping.items():
         if target in api_mapping:

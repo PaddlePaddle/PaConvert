@@ -6320,11 +6320,13 @@
     "paddle_api": "paddle.distribution.IndependentTransform",
     "args_list": [
       "base_transform",
-      "reinterpreted_batch_ndims"
+      "reinterpreted_batch_ndims",
+      "cache_size"
     ],
     "kwargs_change": {
       "base_transform": "base",
-      "reinterpreted_batch_ndims": "reinterpreted_batch_rank"
+      "reinterpreted_batch_ndims": "reinterpreted_batch_rank",
+      "cache_size": ""
     },
     "min_input_args": 2
   },
@@ -6402,11 +6404,13 @@
     "paddle_api": "paddle.distribution.ReshapeTransform",
     "args_list": [
       "in_shape",
-      "out_shape"
+      "out_shape",
+      "cache_size"
     ],
     "kwargs_change": {
       "in_shape": "in_event_shape",
-      "out_shape": "out_event_shape"
+      "out_shape": "out_event_shape",
+      "cache_size": ""
     },
     "min_input_args": 2
   },
@@ -8431,7 +8435,7 @@
       "*",
       "weights_only",
       "mmap",
-      "pickle_load_args"
+      "**pickle_load_args"
     ],
     "kwargs_change": {
       "f": "path",
@@ -11764,7 +11768,10 @@
       "input",
       "*",
       "approximate"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
   },
   "torch.nn.functional.glu": {
     "Matcher": "GenericMatcher",
@@ -12042,7 +12049,10 @@
       "input",
       "weight",
       "bias"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
   },
   "torch.nn.functional.local_response_norm": {
     "Matcher": "GenericMatcher",
@@ -13193,6 +13203,7 @@
     "min_input_args": 1,
     "args_list": [
       "*size",
+      "*",
       "out",
       "dtype",
       "layout",
@@ -13966,11 +13977,13 @@
     "Matcher": "CreateMatcher",
     "paddle_api": "paddle.randn",
     "kwargs_change": {
+      "generator": "",
       "dtype": "dtype"
     },
     "min_input_args": 1,
     "args_list": [
       "*size",
+      "*",
       "generator",
       "out",
       "dtype",
