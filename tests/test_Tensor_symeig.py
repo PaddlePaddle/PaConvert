@@ -24,7 +24,7 @@ def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, -2], [2, 5]])
+        x = torch.tensor([[1, -2j], [2j, 5]])
         result = x.symeig()
         """
     )
@@ -36,7 +36,7 @@ def _test_case_2():
         """
         import torch
         x = torch.tensor([[1, -2j], [2j, 5]])
-        result = x.symeig(eigenvectors=False)
+        result = x.symeig(eigenvectors=False, upper=False)
         """
     )
     obj.run(pytorch_code, ["result"])
