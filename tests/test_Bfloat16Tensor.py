@@ -19,53 +19,42 @@ from apibase import APIBase
 obj = APIBase("torch.BFloat16Tensor")
 
 
-# Paddle not support bfloat16
+# Paddle not support Bfloat16
 def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1.1, 2.5, 3.6, 4.8], dtype=torch.bfloat16)
-        result = a
+        result = torch.BFloat16Tensor([1.5, 2.7, 3])
         """
     )
-    obj.run(pytorch_code, ["result"], unsupport=True, reason="Paddle not support bfloat16")
+    obj.run(pytorch_code, ["result"])
+
 
 def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0.1, -1.5, -2.3, 3.8], dtype=torch.bfloat16)
+        result = torch.BFloat16Tensor()
         """
     )
-    obj.run(pytorch_code, ["result"], unsupport=True, reason="Paddle not support bfloat16")
+    obj.run(pytorch_code, ["result"])
+
 
 def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1.2, 2.3], [-3.4, -4.5]], dtype=torch.bfloat16)
-        result = a
+        result = torch.BFloat16Tensor(2)
         """
     )
-    obj.run(pytorch_code, ["result"], unsupport=True, reason="Paddle not support bfloat16")
+    obj.run(pytorch_code, ["result"])
 
 
 def _test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        abc = torch.tensor([1.999, 2.0001, -3.999, -4.0001], dtype=torch.bfloat16)
-        result = a
+        result = torch.BFloat16Tensor(2,3)
         """
     )
-    obj.run(pytorch_code, ["result"], unsupport=True, reason="Paddle not support bfloat16")
-
-def _test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([-0.1, 0.0, 1.0, 1.1], dtype=torch.bfloat16)
-        result = a
-        """
-    )
-    obj.run(pytorch_code, ["result"], unsupport=True, reason="Paddle not support bfloat16")
+    obj.run(pytorch_code, ["result"])

@@ -21,6 +21,7 @@ obj = APIBase("torch.__version__.split")
 
 # The return value is the version of torch/paddle
 
+
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
@@ -40,6 +41,7 @@ def test_case_2():
     )
     obj.run(pytorch_code, ["result"], check_value=False)
 
+
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
@@ -48,6 +50,7 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
 
 def test_case_4():
     pytorch_code = textwrap.dedent(

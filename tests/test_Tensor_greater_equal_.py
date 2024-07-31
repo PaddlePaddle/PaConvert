@@ -19,7 +19,6 @@ from apibase import APIBase
 obj = APIBase("torch.Tensor.greater_equal_")
 
 
-# `paddle.Tensor.cast_` has bug when continuous inplace on cpu
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """

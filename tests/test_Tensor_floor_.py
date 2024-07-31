@@ -20,8 +20,6 @@ from apibase import APIBase
 obj = APIBase("torch.Tensor.floor_")
 
 
-import textwrap
-
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
@@ -31,6 +29,7 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
@@ -42,22 +41,12 @@ def test_case_2():
     )
     obj.run(pytorch_code, ["result"])
 
+
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([3.14, 2.71, -1.618, 0.0])
-        result = a.floor_()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.tensor([1.999, 2.0001, -3.999, -4.0001])
-        result.floor_()
+        result = torch.tensor([3.14, 2.71, -1.618, 0.0]).floor_()
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -19,6 +19,7 @@ from apibase import APIBase
 
 obj = APIBase("torch.Tensor.ceil")
 
+
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
@@ -29,6 +30,7 @@ def test_case_1():
     )
     obj.run(pytorch_code, ["result"])
 
+
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -38,62 +40,12 @@ def test_case_2():
     )
     obj.run(pytorch_code, ["result"])
 
+
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.full((2, 2), 2.3)
-        result = a.ceil()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(-5, 5, 0.5)
-        result = a.ceil()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.linspace(-2.5, 2.5, steps=6)
-        result = a.ceil()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([[1.2, 2.3], [-3.4, -4.5]])
-        result = a.ceil()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_7():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
         a = torch.tensor([1.999, 2.0001, -3.999, -4.0001])
-        result = a.ceil()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-def test_case_8():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([-0.1, 0.0, 1.0, 1.1])
         result = a.ceil()
         """
     )

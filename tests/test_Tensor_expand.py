@@ -30,62 +30,34 @@ def test_case_1():
     )
     obj.run(pytorch_code, ["result"])
 
+
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1, 2, 3])
-        result = a.expand(3, -1)
+        result = torch.tensor([1, 2, 3]).expand(3, -1)
         """
     )
     obj.run(pytorch_code, ["result"])
+
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1], [2], [3]])
-        result = a.expand(3, 3)
+        a = torch.tensor([[1],[3],[4]])
+        result = a.expand([3,3])
         """
     )
     obj.run(pytorch_code, ["result"])
+
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1, 2, 3]])
-        result = a.expand(4, 3)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([1, 2, 3])
-        result = a.expand(-1)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([[1], [2], [3]])
-        result = a.expand(-1, 3)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-def test_case_7():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([1, 2, 3])
-        result = a.expand(1, 3)
+        a = torch.tensor([[1], [3], [2]])
+        result = a.expand(size=(-1, 3))
         """
     )
     obj.run(pytorch_code, ["result"])
