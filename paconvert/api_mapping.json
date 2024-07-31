@@ -11966,7 +11966,7 @@
     "min_input_args": 1
   },
   "torch.nn.functional.kl_div": {
-    "Matcher": "FunctionalKLDivMatcher",
+    "Matcher": "ProcessReduceMatcher",
     "paddle_api": "paddle.nn.functional.kl_div",
     "args_list": [
       "input",
@@ -11976,6 +11976,9 @@
       "reduction",
       "log_target"
     ],
+    "kwargs_change": {
+      "target": "label"
+    },
     "min_input_args": 2
   },
   "torch.nn.functional.l1_loss": {

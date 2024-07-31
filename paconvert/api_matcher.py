@@ -3370,20 +3370,10 @@ class SpecialXLog1pYMatcher(BaseMatcher):
         return code
 
 
-class FunctionalKLDivMatcher(BaseMatcher):
+class ProcessReduceMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         process_reduce_and_size_average(kwargs)
-
-        if "target" in kwargs:
-            kwargs["label"] = kwargs.pop("target")
-        API_TEMPLATE = "paddle.nn.functional.kl_div(input={}, label={}, reduction={}, log_target={})"
-        code = API_TEMPLATE.format(
-            kwargs.get("input"),
-            kwargs.get("label"),
-            kwargs.pop("reduction", '"""mean"""'),
-            kwargs.get("log_target"),
-        )
-        return code
+        return GenericMatcher.generate_code(self, kwargs)
 
 
 class FunctionalSmoothL1LossMatcher(BaseMatcher):
