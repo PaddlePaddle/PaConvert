@@ -13,8 +13,8 @@
 # limitations under the License.
 
 import textwrap
-import numpy as np
 
+import numpy as np
 from apibase import APIBase
 
 
@@ -119,7 +119,11 @@ class Bfloat16TensorAPIBase(APIBase):
             (
                 pytorch_numpy,
                 paddle_numpy,
-            ) = pytorch_result.float().cpu().numpy(), paddle_result.astype('float32').numpy(False)
+            ) = pytorch_result.float().cpu().numpy(), paddle_result.astype(
+                "float32"
+            ).numpy(
+                False
+            )
 
         if check_stop_gradient:
             assert (
@@ -143,6 +147,7 @@ class Bfloat16TensorAPIBase(APIBase):
             assert np.allclose(
                 pytorch_numpy, paddle_numpy, rtol=rtol, atol=atol
             ), "API ({}): paddle result has diff with pytorch result".format(name)
+
 
 obj = Bfloat16TensorAPIBase("torch.BFloat16Tensor")
 
