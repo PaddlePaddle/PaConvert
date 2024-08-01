@@ -14265,8 +14265,8 @@
       "dim",
       "index",
       "value",
-      "*",
       "src",
+      "*",
       "reduce",
       "out"
     ],
