@@ -1231,6 +1231,8 @@ class TensorMatcher(BaseMatcher):
                     "torch.cuda.BoolTensor" == self.torch_api
                 ):
                     code = "paddle.to_tensor(data={}, dtype='bool')".format(data)
+                elif ("torch.BFloat16Tensor" == self.torch_api):
+                    code = "paddle.to_tensor(data={}, dtype='bfloat16')".format(data)
                 else:
                     if len(args) > 0 and not isinstance(args[0], ast.Name):
                         code = "paddle.to_tensor(data={}, dtype='float32')".format(data)
