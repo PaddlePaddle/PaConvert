@@ -207,10 +207,14 @@ def test_case_16():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        import numpy as np
+        np.random.seed(10)
+        src_np = np.random.randn(3, 5).astype('float32')
         x = torch.arange(15).reshape([3, 5]).type(torch.float32)
-        index = torch.tensor([[0, 1, 2], [3, 0, 1], [1, 2, 4]])
+        index = torch.tensor([[0], [1], [2]])
+        src = torch.tensor(src_np)
         out = torch.zeros(3, 5)
-        result = torch.scatter(x, 1, index, torch.full([3, 3], -1.), reduce='add', out=out)
+        result = torch.scatter(x, 1, index, src, out=out)
         """
     )
     obj.run(pytorch_code, ["out"])
@@ -236,7 +240,7 @@ def test_case_18():
         x = torch.arange(15).reshape([3, 5]).type(torch.float32)
         index = torch.tensor([[0, 1, 2], [3, 0, 1], [1, 2, 4]])
         out = torch.zeros(3, 5)
-        result = torch.scatter(x, 1, index, torch.full([3, 3], -1.), out=out, reduce='multiply')
+        result = torch.scatter(x, 1, index, torch.full([3, 3], -1.), reduce='add', out=out)
         """
     )
     obj.run(pytorch_code, ["out"])
@@ -256,6 +260,19 @@ def test_case_19():
 
 
 def test_case_20():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.arange(15).reshape([3, 5]).type(torch.float32)
+        index = torch.tensor([[0, 1, 2], [3, 0, 1], [1, 2, 4]])
+        out = torch.zeros(3, 5)
+        result = torch.scatter(x, 1, index, torch.full([3, 3], -1.), out=out, reduce='multiply')
+        """
+    )
+    obj.run(pytorch_code, ["out"])
+
+
+def test_case_21():
     pytorch_code = textwrap.dedent(
         """
         import torch
