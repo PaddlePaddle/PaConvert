@@ -5361,6 +5361,16 @@
       "device": "device"
     }
   },
+  "torch.cuda.device": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.CUDAPlace",
+    "args_list": [
+      "device"
+    ],
+    "kwargs_change": {
+      "device": "id"
+    }
+  },
   "torch.cuda.device_count": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.device_count",
@@ -13011,6 +13021,15 @@
       "static_graph"
     ],
     "min_input_args": 1
+  },
+  "torch.nn.parallel.comm.broadcast": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.broadcast",
+    "args_list": [
+      "tensor",
+      "devices",
+      "out"
+    ]
   },
   "torch.nn.utils.clip_grad_norm_": {
     "Matcher": "GenericMatcher",
