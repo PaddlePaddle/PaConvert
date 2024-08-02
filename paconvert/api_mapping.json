@@ -3194,6 +3194,9 @@
       "index": "indices",
       "value": "values",
       "src": "values"
+    },
+    "paddle_default_kwargs": {
+      "broadcast": "False"
     }
   },
   "torch.Tensor.scatter_": {
@@ -3204,18 +3207,19 @@
       "dim",
       "index",
       "value",
-      "*",
       "src",
+      "*",
       "reduce"
     ],
     "kwargs_change": {
       "dim": "axis",
       "index": "indices",
-      "value": "values"
+      "value": "values",
+      "src": "values"
     },
-    "unsupport_args": [
-      "src"
-    ]
+    "paddle_default_kwargs": {
+      "broadcast": "False"
+    }
   },
   "torch.Tensor.scatter_add": {
     "Matcher": "GenericMatcher",
@@ -14277,8 +14281,8 @@
       "dim",
       "index",
       "value",
-      "*",
       "src",
+      "*",
       "reduce",
       "out"
     ],
