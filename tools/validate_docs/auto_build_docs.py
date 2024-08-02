@@ -201,7 +201,7 @@ def get_output_file_path(output_dir, api_name):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Call Variety Check v0.1")
+    parser = argparse.ArgumentParser(description="Auto Build Docs v0.1")
     parser.add_argument(
         "--output_path",
         type=str,
