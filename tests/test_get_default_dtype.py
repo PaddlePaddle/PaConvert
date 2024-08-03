@@ -16,18 +16,30 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.cuda.current_device")
+
+class get_default_dtypeAPIBase(APIBase):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
+    ):
+        assert isinstance(paddle_result, str)
+
+
+obj = get_default_dtypeAPIBase("torch.get_default_dtype")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if not torch.cuda.is_available():
-            result =  1
-        else:
-            torch.cuda.current_device()
-            result = True
+        result = torch.get_default_dtype()
         """
     )
     obj.run(pytorch_code, ["result"])

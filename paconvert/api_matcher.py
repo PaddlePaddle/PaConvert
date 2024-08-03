@@ -2154,7 +2154,6 @@ class IsNonzeroMatcher(BaseMatcher):
 # will implenment by aux_code
 class TensorIndexCopyMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-
         if kwargs["dim"][1:-1].isdigit() and int(kwargs["dim"][1:-1]) == 0:
             code = "{}.scatter_({}, {})".format(
                 self.paddleClass, kwargs["index"], kwargs["source"]
@@ -3133,7 +3132,6 @@ class TensorReshapeMatcher(BaseMatcher):
 
 class TensorReshape_asMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-
         API_TEMPLATE = textwrap.dedent(
             """
             {}.reshape({}.shape)
@@ -3146,7 +3144,6 @@ class TensorReshape_asMatcher(BaseMatcher):
 
 class TensorResize_as_Matcher(BaseMatcher):
     def generate_code(self, kwargs):
-
         API_TEMPLATE = textwrap.dedent(
             """
             {}.reshape_({}.shape)
@@ -3353,7 +3350,6 @@ class TensorMhMatcher(BaseMatcher):
 
 class SpecialXLog1pYMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-
         API_TEMPLATE = textwrap.dedent(
             """
             {} * paddle.log1p(paddle.to_tensor({}))
@@ -3485,11 +3481,14 @@ class RNNMatcher(BaseMatcher):
             batch_first = False
         kwargs["time_major"] = f"not {batch_first}"
 
-        kwargs["direction"] = "'forward'"
         if "bidirectional" in kwargs:
-            if "True" in kwargs["bidirectional"]:
-                direction = "'bidirect'"
+            if "(True)" == kwargs["bidirectional"]:
+                kwargs["direction"] = "'bidirect'"
+            else:
+                kwargs["direction"] = "'forward'"
             kwargs.pop("bidirectional")
+        else:
+            kwargs["direction"] = "'forward'"
 
         return GenericMatcher.generate_code(self, kwargs)
 
@@ -4378,7 +4377,6 @@ class SDPAttnMatcher(BaseMatcher):
 
 class Is_PinnedMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-
         code = f"'pinned' in str({self.paddleClass}.place)"
 
         return code

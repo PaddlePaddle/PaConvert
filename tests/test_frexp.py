@@ -16,18 +16,26 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.cuda.current_device")
+obj = APIBase("torch.frexp")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if not torch.cuda.is_available():
-            result =  1
-        else:
-            torch.cuda.current_device()
-            result = True
+        x = torch.tensor([10.0, -2.5, 0.0, 3.14])
+        result, exponent = torch.frexp(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[128.0, 64.0], [-32.0, 16.0]])
+        result, ex = torch.frexp(x)
         """
     )
     obj.run(pytorch_code, ["result"])

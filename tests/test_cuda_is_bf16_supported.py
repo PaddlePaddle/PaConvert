@@ -16,18 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.cuda.current_device")
+obj = APIBase("torch.cuda.is_bf16_supported")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if not torch.cuda.is_available():
-            result =  1
+        if  torch.cuda.is_available():
+            result = torch.cuda.is_bf16_supported()
         else:
-            torch.cuda.current_device()
-            result = True
+            result = 1
         """
     )
     obj.run(pytorch_code, ["result"])

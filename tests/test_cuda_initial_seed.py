@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.cuda.current_device")
+obj = APIBase("torch.cuda.initial_seed")
 
 
 def test_case_1():
@@ -24,10 +24,9 @@ def test_case_1():
         """
         import torch
         if not torch.cuda.is_available():
-            result =  1
+            result = 1
         else:
-            torch.cuda.current_device()
-            result = True
+            result = torch.cuda.initial_seed()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
