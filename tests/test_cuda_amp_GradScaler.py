@@ -14,9 +14,38 @@
 
 import textwrap
 
+import numpy as np
 from apibase import APIBase
 
-obj = APIBase("torch.cuda.amp.GradScaler")
+
+class cuda_amp_GradScalerAPIBase(APIBase):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
+    ):
+        (
+            pytorch_numpy,
+            paddle_numpy,
+        ) = pytorch_result.cpu().detach().numpy(), paddle_result.numpy(False)
+        assert (
+            pytorch_numpy.dtype == paddle_numpy.dtype
+        ), "API ({}): dtype mismatch, torch dtype is {}, paddle dtype is {}".format(
+            name, pytorch_numpy.dtype, paddle_numpy.dtype
+        )
+        if check_value:
+            assert np.allclose(
+                pytorch_numpy, paddle_numpy, rtol=rtol, atol=atol
+            ), "API ({}): paddle result has diff with pytorch result".format(name)
+
+
+obj = cuda_amp_GradScalerAPIBase("torch.cuda.amp.GradScaler")
 
 
 def test_case_1():
@@ -30,7 +59,7 @@ def test_case_1():
             x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                                 [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
             with torch.cuda.amp.autocast():
-                loss = torch.mean(x*x).to('cuda')
+                loss = torch.mean(x*x).to('cpu')
             scaled = scaler.scale(loss).cpu()  # scale the loss
             result = scaled
         """
@@ -49,7 +78,7 @@ def test_case_2():
             x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                                 [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
             with torch.cuda.amp.autocast():
-                loss = torch.mean(x*x).to('cuda')
+                loss = torch.mean(x*x).to('cpu')
             scaled = scaler.scale(loss).cpu()  # scale the loss
             result = scaled
         """

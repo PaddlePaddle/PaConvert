@@ -14,9 +14,45 @@
 
 import textwrap
 
+import numpy as np
 from apibase import APIBase
 
-obj = APIBase("torch.cuda.BFloat16Tensor")
+
+class cuda_BFloat16TensorAPIBase(APIBase):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
+    ):
+        (
+            pytorch_numpy,
+            paddle_numpy,
+        ) = pytorch_result.float().cpu().numpy(), paddle_result.astype("float32").numpy(
+            False
+        )
+        assert (
+            pytorch_numpy.shape == paddle_numpy.shape
+        ), "API ({}): shape mismatch, torch shape is {}, paddle shape is {}".format(
+            name, pytorch_numpy.shape, paddle_numpy.shape
+        )
+        assert (
+            pytorch_numpy.dtype == paddle_numpy.dtype
+        ), "API ({}): dtype mismatch, torch dtype is {}, paddle dtype is {}".format(
+            name, pytorch_numpy.dtype, paddle_numpy.dtype
+        )
+        if check_value:
+            assert np.allclose(
+                pytorch_numpy, paddle_numpy, rtol=rtol, atol=atol
+            ), "API ({}): paddle result has diff with pytorch result".format(name)
+
+
+obj = cuda_BFloat16TensorAPIBase("torch.cuda.BFloat16Tensor")
 
 
 def test_case_1():

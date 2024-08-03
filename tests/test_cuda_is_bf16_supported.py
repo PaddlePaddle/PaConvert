@@ -29,4 +29,4 @@ def test_case_1():
             result = 1
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)

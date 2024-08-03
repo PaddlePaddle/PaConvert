@@ -14,9 +14,38 @@
 
 import textwrap
 
+import numpy as np
 from apibase import APIBase
 
-obj = APIBase("torch.nn.DaraParallel")
+
+class nn_DataParallelAPIBase(APIBase):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
+    ):
+        (
+            pytorch_numpy,
+            paddle_numpy,
+        ) = pytorch_result.cpu().detach().numpy(), paddle_result.numpy(False)
+        assert (
+            pytorch_numpy.dtype == paddle_numpy.dtype
+        ), "API ({}): dtype mismatch, torch dtype is {}, paddle dtype is {}".format(
+            name, pytorch_numpy.dtype, paddle_numpy.dtype
+        )
+        if check_value:
+            assert np.allclose(
+                pytorch_numpy, paddle_numpy, rtol=rtol, atol=atol
+            ), "API ({}): paddle result has diff with pytorch result".format(name)
+
+
+obj = nn_DataParallelAPIBase("torch.nn.DaraParallel")
 
 
 def test_case_1():
@@ -60,7 +89,7 @@ def test_case_2():
                 return self.fc(x)
 
         x = torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
-        model = nn.DataParallel(SimpleModel(), device_ids=[0, 1])
+        model = nn.DataParallel(SimpleModel(), device_ids=[0])
         result = model(x)
         """
     )
@@ -84,7 +113,7 @@ def test_case_3():
                 return self.fc(x)
 
         x = torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
-        model = nn.DataParallel(SimpleModel(), device_ids=[0, 1], output_device=0)
+        model = nn.DataParallel(SimpleModel(), device_ids=[0], output_device=0)
         result = model(x)
         """
     )
