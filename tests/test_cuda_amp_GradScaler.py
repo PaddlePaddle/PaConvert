@@ -53,7 +53,7 @@ def test_case_1():
         """
         import torch
         if not torch.cuda.is_available():
-            result =  1
+            result = torch.Tensor([1])
         else:
             scaler = torch.cuda.amp.GradScaler()
             x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
@@ -72,7 +72,7 @@ def test_case_2():
         """
         import torch
         if not torch.cuda.is_available():
-            result =  1
+            result = torch.Tensor([1])
         else:
             scaler = torch.cuda.amp.GradScaler(init_scale=32768,growth_interval=1000)
             x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],

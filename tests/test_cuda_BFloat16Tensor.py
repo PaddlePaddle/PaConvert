@@ -60,7 +60,7 @@ def test_case_1():
         """
         import torch
         if not torch.cuda.is_available():
-            result = 1
+            result = torch.Tensor([1])
         else:
             result = torch.cuda.BFloat16Tensor(3, 5)
         """
@@ -74,7 +74,7 @@ def test_case_2():
         import torch
         shape = [2, 2]
         if not torch.cuda.is_available():
-            result = 1
+            result = torch.Tensor([1])
         else:
             result = torch.cuda.BFloat16Tensor(*shape)
         """
@@ -88,7 +88,7 @@ def test_case_3():
         import torch
         dim1, dim2 = 2, 3
         if not torch.cuda.is_available():
-            result = 1
+            result = torch.Tensor([1])
         else:
             result = torch.cuda.BFloat16Tensor(dim1, dim2)
         """
@@ -101,7 +101,7 @@ def test_case_4():
         """
         import torch
         if not torch.cuda.is_available():
-            result = 1
+            result = torch.Tensor([1])
         else:
             result = torch.cuda.BFloat16Tensor([[3, 4], [5, 8]])
         """
@@ -114,7 +114,7 @@ def test_case_5():
         """
         import torch
         if not torch.cuda.is_available():
-            result = 1
+            result = torch.Tensor([1])
         else:
             result = torch.cuda.BFloat16Tensor((1, 2, 3))
         """
@@ -127,7 +127,7 @@ def test_case_6():
         """
         import torch
         if not torch.cuda.is_available():
-            result = 1
+            result = torch.Tensor([1])
         else:
             result = torch.cuda.BFloat16Tensor()
         """

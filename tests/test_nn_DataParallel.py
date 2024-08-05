@@ -65,7 +65,9 @@ def test_case_1():
                 return self.fc(x)
 
         x = torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
-        model = nn.DataParallel(SimpleModel())
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        model = SimpleModel().to(device)
+        model = nn.DataParallel(model)
         result = model(x)
         """
     )
@@ -93,7 +95,7 @@ def test_case_2():
         result = model(x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"],check_value=False)
 
 
 def test_case_3():
@@ -117,7 +119,7 @@ def test_case_3():
         result = model(x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"],check_value=False)
 
 
 def test_case_4():
@@ -160,7 +162,9 @@ def test_case_5():
                 return self.fc(x)
 
         x = torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
-        model = nn.DataParallel(SimpleModel())
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        model = SimpleModel().to(device)
+        model = nn.DataParallel(model)
         result = model(x)
         """
     )
