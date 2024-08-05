@@ -18,7 +18,7 @@ import numpy as np
 from apibase import APIBase
 
 
-class Bfloat16TensorAPIBase(APIBase):
+class BFloat16TensorAPIBase(APIBase):
     def compare(
         self,
         name,
@@ -52,7 +52,7 @@ class Bfloat16TensorAPIBase(APIBase):
             ), "API ({}): paddle result has diff with pytorch result".format(name)
 
 
-obj = Bfloat16TensorAPIBase("torch.BFloat16Tensor")
+obj = BFloat16TensorAPIBase("torch.BFloat16Tensor")
 
 
 def test_case_1():
