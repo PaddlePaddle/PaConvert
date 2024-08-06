@@ -13,20 +13,22 @@
 # limitations under the License.
 
 import textwrap
-
+import pytest
+import paddle
 from apibase import APIBase
 
 obj = APIBase("torch.cuda.is_bf16_supported")
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if  torch.cuda.is_available():
-            result = torch.cuda.is_bf16_supported()
-        else:
-            result = 1
+        result = torch.cuda.is_bf16_supported()
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])

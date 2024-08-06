@@ -1291,6 +1291,10 @@ class TensorMatcher(BaseMatcher):
                     "torch.cuda.BoolTensor" == self.torch_api
                 ):
                     code = "paddle.to_tensor(data={}, dtype='bool')".format(data)
+                elif ("torch.BFloat16Tensor" == self.torch_api) or (
+                            "torch.cuda.BFloat16Tensor" == self.torch_api
+                ):
+                    code = "paddle.to_tensor(data={}, dtype='bfloat16')".format(data)
                 else:
                     if len(args) > 0 and not isinstance(args[0], ast.Name):
                         code = "paddle.to_tensor(data={}, dtype='float32')".format(data)
@@ -1335,6 +1339,11 @@ class TensorMatcher(BaseMatcher):
             or "torch.cuda.ByteTensor" == self.torch_api
         ):
             code = "paddle.zeros(shape={}, dtype='uint8')".format(shape)
+        elif (
+            "torch.BFloat16Tensor" == self.torch_api
+            or "torch.cuda.BFloat16Tensor" == self.torch_api
+        ):
+            code = "paddle.zeros(shape={}, dtype='bfloat16')".format(shape)
         elif ("torch.BoolTensor" == self.torch_api) or (
             "torch.cuda.BoolTensor" == self.torch_api
         ):
@@ -3484,11 +3493,7 @@ class RNNMatcher(BaseMatcher):
         if "bidirectional" in kwargs:
             if "(True)" == kwargs["bidirectional"]:
                 kwargs["direction"] = "'bidirect'"
-            else:
-                kwargs["direction"] = "'forward'"
             kwargs.pop("bidirectional")
-        else:
-            kwargs["direction"] = "'forward'"
 
         return GenericMatcher.generate_code(self, kwargs)
 
@@ -4608,3 +4613,9 @@ class ScalableVarMatcher(BaseMatcher):
 
         code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
         return ast.parse(code).body
+
+class FrexpMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "( paddle.frexp(x = {})[0], paddle.frexp(x = x)[1].astype('int32'))".format(kwargs["input"])
+
+        return code

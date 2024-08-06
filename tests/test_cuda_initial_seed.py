@@ -13,20 +13,21 @@
 # limitations under the License.
 
 import textwrap
-
+import pytest
+import paddle
 from apibase import APIBase
 
 obj = APIBase("torch.cuda.initial_seed")
 
-
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if not torch.cuda.is_available():
-            result = 1
-        else:
-            result = torch.cuda.initial_seed()
+        result = torch.cuda.initial_seed()
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)

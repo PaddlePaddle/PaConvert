@@ -7229,7 +7229,7 @@
     }
   },
   "torch.frexp": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "FrexpMatcher",
     "paddle_api": "paddle.frexp",
     "args_list": [
       "input",

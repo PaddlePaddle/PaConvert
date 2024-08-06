@@ -13,22 +13,23 @@
 # limitations under the License.
 
 import textwrap
-
+import paddle
+import pytest
 import numpy as np
 from apibase import APIBase
 
 
 class cuda_BFloat16TensorAPIBase(APIBase):
     def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
+            self,
+            name,
+            pytorch_result,
+            paddle_result,
+            check_value=True,
+            check_dtype=True,
+            check_stop_gradient=True,
+            rtol=1.0e-6,
+            atol=0.0,
     ):
         (
             pytorch_numpy,
@@ -37,12 +38,12 @@ class cuda_BFloat16TensorAPIBase(APIBase):
             False
         )
         assert (
-            pytorch_numpy.shape == paddle_numpy.shape
+                pytorch_numpy.shape == paddle_numpy.shape
         ), "API ({}): shape mismatch, torch shape is {}, paddle shape is {}".format(
             name, pytorch_numpy.shape, paddle_numpy.shape
         )
         assert (
-            pytorch_numpy.dtype == paddle_numpy.dtype
+                pytorch_numpy.dtype == paddle_numpy.dtype
         ), "API ({}): dtype mismatch, torch dtype is {}, paddle dtype is {}".format(
             name, pytorch_numpy.dtype, paddle_numpy.dtype
         )
@@ -55,81 +56,84 @@ class cuda_BFloat16TensorAPIBase(APIBase):
 obj = cuda_BFloat16TensorAPIBase("torch.cuda.BFloat16Tensor")
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if not torch.cuda.is_available():
-            result = torch.Tensor([1])
-        else:
-            result = torch.cuda.BFloat16Tensor(3, 5)
+        result = torch.cuda.BFloat16Tensor(3, 5)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"],check_value=False)
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
         shape = [2, 2]
-        if not torch.cuda.is_available():
-            result = torch.Tensor([1])
-        else:
-            result = torch.cuda.BFloat16Tensor(*shape)
+        result = torch.cuda.BFloat16Tensor(*shape)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"],check_value=False)
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
         dim1, dim2 = 2, 3
-        if not torch.cuda.is_available():
-            result = torch.Tensor([1])
-        else:
-            result = torch.cuda.BFloat16Tensor(dim1, dim2)
+        result = torch.cuda.BFloat16Tensor(dim1, dim2)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"],check_value=False)
 
-
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if not torch.cuda.is_available():
-            result = torch.Tensor([1])
-        else:
-            result = torch.cuda.BFloat16Tensor([[3, 4], [5, 8]])
+        result = torch.cuda.BFloat16Tensor([[3, 4], [5, 8]])
         """
     )
     obj.run(pytorch_code, ["result"])
 
-
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if not torch.cuda.is_available():
-            result = torch.Tensor([1])
-        else:
-            result = torch.cuda.BFloat16Tensor((1, 2, 3))
+        result = torch.cuda.BFloat16Tensor((1, 2, 3))
         """
     )
     obj.run(pytorch_code, ["result"])
 
-
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if not torch.cuda.is_available():
-            result = torch.Tensor([1])
-        else:
-            result = torch.cuda.BFloat16Tensor()
+        result = torch.cuda.BFloat16Tensor()
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -98,7 +98,7 @@ def test_case_4():
         class SimpleRNNModel(nn.Module):
             def __init__(self):
                 super(SimpleRNNModel, self).__init__()
-                self.gru = nn.GRU(10,5,2,bidirectional=False)
+                self.gru = nn.GRU(10, 5, 2, bidirectional=False)
 
             def forward(self, x):
                 output, h_n = self.gru(x)
@@ -120,7 +120,7 @@ def test_case_5():
         class SimpleRNNModel(nn.Module):
             def __init__(self):
                 super(SimpleRNNModel, self).__init__()
-                self.gru = nn.GRU(10,3,2,True,False,0.7,False)
+                self.gru = nn.GRU(10, 3, 2, True, False, 0.7, False)
 
             def forward(self, x):
                 output, h_n = self.gru(x)

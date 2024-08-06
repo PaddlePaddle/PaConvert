@@ -95,7 +95,7 @@ def test_case_2():
         result = model(x)
         """
     )
-    obj.run(pytorch_code, ["result"],check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -119,7 +119,7 @@ def test_case_3():
         result = model(x)
         """
     )
-    obj.run(pytorch_code, ["result"],check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
