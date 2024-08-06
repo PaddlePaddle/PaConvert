@@ -134,3 +134,80 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def _test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        class SimpleRNNModel(nn.Module):
+            def __init__(self):
+                super(SimpleRNNModel, self).__init__()
+                self.rnn = nn.RNN(input_size=10, hidden_size=20, num_layers=2, nonlinearity='tanh', bias=False, batch_first=True, dropout=0.5,
+                                    bidirectional=True)
+
+            def forward(self, x):
+                output, hidden = self.rnn(x)
+                return output
+
+        x = torch.randn(5, 3, 10)
+        model = SimpleRNNModel()
+        result = model(x)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle not support bias =False",
+    )
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        class SimpleRNNModel(nn.Module):
+            def __init__(self):
+                super(SimpleRNNModel, self).__init__()
+                self.rnn = nn.RNN(10, 20, 3, 'relu', True, False, 0.6, bidirectional=True)
+
+            def forward(self, x):
+                output, hidden = self.rnn(x)
+                return output
+
+        x = torch.randn(3, 5, 10)
+        model = SimpleRNNModel()
+        result = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        class SimpleRNNModel(nn.Module):
+            def __init__(self):
+                super(SimpleRNNModel, self).__init__()
+                self.rnn = nn.RNN(10, 20, 2,  batch_first=True, dropout=0.5, bias=True, nonlinearity='relu',
+                                    bidirectional=True)
+
+            def forward(self, x):
+                output, hidden = self.rnn(x)
+                return output
+
+        x = torch.randn(5, 3, 10)
+        model = SimpleRNNModel()
+        result = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
