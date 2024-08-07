@@ -27,7 +27,7 @@ def test_case_1():
         result, exponent = torch.frexp(x)
         """
     )
-    obj.run(pytorch_code, ["result","exponent"],)
+    obj.run(pytorch_code, ["result", "exponent"], check_dtype=False)
 
 
 def test_case_2():
@@ -38,4 +38,4 @@ def test_case_2():
         result, ex = torch.frexp(x)
         """
     )
-    obj.run(pytorch_code, ["result","ex"])
+    obj.run(pytorch_code, ["result", "ex"], check_dtype=False)

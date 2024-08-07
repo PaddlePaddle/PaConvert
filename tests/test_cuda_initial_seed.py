@@ -13,11 +13,13 @@
 # limitations under the License.
 
 import textwrap
-import pytest
+
 import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.cuda.initial_seed")
+
 
 @pytest.mark.skipif(
     condition=not paddle.device.is_compiled_with_cuda(),

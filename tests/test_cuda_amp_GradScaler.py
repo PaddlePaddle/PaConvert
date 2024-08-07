@@ -14,9 +14,9 @@
 
 import textwrap
 
+import numpy as np
 import paddle
 import pytest
-import numpy as np
 from apibase import APIBase
 
 

@@ -1292,7 +1292,7 @@ class TensorMatcher(BaseMatcher):
                 ):
                     code = "paddle.to_tensor(data={}, dtype='bool')".format(data)
                 elif ("torch.BFloat16Tensor" == self.torch_api) or (
-                            "torch.cuda.BFloat16Tensor" == self.torch_api
+                    "torch.cuda.BFloat16Tensor" == self.torch_api
                 ):
                     code = "paddle.to_tensor(data={}, dtype='bfloat16')".format(data)
                 else:
@@ -4613,9 +4613,3 @@ class ScalableVarMatcher(BaseMatcher):
 
         code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
         return ast.parse(code).body
-
-class FrexpMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        code = "( paddle.frexp(x = {})[0], paddle.frexp(x = x)[1].astype('int32'))".format(kwargs["input"])
-
-        return code

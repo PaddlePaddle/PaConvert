@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import textwrap
+
 import paddle
 import pytest
 from apibase import APIBase
@@ -20,19 +21,20 @@ from apibase import APIBase
 
 class cuda_current_deviceAPIBase(APIBase):
     def compare(
-            self,
-            name,
-            pytorch_result,
-            paddle_result,
-            check_value=True,
-            check_dtype=True,
-            check_stop_gradient=True,
-            rtol=1.0e-6,
-            atol=0.0,
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
     ):
         assert isinstance(pytorch_result, int), "pytorch_result should be int"
-        assert isinstance(paddle_result,
-                          paddle.base.libpaddle.CUDAPlace), "paddle rusult should be class 'paddle.base.libpaddle.CUDAPlace'"
+        assert isinstance(
+            paddle_result, paddle.base.libpaddle.CUDAPlace
+        ), "paddle rusult should be class 'paddle.base.libpaddle.CUDAPlace'"
 
 
 obj = cuda_current_deviceAPIBase("torch.cuda.current.device")
