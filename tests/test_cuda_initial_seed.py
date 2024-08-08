@@ -18,26 +18,7 @@ import paddle
 import pytest
 from apibase import APIBase
 
-
-class cuda_current_deviceAPIBase(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        assert isinstance(pytorch_result, int), "pytorch_result should be int"
-        assert isinstance(
-            paddle_result, paddle.base.libpaddle.CUDAPlace
-        ), "paddle rusult should be class 'paddle.base.libpaddle.CUDAPlace'"
-
-
-obj = cuda_current_deviceAPIBase("torch.cuda.current.device")
+obj = APIBase("torch.cuda.initial_seed")
 
 
 @pytest.mark.skipif(
@@ -48,7 +29,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.cuda.current_device()
+        result = torch.cuda.initial_seed()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)

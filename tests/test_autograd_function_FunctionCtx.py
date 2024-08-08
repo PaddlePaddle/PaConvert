@@ -11,44 +11,42 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
-import paddle
-import pytest
 from apibase import APIBase
 
-
-class cuda_current_deviceAPIBase(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        assert isinstance(pytorch_result, int), "pytorch_result should be int"
-        assert isinstance(
-            paddle_result, paddle.base.libpaddle.CUDAPlace
-        ), "paddle rusult should be class 'paddle.base.libpaddle.CUDAPlace'"
+obj = APIBase("torch.autograd.function.FunctionCtx")
 
 
-obj = cuda_current_deviceAPIBase("torch.cuda.current.device")
-
-
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="can only run on paddle with CUDA",
-)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.cuda.current_device()
+        from torch.autograd import Function
+
+        # Inherit from Function
+        class MyFunction(Function):
+            @staticmethod
+            def forward(ctx, x):
+                # Store some tensors for backward
+                ctx.x = x
+                return x * 2
+
+            @staticmethod
+            def backward(ctx, grad_output):
+                # Retrieve stored tensors
+                x = ctx.x
+                grad_input = grad_output * 2
+                return grad_input
+
+        data = torch.tensor([1.0, 2.0, 3.0], requires_grad=True)
+        output = MyFunction.apply(data)
+        output.backward(torch.tensor([1.0, 1.0, 1.0]))
+
+        result = data.grad
+        result.requires_grad = False
         """
     )
     obj.run(pytorch_code, ["result"])

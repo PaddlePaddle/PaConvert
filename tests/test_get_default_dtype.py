@@ -14,12 +14,10 @@
 
 import textwrap
 
-import paddle
-import pytest
 from apibase import APIBase
 
 
-class cuda_current_deviceAPIBase(APIBase):
+class get_default_dtypeAPIBase(APIBase):
     def compare(
         self,
         name,
@@ -31,24 +29,17 @@ class cuda_current_deviceAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        assert isinstance(pytorch_result, int), "pytorch_result should be int"
-        assert isinstance(
-            paddle_result, paddle.base.libpaddle.CUDAPlace
-        ), "paddle rusult should be class 'paddle.base.libpaddle.CUDAPlace'"
+        assert isinstance(paddle_result, str)
 
 
-obj = cuda_current_deviceAPIBase("torch.cuda.current.device")
+obj = get_default_dtypeAPIBase("torch.get_default_dtype")
 
 
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="can only run on paddle with CUDA",
-)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.cuda.current_device()
+        result = torch.get_default_dtype()
         """
     )
     obj.run(pytorch_code, ["result"])
