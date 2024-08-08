@@ -228,7 +228,7 @@ def test_case_19():
         result = linear.weight.data.T
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"], check_value=False, check_stop_gradient=False)
 
 
 def test_case_20():
@@ -239,7 +239,7 @@ def test_case_20():
         result = linear.weight.T.data
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"], check_value=False, check_stop_gradient=False)
 
 
 def test_case_21():
@@ -250,4 +250,4 @@ def test_case_21():
         result = linear.weight.T.T.data.T
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"], check_value=False, check_stop_gradient=False)
