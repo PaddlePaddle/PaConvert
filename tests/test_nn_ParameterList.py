@@ -41,9 +41,4 @@ def test_case_2():
         result = list(choices)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="Can not support insert multi line to ast.ListComp",
-    )
+    obj.run(pytorch_code, ["result"])

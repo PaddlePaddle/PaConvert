@@ -23,6 +23,20 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        x = torch.tensor([[1.0, 1.0, 1.0]], requires_grad=True)
+        x.detach_()
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
+# paddle.Tensor.data return stop_gradient=False
+# torch.Tensor.data return requires_grad=False, which is detached
+# paddle should set stop_gradient=True
+def _test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
         x = torch.tensor([[1.0, 1.0, 1.0],
                         [2.0, 2.0, 2.0],
                         [3.0, 3.0, 3.0]], requires_grad=True)
@@ -33,14 +47,3 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["y"])
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[1.0, 1.0, 1.0]], requires_grad=True)
-        x.detach_()
-        """
-    )
-    obj.run(pytorch_code, ["x"])

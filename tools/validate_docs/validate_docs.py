@@ -52,8 +52,8 @@ def check_unchange_matcher(paconvert_item, doc_item):
 
     assert matcher == "UnchangeMatcher"
 
-    torch_api = doc_item["torch_api"]
-    paddle_api = doc_item["paddle_api"]
+    torch_api = doc_item["src_api"]
+    paddle_api = doc_item["dst_api"]
 
     api_mapping_rules = {
         "torch.optim.": "paddle.optimizer.",
@@ -106,8 +106,8 @@ def get_kwargs_mapping_from_doc(doc_item):
     kwargs_change = {}
 
     for am in args_mapping:
-        at = extract_doc_arg(am["torch_arg"])
-        ap = extract_doc_arg(am["paddle_arg"])
+        at = extract_doc_arg(am["src_arg"])
+        ap = extract_doc_arg(am["dst_arg"])
         note = am["note"]
 
         if at == "-":
@@ -133,6 +133,8 @@ IGNORE_KWARGS_CHANGE_PAIRS = {
     ("non_blocking", "blocking"),
     ("requires_grad", "stop_gradient"),
     ("track_running_stats", "use_global_stats"),
+    ("async_op", "sync_op"),
+    ("time_major", "batch_first"),
 }
 
 
@@ -228,11 +230,13 @@ def check_mapping_args(paconvert_item, doc_item):
     if doc_item["mapping_type"] == "组合替代实现":
         return
 
+    torch_api = doc_item["src_api"]
+
     matcher = paconvert_item["Matcher"]
 
     args_list = [
         extract_doc_arg(a["arg_name"], remove_star=False)
-        for a in doc_item["torch_signature"].get("args", [])
+        for a in doc_item["src_signature"].get("args", [])
     ]
     if args_list == []:
         assert (
@@ -271,7 +275,7 @@ def check_mapping_args(paconvert_item, doc_item):
 
     if not kwargs_change_equal:
         raise ValidateError(
-            f'{doc_item["torch_api"]} {matcher}: `kwargs_change` not match: doc is {kwargs_change}, but paconvert is {paconvert_item.get("kwargs_change", {})}'
+            f'{doc_item["src_api"]} {matcher}: `kwargs_change` not match: doc is {kwargs_change}, but paconvert is {paconvert_item.get("kwargs_change", {})}'
         )
 
     pc_args_list = paconvert_item.get("args_list", [])
@@ -280,20 +284,20 @@ def check_mapping_args(paconvert_item, doc_item):
             continue
         if pa not in args_list:
             raise ValidateError(
-                f'{doc_item["torch_api"]} {matcher}: `args_list` not match: paconvert is {pc_args_list}, but doc is {args_list}'
+                f'{doc_item["src_api"]} {matcher}: `args_list` not match: paconvert is {pc_args_list}, but doc is {args_list}'
             )
     for da in args_list:
         if da == "*args" or da == "**kwargs":
             continue
         if da not in pc_args_list:
             raise ValidateError(
-                f'{doc_item["torch_api"]} {matcher}: `args_list` not match: paconvert is {pc_args_list}, but doc is {args_list}'
+                f'{doc_item["src_api"]} {matcher}: `args_list` not match: paconvert is {pc_args_list}, but doc is {args_list}'
             )
 
 
 def check_api_mapping(paconvert_item, doc_item):
     matcher = paconvert_item["Matcher"]
-    torch_api = doc_item["torch_api"]
+    torch_api = doc_item["src_api"]
     mapping_type = doc_item["mapping_type"]
 
     mapping_type_1 = [
@@ -305,10 +309,8 @@ def check_api_mapping(paconvert_item, doc_item):
     ]
 
     if mapping_type in mapping_type_1:
-        if "paddle_api" not in doc_item:
-            raise DocDataError(
-                f"{torch_api}: `paddle_api` is not in doc_item: {doc_item}"
-            )
+        if "dst_api" not in doc_item:
+            raise DocDataError(f"{torch_api}: `dst` is not in doc_item: {doc_item}")
 
         # 不用检查的特例
         if matcher == "UnchangeMatcher":
@@ -318,18 +320,16 @@ def check_api_mapping(paconvert_item, doc_item):
             raise PaConvertDataError(
                 f"{torch_api}: `paddle_api` is not in paconvert_item: {paconvert_item}, but doc `paddle_api` is {doc_item['paddle_api']}"
             )
-        if doc_item["paddle_api"] != paconvert_item["paddle_api"]:
+        if doc_item["dst_api"] != paconvert_item["paddle_api"]:
             raise ValidateError(
-                f'{torch_api}: `paddle_api` not match: doc is `{doc_item["paddle_api"]}`, but paconvert is `{paconvert_item["paddle_api"]}`'
+                f'{torch_api}: `paddle_api` not match: doc is `{doc_item["dst_api"]}`, but paconvert is `{paconvert_item["paddle_api"]}`'
             )
         return
 
     mapping_type_2 = ["torch 参数更多"]
     if mapping_type in mapping_type_2:
-        if "paddle_api" not in doc_item:
-            raise DocDataError(
-                f"{torch_api}: `paddle_api` is not in doc_item: {doc_item}"
-            )
+        if "dst_api" not in doc_item:
+            raise DocDataError(f"{torch_api}: `dst_api` is not in doc_item: {doc_item}")
 
         # 不用检查的特例
         if matcher == "UnchangeMatcher":
@@ -337,11 +337,11 @@ def check_api_mapping(paconvert_item, doc_item):
 
         if "paddle_api" not in paconvert_item:
             raise PaConvertDataError(
-                f"{torch_api}: `paddle_api` is not in paconvert_item: {paconvert_item}, but doc `paddle_api` is {doc_item['paddle_api']}"
+                f"{torch_api}: `paddle_api` is not in paconvert_item: {paconvert_item}, but doc `dst_api` is {doc_item['dst_api']}"
             )
-        if doc_item["paddle_api"] != paconvert_item["paddle_api"]:
+        if doc_item["dst_api"] != paconvert_item["paddle_api"]:
             raise ValidateError(
-                f'{torch_api}: `paddle_api` not match: doc is `{doc_item["paddle_api"]}`, but paconvert is `{paconvert_item["paddle_api"]}`'
+                f'{torch_api}: `paddle_api` not match: doc is `{doc_item["dst_api"]}`, but paconvert is `{paconvert_item["paddle_api"]}`'
             )
         return
 
@@ -351,10 +351,8 @@ def check_api_mapping(paconvert_item, doc_item):
         "输入参数类型不一致",
     ]
     if mapping_type in mapping_type_3:
-        if "paddle_api" not in doc_item:
-            raise DocDataError(
-                f"{torch_api}: `paddle_api` is not in doc_item: {doc_item}"
-            )
+        if "dst_api" not in doc_item:
+            raise DocDataError(f"{torch_api}: `dst_api` is not in doc_item: {doc_item}")
 
         # 不用检查的特例
         if matcher == "UnchangeMatcher":
@@ -362,11 +360,11 @@ def check_api_mapping(paconvert_item, doc_item):
 
         if "paddle_api" not in paconvert_item:
             raise PaConvertDataError(
-                f"{torch_api}: `paddle_api` is not in paconvert_item: {paconvert_item}, but doc `paddle_api` is {doc_item['paddle_api']}"
+                f"{torch_api}: `paddle_api` is not in paconvert_item: {paconvert_item}, but doc `dst_api` is {doc_item['dst_api']}"
             )
-        if doc_item["paddle_api"] != paconvert_item["paddle_api"]:
+        if doc_item["dst_api"] != paconvert_item["paddle_api"]:
             raise ValidateError(
-                f'{torch_api}: `paddle_api` not match: doc is `{doc_item["paddle_api"]}`, but paconvert is `{paconvert_item["paddle_api"]}`'
+                f'{torch_api}: `paddle_api` not match: doc is `{doc_item["dst_api"]}`, but paconvert is `{paconvert_item["paddle_api"]}`'
             )
         return
 
@@ -391,6 +389,12 @@ if __name__ == "__main__":
         type=str,
         default=None,
         help="Specify the unittest validation file path.",
+    )
+    parser.add_argument(
+        "--docs_mappings",
+        type=str,
+        default=os.path.join(tool_dir, "docs_mappings.json"),
+        help="Sepcify the docs_mappings.json (from docs/ repo) file path",
     )
     parser.add_argument(
         "--verbose_level",
@@ -427,9 +431,9 @@ if __name__ == "__main__":
             )
         # 允许有多个原 api，但只有一个目标 api
 
-    with open(os.path.join(tool_dir, "docs_mappings.json"), "r") as f:
+    with open(args.docs_mappings, "r") as f:
         docs_mapping_data = json.load(f)
-        docs_mapping = dict([(i["torch_api"], i) for i in docs_mapping_data])
+        docs_mapping = dict([(i["src_api"], i) for i in docs_mapping_data])
 
     missing_docs = []
     validated_apis = []
