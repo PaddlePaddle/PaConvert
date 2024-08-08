@@ -3555,33 +3555,6 @@ class Tuple2ListMatcher(BaseMatcher):
         return code
 
 
-class ParameterMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "requires_grad" in kwargs:
-            requires_grad_v = kwargs["requires_grad"]
-        else:
-            requires_grad_v = "True"
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {} = paddle.create_parameter(shape={}.shape, dtype={}.numpy().dtype, default_initializer=paddle.nn.initializer.Assign({}))
-            {}.stop_gradient = not {}
-            {}
-            """
-        )
-        out = get_unique_name("out")
-        code = API_TEMPLATE.format(
-            out,
-            kwargs["data"],
-            kwargs["data"],
-            kwargs["data"],
-            out,
-            requires_grad_v,
-            out,
-        )
-        return code
-
-
 class TensorTakeMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
