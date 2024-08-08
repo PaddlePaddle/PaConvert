@@ -1291,6 +1291,10 @@ class TensorMatcher(BaseMatcher):
                     "torch.cuda.BoolTensor" == self.torch_api
                 ):
                     code = "paddle.to_tensor(data={}, dtype='bool')".format(data)
+                elif ("torch.BFloat16Tensor" == self.torch_api) or (
+                    "torch.cuda.BFloat16Tensor" == self.torch_api
+                ):
+                    code = "paddle.to_tensor(data={}, dtype='bfloat16')".format(data)
                 else:
                     if len(args) > 0 and not isinstance(args[0], ast.Name):
                         code = "paddle.to_tensor(data={}, dtype='float32')".format(data)
@@ -1334,7 +1338,11 @@ class TensorMatcher(BaseMatcher):
             "torch.ByteTensor" == self.torch_api
             or "torch.cuda.ByteTensor" == self.torch_api
         ):
-            code = "paddle.zeros(shape={}, dtype='uint8')".format(shape)
+            code = "paddle.empty(shape={}, dtype='uint8')".format(shape)
+        elif ("torch.BFloat16Tensor" == self.torch_api) or (
+            "torch.cuda.BFloat16Tensor" == self.torch_api
+        ):
+            code = "paddle.empty(shape={}, dtype='bfloat16')".format(shape)
         elif ("torch.BoolTensor" == self.torch_api) or (
             "torch.cuda.BoolTensor" == self.torch_api
         ):

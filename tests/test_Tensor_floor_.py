@@ -11,55 +11,42 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.symeig", is_aux_api=True)
+obj = APIBase("torch.Tensor.floor_")
 
 
-# This function was deprecated since version 1.9 and is now removed.
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, -2j], [2j, 5]])
-        result = x.symeig()
+        a = torch.tensor([1.1, 2.5, 3.6, 4.8])
+        result = a.floor_()
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, -2j], [2j, 5]])
-        result = x.symeig(eigenvectors=False, upper=False)
+        result = torch.tensor([0.1, -1.5, -2.3, 3.8])
+        result.floor_()
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1, -2j], [2j, 5]])
-        result = x.symeig(False, True)
+        result = torch.tensor([3.14, 2.71, -1.618, 0.0]).floor_()
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-def _test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[1, -2j], [2j, 5]])
-        result = x.symeig(True, True)
-        result = [result[0], torch.abs(result[1])]
-        """
-    )
-    obj.run(pytorch_code, ["result"], atol=1e-7)
