@@ -11,34 +11,52 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.zero_")
+obj = APIBase("torch.__version__.split")
+
+# The return value is the version of torch/paddle
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Tensor([[1.,2.], [3.,4.]])
-        result.zero_()
+        result = torch.__version__.split()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
-# paddle.Tensor.data return stop_gradient=False
-# torch.Tensor.data return requires_grad=False, which is detached
-# paddle should set stop_gradient=True
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        linear = torch.nn.Linear(5, 5)
-        result = linear.weight.data.zero_()
-       """
+        result = torch.__version__.split(sep='234')
+        """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.__version__.split(sep='234',maxsplit=5)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.__version__.split(maxsplit=3)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

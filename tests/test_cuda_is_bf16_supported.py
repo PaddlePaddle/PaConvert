@@ -14,31 +14,22 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.zero_")
+obj = APIBase("torch.cuda.is_bf16_supported")
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Tensor([[1.,2.], [3.,4.]])
-        result.zero_()
+        result = torch.cuda.is_bf16_supported()
         """
     )
-    obj.run(pytorch_code, ["result"])
-
-
-# paddle.Tensor.data return stop_gradient=False
-# torch.Tensor.data return requires_grad=False, which is detached
-# paddle should set stop_gradient=True
-def _test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        linear = torch.nn.Linear(5, 5)
-        result = linear.weight.data.zero_()
-       """
-    )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)

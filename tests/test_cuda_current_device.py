@@ -14,17 +14,41 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
-obj = APIBase("torch.cuda.current_device")
+
+class cuda_current_deviceAPIBase(APIBase):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
+    ):
+        assert isinstance(pytorch_result, int), "pytorch_result should be int"
+        assert isinstance(
+            paddle_result, paddle.base.libpaddle.CUDAPlace
+        ), "paddle rusult should be class 'paddle.base.libpaddle.CUDAPlace'"
 
 
-def _test_case_1():
+obj = cuda_current_deviceAPIBase("torch.cuda.current.device")
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.cuda.current_device()
-        result = True
+        result = torch.cuda.current_device()
         """
     )
     obj.run(pytorch_code, ["result"])

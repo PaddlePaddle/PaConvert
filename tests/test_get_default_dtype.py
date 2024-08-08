@@ -16,29 +16,30 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.zero_")
+
+class get_default_dtypeAPIBase(APIBase):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
+    ):
+        assert isinstance(paddle_result, str)
+
+
+obj = get_default_dtypeAPIBase("torch.get_default_dtype")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Tensor([[1.,2.], [3.,4.]])
-        result.zero_()
+        result = torch.get_default_dtype()
         """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-# paddle.Tensor.data return stop_gradient=False
-# torch.Tensor.data return requires_grad=False, which is detached
-# paddle should set stop_gradient=True
-def _test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        linear = torch.nn.Linear(5, 5)
-        result = linear.weight.data.zero_()
-       """
     )
     obj.run(pytorch_code, ["result"])

@@ -16,29 +16,26 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.zero_")
+obj = APIBase("torch.frexp")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Tensor([[1.,2.], [3.,4.]])
-        result.zero_()
+        x = torch.tensor([10.0, -2.5, 0.0, 3.14])
+        result, exponent = torch.frexp(x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "exponent"], check_dtype=False)
 
 
-# paddle.Tensor.data return stop_gradient=False
-# torch.Tensor.data return requires_grad=False, which is detached
-# paddle should set stop_gradient=True
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        linear = torch.nn.Linear(5, 5)
-        result = linear.weight.data.zero_()
-       """
+        x = torch.tensor([[128.0, 64.0], [-32.0, 16.0]])
+        result, ex = torch.frexp(x)
+        """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "ex"], check_dtype=False)

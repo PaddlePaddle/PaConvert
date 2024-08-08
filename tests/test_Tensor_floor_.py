@@ -11,34 +11,42 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.zero_")
+obj = APIBase("torch.Tensor.floor_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.Tensor([[1.,2.], [3.,4.]])
-        result.zero_()
+        a = torch.tensor([1.1, 2.5, 3.6, 4.8])
+        result = a.floor_()
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# paddle.Tensor.data return stop_gradient=False
-# torch.Tensor.data return requires_grad=False, which is detached
-# paddle should set stop_gradient=True
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        linear = torch.nn.Linear(5, 5)
-        result = linear.weight.data.zero_()
-       """
+        result = torch.tensor([0.1, -1.5, -2.3, 3.8])
+        result.floor_()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([3.14, 2.71, -1.618, 0.0]).floor_()
+        """
     )
     obj.run(pytorch_code, ["result"])

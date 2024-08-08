@@ -1291,6 +1291,10 @@ class TensorMatcher(BaseMatcher):
                     "torch.cuda.BoolTensor" == self.torch_api
                 ):
                     code = "paddle.to_tensor(data={}, dtype='bool')".format(data)
+                elif ("torch.BFloat16Tensor" == self.torch_api) or (
+                    "torch.cuda.BFloat16Tensor" == self.torch_api
+                ):
+                    code = "paddle.to_tensor(data={}, dtype='bfloat16')".format(data)
                 else:
                     if len(args) > 0 and not isinstance(args[0], ast.Name):
                         code = "paddle.to_tensor(data={}, dtype='float32')".format(data)
@@ -1334,7 +1338,11 @@ class TensorMatcher(BaseMatcher):
             "torch.ByteTensor" == self.torch_api
             or "torch.cuda.ByteTensor" == self.torch_api
         ):
-            code = "paddle.zeros(shape={}, dtype='uint8')".format(shape)
+            code = "paddle.empty(shape={}, dtype='uint8')".format(shape)
+        elif ("torch.BFloat16Tensor" == self.torch_api) or (
+            "torch.cuda.BFloat16Tensor" == self.torch_api
+        ):
+            code = "paddle.empty(shape={}, dtype='bfloat16')".format(shape)
         elif ("torch.BoolTensor" == self.torch_api) or (
             "torch.cuda.BoolTensor" == self.torch_api
         ):
@@ -2154,7 +2162,6 @@ class IsNonzeroMatcher(BaseMatcher):
 # will implenment by aux_code
 class TensorIndexCopyMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-
         if kwargs["dim"][1:-1].isdigit() and int(kwargs["dim"][1:-1]) == 0:
             code = "{}.scatter_({}, {})".format(
                 self.paddleClass, kwargs["index"], kwargs["source"]
@@ -3133,7 +3140,6 @@ class TensorReshapeMatcher(BaseMatcher):
 
 class TensorReshape_asMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-
         API_TEMPLATE = textwrap.dedent(
             """
             {}.reshape({}.shape)
@@ -3146,7 +3152,6 @@ class TensorReshape_asMatcher(BaseMatcher):
 
 class TensorResize_as_Matcher(BaseMatcher):
     def generate_code(self, kwargs):
-
         API_TEMPLATE = textwrap.dedent(
             """
             {}.reshape_({}.shape)
@@ -3353,7 +3358,6 @@ class TensorMhMatcher(BaseMatcher):
 
 class SpecialXLog1pYMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-
         API_TEMPLATE = textwrap.dedent(
             """
             {} * paddle.log1p(paddle.to_tensor({}))
@@ -3485,10 +3489,9 @@ class RNNMatcher(BaseMatcher):
             batch_first = False
         kwargs["time_major"] = f"not {batch_first}"
 
-        kwargs["direction"] = "'forward'"
         if "bidirectional" in kwargs:
-            if "True" in kwargs["bidirectional"]:
-                direction = "'bidirect'"
+            if "(True)" == kwargs["bidirectional"]:
+                kwargs["direction"] = "'bidirect'"
             kwargs.pop("bidirectional")
 
         return GenericMatcher.generate_code(self, kwargs)
@@ -3552,33 +3555,6 @@ class Tuple2ListMatcher(BaseMatcher):
 
         code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
 
-        return code
-
-
-class ParameterMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "requires_grad" in kwargs:
-            requires_grad_v = kwargs["requires_grad"]
-        else:
-            requires_grad_v = "True"
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {} = paddle.create_parameter(shape={}.shape, dtype={}.numpy().dtype, default_initializer=paddle.nn.initializer.Assign({}))
-            {}.stop_gradient = not {}
-            {}
-            """
-        )
-        out = get_unique_name("out")
-        code = API_TEMPLATE.format(
-            out,
-            kwargs["data"],
-            kwargs["data"],
-            kwargs["data"],
-            out,
-            requires_grad_v,
-            out,
-        )
         return code
 
 
@@ -4378,7 +4354,6 @@ class SDPAttnMatcher(BaseMatcher):
 
 class Is_PinnedMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-
         code = f"'pinned' in str({self.paddleClass}.place)"
 
         return code
