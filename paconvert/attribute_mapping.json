@@ -6,8 +6,8 @@
     "Matcher": "UnchangeMatcher"
   },
   "torch.Tensor.data": {
-    "Matcher": "Attribute2Func",
-    "paddle_api": "paddle.Tensor.detach"
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.data"
   },
   "torch.Tensor.device": {
     "Matcher": "GenericMatcher",

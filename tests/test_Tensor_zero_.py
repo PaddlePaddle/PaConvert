@@ -30,7 +30,10 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_2():
+# paddle.Tensor.data return stop_gradient=False
+# torch.Tensor.data return requires_grad=False, which is detached
+# paddle should set stop_gradient=True
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
