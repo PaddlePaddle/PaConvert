@@ -1339,9 +1339,8 @@ class TensorMatcher(BaseMatcher):
             or "torch.cuda.ByteTensor" == self.torch_api
         ):
             code = "paddle.empty(shape={}, dtype='uint8')".format(shape)
-        elif (
-            "torch.BFloat16Tensor" == self.torch_api
-            or "torch.cuda.BFloat16Tensor" == self.torch_api
+        elif ("torch.BFloat16Tensor" == self.torch_api) or (
+            "torch.cuda.BFloat16Tensor" == self.torch_api
         ):
             code = "paddle.empty(shape={}, dtype='bfloat16')".format(shape)
         elif ("torch.BoolTensor" == self.torch_api) or (
