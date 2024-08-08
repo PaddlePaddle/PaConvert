@@ -52,7 +52,7 @@ def test_case_1():
 # pytorch_result = {'param_groups': [{'dampening': 0, 'differentiable': False, 'foreach': None, 'fused': None, ...}], 'state': {0: {'momentum_buffer': None}, 1: {'momentum_buffer': None}}}
 # paddle_result = {}
 # AssertionError: {0: {'momentum_buffer': None}, 1: {'momentum_buffer': None}} != {}
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch

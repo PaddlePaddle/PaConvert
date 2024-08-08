@@ -19,10 +19,12 @@ from apibase import APIBase
 obj = APIBase("paddle.DataParallel")
 
 
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        import os
+        os.environ["USE_LIBUV"] = "0"
         torch.distributed.init_process_group(
             "nccl",
             init_method="tcp://127.0.0.1:23456",
@@ -37,10 +39,12 @@ def _test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        import os
+        os.environ["USE_LIBUV"] = "0"
         torch.distributed.init_process_group(
             "nccl",
             init_method="tcp://127.0.0.1:23456",
