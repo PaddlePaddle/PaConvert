@@ -10658,12 +10658,20 @@
     }
   },
   "torch.nn.Parameter": {
-    "Matcher": "ParameterMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.base.framework.EagerParamBase.from_tensor",
     "args_list": [
       "data",
       "requires_grad"
     ],
-    "min_input_args": 1
+    "kwargs_change": {
+      "data": "tensor",
+      "requires_grad": "trainable"
+    },
+    "paddle_default_kwargs": {
+      "tensor": "paddle.to_tensor([])"
+    },
+    "min_input_args": 0
   },
   "torch.nn.ParameterList": {
     "Matcher": "GenericMatcher",

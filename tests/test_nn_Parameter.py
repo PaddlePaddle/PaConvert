@@ -23,7 +23,6 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch
         x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
         result = torch.nn.Parameter(x)
         """
@@ -35,7 +34,6 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch
         x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
         result = torch.nn.Parameter(x, requires_grad=False)
         """
@@ -46,7 +44,6 @@ def test_case_2():
 def test_alias_case_1():
     pytorch_code = textwrap.dedent(
         """
-        import torch
         import torch
         x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
         result = torch.nn.parameter.Parameter(x)
@@ -60,7 +57,6 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch
         x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
         result = torch.nn.Parameter(x, False)
         """
@@ -72,7 +68,6 @@ def test_case_3():
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
-        import torch
         import torch
         x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
         result = torch.nn.Parameter(data=x, requires_grad=False)
@@ -86,9 +81,18 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch
         x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
         result = torch.nn.Parameter(requires_grad=False, data=x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.nn.Parameter()
         """
     )
     obj.run(pytorch_code, ["result"])
