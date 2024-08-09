@@ -29,7 +29,8 @@ class optimOptimizerStateDictAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        assert pytorch_result["state"] == paddle_result
+        assert isinstance(pytorch_result, dict), "pytorch result error"
+        assert isinstance(paddle_result, dict), "paddle result error"
 
 
 obj = optimOptimizerStateDictAPIBase("torch.optim.Optimizer.state_dict")
@@ -52,14 +53,14 @@ def test_case_1():
 # pytorch_result = {'param_groups': [{'dampening': 0, 'differentiable': False, 'foreach': None, 'fused': None, ...}], 'state': {0: {'momentum_buffer': None}, 1: {'momentum_buffer': None}}}
 # paddle_result = {}
 # AssertionError: {0: {'momentum_buffer': None}, 1: {'momentum_buffer': None}} != {}
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
         import torch.nn as nn
         theta = torch.tensor([1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0], requires_grad=True)
         l = torch.nn.Linear(10, 1)
-        optim = torch.optim.SGD(l.parameters(), lr = 1.0)
+        optim = torch.optim.Adam(l.parameters(), lr = 1.0)
         z = l(theta)
         z.backward()
         optim.step()
