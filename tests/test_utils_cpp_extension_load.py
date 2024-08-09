@@ -20,6 +20,7 @@ from apibase import APIBase
 
 obj = APIBase("torch.utils.cpp_extension.load")
 
+
 # need to add cpp file
 def _test_case_1():
     pytorch_code = textwrap.dedent(

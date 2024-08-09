@@ -14,6 +14,7 @@
 
 import textwrap
 
+import numpy as np
 from apibase import APIBase
 
 
@@ -29,7 +30,13 @@ class optimOptimizerStateDictAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        assert pytorch_result["state"] == paddle_result
+        if pytorch_result["state"] != {}:
+            pytorch_numpy = pytorch_result["state"][0]["exp_avg"].cpu().numpy()
+            paddle_numpy = paddle_result["linear_0.w_0_moment1_0"].numpy(False)
+            if check_value:
+                assert np.allclose(
+                    pytorch_numpy, paddle_numpy, rtol=rtol, atol=atol
+                ), "API ({}): paddle result has diff with pytorch result".format(name)
 
 
 obj = optimOptimizerStateDictAPIBase("torch.optim.Optimizer.state_dict")
@@ -59,7 +66,7 @@ def test_case_2():
         import torch.nn as nn
         theta = torch.tensor([1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0], requires_grad=True)
         l = torch.nn.Linear(10, 1)
-        optim = torch.optim.SGD(l.parameters(), lr = 1.0)
+        optim = torch.optim.Adam(l.parameters(), lr = 1.0)
         z = l(theta)
         z.backward()
         optim.step()

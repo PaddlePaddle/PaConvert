@@ -18,6 +18,7 @@ from apibase import APIBase
 
 obj = APIBase("torch.symeig", is_aux_api=True)
 
+
 # This function was deprecated since version 1.9 and is now removed.
 def _test_case_1():
     pytorch_code = textwrap.dedent(
