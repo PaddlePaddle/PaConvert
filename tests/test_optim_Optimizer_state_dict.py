@@ -32,7 +32,7 @@ class optimOptimizerStateDictAPIBase(APIBase):
     ):
         if pytorch_result["state"] != {}:
             pytorch_numpy = pytorch_result["state"][0]["exp_avg"].cpu().numpy()
-            paddle_numpy = paddle_result["linear_0.w_0_moment1_0"].numpy(False)
+            paddle_numpy = paddle_result["linear_1317.b_0_beta1_pow_acc_0"].numpy(False)
             if check_value:
                 assert np.allclose(
                     pytorch_numpy, paddle_numpy, rtol=rtol, atol=atol
