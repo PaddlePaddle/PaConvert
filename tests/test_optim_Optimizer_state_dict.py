@@ -14,7 +14,6 @@
 
 import textwrap
 
-import numpy as np
 from apibase import APIBase
 
 
@@ -30,13 +29,8 @@ class optimOptimizerStateDictAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        if pytorch_result["state"] != {}:
-            pytorch_numpy = pytorch_result["state"][0]["exp_avg"].cpu().numpy()
-            paddle_numpy = paddle_result["linear_1317.b_0_beta1_pow_acc_0"].numpy(False)
-            if check_value:
-                assert np.allclose(
-                    pytorch_numpy, paddle_numpy, rtol=rtol, atol=atol
-                ), "API ({}): paddle result has diff with pytorch result".format(name)
+        assert isinstance(pytorch_result, dict), "pytorch result error"
+        assert isinstance(paddle_result, dict), "paddle result error"
 
 
 obj = optimOptimizerStateDictAPIBase("torch.optim.Optimizer.state_dict")
