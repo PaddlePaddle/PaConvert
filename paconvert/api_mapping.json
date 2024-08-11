@@ -8657,7 +8657,7 @@
   },
   "torch.lu_solve": {},
   "torch.lu_unpack": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "Lu_unpackMatcher",
     "paddle_api": "paddle.linalg.lu_unpack",
     "min_input_args": 2,
     "args_list": [

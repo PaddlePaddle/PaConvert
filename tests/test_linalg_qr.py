@@ -53,7 +53,7 @@ def test_case_3():
 
 
 # when mode='r', torch return empty Q and R, but paddle only return R, should fix Matcher to adapt
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch

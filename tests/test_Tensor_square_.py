@@ -20,7 +20,7 @@ obj = APIBase("torch.Tensor.square_")
 
 
 # AttributeError: module 'paddle.base.libpaddle.eager.ops.legacy' has no attribute 'square_'
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch

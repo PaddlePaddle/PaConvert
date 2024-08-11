@@ -56,7 +56,7 @@ def test_case_3():
 
 
 # paddle not support out
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
