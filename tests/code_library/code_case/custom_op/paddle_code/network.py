@@ -1,8 +1,9 @@
+import paddle
 import GeometricKernelAttention
 from .function import custom_op_module
 
 
-class GeometryKernelAttention(BaseModule):
+class GeometryKernelAttention(paddle.nn.Layer):
 
     def forward(self, query, key=None, value=None, identity=None, query_pos
         =None, key_padding_mask=None, reference_points=None, spatial_shapes

@@ -1,6 +1,7 @@
+import torch
 from .function import GeometricKernelAttentionFunc, GeometricKernelAttentionFuncLoad
 
-class GeometryKernelAttention(BaseModule):
+class GeometryKernelAttention(torch.nn.Module):
     def forward(self,
                 query,
                 key=None,
