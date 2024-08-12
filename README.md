@@ -59,7 +59,9 @@ python paconvert/main.py --in_dir torch_project [--out_dir paddle_project] [--ex
 
 ## 转换示例
 
-以下面 Pytorch 代码为例，转换前：
+以下面 Pytorch 代码为例：
+
+#### 转换前
 ```
 import torch
 import torch.nn as nn
@@ -104,7 +106,7 @@ for i in range(10):
 
 ```
 
-转换后：
+#### 转换后
 ```
 import paddle
 
@@ -146,7 +148,9 @@ for i in range(10):
 
 ```
 
-打印信息如下：
+#### 日志打印
+
+在转换过程中，终端打印信息如下：
 
 ```text
 ===========================================
@@ -206,9 +210,9 @@ ______      _____                          _
 
 ```
 
-转换完成后，会打印 **转换总结** ，包含 **总 API 数、成功转换 API 数、不支持转换 API 数、转化率** 。例如，上述代码里一共有 16 个 Pytorch API（包含基于Pytorch的第三方库例如mmcv），其中 15 个被成功转换，1 个不支持转换，因此转换率为 `93.750%` 。
+转换完成后，会打印 **转换总结** ，包含 **总 API 数、成功转换 API 数、不支持转换 API 数、转换率** 。例如，上述代码里一共有 16 个 Pytorch API（含基于Pytorch的第三方库API例如mmcv），其中 15 个被成功转换，仅 1 个不支持转换，因此转换率为 `93.750%` 。
 
-**对于成功转换的 API**：代码风格会略有变化，会 **补全 API 全名、补全参数关键字、移除注释、移除多余空行** 。因为在代码识别的过程中，**注释、空行** 等无法识别。
+**对于成功转换的 API**：代码风格会略有变化，会 **补全 API 全名、补全参数关键字、移除注释、移除多余空行** 。因为代码在扫描识别的过程中，**注释、空行** 等无法识别，将被移除。
 
 **对于不支持转换的 API**：将 **补全为 Pytorch API 全名**，同时在行前通过 `>>>>>>` 的形式加以标记，用户需要对该 API 进行人工手动转换，然后删除 `>>>>>>` 标记，否则代码无法运行。
 
@@ -219,7 +223,7 @@ ______      _____                          _
 
 | 模型名                                                     | Pytorch代码地址                 | 支持类型   |
 | ----------------------------------------------------------| ------------------------------ | -------- |
-| [llama](https://github.com/PaddlePaddle/PaConvert/blob/master/docs/TypicalCase_Llama.md)   | https://github.com/meta-llama/llama.git  | 推理 |
+| [Llama](https://github.com/PaddlePaddle/PaConvert/blob/master/docs/TypicalCase_Llama.md)   | https://github.com/meta-llama/llama.git  | 推理 |
 | [Qwen](https://github.com/PaddlePaddle/PaConvert/blob/master/docs/TypicalCase_Qwen.md)     | https://huggingface.co/Qwen/Qwen-7B-Chat  | 推理 |
 
 
