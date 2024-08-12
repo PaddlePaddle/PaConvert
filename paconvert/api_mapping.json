@@ -1585,6 +1585,9 @@
     "kwargs_change": {
       "dim": "axis",
       "index": "indices"
+    },
+    "paddle_default_kwargs": {
+      "broadcast": "False"
     }
   },
   "torch.Tensor.gcd": {
@@ -7322,6 +7325,9 @@
       "dim": "axis",
       "index": "indices",
       "sparse_grad": ""
+    },
+    "paddle_default_kwargs": {
+      "broadcast": "False"
     }
   },
   "torch.gcd": {

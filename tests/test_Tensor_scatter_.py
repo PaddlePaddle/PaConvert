@@ -189,7 +189,7 @@ def test_case_13():
         result = x.scatter_(index=index, src=torch.full([3, 3], -1.), dim=1)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "x"])
 
 
 def test_case_14():
@@ -201,7 +201,7 @@ def test_case_14():
         result = x.scatter_(dim=1, src=torch.full([3, 3], -1.), reduce='add', index=index)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "x"])
 
 
 def test_case_15():
@@ -213,7 +213,7 @@ def test_case_15():
         result = x.scatter_(reduce='multiply', dim=1, index=index, src=torch.full([3, 3], -1.))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "x"])
 
 
 def test_case_16():
@@ -225,7 +225,7 @@ def test_case_16():
         result = x.scatter_(index=index, value=10.0, dim=1)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "x"])
 
 
 def test_case_17():
@@ -237,7 +237,7 @@ def test_case_17():
         result = x.scatter_(dim=1, value=3.0, reduce='add', index=index)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "x"])
 
 
 def test_case_18():
@@ -249,4 +249,4 @@ def test_case_18():
         result = x.scatter_(reduce='multiply', dim=1, index=index, value=-3.0)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "x"])
