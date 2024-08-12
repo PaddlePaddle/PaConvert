@@ -64,29 +64,44 @@ python paconvert/main.py --in_dir torch_project [--out_dir paddle_project] [--ex
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import torch.nn.Linear as Linear
 import torch.nn.functional as F
+from torch.nn import Linear
+import mmcv
 
 class MyNet(nn.Module):
     test = "str"
 
-    def __init__(self):
-        self._fc1 = torch.nn.Linear(10, 10)
-        self._fc2 = nn.Linear(10, 10)
-        self._fc3 = Linear(10, 10)
+    def __init__(self, num_classes=10):
+        super(MyNet, self).__init__()
+        self._conv = mmcv.cnn.ConvModule(4, 6, (3, 3))
+        self._pool = nn.MaxPool2d(kernel_size=2, stride=1)
 
-    @torch.no_grad()
+        self._fc1 = torch.nn.Linear(6 * 25 * 25, 120)  # 假设输入图像为28x28，通过卷积和池化后尺寸变为25x25
+        self._fc2 = nn.Linear(120, out_features=84)
+        self._fc3 = Linear(in_features=84, out_features=num_classes)
+
     def forward(self, x):
-        x = self._fc1(x)
+        x = self._conv(x)
+        x = self._pool(x)
+
+        x = self._fc1(torch.flatten(x, 1))
         x = self._fc2(x)
         x = self._fc3(x)
         y = torch.add(x, x)
-        return F.relu(y)
+        return y
 
 net = MyNet()
-
-sgd = optim.SGD(net.parameters(), lr=0.1, momentum=0.9)
+sgd = optim.SGD(net.parameters(), lr=0.01)
 lr = optim.lr_scheduler.MultiStepLR(sgd, milestones=[2, 4, 6], gamma=0.8)
+
+for i in range(10):
+    x = torch.rand(8, 4, 28, 28)
+    out = net(x).sum()
+
+    sgd.zero_grad()
+    out.backward()
+    sgd.step()
+
 ```
 
 转换后：
@@ -97,26 +112,38 @@ import paddle
 class MyNet(paddle.nn.Layer):
     test = 'str'
 
-    def __init__(self):
-        self._fc1 = paddle.nn.Linear(in_features=10, out_features=10)
-        self._fc2 = paddle.nn.Linear(in_features=10, out_features=10)
-        self._fc3 = paddle.nn.Linear(in_features=10, out_features=10)
+    def __init__(self, num_classes=10):
+        super(MyNet, self).__init__()
+>>>>>>        self._conv = mmcv.cnn.ConvModule(4, 6, (3, 3))
+        self._pool = paddle.nn.MaxPool2D(kernel_size=2, stride=1)
+        self._fc1 = paddle.nn.Linear(in_features=6 * 25 * 25, out_features=120)
+        self._fc2 = paddle.nn.Linear(in_features=120, out_features=84)
+        self._fc3 = paddle.nn.Linear(in_features=84, out_features=num_classes)
 
-    @paddle.no_grad()
     def forward(self, x):
-        x = self._fc1(x)
+        x = self._conv(x)
+        x = self._pool(x)
+        x = self._fc1(paddle.flatten(x=x, start_axis=1))
         x = self._fc2(x)
         x = self._fc3(x)
         y = paddle.add(x=x, y=paddle.to_tensor(x))
-        return paddle.nn.functional.relu(x=y)
+        return y
 
 
 net = MyNet()
->>>>>>sgd = torch.optim.SGD(net.parameters(), lr=0.1, momentum=0.9)
+sgd = paddle.optimizer.SGD(parameters=net.parameters(), learning_rate=0.01,
+    weight_decay=0.0)
 tmp_lr = paddle.optimizer.lr.MultiStepDecay(milestones=[2, 4, 6], gamma=0.8,
     learning_rate=sgd.get_lr())
 sgd.set_lr_scheduler(tmp_lr)
 lr = tmp_lr
+for i in range(10):
+    x = paddle.rand(shape=[8, 4, 28, 28])
+    out = net(x).sum()
+    sgd.clear_gradients(set_to_zero=False)
+    out.backward()
+    sgd.step()
+
 ```
 
 打印信息如下：
@@ -125,33 +152,40 @@ lr = tmp_lr
 ===========================================
 PyTorch to Paddle Convert Start ------>:
 ===========================================
-Start convert file: /workspace/PaConvert/test_code.py --> /workspace/PaConvert/paddle_project/test_code.py
+Start convert file: /workspace/PaConvert1/test_code.py --> /workspace/PaConvert1/paddle_project/test_code.py
 [test_code.py:1] remove 'import torch'
 [test_code.py:2] remove 'import torch.nn as nn'
 [test_code.py:3] remove 'import torch.optim as optim'
-[test_code.py:4] remove 'import torch.nn.Linear as Linear'
-[test_code.py:5] remove 'import torch.nn.functional as F'
+[test_code.py:4] remove 'import torch.nn.functional as F'
+[test_code.py:5] remove 'from torch.nn import Linear'
+[test_code.py:6] remove 'import mmcv'
 [test_code.py] add 'import paddle' in line 1
 [test_code.py:1] [Success] Convert torch.nn.Module to Paddle
-[test_code.py:11] [Success] Convert torch.nn.Linear to Paddle
-[test_code.py:12] [Success] Convert torch.nn.Linear to Paddle
-[test_code.py:13] [Success] Convert torch.nn.Linear to Paddle
-[test_code.py:20] [Success] Convert torch.add to Paddle
-[test_code.py:21] [Success] Convert torch.nn.functional.relu to Paddle
-[test_code.py:15] [Success] Convert torch.no_grad to Paddle
-[test_code.py:25] [Success] Convert Class Method: torch.nn.Module.parameters to Paddle
-[test_code.py:25] [Not Support] convert torch.optim.SGD to Paddle is not supported currently
-[test_code.py:26] [Success] Convert torch.optim.lr_scheduler.MultiStepLR to Paddle
-Finish convert /workspace/PaConvert/test_code.py --> /workspace/PaConvert/paddle_project/test_code.py
+[test_code.py:13] [Not Support] convert mmcv.cnn.ConvModule to Paddle is not supported currently
+[test_code.py:14] [Success] Convert torch.nn.MaxPool2d to Paddle
+[test_code.py:16] [Success] Convert torch.nn.Linear to Paddle
+[test_code.py:17] [Success] Convert torch.nn.Linear to Paddle
+[test_code.py:18] [Success] Convert torch.nn.Linear to Paddle
+[test_code.py:24] [Success] Convert torch.flatten to Paddle
+[test_code.py:27] [Success] Convert torch.add to Paddle
+[test_code.py:31] [Success] Convert Class Method: torch.nn.Module.parameters to Paddle
+[test_code.py:31] [Success] Convert torch.optim.SGD to Paddle
+[test_code.py:32] [Success] Convert torch.optim.lr_scheduler.MultiStepLR to Paddle
+[test_code.py:35] [Success] Convert torch.rand to Paddle
+[test_code.py:36] [Success] Convert Class Method: torch.Tensor.sum to Paddle
+[test_code.py:38] [Success] Convert Class Method: torch.nn.Module.zero_grad to Paddle
+[test_code.py:39] [Success] Convert Class Method: torch.Tensor.backward to Paddle
+[test_code.py:40] [Success] Convert Class Method: torch.optim.Optimizer.step to Paddle, just remain the same
+Finish convert /workspace/PaConvert1/test_code.py --> /workspace/PaConvert1/paddle_project/test_code.py
 
 
 ===========================================
 Convert Summary:
 ===========================================
-There are 10 Pytorch APIs in this Project:
- 9  Pytorch APIs have been converted to Paddle successfully!
+There are 16 Pytorch APIs in this Project:
+ 15  Pytorch APIs have been converted to Paddle successfully!
  1  Pytorch APIs are not supported to convert to Paddle currently!
- Convert Rate is: 90.000%
+ Convert Rate is: 93.750%
 
 For these 1 Pytorch APIs that currently do not support to convert, which have been marked by >>> before the line,
 please refer to [https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html]
@@ -172,7 +206,7 @@ ______      _____                          _
 
 ```
 
-转换完成后，会打印 **转换总结** ，包含 **总 API 数、成功转换 API 数、不支持转换 API 数、转化率** 。例如，上述代码里一共有 10 个 Pytorch API，其中 9 个被成功转换，1 个不支持转换，因此转换率为 `90.00%` 。
+转换完成后，会打印 **转换总结** ，包含 **总 API 数、成功转换 API 数、不支持转换 API 数、转化率** 。例如，上述代码里一共有 16 个 Pytorch API（包含基于Pytorch的第三方库例如mmcv），其中 15 个被成功转换，1 个不支持转换，因此转换率为 `93.750%` 。
 
 **对于成功转换的 API**：代码风格会略有变化，会 **补全 API 全名、补全参数关键字、移除注释、移除多余空行** 。因为在代码识别的过程中，**注释、空行** 等无法识别。
 
