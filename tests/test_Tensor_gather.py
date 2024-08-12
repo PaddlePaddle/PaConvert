@@ -70,3 +70,56 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        result = a.gather(1, torch.tensor([[0]]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]]).gather(0, torch.tensor([[0]]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        dim = 0
+        index = torch.tensor([[0]])
+        result = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]]).gather(dim, index)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]]).gather(dim=1, index=torch.tensor([[0]]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]]).gather(index=torch.tensor([[0]]), dim=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
