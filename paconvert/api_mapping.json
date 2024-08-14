@@ -8274,7 +8274,7 @@
     }
   },
   "torch.linalg.qr": {
-    "Matcher": "DoubleAssignMatcher",
+    "Matcher": "Linalg_qrMatcher",
     "paddle_api": "paddle.linalg.qr",
     "min_input_args": 1,
     "args_list": [

@@ -4614,26 +4614,72 @@ class Lu_unpackMatcher(BaseMatcher):
                 out2 = "out2"
                 out3 = "out3"
                 if "unpack_ludata" in kwargs and kwargs["unpack_ludata"] == "(False)":
-                    out2 = "paddle.Tensor()"
-                    out3 = "paddle.Tensor()"
+                    out2 = "paddle.paddle.to_tensor([])"
+                    out3 = "paddle.paddle.to_tensor([])"
                 if "unpack_pivots" in kwargs and kwargs["unpack_pivots"] == "(False)":
-                    out1 = "paddle.Tensor()"
+                    out1 = "paddle.paddle.to_tensor([])"
                 API_TEMPLATE = textwrap.dedent(
                     """
                     out1, out2, out3 = {}({})
-                    {} = ({},{},{})
-                    out1,out2,out3
+                    paddle.assign({}, {}[0]), paddle.assign({}, {}[1]), paddle.assign({}, {}[2])
                     """
                 )
                 code = API_TEMPLATE.format(
                     self.get_paddle_api(),
                     self.kwargs_to_str(kwargs),
-                    out_v,
                     out1,
+                    out_v,
                     out2,
+                    out_v,
                     out3,
+                    out_v,
                 )
         else:
             code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
+        return code
+
+
+class Linalg_qrMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs = self.set_paddle_default_kwargs(kwargs)
+        kwargs_change = self.api_mapping.get("kwargs_change", {})
+        for k in kwargs_change:
+            if k in kwargs:
+                if kwargs[k]:
+                    kwargs[kwargs_change[k]] = kwargs.pop(k)
+                else:
+                    kwargs.pop(k)
+        if "mode" in kwargs and kwargs["mode"] == '"""r"""':
+            if "out" in kwargs:
+                out_v = kwargs.pop("out")
+                API_TEMPLATE = textwrap.dedent(
+                    """
+                    out1, out2 = (paddle.to_tensor([]),{}({}))
+                    paddle.assign(out1, {}[0]), paddle.assign(out2, {}[1])
+                    """
+                )
+                code = API_TEMPLATE.format(
+                    self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v, out_v
+                )
+            else:
+                code = "(paddle.to_tensor([]),{}({}))".format(
+                    self.get_paddle_api(), self.kwargs_to_str(kwargs)
+                )
+        else:
+            if "out" in kwargs:
+                out_v = kwargs.pop("out")
+                API_TEMPLATE = textwrap.dedent(
+                    """
+                    out1, out2 = {}({})
+                    paddle.assign(out1, {}[0]), paddle.assign(out2, {}[1])
+                    """
+                )
+                code = API_TEMPLATE.format(
+                    self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v, out_v
+                )
+            else:
+                code = "{}({})".format(
+                    self.get_paddle_api(), self.kwargs_to_str(kwargs)
+                )
         return code
