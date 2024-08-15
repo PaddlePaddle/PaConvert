@@ -12359,7 +12359,7 @@
     }
   },
   "torch.nn.functional.pad": {
-    "Matcher": "FunctionalPadMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.pad",
     "min_input_args": 2,
     "args_list": [
@@ -12367,7 +12367,13 @@
       "pad",
       "mode",
       "value"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x"
+    },
+    "paddle_default_kwargs": {
+      "pad_from_left_axis": "False"
+    }
   },
   "torch.nn.functional.pairwise_distance": {
     "Matcher": "GenericMatcher",

@@ -110,3 +110,107 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x_shape = (3, 3, 4, 2)
+        x = torch.arange(torch.prod(torch.Tensor(x_shape)), dtype=torch.float32).reshape(x_shape) + 1
+        result = F.pad(x, [0, 2, 1, 0, 2, 3], value=1, mode='constant')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x_shape = (3, 3, 4, 2)
+        x = torch.arange(torch.prod(torch.Tensor(x_shape)), dtype=torch.float32).reshape(x_shape) + 1
+        result = F.pad(x, [0, 2], value=1, mode='constant')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x_shape = (3, 3, 4, 2)
+        x = torch.arange(torch.prod(torch.Tensor(x_shape)), dtype=torch.float32).reshape(x_shape) + 1
+        result = F.pad(input=x, pad=[0, 2, 1, 0, 2, 3], value=1, mode='constant')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x_shape = (3, 3, 4, 2)
+        x = torch.arange(torch.prod(torch.Tensor(x_shape)), dtype=torch.float32).reshape(x_shape) + 1
+        result = F.pad(input=x, value=1, mode='constant', pad=[0, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x_shape = (3, 3, 4, 2)
+        x = torch.arange(torch.prod(torch.Tensor(x_shape)), dtype=torch.float32).reshape(x_shape) + 1
+        result = F.pad(x, [0, 0, 0, 1, 2, 1, 2, 3])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x_shape = (3, 3, 4, 2)
+        x = torch.arange(torch.prod(torch.Tensor(x_shape)), dtype=torch.float32).reshape(x_shape) + 1
+        result = F.pad(x, [0, 1, 2, 3])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x_shape = (3, 3, 4, 2)
+        x = torch.arange(torch.prod(torch.Tensor(x_shape)), dtype=torch.float32).reshape(x_shape) + 1
+        result = F.pad(x, [0, 2, 1, 0, 2, 3])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_15():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x_shape = (3, 3, 4, 2)
+        x = torch.arange(torch.prod(torch.Tensor(x_shape)), dtype=torch.float32).reshape(x_shape) + 1
+        result = F.pad(x, [0, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
