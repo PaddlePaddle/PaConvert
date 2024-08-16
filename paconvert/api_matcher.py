@@ -363,7 +363,7 @@ class UnchangeMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         new_args = self.parse_args(args)
         new_kwargs = self.parse_kwargs(kwargs)
-        if new_kwargs is not None or new_args is not None:
+        if new_kwargs is not None and new_args is not None:
             code = "{}({})".format(
                 self.get_paddle_api(), self.args_and_kwargs_to_str(new_args, new_kwargs)
             )
