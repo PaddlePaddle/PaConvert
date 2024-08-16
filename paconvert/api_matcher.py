@@ -3414,14 +3414,8 @@ class DoubleAssignMatcher(BaseMatcher):
             code = API_TEMPLATE.format(
                 self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v, out_v
             )
-            if self.get_paddle_api() == "paddle.linalg.qr" and "mode" in kwargs:
-                if kwargs["mode"] == '"""r"""':
-                    code = "({},{})".format("paddle.to_tensor([])", code)
         else:
             code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-            if self.get_paddle_api() == "paddle.linalg.qr" and "mode" in kwargs:
-                if kwargs["mode"] == '"""r"""':
-                    code = "({},{})".format("paddle.to_tensor([])", code)
         return code
 
 
@@ -4603,37 +4597,32 @@ class Lu_unpackMatcher(BaseMatcher):
                 else:
                     kwargs.pop(k)
 
-        if "out" in kwargs:
-            out_v = kwargs.pop("out")
-            if out_v == "None":
-                code = "{}({})".format(
-                    self.get_paddle_api(), self.kwargs_to_str(kwargs)
-                )
-            else:
-                out1 = "out1"
-                out2 = "out2"
-                out3 = "out3"
-                if "unpack_ludata" in kwargs and kwargs["unpack_ludata"] == "(False)":
-                    out2 = "paddle.paddle.to_tensor([])"
-                    out3 = "paddle.paddle.to_tensor([])"
-                if "unpack_pivots" in kwargs and kwargs["unpack_pivots"] == "(False)":
-                    out1 = "paddle.paddle.to_tensor([])"
-                API_TEMPLATE = textwrap.dedent(
-                    """
-                    out1, out2, out3 = {}({})
-                    paddle.assign({}, {}[0]), paddle.assign({}, {}[1]), paddle.assign({}, {}[2])
-                    """
-                )
-                code = API_TEMPLATE.format(
-                    self.get_paddle_api(),
-                    self.kwargs_to_str(kwargs),
-                    out1,
-                    out_v,
-                    out2,
-                    out_v,
-                    out3,
-                    out_v,
-                )
+        out_v = kwargs.pop("out", "None")
+        if out_v != "None":
+            out1 = "out1"
+            out2 = "out2"
+            out3 = "out3"
+            if "unpack_ludata" in kwargs and kwargs["unpack_ludata"] == "(False)":
+                out2 = "paddle.paddle.to_tensor([])"
+                out3 = "paddle.paddle.to_tensor([])"
+            if "unpack_pivots" in kwargs and kwargs["unpack_pivots"] == "(False)":
+                out1 = "paddle.paddle.to_tensor([])"
+            API_TEMPLATE = textwrap.dedent(
+                """
+                out1, out2, out3 = {}({})
+                paddle.assign({}, {}[0]), paddle.assign({}, {}[1]), paddle.assign({}, {}[2])
+                """
+            )
+            code = API_TEMPLATE.format(
+                self.get_paddle_api(),
+                self.kwargs_to_str(kwargs),
+                out1,
+                out_v,
+                out2,
+                out_v,
+                out3,
+                out_v,
+            )
         else:
             code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
