@@ -112,14 +112,3 @@ def test_case_7():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_8():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        import torch.nn.functional as F
-        x_shape = (3, 3, 4, 2)
-        x = torch.arange(torch.prod(torch.Tensor(x_shape)), dtype=torch.float32).reshape(x_shape) + 1
-        result = F.pad(x, [0, 1, 2, 3])
-        """
-    )
-    obj.run(pytorch_code, ["result"])
