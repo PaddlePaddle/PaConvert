@@ -58,6 +58,10 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skipif(
+    condition=paddle.is_compiled_with_cinn(),
+    reason="WITH_RPC = OFF, if WITH_CINN = ON.",
+)
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -88,9 +92,18 @@ def test_case_2():
         result = rpc.shutdown(graceful=False, timeout=2)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support this parameter",
+    )
 
 
+@pytest.mark.skipif(
+    condition=paddle.is_compiled_with_cinn(),
+    reason="WITH_RPC = OFF, if WITH_CINN = ON.",
+)
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
@@ -121,9 +134,18 @@ def test_case_3():
         result = rpc.shutdown(timeout=2, graceful=False)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support this parameter",
+    )
 
 
+@pytest.mark.skipif(
+    condition=paddle.is_compiled_with_cinn(),
+    reason="WITH_RPC = OFF, if WITH_CINN = ON.",
+)
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
@@ -154,4 +176,9 @@ def test_case_4():
         result = rpc.shutdown(True, 1)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support this parameter",
+    )

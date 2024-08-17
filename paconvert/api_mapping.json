@@ -6029,6 +6029,9 @@
     "args_list": [
       "graceful",
       "timeout"
+    ],
+    "unsupport_args": [
+      "graceful"
     ]
   },
   "torch.distributed.scatter": {
