@@ -73,3 +73,17 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones(1, 2, 3, requires_grad=True)
+        @torch.inference_mode(mode= False)
+        def doubler(x):
+            return x * 2
+        result = (doubler(x).requires_grad, doubler(x))
+        """
+    )
+    obj.run(pytorch_code, ["result"])

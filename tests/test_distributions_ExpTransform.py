@@ -29,3 +29,27 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        exp = torch.distributions.ExpTransform(cache_size=1)
+        result = exp.forward_shape([1, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        exp = torch.distributions.ExpTransform(1)
+        result = exp.forward_shape([1, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])

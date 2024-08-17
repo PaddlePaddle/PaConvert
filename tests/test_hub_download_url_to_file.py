@@ -65,3 +65,36 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.hub.download_url_to_file(url='https://paddle-paconvert.bj.bcebos.com/model.params', dst='/tmp/temporary_file',
+                hash_prefix="e1bf0a03102811bb2168e9952fe4edfa09cceb3343278bd4e5876b33b6889e9b", progress=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.hub.download_url_to_file(url='https://paddle-paconvert.bj.bcebos.com/model.params', dst='/tmp/temporary_file',
+                hash_prefix="e1bf0a03102811bb2168e9952fe4edfa09cceb3343278bd4e5876b33b6889e9b", progress=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.hub.download_url_to_file(dst='/tmp/temporary_file',
+                hash_prefix="e1bf0a03102811bb2168e9952fe4edfa09cceb3343278bd4e5876b33b6889e9b", url='https://paddle-paconvert.bj.bcebos.com/model.params', progress=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

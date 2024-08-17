@@ -173,3 +173,29 @@ def test_case_12():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn.functional as F
+        import torch
+        input = torch.arange(0, 15,dtype=torch.float32, requires_grad=True).reshape((3, 5))
+        target = torch.arange(100, 160, 4, dtype=torch.float32, requires_grad=True).reshape((3, 5)) + 4
+        result = F.kl_div(input, target, True, True, reduction="sum", log_target=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn.functional as F
+        import torch
+        input = torch.arange(0, 15,dtype=torch.float32, requires_grad=True).reshape((3, 5))
+        target = torch.arange(100, 160, 4, dtype=torch.float32, requires_grad=True).reshape((3, 5)) + 4
+        result = F.kl_div(input=input, target=target, reduction="sum", log_target=True, size_average=False, reduce=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

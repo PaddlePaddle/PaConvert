@@ -29,3 +29,39 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        power = torch.distributions.PowerTransform(exponent=torch.tensor(2.),cache_size=1)
+        result = power.forward_shape([1, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        power = torch.distributions.PowerTransform(cache_size=1, exponent=torch.tensor(2.))
+        result = power.forward_shape([1, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        power = torch.distributions.PowerTransform(torch.tensor(2.), 0)
+        result = power.forward_shape([1, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])

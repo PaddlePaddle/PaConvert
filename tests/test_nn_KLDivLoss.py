@@ -152,3 +152,48 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        target = torch.tensor([[1.,2.,3.],[4.,5.,6.]])
+        loss = torch.nn.KLDivLoss(size_average=False, reduce=True, reduction='batchmean', log_target=False)
+        result = loss(input,target)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        target = torch.tensor([[1.,2.,3.],[4.,5.,6.]])
+        loss = torch.nn.KLDivLoss(False, True, 'batchmean', False)
+        result = loss(input,target)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        target = torch.tensor([[1.,2.,3.],[4.,5.,6.]])
+        loss = torch.nn.KLDivLoss(reduction='batchmean', log_target=False, size_average=False, reduce=True, )
+        result = loss(input,target)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

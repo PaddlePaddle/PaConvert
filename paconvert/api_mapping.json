@@ -11811,8 +11811,8 @@
       "input",
       "grid",
       "mode",
-      "align_corners",
-      "padding_mode"
+      "padding_mode",
+      "align_corners"
     ],
     "kwargs_change": {
       "input": "x"

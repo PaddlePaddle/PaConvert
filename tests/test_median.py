@@ -78,7 +78,7 @@ def test_case_5():
         import torch
         input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
         out = (torch.tensor([[1.1], [1.2]]), torch.tensor([[1], [2]]))
-        result = torch.median(input, dim=1, keepdim=True, out=out)
+        result = torch.median(input=input, dim=1, keepdim=True, out=out)
         """
     )
     obj.run(pytorch_code, ["result", "out"])
@@ -107,3 +107,26 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = torch.median(input, 1, True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        out = (torch.tensor([[1.1], [1.2]]), torch.tensor([[1], [2]]))
+        result = torch.median(keepdim=True, out=out, input=input, dim=1)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
