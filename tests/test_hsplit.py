@@ -62,3 +62,47 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        t = torch.arange(16.0).reshape(4, 4)
+        result = torch.hsplit(input=t,sections=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        t = torch.arange(16.0).reshape(4, 4)
+        result = torch.hsplit(sections=2, input=t)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        t = torch.arange(12).reshape(3, 2, 2)
+        result = torch.hsplit(input=t, indices=[1, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        t = torch.arange(12).reshape(3, 2, 2)
+        result = torch.hsplit(indices=[1, 2], input=t)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

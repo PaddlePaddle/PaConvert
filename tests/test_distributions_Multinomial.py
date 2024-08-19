@@ -89,3 +89,54 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Multinomial(total_count=1, probs=torch.tensor([0.3]), logits=None, validate_args=False)
+        result = m.sample([100])
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle does not support logits temporarily",
+    )
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Multinomial(total_count=1, logits=None, probs=torch.tensor([0.3]), validate_args=False)
+        result = m.sample([100])
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle does not support logits temporarily",
+    )
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Multinomial(1, torch.tensor([0.3]), None, False)
+        result = m.sample([100])
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle does not support logits temporarily",
+    )

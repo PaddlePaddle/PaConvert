@@ -31,3 +31,31 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result", "b"], check_value=False)
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        model = nn.Linear(10, 20)
+        a = torch.nn.utils.parameters_to_vector(model.parameters())
+        b = torch.nn.utils.vector_to_parameters(vec=a, parameters=model.parameters())
+        result = a.detach()
+        """
+    )
+    obj.run(pytorch_code, ["result", "b"], check_value=False)
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        model = nn.Linear(10, 20)
+        a = torch.nn.utils.parameters_to_vector(model.parameters())
+        b = torch.nn.utils.vector_to_parameters(parameters=model.parameters(), vec=a)
+        result = a.detach()
+        """
+    )
+    obj.run(pytorch_code, ["result", "b"], check_value=False)

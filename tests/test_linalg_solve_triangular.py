@@ -79,3 +79,16 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        A = torch.tensor([[ 1.1527, -1.0753], [ 1.23,  0.7986]])
+        B = torch.tensor([[-0.0210,  2.3513, -1.5492], [ 1.5429,  0.7403, -1.0243]])
+        out = torch.tensor([])
+        result = torch.linalg.solve_triangular(input=A, unitriangular=False, upper=True, left=True, B=B, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

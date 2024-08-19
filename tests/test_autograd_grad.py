@@ -127,3 +127,65 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1.1, 2.2, 3.3], requires_grad=True)
+        z = torch.tensor([1.1, 2.2, 3.3], requires_grad=True)
+        grad = torch.tensor(2.0)
+        y = x * x + z
+
+        result = torch.autograd.grad(outputs=[y.sum()], inputs=[x, z], grad_outputs=grad, retain_graph=True,
+            create_graph=False, only_inputs=True, allow_unused=True, is_grads_batched=False, materialize_grads=False)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle dose not support 'only_inputs' now!",
+    )
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1.1, 2.2, 3.3], requires_grad=True)
+        z = torch.tensor([1.1, 2.2, 3.3], requires_grad=True)
+        grad = torch.tensor(2.0)
+        y = x * x + z
+
+        result = torch.autograd.grad([y.sum()], [x, z], grad, True, False, True, True, False, False)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle dose not support 'only_inputs' now!",
+    )
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1.1, 2.2, 3.3], requires_grad=True)
+        z = torch.tensor([1.1, 2.2, 3.3], requires_grad=True)
+        grad = torch.tensor(2.0)
+        y = x * x + z
+
+        result = torch.autograd.grad(outputs=[y.sum()], inputs=[x, z], retain_graph=True, allow_unused=True,
+            create_graph=False, only_inputs=True, is_grads_batched=False, grad_outputs=grad, materialize_grads=False)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle dose not support 'only_inputs' now!",
+    )

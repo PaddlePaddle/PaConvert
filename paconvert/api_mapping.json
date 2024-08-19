@@ -4755,17 +4755,13 @@
     "paddle_api": "paddle.bernoulli",
     "args_list": [
       "input",
-      "p",
       "*",
       "generator",
       "out"
     ],
     "kwargs_change": {
       "input": "x"
-    },
-    "unsupport_args": [
-      "p"
-    ]
+    }
   },
   "torch.binary_cross_entropy_with_logits": {},
   "torch.bincount": {
@@ -8214,7 +8210,7 @@
     "paddle_api": "paddle.linalg.matrix_rank",
     "min_input_args": 1,
     "args_list": [
-      "A",
+      "input",
       "tol",
       "hermitian",
       "*",
@@ -8224,7 +8220,7 @@
       "out"
     ],
     "kwargs_change": {
-      "A": "x",
+      "input": "x",
       "atol": "tol",
       "rtol": ""
     }
