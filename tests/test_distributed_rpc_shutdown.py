@@ -14,17 +14,11 @@
 
 import textwrap
 
-import paddle
-import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.distributed.rpc.shutdown")
 
 
-@pytest.mark.skipif(
-    condition=paddle.is_compiled_with_cinn(),
-    reason="WITH_RPC = OFF, if WITH_CINN = ON.",
-)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
@@ -58,10 +52,6 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-@pytest.mark.skipif(
-    condition=paddle.is_compiled_with_cinn(),
-    reason="WITH_RPC = OFF, if WITH_CINN = ON.",
-)
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -96,14 +86,10 @@ def test_case_2():
         pytorch_code,
         ["result"],
         unsupport=True,
-        reason="paddle does not support this parameter",
+        reason="The parameter graceful not support",
     )
 
 
-@pytest.mark.skipif(
-    condition=paddle.is_compiled_with_cinn(),
-    reason="WITH_RPC = OFF, if WITH_CINN = ON.",
-)
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
@@ -138,14 +124,10 @@ def test_case_3():
         pytorch_code,
         ["result"],
         unsupport=True,
-        reason="paddle does not support this parameter",
+        reason="The parameter graceful not support",
     )
 
 
-@pytest.mark.skipif(
-    condition=paddle.is_compiled_with_cinn(),
-    reason="WITH_RPC = OFF, if WITH_CINN = ON.",
-)
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
@@ -180,5 +162,5 @@ def test_case_4():
         pytorch_code,
         ["result"],
         unsupport=True,
-        reason="paddle does not support this parameter",
+        reason="The parameter graceful not support",
     )
