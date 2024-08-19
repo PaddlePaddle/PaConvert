@@ -15640,7 +15640,10 @@
   "torch.utils.checkpoint.checkpoint": {
     "Matcher": "UnchangeMatcher",
     "paddle_api": "paddle.distributed.fleet.utils.recompute",
-    "min_input_args": 1
+    "min_input_args": 1,
+    "unsupport_args": [
+      "determinism_check"
+    ]
   },
   "torch.utils.cpp_extension.BuildExtension": {
     "Matcher": "GenericMatcher",

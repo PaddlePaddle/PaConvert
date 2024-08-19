@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.unique_consecutive")
+obj = APIBase("torch.unique_consecutive")
 
 
 def test_case_1():
