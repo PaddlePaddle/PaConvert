@@ -987,7 +987,6 @@ class MaxMinMatcher(BaseMatcher):
         if call_maximinimum:
             self.api_mapping["args_list"] = ["input", "other", "*", "out"]
             new_kwargs = self.parse_args_and_kwargs(args, kwargs)
-            print(new_kwargs)
             new_kwargs["x"] = new_kwargs.pop("input")
             new_kwargs["y"] = new_kwargs.pop("other")
 
