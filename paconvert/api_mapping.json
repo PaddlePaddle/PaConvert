@@ -8317,10 +8317,7 @@
     "kwargs_change": {
       "A": "x",
       "B": "y"
-    },
-    "unsupport_args": [
-      "left"
-    ]
+    }
   },
   "torch.linalg.solve_ex": {},
   "torch.linalg.solve_triangular": {
