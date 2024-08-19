@@ -64,12 +64,7 @@ def test_case_4():
         result = torch.linalg.solve(B=y, A=x, left=True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="The parameter left is not supported.",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -80,6 +75,55 @@ def test_case_5():
         y = torch.tensor([9.0, 8])
         out = torch.tensor([])
         result = torch.linalg.solve(A=x, B=y, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[3.0, 1],[1, 2]])
+        y = torch.tensor([[9.0, 8]])
+        result = torch.linalg.solve(x, y, left=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[3.0, 1],[1, 2]])
+        y = torch.tensor([[9.0, 8]])
+        result = torch.linalg.solve(A=x, B=y, left=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[3.0, 1],[1, 2]])
+        y = torch.tensor([[9.0, 8]])
+        result = torch.linalg.solve(B=y, left=False, A=x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[3.0, 1],[1, 2]])
+        y = torch.tensor([[9.0, 8]])
+        out = torch.tensor([])
+        result = torch.linalg.solve(A=x, B=y, out=out, left=False)
         """
     )
     obj.run(pytorch_code, ["result", "out"])
