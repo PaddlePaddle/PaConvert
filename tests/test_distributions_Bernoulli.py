@@ -140,3 +140,20 @@ def test_case_9():
         unsupport=True,
         reason="paddle does not support logits temporarily",
     )
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Bernoulli(probs=None, validate_args=False, logits=3.5)
+        result = m.sample([100])
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle does not support logits temporarily",
+    )

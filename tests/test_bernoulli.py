@@ -93,12 +93,16 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.ones(3, 3)
-        out = torch.zeros(3, 3)
-        result = torch.bernoulli(a, out=out, generator=torch.Generator())
+        a = torch.rand(3, 3)
+        result = torch.bernoulli(a, p=0.0)
         """
     )
-    obj.run(pytorch_code, ["result", "out"])
+    obj.run(
+        pytorch_code,
+        ["a", "result"],
+        unsupport=True,
+        reason="paddle not support parameter 'p' ",
+    )
 
 
 def test_case_8():
@@ -107,7 +111,7 @@ def test_case_8():
         import torch
         a = torch.ones(3, 3)
         out = torch.zeros(3, 3)
-        result = torch.bernoulli(input=a, generator=torch.Generator(), out=out)
+        result = torch.bernoulli(a, out=out, generator=torch.Generator())
         """
     )
     obj.run(pytorch_code, ["result", "out"])
@@ -123,3 +127,31 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.ones(3, 3)
+        out = torch.zeros(3, 3)
+        result = torch.bernoulli(input=a, generator=torch.Generator(), out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.rand(3, 3)
+        result = torch.bernoulli(input=a, p=0.0, generator=torch.Generator())
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["a", "result"],
+        unsupport=True,
+        reason="paddle not support parameter 'p' ",
+    )
