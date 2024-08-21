@@ -133,7 +133,7 @@ class Converter:
             if self.torch_api_count > 0:
                 self.convert_rate = self.success_api_count / self.torch_api_count
             log_warning(
-                self.logger, " Convert Rate is: {:.3%}".format(self.convert_rate)
+                self.logger, " Convert Rate is: {:.2%}".format(self.convert_rate)
             )
             if faild_api_count > 0:
                 log_warning(
@@ -154,7 +154,7 @@ class Converter:
                 self.convert_rate = self.success_api_count / self.torch_api_count
             log_warning(
                 self.logger,
-                "总计有 {} 行Pytorch代码需要被转换，整体转换率是 {:.3%}，数据如下：".format(
+                "总计有 {} 行Pytorch代码需要被转换，整体转换率是 {:.2%}，数据如下：".format(
                     self.torch_api_count, self.convert_rate
                 ),
             )
