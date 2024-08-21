@@ -35,14 +35,14 @@
 
 ```bash
 pip install -U paconvert
-paconvert --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "DEBUG"] [--run_check 1]
+paconvert --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "INFO"] [--run_check 1]
 ```
 
 2. 使用源码安装
 
 ```bash
 git clone https://github.com/PaddlePaddle/PaConvert.git
-python paconvert/main.py --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "DEBUG"] [--run_check 1]
+python paconvert/main.py --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "INFO"] [--run_check 1]
 ```
 
 **参数介绍**
@@ -52,7 +52,7 @@ python paconvert/main.py --in_dir torch_project [--out_dir paddle_project] [--ex
 --out_dir       可选，输出 paddle 项目文件，可以为单个文件或文件夹，默认在当前目录下创建./paddle_project/
 --exclude_dirs  可选，排除转换的文件或文件夹，排除多项时请用逗号分隔，默认不排除
 --log_dir       可选，输出日志的路径，默认会在终端上打印日志
---log_level     可选，打印 log 等级，仅支持"INFO" "DEBUG"，默认"INFO"
+--log_level     可选，打印 log 等级，支持"WARNING"、"INFO"、"DEBUG"，默认"INFO"
 --run_check     可选，工具自检
 ```
 

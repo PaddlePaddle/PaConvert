@@ -69,7 +69,7 @@ class AuxFileHelper(object):
         return cls._instance
 
 
-def log_debug(logger, msg, file=None, line=None):
+def log_warning(logger, msg, file=None, line=None):
     if file:
         if line:
             msg = "[{}:{}] {}".format(file, line, msg)
@@ -77,7 +77,7 @@ def log_debug(logger, msg, file=None, line=None):
             msg = "[{}] {}".format(file, msg)
     else:
         msg = "{}".format(msg)
-    logger.debug(msg)
+    logger.warning(msg)
 
 
 def log_info(logger, msg, file=None, line=None):
@@ -89,6 +89,17 @@ def log_info(logger, msg, file=None, line=None):
     else:
         msg = "{}".format(msg)
     logger.info(msg)
+
+
+def log_debug(logger, msg, file=None, line=None):
+    if file:
+        if line:
+            msg = "[{}:{}] {}".format(file, line, msg)
+        else:
+            msg = "[{}] {}".format(file, msg)
+    else:
+        msg = "{}".format(msg)
+    logger.debug(msg)
 
 
 def process_reduce_and_size_average(kwargs):
