@@ -154,17 +154,17 @@ class Converter:
                 self.convert_rate = self.success_api_count / self.torch_api_count
             log_warning(
                 self.logger,
-                "总计有{}行Pytorch代码需要被转换，整体转换率是 {:.3%}，数据如下：".format(
+                "总计有 {} 行Pytorch代码需要被转换，整体转换率是 {:.3%}，数据如下：".format(
                     self.torch_api_count, self.convert_rate
                 ),
             )
             log_warning(
                 self.logger,
-                "* {}行Pytorch 代码被成功转换为飞桨".format(self.success_api_count),
+                "* {} 行Pytorch 代码被成功转换为飞桨".format(self.success_api_count),
             )
             log_warning(
                 self.logger,
-                "* {}行Pytorch 代码暂时不支持自动转换为飞桨，因为飞桨不支持该功能，请手动转换".format(faild_api_count),
+                "* {} 行Pytorch 代码暂时不支持自动转换为飞桨，因为飞桨不支持该功能，请手动转换".format(faild_api_count),
             )
             if faild_api_count > 0:
                 log_warning(
