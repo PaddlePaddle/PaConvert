@@ -6030,9 +6030,10 @@
       "graceful",
       "timeout"
     ],
-    "unsupport_args": [
-      "graceful"
-    ]
+    "kwargs_change": {
+      "graceful": "",
+      "timeout": ""
+    }
   },
   "torch.distributed.scatter": {
     "Matcher": "ScatterMatcher",

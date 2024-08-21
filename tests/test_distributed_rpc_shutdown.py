@@ -82,12 +82,7 @@ def test_case_2():
         result = rpc.shutdown(graceful=False, timeout=2)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="The parameter graceful not support",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -120,12 +115,7 @@ def test_case_3():
         result = rpc.shutdown(timeout=2, graceful=False)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="The parameter graceful not support",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -158,9 +148,4 @@ def test_case_4():
         result = rpc.shutdown(True, 1)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="The parameter graceful not support",
-    )
+    obj.run(pytorch_code, ["result"])
