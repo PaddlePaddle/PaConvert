@@ -52,8 +52,14 @@ def main():
         "--log_level",
         default="INFO",
         type=str,
-        choices=["DEBUG", "INFO"],
+        choices=["WARNING", "INFO", "DEBUG"],
         help="set log level, default is INFO",
+    )
+    parser.add_argument(
+        "--log_markdown",
+        default=False,
+        type=bool,
+        help="whether show log with markdown format",
     )
     parser.add_argument(
         "--run_check",
@@ -78,7 +84,7 @@ def main():
 
     if args.run_check:
         cwd = os.path.dirname(__file__)
-        converter = Converter(args.log_dir, args.log_level, args.show_unsupport)
+        converter = Converter()
         converter.run(cwd + "/example_code.py", cwd + "/temp_out/example_code.py")
         sys.exit(0)
 
@@ -91,7 +97,7 @@ def main():
         in_dir = os.path.abspath(args.in_dir)
         for project_name in os.listdir(in_dir):
             project_dir = os.path.join(in_dir, project_name)
-            converter = Converter(args.log_dir, args.log_level, args.show_unsupport)
+            converter = Converter(show_unsupport=args.show_unsupport)
             converter.run(project_dir, args.out_dir, args.exclude_dirs)
             if converter.convert_rate == 1.0:
                 project_num_100 += 1
@@ -102,9 +108,9 @@ def main():
             convert_rate_map[project_name] = converter.convert_rate
 
         project_num = len(os.listdir(in_dir))
-        print("\n**************************************************************")
-        print("Model Convert Summary:")
-        print("\n**************************************************************")
+        print("\n==============================================")
+        print("Convert Summary")
+        print("==============================================")
         print("Convert rate of each project is:\n")
         for k, v in convert_rate_map.items():
             print("  {}: {:.2%}".format(k, v))
@@ -127,7 +133,12 @@ def main():
         sys.exit(0)
 
     assert args.in_dir is not None, "User must specify --in_dir "
-    converter = Converter(args.log_dir, args.log_level, args.show_unsupport)
+    converter = Converter(
+        log_dir=args.log_dir,
+        log_level=args.log_level,
+        log_markdown=args.log_markdown,
+        show_unsupport=args.show_unsupport,
+    )
     converter.run(args.in_dir, args.out_dir, args.exclude_dirs)
 
     print(r"****************************************************************")

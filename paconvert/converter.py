@@ -33,7 +33,7 @@ from paconvert.transformer.custom_op_transformer import (
     PreCustomOpTransformer,
     CustomOpTransformer,
 )
-from paconvert.utils import AuxFileHelper, get_unique_name, log_info
+from paconvert.utils import AuxFileHelper, get_unique_name, log_info, log_warning
 
 
 def listdir_nohidden(path):
@@ -43,7 +43,9 @@ def listdir_nohidden(path):
 
 
 class Converter:
-    def __init__(self, log_dir=None, log_level="INFO", show_unsupport=False):
+    def __init__(
+        self, log_dir=None, log_level="INFO", log_markdown=False, show_unsupport=False
+    ):
         self.imports_map = collections.defaultdict(dict)
         self.torch_api_count = 0
         self.success_api_count = 0
@@ -55,6 +57,7 @@ class Converter:
         else:
             self.logger.addHandler(logging.FileHandler(log_dir, mode="w"))
         self.logger.setLevel(log_level)
+        self.log_markdown = log_markdown
         self.show_unsupport = show_unsupport
         self.unsupport_map = collections.defaultdict(int)
         self.convert_rate = 0.0
@@ -105,41 +108,71 @@ class Converter:
                 log_info(self.logger, "{}: {}".format(k, v))
 
         faild_api_count = self.torch_api_count - self.success_api_count
-        log_info(self.logger, "\n===========================================")
-        log_info(self.logger, "Convert Summary:")
-        log_info(self.logger, "===========================================")
-        log_info(
-            self.logger,
-            "There are {} Pytorch APIs in this Project:".format(self.torch_api_count),
-        )
-        log_info(
-            self.logger,
-            " {}  Pytorch APIs have been converted to Paddle successfully!".format(
-                self.success_api_count
-            ),
-        )
-        log_info(
-            self.logger,
-            " {}  Pytorch APIs are not supported to convert to Paddle currently!".format(
-                faild_api_count
-            ),
-        )
-        if self.torch_api_count > 0:
-            self.convert_rate = self.success_api_count / self.torch_api_count
-        log_info(self.logger, " Convert Rate is: {:.3%}".format(self.convert_rate))
-        if faild_api_count > 0:
-            log_info(
+        if not self.log_markdown:
+            log_warning(self.logger, "\n===========================================")
+            log_warning(self.logger, "Convert Summary")
+            log_warning(self.logger, "===========================================")
+            log_warning(
                 self.logger,
-                "\nFor these {} Pytorch APIs that currently do not support to convert, which have been marked by >>> before the line, \nplease refer to "
-                "[https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html]"
-                " \nand convert it by yourself manually. In addition, these APIs will be supported in future.".format(
+                "There are {} Pytorch APIs in this Project:".format(
+                    self.torch_api_count
+                ),
+            )
+            log_warning(
+                self.logger,
+                " {}  Pytorch APIs have been converted to Paddle successfully!".format(
+                    self.success_api_count
+                ),
+            )
+            log_warning(
+                self.logger,
+                " {}  Pytorch APIs are not supported to convert to Paddle currently!".format(
                     faild_api_count
                 ),
             )
-        log_info(
-            self.logger,
-            "\nThank you to use Paddle Code Convert Tool. You can make any suggestions \nto us by submitting issues to [https://github.com/PaddlePaddle/PaConvert].\n",
-        )
+            if self.torch_api_count > 0:
+                self.convert_rate = self.success_api_count / self.torch_api_count
+            log_warning(
+                self.logger, " Convert Rate is: {:.3%}".format(self.convert_rate)
+            )
+            if faild_api_count > 0:
+                log_warning(
+                    self.logger,
+                    "\nFor these {} Pytorch APIs that currently do not support to convert, which have been marked by >>> before the line, \nplease refer to "
+                    "[https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html]"
+                    " \nand convert it by yourself manually. In addition, these APIs will be supported in future.".format(
+                        faild_api_count
+                    ),
+                )
+            log_warning(
+                self.logger,
+                "\nThank you to use Paddle Code Convert Tool. You can make any suggestions \nto us by submitting issues to [https://github.com/PaddlePaddle/PaConvert].\n",
+            )
+        else:
+            log_warning(self.logger, "# 转换总结")
+            if self.torch_api_count > 0:
+                self.convert_rate = self.success_api_count / self.torch_api_count
+            log_warning(
+                self.logger,
+                "总计有{}行Pytorch代码需要被转换，整体转换率是 {:.3%}，数据如下：".format(
+                    self.torch_api_count, self.convert_rate
+                ),
+            )
+            log_warning(
+                self.logger,
+                "* {}行Pytorch 代码被成功转换为飞桨".format(self.success_api_count),
+            )
+            log_warning(
+                self.logger,
+                "* {}行Pytorch 代码暂时不支持自动转换为飞桨，因为飞桨不支持该功能，请手动转换".format(faild_api_count),
+            )
+            if faild_api_count > 0:
+                log_warning(
+                    self.logger,
+                    "\n对于这{}行未转换的Pytorch代码，已经在行前通过 >>>>>> 标记，请参考[Pytorch-Paddle API映射表]"
+                    "(https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html)来手工转换。"
+                    "未来飞桨完善此部分功能后，这些API将被支持自动转换。\n".format(faild_api_count),
+                )
         return self.success_api_count, faild_api_count
 
     def transfer_dir(self, in_dir, out_dir, exclude_dir_list):
