@@ -103,6 +103,48 @@ def test_case_6():
     obj.run(pytorch_code, ["model_args"])
 
 
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        model = torch.nn.RNNBase(mode='RNN_RELU', input_size=16, hidden_size=32, num_layers=2, bias=True, batch_first=False, dropout=0.0, bidirectional=False, proj_size=0, device='cpu', dtype=None)
+
+        model_args = (model.input_size, model.hidden_size, model.num_layers)
+        """
+    )
+    obj.run(pytorch_code, ["model_args"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        model = torch.nn.RNNBase('RNN_RELU', 16, 32, 2, True, False, 0.0, False, 0, 'cpu', None)
+
+        model_args = (model.input_size, model.hidden_size, model.num_layers)
+        """
+    )
+    obj.run(pytorch_code, ["model_args"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        model = torch.nn.RNNBase(mode='RNN_RELU', hidden_size=32, batch_first=False, num_layers=2, bias=True, input_size=16, dropout=0.0, bidirectional=False, proj_size=0, device='cpu', dtype=None)
+
+        model_args = (model.input_size, model.hidden_size, model.num_layers)
+        """
+    )
+    obj.run(pytorch_code, ["model_args"])
+
+
 def test_mode_case_1():
     pytorch_code = textwrap.dedent(
         """

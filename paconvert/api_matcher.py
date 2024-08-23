@@ -363,7 +363,7 @@ class UnchangeMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         new_args = self.parse_args(args)
         new_kwargs = self.parse_kwargs(kwargs)
-        if new_kwargs is not None and new_args is not None:
+        if new_kwargs is not None:
             code = "{}({})".format(
                 self.get_paddle_api(), self.args_and_kwargs_to_str(new_args, new_kwargs)
             )
@@ -1003,6 +1003,7 @@ class MaxMinMatcher(BaseMatcher):
             else:
                 code = "{}({})".format(paddle_api, self.kwargs_to_str(new_kwargs))
 
+            self.api_mapping["args_list"] = ["input", "dim", "keepdim", "*", "out"]
             return ast.parse(code).body
 
         # the case of one tensor
@@ -3828,8 +3829,8 @@ class UnpoolMatcher(BaseMatcher):
 class SoftmaxMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "dim" not in kwargs or "None" in kwargs["dim"]:
-            return None
-
+            kwargs.pop("dim", "None")
+            kwargs["axis"] = 0
         return GenericMatcher.generate_code(self, kwargs)
 
 
