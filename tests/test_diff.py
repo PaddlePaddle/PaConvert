@@ -130,3 +130,15 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 3, 2])
+        b = torch.tensor([4, 5])
+        result = torch.diff(x, 1, 0, b, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

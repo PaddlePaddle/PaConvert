@@ -91,3 +91,45 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False, check_stop_gradient=False)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([[[[[-0.6,  0.8, -0.5], [-0.5,  0.2,  1.2], [ 1.4,  0.3, -0.2]]]]])
+        grid = torch.tensor([[[[[ 0.2, 0.2,  0.3],[-0.4, 0.2, -0.3],[-0.9, 0.2,  0.3],[-0.9, 0.9, -0.6]],
+                            [[ 0.2, 0.2,  0.3],[-0.4, 0.2, -0.3],[-0.9, 0.2,  0.3],[-0.9, 0.9, -0.6]]]]])
+        result = F.grid_sample(input=x, grid=grid, mode='bilinear', padding_mode="border", align_corners=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False, check_stop_gradient=False)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([[[[[-0.6,  0.8, -0.5], [-0.5,  0.2,  1.2], [ 1.4,  0.3, -0.2]]]]])
+        grid = torch.tensor([[[[[ 0.2, 0.2,  0.3],[-0.4, 0.2, -0.3],[-0.9, 0.2,  0.3],[-0.9, 0.9, -0.6]],
+                            [[ 0.2, 0.2,  0.3],[-0.4, 0.2, -0.3],[-0.9, 0.2,  0.3],[-0.9, 0.9, -0.6]]]]])
+        result = F.grid_sample(input=x, padding_mode="border", align_corners=True, grid=grid, mode='bilinear')
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False, check_stop_gradient=False)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([[[[[-0.6,  0.8, -0.5], [-0.5,  0.2,  1.2], [ 1.4,  0.3, -0.2]]]]])
+        grid = torch.tensor([[[[[ 0.2, 0.2,  0.3],[-0.4, 0.2, -0.3],[-0.9, 0.2,  0.3],[-0.9, 0.9, -0.6]],
+                            [[ 0.2, 0.2,  0.3],[-0.4, 0.2, -0.3],[-0.9, 0.2,  0.3],[-0.9, 0.9, -0.6]]]]])
+        result = F.grid_sample(x, grid, 'bilinear', "border", True)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False, check_stop_gradient=False)

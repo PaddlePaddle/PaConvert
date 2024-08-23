@@ -134,7 +134,49 @@ def test_case_8():
         result = loss(input, target)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        weight = torch.Tensor([1, 3, 4, 3, 2])
+        input = torch.ones(3, 5)
+        target = torch.ones(3, dtype=torch.long)
+        loss = nn.CrossEntropyLoss(weight=weight, size_average=False, ignore_index=0, reduce=True, reduction='sum', label_smoothing=0.1)
+        result = loss(input, target)
+        """
     )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        weight = torch.Tensor([1, 3, 4, 3, 2])
+        input = torch.ones(3, 5)
+        target = torch.ones(3, dtype=torch.long)
+        loss = nn.CrossEntropyLoss(weight, False, 0, True, 'sum', 0.1)
+        result = loss(input, target)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        weight = torch.Tensor([1, 3, 4, 3, 2])
+        input = torch.ones(3, 5)
+        target = torch.ones(3, dtype=torch.long)
+        loss = nn.CrossEntropyLoss(weight=weight, label_smoothing=0.1, reduce=True, size_average=False, ignore_index=0, reduction='sum')
+        result = loss(input, target)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

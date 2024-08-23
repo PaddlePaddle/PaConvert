@@ -123,3 +123,16 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        m = nn.LayerNorm(device="cpu", dtype=torch.float32, normalized_shape=10, eps=1e-05, elementwise_affine=False)
+        input = torch.ones(2, 5, 10)
+        result = m(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

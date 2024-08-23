@@ -87,3 +87,16 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0., 1.], [1., 0.], [2.,0.], [2., 2.]])
+        bins = [3,3]
+        weights = torch.tensor([1., 2., 4., 8.])
+        result = torch.histogramdd(x, bins)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

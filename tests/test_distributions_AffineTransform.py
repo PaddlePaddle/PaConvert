@@ -45,3 +45,45 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        x = torch.tensor(1.)
+        y = torch.tensor(2.)
+        affine = torch.distributions.AffineTransform(x, y, 1, 1)
+        result = affine.forward_shape([1, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        x = torch.tensor(1.)
+        y = torch.tensor(2.)
+        affine = torch.distributions.AffineTransform(loc=x, scale=y, event_dim=1, cache_size=1)
+        result = affine.forward_shape([1, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        x = torch.tensor(1.)
+        y = torch.tensor(2.)
+        affine = torch.distributions.AffineTransform(event_dim=1, cache_size=1, loc=x, scale=y)
+        result = affine.forward_shape([1, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
