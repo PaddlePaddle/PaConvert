@@ -89,3 +89,71 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Bernoulli(probs=torch.tensor([0.3]), logits=None, validate_args=False)
+        result = m.sample([100])
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle does not support logits temporarily",
+    )
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Bernoulli(torch.tensor([0.3]), None, False)
+        result = m.sample([100])
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle does not support logits temporarily",
+    )
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Bernoulli(probs=torch.tensor([0.3]), validate_args=False, logits=None)
+        result = m.sample([100])
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle does not support logits temporarily",
+    )
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Bernoulli(probs=None, validate_args=False, logits=3.5)
+        result = m.sample([100])
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle does not support logits temporarily",
+    )

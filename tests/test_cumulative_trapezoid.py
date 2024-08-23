@@ -84,3 +84,37 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        y = torch.tensor([1, 1, 1, 0, 1]).type(torch.float32)
+        result = torch.cumulative_trapezoid(y=y, dx=0.05, dim=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        y = torch.tensor([1, 1, 1, 0, 1]).type(torch.float32)
+        result = torch.cumulative_trapezoid(y, dx=0.05, dim=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        y = torch.tensor([1, 1, 1, 0, 1]).type(torch.float32)
+        x = torch.tensor([1, 2, 3, 0, 1]).type(torch.float32)
+        result = torch.cumulative_trapezoid(dim=0, y=y, x=x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

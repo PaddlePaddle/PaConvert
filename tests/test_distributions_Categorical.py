@@ -78,3 +78,71 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Categorical(probs=None, logits=torch.tensor([0.25, 0.25, 0.25, 0.25]), validate_args=False)
+        result = m.sample([1])
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle does not support probs temporarily",
+    )
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Categorical(None, torch.tensor([0.25, 0.25, 0.25, 0.25]), False)
+        result = m.sample([1])
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle does not support probs temporarily",
+    )
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Categorical(probs=None, validate_args=False, logits=torch.tensor([0.25, 0.25, 0.25, 0.25]))
+        result = m.sample([1])
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle does not support probs temporarily",
+    )
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Categorical(probs=torch.tensor([0.25, 0.25, 0.25, 0.25]), validate_args=False,logits=None)
+        result = m.sample([1])
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle does not support probs temporarily",
+    )

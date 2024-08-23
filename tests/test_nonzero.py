@@ -86,3 +86,33 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0.6, 0.0, 0.0, 0.0],
+                        [0.0, 0.4, 0.0, 0.0],
+                        [0.0, 0.0, 1.2, 0.0],
+                        [0.0, 0.0, 0.0,-0.4]])
+        out = torch.tensor([1], dtype=torch.int64)
+        result = torch.nonzero(input=x, out=out, as_tuple=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0.6, 0.0, 0.0, 0.0],
+                        [0.0, 0.4, 0.0, 0.0],
+                        [0.0, 0.0, 1.2, 0.0],
+                        [0.0, 0.0, 0.0,-0.4]])
+        out = torch.tensor([1], dtype=torch.int64)
+        result = torch.nonzero(as_tuple=False, input=x, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

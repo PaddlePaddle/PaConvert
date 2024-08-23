@@ -115,3 +115,43 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.ones(3, 3)
+        out = torch.zeros(3, 3)
+        result = torch.bernoulli(generator=torch.Generator(), input=a, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.ones(3, 3)
+        out = torch.zeros(3, 3)
+        result = torch.bernoulli(input=a, generator=torch.Generator(), out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.rand(3, 3)
+        result = torch.bernoulli(input=a, p=0.0, generator=torch.Generator())
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["a", "result"],
+        unsupport=True,
+        reason="paddle not support parameter 'p' ",
+    )

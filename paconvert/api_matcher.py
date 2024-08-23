@@ -1003,6 +1003,7 @@ class MaxMinMatcher(BaseMatcher):
             else:
                 code = "{}({})".format(paddle_api, self.kwargs_to_str(new_kwargs))
 
+            self.api_mapping["args_list"] = ["input", "dim", "keepdim", "*", "out"]
             return ast.parse(code).body
 
         # the case of one tensor

@@ -8218,7 +8218,7 @@
     "paddle_api": "paddle.linalg.matrix_rank",
     "min_input_args": 1,
     "args_list": [
-      "A",
+      "input",
       "tol",
       "hermitian",
       "*",
@@ -8228,7 +8228,7 @@
       "out"
     ],
     "kwargs_change": {
-      "A": "x",
+      "input": "x",
       "atol": "tol",
       "rtol": ""
     }
