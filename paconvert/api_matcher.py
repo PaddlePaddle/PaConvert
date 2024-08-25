@@ -676,28 +676,61 @@ class TensorDivideMatcher(BaseMatcher):
 
 
 class TransposeMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
+    def generate_aux_code(self):
         API_TEMPLATE = textwrap.dedent(
             """
-            x = {}
-            {} = list(range(x.ndim))
-            {}[{}] = {}
-            {}[{}] = {}
-            {}(x=x, perm={})
+            def transpose_aux_func(dims,dim0, dim1):
+                perm = list(range(dims))
+                perm[dim0], perm[dim1] = perm[dim1], perm[dim0]
+                return perm
+            """
+        )
+
+        return API_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}(x={}, perm=paddle_aux.transpose_aux_func({}.ndim,{}, {}))
             """
         )
         perm = get_unique_name("perm")
         code = API_TEMPLATE.format(
-            kwargs["input"],
-            perm,
-            perm,
-            kwargs["dim0"],
-            kwargs["dim1"],
-            perm,
-            kwargs["dim1"],
-            kwargs["dim0"],
             self.get_paddle_api(),
-            perm,
+            kwargs["input"],
+            kwargs["input"],
+            kwargs["dim0"],
+            kwargs["dim1"],
+        )
+        return code
+
+
+class TensorTransposeMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            def transpose_aux_func(dims,dim0, dim1):
+                perm = list(range(dims))
+                perm[dim0], perm[dim1] = perm[dim1], perm[dim0]
+                return perm
+            """
+        )
+
+        return API_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}.transpose(perm=paddle_aux.transpose_aux_func({}.ndim,{}, {}))
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.paddleClass,
+            self.paddleClass,
+            kwargs["dim0"],
+            kwargs["dim1"],
         )
         return code
 
@@ -1364,32 +1397,6 @@ class SparseSoftmaxMatcher(BaseMatcher):
             )
             kwargs["input"] = tmp_val
         code = code + GenericMatcher.generate_code(self, kwargs)
-        return code
-
-
-class TensorTransposeMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        API_TEMPLATE = textwrap.dedent(
-            """
-            x = {}
-            {} = list(range(x.ndim))
-            {}[{}] = {}
-            {}[{}] = {}
-            x.transpose(perm={})
-            """
-        )
-        perm = get_unique_name("perm")
-        code = API_TEMPLATE.format(
-            self.paddleClass,
-            perm,
-            perm,
-            kwargs["dim0"],
-            kwargs["dim1"],
-            perm,
-            kwargs["dim1"],
-            kwargs["dim0"],
-            perm,
-        )
         return code
 
 
