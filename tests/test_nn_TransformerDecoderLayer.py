@@ -78,3 +78,44 @@ def test_case_4():
         unsupport=True,
         reason="paddle unsupport batch_first args",
     )
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.ones(10, 32,512)
+        tgt = torch.ones(10, 32, 512)
+        model = nn.TransformerDecoderLayer(d_model=512, nhead=8,dim_feedforward=2048, dropout=0.1,
+                                            activation="relu", layer_norm_eps=1e-06, batch_first=False,
+                                            norm_first=False, bias=True, device=None, dtype=None)
+        result = model(tgt,x)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle unsupport batch_first args",
+    )
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.ones(10, 32,512)
+        tgt = torch.ones(10, 32, 512)
+        model = nn.TransformerDecoderLayer(512, 8,2048, 0.1, "relu", 1e-06, False,
+                                            False, True, None, None)
+        result = model(tgt,x)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle unsupport batch_first args",
+    )

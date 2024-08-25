@@ -58,11 +58,61 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        w0 = torch.Tensor([[0., 0., 0.],
-                    [1., 1., 1.],
-                    [2., 2., 2.],
-                    [3., 3., 3.]])
-        result = torch.nn.functional.embedding(x,embedding_matrix,padding_idx=0,max_norm=2)
+        import numpy as np
+        embedding_matrix = torch.Tensor([[0., 0., 0.],
+                           [1., 1., 1.],
+                           [2., 2., 2.],
+                           [3., 3., 3.]])
+        x = torch.tensor(np.array([[0,1],[2,3]]))
+        result = torch.nn.functional.embedding(x, embedding_matrix, padding_idx=0, max_norm=2)
         """
     )
     obj.run(pytorch_code, unsupport=True, reason="paddle unsupport")
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import numpy as np
+        embedding_matrix = torch.Tensor([[0., 0., 0.],
+                           [1., 1., 1.],
+                           [2., 2., 2.],
+                           [3., 3., 3.]])
+        x = torch.tensor(np.array([[0,1],[2,3]]))
+        result = torch.nn.functional.embedding(input=x, weight=embedding_matrix, padding_idx=0, max_norm=2, norm_type=2.0, scale_grad_by_freq=False, sparse=True)
+        """
+    )
+    obj.run(pytorch_code, unsupport=True, reason="paddle unsupport max_norm ")
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import numpy as np
+        embedding_matrix = torch.Tensor([[0., 0., 0.],
+                           [1., 1., 1.],
+                           [2., 2., 2.],
+                           [3., 3., 3.]])
+        x = torch.tensor(np.array([[0,1],[2,3]]))
+        result = torch.nn.functional.embedding(input=x, padding_idx=0, max_norm=2, weight=embedding_matrix, scale_grad_by_freq=False, norm_type=2.0, sparse=True)
+        """
+    )
+    obj.run(pytorch_code, unsupport=True, reason="paddle unsupport max_norm ")
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import numpy as np
+        embedding_matrix = torch.Tensor([[0., 0., 0.],
+                           [1., 1., 1.],
+                           [2., 2., 2.],
+                           [3., 3., 3.]])
+        x = torch.tensor(np.array([[0,1],[2,3]]))
+        result = torch.nn.functional.embedding(x, embedding_matrix, 0, 2, 2.0, False, True)
+        """
+    )
+    obj.run(pytorch_code, unsupport=True, reason="paddle unsupport max_norm ")

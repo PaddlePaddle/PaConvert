@@ -3829,8 +3829,8 @@ class UnpoolMatcher(BaseMatcher):
 class SoftmaxMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "dim" not in kwargs or "None" in kwargs["dim"]:
-            return None
-
+            kwargs.pop("dim", "None")
+            kwargs["axis"] = 0
         return GenericMatcher.generate_code(self, kwargs)
 
 
