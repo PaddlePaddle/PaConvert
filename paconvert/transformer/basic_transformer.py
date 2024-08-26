@@ -389,10 +389,13 @@ class BasicTransformer(BaseTransformer):
         super(BasicTransformer, self).generic_visit(node)
 
         full_attr = self.get_full_attr(node.func)
+        if full_attr in ALIAS_MAPPING:
+            full_attr = ALIAS_MAPPING[full_attr]
 
         # Torch Package Call, include torch third_party
         #   such as : torch.add(x, y) / torch.add(torch.abs(x), y)
         for torch_package in self.imports_map[self.file]["torch_packages"]:
+
             if (
                 full_attr.startswith("%s." % torch_package)
                 or full_attr in self.MAY_TORCH_METHOD_LIST
