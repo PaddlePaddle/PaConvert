@@ -10513,7 +10513,15 @@
     ]
   },
   "torch.nn.Module.to": {
-    "min_input_args": 0
+    "Matcher": "ModuleToMatcher",
+    "paddle_api": "paddle.nn.Layer.to",
+    "min_input_args": 0,
+    "args_list": [
+      "device",
+      "dtype",
+      "non_blocking",
+      "memory_format"
+    ]
   },
   "torch.nn.Module.to_empty": {
     "min_input_args": 0

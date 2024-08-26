@@ -789,6 +789,39 @@ class CreateMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
+class ModuleToMatcher(BaseMatcher):
+    # NOTE: There is no completely equivalent API in Paddle. Matcher may need to be rewritten in the future.
+    def generate_code(self, kwargs):
+        if "memory_format" in kwargs:
+            kwargs.pop("memory_format")
+        if "non_blocking" in kwargs:
+            kwargs.pop("non_blocking")
+        # handle kwargs["device"]
+        if """cuda""" == kwargs["device"]:
+            # case1: device = "cuda"
+            kwargs["device"] = "paddle.CUDAPlace()"
+        elif "cuda:" in kwargs["device"] and "if" not in kwargs["device"]:
+            # case2: device = "cuda:0"
+            kwargs["device"] = "paddle.CUDAPlace({})".format(
+                f'int({kwargs["device"]}.replace("cuda:",""))'
+            )
+        elif "cpu" in kwargs["device"] and "if" not in kwargs["device"]:
+            # paddle.CPUPlace() does not accept input.
+            # case3: device = "cpu"
+            # case4: device = "cpu:0"
+            kwargs["device"] = "paddle.CPUPlace()"
+        else:
+            # case5: device = "cpu:0" if condition else "cuda:0"
+            # case6: dev = xx, device = dev
+            kwargs[
+                "device"
+            ] = f'str({kwargs["device"]}).replace("cuda", "gpu") if isinstance({kwargs["device"]},str) else device'
+        print(kwargs["device"])
+
+        code = "{}.to({})".format(self.paddleClass, self.kwargs_to_str(kwargs))
+        return code
+
+
 class DeviceMatcher(BaseMatcher):
     # NOTE: There is no completely equivalent API in Paddle. Matcher may need to be rewritten in the future.
     def generate_code(self, kwargs):
