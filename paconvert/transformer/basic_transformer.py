@@ -485,8 +485,10 @@ class BasicTransformer(BaseTransformer):
 
         # Torch Class call
         #   such as : x.add(y) / x.abs().add / sgd.step() / model.to(torch.device('cuda'))
-        if "NonTorchClass" not in full_attr:
-
+        if (
+            "NonTorchClass" not in full_attr
+            and "torch" in self.imports_map[self.file]["torch_packages"]
+        ):
             is_tensor_api = False
             is_module_api = False
             is_optim_api = False
