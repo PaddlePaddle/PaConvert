@@ -4505,6 +4505,14 @@
     "abstract": true,
     "min_input_args": 1
   },
+  "torch.autograd.Variable": {
+    "Matcher": "ADVariableMatcher",
+    "args_list": [
+      "input",
+      "requires_grad"
+    ],
+    "min_input_args": 1
+  },
   "torch.autograd.backward": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.autograd.backward",

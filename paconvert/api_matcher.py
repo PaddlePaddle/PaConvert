@@ -848,6 +848,22 @@ class GeluMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class ADVariableMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}.stop_gradient = {}
+            {}
+            """
+        )
+
+        if "requires_grad" in kwargs:
+            return API_TEMPLATE.format(
+                kwargs["input"], kwargs["requires_grad"], kwargs["input"]
+            )
+        return kwargs["input"]
+
+
 class SequentialMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         # nn.Sequential(OrderedDict([...]) / nn.Sequential(OrderedDict(blocks))
