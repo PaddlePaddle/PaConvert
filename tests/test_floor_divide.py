@@ -102,3 +102,26 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([4.0, 3.0])
+        b = torch.tensor([2.0, -2.0])
+        out = torch.randn(2)
+        result = torch.floor_divide(a, b, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.floor_divide(input=torch.tensor([4.0, 3.0]), other=-2.)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

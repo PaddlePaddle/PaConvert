@@ -145,3 +145,40 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[[ 0.9254, -0.6213],
+            [-0.5787,  1.6843]],
+
+            [[ 0.3242, -0.9665],
+            [ 0.4539, -0.0887]],
+
+            [[ 1.1336, -0.4025],
+            [-0.7089,  0.9032]]])
+        result = torch.round(input=a, decimals=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[[ 0.9254, -0.6213],
+            [-0.5787,  1.6843]],
+
+            [[ 0.3242, -0.9665],
+            [ 0.4539, -0.0887]],
+
+            [[ 1.1336, -0.4025],
+            [-0.7089,  0.9032]]])
+        out = torch.randn_like(a)
+        result = torch.round(input=a, decimals=5, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

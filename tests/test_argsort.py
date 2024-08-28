@@ -134,3 +134,61 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1.3398, 0.2663, -0.2686, 0.2450],
+                            [-0.7401, -0.8805, -0.3402, -1.1936],
+                            [0.4907, -1.3948, -1.0691, -0.3132],
+                            [-1.6092, 0.5419, -0.2993, 0.3195]])
+        result = torch.argsort(input, stable=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1.3398, 0.2663, -0.2686, 0.2450],
+                            [-0.7401, -0.8805, -0.3402, -1.1936],
+                            [0.4907, -1.3948, -1.0691, -0.3132],
+                            [-1.6092, 0.5419, -0.2993, 0.3195]])
+        result = torch.argsort(input, dim = 1, stable=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1.3398, 0.2663, -0.2686, 0.2450],
+                            [-0.7401, -0.8805, -0.3402, -1.1936],
+                            [0.4907, -1.3948, -1.0691, -0.3132],
+                            [-1.6092, 0.5419, -0.2993, 0.3195]])
+        dim = 1
+        result = torch.argsort(input, dim = dim, descending=False, stable=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1.3398, 0.2663, -0.2686, 0.2450],
+                            [-0.7401, -0.8805, -0.3402, -1.1936],
+                            [0.4907, -1.3948, -1.0691, -0.3132],
+                            [-1.6092, 0.5419, -0.2993, 0.3195]])
+        descending = False
+        result = torch.argsort(input=input, dim = 1, stable=True, descending=descending)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

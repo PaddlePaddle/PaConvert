@@ -88,3 +88,14 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["out"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [-1, -2, 3]
+        result = torch.expm1(torch.tensor(a))
+        """
+    )
+    obj.run(pytorch_code, ["result"])

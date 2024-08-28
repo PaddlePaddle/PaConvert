@@ -30,7 +30,7 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-# paddle.pow not support type promote and x/y must have same dtype
+# current type promotion only support calculations between floating-point numbers and between complex and real numbers
 def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -103,3 +103,39 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0.4331,  1.2475,  0.6834, -0.2791], dtype=torch.float32)
+        b = torch.tensor([1, 2, 3, 4], dtype=torch.float64)
+        result = torch.pow(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0.4331,  1.2475,  0.6834, -0.2791], dtype=torch.float32)
+        b = torch.tensor([1, 2, 3, 4], dtype=torch.float16)
+        result = torch.pow(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0.4331,  1.2475,  0.6834, -0.2791], dtype=torch.float16)
+        b = torch.tensor([1, 2, 3, 4], dtype=torch.float64)
+        result = torch.pow(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
