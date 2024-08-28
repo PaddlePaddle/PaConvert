@@ -128,6 +128,4 @@ def test_case_6():
         result = embedding.padding_idx
         """
     )
-    obj.run(
-        pytorch_code
-    )
+    obj.run(pytorch_code)
