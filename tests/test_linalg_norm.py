@@ -112,3 +112,102 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[[10, 2, 3], [3, 10, 5], [5, 6, 12.]]])
+        result = torch.linalg.norm(input=x, ord='fro', dim=[1, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[[10, 2, 3], [3, 10, 5], [5, 6, 12.]]])
+        result = torch.linalg.norm(input=x, ord='nuc', dim=[1, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[[10, 2, 3], [3, 10, 5], [5, 6, 12.]]])
+        result = torch.linalg.norm(input=x, ord=-float('inf'), dim=[1, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([10, 2, 3 ,3, 10, 5, 5, 6, 12.])
+        result = torch.linalg.norm(input=x, ord=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[[10, 2, 3], [3, 10, 5], [5, 6, 12.]]])
+        result = torch.linalg.norm(input=x, ord=1, dim=[1, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[[10, 2, 3], [3, 10, 5], [5, 6, 12.]]])
+        result = torch.linalg.norm(input=x, ord=2, dim=[1, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_15():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[[10, 2, 3], [3, 10, 5], [5, 6, 12.]]])
+        result = torch.linalg.norm(input=x, ord=-2, dim=[1, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_16():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([10, 2, 3 ,3, 10, 5, 5, 6, 12.])
+        result = torch.linalg.norm(input=x, ord=2.2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_17():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([10, 2, 3 ,3, 10, 5, 5, 6, 12.])
+        result = torch.linalg.norm(input=x, ord=-3.14)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

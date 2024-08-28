@@ -4443,26 +4443,6 @@ class EmbeddingMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-class OuterMatcher(BaseMatcher):
-    def generate_aux_code(self):
-        CODE_TEMPLATE = TypePromoteFunc
-        return CODE_TEMPLATE
-
-    def generate_code(self, kwargs):
-        self.write_aux_code()
-        API_TEMPLATE = textwrap.dedent(
-            """
-                {},{}=paddle_aux.TypePromote({},{})
-                paddle.outer(x={},y={})
-            """
-        )
-        input = get_unique_name("input")
-        vec2 = get_unique_name("vec2")
-        return API_TEMPLATE.format(
-            input, vec2, kwargs["input"], kwargs["vec2"], input, vec2
-        )
-
-
 class OsEnvironGetMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "key" in kwargs:

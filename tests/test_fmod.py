@@ -95,3 +95,34 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["out"])
+
+
+# dtype mismatch, torch dtype is float64, paddle dtype is float32
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.fmod(input=torch.tensor([[3, 2, 1], [1, 2, 3]], dtype=torch.float32), other=torch.tensor([2, 3, 1], dtype=torch.float64))
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_dtype=False)
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.fmod(input=torch.tensor([[3, 2, 1], [1, 2, 3]], dtype=torch.float64), other=torch.tensor([2, 3, 1], dtype=torch.float16))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.fmod(input=torch.tensor([[3, 2, 1], [1, 2, 3]], dtype=torch.float32), other=torch.tensor([2, 3, 1], dtype=torch.float16))
+        """
+    )
+    obj.run(pytorch_code, ["result"])

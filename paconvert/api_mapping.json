@@ -13743,7 +13743,7 @@
     ]
   },
   "torch.outer": {
-    "Matcher": "OuterMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.outer",
     "min_input_args": 2,
     "args_list": [
