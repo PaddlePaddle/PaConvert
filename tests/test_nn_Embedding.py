@@ -117,3 +117,17 @@ def test_case_5():
         unsupport=True,
         reason="Paddle does not support parameter of max_norm",
     )
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        padding_idx = 0
+        embedding = torch.nn.Embedding(num_embeddings=4, embedding_dim=3, padding_idx=padding_idx, norm_type=2.0, scale_grad_by_freq=False, sparse=False)
+        result = embedding.padding_idx
+        """
+    )
+    obj.run(
+        pytorch_code
+    )
