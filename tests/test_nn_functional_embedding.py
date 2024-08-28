@@ -67,7 +67,7 @@ def test_case_3():
         result = torch.nn.functional.embedding(x, embedding_matrix, padding_idx=0, max_norm=2)
         """
     )
-    obj.run(pytorch_code, unsupport=True, reason="paddle unsupport")
+    obj.run(pytorch_code, unsupport=True, reason="paddle unsupport max_norm")
 
 
 def test_case_4():
