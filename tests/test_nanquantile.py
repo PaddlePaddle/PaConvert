@@ -180,3 +180,27 @@ def test_case_14():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_15():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([float('nan'), 1.02, 2.21, 3.333,30, float('nan')])
+        result = torch.tensor([[1.], [1.]])
+        torch.nanquantile(x, torch.tensor([0.3, 0.6]), -1, True, out=result)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_16():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([float('nan'), 1.02, 2.21, 3.333,30, float('nan')], dtype=torch.float64)
+        result = torch.tensor([[1.], [1.]], dtype=torch.float64)
+        torch.nanquantile(x, torch.tensor([0.3, 0.6], dtype=torch.float64), -1, True, out=result)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

@@ -3395,7 +3395,7 @@
   },
   "torch.Tensor.sort": {
     "Matcher": "SortMatcher",
-    "paddle_api": "paddle.sort",
+    "paddle_api": "paddle.Tensor.sort",
     "min_input_args": 0,
     "args_list": [
       "dim",
@@ -7446,6 +7446,26 @@
       "out"
     ]
   },
+  "torch.histogram": {
+    "Matcher": "HistogramMatcher",
+    "paddle_api": "paddle.histogram",
+    "min_input_args": 2,
+    "args_list": [
+      "input",
+      "bins",
+      "*",
+      "range",
+      "weight",
+      "density",
+      "out"
+    ],
+    "kwargs_change": {
+      "range": [
+        "min",
+        "max"
+      ]
+    }
+  },
   "torch.histogramdd": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.histogramdd",
@@ -9706,8 +9726,6 @@
       "sparse"
     ],
     "unsupport_args": [
-      "max_norm",
-      "norm_type",
       "scale_grad_by_freq"
     ],
     "min_input_args": 2
@@ -10511,8 +10529,7 @@
       "prefix": "structured_name_prefix"
     },
     "unsupport_args": [
-      "destination",
-      "keep_vars"
+      "destination"
     ]
   },
   "torch.nn.Module.to": {
@@ -11202,7 +11219,7 @@
     }
   },
   "torch.nn.Unfold": {
-    "Matcher": "Tuple2ListMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Unfold",
     "args_list": [
       "kernel_size",
@@ -11743,8 +11760,6 @@
       "input": "x"
     },
     "unsupport_args": [
-      "max_norm",
-      "norm_type",
       "scale_grad_by_freq"
     ],
     "min_input_args": 2
@@ -12703,6 +12718,20 @@
       "input": "x"
     }
   },
+  "torch.nn.functional.threshold": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.thresholded_relu",
+    "min_input_args": 3,
+    "args_list": [
+      "input",
+      "threshold",
+      "value",
+      "inplace"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.nn.functional.triplet_margin_loss": {
     "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.functional.triplet_margin_loss",
@@ -12743,7 +12772,7 @@
     "min_input_args": 3
   },
   "torch.nn.functional.unfold": {
-    "Matcher": "Tuple2ListMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.unfold",
     "args_list": [
       "input",

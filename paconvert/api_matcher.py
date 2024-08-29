@@ -3516,27 +3516,6 @@ class LinalgSvdvalsMatcher(BaseMatcher):
         return code
 
 
-class Tuple2ListMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        new_kwargs = {}
-        kwargs_change = self.api_mapping["kwargs_change"]
-        for k in kwargs.keys():
-            if k in kwargs_change:
-                if "," in kwargs[k]:
-                    new_kwargs[kwargs_change[k]] = "list({})".format(kwargs[k])
-                else:
-                    new_kwargs[kwargs_change[k]] = kwargs[k]
-            else:
-                if "," in kwargs[k]:
-                    new_kwargs[k] = "list({})".format(kwargs[k])
-                else:
-                    new_kwargs[k] = kwargs[k]
-
-        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
-
-        return code
-
-
 class TensorTakeMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -4632,4 +4611,36 @@ class Linalg_qrMatcher(BaseMatcher):
                 code = "{}({})".format(
                     self.get_paddle_api(), self.kwargs_to_str(kwargs)
                 )
+        return code
+
+
+class HistogramMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs = self.set_paddle_default_kwargs(kwargs)
+        kwargs_change = self.api_mapping.get("kwargs_change", {})
+
+        for k in kwargs_change:
+            if k == "range":
+                range = eval(kwargs.pop(k))
+                kwargs["min"] = range[0]
+                kwargs["max"] = range[1]
+            if k in kwargs:
+                if kwargs[k]:
+                    kwargs[kwargs_change[k]] = kwargs.pop(k)
+                else:
+                    kwargs.pop(k)
+
+        if "out" in kwargs:
+            out_v = kwargs.pop("out")
+            API_TEMPLATE = textwrap.dedent(
+                """
+                out = {}({})
+                paddle.assign(out, {})
+                """
+            )
+            code = API_TEMPLATE.format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v
+            )
+        else:
+            code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
         return code
