@@ -95,9 +95,7 @@ def test_case_5():
     )
 
 
-# when return_indices=False, paddle result and indices shape is (1, 3, 2), which is right: ceil(6/5)=2
-# when return_indices=True, paddle result and indices shape is (1, 3, 1), which is bug
-def _test_case_6():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -106,6 +104,25 @@ def _test_case_6():
             [-1.2533, -0.9829, -1.0981, 0.7655, 0.8541, 0.9873],
             [ 0.1507, -1.1431, -2.0361, 0.2344, 0.5675, 0.1546]]])
         result, indices = F.max_pool1d(input, kernel_size=5, ceil_mode=True, return_indices=True)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
+    )
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857, 0.4586, 0.9876, 0.5487],
+            [-1.2533, -0.9829, -1.0981, 0.7655, 0.8541, 0.9873],
+            [ 0.1507, -1.1431, -2.0361, 0.2344, 0.5675, 0.1546]]])
+        result, indices = F.max_pool1d(input, kernel_size=5, ceil_mode=False, return_indices=True)
         """
     )
     obj.run(

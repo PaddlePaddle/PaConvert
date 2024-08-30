@@ -31,8 +31,7 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support sampler is any iterable
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         from torch.utils.data import BatchSampler
@@ -43,8 +42,7 @@ def _test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support sampler is any iterable
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -67,8 +65,7 @@ def test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support sampler is any iterable
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch

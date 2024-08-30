@@ -4633,3 +4633,18 @@ class Linalg_qrMatcher(BaseMatcher):
                     self.get_paddle_api(), self.kwargs_to_str(kwargs)
                 )
         return code
+
+
+class StftMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs = self.set_paddle_default_kwargs(kwargs)
+        kwargs_change = self.api_mapping.get("kwargs_change", {})
+        for k in kwargs_change:
+            if k in kwargs:
+                if kwargs[k]:
+                    kwargs[kwargs_change[k]] = kwargs.pop(k)
+                else:
+                    kwargs.pop(k)
+        if "return_complex" in kwargs:
+            kwargs.pop("return_complex")
+        return GenericMatcher.generate_code(self, kwargs)
