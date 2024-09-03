@@ -10121,6 +10121,9 @@
     ],
     "kwargs_change": {
       "dim": "axis"
+    },
+    "paddle_default_kwargs": {
+      "axis": 0
     }
   },
   "torch.nn.MSELoss": {
@@ -10771,9 +10774,6 @@
         "bias_hh_attr"
       ]
     },
-    "unsupport_args": [
-      "proj_size"
-    ],
     "min_input_args": 3
   },
   "torch.nn.RNNCell": {
@@ -10952,6 +10952,9 @@
     ],
     "kwargs_change": {
       "dim": "axis"
+    },
+    "paddle_default_kwargs": {
+      "axis": 0
     }
   },
   "torch.nn.Softmax2d": {

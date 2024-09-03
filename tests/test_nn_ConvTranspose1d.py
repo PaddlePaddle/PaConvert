@@ -76,8 +76,10 @@ def test_case_5():
         """
         import torch
         import torch.nn as nn
+
         x = torch.randn(5, 16, 50)
-        model = nn.ConvTranspose1d(16, 33, 5, stride=1, padding=4, dilation=3, bias=True, padding_mode='zeros')
+        model = nn.ConvTranspose1d(in_channels=16, out_channels=33, kernel_size=5, stride=1, padding=4, output_padding=0, groups=1, bias=True, dilation=3,
+                                   padding_mode='zeros', device=None, dtype=None)
         result = model(x)
         """
     )
@@ -87,3 +89,56 @@ def test_case_5():
         unsupport=True,
         reason="Paddle does not support parameter of padding_mode",
     )
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        x = torch.randn(5, 16, 50)
+        model = nn.ConvTranspose1d(in_channels=16, kernel_size=5, out_channels=33, stride=1, padding=4, device=None, groups=1, bias=True, output_padding=0, dilation=3,
+                                   padding_mode='zeros', dtype=None)
+        result = model(x)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Paddle does not support parameter of padding_mode",
+    )
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        x = torch.randn(5, 16, 50)
+        model = nn.ConvTranspose1d(16, 33, 5, 1, 4, 0, 1, True, 3, 'zeros', None, None)
+        result = model(x)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Paddle does not support parameter of padding_mode",
+    )
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        x = torch.randn(5, 16, 50)
+        model = nn.ConvTranspose1d(16, 33, 5)
+        result = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
