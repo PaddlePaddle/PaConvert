@@ -14593,16 +14593,11 @@
       "values",
       "size",
       "*",
-      "dtype",
-      "device",
-      "requires_grad",
-      "check_invariants"
+      "device"
     ],
     "kwargs_change": {
       "size": "shape",
-      "dtype": "dtype",
-      "device": "place",
-      "check_invariants": ""
+      "device": "place"
     }
   },
   "torch.sparse.addmm": {
