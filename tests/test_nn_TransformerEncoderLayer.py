@@ -165,3 +165,22 @@ def test_case_9():
         unsupport=True,
         reason="paddle unsupport batch_first args",
     )
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        tgt = torch.ones(10, 32, 512)
+        model = nn.TransformerEncoderLayer(512, 8,
+                2048,
+                0.1, 'relu',
+                norm_first=False,
+                device=None,
+                bias=True,
+                dtype=torch.float32)
+        result = model(tgt)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
