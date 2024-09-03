@@ -790,7 +790,6 @@ class CreateMatcher(BaseMatcher):
 
 
 class ModuleToMatcher(BaseMatcher):
-    # NOTE: There is no completely equivalent API in Paddle. Matcher may need to be rewritten in the future.
     def generate_code(self, kwargs):
         if "memory_format" in kwargs:
             kwargs.pop("memory_format")
@@ -816,7 +815,6 @@ class ModuleToMatcher(BaseMatcher):
             kwargs[
                 "device"
             ] = f'str({kwargs["device"]}).replace("cuda", "gpu") if isinstance({kwargs["device"]},str) else device'
-        print(kwargs["device"])
 
         code = "{}.to({})".format(self.paddleClass, self.kwargs_to_str(kwargs))
         return code
