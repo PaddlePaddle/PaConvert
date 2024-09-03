@@ -852,7 +852,7 @@ class ADVariableMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            {}.stop_gradient = {}
+            {}.stop_gradient = not {}
             {}
             """
         )
