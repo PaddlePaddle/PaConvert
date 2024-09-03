@@ -148,3 +148,72 @@ def test_case_7():
         unsupport=True,
         reason="paddle unsupport batch_first args",
     )
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        transformer_model = torch.nn.Transformer(d_model=512,
+                nhead=8, num_encoder_layers=6,
+                num_decoder_layers=6, dim_feedforward=2048,
+                dropout=0.1, activation='relu',
+                custom_encoder=None, custom_decoder=None,
+                layer_norm_eps=1e-05, batch_first=False,
+                norm_first=False, bias=False,
+                device=None, dtype=None)
+        src = torch.rand((10, 32, 512))
+        tgt = torch.rand((10, 32, 512))
+        result = transformer_model(src, tgt)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle unsupport layer_norm_eps args",
+    )
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        transformer_model = torch.nn.Transformer(512,
+                8, 6, 6, 2048,
+                0.1, 'relu',
+                None, None,
+                1e-05, False,
+                False, False,
+                None, None)
+        src = torch.rand((10, 32, 512))
+        tgt = torch.rand((10, 32, 512))
+        result = transformer_model(src, tgt)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle unsupport layer_norm_eps args",
+    )
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        transformer_model = torch.nn.Transformer(d_model=512,
+                nhead=8, num_encoder_layers=6,
+                num_decoder_layers=6, dim_feedforward=2048,
+                dropout=0.1, activation='relu',
+                custom_encoder=None, custom_decoder=None,
+                norm_first=False, bias=True, device=None, dtype=None)
+        src = torch.rand((10, 32, 512))
+        tgt = torch.rand((10, 32, 512))
+        result = transformer_model(src, tgt)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

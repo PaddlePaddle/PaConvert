@@ -11057,11 +11057,13 @@
       "layer_norm_eps",
       "batch_first",
       "norm_first",
+      "bias",
       "device",
       "dtype"
     ],
     "kwargs_change": {
       "norm_first": "normalize_before",
+      "bias": "bias_attr",
       "device": "",
       "dtype": ""
     },
@@ -11093,11 +11095,13 @@
       "layer_norm_eps",
       "batch_first",
       "norm_first",
+      "bias",
       "device",
       "dtype"
     ],
     "kwargs_change": {
       "norm_first": "normalize_before",
+      "bias": "bias_attr",
       "device": "",
       "dtype": ""
     },
@@ -11137,11 +11141,13 @@
       "layer_norm_eps",
       "batch_first",
       "norm_first",
+      "bias",
       "device",
       "dtype"
     ],
     "kwargs_change": {
       "norm_first": "normalize_before",
+      "bias": "bias_attr",
       "device": "",
       "dtype": ""
     },
@@ -12095,7 +12101,7 @@
     }
   },
   "torch.nn.functional.log_softmax": {
-    "Matcher": "RequireDimMatcher",
+    "Matcher": "SoftmaxMatcher",
     "paddle_api": "paddle.nn.functional.log_softmax",
     "args_list": [
       "input",
@@ -12218,9 +12224,6 @@
     "kwargs_change": {
       "input": "x"
     },
-    "unsupport_args": [
-      "output_size"
-    ],
     "min_input_args": 3
   },
   "torch.nn.functional.max_unpool2d": {
@@ -12608,7 +12611,7 @@
     "min_input_args": 2
   },
   "torch.nn.functional.softmax": {
-    "Matcher": "RequireDimMatcher",
+    "Matcher": "SoftmaxMatcher",
     "paddle_api": "paddle.nn.functional.softmax",
     "args_list": [
       "input",
