@@ -865,6 +865,17 @@ class SequentialMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
+class MPCpuCountMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            os.cpu_count()
+            """
+        )
+        return API_TEMPLATE
+
+
 class PadMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "Reflection" in self.torch_api:

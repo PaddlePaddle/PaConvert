@@ -127,6 +127,19 @@ class BasicTransformer(BaseTransformer):
                                 node.lineno,
                             )
                             return None
+                        elif (
+                            isinstance(self.parent_node, ast.FunctionDef)
+                            and node in self.parent_node.decorator_list
+                        ):
+                            self.parent_node.decorator_list.remove(node)
+                            self.success_api_count += 1
+                            log_info(
+                                self.logger,
+                                "[Delete] Just remove {} ".format(torch_api),
+                                self.file_name,
+                                node.lineno,
+                            )
+                            return None
                     elif paddle_api == "misidentify":
                         # This API usage indicate that is is not a Pytorch API
                         self.torch_api_count -= 1
@@ -470,6 +483,7 @@ class BasicTransformer(BaseTransformer):
                                 return new_node
 
                 self.unsupport_map[torch_api] += 1
+
                 log_info(
                     self.logger,
                     "[Not Support] convert {} to Paddle is not supported currently".format(
