@@ -140,3 +140,15 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["hist", "bin"], check_dtype=False)
+
+
+# the returned hist tensor of paddle is int64 but pytorch is float32
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        bins = 4
+        hist, bin = torch.histogram(torch.tensor([[1., 2, 1]]), 4, range=[0, 3])
+        """
+    )
+    obj.run(pytorch_code, ["hist", "bin"], check_dtype=False)
