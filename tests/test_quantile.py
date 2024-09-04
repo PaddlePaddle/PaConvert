@@ -186,3 +186,23 @@ def test_case_13():
         pytorch_code,
         ["result", "out"],
     )
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.quantile(torch.tensor([[ 0.0795, -1.2117,  0.9765], [ 1.1707,  0.6706,  0.4884]]), torch.tensor([0.6, 0.2]), dim=1, keepdim=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_15():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.quantile(torch.tensor([[ 0.0795, -1.2117,  0.9765], [ 1.1707,  0.6706,  0.4884]],dtype=torch.float64), torch.tensor([0.6, 0.2],dtype=torch.float64), dim=1, keepdim=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
