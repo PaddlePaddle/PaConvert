@@ -4620,27 +4620,42 @@ class HistogramMatcher(BaseMatcher):
         kwargs_change = self.api_mapping.get("kwargs_change", {})
 
         for k in kwargs_change:
-            if k == "range":
-                range = eval(kwargs.pop(k))
-                kwargs["min"] = range[0]
-                kwargs["max"] = range[1]
-            if k in kwargs:
-                if kwargs[k]:
-                    kwargs[kwargs_change[k]] = kwargs.pop(k)
-                else:
-                    kwargs.pop(k)
+            if k == "range" and k in kwargs:
+                kwargs[kwargs_change[k][0]] = f"{kwargs['range']}[0]"
+                kwargs[kwargs_change[k][1]] = f"{kwargs['range']}[1]"
+                kwargs.pop(k)
 
+        kwargs_bin_edges = kwargs.copy()
+        if "weight" in kwargs_bin_edges:
+            kwargs_bin_edges.pop("weight")
+        if "density" in kwargs_bin_edges:
+            kwargs_bin_edges.pop("density")
+
+        bin_edges_paddle_api = self.get_paddle_api().replace(
+            "histogram", "histogram_bin_edges"
+        )
         if "out" in kwargs:
             out_v = kwargs.pop("out")
+            kwargs_bin_edges.pop("out")
             API_TEMPLATE = textwrap.dedent(
                 """
-                out = {}({})
-                paddle.assign(out, {})
+                out1, out2 = {}({}), {}({})
+                paddle.assign(out1, {}[0]), paddle.assign(out2, {}[1])
                 """
             )
             code = API_TEMPLATE.format(
-                self.get_paddle_api(), self.kwargs_to_str(kwargs), out_v
+                self.get_paddle_api(),
+                self.kwargs_to_str(kwargs),
+                bin_edges_paddle_api,
+                self.kwargs_to_str(kwargs_bin_edges),
+                out_v,
+                out_v,
             )
         else:
-            code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+            code = "{}({}), {}({})".format(
+                self.get_paddle_api(),
+                self.kwargs_to_str(kwargs),
+                bin_edges_paddle_api,
+                self.kwargs_to_str(kwargs_bin_edges),
+            )
         return code

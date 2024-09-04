@@ -1721,7 +1721,24 @@
       "max"
     ]
   },
-  "torch.Tensor.histogram": {},
+  "torch.Tensor.histogram": {
+    "Matcher": "HistogramMatcher",
+    "paddle_api": "paddle.Tensor.histogram",
+    "min_input_args": 1,
+    "args_list": [
+      "bins",
+      "*",
+      "range",
+      "weight",
+      "density"
+    ],
+    "kwargs_change": {
+      "range": [
+        "min",
+        "max"
+      ]
+    }
+  },
   "torch.Tensor.hsplit": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.hsplit",
