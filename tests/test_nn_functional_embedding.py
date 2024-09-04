@@ -84,7 +84,12 @@ def test_case_4():
         result = torch.nn.functional.embedding(input=x, weight=embedding_matrix, padding_idx=0, max_norm=2, norm_type=2.0, scale_grad_by_freq=True, sparse=True)
         """
     )
-    obj.run(pytorch_code, ["result"], unsupport=True, reason="paddle unsupport scale_grad_by_freq ")
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle unsupport scale_grad_by_freq ",
+    )
 
 
 def test_case_5():
@@ -100,7 +105,12 @@ def test_case_5():
         result = torch.nn.functional.embedding(input=x, padding_idx=0, max_norm=2, weight=embedding_matrix, scale_grad_by_freq=True, norm_type=2.0, sparse=True)
         """
     )
-    obj.run(pytorch_code, ["result"], unsupport=True, reason="paddle unsupport scale_grad_by_freq ")
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle unsupport scale_grad_by_freq ",
+    )
 
 
 def test_case_6():
@@ -116,7 +126,12 @@ def test_case_6():
         result = torch.nn.functional.embedding(x, embedding_matrix, 0, 2, 2.0, True, True)
         """
     )
-    obj.run(pytorch_code, ["result"], unsupport=True, reason="paddle unsupport scale_grad_by_freq ")
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle unsupport scale_grad_by_freq ",
+    )
 
 
 def test_case_7():
