@@ -4616,7 +4616,6 @@ class Linalg_qrMatcher(BaseMatcher):
 
 class HistogramMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs = self.set_paddle_default_kwargs(kwargs)
         kwargs_change = self.api_mapping.get("kwargs_change", {})
 
         for k in kwargs_change:
@@ -4631,31 +4630,48 @@ class HistogramMatcher(BaseMatcher):
         if "density" in kwargs_bin_edges:
             kwargs_bin_edges.pop("density")
 
-        bin_edges_paddle_api = self.get_paddle_api().replace(
-            "histogram", "histogram_bin_edges"
-        )
         if "out" in kwargs:
             out_v = kwargs.pop("out")
             kwargs_bin_edges.pop("out")
-            API_TEMPLATE = textwrap.dedent(
-                """
-                out1, out2 = {}({}), {}({})
-                paddle.assign(out1, {}[0]), paddle.assign(out2, {}[1])
-                """
-            )
-            code = API_TEMPLATE.format(
-                self.get_paddle_api(),
-                self.kwargs_to_str(kwargs),
-                bin_edges_paddle_api,
-                self.kwargs_to_str(kwargs_bin_edges),
-                out_v,
-                out_v,
-            )
+            if "Tensor" in self.torch_api:
+                API_TEMPLATE = textwrap.dedent(
+                    """
+                    out1, out2 = {}.histogram({}), {}.histogram_bin_edges({})
+                    paddle.assign(out1, {}[0]), paddle.assign(out2, {}[1])
+                    """
+                )
+                code = API_TEMPLATE.format(
+                    self.paddleClass,
+                    self.kwargs_to_str(kwargs),
+                    self.paddleClass,
+                    self.kwargs_to_str(kwargs_bin_edges),
+                    out_v,
+                    out_v,
+                )
+            else:
+                API_TEMPLATE = textwrap.dedent(
+                    """
+                    out1, out2 = paddle.histogram({}), paddle.histogram_bin_edges({})
+                    paddle.assign(out1, {}[0]), paddle.assign(out2, {}[1])
+                    """
+                )
+                code = API_TEMPLATE.format(
+                    self.kwargs_to_str(kwargs),
+                    self.kwargs_to_str(kwargs_bin_edges),
+                    out_v,
+                    out_v,
+                )
         else:
-            code = "{}({}), {}({})".format(
-                self.get_paddle_api(),
-                self.kwargs_to_str(kwargs),
-                bin_edges_paddle_api,
-                self.kwargs_to_str(kwargs_bin_edges),
-            )
+            if "Tensor" in self.torch_api:
+                code = "{}.histogram({}), {}.histogram_bin_edges({})".format(
+                    self.paddleClass,
+                    self.kwargs_to_str(kwargs),
+                    self.paddleClass,
+                    self.kwargs_to_str(kwargs_bin_edges),
+                )
+            else:
+                code = "paddle.histogram({}), paddle.histogram_bin_edges({})".format(
+                    self.kwargs_to_str(kwargs),
+                    self.kwargs_to_str(kwargs_bin_edges),
+                )
         return code

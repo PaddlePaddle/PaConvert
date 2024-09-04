@@ -1723,7 +1723,6 @@
   },
   "torch.Tensor.histogram": {
     "Matcher": "HistogramMatcher",
-    "paddle_api": "paddle.Tensor.histogram",
     "min_input_args": 1,
     "args_list": [
       "bins",
@@ -7465,7 +7464,6 @@
   },
   "torch.histogram": {
     "Matcher": "HistogramMatcher",
-    "paddle_api": "paddle.histogram",
     "min_input_args": 2,
     "args_list": [
       "input",
