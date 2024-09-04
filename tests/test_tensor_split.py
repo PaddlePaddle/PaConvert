@@ -1,4 +1,4 @@
-# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
+# Copyright (c) 2024 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,20 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.prod")
+obj = APIBase("torch.tensor_split")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([1.4907, 1.0593, 1.5696])
-        result = torch.prod(input)
+        a = torch.arange(8)
+        result = torch.tensor_split(a, 3)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +35,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
-        result = torch.prod(input, 1)
+        a = torch.arange(7)
+        result = torch.tensor_split(a, sections = 3)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,8 +46,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
-        result = torch.prod(input, 1, keepdim=True)
+        a = torch.arange(7)
+        result = torch.tensor_split(a, (1, 6))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -56,8 +57,8 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
-        result = torch.prod(input, dim=1, keepdim=True)
+        a = torch.arange(7)
+        result = torch.tensor_split(a, indices = (1, 6))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -67,9 +68,8 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
-        out = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
-        result = torch.prod(input, dim=1, keepdim=True, out=out)
+        a = torch.arange(7)
+        result = torch.tensor_split(a, [1, 6])
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -79,8 +79,8 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
-        result = torch.prod(input, dim=1, keepdim=True, dtype=torch.float64)
+        a = torch.arange(7)
+        result = torch.tensor_split(a, indices = [1, 6])
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -90,9 +90,8 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
-        out = torch.tensor([],dtype=torch.float64)
-        result = torch.prod(input=input, dim=1, keepdim=True, dtype=torch.float64, out=out)
+        a = torch.arange(14).reshape(2, 7)
+        result = torch.tensor_split(a, 3, dim = 1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -102,9 +101,8 @@ def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
-        out = torch.tensor([],dtype=torch.float64)
-        result = torch.prod(input, 1, True, dtype=torch.float64, out=out)
+        a = torch.arange(14).reshape(2, 7)
+        result = torch.tensor_split(a, (1, 6), dim = 1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -114,9 +112,52 @@ def test_case_9():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
-        out = torch.tensor([],dtype=torch.float64)
-        result = torch.prod(keepdim=True, dim=1, dtype=torch.float64, input=input, out=out)
+        a = torch.arange(14).reshape(2, 7)
+        result = torch.tensor_split(a, 3, 1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(14).reshape(2, 7)
+        result = torch.tensor_split(input=a, sections=3, dim=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(14).reshape(2, 7)
+        result = torch.tensor_split(sections=3, input=a, dim=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(7)
+        result = torch.tensor_split(input=a, indices = (1, 6), dim=-1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(7)
+        result = torch.tensor_split(indices = (1, 6), input=a, dim=-1)
         """
     )
     obj.run(pytorch_code, ["result"])

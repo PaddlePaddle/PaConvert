@@ -144,3 +144,19 @@ def _test_case_8():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        crows = [0, 2, 3, 5]
+        cols = [1, 3, 2, 0, 1]
+        values = [1, 2, 3, 4, 5]
+        dense_shape = [3, 4]
+        result = torch.sparse_csr_tensor(crow_indices=crows, layout=torch.sparse_csr, col_indices=cols,pin_memory=True, values=values, size=dense_shape,
+                                         dtype=torch.float32, device=torch.device('cpu'), requires_grad=False, check_invariants=None)
+        result = result.to_dense()
+        """
+    )
+    obj.run(pytorch_code, ["result"])

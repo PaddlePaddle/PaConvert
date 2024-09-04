@@ -82,3 +82,33 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor(
+            [[2, 1, 3], [3, 0, 1], [2, 1, 3]])
+        dim = 1
+        result = torch.unique(a, False, True, False, dim)
+        """
+    )
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="Paddle not support 'sorted' "
+    )
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor(
+            [[2, 1, 3], [3, 0, 1], [2, 1, 3]])
+        dim = 1
+        result = torch.unique(return_inverse=True, input=a, return_counts=False, dim=dim, sorted=False)
+        """
+    )
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="Paddle not support 'sorted' "
+    )
