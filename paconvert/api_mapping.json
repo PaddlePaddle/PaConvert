@@ -7844,6 +7844,9 @@
       "input": "x"
     }
   },
+  "torch.jit.script": {
+    "Matcher": "DeleteMatcher"
+  },
   "torch.kl_div": {},
   "torch.kron": {
     "Matcher": "GenericMatcher",
@@ -9006,6 +9009,9 @@
       "*",
       "out"
     ]
+  },
+  "torch.multiprocessing.cpu_count": {
+    "Matcher": "MPCpuCountMatcher"
   },
   "torch.multiprocessing.spawn": {
     "Matcher": "GenericMatcher",
