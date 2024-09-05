@@ -14631,6 +14631,22 @@
       "dim": "axis"
     }
   },
+  "torch.sparse.FloatTensor": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.sparse.sparse_coo_tensor",
+    "min_input_args": 3,
+    "args_list": [
+      "indices",
+      "values",
+      "size",
+      "*",
+      "device"
+    ],
+    "kwargs_change": {
+      "size": "shape",
+      "device": ""
+    }
+  },
   "torch.sparse.addmm": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.sparse.addmm",
