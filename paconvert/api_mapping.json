@@ -15185,7 +15185,7 @@
     }
   },
   "torch.stft": {
-    "Matcher": "StftMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.signal.stft",
     "min_input_args": 2,
     "args_list": [
@@ -15201,8 +15201,12 @@
       "return_complex"
     ],
     "kwargs_change": {
-      "input": "x"
-    }
+      "input": "x",
+      "return_complex": ""
+    },
+    "unsupport_args": [
+      "return_complex"
+    ]
   },
   "torch.subtract": {
     "Matcher": "Num2TensorBinaryWithAlphaMatcher",

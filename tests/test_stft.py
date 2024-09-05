@@ -42,11 +42,15 @@ def test_case_1():
         result = torch.stft(x, n_fft=4, return_complex=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support return_complex",
+    )
 
 
-# paddle does not support return_complex
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -68,7 +72,12 @@ def _test_case_2():
         result = torch.stft(x, n_fft=4, return_complex=False)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support return_complex",
+    )
 
 
 # paddle's `onesided` should be False when input or window is complex
@@ -144,7 +153,12 @@ def test_case_5():
         result = torch.stft(x, n_fft=4, center=False, return_complex=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support return_complex",
+    )
 
 
 def test_case_6():
@@ -169,4 +183,9 @@ def test_case_6():
         result = torch.stft(x, n_fft=4, center=False, onesided=False, return_complex=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support return_complex",
+    )
