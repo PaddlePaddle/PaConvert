@@ -30,3 +30,17 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        m = nn.Identity(54, unused_argument1=0.1, unused_argument2=False)
+        input = torch.ones(128, 20)
+        output = m(input)
+        result = m(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

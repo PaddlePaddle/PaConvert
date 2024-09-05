@@ -101,3 +101,57 @@ def test_case_6():
         unsupport=True,
         reason="paddle.nn.MaxPool2D dose not support 'dilation' now!",
     )
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.tensor([[[[0., 1., 2., 3.], [4., 5., 6., 7.]]]])
+        model = nn.MaxPool2d(kernel_size=2, stride=1, padding=1, dilation=2, return_indices=True, ceil_mode=True)
+        result, indices = model(x)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        unsupport=True,
+        reason="paddle.nn.MaxPool2D dose not support 'dilation' now!",
+    )
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.tensor([[[[0., 1., 2., 3.], [4., 5., 6., 7.]]]])
+        model = nn.MaxPool2d(kernel_size=2, dilation=2, stride=1, return_indices=True, padding=1, ceil_mode=True)
+        result, indices = model(x)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        unsupport=True,
+        reason="paddle.nn.MaxPool2D dose not support 'dilation' now!",
+    )
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.tensor([[[[0., 1., 2., 3.], [4., 5., 6., 7.]]]])
+        model = nn.MaxPool2d(2, 1, 1, 2, True, True)
+        result, indices = model(x)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        unsupport=True,
+        reason="paddle.nn.MaxPool2D dose not support 'dilation' now!",
+    )

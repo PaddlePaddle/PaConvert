@@ -19,47 +19,58 @@ from apibase import APIBase
 obj = APIBase("torch.Tensor.histogram")
 
 
-def test_case_1():
+# parameters of paddle.histogram: `min` and `max` do not support float
+def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([[1., 2, 1]]).histogram(bins=4, range=(0., 3.))
+        hist, bin = torch.tensor([[1., 2, 1]]).histogram(bins=4, range=(0., 3.))
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle.histogram only return one tensor while torch return two",
-    )
+    obj.run(pytorch_code, ["hist", "bin"], check_dtype=False)
 
 
+# the returned hist tensor of paddle is int64 but pytorch is float32
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[1, 2], [3, 4]], dtype=torch.float32)
-        result = input.histogram(bins=4, range=(0., 3.))
+        hist, bin = torch.tensor([[1., 2, 1]]).histogram(bins=4, range=(0, 3))
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle.histogram only return one tensor while torch return two",
-    )
+    obj.run(pytorch_code, ["hist", "bin"], check_dtype=False)
 
 
+# the returned hist tensor of paddle is int64 but pytorch is float32
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([[1., 2, 1]]).histogram()
+        input = torch.tensor([[1, 2], [3, 4]], dtype=torch.float32)
+        hist, bin = input.histogram(bins=4, range=(0, 3))
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle.histogram only return one tensor while torch return two",
+    obj.run(pytorch_code, ["hist", "bin"], check_dtype=False)
+
+
+# the returned hist tensor of paddle is int64 but pytorch is float32
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1, 2], [3, 4]], dtype=torch.float32)
+        hist, bin = input.histogram(bins=4, range=[0, 3])
+        """
     )
+    obj.run(pytorch_code, ["hist", "bin"], check_dtype=False)
+
+
+# the returned hist tensor of paddle is int64 but pytorch is float32
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        hist, bin = torch.tensor([[1., 2, 1]]).histogram(10)
+        """
+    )
+    obj.run(pytorch_code, ["hist", "bin"], check_dtype=False)

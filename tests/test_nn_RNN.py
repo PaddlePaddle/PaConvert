@@ -136,6 +136,7 @@ def test_case_5():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
+# when bias=False, paddle has bug in paddle.nn.RNNBase flatten_parameters()
 def _test_case_6():
     pytorch_code = textwrap.dedent(
         """

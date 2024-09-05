@@ -80,7 +80,7 @@ def test_case_3():
         result = embedding(x)
         """
     )
-    obj.run(pytorch_code, unsupport=True, reason="paddle unsupport")
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -88,8 +88,69 @@ def test_case_4():
         """
         import torch
         padding_idx = 0
-        embedding = torch.nn.Embedding(4, 3,padding_idx=padding_idx,max_norm=2.0)
+        embedding = torch.nn.Embedding(num_embeddings=4, embedding_dim=3, padding_idx=padding_idx, max_norm=2.0, norm_type=2.0, scale_grad_by_freq=False, sparse=False)
         result = embedding.padding_idx
         """
     )
-    obj.run(pytorch_code)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Paddle does not support parameter of scale_grad_by_freq",
+    )
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        padding_idx = 0
+        embedding = torch.nn.Embedding(num_embeddings=4, embedding_dim=3, scale_grad_by_freq=False, max_norm=2.0, norm_type=2.0, padding_idx=padding_idx, sparse=False)
+        result = embedding.padding_idx
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Paddle does not support parameter of scale_grad_by_freq",
+    )
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        padding_idx = 0
+        embedding = torch.nn.Embedding(num_embeddings=4, embedding_dim=3, padding_idx=padding_idx, norm_type=2.0, scale_grad_by_freq=False, sparse=False)
+        result = embedding.padding_idx
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Paddle does not support parameter of scale_grad_by_freq",
+    )
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        padding_idx = 0
+        embedding = torch.nn.Embedding(4, 3,padding_idx=padding_idx,max_norm=2.0, norm_type=2.6)
+        w0 = torch.Tensor([[0., 0., 0.],
+                    [1., 1., 1.],
+                    [2., 2., 2.],
+                    [3., 3., 3.]])
+        with torch.no_grad():
+            embedding.weight[0]=w0[0]
+            embedding.weight[1]=w0[1]
+            embedding.weight[2]=w0[2]
+            embedding.weight[3]=w0[3]
+        x = torch.LongTensor([[0],[1],[3]])
+        result = embedding(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

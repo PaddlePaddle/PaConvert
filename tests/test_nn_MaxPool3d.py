@@ -160,3 +160,87 @@ def test_case_6():
         unsupport=True,
         reason="paddle.nn.MaxPool3D dose not support 'dilation' now!",
     )
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.tensor([[[[[-0.8658,  1.0869, -2.1977],
+           [-2.1073,  1.0974, -1.4485],
+           [ 0.5880, -0.7189,  0.1089]],
+
+          [[ 1.3036,  0.3086, -1.2245],
+           [-0.6707, -0.0195, -0.1474],
+           [ 0.2727, -0.4938, -0.6854]],
+
+          [[ 0.5525,  1.0111, -0.1847],
+           [ 0.1111, -0.6373, -0.2220],
+           [-0.5963,  0.7734,  0.0409]]]]])
+        model = nn.MaxPool3d(kernel_size=2, stride=1, padding=1, dilation=2, return_indices=True, ceil_mode=True)
+        result, indices = model(x)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        unsupport=True,
+        reason="paddle.nn.MaxPool3D dose not support 'dilation' now!",
+    )
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.tensor([[[[[-0.8658,  1.0869, -2.1977],
+           [-2.1073,  1.0974, -1.4485],
+           [ 0.5880, -0.7189,  0.1089]],
+
+          [[ 1.3036,  0.3086, -1.2245],
+           [-0.6707, -0.0195, -0.1474],
+           [ 0.2727, -0.4938, -0.6854]],
+
+          [[ 0.5525,  1.0111, -0.1847],
+           [ 0.1111, -0.6373, -0.2220],
+           [-0.5963,  0.7734,  0.0409]]]]])
+        model = nn.MaxPool3d(kernel_size=2, padding=1, stride=1, return_indices=True, dilation=2, ceil_mode=True)
+        result, indices = model(x)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        unsupport=True,
+        reason="paddle.nn.MaxPool3D dose not support 'dilation' now!",
+    )
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.tensor([[[[[-0.8658,  1.0869, -2.1977],
+           [-2.1073,  1.0974, -1.4485],
+           [ 0.5880, -0.7189,  0.1089]],
+
+          [[ 1.3036,  0.3086, -1.2245],
+           [-0.6707, -0.0195, -0.1474],
+           [ 0.2727, -0.4938, -0.6854]],
+
+          [[ 0.5525,  1.0111, -0.1847],
+           [ 0.1111, -0.6373, -0.2220],
+           [-0.5963,  0.7734,  0.0409]]]]])
+        model = nn.MaxPool3d(2, 1, 1, True, 2, True)
+        result, indices = model(x)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        unsupport=True,
+        reason="paddle.nn.MaxPool3D dose not support 'dilation' now!",
+    )

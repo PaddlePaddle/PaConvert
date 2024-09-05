@@ -24,6 +24,7 @@ python -c "import paddle; print('paddle version information:' , paddle.__version
 python ../../paconvert/main.py --in_dir . --out_dir /tmp/paddle --log_level "DEBUG"
 
 export CUDA_VISIBLE_DEVICES=0,1
+netstat -tulnp | grep :29500 | awk '{print $7}' | cut -d/ -f1 | xargs kill -9 2> nul
 
 if [ $# -gt 0 ] ; then
     item=$1

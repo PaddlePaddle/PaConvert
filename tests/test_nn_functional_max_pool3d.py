@@ -100,6 +100,8 @@ def test_case_6():
     obj.run(pytorch_code, ["result"])
 
 
+# when return_indices=False, paddle result and indices shape is (1, 3, 2, 2, 2), which is right: ceil(10/8)=2
+# when return_indices=True, paddle result and indices shape is (1, 3, 1, 1, 1), which is bug
 def test_case_7():
     pytorch_code = textwrap.dedent(
         """
@@ -122,13 +124,10 @@ def test_case_8():
         """
         import torch
         import torch.nn.functional as F
-        input = torch.arange(3000, dtype=torch.float32).reshape(1, 3, 10, 10, 10)
-        result, indices = F.max_pool3d(input, kernel_size=8, ceil_mode=False, return_indices=True)
+        input = torch.arange(4800, dtype=torch.float32).reshape(2, 3, 8, 10, 10)
+        result = F.max_pool3d(input, 3, 1, 1, 2, True, False)
         """
     )
     obj.run(
-        pytorch_code,
-        ["result", "indices"],
-        check_dtype=False,
-        reason="torch indices dtype is int64, while paddle is int32",
+        pytorch_code, ["result"], unsupport=True, reason="dilation is not supported now"
     )
