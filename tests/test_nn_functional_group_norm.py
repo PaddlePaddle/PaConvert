@@ -145,3 +145,47 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"], atol=1e-4)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([[[-0.0878,  0.3378,  0.0547,  1.2068],
+                    [0.4212, -1.6113,  0.7277,  0.0766],
+                    [0.8189,  0.0958,  1.7780,  1.1192],
+                    [0.7286, -0.1988,  1.0519,  0.9217]],
+
+                    [[0.0088, -1.9815, -0.3543,  0.1712],
+                    [-0.1830,  0.0325, -0.1784,  0.1072],
+                    [1.1752, -0.0234, -1.0873, -0.5568],
+                    [0.4471,  0.4073, -1.6031, -0.0310]]])
+        weight = torch.tensor([1.3, 1.2, 1.1, 1.0])
+        bias = torch.tensor([0.1, 0.2, 0.3, 0.4])
+        result = F.group_norm(x, 2, weight, bias, 1e-5)
+        """
+    )
+    obj.run(pytorch_code, ["result"], atol=1e-4)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([[[[[-0.0878,  0.3378,  0.0547,  1.2068],
+                    [0.4212, -1.6113,  0.7277,  0.0766],
+                    [0.8189,  0.0958,  1.7780,  1.1192],
+                    [0.7286, -0.1988,  1.0519,  0.9217]],
+
+                    [[0.0088, -1.9815, -0.3543,  0.1712],
+                    [-0.1830,  0.0325, -0.1784,  0.1072],
+                    [1.1752, -0.0234, -1.0873, -0.5568],
+                    [0.4471,  0.4073, -1.6031, -0.0310]]]]])
+        weight = torch.tensor([1.3])
+        bias = torch.tensor([0.1])
+        result = F.group_norm(x, 1, weight, bias, 1e-5)
+        """
+    )
+    obj.run(pytorch_code, ["result"], atol=1e-4)

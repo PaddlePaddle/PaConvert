@@ -3501,9 +3501,6 @@
       "correction": "unbiased"
     }
   },
-  "torch.Tensor.stft": {
-    "min_input_args": 1
-  },
   "torch.Tensor.storage": {
     "min_input_args": 0
   },
@@ -15186,6 +15183,30 @@
       "dim": "axis",
       "correction": "unbiased"
     }
+  },
+  "torch.stft": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.signal.stft",
+    "min_input_args": 2,
+    "args_list": [
+      "input",
+      "n_fft",
+      "hop_length",
+      "win_length",
+      "window",
+      "center",
+      "pad_mode",
+      "normalized",
+      "onesided",
+      "return_complex"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "return_complex": ""
+    },
+    "unsupport_args": [
+      "return_complex"
+    ]
   },
   "torch.subtract": {
     "Matcher": "Num2TensorBinaryWithAlphaMatcher",
