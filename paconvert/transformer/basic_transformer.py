@@ -135,7 +135,7 @@ class BasicTransformer(BaseTransformer):
                             self.success_api_count += 1
                             log_info(
                                 self.logger,
-                                "[Delete] Just remove {} ".format(torch_api),
+                                "[Delete] Just remove decorator",
                                 self.file_name,
                                 node.lineno,
                             )
