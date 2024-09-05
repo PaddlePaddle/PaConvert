@@ -105,3 +105,47 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["a"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4, 0, 7], [0, 2, 6]], dtype=torch.int32)
+        result = torch.any(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4, 0, 7], [0, 2, 6]], dtype=torch.int64)
+        result = torch.any(a, 1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4, 0, 7], [0, 2, 6]], dtype=torch.float64)
+        result = torch.any(a, 1, True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4, 0, 7], [0, 2, 6]], dtype=torch.float32)
+        result = torch.any(a, dim=0, keepdim=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

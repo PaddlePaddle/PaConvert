@@ -79,3 +79,29 @@ def test_case_5():
         check_dtype=False,
         reason="torch indices dtype is int64, while paddle is int32",
     )
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.arange(4800, dtype=torch.float32).reshape(2, 3, 8, 10, 10)
+        result = torch.max_pool3d(input=input, kernel_size=(2, 2, 2), stride=(2, 1, 1), padding=1, dilation=1, ceil_mode=True)
+        """
+    )
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="dilation is not suppored now"
+    )
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.arange(4800, dtype=torch.float32).reshape(2, 3, 8, 10, 10)
+        result = torch.max_pool3d(input=input, dilation=1, kernel_size=(2, 2, 2), padding=1, stride=(2, 1, 1), ceil_mode=True)
+        """
+    )
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="dilation is not suppored now"
+    )

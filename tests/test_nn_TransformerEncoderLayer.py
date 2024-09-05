@@ -123,3 +123,64 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        tgt = torch.ones(10, 32, 512)
+        model = nn.TransformerEncoderLayer(d_model=512, nhead=8, dim_feedforward=2048, dropout=0.1,
+                                            activation="relu", layer_norm_eps=1e-05, batch_first=False,
+                                            norm_first=False, bias=True, device=None, dtype=None)
+        result = model(tgt)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle unsupport batch_first args",
+    )
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        tgt = torch.ones(10, 32, 512)
+        model = nn.TransformerEncoderLayer(512, 8, 2048, 0.1,
+                                           "relu", 1e-05, False,
+                                            False, True, "cpu", None)
+        result = model(tgt)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle unsupport batch_first args",
+    )
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        tgt = torch.ones(10, 32, 512)
+        model = nn.TransformerEncoderLayer(512, 8,
+                2048,
+                0.1, 'relu',
+                norm_first=False,
+                device=None,
+                bias=True,
+                dtype=torch.float32)
+        result = model(tgt)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

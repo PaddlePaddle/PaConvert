@@ -25,7 +25,7 @@ def test_case_1():
         import torch
         import torch.nn as nn
         model = nn.Linear(10, 20)
-        result = torch.nn.utils.parameters_to_vector(model.parameters()).detach()
+        result = torch.nn.utils.parameters_to_vector(model.parameters())
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -38,7 +38,7 @@ def test_case_2():
         import torch
         import torch.nn as nn
         model = nn.Linear(10, 20)
-        result = torch.nn.utils.parameters_to_vector(parameters=model.parameters()).detach()
+        result = torch.nn.utils.parameters_to_vector(parameters=model.parameters())
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)

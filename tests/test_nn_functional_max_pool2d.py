@@ -138,7 +138,7 @@ def test_case_6():
 
 # when return_indices=False, paddle result and indices shape is (1, 3, 2, 2), which is right: ceil(6/5)=2
 # when return_indices=True, paddle result and indices shape is (1, 3, 1, 1), which is bug
-def _test_case_7():
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -152,4 +152,78 @@ def _test_case_7():
         ["result", "indices"],
         check_dtype=False,
         reason="torch indices dtype is int64, while paddle is int32",
+    )
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+
+        input = torch.tensor([[[[1.1524, 0.4714, 0.2857],
+                                [-1.2533, -0.9829, -1.0981],
+                                [0.1507, -1.1431, -2.0361]],
+
+                               [[0.1024, -0.4482, 0.4137],
+                                [0.9385, 0.4565, 0.7702],
+                                [0.4135, -0.2587, 0.0482]]]])
+        result, indices = F.max_pool2d(input=input, kernel_size=(2, 2), stride=2, padding=1, dilation=2, ceil_mode=False,
+                                       return_indices=True)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        unsupport=True,
+        reason="dilation is not supported now",
+    )
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+
+        input = torch.tensor([[[[1.1524, 0.4714, 0.2857],
+                                [-1.2533, -0.9829, -1.0981],
+                                [0.1507, -1.1431, -2.0361]],
+
+                               [[0.1024, -0.4482, 0.4137],
+                                [0.9385, 0.4565, 0.7702],
+                                [0.4135, -0.2587, 0.0482]]]])
+        result, indices = F.max_pool2d(input, (2, 2), 2, 1, 2, False, True)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        unsupport=True,
+        reason="dilation is not supported now",
+    )
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+
+        input = torch.tensor([[[[1.1524, 0.4714, 0.2857],
+                                [-1.2533, -0.9829, -1.0981],
+                                [0.1507, -1.1431, -2.0361]],
+
+                               [[0.1024, -0.4482, 0.4137],
+                                [0.9385, 0.4565, 0.7702],
+                                [0.4135, -0.2587, 0.0482]]]])
+        result, indices = F.max_pool2d(input=input, stride=2, padding=1, dilation=2, kernel_size=(2, 2), ceil_mode=False,
+                                       return_indices=True)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        unsupport=True,
+        reason="dilation is not supported now",
     )

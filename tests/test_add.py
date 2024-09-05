@@ -95,3 +95,44 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["a"])
+
+
+# current type promotion only support calculations between floating-point numbers and between complex and real numbers
+def _test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.add(torch.tensor([1, 2, 3], dtype=torch.int32), torch.tensor([1, 4, 6], dtype=torch.float32))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.add(torch.tensor([1, 2, 3], dtype=torch.float64), torch.tensor([1, 4, 6], dtype=torch.float32))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.add(torch.tensor([1, 2, 3], dtype=torch.float16), torch.tensor([1, 4, 6], dtype=torch.float32))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.add(torch.tensor([1, 2, 3], dtype=torch.float64), torch.tensor([1, 4, 6], dtype=torch.complex64))
+        """
+    )
+    obj.run(pytorch_code, ["result"])

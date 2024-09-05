@@ -117,3 +117,47 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[-12., -11., -10., -9. ],
+                    [-8. , -7. , -6. , -5. ],
+                    [-4. , -3. , -2. , -1. ]])
+        out = torch.tensor([1.], dtype=torch.float64)
+        result = torch.norm(input=input, p=2, dim=1, keepdim=True, out=out, dtype=torch.float64)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[-12., -11., -10., -9. ],
+                    [-8. , -7. , -6. , -5. ],
+                    [-4. , -3. , -2. , -1. ]])
+        out = torch.tensor([1.], dtype=torch.float64)
+        result = torch.norm(input=input, keepdim=True, dim=1, p=2, out=out, dtype=torch.float64)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[[-12., -11., -10., -9. ],
+                            [-8. , -7. , -6. , -5. ],
+                            [-4. , -3. , -2. , -1. ]],
+                            [[ 0. ,  1. ,  2. ,  3. ],
+                            [ 4. ,  5. ,  6. ,  7. ],
+                            [ 8. ,  9. ,  10.,  11.]]])
+        result = torch.norm(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

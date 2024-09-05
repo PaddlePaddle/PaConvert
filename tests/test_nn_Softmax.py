@@ -70,9 +70,22 @@ def test_case_3():
         result = model(x)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="When dim is None, paddle and pytorch generate different results",
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.tensor([[[2.0, 3.0, 4.0, 5.0],
+                        [3.0, 4.0, 5.0, 6.0],
+                        [7.0, 8.0, 8.0, 10.0]],
+                        [[1.0, 2.0, 3.0, 4.0],
+                        [5.0, 6.0, 7.0, 8.0],
+                        [6.0, 7.0, 8.0, 9.0]]])
+        model = nn.Softmax(dim=None)
+        result = model(x)
+        """
     )
+    obj.run(pytorch_code, ["result"])

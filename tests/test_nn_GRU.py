@@ -133,3 +133,27 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["output", "h_n"], check_value=False)
+
+
+# when bias=False, paddle has bug in paddle.nn.RNNBase flatten_parameters()
+def _test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        class SimpleRNNModel(nn.Module):
+            def __init__(self):
+                super(SimpleRNNModel, self).__init__()
+                self.gru = nn.GRU(10, 3, 2, False, False, 0.7, False)
+
+            def forward(self, x):
+                output, h_n = self.gru(x)
+                return output, h_n
+
+
+        x = torch.randn(5, 3, 10)
+        model = SimpleRNNModel()
+        output, h_n = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["output", "h_n"], check_value=False)

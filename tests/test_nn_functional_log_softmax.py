@@ -33,12 +33,7 @@ def test_case_1():
         result = F.log_softmax(x)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="When dim is None, paddle and pytorch generate different results due to the way to calculate dimensions",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -72,12 +67,7 @@ def test_case_3():
         result = F.log_softmax(x, dtype=torch.float64)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="When dim is None, paddle and pytorch generate different results due to the way to calculate dimensions",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -94,9 +84,55 @@ def test_case_4():
         result = F.log_softmax(x, _stacklevel=2)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="When dim is None, paddle and pytorch generate different results due to the way to calculate dimensions",
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([[[-2.0, 3.0, -4.0, 5.0],
+                            [3.0, -4.0, 5.0, -6.0],
+                            [-7.0, -8.0, 8.0, 9.0]],
+                            [[1.0, -2.0, -3.0, 4.0],
+                            [-5.0, 6.0, 7.0, -8.0],
+                            [6.0, 7.0, 8.0, 9.0]]])
+        result = F.log_softmax(input=x, dim=2, _stacklevel=2, dtype=torch.float64)
+        """
     )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([[[-2.0, 3.0, -4.0, 5.0],
+                            [3.0, -4.0, 5.0, -6.0],
+                            [-7.0, -8.0, 8.0, 9.0]],
+                            [[1.0, -2.0, -3.0, 4.0],
+                            [-5.0, 6.0, 7.0, -8.0],
+                            [6.0, 7.0, 8.0, 9.0]]])
+        result = F.log_softmax(x, 2, 2, torch.float64)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([[[-2.0, 3.0, -4.0, 5.0],
+                            [3.0, -4.0, 5.0, -6.0],
+                            [-7.0, -8.0, 8.0, 9.0]],
+                            [[1.0, -2.0, -3.0, 4.0],
+                            [-5.0, 6.0, 7.0, -8.0],
+                            [6.0, 7.0, 8.0, 9.0]]])
+        result = F.log_softmax(input=x, _stacklevel=2, dtype=torch.float64, dim=-2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

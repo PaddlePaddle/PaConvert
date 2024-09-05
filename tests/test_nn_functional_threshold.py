@@ -29,12 +29,7 @@ def test_case_1():
         result = nn.functional.threshold(x, 0.5, 0.0)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support value != 0.0 and value is mandatory in torch",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -47,12 +42,7 @@ def test_case_2():
         result = nn.functional.threshold(x, threshold=0.5, value=0.0)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support value != 0.0 and value is mandatory in torch",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -65,12 +55,7 @@ def test_case_3():
         result = nn.functional.threshold(x, value=0.0, threshold=0.5)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support value != 0.0 and value is mandatory in torch",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -83,12 +68,7 @@ def test_case_4():
         result = nn.functional.threshold(x, 0.5, 0.0, False)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support value != 0.0 and value is mandatory in torch",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -101,9 +81,4 @@ def test_case_5():
         result = nn.functional.threshold(x, threshold=0.5, value=0.1, inplace=False)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support value != 0.0 and value is mandatory in torch",
-    )
+    obj.run(pytorch_code, ["result"])

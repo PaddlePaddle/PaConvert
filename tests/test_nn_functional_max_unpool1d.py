@@ -74,12 +74,7 @@ def test_case_4():
         result = F.max_unpool1d(x, indices, kernel_size=2, output_size=(1, 1, 4))
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle will generate error when the output_size parameter is specified",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -92,6 +87,69 @@ def test_case_5():
         indices = torch.tensor([[[1 , 3 , 4 , 7 , 8 , 10, 13, 14],
                                 [1 , 2 , 5 , 6 , 8 , 11, 13, 14]]])
         result = F.max_unpool1d(x, indices, kernel_size=2, padding=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+
+        x = torch.tensor([[[0.58987975, 0.80133516, 0.71605772, 0.46068805, 0.30434567, 0.41771618, 0.15606387, 0.88071585],
+                           [0.67178625, 0.54522562, 0.83222342, 0.26114768, 0.77833325, 0.52892995, 0.26498035, 0.97040081]]])
+        indices = torch.tensor([[[1, 3, 4, 7, 8, 10, 13, 14],
+                                 [1, 2, 5, 6, 8, 11, 13, 14]]])
+        result = F.max_unpool1d(input=x, indices=indices, kernel_size=2, stride=2, padding=0, output_size=(15,15,15))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+
+        x = torch.tensor([[[0.58987975, 0.80133516, 0.71605772, 0.46068805, 0.30434567, 0.41771618, 0.15606387, 0.88071585],
+                           [0.67178625, 0.54522562, 0.83222342, 0.26114768, 0.77833325, 0.52892995, 0.26498035, 0.97040081]]])
+        indices = torch.tensor([[[1, 3, 4, 7, 8, 10, 13, 14],
+                                 [1, 2, 5, 6, 8, 11, 13, 14]]])
+        result = F.max_unpool1d(x, indices, 2, 2, 0, (15,15,15))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+
+        x = torch.tensor([[[0.58987975, 0.80133516, 0.71605772, 0.46068805, 0.30434567, 0.41771618, 0.15606387, 0.88071585],
+                           [0.67178625, 0.54522562, 0.83222342, 0.26114768, 0.77833325, 0.52892995, 0.26498035, 0.97040081]]])
+        indices = torch.tensor([[[1, 3, 4, 7, 8, 10, 13, 14],
+                                 [1, 2, 5, 6, 8, 11, 13, 14]]])
+        result = F.max_unpool1d(input=x, kernel_size=2, indices=indices, padding=0, stride=2, output_size=(15,15,15))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([[[0.58987975, 0.80133516, 0.71605772, 0.46068805, 0.30434567, 0.41771618, 0.15606387, 0.88071585],
+                        [0.67178625, 0.54522562, 0.83222342, 0.26114768, 0.77833325, 0.52892995, 0.26498035, 0.97040081]]])
+        indices = torch.tensor([[[1 , 3 , 4 , 7 , 8 , 10, 13, 14],
+                                [1 , 2 , 5 , 6 , 8 , 11, 13, 14]]])
+        result = F.max_unpool1d(x, indices, kernel_size=2)
         """
     )
     obj.run(pytorch_code, ["result"])

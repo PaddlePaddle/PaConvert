@@ -87,3 +87,88 @@ def test_case_5():
         unsupport=True,
         reason="Paddle does not support parameter of padding_mode",
     )
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.randn(5, 16, 50, 100)
+        model = nn.ConvTranspose2d(16, 33, (3, 5), stride=(2, 1), padding=(4, 2), dilation=(3, 1), bias=True, padding_mode='zeros')
+        result = model(x)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Paddle does not support parameter of padding_mode",
+    )
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.randn(5, 16, 50, 100)
+        model = nn.ConvTranspose2d(in_channels=16, out_channels=33, kernel_size=(3, 5), stride=(2, 1), padding=(4, 2), output_padding=0, groups=1, bias=True, dilation=(3, 1), padding_mode='zeros', device=None, dtype=None)
+        result = model(x)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Paddle does not support parameter of padding_mode",
+    )
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.randn(5, 16, 50, 100)
+        model = nn.ConvTranspose2d(in_channels=16, output_padding=0, kernel_size=(3, 5), stride=(2, 1), padding=(4, 2), groups=1, bias=True, out_channels=33, dilation=(3, 1), padding_mode='zeros', device=None, dtype=None)
+        result = model(x)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Paddle does not support parameter of padding_mode",
+    )
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.randn(5, 16, 50, 100)
+        model = nn.ConvTranspose2d(16, 33, (3, 5), (2, 1), (4, 2), 0, 1, True, (3, 1), 'zeros', None, None)
+        result = model(x)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="Paddle does not support parameter of padding_mode",
+    )
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.randn(5, 16, 50, 100)
+        model = nn.ConvTranspose2d(16, 33, (3, 5))
+        result = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
