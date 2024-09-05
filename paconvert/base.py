@@ -197,7 +197,7 @@ class BaseTransformer(ast.NodeTransformer):
         return True
 
     def get_full_attr(self, node):
-        if "torch" not in self.imports_map[self.file]["torch_packages"]:
+        if len(self.imports_map[self.file]["torch_packages"]) == 0:
             return "NonTorchClass"
         if isinstance(node, ast.Attribute):
             return self.get_full_attr(node.value) + "." + node.attr

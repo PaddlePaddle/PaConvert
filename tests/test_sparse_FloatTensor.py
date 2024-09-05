@@ -61,6 +61,7 @@ def test_case_3():
     obj.run(pytorch_code, ["result"])
 
 
+# NOTE: 'device' only support "cpu".
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
@@ -68,7 +69,7 @@ def test_case_4():
         i = torch.tensor([[0, 1, 1],
                           [2, 0, 2]])
         v = torch.tensor([3, 4, 5])
-        result = torch.sparse.FloatTensor(size=[2, 4], values=v, indices=i)
+        result = torch.sparse.FloatTensor(size=[2, 4], values=v, indices=i, device = "cpu")
         result = result.to_dense()
         """
     )

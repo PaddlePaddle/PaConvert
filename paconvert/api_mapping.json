@@ -14587,7 +14587,7 @@
   "torch.sparse.FloatTensor": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.sparse.sparse_coo_tensor",
-    "min_input_args": 2,
+    "min_input_args": 3,
     "args_list": [
       "indices",
       "values",
@@ -14597,7 +14597,7 @@
     ],
     "kwargs_change": {
       "size": "shape",
-      "device": "place"
+      "device": ""
     }
   },
   "torch.sparse.addmm": {
