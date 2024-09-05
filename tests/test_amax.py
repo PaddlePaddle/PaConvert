@@ -118,5 +118,3 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["out"])
-
-
