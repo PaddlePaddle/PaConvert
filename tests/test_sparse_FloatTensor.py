@@ -45,3 +45,31 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        i = torch.tensor([[0, 1, 1],
+                          [2, 0, 2]])
+        v = torch.tensor([3, 4, 5])
+        result = torch.sparse.FloatTensor(values=v, indices=i, size=[2, 4])
+        result = result.to_dense()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        i = torch.tensor([[0, 1, 1],
+                          [2, 0, 2]])
+        v = torch.tensor([3, 4, 5])
+        result = torch.sparse.FloatTensor(size=[2, 4], values=v, indices=i)
+        result = result.to_dense()
+        """
+    )
+    obj.run(pytorch_code, ["result"])

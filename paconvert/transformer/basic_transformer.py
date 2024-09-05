@@ -389,8 +389,6 @@ class BasicTransformer(BaseTransformer):
         super(BasicTransformer, self).generic_visit(node)
 
         full_attr = self.get_full_attr(node.func)
-        if full_attr in ALIAS_MAPPING:
-            full_attr = ALIAS_MAPPING[full_attr]
 
         # Torch Package Call, include torch third_party
         #   such as : torch.add(x, y) / torch.add(torch.abs(x), y)
@@ -400,6 +398,8 @@ class BasicTransformer(BaseTransformer):
                 full_attr.startswith("%s." % torch_package)
                 or full_attr in self.MAY_TORCH_METHOD_LIST
             ):
+                if full_attr in ALIAS_MAPPING:
+                    full_attr = ALIAS_MAPPING[full_attr]
                 torch_api = full_attr
                 self.torch_api_count += 1
                 log_debug(
@@ -485,10 +485,7 @@ class BasicTransformer(BaseTransformer):
 
         # Torch Class call
         #   such as : x.add(y) / x.abs().add / sgd.step() / model.to(torch.device('cuda'))
-        if (
-            "NonTorchClass" not in full_attr
-            and "torch" in self.imports_map[self.file]["torch_packages"]
-        ):
+        if "NonTorchClass" not in full_attr:
             is_tensor_api = False
             is_module_api = False
             is_optim_api = False
