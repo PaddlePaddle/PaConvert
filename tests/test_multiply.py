@@ -32,7 +32,7 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support input type promote, and x/y must have the same dtype
+# current type promotion only support calculations between floating-point numbers and between complex and real numbers
 def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -45,7 +45,7 @@ def _test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support input type promote, and x/y must have the same dtype
+# current type promotion only support calculations between floating-point numbers and between complex and real numbers
 def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
@@ -68,7 +68,7 @@ def test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support input type promote, and x/y must have the same dtype
+# current type promotion only support calculations between floating-point numbers and between complex and real numbers
 def _test_case_5():
     pytorch_code = textwrap.dedent(
         """
@@ -100,6 +100,66 @@ def test_case_7():
         input = torch.tensor([0.2015, -0.4255,  2.6087])
         other = torch.tensor([0.2015, -0.4255,  2.6087])
         result = torch.multiply(other=other, input=input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.2015, -0.4255,  2.6087], dtype=torch.float32)
+        other = torch.tensor([2, 6, 4], dtype=torch.float64)
+        result = torch.multiply(input, other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.2015, -0.4255,  2.6087], dtype=torch.float16)
+        other = torch.tensor([2, 6, 4], dtype=torch.float64)
+        result = torch.multiply(input, other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.2015, -0.4255,  2.6087], dtype=torch.float32)
+        other = torch.tensor([2, 6, 4], dtype=torch.float16)
+        result = torch.multiply(input, other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.2015, -0.4255,  2.6087], dtype=torch.float32)
+        other = torch.tensor([2, 6, 4], dtype=torch.complex128)
+        result = torch.multiply(input, other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.2015, -0.4255,  2.6087], dtype=torch.int32)
+        other = torch.tensor([2, 6, 4], dtype=torch.complex64)
+        result = torch.multiply(input, other)
         """
     )
     obj.run(pytorch_code, ["result"])

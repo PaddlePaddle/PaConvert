@@ -127,3 +127,21 @@ def test_case_6():
     obj.run(
         pytorch_code, unsupport=True, reason="paddle unsupport recompute_scale_factor "
     )
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[[[ 1.1524,  0.4714,  0.2857],
+         [-1.2533, -0.9829, -1.0981],
+         [ 0.1507, -1.1431, -2.0361]],
+
+        [[ 0.1024, -0.4482,  0.4137],
+         [ 0.9385,  0.4565,  0.7702],
+         [ 0.4135, -0.2587,  0.0482]]]])
+        m = torch.nn.Upsample(scale_factor=2, align_corners=True, mode='bilinear')
+        result = m(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

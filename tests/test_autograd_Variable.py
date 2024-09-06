@@ -16,18 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Module.to")
+obj = APIBase("torch.autograd.Variable")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3.])
-        module1 = torch.nn.Module()
-        module1.register_buffer('buffer', x)
-        module1.to(dtype=torch.float32)
-        result = module1.buffer
+        x = torch.tensor([1.1, 2.2, 3.3])
+
+        result = torch.autograd.Variable(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -37,11 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3.])
-        module1 = torch.nn.Module()
-        module1.register_buffer('buffer', x)
-        module1.to(device="cpu")
-        result = module1.buffer
+        x = torch.tensor([1.1, 2.2, 3.3])
+
+        result = torch.autograd.Variable(x, requires_grad=True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -51,11 +47,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3.])
-        module1 = torch.nn.Module()
-        module1.register_buffer('buffer', x)
-        module1.to(device="cpu", non_blocking=False)
-        result = module1.buffer
+        x = torch.tensor([1.1, 2.2, 3.3])
+        result = torch.autograd.Variable(x, requires_grad=False)
         """
     )
     obj.run(pytorch_code, ["result"])

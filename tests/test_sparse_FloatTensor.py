@@ -16,15 +16,18 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.transpose", is_aux_api=True)
+obj = APIBase("torch.sparse.FloatTensor")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.transpose(dim0=0, dim1=1)
+        i = torch.tensor([[0, 1, 1],
+                          [2, 0, 2]])
+        v = torch.tensor([3, 4, 5], dtype=torch.float32)
+        result = torch.sparse.FloatTensor(i, v, [2, 4])
+        result = result.to_dense()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +37,11 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.transpose(0, 1)
+        i = torch.tensor([[0, 1, 1],
+                          [2, 0, 2]])
+        v = torch.tensor([3, 4, 5])
+        result = torch.sparse.FloatTensor(indices=i, values=v, size=[2, 4])
+        result = result.to_dense()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,20 +51,26 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.transpose(dim1=0, dim0=1)
+        i = torch.tensor([[0, 1, 1],
+                          [2, 0, 2]])
+        v = torch.tensor([3, 4, 5])
+        result = torch.sparse.FloatTensor(values=v, indices=i, size=[2, 4])
+        result = result.to_dense()
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
+# NOTE: 'device' only support "cpu".
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        list_a = [a,a]
-        result = [x.transpose(dim1=0, dim0=1) for x in list_a ]
+        i = torch.tensor([[0, 1, 1],
+                          [2, 0, 2]])
+        v = torch.tensor([3, 4, 5])
+        result = torch.sparse.FloatTensor(size=[2, 4], values=v, indices=i, device = "cpu")
+        result = result.to_dense()
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -67,3 +67,27 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        conv = torch.nn.Conv2d(3, 6, (3, 3))
+        torch.nn.init.trunc_normal_(tensor=conv.weight, mean=1., std=2., a=-5., b=5.)
+        result = conv.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        conv = torch.nn.Conv2d(3, 6, (3, 3))
+        torch.nn.init.trunc_normal_(tensor=conv.weight, mean=0., std=3., a=-5., b=5.)
+        result = conv.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

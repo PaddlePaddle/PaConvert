@@ -79,7 +79,7 @@ def test_case_5():
     obj.run(pytorch_code, ["result", "out"])
 
 
-# paddle not support input type promote
+# current type promotion only support calculations between floating-point numbers and between complex and real numbers
 def _test_case_6():
     pytorch_code = textwrap.dedent(
         """
@@ -118,3 +118,51 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0, 1, 10, 0], dtype=torch.float32)
+        b = torch.tensor([4, 0, 1, 0], dtype=torch.float64)
+        result = torch.logical_or(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0, 1, 10, 0], dtype=torch.float16)
+        b = torch.tensor([4, 0, 1, 0], dtype=torch.float64)
+        result = torch.logical_or(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0, 1, 10, 0], dtype=torch.float32)
+        b = torch.tensor([4, 0, 1, 0], dtype=torch.float16)
+        result = torch.logical_or(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0, 1, 10, 0], dtype=torch.float32)
+        b = torch.tensor([4, 0, 1, 0], dtype=torch.complex64)
+        result = torch.logical_or(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
