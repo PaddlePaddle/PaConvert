@@ -329,13 +329,18 @@ class BaseMatcher(object):
         posion_args_list = group_list[0] if len(group_list) > 0 else []
         force_kwargs_list = group_list[1] if len(group_list) > 1 else []
         force_kwargs_num = 0
-        for node in kwargs:
+        tmp_kwargs = kwargs
+        for node in tmp_kwargs:
             k = node.arg
             # not support 'torch.rot90(tensor, **config)'
             if k is None:
                 return None
             # not support some API args
             if k in unsupport_args:
+                if isinstance(node.value, ast.Constant):
+                    if node.value.value is None:
+                        kwargs.remove(node)
+                        continue
                 return None
             if k not in args_list + overload_args_list:
                 return "misidentify"

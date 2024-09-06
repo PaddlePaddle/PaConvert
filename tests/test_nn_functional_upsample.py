@@ -94,7 +94,7 @@ def test_case_6():
         result = F.upsample(x, size=None, scale_factor=2.0, mode='nearest', align_corners=None)
         """
     )
-    obj.run(pytorch_code, unsupport=True, reason="align_corners is not supported")
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_7():
@@ -104,7 +104,7 @@ def test_case_7():
         import torch.nn.functional as F
         x = torch.tensor([[[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                             [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]]])
-        result = F.upsample(input=x, size=None, scale_factor=2.0, mode='nearest', align_corners=None)
+        result = F.upsample(x, size=None, scale_factor=2.0, mode='nearest', align_corners=True)
         """
     )
     obj.run(pytorch_code, unsupport=True, reason="align_corners is not supported")
@@ -117,7 +117,7 @@ def test_case_8():
         import torch.nn.functional as F
         x = torch.tensor([[[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                             [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]]])
-        result = F.upsample(x, None, 2.0, 'nearest', None)
+        result = F.upsample(x, None, 2.0, 'nearest', True)
         """
     )
     obj.run(pytorch_code, unsupport=True, reason="align_corners is not supported")
