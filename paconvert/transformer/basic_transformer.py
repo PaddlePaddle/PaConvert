@@ -75,16 +75,21 @@ class BasicTransformer(BaseTransformer):
         ):
             super(BasicTransformer, self).generic_visit(node)
 
-        # 6.torch.tensor(features_A).T.cuda()
-        if isinstance(node.value, ast.Attribute) and node.value.attr in [
-            "T",
-            "real",
-            "data",
-            "weight",
-            "bias",
-            "imag",
-        ]:
-            super(BasicTransformer, self).generic_visit(node)
+        # 6. torch.tensor(features_A).T.cuda()
+        if isinstance(node.value, ast.Attribute):
+            if node.value.attr in [
+                "T",
+                "real",
+                "weight",
+                "bias",
+                "imag",
+            ]:
+                super(BasicTransformer, self).generic_visit(node)
+            # 7.  x.data.cuda()  / avoid  torch.utils.data.*
+            elif node.value.attr == "data" and "torch.utils" not in self.get_full_attr(
+                node.value
+            ):
+                super(BasicTransformer, self).generic_visit(node)
 
         # should be handled by visit_Call
         if isinstance(self.parent_node, ast.Call):
