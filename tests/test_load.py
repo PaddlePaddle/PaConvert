@@ -79,7 +79,7 @@ def test_case_5():
         result = torch.load('tensor.pt', map_location=torch.device('cpu'), pickle_module=pickle, weights_only=False, mmap=None)
         """
     )
-    obj.run(pytorch_code, unsupport=True, reason="`mmap` is not supported in paddle")
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_6():
@@ -146,7 +146,7 @@ def test_case_10():
 
         result = torch.tensor([0., 1., 2., 3., 4.])
         torch.save(result, 'tensor.pt', pickle_protocol=4)
-        result = torch.load(f='tensor.pt', map_location=torch.device('cpu'), pickle_module=pickle, weights_only=False, mmap=None)
+        result = torch.load(f='tensor.pt', map_location=torch.device('cpu'), pickle_module=pickle, weights_only=False, mmap=True)
         """
     )
     obj.run(pytorch_code, unsupport=True, reason="`mmap` is not supported in paddle")
@@ -160,7 +160,7 @@ def test_case_11():
 
         result = torch.tensor([0., 1., 2., 3., 4.])
         torch.save(result, 'tensor.pt', pickle_protocol=4)
-        result = torch.load(f='tensor.pt', pickle_module=pickle, map_location=torch.device('cpu'), weights_only=False, mmap=None)
+        result = torch.load(f='tensor.pt', pickle_module=pickle, map_location=torch.device('cpu'), weights_only=False, mmap=False)
         """
     )
     obj.run(pytorch_code, unsupport=True, reason="`mmap` is not supported in paddle")

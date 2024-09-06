@@ -38,13 +38,7 @@ def test_case_2():
         result = m.sample([100])
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="paddle does not support logits temporarily",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
@@ -95,7 +89,7 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Geometric(probs=torch.tensor([0.3]), logits=None, validate_args=False)
+        m = torch.distributions.Geometric(probs=torch.tensor([0.3]), logits=torch.tensor([0.3]), validate_args=False)
         result = m.sample([100])
         """
     )
@@ -112,7 +106,7 @@ def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Geometric(probs=torch.tensor([0.3]), validate_args=False, logits=None)
+        m = torch.distributions.Geometric(probs=torch.tensor([0.3]), validate_args=False, logits=torch.tensor([0.3]))
         result = m.sample([100])
         """
     )

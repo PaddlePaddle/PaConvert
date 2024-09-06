@@ -59,4 +59,17 @@ def test_case_2():
         result = nn.SyncBatchNorm.convert_sync_batchnorm(module=m, process_group=None)
         """
     )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        m = nn.BatchNorm1d(2)
+        a = torch.tensor([[1.0, 2.0], [1.0, 2.0]])
+        result = nn.SyncBatchNorm.convert_sync_batchnorm(module=m, process_group=process_group)
+        """
+    )
     obj.run(pytorch_code, unsupport=True, reason="Not support process_group")
