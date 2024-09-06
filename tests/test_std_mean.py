@@ -122,3 +122,33 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["std", "mean"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor(
+            [[ 0.2035,  1.2959,  1.8101, -0.4644],
+            [ 1.5027, -0.3270,  0.5905,  0.6538],
+            [-1.5745,  1.3330, -0.5596, -0.6548],
+            [ 0.1264, -0.5080,  1.6420,  0.1992]])
+        std, mean = torch.std_mean(input=a, dim=1, correction=0, keepdim=True)
+        """
+    )
+    obj.run(pytorch_code, ["std", "mean"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor(
+            [[ 0.2035,  1.2959,  1.8101, -0.4644],
+            [ 1.5027, -0.3270,  0.5905,  0.6538],
+            [-1.5745,  1.3330, -0.5596, -0.6548],
+            [ 0.1264, -0.5080,  1.6420,  0.1992]])
+        std, mean = torch.std_mean(input=a, correction=0, dim=1, keepdim=True)
+        """
+    )
+    obj.run(pytorch_code, ["std", "mean"])

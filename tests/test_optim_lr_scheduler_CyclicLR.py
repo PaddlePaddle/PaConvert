@@ -108,3 +108,33 @@ def test_case_9():
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5, check_value=False)
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        generate_lr_scheduler_test_code(
+            "torch.optim.lr_scheduler.CyclicLR(sgd, 0.01, 0.1, 1000, 1000, 'triangular', 1.0, None, 'cycle', True, 0.8, 0.9, -1, False)"
+        )
+    )
+    obj.run(
+        pytorch_code,
+        ["result1", "result2"],
+        rtol=1.0e-5,
+        unsupport=True,
+        reason="`cycle_momentum`, `base_momentum`, `max_momentum` is not supported.",
+    )
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        generate_lr_scheduler_test_code(
+            "torch.optim.lr_scheduler.CyclicLR(optimizer=sgd, max_lr=0.1, mode='triangular', step_size_up=1000, base_lr=0.01, step_size_down=1000, gamma=1.0, cycle_momentum=True, scale_fn=None, scale_mode='cycle', base_momentum=0.8, max_momentum=0.9, last_epoch=-1, verbose=False)"
+        )
+    )
+    obj.run(
+        pytorch_code,
+        ["result1", "result2"],
+        rtol=1.0e-5,
+        unsupport=True,
+        reason="`cycle_momentum`, `base_momentum`, `max_momentum` is not supported.",
+    )

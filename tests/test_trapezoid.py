@@ -76,3 +76,15 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        y = torch.tensor([1, 1, 1, 0, 1]).type(torch.float32)
+        x = torch.tensor([1, 2, 3, 0, 1]).type(torch.float32)
+        result = torch.trapezoid(y, x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

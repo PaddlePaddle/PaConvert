@@ -84,3 +84,39 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        out = torch.tensor([],dtype=torch.float64)
+        result = torch.prod(input=input, dim=1, keepdim=True, dtype=torch.float64, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        out = torch.tensor([],dtype=torch.float64)
+        result = torch.prod(input, 1, True, dtype=torch.float64, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        out = torch.tensor([],dtype=torch.float64)
+        result = torch.prod(keepdim=True, dim=1, dtype=torch.float64, input=input, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
