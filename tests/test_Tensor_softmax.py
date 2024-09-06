@@ -37,15 +37,10 @@ def test_case_2():
         import torch
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
-        result = input.softmax()
+        result = input.softmax(1)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="Default dim is not same for pytorch with paddle",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():

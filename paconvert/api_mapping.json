@@ -3381,9 +3381,9 @@
   },
   "torch.Tensor.smm": {},
   "torch.Tensor.softmax": {
-    "Matcher": "TensorSoftmaxMatcher",
+    "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.nn.functional.softmax",
-    "min_input_args": 0,
+    "min_input_args": 1,
     "args_list": [
       "dim",
       "dtype"

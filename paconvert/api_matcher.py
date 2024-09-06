@@ -148,6 +148,14 @@ class GenericMatcher(BaseMatcher):
         return code
 
 
+class RegistCustomMethodMatcher(GenericMatcher):
+    def get_paddle_api(self):
+        assert "paddle_api" in self.api_mapping
+        if self.paddle_api:
+            return self.paddle_api + "_custom"
+        return self.api_mapping["paddle_api"] + "_custom"
+
+
 class SliceScatterMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" in kwargs:
@@ -1798,13 +1806,6 @@ class TensorExpandMatcher(BaseMatcher):
 
         code = "{}.expand({})".format(self.paddleClass, self.kwargs_to_str(kwargs))
         return ast.parse(code).body
-
-
-class TensorSoftmaxMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "dim" not in kwargs:
-            return None
-        return TensorFunc2PaddleFunc.generate_code(self, kwargs)
 
 
 class TensorRequiresGrad_Matcher(BaseMatcher):
@@ -3827,10 +3828,38 @@ class UnpoolMatcher(BaseMatcher):
 
 
 class SoftmaxMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def _get_softmax_dim(axis: int) -> int:
+                if axis == 0 or axis == 1 or axis == 3:
+                    ret = 0
+                else:
+                    ret = 1
+                return ret
+
+            def forward(self,x):
+                if self._axis is None:
+                    return paddle.nn.functional.softmax(x, _get_softmax_dim(x.ndim))
+                return paddle.nn.functional.softmax(x, self._axis)
+            setattr(paddle.nn.Softmax, 'forward', forward)
+
+            def forward(self,x):
+                if self._axis is None:
+                    return paddle.nn.functional.log_softmax(x, _get_softmax_dim(x.ndim))
+                return paddle.nn.functional.log_softmax(x, self._axis)
+            setattr(paddle.nn.LogSoftmax, 'forward', forward)
+            """
+        )
+        return CODE_TEMPLATE
+
     def generate_code(self, kwargs):
-        if "dim" not in kwargs or "None" in kwargs["dim"]:
-            kwargs.pop("dim", "None")
-            kwargs["axis"] = 0
+        if "dim" not in kwargs or kwargs["dim"] == "None":
+            self.write_aux_code()
+            if "functional" in self.get_paddle_api():
+                kwargs["dim"] = "paddle_aux._get_softmax_dim({}.ndim)".format(
+                    kwargs["input"]
+                )
         return GenericMatcher.generate_code(self, kwargs)
 
 
