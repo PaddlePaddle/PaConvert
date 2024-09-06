@@ -196,6 +196,7 @@
   "torch.utils.data.sampler.SequentialSampler": "torch.utils.data.SequentialSampler",
   "torch.utils.data.sampler.SubsetRandomSampler": "torch.utils.data.SubsetRandomSampler",
   "torch.utils.data.sampler.WeightedRandomSampler": "torch.utils.data.WeightedRandomSampler",
+  "torch.utils.model_zoo.load_url": "torch.hub.load_state_dict_from_url",
   "torch.xlogy": "torch.special.xlogy",
   "transformers.generation.logits_process.LogitsProcessorList": "transformers.generation.LogitsProcessorList",
   "transformers.modeling_utils.PreTrainedModel": "transformers.PreTrainedModel",
