@@ -88,5 +88,4 @@ response, history = model.chat(tokenizer, "给这个故事起一个标题", hist
 
 ```python
 python -m paddle.distributed.launch ./convert_model/Qwen-7B-Chat/run_qwen.py
-
 ```
