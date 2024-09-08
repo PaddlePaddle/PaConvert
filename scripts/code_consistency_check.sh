@@ -18,6 +18,8 @@ export FLAGS_set_to_1d=0
 DOWNLOAD_DATASET_IF="OFF"
 
 cd /workspace/$1/PaConvert/
+chmod +x scripts/codecheck
+./scripts/codecheck
 TORCH_PROJECT_PATH=$2
 
 echo "Insalling cpu version torch"

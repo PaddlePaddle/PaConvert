@@ -17,6 +17,8 @@ set +x
 export FLAGS_set_to_1d=0
 
 cd /workspace/$1/PaConvert/ 
+chmod +x scripts/codecheck
+./scripts/codecheck
 AGILE_PULL_ID=$2
 GITHUB_API_TOKEN=$3
 

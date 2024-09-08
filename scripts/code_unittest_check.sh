@@ -18,7 +18,8 @@ export FLAGS_set_to_1d=0
 
 cd /workspace/$1/PaConvert/
 export LD_LIBRARY_PATH=/root/anaconda3/lib:$LD_LIBRARY_PATH
-
+chmod +x scripts/codecheck
+./scripts/codecheck
 echo "Insalling cpu version torch"
 python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
 python -c "import torch; print('torch version information:' ,torch.__version__)"

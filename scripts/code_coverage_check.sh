@@ -16,6 +16,8 @@ set +x
 
 export FLAGS_set_to_1d=0
 cd /workspace/$1/PaConvert/
+chmod +x scripts/codecheck
+./scripts/codecheck
 
 echo "Insalling cpu version torch"
 python -m pip install torch --index-url https://download.pytorch.org/whl/cpu

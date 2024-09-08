@@ -17,7 +17,8 @@ set +x
 export FLAGS_set_to_1d=0
 
 cd /workspace/$1/PaConvert/
-
+chmod +x scripts/codecheck
+./scripts/codecheck
 python -m pip install --upgrade pip
 echo "Insalling develop version paddle"
 python -m pip uninstall -y paddlepaddle
