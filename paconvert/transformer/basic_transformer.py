@@ -243,9 +243,10 @@ class BasicTransformer(BaseTransformer):
                     ".".join(["torch.autograd.function.FunctionCtx", attr_list[-1]])
                 )
             if is_distribution_api:
-                torch_class_apis.append(
-                    ".".join(["torch.distributions.Distribution", attr_list[-1]])
-                )
+                # config.mode
+                if full_attr != "config.mode":
+                    torch_class_apis.append(".".join(["paddle.Tensor", attr_list[-1]]))
+
             for torch_class_api in torch_class_apis:
                 if torch_class_api in ALIAS_MAPPING:
                     torch_class_api = ALIAS_MAPPING[torch_class_api]
