@@ -244,6 +244,12 @@ class TensorFunc2PaddleFunc(BaseMatcher):
         return code
 
 
+class DetachMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "{}.detach()".format(kwargs["input"])
+        return code
+
+
 class DeleteMatcher(BaseMatcher):
     def get_paddle_api(self):
         return "delete"
@@ -2149,6 +2155,22 @@ class AddCMulMatcher(BaseMatcher):
                 kwargs["input"], kwargs["value"], kwargs["tensor1"], kwargs["tensor2"]
             )
 
+        return code
+
+
+class AddCMul_Matcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "value" not in kwargs:
+            kwargs["value"] = 1
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}.add_({} * {} * {})
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.paddleClass, kwargs["value"], kwargs["tensor1"], kwargs["tensor2"]
+        )
         return code
 
 
@@ -4293,6 +4315,22 @@ class TensorToBoolMatcher(BaseMatcher):
             self.kwargs_to_str(kwargs),
         )
         return code
+
+
+class LoadStateDictFromUrlMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            import warnings
+            warnings.warn(
+                "The parameter format of PyTorch model should be converted to paddle format, and used it as the parameter for paddle.load(). "
+                "More information infer from https://github.com/PaddlePaddle/PaddleNLP/blob/develop/docs/community/contribute_models/convert_pytorch_to_paddle.rst"
+            )
+            paddle.load(paddle.utils.download.get_weights_path_from_url({})
+            )
+            """
+        )
+        return CODE_TEMPLATE.format(kwargs["url"])
 
 
 class TensorDatasetMatcher(BaseMatcher):

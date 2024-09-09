@@ -322,7 +322,16 @@
       "value"
     ]
   },
-  "torch.Tensor.addcmul_": {},
+  "torch.Tensor.addcmul_": {
+    "Matcher": "AddCMul_Matcher",
+    "min_input_args": 2,
+    "args_list": [
+      "tensor1",
+      "tensor2",
+      "*",
+      "value"
+    ]
+  },
   "torch.Tensor.addmm": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.addmm",
@@ -5668,6 +5677,13 @@
       "input": "x"
     }
   },
+  "torch.detach": {
+    "Matcher": "DetachMatcher",
+    "args_list": [
+      "input"
+    ],
+    "min_input_args": 1
+  },
   "torch.device": {
     "Matcher": "DeviceMatcher",
     "paddle_api": "(paddle.CPUPlace, paddle.CUDAPlace, str)",
@@ -7603,6 +7619,19 @@
       "verbose": "",
       "skip_validation": ""
     }
+  },
+  "torch.hub.load_state_dict_from_url": {
+    "Matcher": "LoadStateDictFromUrlMatcher",
+    "args_list": [
+      "url",
+      "model_dir",
+      "map_location",
+      "progress",
+      "check_hash",
+      "file_name",
+      "weights_only"
+    ],
+    "min_input_args": 1
   },
   "torch.hypot": {
     "Matcher": "GenericMatcher",
