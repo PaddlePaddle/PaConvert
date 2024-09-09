@@ -148,14 +148,6 @@ class GenericMatcher(BaseMatcher):
         return code
 
 
-class RegistCustomMethodMatcher(GenericMatcher):
-    def get_paddle_api(self):
-        assert "paddle_api" in self.api_mapping
-        if self.paddle_api:
-            return self.paddle_api + "_custom"
-        return self.api_mapping["paddle_api"] + "_custom"
-
-
 class SliceScatterMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" in kwargs:
