@@ -16,14 +16,14 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.ContinuousBernoulli")
+obj = APIBase("torch.distributions.continuous_bernoulli.ContinuousBernoulli")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.ContinuousBernoulli(torch.tensor([0.3]))
+        m = torch.distributions.continuous_bernoulli.ContinuousBernoulli(torch.tensor([0.3]))
         result = m.sample([100])
         """
     )
@@ -38,7 +38,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.ContinuousBernoulli(probs=torch.tensor([0.3]), logits=None)
+        m = torch.distributions.continuous_bernoulli.ContinuousBernoulli(probs=torch.tensor([0.3]), logits=None)
         result = m.sample([100])
         """
     )
@@ -55,7 +55,7 @@ def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.ContinuousBernoulli(0.3, validate_args=False)
+        m = torch.distributions.continuous_bernoulli.ContinuousBernoulli(0.3, validate_args=False)
         result = m.sample([100])
         """
     )
@@ -72,7 +72,7 @@ def _test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.ContinuousBernoulli(0.3, validate_args=False)
+        m = torch.distributions.continuous_bernoulli.ContinuousBernoulli(0.3, validate_args=False)
         result = m.sample([100])
         """
     )
@@ -89,7 +89,7 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.ContinuousBernoulli(probs=torch.tensor([0.3]),lims=(0.1, 0.2),validate_args=False )
+        m = torch.distributions.continuous_bernoulli.ContinuousBernoulli(probs=torch.tensor([0.3]),lims=(0.1, 0.2),validate_args=False )
         result = m.sample([100])
         """
     )
@@ -104,7 +104,7 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.ContinuousBernoulli(lims=(0.1, 0.2), probs=torch.tensor([0.3]), validate_args=False )
+        m = torch.distributions.continuous_bernoulli.ContinuousBernoulli(lims=(0.1, 0.2), probs=torch.tensor([0.3]), validate_args=False )
         result = m.sample([100])
         """
     )
@@ -119,7 +119,7 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.ContinuousBernoulli(torch.tensor([0.3]))
+        m = torch.distributions.continuous_bernoulli.ContinuousBernoulli(torch.tensor([0.3]))
         result = m.sample([100])
         """
     )

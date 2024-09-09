@@ -23,15 +23,14 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Binomial(100, torch.tensor([0, .2, .8, 1]))
+        m = torch.distributions.Binomial(total_count=100, probs=torch.tensor([0, .2, .8, 1]), validate_args=False)
         result = m.sample()
         """
     )
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
+        check_value=False,
     )
 
 
@@ -47,7 +46,7 @@ def test_case_2():
         pytorch_code,
         ["result"],
         unsupport=True,
-        reason="paddle does not support this function temporarily",
+        reason="paddle does not support this parameter logits",
     )
 
 
@@ -55,15 +54,14 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Binomial(1, 0.3, validate_args=False)
+        m = torch.distributions.Binomial(5, torch.tensor([0.3]), validate_args=False)
         result = m.sample()
         """
     )
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
+        check_value=False,
     )
 
 
@@ -71,7 +69,52 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.binomial.Binomial(1, 0.3, validate_args=False)
+        m = torch.distributions.Binomial(1, torch.tensor([0.3]), validate_args=False)
+        result = m.sample()
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+    )
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Binomial(probs=torch.tensor([0, .2, .8, 1]), total_count=100, validate_args=False)
+        result = m.sample()
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+    )
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Binomial(probs=torch.tensor([0, .2, .8, 1]))
+        result = m.sample()
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+    )
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.Binomial(logits=torch.tensor(0.2))
         result = m.sample()
         """
     )
@@ -79,5 +122,5 @@ def test_case_4():
         pytorch_code,
         ["result"],
         unsupport=True,
-        reason="paddle does not support this function temporarily",
+        reason="paddle does not support this parameter logits",
     )

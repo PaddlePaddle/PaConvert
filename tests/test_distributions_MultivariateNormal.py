@@ -16,15 +16,17 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.Exponential")
+obj = APIBase("torch.distributions.MultivariateNormal")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Exponential(torch.tensor([1.0]))
-        result = m.sample([100])
+        loc = torch.tensor([0.0, 0.0])
+        covariance_matrix = torch.tensor([[1.0, 0.0], [0.0, 1.0]])
+        m = torch.distributions.MultivariateNormal(loc=loc, covariance_matrix=covariance_matrix, validate_args=True)
+        result = m.sample()
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -34,8 +36,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Exponential(rate=torch.tensor([1.0]))
-        result = m.sample([100])
+        loc = torch.tensor([0.0, 0.0])
+        covariance_matrix = torch.tensor([[1.0, 0.0], [0.0, 1.0]])
+        m = torch.distributions.MultivariateNormal(loc, covariance_matrix)
+        result = m.sample()
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -45,8 +49,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Exponential(torch.tensor([1.0]), validate_args=False)
-        result = m.sample([100])
+        loc = torch.tensor([0.0, 0.0])
+        scale_tril = torch.tensor([[1.0, 0.0], [0.0, 1.0]])
+        m = torch.distributions.MultivariateNormal(loc, scale_tril=scale_tril)
+        result = m.sample()
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -56,8 +62,10 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Exponential(torch.tensor([1.0]), False)
-        result = m.sample([100])
+        loc = torch.tensor([0.0, 0.0])
+        scale_tril = torch.tensor([[1.0, 0.0], [0.0, 1.0]])
+        m = torch.distributions.MultivariateNormal(loc, scale_tril=scale_tril)
+        result = m.sample()
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -67,19 +75,13 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Exponential(rate=torch.tensor([1.0]), validate_args=False)
-        result = m.sample([100])
-        """
-    )
-    obj.run(pytorch_code, ["result"], check_value=False)
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        m = torch.distributions.Exponential(validate_args=True, rate=torch.tensor([1.0]))
-        result = m.sample([100])
+        loc = torch.tensor([0.0, 0.0])
+        precision_matrix = torch.tensor([
+            [2.0, -1.0],
+            [-1.0, 2.0]
+        ])
+        m = torch.distributions.multivariate_normal.MultivariateNormal(loc=loc, precision_matrix=precision_matrix)
+        result = m.sample()
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
