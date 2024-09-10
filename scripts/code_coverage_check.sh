@@ -18,6 +18,7 @@ export FLAGS_set_to_1d=0
 cd /workspace/$1/PaConvert/
 
 echo "Insalling cpu version torch"
+python tests/distributed/load_lib.py
 python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
 python -c "import torch; print('torch version information:' ,torch.__version__)"
 
