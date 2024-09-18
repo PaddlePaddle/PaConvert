@@ -1918,7 +1918,7 @@ class TensorTypeMatcher(BaseMatcher):
 class TensorIsCudaMatcher(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
-        code = "'gpu' in str({}.place)".format(self.paddleClass)
+        code = "{}.place.is_gpu_place()".format(self.paddleClass)
         return ast.parse(code).body
 
 
