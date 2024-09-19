@@ -46,7 +46,7 @@ def test_case_3():
         result = torch.signal.windows.blackman(5, dtype=torch.float64, requires_grad=True)
         """
     )
-    obj.run(pytorch_code, ["out"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():

@@ -56,7 +56,7 @@ def test_case_4():
         result = torch.signal.windows.hamming(10, dtype=torch.float64, requires_grad=True)
         """
     )
-    obj.run(pytorch_code, ["out"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
