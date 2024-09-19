@@ -8300,9 +8300,7 @@
       "out"
     ],
     "kwargs_change": {
-      "input": "x",
-      "atol": "tol",
-      "rtol": ""
+      "input": "x"
     }
   },
   "torch.linalg.multi_dot": {
