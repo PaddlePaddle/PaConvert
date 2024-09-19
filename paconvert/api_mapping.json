@@ -14575,7 +14575,7 @@
   },
   "torch.signal.windows.blackman": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.audio.functional._blackman",
+    "paddle_api": "paddle.audio.functional.window._blackman",
     "min_input_args": 1,
     "args_list": [
       "M",
@@ -14596,7 +14596,7 @@
   },
   "torch.signal.windows.cosine": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.audio.functional._cosine",
+    "paddle_api": "paddle.audio.functional.window._cosine",
     "min_input_args": 1,
     "args_list": [
       "M",
@@ -14617,7 +14617,7 @@
   },
   "torch.signal.windows.exponential": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.audio.functional._exponential",
+    "paddle_api": "paddle.audio.functional.window._exponential",
     "min_input_args": 1,
     "args_list": [
       "M",
@@ -14640,7 +14640,7 @@
   },
   "torch.signal.windows.gaussian": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.audio.functional._gaussian",
+    "paddle_api": "paddle.audio.functional.window._gaussian",
     "min_input_args": 1,
     "args_list": [
       "M",
@@ -14663,7 +14663,7 @@
   },
   "torch.signal.windows.general_cosine": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.audio.functional._general_cosine",
+    "paddle_api": "paddle.audio.functional.window._general_cosine",
     "min_input_args": 1,
     "args_list": [
       "M",
@@ -14685,7 +14685,7 @@
   },
   "torch.signal.windows.general_hamming": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.audio.functional._general_hamming",
+    "paddle_api": "paddle.audio.functional.window._general_hamming",
     "min_input_args": 1,
     "args_list": [
       "M",
@@ -14708,7 +14708,7 @@
   },
   "torch.signal.windows.hamming": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.audio.functional._hamming",
+    "paddle_api": "paddle.audio.functional.window._hamming",
     "min_input_args": 1,
     "args_list": [
       "M",
@@ -14729,7 +14729,7 @@
   },
   "torch.signal.windows.hann": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.audio.functional._hann",
+    "paddle_api": "paddle.audio.functional.window._hann",
     "min_input_args": 1,
     "args_list": [
       "M",
