@@ -3878,13 +3878,6 @@ class Get_EnumMatcher(BaseMatcher):
         return code
 
 
-class UnpoolMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        kwargs["indices"] = "{}.astype('int32')".format(kwargs["indices"])
-
-        return GenericMatcher.generate_code(self, kwargs)
-
-
 class SoftmaxMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
