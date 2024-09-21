@@ -25,12 +25,7 @@ def test_case_1():
         result = torch.testing.make_tensor((3,), device='cpu', dtype=torch.float32)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -40,12 +35,7 @@ def test_case_2():
         result = torch.testing.make_tensor((3,), dtype=torch.float32, device='cpu')
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -55,12 +45,7 @@ def test_case_3():
         result = torch.testing.make_tensor((2, 2), device='cuda', dtype=torch.bool)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():

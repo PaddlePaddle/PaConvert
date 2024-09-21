@@ -806,7 +806,74 @@ class SwapAxesMatcher(BaseMatcher):
         )
         return code
 
+class OrgqrMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.linalg.householder_product(x={}, tau={})
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.paddleClass,
+            kwargs['input2'],
+        )
+        return code
+    
+class AssertMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            assert {}, '{}'
+            """
+        )
+        code = API_TEMPLATE.format(
+            kwargs['condition'],
+            kwargs['message'],
+        )
+        return code
 
+class MakeTMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {} = paddle.uniform({}, dtype={}, min={}, max={}).to({})
+            {}.stop_gradient = not {}
+            """
+        )
+
+        # handle kwargs["device"]
+        if """cuda""" == kwargs["device"]:
+            # case1: device = "cuda"
+            kwargs["device"] = "paddle.CUDAPlace()"
+        elif "cuda:" in kwargs["device"] and "if" not in kwargs["device"]:
+            # case2: device = "cuda:0"
+            kwargs["device"] = "paddle.CUDAPlace({})".format(
+                f'int({kwargs["device"]}.replace("cuda:",""))'
+            )
+        elif "cpu" in kwargs["device"] and "if" not in kwargs["device"]:
+            # paddle.CPUPlace() does not accept input.
+            # case3: device = "cpu"
+            # case4: device = "cpu:0"
+            kwargs["device"] = "paddle.CPUPlace()"
+        else:
+            # case5: device = "cpu:0" if condition else "cuda:0"
+            # case6: dev = xx, device = dev
+            kwargs[
+                "device"
+            ] = f'str({kwargs["device"]}).replace("cuda", "gpu") if isinstance({kwargs["device"]},str) else device'
+        
+        code = API_TEMPLATE.format(
+            self.paddleClass,
+            kwargs['shape'],
+            kwargs['dtype'],
+            kwargs['low'],
+            kwargs['high'],
+            kwargs['device'],
+            self.paddleClass,
+            kwargs['requires_grad'],
+        )
+        return code
+    
 class CreateMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         kwargs = self.parse_kwargs(kwargs)
@@ -3350,6 +3417,60 @@ class SpecialNdtriMatcher(BaseMatcher):
             code = "paddle.assign({}, output={})".format(code, kwargs["out"])
 
         return code
+
+
+class SpecialNdtrMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            (paddle.erf({}/paddle.sqrt(paddle.to_tensor(2)))-paddle.erf(paddle.to_tensor(-float('inf'))))/2
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["input"])
+        if "out" in kwargs and kwargs["out"] != "None":
+            code = "paddle.assign({}, output={})".format(code, kwargs["out"])
+
+        return code
+
+
+class TensorMatrixExpMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.linalg.matrix_ex({})
+            """
+        )
+
+        code = API_TEMPLATE.format(self.paddleClass)
+
+        return code
+
+
+class TensorMvlgaMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}({}, p={})
+            """
+        )
+
+        code = API_TEMPLATE.format(self.get_paddle_api(), self.paddleClass, kwargs["p"])
+
+        return code
+
+
+class TensorIgammaMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}({}, y={})
+            """
+        )
+
+        code = API_TEMPLATE.format(self.get_paddle_api(), self.paddleClass, kwargs["other"])
+
+        return code
+    pass
 
 
 class AdjointMatcher(BaseMatcher):

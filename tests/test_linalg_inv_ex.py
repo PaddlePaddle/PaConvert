@@ -1,3 +1,10 @@
+'''
+Description: 
+Author: Xiao
+Date: 2024-09-18 11:11:26
+LastEditTime: 2024-09-20 22:41:34
+LastEditors: Xiao
+'''
 # Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,12 +36,7 @@ def test_case_1():
         result = torch.linalg.inv_ex(x)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -49,9 +51,7 @@ def test_case_2():
     )
     obj.run(
         pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
+        ["result"]
     )
 
 
@@ -64,6 +64,23 @@ def test_case_3():
                 [0.48016702, 0.14235102, 0.42620817]])
         out = torch.tensor([])
         result = torch.linalg.inv_ex(x, out=out)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result", "out"]
+    )
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0.02773777, 0.93004224, 0.06911496],
+                [0.24831591, 0.45733623, 0.07717843],
+                [0.48016702, 0.14235102, 0.42620817]])
+        out = torch.tensor([])
+        result = torch.linalg.inv_ex(x, check_errors=False, out=out)
         """
     )
     obj.run(
