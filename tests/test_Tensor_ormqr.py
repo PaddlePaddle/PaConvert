@@ -29,10 +29,7 @@ def test_case_1():
         result = x.ormqr(tau, y)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -45,10 +42,7 @@ def test_case_2():
         result = x.ormqr(input2=tau, input3=y)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -61,10 +55,7 @@ def test_case_3():
         result = x.ormqr(input2=tau, input3=y, left=False)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -77,10 +68,7 @@ def test_case_4():
         result = x.ormqr(input2=tau, input3=y, transpose=True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -93,7 +81,4 @@ def test_case_5():
         result = x.ormqr(input2=tau, input3=y, left=True, transpose=True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])

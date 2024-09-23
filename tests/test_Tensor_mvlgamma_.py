@@ -27,10 +27,7 @@ def test_case_1():
         result = x.mvlgamma_(2)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -41,7 +38,4 @@ def test_case_2():
         result = x.mvlgamma_(p=2)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])

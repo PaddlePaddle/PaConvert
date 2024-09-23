@@ -27,10 +27,7 @@ def test_case_1():
         result = torch.mvlgamma(x, 2)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -41,10 +38,7 @@ def test_case_2():
         result = torch.mvlgamma(x, p=2)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -56,13 +50,10 @@ def test_case_3():
         torch.mvlgamma(x, p=2, out=result)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
-def test_case_3():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -71,8 +62,4 @@ def test_case_3():
         torch.mvlgamma(input=x, p=2, out=result)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
-    
+    obj.run(pytorch_code, ["result"])

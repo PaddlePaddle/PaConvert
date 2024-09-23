@@ -29,10 +29,7 @@ def test_case_1():
         result = torch.ormqr(x, tau, y)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -42,13 +39,10 @@ def test_case_2():
         x = torch.tensor([[-114.6, 10.9, 1.1], [-0.304, 38.07, 69.38], [-0.45, -0.17, 62]])
         tau = torch.tensor([1.55, 1.94, 3.0])
         y = torch.tensor([[-114.6, 10.9, 1.1], [-0.304, 38.07, 69.38], [-0.45, -0.17, 62]])
-        result = torch.ormqr(x,tau=tau, other=y)
+        result = torch.ormqr(x,input2=tau, input=y)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -58,13 +52,10 @@ def test_case_3():
         x = torch.tensor([[-114.6, 10.9, 1.1], [-0.304, 38.07, 69.38], [-0.45, -0.17, 62]])
         tau = torch.tensor([1.55, 1.94, 3.0])
         y = torch.tensor([[-114.6, 10.9, 1.1], [-0.304, 38.07, 69.38], [-0.45, -0.17, 62]])
-        result = torch.ormqr(x, tau=tau, other=y, left=False)
+        result = torch.ormqr(x, input2=tau, input3=y, left=False)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -74,13 +65,10 @@ def test_case_4():
         x = torch.tensor([[-114.6, 10.9, 1.1], [-0.304, 38.07, 69.38], [-0.45, -0.17, 62]])
         tau = torch.tensor([1.55, 1.94, 3.0])
         y = torch.tensor([[-114.6, 10.9, 1.1], [-0.304, 38.07, 69.38], [-0.45, -0.17, 62]])
-        result = torch.ormqr(x, tau=tau, other=y, transpose=True)
+        result = torch.ormqr(x, input2=tau, input3=y, transpose=True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -90,10 +78,7 @@ def test_case_5():
         x = torch.tensor([[-114.6, 10.9, 1.1], [-0.304, 38.07, 69.38], [-0.45, -0.17, 62]])
         tau = torch.tensor([1.55, 1.94, 3.0])
         y = torch.tensor([[-114.6, 10.9, 1.1], [-0.304, 38.07, 69.38], [-0.45, -0.17, 62]])
-        result = torch.ormqr(input=x,tau=tau, other=y, left=True, transpose=True)
+        result = torch.ormqr(input=x,input2=tau, input3=y, left=True, transpose=True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])

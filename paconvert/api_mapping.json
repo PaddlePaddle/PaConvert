@@ -300,34 +300,6 @@
       "alpha"
     ]
   },
-  "torch._assert": {
-    "Matcher": "AssertMatcher",
-    "min_input_args": 2,
-    "args_list": [
-      "condition",
-      "message"
-    ]
-  },
-  "torch.testing.make_tensor": {
-    "Matcher": "MakeTMatcher",
-    "min_input_args": 3,
-    "args_list": [
-      "shape",
-      "dtype",
-      "device",
-      "low",
-      "high",
-      "requires_grad",
-      "noncontiguous",
-      "exclude_zero",
-      "memory_format"
-    ],
-    "unsupport_args": [
-      "noncontiguous",
-      "exclude_zero",
-      "memory_format"
-    ]
-  },
   "torch.Tensor.addbmm_": {},
   "torch.Tensor.addcdiv": {
     "Matcher": "AddCDivMatcher",
@@ -2454,8 +2426,8 @@
   },
   "torch.Tensor.matrix_exp": {
     "Matcher": "TensorMatrixExpMatcher",
-    "paddle_api": "paddle.linalg.matrix_ex",
-    "min_input_args":0
+    "paddle_api": "paddle.linalg.matrix_exp",
+    "min_input_args": 0
   },
   "torch.Tensor.matrix_power": {
     "Matcher": "GenericMatcher",
@@ -2968,21 +2940,6 @@
     "kwargs_change": {
       "input2": "tau",
       "input3": "other"
-    }
-  },
-  "torch.ormqr": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.linalg.ormqr",
-    "min_input_args": 3,
-    "args_list": [
-      "input",
-      "tau",
-      "other",
-      "left",
-      "transpose"
-    ],
-    "kwargs_change": {
-      "input": "x"
     }
   },
   "torch.Tensor.outer": {
@@ -4114,6 +4071,14 @@
     "args_list": [
       "sep",
       "maxsplit"
+    ]
+  },
+  "torch._assert": {
+    "Matcher": "AssertMatcher",
+    "min_input_args": 2,
+    "args_list": [
+      "condition",
+      "message"
     ]
   },
   "torch.abs": {
@@ -9227,6 +9192,20 @@
       "input": "x"
     }
   },
+  "torch.mvlgamma": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.multigammaln",
+    "min_input_args": 2,
+    "args_list": [
+      "input",
+      "p",
+      "*",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.nan_to_num": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nan_to_num",
@@ -13983,6 +13962,23 @@
       "verbose"
     ]
   },
+  "torch.ormqr": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.ormqr",
+    "min_input_args": 3,
+    "args_list": [
+      "input",
+      "input2",
+      "input3",
+      "left",
+      "transpose"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "input2": "tau",
+      "input3": "other"
+    }
+  },
   "torch.outer": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.outer",
@@ -15190,20 +15186,6 @@
       "input": "x"
     }
   },
-  "torch.mvlgamma": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.multigammaln",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "p",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
-  },
   "torch.special.ndtr": {
     "Matcher": "SpecialNdtrMatcher",
     "min_input_args": 1,
@@ -15691,6 +15673,26 @@
       "check_layout": "",
       "check_stride": ""
     }
+  },
+  "torch.testing.make_tensor": {
+    "Matcher": "MakeTMatcher",
+    "min_input_args": 3,
+    "args_list": [
+      "shape",
+      "dtype",
+      "device",
+      "low",
+      "high",
+      "requires_grad",
+      "noncontiguous",
+      "exclude_zero",
+      "memory_format"
+    ],
+    "unsupport_args": [
+      "noncontiguous",
+      "exclude_zero",
+      "memory_format"
+    ]
   },
   "torch.tile": {
     "Matcher": "GenericMatcher",

@@ -806,6 +806,7 @@ class SwapAxesMatcher(BaseMatcher):
         )
         return code
 
+
 class OrgqrMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
@@ -815,10 +816,11 @@ class OrgqrMatcher(BaseMatcher):
         )
         code = API_TEMPLATE.format(
             self.paddleClass,
-            kwargs['input2'],
+            kwargs["input2"],
         )
         return code
-    
+
+
 class AssertMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
@@ -827,10 +829,11 @@ class AssertMatcher(BaseMatcher):
             """
         )
         code = API_TEMPLATE.format(
-            kwargs['condition'],
-            kwargs['message'],
+            kwargs["condition"],
+            kwargs["message"],
         )
         return code
+
 
 class MakeTMatcher(BaseMatcher):
     def generate_code(self, kwargs):
@@ -861,19 +864,20 @@ class MakeTMatcher(BaseMatcher):
             kwargs[
                 "device"
             ] = f'str({kwargs["device"]}).replace("cuda", "gpu") if isinstance({kwargs["device"]},str) else device'
-        
+
         code = API_TEMPLATE.format(
             self.paddleClass,
-            kwargs['shape'],
-            kwargs['dtype'],
-            kwargs['low'],
-            kwargs['high'],
-            kwargs['device'],
+            kwargs["shape"],
+            kwargs["dtype"],
+            kwargs["low"],
+            kwargs["high"],
+            kwargs["device"],
             self.paddleClass,
-            kwargs['requires_grad'],
+            kwargs["requires_grad"],
         )
         return code
-    
+
+
 class CreateMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         kwargs = self.parse_kwargs(kwargs)
@@ -3423,7 +3427,7 @@ class SpecialNdtrMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            (paddle.erf({}/paddle.sqrt(paddle.to_tensor(2)))-paddle.erf(paddle.to_tensor(-float('inf'))))/2
+            (paddle.erf({}/paddle.sqrt(paddle.to_tensor(2.)))-paddle.erf(paddle.to_tensor(-float('inf'))))/2
             """
         )
         code = API_TEMPLATE.format(kwargs["input"])
@@ -3467,10 +3471,12 @@ class TensorIgammaMatcher(BaseMatcher):
             """
         )
 
-        code = API_TEMPLATE.format(self.get_paddle_api(), self.paddleClass, kwargs["other"])
+        code = API_TEMPLATE.format(
+            self.get_paddle_api(), self.paddleClass, kwargs["other"]
+        )
 
         return code
-    pass
+
 
 
 class AdjointMatcher(BaseMatcher):

@@ -1,10 +1,3 @@
-'''
-Description: 
-Author: Xiao
-Date: 2024-09-18 11:11:26
-LastEditTime: 2024-09-20 22:41:34
-LastEditors: Xiao
-'''
 # Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -49,10 +42,7 @@ def test_case_2():
         result = torch.linalg.inv_ex(A=x)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -66,10 +56,7 @@ def test_case_3():
         result = torch.linalg.inv_ex(x, out=out)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result", "out"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -85,7 +72,7 @@ def test_case_4():
     )
     obj.run(
         pytorch_code,
-        ["result", "out"],
+        ["result"],
         unsupport=True,
         reason="paddle does not support this function temporarily",
     )

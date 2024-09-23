@@ -29,10 +29,7 @@ def test_case_1():
         result = x.matrix_exp()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -45,7 +42,4 @@ def test_case_2():
         result = x.matrix_exp()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])

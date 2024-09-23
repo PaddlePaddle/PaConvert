@@ -28,10 +28,7 @@ def test_case_1():
         result = x.igamma(y)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -43,7 +40,4 @@ def test_case_2():
         result = x.igamma(other=y)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])

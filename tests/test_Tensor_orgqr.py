@@ -31,10 +31,7 @@ def test_case_1():
         result = x.orgqr(input2)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -49,7 +46,4 @@ def test_case_2():
         result = x.orgqr(input2=input2)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])

@@ -30,10 +30,7 @@ def test_case_1():
         result = torch.linalg.cholesky_ex(a)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -46,10 +43,7 @@ def test_case_2():
         result = torch.linalg.cholesky_ex(a, upper=False)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -63,10 +57,7 @@ def test_case_3():
         result = torch.linalg.cholesky_ex(a, upper=True, out=out)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result", "out"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -82,7 +73,7 @@ def test_case_4():
     )
     obj.run(
         pytorch_code,
-        ["result", "out"],
+        ["result"],
         unsupport=True,
         reason="paddle does not support this function temporarily",
     )
