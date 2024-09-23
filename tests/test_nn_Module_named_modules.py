@@ -96,5 +96,5 @@ def test_case_3():
         pytorch_code,
         ["result"],
         unsupport=True,
-        reason="paddle doesn't support the memo parameter",
+        reason="paddle doesn't support the memo parameter"
     )

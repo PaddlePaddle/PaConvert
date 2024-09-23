@@ -431,7 +431,7 @@ if __name__ == "__main__":
             )
         # 允许有多个原 api，但只有一个目标 api
 
-    with open(args.docs_mappings, "r") as f:
+    with open(args.docs_mappings, "r",encoding="utf-8") as f:
         docs_mapping_data = json.load(f)
         docs_mapping = dict([(i["src_api"], i) for i in docs_mapping_data])
 
