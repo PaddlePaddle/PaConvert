@@ -3478,6 +3478,29 @@ class TensorIgammaMatcher(BaseMatcher):
         return code
 
 
+class OrmqrMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}({}, {}, {}, left={}, transpose={})
+            """
+        )
+
+        if kwargs["input"]:
+            kwargs["x"] = self.paddleClass
+        else:
+            kwargs["x"] = kwargs["input"]
+        code = API_TEMPLATE.format(
+            self.get_paddle_api(),
+            kwargs["x"],
+            kwargs["input2"],
+            kwargs["input3"],
+            kwargs["left"],
+            kwargs["transpose"],
+        )
+
+        return code
+
 
 class AdjointMatcher(BaseMatcher):
     def generate_code(self, kwargs):
