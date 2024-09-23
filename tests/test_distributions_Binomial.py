@@ -38,7 +38,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Binomial(1, probs=torch.tensor([0.3]), logits=None)
+        m = torch.distributions.Binomial(1, logits= torch.tensor([2., 0.]))
         result = m.sample()
         """
     )

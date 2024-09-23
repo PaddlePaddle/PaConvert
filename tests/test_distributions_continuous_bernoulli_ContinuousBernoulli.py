@@ -38,7 +38,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.continuous_bernoulli.ContinuousBernoulli(probs=torch.tensor([0.3]), logits=None)
+        m = torch.distributions.continuous_bernoulli.ContinuousBernoulli(probs=None, logits=torch.tensor([0.3]))
         result = m.sample([100])
         """
     )
