@@ -1795,36 +1795,48 @@
     "min_input_args": 0
   },
   "torch.Tensor.igamma": {
-    "Matcher": "TensorIgammaMatcher",
-    "paddle_api": "paddle.gammainc",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.gammainc",
     "min_input_args": 1,
     "args_list": [
       "other"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.igamma_": {
-    "Matcher": "TensorIgammaMatcher",
-    "paddle_api": "paddle.gammainc_",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.gammainc_",
     "min_input_args": 1,
     "args_list": [
       "other"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.igammac": {
-    "Matcher": "TensorIgammaMatcher",
-    "paddle_api": "paddle.gammaincc",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.gammaincc",
     "min_input_args": 1,
     "args_list": [
       "other"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.igammac_": {
-    "Matcher": "TensorIgammaMatcher",
-    "paddle_api": "paddle.gammaincc_",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.gammaincc_",
     "min_input_args": 1,
     "args_list": [
       "other"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.index_add": {
     "Matcher": "IndexAddMatcher",
@@ -2598,16 +2610,16 @@
     ]
   },
   "torch.Tensor.mvlgamma": {
-    "Matcher": "TensorMvlgaMatcher",
-    "paddle_api": "paddle.multigammaln",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.multigammaln",
     "min_input_args": 1,
     "args_list": [
       "p"
     ]
   },
   "torch.Tensor.mvlgamma_": {
-    "Matcher": "TensorMvlgaMatcher",
-    "paddle_api": "paddle.multigammaln_",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.multigammaln_",
     "min_input_args": 1,
     "args_list": [
       "p"
@@ -2921,7 +2933,7 @@
   },
   "torch.Tensor.orgqr": {
     "Matcher": "OrgqrMatcher",
-    "paddle_api": "paddle.linalg.householder_product",
+    "paddle_api": "paddle.Tensor.householder_product",
     "min_input_args": 1,
     "args_list": [
       "input2"
@@ -8090,7 +8102,7 @@
     }
   },
   "torch.linalg.cholesky_ex": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "LinalgCholeskyExMatcher",
     "paddle_api": "paddle.linalg.cholesky",
     "min_input_args": 1,
     "args_list": [
@@ -8100,9 +8112,6 @@
       "check_errors",
       "out"
     ],
-    "kwargs_change": {
-      "input": "x"
-    },
     "unsupport_args": [
       "check_errors"
     ]
@@ -8257,7 +8266,7 @@
     }
   },
   "torch.linalg.inv_ex": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "LinalgInvExMatcher",
     "paddle_api": "paddle.linalg.inv",
     "min_input_args": 1,
     "args_list": [
@@ -8266,9 +8275,6 @@
       "*",
       "out"
     ],
-    "kwargs_change": {
-      "A": "x"
-    },
     "unsupport_args": [
       "check_errors"
     ]

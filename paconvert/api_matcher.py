@@ -811,7 +811,7 @@ class OrgqrMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle.linalg.householder_product(x={}, tau={})
+            {}.householder_product(tau={})
             """
         )
         code = API_TEMPLATE.format(
@@ -3450,30 +3450,36 @@ class TensorMatrixExpMatcher(BaseMatcher):
         return code
 
 
-class TensorMvlgaMatcher(BaseMatcher):
+class LinalgInvExMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            {}({}, p={})
+            ({}({}), paddle.zeros({}.shape[:-2], dtype='int64'))
             """
         )
 
-        code = API_TEMPLATE.format(self.get_paddle_api(), self.paddleClass, kwargs["p"])
+        code = API_TEMPLATE.format(self.get_paddle_api, kwargs["A"], kwargs["A"])
+
+        if "out" in kwargs and kwargs["out"] != "None":
+            code = "paddle.assign({}, output={})".format(code, kwargs["out"])
 
         return code
 
 
-class TensorIgammaMatcher(BaseMatcher):
+class LinalgCholeskyExMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            {}({}, y={})
+            ({}(x={}, upper={}), paddle.zeros({}.shape[:-2], dtype='int64'))
             """
         )
 
         code = API_TEMPLATE.format(
-            self.get_paddle_api(), self.paddleClass, kwargs["other"]
+            self.get_paddle_api, kwargs["input"], kwargs["upper"], kwargs["input"]
         )
+
+        if "out" in kwargs and kwargs["out"] != "None":
+            code = "paddle.assign({}, output={})".format(code, kwargs["out"])
 
         return code
 
