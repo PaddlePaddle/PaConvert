@@ -287,3 +287,16 @@ def test_case_21():
         """
     )
     obj.run(pytorch_code, ["out"])
+
+
+def test_case_22():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.arange(15).reshape([3, 5]).type(torch.float32)
+        index = torch.tensor([[0], [1], [2]])
+        out = torch.zeros(3, 5)
+        result = torch.scatter(input=input, dim=1, index=index, value=1.0, reduce='add', out=out)
+        """
+    )
+    obj.run(pytorch_code, ["out"])

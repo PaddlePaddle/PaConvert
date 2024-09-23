@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.transpose")
+obj = APIBase("torch.Tensor.transpose", is_aux_api=True)
 
 
 def test_case_1():
@@ -47,6 +47,18 @@ def test_case_3():
         import torch
         a = torch.Tensor([[1.,2.], [3.,4.]])
         result = a.transpose(dim1=0, dim0=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.Tensor([[1.,2.], [3.,4.]])
+        list_a = [a,a]
+        result = [x.transpose(dim1=0, dim0=1) for x in list_a ]
         """
     )
     obj.run(pytorch_code, ["result"])

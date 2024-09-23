@@ -84,3 +84,13 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.profiler.schedule(warmup=2, repeat=1, active=1, wait=1, skip_first=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

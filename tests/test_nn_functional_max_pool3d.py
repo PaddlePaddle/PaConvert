@@ -100,8 +100,6 @@ def test_case_6():
     obj.run(pytorch_code, ["result"])
 
 
-# when return_indices=False, paddle result and indices shape is (1, 3, 2, 2, 2), which is right: ceil(10/8)=2
-# when return_indices=True, paddle result and indices shape is (1, 3, 1, 1, 1), which is bug
 def test_case_7():
     pytorch_code = textwrap.dedent(
         """

@@ -95,8 +95,6 @@ def test_case_5():
     )
 
 
-# when return_indices=False, paddle result and indices shape is (1, 3, 2), which is right: ceil(6/5)=2
-# when return_indices=True, paddle result and indices shape is (1, 3, 1), which is bug
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """

@@ -83,3 +83,22 @@ def test_case_4():
         unsupport=True,
         reason="paddle not support 'dtype' ",
     )
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        indices = [[0, 1, 2], [1, 2, 0]]
+        values = [1.0, 2.0, 3.0]
+        dense_shape = [3, 3]
+        coo = torch.sparse_coo_tensor(indices, values, dense_shape)
+        result = torch.sparse.sum(coo, 1, torch.float64)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle not support 'dtype' ",
+    )

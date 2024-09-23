@@ -38,13 +38,7 @@ def test_case_2():
         result = m.sample([1])
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="paddle does not support probs temporarily",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
@@ -84,7 +78,7 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Categorical(probs=None, logits=torch.tensor([0.25, 0.25, 0.25, 0.25]), validate_args=False)
+        m = torch.distributions.Categorical(probs=torch.tensor([0.25, 0.25, 0.25, 0.25]), logits=torch.tensor([0.25, 0.25, 0.25, 0.25]), validate_args=False)
         result = m.sample([1])
         """
     )
@@ -118,7 +112,7 @@ def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Categorical(probs=None, validate_args=False, logits=torch.tensor([0.25, 0.25, 0.25, 0.25]))
+        m = torch.distributions.Categorical(probs=torch.tensor([0.25, 0.25, 0.25, 0.25]), validate_args=False, logits=torch.tensor([0.25, 0.25, 0.25, 0.25]))
         result = m.sample([1])
         """
     )

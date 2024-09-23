@@ -17,6 +17,8 @@ python -m pip install -r requirements.txt
 python -m pip install -r tests/requirements.txt
 pre-commit install
 
+python tests/distributed/load_lib.py
+
 # code_style_check
 bash scripts/code_style_check.sh
 

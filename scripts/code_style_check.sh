@@ -20,6 +20,7 @@ cd /workspace/$1/PaConvert/
 
 # pre-commit multi-thread running.
 echo "Checking code style by pre-commit ..."
+python tests/distributed/load_lib.py
 pip install pre-commit==2.17.0
 pre-commit install
 pre-commit run --all-files;check_error=$?

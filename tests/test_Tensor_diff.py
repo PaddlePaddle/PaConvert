@@ -113,3 +113,39 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 3, 2, 10])
+        b = torch.tensor([4, 5])
+        result = x.diff(n=2, prepend=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 3, 2, 10])
+        b = torch.tensor([4, 5])
+        result = x.diff(n=3, append=b, prepend=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 3, 2, 10])
+        b = torch.tensor([4, 5])
+        result = x.diff(n=4, append=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

@@ -75,16 +75,21 @@ class BasicTransformer(BaseTransformer):
         ):
             super(BasicTransformer, self).generic_visit(node)
 
-        # 6.torch.tensor(features_A).T.cuda()
-        if isinstance(node.value, ast.Attribute) and node.value.attr in [
-            "T",
-            "real",
-            "data",
-            "weight",
-            "bias",
-            "imag",
-        ]:
-            super(BasicTransformer, self).generic_visit(node)
+        # 6. torch.tensor(features_A).T.cuda()
+        if isinstance(node.value, ast.Attribute):
+            if node.value.attr in [
+                "T",
+                "real",
+                "weight",
+                "bias",
+                "imag",
+            ]:
+                super(BasicTransformer, self).generic_visit(node)
+            # 7.  x.data.cuda()  / avoid  torch.utils.data.*
+            elif node.value.attr == "data" and "torch.utils" not in self.get_full_attr(
+                node.value
+            ):
+                super(BasicTransformer, self).generic_visit(node)
 
         # should be handled by visit_Call
         if isinstance(self.parent_node, ast.Call):
@@ -123,6 +128,19 @@ class BasicTransformer(BaseTransformer):
                             log_info(
                                 self.logger,
                                 "[Delete] Just remove {} ".format(torch_api),
+                                self.file_name,
+                                node.lineno,
+                            )
+                            return None
+                        elif (
+                            isinstance(self.parent_node, ast.FunctionDef)
+                            and node in self.parent_node.decorator_list
+                        ):
+                            self.parent_node.decorator_list.remove(node)
+                            self.success_api_count += 1
+                            log_info(
+                                self.logger,
+                                "[Delete] Just remove decorator",
                                 self.file_name,
                                 node.lineno,
                             )
@@ -225,9 +243,10 @@ class BasicTransformer(BaseTransformer):
                     ".".join(["torch.autograd.function.FunctionCtx", attr_list[-1]])
                 )
             if is_distribution_api:
-                torch_class_apis.append(
-                    ".".join(["torch.distributions.Distribution", attr_list[-1]])
-                )
+                # config.mode
+                if full_attr != "config.mode":
+                    torch_class_apis.append(".".join(["paddle.Tensor", attr_list[-1]]))
+
             for torch_class_api in torch_class_apis:
                 if torch_class_api in ALIAS_MAPPING:
                     torch_class_api = ALIAS_MAPPING[torch_class_api]
@@ -393,10 +412,13 @@ class BasicTransformer(BaseTransformer):
         # Torch Package Call, include torch third_party
         #   such as : torch.add(x, y) / torch.add(torch.abs(x), y)
         for torch_package in self.imports_map[self.file]["torch_packages"]:
+
             if (
                 full_attr.startswith("%s." % torch_package)
                 or full_attr in self.MAY_TORCH_METHOD_LIST
             ):
+                if full_attr in ALIAS_MAPPING:
+                    full_attr = ALIAS_MAPPING[full_attr]
                 torch_api = full_attr
                 self.torch_api_count += 1
                 log_debug(
@@ -470,6 +492,7 @@ class BasicTransformer(BaseTransformer):
                                 return new_node
 
                 self.unsupport_map[torch_api] += 1
+
                 log_info(
                     self.logger,
                     "[Not Support] convert {} to Paddle is not supported currently".format(
@@ -483,7 +506,6 @@ class BasicTransformer(BaseTransformer):
         # Torch Class call
         #   such as : x.add(y) / x.abs().add / sgd.step() / model.to(torch.device('cuda'))
         if "NonTorchClass" not in full_attr:
-
             is_tensor_api = False
             is_module_api = False
             is_optim_api = False

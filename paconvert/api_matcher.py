@@ -244,6 +244,12 @@ class TensorFunc2PaddleFunc(BaseMatcher):
         return code
 
 
+class DetachMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        code = "{}.detach()".format(kwargs["input"])
+        return code
+
+
 class DeleteMatcher(BaseMatcher):
     def get_paddle_api(self):
         return "delete"
@@ -676,28 +682,61 @@ class TensorDivideMatcher(BaseMatcher):
 
 
 class TransposeMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
+    def generate_aux_code(self):
         API_TEMPLATE = textwrap.dedent(
             """
-            x = {}
-            {} = list(range(x.ndim))
-            {}[{}] = {}
-            {}[{}] = {}
-            {}(x=x, perm={})
+            def transpose_aux_func(dims,dim0, dim1):
+                perm = list(range(dims))
+                perm[dim0], perm[dim1] = perm[dim1], perm[dim0]
+                return perm
+            """
+        )
+
+        return API_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}(x={}, perm=paddle_aux.transpose_aux_func({}.ndim,{}, {}))
             """
         )
         perm = get_unique_name("perm")
         code = API_TEMPLATE.format(
-            kwargs["input"],
-            perm,
-            perm,
-            kwargs["dim0"],
-            kwargs["dim1"],
-            perm,
-            kwargs["dim1"],
-            kwargs["dim0"],
             self.get_paddle_api(),
-            perm,
+            kwargs["input"],
+            kwargs["input"],
+            kwargs["dim0"],
+            kwargs["dim1"],
+        )
+        return code
+
+
+class TensorTransposeMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            def transpose_aux_func(dims,dim0, dim1):
+                perm = list(range(dims))
+                perm[dim0], perm[dim1] = perm[dim1], perm[dim0]
+                return perm
+            """
+        )
+
+        return API_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}.transpose(perm=paddle_aux.transpose_aux_func({}.ndim,{}, {}))
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.paddleClass,
+            self.paddleClass,
+            kwargs["dim0"],
+            kwargs["dim1"],
         )
         return code
 
@@ -789,6 +828,37 @@ class CreateMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
+class ModuleToMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "memory_format" in kwargs:
+            kwargs.pop("memory_format")
+        if "non_blocking" in kwargs:
+            kwargs.pop("non_blocking")
+        # handle kwargs["device"]
+        if """cuda""" == kwargs["device"]:
+            # case1: device = "cuda"
+            kwargs["device"] = "paddle.CUDAPlace()"
+        elif "cuda:" in kwargs["device"] and "if" not in kwargs["device"]:
+            # case2: device = "cuda:0"
+            kwargs["device"] = "paddle.CUDAPlace({})".format(
+                f'int({kwargs["device"]}.replace("cuda:",""))'
+            )
+        elif "cpu" in kwargs["device"] and "if" not in kwargs["device"]:
+            # paddle.CPUPlace() does not accept input.
+            # case3: device = "cpu"
+            # case4: device = "cpu:0"
+            kwargs["device"] = "paddle.CPUPlace()"
+        else:
+            # case5: device = "cpu:0" if condition else "cuda:0"
+            # case6: dev = xx, device = dev
+            kwargs[
+                "device"
+            ] = f'str({kwargs["device"]}).replace("cuda", "gpu") if isinstance({kwargs["device"]},str) else device'
+
+        code = "{}.to({})".format(self.paddleClass, self.kwargs_to_str(kwargs))
+        return code
+
+
 class DeviceMatcher(BaseMatcher):
     # NOTE: There is no completely equivalent API in Paddle. Matcher may need to be rewritten in the future.
     def generate_code(self, kwargs):
@@ -848,6 +918,22 @@ class GeluMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class ADVariableMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}.stop_gradient = not {}
+            {}
+            """
+        )
+
+        if "requires_grad" in kwargs:
+            return API_TEMPLATE.format(
+                kwargs["input"], kwargs["requires_grad"], kwargs["input"]
+            )
+        return kwargs["input"]
+
+
 class SequentialMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         # nn.Sequential(OrderedDict([...]) / nn.Sequential(OrderedDict(blocks))
@@ -863,6 +949,17 @@ class SequentialMatcher(BaseMatcher):
             new_args = self.parse_args(args)
         code = "paddle.nn.Sequential({})".format(self.args_to_str(new_args))
         return ast.parse(code).body
+
+
+class MPCpuCountMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            os.cpu_count()
+            """
+        )
+        return API_TEMPLATE
 
 
 class PadMatcher(BaseMatcher):
@@ -1367,32 +1464,6 @@ class SparseSoftmaxMatcher(BaseMatcher):
         return code
 
 
-class TensorTransposeMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        API_TEMPLATE = textwrap.dedent(
-            """
-            x = {}
-            {} = list(range(x.ndim))
-            {}[{}] = {}
-            {}[{}] = {}
-            x.transpose(perm={})
-            """
-        )
-        perm = get_unique_name("perm")
-        code = API_TEMPLATE.format(
-            self.paddleClass,
-            perm,
-            perm,
-            kwargs["dim0"],
-            kwargs["dim1"],
-            perm,
-            kwargs["dim1"],
-            kwargs["dim0"],
-            perm,
-        )
-        return code
-
-
 class TensorSizeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "dim" in kwargs:
@@ -1800,13 +1871,6 @@ class TensorExpandMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
-class TensorSoftmaxMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "dim" not in kwargs:
-            return None
-        return TensorFunc2PaddleFunc.generate_code(self, kwargs)
-
-
 class TensorRequiresGrad_Matcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "requires_grad" in kwargs:
@@ -1854,7 +1918,7 @@ class TensorTypeMatcher(BaseMatcher):
 class TensorIsCudaMatcher(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
-        code = "'gpu' in str({}.place)".format(self.paddleClass)
+        code = "{}.place.is_gpu_place()".format(self.paddleClass)
         return ast.parse(code).body
 
 
@@ -2091,6 +2155,22 @@ class AddCMulMatcher(BaseMatcher):
                 kwargs["input"], kwargs["value"], kwargs["tensor1"], kwargs["tensor2"]
             )
 
+        return code
+
+
+class AddCMul_Matcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "value" not in kwargs:
+            kwargs["value"] = 1
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}.add_({} * {} * {})
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.paddleClass, kwargs["value"], kwargs["tensor1"], kwargs["tensor2"]
+        )
         return code
 
 
@@ -3798,18 +3878,39 @@ class Get_EnumMatcher(BaseMatcher):
         return code
 
 
-class UnpoolMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        kwargs["indices"] = "{}.astype('int32')".format(kwargs["indices"])
-
-        return GenericMatcher.generate_code(self, kwargs)
-
-
 class SoftmaxMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def _get_softmax_dim(axis: int) -> int:
+                if axis == 0 or axis == 1 or axis == 3:
+                    ret = 0
+                else:
+                    ret = 1
+                return ret
+
+            def forward(self,x):
+                if self._axis is None:
+                    return paddle.nn.functional.softmax(x, _get_softmax_dim(x.ndim))
+                return paddle.nn.functional.softmax(x, self._axis)
+            setattr(paddle.nn.Softmax, 'forward', forward)
+
+            def forward(self,x):
+                if self._axis is None:
+                    return paddle.nn.functional.log_softmax(x, _get_softmax_dim(x.ndim))
+                return paddle.nn.functional.log_softmax(x, self._axis)
+            setattr(paddle.nn.LogSoftmax, 'forward', forward)
+            """
+        )
+        return CODE_TEMPLATE
+
     def generate_code(self, kwargs):
-        if "dim" not in kwargs or "None" in kwargs["dim"]:
-            kwargs.pop("dim", "None")
-            kwargs["axis"] = 0
+        if "dim" not in kwargs or kwargs["dim"] == "None":
+            self.write_aux_code()
+            if "functional" in self.get_paddle_api():
+                kwargs["dim"] = "paddle_aux._get_softmax_dim({}.ndim)".format(
+                    kwargs["input"]
+                )
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -4207,6 +4308,22 @@ class TensorToBoolMatcher(BaseMatcher):
             self.kwargs_to_str(kwargs),
         )
         return code
+
+
+class LoadStateDictFromUrlMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            import warnings
+            warnings.warn(
+                "The parameter format of PyTorch model should be converted to paddle format, and used it as the parameter for paddle.load(). "
+                "More information infer from https://github.com/PaddlePaddle/PaddleNLP/blob/develop/docs/community/contribute_models/convert_pytorch_to_paddle.rst"
+            )
+            paddle.load(paddle.utils.download.get_weights_path_from_url({})
+            )
+            """
+        )
+        return CODE_TEMPLATE.format(kwargs["url"])
 
 
 class TensorDatasetMatcher(BaseMatcher):
