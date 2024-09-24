@@ -14587,8 +14587,7 @@
       "requires_grad"
     ],
     "kwargs_change": {
-      "dtype": "dtype",
-      "device": "place"
+      "dtype": "dtype"
     },
     "paddle_default_kwargs": {
       "dtype": "paddle.float64"
@@ -14608,8 +14607,7 @@
       "requires_grad"
     ],
     "kwargs_change": {
-      "dtype": "dtype",
-      "device": "place"
+      "dtype": "dtype"
     },
     "paddle_default_kwargs": {
       "dtype": "paddle.float64"
@@ -14631,8 +14629,7 @@
       "requires_grad"
     ],
     "kwargs_change": {
-      "dtype": "dtype",
-      "device": "place"
+      "dtype": "dtype"
     },
     "paddle_default_kwargs": {
       "dtype": "paddle.float64"
@@ -14653,8 +14650,7 @@
       "requires_grad"
     ],
     "kwargs_change": {
-      "dtype": "dtype",
-      "device": "place"
+      "dtype": "dtype"
     },
     "paddle_default_kwargs": {
       "std": 1.0,
@@ -14676,8 +14672,7 @@
       "requires_grad"
     ],
     "kwargs_change": {
-      "dtype": "dtype",
-      "device": "place"
+      "dtype": "dtype"
     },
     "paddle_default_kwargs": {
       "dtype": "paddle.float64"
@@ -14698,8 +14693,7 @@
       "requires_grad"
     ],
     "kwargs_change": {
-      "dtype": "dtype",
-      "device": "place"
+      "dtype": "dtype"
     },
     "paddle_default_kwargs": {
       "alpha": 0.54,
@@ -14720,8 +14714,7 @@
       "requires_grad"
     ],
     "kwargs_change": {
-      "dtype": "dtype",
-      "device": "place"
+      "dtype": "dtype"
     },
     "paddle_default_kwargs": {
       "dtype": "paddle.float64"
@@ -14741,8 +14734,7 @@
       "requires_grad"
     ],
     "kwargs_change": {
-      "dtype": "dtype",
-      "device": "place"
+      "dtype": "dtype"
     },
     "paddle_default_kwargs": {
       "dtype": "paddle.float64"
