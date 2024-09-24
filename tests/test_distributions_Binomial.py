@@ -50,7 +50,6 @@ def test_case_2():
     )
 
 
-
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
