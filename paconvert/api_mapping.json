@@ -4226,6 +4226,22 @@
       "out"
     ]
   },
+  "torch.amp.autocast": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.amp.auto_cast",
+    "args_list": [
+      "device_type",
+      "dtype",
+      "enabled",
+      "cache_enabled"
+    ],
+    "kwargs_change": {
+      "device_type": "",
+      "dtype": "dtype",
+      "enabled": "enable",
+      "cache_enabled": ""
+    }
+  },
   "torch.angle": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.angle",
@@ -6173,6 +6189,25 @@
       "validate_args": ""
     }
   },
+  "torch.distributions.Binomial": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Binomial",
+    "args_list": [
+      "total_count",
+      "probs",
+      "logits",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    },
+    "unsupport_args": [
+      "logits"
+    ],
+    "paddle_default_kwargs": {
+      "total_count": "1"
+    }
+  },
   "torch.distributions.Categorical": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Categorical",
@@ -6214,6 +6249,22 @@
       "parts": "transforms",
       "cache_size": ""
     }
+  },
+  "torch.distributions.ContinuousBernoulli": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.ContinuousBernoulli",
+    "args_list": [
+      "probs",
+      "logits",
+      "lims",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    },
+    "unsupport_args": [
+      "logits"
+    ]
   },
   "torch.distributions.Dirichlet": {
     "Matcher": "GenericMatcher",
@@ -6304,6 +6355,17 @@
     ],
     "kwargs_change": {
       "cache_size": ""
+    }
+  },
+  "torch.distributions.Exponential": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Exponential",
+    "args_list": [
+      "rate",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
     }
   },
   "torch.distributions.ExponentialFamily": {
@@ -6420,6 +6482,20 @@
     "unsupport_args": [
       "logits"
     ]
+  },
+  "torch.distributions.MultivariateNormal": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.MultivariateNormal",
+    "args_list": [
+      "loc",
+      "covariance_matrix",
+      "precision_matrix",
+      "scale_tril",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
   },
   "torch.distributions.Normal": {
     "Matcher": "GenericMatcher",
@@ -11570,6 +11646,17 @@
       "input": "x"
     }
   },
+  "torch.nn.functional.channel_shuffle": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.channel_shuffle",
+    "args_list": [
+      "input",
+      "groups"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
   "torch.nn.functional.conv1d": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.conv1d",
@@ -14904,8 +14991,34 @@
       "input": "x"
     }
   },
-  "torch.special.gammainc": {},
-  "torch.special.gammaincc": {},
+  "torch.special.gammainc": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.gammainc",
+    "args_list": [
+      "input",
+      "other",
+      "*",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "other": "y"
+    }
+  },
+  "torch.special.gammaincc": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.gammaincc",
+    "args_list": [
+      "input",
+      "other",
+      "*",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "other": "y"
+    }
+  },
   "torch.special.gammaln": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.lgamma",
