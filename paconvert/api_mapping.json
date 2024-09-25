@@ -14573,7 +14573,7 @@
   },
   "torch.signal.windows.blackman": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.audio.functional.window._blackman",
+    "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
       "M",
@@ -14585,15 +14585,18 @@
       "requires_grad"
     ],
     "kwargs_change": {
+      "M": "win_length",
+      "sym": "fftbins",
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
-      "dtype": "paddle.float64"
+      "dtype": "paddle.float64",
+      "window": "blackman"
     }
   },
   "torch.signal.windows.cosine": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.audio.functional.window._cosine",
+    "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
       "M",
@@ -14605,15 +14608,18 @@
       "requires_grad"
     ],
     "kwargs_change": {
+      "M": "win_length",
+      "sym": "fftbins",
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
-      "dtype": "paddle.float64"
+      "dtype": "paddle.float64",
+      "window": "cosine"
     }
   },
   "torch.signal.windows.exponential": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.audio.functional.window._exponential",
+    "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
       "M",
@@ -14626,16 +14632,23 @@
       "device",
       "requires_grad"
     ],
+    "unsupport_args": [
+      "center",
+      "tau"
+    ],
     "kwargs_change": {
+      "M": "win_length",
+      "sym": "fftbins",
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
-      "dtype": "paddle.float64"
+      "dtype": "paddle.float64",
+      "window": "exponential"
     }
   },
   "torch.signal.windows.gaussian": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.audio.functional.window._gaussian",
+    "Matcher": "GaussianMatcher",
+    "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
       "M",
@@ -14648,17 +14661,19 @@
       "requires_grad"
     ],
     "kwargs_change": {
+      "M": "win_length",
+      "sym": "fftbins",
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
-      "std": 1.0,
-      "dtype": "paddle.float64"
+      "dtype": "paddle.float64",
+      "window": "gaussian"
     }
   },
   "torch.signal.windows.general_cosine": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.audio.functional.window._general_cosine",
-    "min_input_args": 1,
+    "Matcher": "GaussianMatcher",
+    "paddle_api": "paddle.audio.functional.get_window",
+    "min_input_args": 2,
     "args_list": [
       "M",
       "*",
@@ -14670,15 +14685,18 @@
       "requires_grad"
     ],
     "kwargs_change": {
+      "M": "win_length",
+      "sym": "fftbins",
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
-      "dtype": "paddle.float64"
+      "dtype": "paddle.float64",
+      "window": "general_cosine"
     }
   },
   "torch.signal.windows.general_hamming": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.audio.functional.window._general_hamming",
+    "Matcher": "GaussianMatcher",
+    "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
       "M",
@@ -14691,16 +14709,18 @@
       "requires_grad"
     ],
     "kwargs_change": {
+      "M": "win_length",
+      "sym": "fftbins",
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
-      "alpha": 0.54,
-      "dtype": "paddle.float64"
+      "dtype": "paddle.float64",
+      "window": "general_hamming"
     }
   },
   "torch.signal.windows.hamming": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.audio.functional.window._hamming",
+    "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
       "M",
@@ -14712,15 +14732,18 @@
       "requires_grad"
     ],
     "kwargs_change": {
+      "M": "win_length",
+      "sym": "fftbins",
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
-      "dtype": "paddle.float64"
+      "dtype": "paddle.float64",
+      "window": "hamming"
     }
   },
   "torch.signal.windows.hann": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.audio.functional.window._hann",
+    "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
       "M",
@@ -14732,10 +14755,13 @@
       "requires_grad"
     ],
     "kwargs_change": {
+      "M": "win_length",
+      "sym": "fftbins",
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
-      "dtype": "paddle.float64"
+      "dtype": "paddle.float64",
+      "window": "hann"
     }
   },
   "torch.signbit": {

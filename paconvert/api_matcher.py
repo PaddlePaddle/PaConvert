@@ -519,6 +519,33 @@ class InitKaimingMatcher(InitMatcher):
         return super().generate_code(kwargs)
 
 
+class GaussianMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs_window = self.set_paddle_default_kwargs(kwargs)
+        kwargs_change = self.api_mapping.get("kwargs_change", {})
+        for k in kwargs_change:
+            if k in kwargs:
+                kwargs[kwargs_change[k]] = kwargs.pop(k)
+
+        if "std" in kwargs:
+            code = "paddle.audio.functional.get_window(({},{}),{})".format(
+                kwargs_window.pop("window"), kwargs.pop("std"), kwargs.pop("win_length")
+            )
+
+        if "a" in kwargs:
+            code = "paddle.audio.functional.get_window(({},{}),{})".format(
+                kwargs_window.pop("window"), kwargs.pop("a"), kwargs.pop("win_length")
+            )
+        if "alpha" in kwargs:
+            code = "paddle.audio.functional.get_window(({},{}),{})".format(
+                kwargs_window.pop("window"),
+                kwargs.pop("alpha"),
+                kwargs.pop("win_length"),
+            )
+
+        return code
+
+
 class Num2TensorBinaryWithAlphaMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs_change = self.api_mapping.get("kwargs_change", {})
