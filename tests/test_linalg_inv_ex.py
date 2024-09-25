@@ -1,4 +1,4 @@
-# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
+# Copyright (c) 2024 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,10 +26,10 @@ def test_case_1():
         x = torch.tensor([[0.02773777, 0.93004224, 0.06911496],
                 [0.24831591, 0.45733623, 0.07717843],
                 [0.48016702, 0.14235102, 0.42620817]])
-        result = torch.linalg.inv_ex(x)
+        out, info = torch.linalg.inv_ex(x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["out", "info"])
 
 
 def test_case_2():
@@ -39,10 +39,10 @@ def test_case_2():
         x = torch.tensor([[0.02773777, 0.93004224, 0.06911496],
                 [0.24831591, 0.45733623, 0.07717843],
                 [0.48016702, 0.14235102, 0.42620817]])
-        result = torch.linalg.inv_ex(A=x)
+        out, info = torch.linalg.inv_ex(A=x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["out", "info"])
 
 
 def test_case_3():
@@ -53,10 +53,10 @@ def test_case_3():
                 [0.24831591, 0.45733623, 0.07717843],
                 [0.48016702, 0.14235102, 0.42620817]])
         out = torch.tensor([])
-        result = torch.linalg.inv_ex(x, out=out)
+        out1, info = torch.linalg.inv_ex(x, out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["out1", "info"])
 
 
 def test_case_4():
@@ -67,12 +67,12 @@ def test_case_4():
                 [0.24831591, 0.45733623, 0.07717843],
                 [0.48016702, 0.14235102, 0.42620817]])
         out = torch.tensor([])
-        result = torch.linalg.inv_ex(x, check_errors=False, out=out)
+        out1, info = torch.linalg.inv_ex(x, check_errors=False, out=out)
         """
     )
     obj.run(
         pytorch_code,
-        ["result"],
+        ["out1", "info"],
         unsupport=True,
         reason="paddle does not support this function temporarily",
     )
