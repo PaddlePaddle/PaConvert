@@ -519,7 +519,7 @@ class InitKaimingMatcher(InitMatcher):
         return super().generate_code(kwargs)
 
 
-class GaussianMatcher(BaseMatcher):
+class WindowsMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs_window = self.set_paddle_default_kwargs(kwargs)
         kwargs_change = self.api_mapping.get("kwargs_change", {})
@@ -542,7 +542,10 @@ class GaussianMatcher(BaseMatcher):
                 kwargs.pop("alpha"),
                 kwargs.pop("win_length"),
             )
-
+        else:
+            code = "paddle.audio.functional.get_window(({}),{})".format(
+                kwargs_window.pop("window"), kwargs.pop("win_length")
+            )
         return code
 
 
