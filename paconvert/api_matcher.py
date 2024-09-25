@@ -521,30 +521,40 @@ class InitKaimingMatcher(InitMatcher):
 
 class WindowsMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs_window = self.set_paddle_default_kwargs(kwargs)
+        default_kwargs = self.api_mapping.get("paddle_default_kwargs", {})
+        for k in default_kwargs:
+            if k not in kwargs:
+                kwargs[k] = default_kwargs[k]
+
         kwargs_change = self.api_mapping.get("kwargs_change", {})
         for k in kwargs_change:
             if k in kwargs:
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
 
         if "std" in kwargs:
-            code = "paddle.audio.functional.get_window(({},{}),{})".format(
-                kwargs_window.pop("window"), kwargs.pop("std"), kwargs.pop("win_length")
+            code = "{}(({},{}),{})".format(
+                self.get_paddle_api(),
+                kwargs.pop("window"),
+                kwargs.pop("std"),
+                kwargs.pop("win_length"),
             )
-
         if "a" in kwargs:
-            code = "paddle.audio.functional.get_window(({},{}),{})".format(
-                kwargs_window.pop("window"), kwargs.pop("a"), kwargs.pop("win_length")
+            code = "{}(({},{}),{})".format(
+                self.get_paddle_api(),
+                kwargs.pop("window"),
+                kwargs.pop("a"),
+                kwargs.pop("win_length"),
             )
         if "alpha" in kwargs:
-            code = "paddle.audio.functional.get_window(({},{}),{})".format(
-                kwargs_window.pop("window"),
+            code = "{}(({},{}),{})".format(
+                self.get_paddle_api(),
+                kwargs.pop("window"),
                 kwargs.pop("alpha"),
                 kwargs.pop("win_length"),
             )
         else:
-            code = "paddle.audio.functional.get_window(({}),{})".format(
-                kwargs_window.pop("window"), kwargs.pop("win_length")
+            code = "{}({},{})".format(
+                self.get_paddle_api(), kwargs.pop("window"), kwargs.pop("win_length")
             )
         return code
 
