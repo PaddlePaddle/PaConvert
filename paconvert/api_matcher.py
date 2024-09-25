@@ -520,43 +520,35 @@ class InitKaimingMatcher(InitMatcher):
 
 
 class WindowsMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def add(self, *args, **kwargs):
+                if 'M' in kwargs:
+                    win_length = kwargs['M']
+                elif 'win_length' in kwargs:
+                    win_length = kwargs['win_length']
+                else:
+                    win_length = args[1]
+
+                if 'std' in kwargs:
+                    std = kwargs['std']
+                    return paddle.audio.functional.get_window((args[0],std),win_length)
+                elif 'a' in kwargs:
+                    a = kwargs['a']
+                    return paddle.audio.functional.get_window((args[0],a),win_length)
+                elif 'alpha' in kwargs:
+                    alpha = kwargs['alpha']
+                    return paddle.audio.functional.get_window((args[0],alpha),win_length)
+                else:
+                    return paddle.audio.functional.get_window(args[0], win_length)
+            """
+        )
+        return CODE_TEMPLATE
+
     def generate_code(self, kwargs):
-        default_kwargs = self.api_mapping.get("paddle_default_kwargs", {})
-        for k in default_kwargs:
-            if k not in kwargs:
-                kwargs[k] = default_kwargs[k]
-
-        kwargs_change = self.api_mapping.get("kwargs_change", {})
-        for k in kwargs_change:
-            if k in kwargs:
-                kwargs[kwargs_change[k]] = kwargs.pop(k)
-
-        if "std" in kwargs:
-            code = "{}(({},{}),{})".format(
-                self.get_paddle_api(),
-                kwargs.pop("window"),
-                kwargs.pop("std"),
-                kwargs.pop("win_length"),
-            )
-        if "a" in kwargs:
-            code = "{}(({},{}),{})".format(
-                self.get_paddle_api(),
-                kwargs.pop("window"),
-                kwargs.pop("a"),
-                kwargs.pop("win_length"),
-            )
-        if "alpha" in kwargs:
-            code = "{}(({},{}),{})".format(
-                self.get_paddle_api(),
-                kwargs.pop("window"),
-                kwargs.pop("alpha"),
-                kwargs.pop("win_length"),
-            )
-        else:
-            code = "{}({},{})".format(
-                self.get_paddle_api(), kwargs.pop("window"), kwargs.pop("win_length")
-            )
-        return code
+        self.write_aux_code()
+        return "unchange"
 
 
 class Num2TensorBinaryWithAlphaMatcher(BaseMatcher):
