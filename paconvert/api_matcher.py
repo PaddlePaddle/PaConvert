@@ -4792,3 +4792,54 @@ class HistogramMatcher(BaseMatcher):
                     self.kwargs_to_str(kwargs_bin_edges),
                 )
         return code
+
+
+class GetNumThreadsMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            import multiprocessing
+            def get_num_threads():
+                device = paddle.device.get_device()
+                if 'cpu' in device:
+                    return multiprocessing.cpu_count()
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.get_num_threads()
+            """
+        )
+        code = API_TEMPLATE.format(self.paddleClass)
+
+        return code
+
+
+class FromBufferMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def paddle_frombuffer(buffer, dtype, count=-1, offset=0):
+                original = memoryview(buffer)
+                numpy_frombuffer = np.frombuffer(original, dtype=dtype, count=count, offset=offset)
+                paddle_tensor = paddle.to_tensor(numpy_frombuffer)
+                return paddle_tensor
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        kwargs = self.set_paddle_default_kwargs(kwargs)
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.frombuffer({})({})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["buffer"], kwargs["dtype"])
+
+        return code

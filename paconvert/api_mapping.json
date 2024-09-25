@@ -4869,6 +4869,28 @@
       "other": "y"
     }
   },
+  "torch.blackman_window": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.audio.functional.window._blackman",
+    "min_input_args": 1,
+    "args_list": [
+      "window_length",
+      "periodic",
+      "*",
+      "dtype",
+      "layout",
+      "device",
+      "requires_grad"
+    ],
+    "kwargs_change": {
+      "window_length": "M",
+      "periodic": "sym",
+      "dtype": "dtype"
+    },
+    "paddle_default_kwargs": {
+      "dtype": "paddle.float64"
+    }
+  },
   "torch.bmm": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.bmm",
@@ -7311,6 +7333,17 @@
       "ndarray": "data"
     }
   },
+  "torch.frombuffer": {
+    "Matcher": "FromBufferMatcher",
+    "min_input_args": 2,
+    "args_list": [
+      "buffer",
+      "dtype",
+      "count",
+      "offset",
+      "requires_grad"
+    ]
+  },
   "torch.full": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.full",
@@ -7416,6 +7449,10 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.get_default_dtype"
   },
+  "torch.get_num_threads": {
+    "Matcher": "GetNumThreadsMatcher",
+    "min_input_args": 0
+  },
   "torch.get_rng_state": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.get_rng_state",
@@ -7453,6 +7490,56 @@
       "*",
       "out"
     ]
+  },
+  "torch.hamming_window": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.audio.functional.window._hamming",
+    "min_input_args": 1,
+    "args_list": [
+      "window_length",
+      "periodic",
+      "alpha",
+      "beta",
+      "*",
+      "dtype",
+      "layout",
+      "device",
+      "requires_grad"
+    ],
+    "unsupport_args": [
+      "alpha",
+      "beta"
+    ],
+    "kwargs_change": {
+      "window_length": "M",
+      "periodic": "sym",
+      "dtype": "dtype"
+    },
+    "paddle_default_kwargs": {
+      "dtype": "paddle.float64"
+    }
+  },
+  "torch.hann_window": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.audio.functional.window._hann",
+    "min_input_args": 1,
+    "args_list": [
+      "window_length",
+      "periodic",
+      "*",
+      "dtype",
+      "layout",
+      "device",
+      "requires_grad"
+    ],
+    "kwargs_change": {
+      "window_length": "M",
+      "periodic": "sym",
+      "dtype": "dtype"
+    },
+    "paddle_default_kwargs": {
+      "dtype": "paddle.float64"
+    }
   },
   "torch.heaviside": {
     "Matcher": "GenericMatcher",
@@ -14517,6 +14604,17 @@
     "args_list": [
       "mode"
     ]
+  },
+  "torch.set_num_threads": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.static.cpu_places",
+    "min_input_args": 1,
+    "args_list": [
+      "input"
+    ],
+    "kwargs_change": {
+      "input": "device_count"
+    }
   },
   "torch.set_printoptions": {
     "Matcher": "SetPrintOptionsMatcher",
