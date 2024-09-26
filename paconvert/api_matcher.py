@@ -545,8 +545,6 @@ class GaussianMatcher(BaseMatcher):
         if "std" in kwargs:
             std_value = float(str(kwargs.pop("std")).split("=")[-1].strip("()"))
             new_kwargs["window"] = ("gaussian", std_value)
-            print("--------std-----------", std_value)
-            print("--------std-----------", type(std_value))
         else:
             new_kwargs["window"] = ("gaussian", 1.0)
         new_kwargs.update(kwargs)
@@ -561,9 +559,7 @@ class GeneralCosineMatcher(BaseMatcher):
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
         new_kwargs = {}
         if "a" in kwargs:
-            a_value = kwargs.pop("a").split("=")[-1]
-            print("--------a_value-----------", a_value)
-            print("--------a_value-----------", type(a_value))
+            a_value = str(kwargs.pop("a")).split("=")[-1].strip("()")
             new_kwargs["window"] = ("general_cosine", a_value)
         else:
             new_kwargs["window"] = ("general_cosine", [0.46, 0.23, 0.31])
