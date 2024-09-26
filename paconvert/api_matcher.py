@@ -527,9 +527,12 @@ class ExponentialMatcher(BaseMatcher):
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
         new_kwargs = {}
         if "tau" in kwargs:
-            new_kwargs["window"] = ("'exponential'", kwargs.pop("tau"))
+            tau_value = float(str(kwargs.pop("tau")).split("=")[-1])
+            print(tau_value)
+            new_kwargs["window"] = ("exponential", tau_value)
+            print(new_kwargs["window"])
         else:
-            new_kwargs["window"] = ("'exponential'", 1.0)
+            new_kwargs["window"] = ("exponential", 1.0)
         new_kwargs.update(kwargs)
         return GenericMatcher.generate_code(self, new_kwargs)
 
@@ -542,9 +545,10 @@ class GaussianMatcher(BaseMatcher):
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
         new_kwargs = {}
         if "std" in kwargs:
-            new_kwargs["window"] = ("'gaussian'", kwargs.pop("std"))
+            std_value = float(str(kwargs.pop("std")).split("=")[-1])
+            new_kwargs["window"] = tuple("gaussian", std_value)
         else:
-            new_kwargs["window"] = ("'gaussian'", 1.0)
+            new_kwargs["window"] = tuple("gaussian", 1.0)
         new_kwargs.update(kwargs)
         return GenericMatcher.generate_code(self, new_kwargs)
 
@@ -557,9 +561,10 @@ class GeneralCosineMatcher(BaseMatcher):
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
         new_kwargs = {}
         if "a" in kwargs:
-            new_kwargs["window"] = ("'general_cosine'", kwargs.pop("a"))
+            a_value = str(kwargs.pop("a")).split("=")[-1]
+            new_kwargs["window"] = ("general_cosine", a_value)
         else:
-            new_kwargs["window"] = ("'general_cosine'", [0.46, 0.23, 0.31])
+            new_kwargs["window"] = ("general_cosine", [0.46, 0.23, 0.31])
         new_kwargs.update(kwargs)
         return GenericMatcher.generate_code(self, new_kwargs)
 
@@ -572,9 +577,10 @@ class GeneralHammingMatcher(BaseMatcher):
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
         new_kwargs = {}
         if "alpha" in kwargs:
-            new_kwargs["window"] = ("'general_hamming',", kwargs.pop("alpha"))
+            alpha_value = float(str(kwargs.pop("alpha")).split("=")[-1])
+            new_kwargs["window"] = tuple("general_hamming", alpha_value)
         else:
-            new_kwargs["window"] = ("'general_hamming',", 0.54)
+            new_kwargs["window"] = tuple("general_hamming", 0.54)
         new_kwargs.update(kwargs)
         return GenericMatcher.generate_code(self, new_kwargs)
 
