@@ -10440,9 +10440,11 @@
       "remove_duplicate"
     ],
     "kwargs_change": {
-      "recurse": "include_sublayers",
-      "remove_duplicate": ""
+      "recurse": "include_sublayers"
     },
+    "unsupport_args": [
+      "remove_duplicate"
+    ],
     "min_input_args": 0
   },
   "torch.nn.Module.named_children": {
@@ -10474,9 +10476,11 @@
       "remove_duplicate"
     ],
     "kwargs_change": {
-      "recurse": "include_sublayers",
-      "remove_duplicate": ""
-    }
+      "recurse": "include_sublayers"
+    },
+    "unsupport_args": [
+      "remove_duplicate"
+    ]
   },
   "torch.nn.Module.parameters": {
     "Matcher": "GenericMatcher",
