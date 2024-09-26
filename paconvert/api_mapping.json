@@ -14572,7 +14572,7 @@
     }
   },
   "torch.signal.windows.blackman": {
-    "Matcher": "WindowsMatcher",
+    "Matcher": "BlackmanWindowMatcher",
     "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
