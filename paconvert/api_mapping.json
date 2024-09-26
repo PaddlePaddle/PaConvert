@@ -14646,7 +14646,7 @@
     }
   },
   "torch.signal.windows.gaussian": {
-    "Matcher": "SpecialWindowsMatcher",
+    "Matcher": "GaussianMatcher",
     "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
@@ -14665,12 +14665,11 @@
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
-      "dtype": "paddle.float64",
-      "window": "'gaussian'"
+      "dtype": "paddle.float64"
     }
   },
   "torch.signal.windows.general_cosine": {
-    "Matcher": "SpecialWindowsMatcher",
+    "Matcher": "GeneralCosineMatcher",
     "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 2,
     "args_list": [
@@ -14689,12 +14688,11 @@
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
-      "dtype": "paddle.float64",
-      "window": "'general_cosine'"
+      "dtype": "paddle.float64"
     }
   },
   "torch.signal.windows.general_hamming": {
-    "Matcher": "SpecialWindowsMatcher",
+    "Matcher": "GeneralHammingMatcher",
     "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
@@ -14713,8 +14711,7 @@
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
-      "dtype": "paddle.float64",
-      "window": "'general_hamming'"
+      "dtype": "paddle.float64"
     }
   },
   "torch.signal.windows.hamming": {

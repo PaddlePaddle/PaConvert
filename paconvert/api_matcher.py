@@ -527,44 +527,56 @@ class ExponentialMatcher(BaseMatcher):
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
         new_kwargs = {}
         if "tau" in kwargs:
-            new_kwargs["window"] = (kwargs.pop("window"), kwargs.pop("tau"))
+            new_kwargs["window"] = ("'exponential'", kwargs.pop("tau"))
         else:
-            new_kwargs["window"] = (kwargs.pop("window"), 1.0)
+            new_kwargs["window"] = ("'exponential'", 1.0)
         new_kwargs.update(kwargs)
         return GenericMatcher.generate_code(self, new_kwargs)
 
 
-class SpecialWindowsMatcher(BaseMatcher):
+class GaussianMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        default_kwargs = self.api_mapping.get("paddle_default_kwargs", {})
-        for k in default_kwargs:
-            if k not in kwargs:
-                kwargs[k] = default_kwargs[k]
-
         kwargs_change = self.api_mapping.get("kwargs_change", {})
         for k in kwargs_change:
             if k in kwargs:
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
-
         new_kwargs = {}
-        if kwargs["window"] == '"""gaussian"""':
-            if "std" in kwargs:
-                new_kwargs["window"] = (kwargs.pop("window"), kwargs.pop("std"))
-            else:
-                new_kwargs["window"] = (kwargs.pop("window"), 1.0)
-        elif kwargs["window"] == '"""general_cosine"""':
-            if "a" in kwargs:
-                new_kwargs["window"] = (kwargs.pop("window"), kwargs.pop("a"))
-            else:
-                temp = [0.46, 0.23, 0.31]
-                new_kwargs["window"] = (kwargs.pop("window"), temp)
-        elif kwargs["window"] == '"""general_hamming"""':
-            if "alpha" in kwargs:
-                new_kwargs["window"] = (kwargs.pop("window"), kwargs.pop("alpha"))
-            else:
-                new_kwargs["window"] = (kwargs.pop("window"), 0.54)
+        if "std" in kwargs:
+            new_kwargs["window"] = ("'gaussian'", kwargs.pop("std"))
+        else:
+            new_kwargs["window"] = ("'gaussian'", 1.0)
         new_kwargs.update(kwargs)
-        return GenericMatcher.generate_code(self, kwargs)
+        return GenericMatcher.generate_code(self, new_kwargs)
+
+
+class GeneralCosineMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs_change = self.api_mapping.get("kwargs_change", {})
+        for k in kwargs_change:
+            if k in kwargs:
+                kwargs[kwargs_change[k]] = kwargs.pop(k)
+        new_kwargs = {}
+        if "a" in kwargs:
+            new_kwargs["window"] = ("'general_cosine'", kwargs.pop("a"))
+        else:
+            new_kwargs["window"] = ("'general_cosine'", [0.46, 0.23, 0.31])
+        new_kwargs.update(kwargs)
+        return GenericMatcher.generate_code(self, new_kwargs)
+
+
+class GeneralHammingMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs_change = self.api_mapping.get("kwargs_change", {})
+        for k in kwargs_change:
+            if k in kwargs:
+                kwargs[kwargs_change[k]] = kwargs.pop(k)
+        new_kwargs = {}
+        if "alpha" in kwargs:
+            new_kwargs["window"] = ("'general_hamming',", kwargs.pop("alpha"))
+        else:
+            new_kwargs["window"] = ("'general_hamming',", 0.54)
+        new_kwargs.update(kwargs)
+        return GenericMatcher.generate_code(self, new_kwargs)
 
 
 class Num2TensorBinaryWithAlphaMatcher(BaseMatcher):
