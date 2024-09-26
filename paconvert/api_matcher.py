@@ -530,9 +530,13 @@ class SpecialWindowsMatcher(BaseMatcher):
         for k in kwargs_change:
             if k in kwargs:
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
-
+        p_x = None
         if kwargs["window"] == '"""exponential"""':
-            p_x = kwargs.pop("tau") if "tau" in kwargs else 1.0
+            if "tau" in kwargs:
+                p_x = kwargs.pop("tau")
+                print(p_x)
+            else:
+                p_x = 1.0
         elif kwargs["window"] == '"""gaussian"""':
             p_x = kwargs.pop("std") if "std" in kwargs else 1.0
         elif kwargs["window"] == '"""general_cosine"""':
