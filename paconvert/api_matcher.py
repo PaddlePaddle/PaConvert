@@ -519,22 +519,17 @@ class InitKaimingMatcher(InitMatcher):
         return super().generate_code(kwargs)
 
 
-class BlackmanWindowMatcher(BaseMatcher):
+class RegularWindowMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         default_kwargs = self.api_mapping.get("paddle_default_kwargs", {})
         for k in default_kwargs:
             if k not in kwargs:
                 kwargs[k] = default_kwargs[k]
-
-        kwargs_change = self.api_mapping.get("kwargs_change", {})
-        for k in kwargs_change:
-            if k in kwargs:
-                kwargs[kwargs_change[k]] = kwargs.pop(k)
 
         return GenericMatcher.generate_code(self, kwargs)
 
 
-class WindowsMatcher(BaseMatcher):
+class SpecialWindowsMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         default_kwargs = self.api_mapping.get("paddle_default_kwargs", {})
         for k in default_kwargs:
@@ -546,40 +541,39 @@ class WindowsMatcher(BaseMatcher):
             if k in kwargs:
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
 
-            if "std" in kwargs:
-                code = "{}(({},{}),{})".format(
-                    self.get_paddle_api(),
-                    kwargs.pop("window"),
-                    kwargs.pop("std"),
-                    kwargs.pop("win_length"),
-                )
-            if "a" in kwargs:
-                code = "{}(({},{}),{})".format(
-                    self.get_paddle_api(),
-                    kwargs.pop("window"),
-                    kwargs.pop("a"),
-                    kwargs.pop("win_length"),
-                )
-            if "alpha" in kwargs:
-                code = "{}(({},{}),{})".format(
-                    self.get_paddle_api(),
-                    kwargs.pop("window"),
-                    kwargs.pop("alpha"),
-                    kwargs.pop("win_length"),
-                )
+        new_kwargs = {}
+        if kwargs["window"] == '"""exponential"""':
             if "tau" in kwargs:
-                code = "{}(({},{}),{})".format(
-                    self.get_paddle_api(),
-                    kwargs.pop("window"),
-                    kwargs.pop("tau"),
-                    kwargs.pop("win_length"),
-                )
+                new_kwargs["p_x"] = kwargs.pop("tau")
             else:
-                code = "{}({},{})".format(
-                    self.get_paddle_api(),
-                    kwargs.pop("window"),
-                    kwargs.pop("win_length"),
-                )
+                new_kwargs["p_x"] = 1.0
+        elif kwargs["window"] == '"""gaussian"""':
+            if "std" in kwargs:
+                new_kwargs["p_x"] = kwargs.pop("std")
+            else:
+                new_kwargs["p_x"] = 1.0
+        elif kwargs["window"] == '"""general_cosine"""':
+            if "a" in kwargs:
+                new_kwargs["p_x"] = kwargs.pop("a")
+            else:
+                new_kwargs["p_x"] = [0.46, 0.23, 0.31]
+        elif kwargs["window"] == '"""general_hamming"""':
+            if "alpha" in kwargs:
+                new_kwargs["p_x"] = kwargs.pop("alpha")
+            else:
+                new_kwargs["p_x"] = 0.54
+
+            API_TEMPLATE = textwrap.dedent(
+                """
+                {}(({}, {}),{})
+                """
+            )
+            code = API_TEMPLATE.format(
+                self.get_paddle_api(),
+                kwargs.pop("window"),
+                new_kwargs["p_x"],
+                kwargs.pop("win_length"),
+            )
             return code
         return GenericMatcher.generate_code(self, kwargs)
 
