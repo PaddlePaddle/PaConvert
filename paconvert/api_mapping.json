@@ -14618,7 +14618,7 @@
     }
   },
   "torch.signal.windows.exponential": {
-    "Matcher": "SpecialWindowsMatcher",
+    "Matcher": "ExponentialMatcher",
     "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
@@ -14642,8 +14642,7 @@
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
-      "dtype": "paddle.float64",
-      "window": "'exponential'"
+      "dtype": "paddle.float64"
     }
   },
   "torch.signal.windows.gaussian": {

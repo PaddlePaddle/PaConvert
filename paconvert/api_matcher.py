@@ -519,6 +519,21 @@ class InitKaimingMatcher(InitMatcher):
         return super().generate_code(kwargs)
 
 
+class ExponentialMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs_change = self.api_mapping.get("kwargs_change", {})
+        for k in kwargs_change:
+            if k in kwargs:
+                kwargs[kwargs_change[k]] = kwargs.pop(k)
+        new_kwargs = {}
+        if "tau" in kwargs:
+            new_kwargs["window"] = (kwargs.pop("window"), kwargs.pop("tau"))
+        else:
+            new_kwargs["window"] = (kwargs.pop("window"), 1.0)
+        new_kwargs.update(kwargs)
+        return GenericMatcher.generate_code(self, new_kwargs)
+
+
 class SpecialWindowsMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         default_kwargs = self.api_mapping.get("paddle_default_kwargs", {})
@@ -531,32 +546,24 @@ class SpecialWindowsMatcher(BaseMatcher):
             if k in kwargs:
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
 
-        if kwargs["window"] == '"""exponential"""':
-            if "tau" in kwargs:
-                p_x = kwargs.pop("tau")
-                kwargs["window"] = (kwargs.pop("window"), p_x)
-            else:
-                kwargs["window"] = (kwargs.pop("window"), 1.0)
-        elif kwargs["window"] == '"""gaussian"""':
+        new_kwargs = {}
+        if kwargs["window"] == '"""gaussian"""':
             if "std" in kwargs:
-                p_x = kwargs.pop("std")
-                kwargs["window"] = (kwargs.pop("window"), p_x)
+                new_kwargs["window"] = (kwargs.pop("window"), kwargs.pop("std"))
             else:
-                kwargs["window"] = (kwargs.pop("window"), 1.0)
+                new_kwargs["window"] = (kwargs.pop("window"), 1.0)
         elif kwargs["window"] == '"""general_cosine"""':
             if "a" in kwargs:
-                p_x = kwargs.pop("a")
-                kwargs["window"] = (kwargs.pop("window"), p_x)
+                new_kwargs["window"] = (kwargs.pop("window"), kwargs.pop("a"))
             else:
                 temp = [0.46, 0.23, 0.31]
-                kwargs["window"] = (kwargs.pop("window"), temp)
+                new_kwargs["window"] = (kwargs.pop("window"), temp)
         elif kwargs["window"] == '"""general_hamming"""':
             if "alpha" in kwargs:
-                p_x = kwargs.pop("alpha")
-                kwargs["window"] = (kwargs.pop("window"), p_x)
+                new_kwargs["window"] = (kwargs.pop("window"), kwargs.pop("alpha"))
             else:
-                kwargs["window"] = (kwargs.pop("window"), 0.54)
-
+                new_kwargs["window"] = (kwargs.pop("window"), 0.54)
+        new_kwargs.update(kwargs)
         return GenericMatcher.generate_code(self, kwargs)
 
 
