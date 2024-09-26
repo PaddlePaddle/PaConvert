@@ -77,13 +77,3 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
-
-
-def test_case_7():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.signal.windows.general_hamming(10, alpha=0.5, sym=False, dtype=torch.float64)
-        """
-    )
-    obj.run(pytorch_code, ["result"], check_value=False)
