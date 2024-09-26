@@ -531,28 +531,16 @@ class SpecialWindowsMatcher(BaseMatcher):
             if k in kwargs:
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
 
-        new_kwargs = {}
         if kwargs["window"] == '"""exponential"""':
-            if "tau" in kwargs:
-                new_kwargs["p_x"] = kwargs.pop("tau")
-            else:
-                new_kwargs["p_x"] = 1.0
+            p_x = kwargs.pop("tau") if "tau" in kwargs else 1.0
         elif kwargs["window"] == '"""gaussian"""':
-            if "std" in kwargs:
-                new_kwargs["p_x"] = kwargs.pop("std")
-            else:
-                new_kwargs["p_x"] = 1.0
+            p_x = kwargs.pop("std") if "std" in kwargs else 1.0
         elif kwargs["window"] == '"""general_cosine"""':
-            if "a" in kwargs:
-                new_kwargs["p_x"] = kwargs.pop("a")
-            else:
-                new_kwargs["p_x"] = [0.46, 0.23, 0.31]
+            p_x = kwargs.pop("a") if "a" in kwargs else [0.46, 0.23, 0.31]
         elif kwargs["window"] == '"""general_hamming"""':
-            if "alpha" in kwargs:
-                new_kwargs["p_x"] = kwargs.pop("alpha")
-            else:
-                new_kwargs["p_x"] = 0.54
+            p_x = kwargs.pop("alpha") if "alpha" in kwargs else 0.54
 
+        if p_x:
             API_TEMPLATE = textwrap.dedent(
                 """
                 {}(({}, {}),{})
@@ -560,9 +548,9 @@ class SpecialWindowsMatcher(BaseMatcher):
             )
             code = API_TEMPLATE.format(
                 self.get_paddle_api(),
-                kwargs.pop("window"),
-                new_kwargs["p_x"],
-                kwargs.pop("win_length"),
+                kwargs["window"],
+                p_x,
+                kwargs["win_length"],
             )
             return code
         return GenericMatcher.generate_code(self, kwargs)
