@@ -559,7 +559,8 @@ class GeneralCosineMatcher(BaseMatcher):
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
         new_kwargs = {}
         if "a" in kwargs:
-            a_value = str(kwargs.pop("a")).split("=")[-1].strip("()")
+            temp_value = str(kwargs.pop("a")).split("=")[-1].strip("()")
+            a_value = ast.literal_eval(temp_value)
             new_kwargs["window"] = ("general_cosine", a_value)
         else:
             new_kwargs["window"] = ("general_cosine", [0.46, 0.23, 0.31])
