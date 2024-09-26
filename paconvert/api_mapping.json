@@ -14572,7 +14572,7 @@
     }
   },
   "torch.signal.windows.blackman": {
-    "Matcher": "RegularWindowMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
@@ -14618,7 +14618,7 @@
     }
   },
   "torch.signal.windows.exponential": {
-    "Matcher": "WindowsMatcher",
+    "Matcher": "SpecialWindowsMatcher",
     "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
@@ -14647,7 +14647,7 @@
     }
   },
   "torch.signal.windows.gaussian": {
-    "Matcher": "WindowsMatcher",
+    "Matcher": "SpecialWindowsMatcher",
     "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
@@ -14671,7 +14671,7 @@
     }
   },
   "torch.signal.windows.general_cosine": {
-    "Matcher": "WindowsMatcher",
+    "Matcher": "SpecialWindowsMatcher",
     "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 2,
     "args_list": [
@@ -14695,7 +14695,7 @@
     }
   },
   "torch.signal.windows.general_hamming": {
-    "Matcher": "WindowsMatcher",
+    "Matcher": "SpecialWindowsMatcher",
     "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [

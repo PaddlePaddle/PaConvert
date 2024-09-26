@@ -519,16 +519,6 @@ class InitKaimingMatcher(InitMatcher):
         return super().generate_code(kwargs)
 
 
-class RegularWindowMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        default_kwargs = self.api_mapping.get("paddle_default_kwargs", {})
-        for k in default_kwargs:
-            if k not in kwargs:
-                kwargs[k] = default_kwargs[k]
-
-        return GenericMatcher.generate_code(self, kwargs)
-
-
 class SpecialWindowsMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         default_kwargs = self.api_mapping.get("paddle_default_kwargs", {})
