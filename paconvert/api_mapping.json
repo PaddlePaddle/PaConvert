@@ -3815,6 +3815,7 @@
     "args_list": [
       "dtype",
       "non_blocking",
+      "dst_type",
       "**kwargs"
     ]
   },
