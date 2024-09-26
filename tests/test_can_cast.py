@@ -23,14 +23,27 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[0,1,2]])
-        y = torch.tensor([[0],[1]])
-        result = torch.can_cast(x, y)
+        result = torch.can_cast(torch.double, torch.float)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle not support this API now",
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.can_cast(torch.float, torch.int)
+        """
     )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.can_cast(torch.complex64, torch.complex128)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
