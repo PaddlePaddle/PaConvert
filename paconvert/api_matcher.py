@@ -527,7 +527,7 @@ class ExponentialMatcher(BaseMatcher):
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
         new_kwargs = {}
         if "tau" in kwargs:
-            tau_value = kwargs.pop("tau").split("=")[-1]
+            tau_value = float(str(kwargs.pop("tau")).split("=")[-1].strip("()"))
             new_kwargs["window"] = ("exponential", tau_value)
         else:
             new_kwargs["window"] = ("exponential", 1.0)
@@ -543,8 +543,10 @@ class GaussianMatcher(BaseMatcher):
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
         new_kwargs = {}
         if "std" in kwargs:
-            std_value = kwargs.pop("std").split("=")[-1]
+            std_value = float(str(kwargs.pop("std")).split("=")[-1].strip("()"))
             new_kwargs["window"] = ("gaussian", std_value)
+            print("--------std-----------", std_value)
+            print("--------std-----------", type(std_value))
         else:
             new_kwargs["window"] = ("gaussian", 1.0)
         new_kwargs.update(kwargs)
@@ -560,6 +562,8 @@ class GeneralCosineMatcher(BaseMatcher):
         new_kwargs = {}
         if "a" in kwargs:
             a_value = kwargs.pop("a").split("=")[-1]
+            print("--------a_value-----------", a_value)
+            print("--------a_value-----------", type(a_value))
             new_kwargs["window"] = ("general_cosine", a_value)
         else:
             new_kwargs["window"] = ("general_cosine", [0.46, 0.23, 0.31])
@@ -575,7 +579,7 @@ class GeneralHammingMatcher(BaseMatcher):
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
         new_kwargs = {}
         if "alpha" in kwargs:
-            alpha_value = kwargs.pop("alpha").split("=")[-1]
+            alpha_value = float(str(kwargs.pop("alpha")).split("=")[-1].strip("()"))
             new_kwargs["window"] = ("general_hamming", alpha_value)
         else:
             new_kwargs["window"] = ("general_hamming", 0.54)
