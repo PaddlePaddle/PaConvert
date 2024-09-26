@@ -14591,7 +14591,7 @@
     },
     "paddle_default_kwargs": {
       "dtype": "paddle.float64",
-      "window": "blackman"
+      "window": "'blackman'"
     }
   },
   "torch.signal.windows.cosine": {
@@ -14614,7 +14614,7 @@
     },
     "paddle_default_kwargs": {
       "dtype": "paddle.float64",
-      "window": "cosine"
+      "window": "'cosine'"
     }
   },
   "torch.signal.windows.exponential": {
@@ -14643,7 +14643,7 @@
     },
     "paddle_default_kwargs": {
       "dtype": "paddle.float64",
-      "window": "exponential"
+      "window": "'exponential'"
     }
   },
   "torch.signal.windows.gaussian": {
@@ -14667,7 +14667,7 @@
     },
     "paddle_default_kwargs": {
       "dtype": "paddle.float64",
-      "window": "gaussian"
+      "window": "'gaussian'"
     }
   },
   "torch.signal.windows.general_cosine": {
@@ -14691,7 +14691,7 @@
     },
     "paddle_default_kwargs": {
       "dtype": "paddle.float64",
-      "window": "general_cosine"
+      "window": "'general_cosine'"
     }
   },
   "torch.signal.windows.general_hamming": {
@@ -14715,7 +14715,7 @@
     },
     "paddle_default_kwargs": {
       "dtype": "paddle.float64",
-      "window": "general_hamming"
+      "window": "'general_hamming'"
     }
   },
   "torch.signal.windows.hamming": {
@@ -14738,7 +14738,7 @@
     },
     "paddle_default_kwargs": {
       "dtype": "paddle.float64",
-      "window": "hamming"
+      "window": "'hamming'"
     }
   },
   "torch.signal.windows.hann": {
@@ -14761,7 +14761,7 @@
     },
     "paddle_default_kwargs": {
       "dtype": "paddle.float64",
-      "window": "hann"
+      "window": "'hann'"
     }
   },
   "torch.signbit": {
