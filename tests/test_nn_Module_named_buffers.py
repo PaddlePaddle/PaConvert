@@ -87,7 +87,7 @@ def test_case_5():
         )
     )
     obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="not support remove_duplicate"
+        pytorch_code, ["result"]
     )
 
 
@@ -97,7 +97,7 @@ def test_case_6():
         generate_torch_code("model.named_buffers('wfs', True, False)")
     )
     obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="not support remove_duplicate"
+        pytorch_code, ["result"]
     )
 
 
@@ -109,5 +109,5 @@ def test_case_7():
         )
     )
     obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="not support remove_duplicate"
+        pytorch_code, ["result"]
     )

@@ -41,9 +41,7 @@ def test_case_1():
     )
     obj.run(
         pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="doesn't support param remove_duplicate",
+        ["result"]
     )
 
 
@@ -67,9 +65,7 @@ def test_case_2():
     )
     obj.run(
         pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle only support to output remove duplicate version",
+        ["result"]
     )
 
 
@@ -94,7 +90,5 @@ def test_case_3():
     )
     obj.run(
         pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle doesn't support the memo parameter",
+        ["result"]
     )

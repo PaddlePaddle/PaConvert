@@ -88,9 +88,7 @@ def test_case_3():
     obj.run(
         pytorch_code,
         ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="not support remove_duplicate",
+        check_value=False
     )
 
 
@@ -117,9 +115,7 @@ def test_case_4():
     obj.run(
         pytorch_code,
         ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="not support remove_duplicate",
+        check_value=False
     )
 
 
@@ -147,9 +143,7 @@ def test_case_5():
     obj.run(
         pytorch_code,
         ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="not support remove_duplicate",
+        check_value=False
     )
 
 
@@ -177,9 +171,7 @@ def test_case_6():
     obj.run(
         pytorch_code,
         ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="not support remove_duplicate",
+        check_value=False
     )
 
 
