@@ -530,33 +530,33 @@ class SpecialWindowsMatcher(BaseMatcher):
         for k in kwargs_change:
             if k in kwargs:
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
-        p_x = None
+
         if kwargs["window"] == '"""exponential"""':
             if "tau" in kwargs:
                 p_x = kwargs.pop("tau")
-                print(p_x)
+                kwargs["window"] = (kwargs.pop("window"), p_x)
             else:
-                p_x = 1.0
+                kwargs["window"] = (kwargs.pop("window"), 1.0)
         elif kwargs["window"] == '"""gaussian"""':
-            p_x = kwargs.pop("std") if "std" in kwargs else 1.0
+            if "std" in kwargs:
+                p_x = kwargs.pop("std")
+                kwargs["window"] = (kwargs.pop("window"), p_x)
+            else:
+                kwargs["window"] = (kwargs.pop("window"), 1.0)
         elif kwargs["window"] == '"""general_cosine"""':
-            p_x = kwargs.pop("a") if "a" in kwargs else [0.46, 0.23, 0.31]
+            if "a" in kwargs:
+                p_x = kwargs.pop("a")
+                kwargs["window"] = (kwargs.pop("window"), p_x)
+            else:
+                temp = [0.46, 0.23, 0.31]
+                kwargs["window"] = (kwargs.pop("window"), temp)
         elif kwargs["window"] == '"""general_hamming"""':
-            p_x = kwargs.pop("alpha") if "alpha" in kwargs else 0.54
+            if "alpha" in kwargs:
+                p_x = kwargs.pop("alpha")
+                kwargs["window"] = (kwargs.pop("window"), p_x)
+            else:
+                kwargs["window"] = (kwargs.pop("window"), 0.54)
 
-        if p_x:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {}(({}, {}),{})
-                """
-            )
-            code = API_TEMPLATE.format(
-                self.get_paddle_api(),
-                kwargs["window"],
-                p_x,
-                kwargs["win_length"],
-            )
-            return code
         return GenericMatcher.generate_code(self, kwargs)
 
 
