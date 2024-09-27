@@ -4797,14 +4797,14 @@ class HistogramMatcher(BaseMatcher):
 class BHHWindowMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         new_kwargs = {}
+        if "blackman_window" in self.torch_api:
+            new_kwargs["window"] = "blackman"
+        if "hann_window" in self.torch_api:
+            new_kwargs["window"] = "hann"
+        if "hamming_window" in self.torch_api:
+            new_kwargs["window"] = "hamming"
         if "periodic" in kwargs:
             new_kwargs["fftbins"] = f"not {kwargs.pop('periodic')}"
-            if "blackman_window" in self.torch_api:
-                new_kwargs["window"] = "blackman"
-            if "hann_window" in self.torch_api:
-                new_kwargs["window"] = "hann"
-            if "hamming_window" in self.torch_api:
-                new_kwargs["window"] = "hamming"
         new_kwargs.update(kwargs)
         return GenericMatcher.generate_code(self, new_kwargs)
 
@@ -4817,20 +4817,24 @@ class FromBufferMatcher(BaseMatcher):
             paddle.to_tensor(numpy.frombuffer({}, dtype='int32'))
             """
         )
-        code = API_TEMPLATE.format(kwargs["input"])
+        code = API_TEMPLATE.format(kwargs["buffer"])
         return code
 
 
 class GetNumThreadsMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        API_TEMPLATE = textwrap.dedent(
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
             """
             import multiprocessing
-            return multiprocessing.cpu_count()
+            def _GET_NUM_THREADS():
+                return multiprocessing.cpu_count()
             """
         )
-        code = API_TEMPLATE.format()
-        return code
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        return "paddle_aux._GET_NUM_THREADS()"
 
 
 class GetNumInteropThreadsMatcher(BaseMatcher):
