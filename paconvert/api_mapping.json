@@ -14670,7 +14670,7 @@
   "torch.signal.windows.general_cosine": {
     "Matcher": "SignalWindowsWatcher",
     "paddle_api": "paddle.audio.functional.get_window",
-    "min_input_args": 2,
+    "min_input_args": 1,
     "args_list": [
       "M",
       "*",
