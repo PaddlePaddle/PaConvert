@@ -4794,52 +4794,76 @@ class HistogramMatcher(BaseMatcher):
         return code
 
 
-class GetNumThreadsMatcher(BaseMatcher):
-    def generate_aux_code(self):
-        CODE_TEMPLATE = textwrap.dedent(
-            """
-            import multiprocessing
-            def get_num_threads():
-                device = paddle.device.get_device()
-                if 'cpu' in device:
-                    return multiprocessing.cpu_count()
-            """
-        )
-        return CODE_TEMPLATE
-
+class BHHWindowMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        self.write_aux_code()
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle_aux.get_num_threads()
-            """
-        )
-        code = API_TEMPLATE.format(self.paddleClass)
-
-        return code
+        new_kwargs = {}
+        if "periodic" in kwargs:
+            new_kwargs["fftbins"] = f"not {kwargs.pop('periodic')}"
+            if "blackman_window" in self.torch_api:
+                new_kwargs["window"] = "blackman"
+            if "hann_window" in self.torch_api:
+                new_kwargs["window"] = "hann"
+            if "hamming_window" in self.torch_api:
+                new_kwargs["window"] = "hamming"
+        new_kwargs.update(kwargs)
+        return GenericMatcher.generate_code(self, new_kwargs)
 
 
 class FromBufferMatcher(BaseMatcher):
-    def generate_aux_code(self):
-        CODE_TEMPLATE = textwrap.dedent(
-            """
-            def paddle_frombuffer(buffer, dtype, count=-1, offset=0):
-                original = memoryview(buffer)
-                numpy_frombuffer = np.frombuffer(original, dtype=dtype, count=count, offset=offset)
-                paddle_tensor = paddle.to_tensor(numpy_frombuffer)
-                return paddle_tensor
-            """
-        )
-        return CODE_TEMPLATE
-
-    def generate_code(self, kwargs):
-        self.write_aux_code()
-        kwargs = self.set_paddle_default_kwargs(kwargs)
+    def genrate_code(swlf, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.frombuffer({})({})
+            import numpy
+            paddle.to_tensor(numpy.frombuffer({}, dtype='int32'))
             """
         )
-        code = API_TEMPLATE.format(kwargs["buffer"], kwargs["dtype"])
+        code = API_TEMPLATE.format(kwargs["input"])
+        return code
 
+
+class GetNumThreadsMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import multiprocessing
+            return multiprocessing.cpu_count()
+            """
+        )
+        code = API_TEMPLATE.format()
+        return code
+
+
+class GetNumInteropThreadsMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            return os.environ['OMP_NUM_THREADS']
+            """
+        )
+        code = API_TEMPLATE.format()
+        return code
+
+
+class SetNumInteropThreadsMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            os.environ['OMP_NUM_THREADS'] = '{}'
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["input"])
+        return code
+
+
+class SetNumThreadsMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            os.environ['CPU_NUM'] = '{}'
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["input"])
         return code

@@ -16,14 +16,14 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.set_num_threads")
+obj = APIBase("torch.set_num_interop_threads")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.set_num_threads(1)
+        result = torch.set_num_interop_threads(1)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -33,7 +33,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.set_num_threads(2)
+        result = torch.set_num_interop_threads(2)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -43,7 +43,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.set_num_threads(3)
+        result = torch.set_num_interop_threads(3)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)

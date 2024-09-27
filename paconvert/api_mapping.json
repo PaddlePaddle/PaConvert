@@ -4870,8 +4870,8 @@
     }
   },
   "torch.blackman_window": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.audio.functional.window._blackman",
+    "Matcher": "BHHWindowMatcher",
+    "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
       "window_length",
@@ -4883,8 +4883,8 @@
       "requires_grad"
     ],
     "kwargs_change": {
-      "window_length": "M",
-      "periodic": "sym",
+      "window_length": "win_length",
+      "periodic": "fftbins",
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
@@ -7335,13 +7335,17 @@
   },
   "torch.frombuffer": {
     "Matcher": "FromBufferMatcher",
-    "min_input_args": 2,
+    "min_input_args": 1,
     "args_list": [
       "buffer",
       "dtype",
       "count",
       "offset",
       "requires_grad"
+    ],
+    "unsupport_args": [
+      "count",
+      "offset"
     ]
   },
   "torch.full": {
@@ -7449,6 +7453,10 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.get_default_dtype"
   },
+  "torch.get_num_interop_threads": {
+    "Matcher": "GetNumInteropThreadsMatcher",
+    "min_input_args": 0
+  },
   "torch.get_num_threads": {
     "Matcher": "GetNumThreadsMatcher",
     "min_input_args": 0
@@ -7492,7 +7500,7 @@
     ]
   },
   "torch.hamming_window": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "BHHWindowMatcher",
     "paddle_api": "paddle.audio.functional.window._hamming",
     "min_input_args": 1,
     "args_list": [
@@ -7511,8 +7519,8 @@
       "beta"
     ],
     "kwargs_change": {
-      "window_length": "M",
-      "periodic": "sym",
+      "window_length": "win_length",
+      "periodic": "fftbins",
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
@@ -7520,7 +7528,7 @@
     }
   },
   "torch.hann_window": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "BHHWindowMatcher",
     "paddle_api": "paddle.audio.functional.window._hann",
     "min_input_args": 1,
     "args_list": [
@@ -7533,8 +7541,8 @@
       "requires_grad"
     ],
     "kwargs_change": {
-      "window_length": "M",
-      "periodic": "sym",
+      "window_length": "win_length",
+      "periodic": "fftbins",
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
@@ -14605,16 +14613,13 @@
       "mode"
     ]
   },
+  "torch.set_num_interop_threads": {
+    "Matcher": "SetNumInteropThreadsMatcher",
+    "min_input_args": 1
+  },
   "torch.set_num_threads": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.static.cpu_places",
-    "min_input_args": 1,
-    "args_list": [
-      "input"
-    ],
-    "kwargs_change": {
-      "input": "device_count"
-    }
+    "Matcher": "SetNumThreadsMatcher",
+    "min_input_args": 1
   },
   "torch.set_printoptions": {
     "Matcher": "SetPrintOptionsMatcher",
