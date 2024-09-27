@@ -540,32 +540,14 @@ class SignalWindowsWatcher(BaseMatcher):
                 new_kwargs["window"] = ("general_hamming", alpha_value)
             else:
                 new_kwargs["window"] = ("general_hamming", 0.54)
+        if "general_cosine" in self.torch_api:
+            if "a" in kwargs:
+                a_value = list(kwargs.values())[0]
+                new_kwargs["window"] = ("general_cosine", a_value)
+            else:
+                new_kwargs["window"] = ("general_cosine", [0.46, 0.23, 0.31])
         new_kwargs.update(kwargs)
         return GenericMatcher.generate_code(self, new_kwargs)
-
-
-class GeneralCosineMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        kwargs = self.parse_kwargs(kwargs)
-        if kwargs is None:
-            return None
-        if "a" in kwargs:
-            test_value = self.parse_args(args)
-            print("------test_value------", test_value)
-            test_value1 = self.parse_args(args)[1]
-            print("------test_value------", test_value1)
-            a_value = astor.to_source(args[1].value).strip("\n")
-            print("------a_value------", a_value)
-            temp_value = str(kwargs.pop("a")).split("=")[-1]
-            print("------temp_value------", temp_value)
-            temp_value1 = ast.literal_eval(temp_value)
-            print("------a_value------", temp_value1)
-            gc_kwargs = "tuple({},{})".format("general_cosine", temp_value1)
-            kwargs = {"window": gc_kwargs, **kwargs}
-        else:
-            kwargs = {"window": ("general_cosine", [0.46, 0.23, 0.31])}
-        code = GenericMatcher.generate_code(self, kwargs)
-        return ast.parse(code).body
 
 
 class Num2TensorBinaryWithAlphaMatcher(BaseMatcher):

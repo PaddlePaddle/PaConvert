@@ -14668,7 +14668,7 @@
     }
   },
   "torch.signal.windows.general_cosine": {
-    "Matcher": "GeneralCosineMatcher",
+    "Matcher": "SignalWindowsWatcher",
     "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 2,
     "args_list": [
