@@ -53,7 +53,7 @@
   },
   "fairscale.nn.model_parallel.layers.ParallelEmbedding": {
     "Matcher": "FSParallelEmbeddingMatcher",
-    "paddle_api": "paddle.distributed.meta_parallel.parallel_layers.mp_layers.VocabParallelEmbedding",
+    "paddle_api": "paddle.distributed.fleet.meta_parallel.VocabParallelEmbedding",
     "args_list": [
       "num_embeddings",
       "embedding_dim",
