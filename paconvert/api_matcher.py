@@ -556,7 +556,7 @@ class GeneralCosineMatcher(BaseMatcher):
         new_kwargs = {}
         if "a" in kwargs:
             temp_value = str(kwargs.pop("a")).split("=")[-1].strip("()")
-            a_value = ast.literal_eval(temp_value)
+            a_value = "list[{}]".format(astor.to_source(temp_value).strip("\n"))
             new_kwargs["window"] = ("general_cosine", a_value)
         else:
             new_kwargs["window"] = ("general_cosine", [0.46, 0.23, 0.31])
