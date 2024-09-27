@@ -541,8 +541,11 @@ class SignalWindowsWatcher(BaseMatcher):
             else:
                 new_kwargs["window"] = ("general_hamming", 0.54)
         if "general_cosine" in self.torch_api:
+            print("-------kwargs-------", kwargs)
+            print("-------kwargs-------", kwargs.values())
             a_value = [v for v in kwargs.values()][0]
-            new_kwargs["window"] = ("general_cosine", a_value)
+            print("------a_value-----", a_value)
+            new_kwargs["window"] = ("general_cosine", list(a_value))
         new_kwargs.update(kwargs)
         return GenericMatcher.generate_code(self, new_kwargs)
 
