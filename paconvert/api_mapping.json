@@ -14618,7 +14618,7 @@
     }
   },
   "torch.signal.windows.exponential": {
-    "Matcher": "ExponentialMatcher",
+    "Matcher": "SignalWindowsWatcher",
     "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
@@ -14645,7 +14645,7 @@
     }
   },
   "torch.signal.windows.gaussian": {
-    "Matcher": "GaussianMatcher",
+    "Matcher": "SignalWindowsWatcher",
     "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
@@ -14691,7 +14691,7 @@
     }
   },
   "torch.signal.windows.general_hamming": {
-    "Matcher": "GeneralHammingMatcher",
+    "Matcher": "SignalWindowsWatcher",
     "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [

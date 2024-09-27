@@ -519,65 +519,44 @@ class InitKaimingMatcher(InitMatcher):
         return super().generate_code(kwargs)
 
 
-class ExponentialMatcher(BaseMatcher):
+class SignalWindowsWatcher(BaseMatcher):
     def generate_code(self, kwargs):
         new_kwargs = {}
-        if "tau" in kwargs:
-            tau_value = float(str(kwargs.pop("tau")).split("=")[-1].strip("()"))
-            new_kwargs["window"] = ("exponential", tau_value)
-        else:
-            new_kwargs["window"] = ("exponential", 1.0)
-        new_kwargs.update(kwargs)
-        return GenericMatcher.generate_code(self, new_kwargs)
-
-
-class GaussianMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        kwargs_change = self.api_mapping.get("kwargs_change", {})
-        for k in kwargs_change:
-            if k in kwargs:
-                kwargs[kwargs_change[k]] = kwargs.pop(k)
-        new_kwargs = {}
-        if "std" in kwargs:
-            std_value = float(str(kwargs.pop("std")).split("=")[-1].strip("()"))
-            new_kwargs["window"] = ("gaussian", std_value)
-        else:
-            new_kwargs["window"] = ("gaussian", 1.0)
+        if "exponential" in self.torch_api:
+            if "tau" in kwargs:
+                tau_value = float(str(kwargs.pop("tau")).split("=")[-1].strip("()"))
+                new_kwargs["window"] = ("exponential", tau_value)
+            else:
+                new_kwargs["window"] = ("exponential", 1.0)
+        if "gaussian" in self.torch_api:
+            if "std" in kwargs:
+                std_value = float(str(kwargs.pop("std")).split("=")[-1].strip("()"))
+                new_kwargs["window"] = ("gaussian", std_value)
+            else:
+                new_kwargs["window"] = ("gaussian", 1.0)
+        if "general_hamming" in self.torch_api:
+            if "alpha" in kwargs:
+                alpha_value = float(str(kwargs.pop("alpha")).split("=")[-1].strip("()"))
+                new_kwargs["window"] = ("general_hamming", alpha_value)
+            else:
+                new_kwargs["window"] = ("general_hamming", 0.54)
         new_kwargs.update(kwargs)
         return GenericMatcher.generate_code(self, new_kwargs)
 
 
 class GeneralCosineMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        kwargs_change = self.api_mapping.get("kwargs_change", {})
-        for k in kwargs_change:
-            if k in kwargs:
-                kwargs[kwargs_change[k]] = kwargs.pop(k)
-        new_kwargs = {}
+    def get_paddle_nodes(self, args, kwargs):
+        kwargs = self.parse_kwargs(kwargs)
+        if kwargs is None:
+            return None
         if "a" in kwargs:
-            temp_value = str(kwargs.pop("a")).split("=")[-1].strip("()")
-            a_value = "list[{}]".format(astor.to_source(temp_value).strip("\n"))
-            new_kwargs["window"] = ("general_cosine", a_value)
+            a_value = "list[{}]".format(astor.to_source(args[1].value).strip("\n"))
+            gc_kwargs = "tuple({},{})".format("general_cosine", a_value)
+            kwargs = {"window": gc_kwargs, **kwargs}
         else:
-            new_kwargs["window"] = ("general_cosine", [0.46, 0.23, 0.31])
-        new_kwargs.update(kwargs)
-        return GenericMatcher.generate_code(self, new_kwargs)
-
-
-class GeneralHammingMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        kwargs_change = self.api_mapping.get("kwargs_change", {})
-        for k in kwargs_change:
-            if k in kwargs:
-                kwargs[kwargs_change[k]] = kwargs.pop(k)
-        new_kwargs = {}
-        if "alpha" in kwargs:
-            alpha_value = float(str(kwargs.pop("alpha")).split("=")[-1].strip("()"))
-            new_kwargs["window"] = ("general_hamming", alpha_value)
-        else:
-            new_kwargs["window"] = ("general_hamming", 0.54)
-        new_kwargs.update(kwargs)
-        return GenericMatcher.generate_code(self, new_kwargs)
+            kwargs = {"window": ("general_cosine", [0.46, 0.23, 0.31])}
+        code = GenericMatcher.generate_code(self, kwargs)
+        return ast.parse(code).body
 
 
 class Num2TensorBinaryWithAlphaMatcher(BaseMatcher):
