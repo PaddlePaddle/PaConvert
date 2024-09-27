@@ -68,3 +68,21 @@ def test_case_6():
         generate_optimizer_test_code("torch.optim.Adamax(conv.parameters())")
     )
     obj.run(pytorch_code, ["result"], rtol=1.0e-2)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        generate_optimizer_test_code(
+            "torch.optim.Adamax(conv.parameters(), weight_decay=0, eps=1e-7)"
+        )
+    )
+    obj.run(pytorch_code, ["result"], rtol=1.0e-2)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        generate_optimizer_test_code(
+            "torch.optim.Adamax(conv.parameters(), weight_decay=1, eps=1e-7)"
+        )
+    )
+    obj.run(pytorch_code, ["result"], rtol=1.0e-2)
