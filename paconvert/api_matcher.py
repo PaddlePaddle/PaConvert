@@ -4798,11 +4798,11 @@ class BHHWindowMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         new_kwargs = {}
         if "blackman_window" in self.torch_api:
-            new_kwargs["window"] = "blackman"
+            new_kwargs["window"] = "'blackman'"
         if "hann_window" in self.torch_api:
-            new_kwargs["window"] = "hann"
+            new_kwargs["window"] = "'hann'"
         if "hamming_window" in self.torch_api:
-            new_kwargs["window"] = "hamming"
+            new_kwargs["window"] = "'hamming'"
         if "periodic" in kwargs:
             new_kwargs["fftbins"] = f"not {kwargs.pop('periodic')}"
         new_kwargs.update(kwargs)
