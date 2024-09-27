@@ -550,11 +550,17 @@ class GeneralCosineMatcher(BaseMatcher):
         if kwargs is None:
             return None
         if "a" in kwargs:
-            a_value = "list[{}]".format(astor.to_source(args[0].value).strip("\n"))
-            print("------------", a_value)
-            temp_value = str(kwargs.pop("a")).split("=")[-1].strip("()")
-            print("------------", temp_value)
-            gc_kwargs = "tuple({},{})".format("general_cosine", a_value)
+            test_value = self.parse_args(args)
+            print("------test_value------", test_value)
+            test_value1 = self.parse_args(args)[1]
+            print("------test_value------", test_value1)
+            a_value = astor.to_source(args[1].value).strip("\n")
+            print("------a_value------", a_value)
+            temp_value = str(kwargs.pop("a")).split("=")[-1]
+            print("------temp_value------", temp_value)
+            temp_value1 = ast.literal_eval(temp_value)
+            print("------a_value------", temp_value1)
+            gc_kwargs = "tuple({},{})".format("general_cosine", temp_value1)
             kwargs = {"window": gc_kwargs, **kwargs}
         else:
             kwargs = {"window": ("general_cosine", [0.46, 0.23, 0.31])}
