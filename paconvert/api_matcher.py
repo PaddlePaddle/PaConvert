@@ -4814,27 +4814,23 @@ class FromBufferMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             import numpy
-            paddle.to_tensor(numpy.frombuffer({}, dtype='int32'))
+            paddle.to_tensor(numpy.frombuffer({}, {})
             """
         )
-        code = API_TEMPLATE.format(kwargs["buffer"])
+        code = API_TEMPLATE.format(kwargs["buffer"], kwargs["dtype"])
         return code
 
 
 class GetNumThreadsMatcher(BaseMatcher):
-    def generate_aux_code(self):
-        CODE_TEMPLATE = textwrap.dedent(
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
             """
             import multiprocessing
-            def _GET_NUM_THREADS():
-                return multiprocessing.cpu_count()
+            multiprocessing.cpu_count()
             """
         )
-        return CODE_TEMPLATE
-
-    def generate_code(self, kwargs):
-        self.write_aux_code()
-        return "paddle_aux._GET_NUM_THREADS()"
+        code = API_TEMPLATE.format()
+        return code
 
 
 class GetNumInteropThreadsMatcher(BaseMatcher):
@@ -4842,7 +4838,7 @@ class GetNumInteropThreadsMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             import os
-            return os.environ['OMP_NUM_THREADS']
+            os.environ['OMP_NUM_THREADS']
             """
         )
         code = API_TEMPLATE.format()
@@ -4857,7 +4853,7 @@ class SetNumInteropThreadsMatcher(BaseMatcher):
             os.environ['OMP_NUM_THREADS'] = '{}'
             """
         )
-        code = API_TEMPLATE.format(kwargs["input"])
+        code = API_TEMPLATE.format(kwargs["int"])
         return code
 
 
@@ -4869,5 +4865,5 @@ class SetNumThreadsMatcher(BaseMatcher):
             os.environ['CPU_NUM'] = '{}'
             """
         )
-        code = API_TEMPLATE.format(kwargs["input"])
+        code = API_TEMPLATE.format(kwargs["int"])
         return code

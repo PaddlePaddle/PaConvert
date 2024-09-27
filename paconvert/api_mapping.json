@@ -7454,12 +7454,10 @@
     "paddle_api": "paddle.get_default_dtype"
   },
   "torch.get_num_interop_threads": {
-    "Matcher": "GetNumInteropThreadsMatcher",
-    "min_input_args": 0
+    "Matcher": "GetNumInteropThreadsMatcher"
   },
   "torch.get_num_threads": {
-    "Matcher": "GetNumThreadsMatcher",
-    "min_input_args": 0
+    "Matcher": "GetNumThreadsMatcher"
   },
   "torch.get_rng_state": {
     "Matcher": "GenericMatcher",
@@ -7501,7 +7499,7 @@
   },
   "torch.hamming_window": {
     "Matcher": "BHHWindowMatcher",
-    "paddle_api": "paddle.audio.functional.window._hamming",
+    "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
       "window_length",
@@ -7529,7 +7527,7 @@
   },
   "torch.hann_window": {
     "Matcher": "BHHWindowMatcher",
-    "paddle_api": "paddle.audio.functional.window._hann",
+    "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
       "window_length",
@@ -14615,11 +14613,17 @@
   },
   "torch.set_num_interop_threads": {
     "Matcher": "SetNumInteropThreadsMatcher",
-    "min_input_args": 1
+    "min_input_args": 1,
+    "args_list": [
+      "int"
+    ]
   },
   "torch.set_num_threads": {
     "Matcher": "SetNumThreadsMatcher",
-    "min_input_args": 1
+    "min_input_args": 1,
+    "args_list": [
+      "int"
+    ]
   },
   "torch.set_printoptions": {
     "Matcher": "SetPrintOptionsMatcher",
