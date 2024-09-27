@@ -202,7 +202,6 @@ def test_case_8():
         a = TestForHook()
         for a,b in a.named_parameters(remove_duplicate=False):
             result.append(b)
-        result = result[0]
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -227,7 +226,6 @@ def test_case_9():
         a = TestForHook()
         for a,b in a.named_parameters(remove_duplicate=True):
             result.append(b)
-        result = result[0]
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -252,7 +250,6 @@ def test_case_10():
         a = TestForHook()
         for a,b in a.named_parameters(prefix = "wfs", recurse = False, remove_duplicate = False):
             result.append(b)
-        result = result[0]
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -277,7 +274,6 @@ def test_case_11():
         a = TestForHook()
         for a,b in a.named_parameters(remove_duplicate = False, recurse = True, prefix = "wfs"):
             result.append(b)
-        result = result[0]
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
