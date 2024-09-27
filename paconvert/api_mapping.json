@@ -14633,8 +14633,7 @@
       "requires_grad"
     ],
     "unsupport_args": [
-      "center",
-      "tau"
+      "center"
     ],
     "kwargs_change": {
       "M": "win_length",

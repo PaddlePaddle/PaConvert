@@ -22,9 +22,9 @@ obj = APIBase("torch.signal.windows.blackman")
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
-import torch
-result = torch.signal.windows.blackman(5)
-"""
+        import torch
+        result = torch.signal.windows.blackman(5)
+        """
     )
     obj.run(pytorch_code, ["result"], check_value=False, check_dtype=False)
 
