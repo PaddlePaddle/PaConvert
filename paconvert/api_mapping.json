@@ -2022,6 +2022,11 @@
     "Matcher": "UnchangeMatcher",
     "min_input_args": 0
   },
+  "torch.Tensor.itemsize": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.element_size",
+    "min_input_args": 0
+  },
   "torch.Tensor.kthvalue": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.kthvalue",
@@ -14533,11 +14538,6 @@
     "paddle_default_kwargs": {
       "precision": 4
     }
-  },
-  "torch.Tensor.itemsize":{
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.element_size",
-    "min_input_args": 0
   },
   "torch.set_rng_state": {
     "Matcher": "GenericMatcher",

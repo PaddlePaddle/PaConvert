@@ -24,7 +24,7 @@ def test_case_1():
         """
         import torch
         x = torch.tensor([1, 3, 2])
-        result = x.itemsize()
+        result = x.itemsize
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,7 +35,7 @@ def test_case_2():
         """
         import torch
         x = torch.tensor([1, 3, 2], dtype=torch.int64)
-        result = x.itemsize()
+        result = x.itemsize
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,7 +45,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1, 3, 2]).itemsize()
+        result = torch.tensor([1, 3, 2], dtype=torch.float64).itemsize
         """
     )
     obj.run(pytorch_code, ["result"])
