@@ -2023,7 +2023,7 @@
     "min_input_args": 0
   },
   "torch.Tensor.itemsize": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "TensorItemsizeMatcher",
     "paddle_api": "paddle.Tensor.element_size",
     "min_input_args": 0
   },

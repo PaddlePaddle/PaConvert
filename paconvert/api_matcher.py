@@ -436,6 +436,17 @@ class InitEyeMatcher(InitMatcher):
         return super().generate_code(kwargs)
 
 
+class TensorItemsizeMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}.element_size()
+            """
+        )
+        code = API_TEMPLATE.format(self.paddleClass)
+        return code
+
+
 class TRFMPreTrainedTokenizerMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
