@@ -729,40 +729,11 @@ class TensorTransposeMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            {}.transpose(perm=paddle_aux.transpose_aux_func({}.ndim,{}, {}))
+            {}(perm=paddle_aux.transpose_aux_func({}.ndim,{}, {}))
             """
         )
         code = API_TEMPLATE.format(
-            self.paddleClass,
-            self.paddleClass,
-            kwargs["dim0"],
-            kwargs["dim1"],
-        )
-        return code
-
-
-class TensorTranspose_Matcher(BaseMatcher):
-    def generate_aux_code(self):
-        API_TEMPLATE = textwrap.dedent(
-            """
-            def transpose_aux_func(dims,dim0, dim1):
-                perm = list(range(dims))
-                perm[dim0], perm[dim1] = perm[dim1], perm[dim0]
-                return perm
-            """
-        )
-
-        return API_TEMPLATE
-
-    def generate_code(self, kwargs):
-        self.write_aux_code()
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {}.transpose_(perm=paddle_aux.transpose_aux_func({}.ndim,{}, {}))
-            """
-        )
-        code = API_TEMPLATE.format(
-            self.paddleClass,
+            self.get_paddle_api(),
             self.paddleClass,
             kwargs["dim0"],
             kwargs["dim1"],

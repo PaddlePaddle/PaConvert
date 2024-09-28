@@ -3830,7 +3830,7 @@
     ]
   },
   "torch.Tensor.transpose_": {
-    "Matcher": "TensorTranspose_Matcher",
+    "Matcher": "TensorTransposeMatcher",
     "paddle_api": "paddle.Tensor.transpose_",
     "min_input_args": 2,
     "args_list": [
