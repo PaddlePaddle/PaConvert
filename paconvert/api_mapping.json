@@ -14534,6 +14534,11 @@
       "precision": 4
     }
   },
+  "torch.Tensor.itemsize":{
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.element_size",
+    "min_input_args": 0
+  },
   "torch.set_rng_state": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.set_rng_state",
