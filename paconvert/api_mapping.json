@@ -14624,7 +14624,7 @@
     "Matcher": "SetNumThreadsMatcher",
     "min_input_args": 1,
     "args_list": [
-      "input"
+      "int"
     ]
   },
   "torch.set_printoptions": {
