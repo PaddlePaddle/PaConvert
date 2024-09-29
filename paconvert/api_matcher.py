@@ -3347,11 +3347,7 @@ class SpecialNdtriMatcher(BaseMatcher):
         )
         code = API_TEMPLATE.format(kwargs["input"])
         if "out" in kwargs and kwargs["out"] != "None":
-            code = (
-                "paddle.assign({}, outpcode = API_TEMPLATE.format(kwargsut={})".format(
-                    code, kwargs["out"]
-                )
-            )
+            code = "paddle.assign({}, output={})".format(code, kwargs["out"])
 
         return code
 
@@ -4815,13 +4811,10 @@ class BHHWindowMatcher(BaseMatcher):
 
 class FromBufferMatcher(BaseMatcher):
     def genrate_code(self, kwargs):
-        if "buffer" not in kwargs:
-            kwargs["buffer"] = self.paddleClass
-
         API_TEMPLATE = textwrap.dedent(
             """
             import numpy
-            paddle.to_tensor(numpy.frombuffer({}, {})
+            paddle.to_tensor(numpy.frombuffer(numpy.array({}), {})
             """
         )
         code = API_TEMPLATE.format(kwargs["buffer"], kwargs["dtype"])
@@ -4854,8 +4847,6 @@ class GetNumInteropThreadsMatcher(BaseMatcher):
 
 class SetNumInteropThreadsMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "int" not in kwargs:
-            kwargs["int"] = self.paddleClass
         API_TEMPLATE = textwrap.dedent(
             """
             import os
@@ -4868,14 +4859,11 @@ class SetNumInteropThreadsMatcher(BaseMatcher):
 
 class SetNumThreadsMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "int" not in kwargs:
-            kwargs["int"] = self.paddleClass
-
         API_TEMPLATE = textwrap.dedent(
             """
             import os
             os.environ['CPU_NUM'] = {}
             """
         )
-        code = API_TEMPLATE.format(kwargs["int"])
+        code = API_TEMPLATE.format(kwargs["input"])
         return code

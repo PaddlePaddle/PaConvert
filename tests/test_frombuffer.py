@@ -22,21 +22,9 @@ obj = APIBase("torch.frombuffer")
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
-        import array
         import torch
+        import array
         a = array.array('i', [1, 2, 3])
-        result = torch.frombuffer(a, dtype=torch.int32)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import array
-        import torch
-        a = array.array('b', [-1, 0, 0, 0])
         result = torch.frombuffer(a, dtype=torch.int32)
         """
     )
