@@ -4814,7 +4814,10 @@ class BHHWindowMatcher(BaseMatcher):
 
 
 class FromBufferMatcher(BaseMatcher):
-    def genrate_code(swlf, kwargs):
+    def genrate_code(self, kwargs):
+        if "buffer" not in kwargs:
+            kwargs["buffer"] = self.paddleClass
+
         API_TEMPLATE = textwrap.dedent(
             """
             import numpy
@@ -4865,13 +4868,14 @@ class SetNumInteropThreadsMatcher(BaseMatcher):
 
 class SetNumThreadsMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "input" not in kwargs:
-            kwargs["input"] = self.paddleClass
+        if "int" not in kwargs:
+            kwargs["int"] = self.paddleClass
+
         API_TEMPLATE = textwrap.dedent(
             """
             import os
             os.environ['CPU_NUM'] = {}
             """
         )
-        code = API_TEMPLATE.format(kwargs["input"])
+        code = API_TEMPLATE.format(kwargs["int"])
         return code
