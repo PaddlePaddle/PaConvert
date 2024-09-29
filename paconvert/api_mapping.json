@@ -16354,6 +16354,361 @@
       "dtype": "dtype"
     }
   },
+  "torchvision.transforms.CenterCrop": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.CenterCrop",
+    "args_list": [
+      "size"
+    ]
+  },
+  "torchvision.transforms.ColorJitter": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.ColorJitter",
+    "args_list": [
+      "brightness",
+      "contrast",
+      "saturation",
+      "hue"
+    ]
+  },
+  "torchvision.transforms.Compose": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.Compose",
+    "args_list": [
+      "transforms"
+    ]
+  },
+  "torchvision.transforms.Grayscale": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.Grayscale",
+    "args_list": [
+      "num_output_channels"
+    ]
+  },
+  "torchvision.transforms.InterpolationMode.BICUBIC": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'bicubic'",
+    "min_input_args": 0
+  },
+  "torchvision.transforms.InterpolationMode.BILINEAR": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'bilinear'",
+    "min_input_args": 0
+  },
+  "torchvision.transforms.InterpolationMode.BOX": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'box'",
+    "min_input_args": 0
+  },
+  "torchvision.transforms.InterpolationMode.HAMMING": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'hamming'",
+    "min_input_args": 0
+  },
+  "torchvision.transforms.InterpolationMode.LANCZOS": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'lanczos'",
+    "min_input_args": 0
+  },
+  "torchvision.transforms.InterpolationMode.NEAREST": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'nearest'",
+    "min_input_args": 0
+  },
+  "torchvision.transforms.InterpolationMode.NEAREST_EXACT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'nearest_exact'",
+    "min_input_args": 0
+  },
+  "torchvision.transforms.Normalize": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.Normalize",
+    "args_list": [
+      "mean",
+      "std"
+    ],
+    "unsupport_args": [
+      "inplace"
+    ]
+  },
+  "torchvision.transforms.Pad": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.Pad",
+    "args_list": [
+      "padding",
+      "fill",
+      "padding_mode"
+    ]
+  },
+  "torchvision.transforms.RandomAffine": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.RandomAffine",
+    "args_list": [
+      "degrees",
+      "translate",
+      "scale",
+      "shear",
+      "interpolation",
+      "fill",
+      "center"
+    ]
+  },
+  "torchvision.transforms.RandomCrop": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.RandomCrop",
+    "args_list": [
+      "size",
+      "padding",
+      "pad_if_needed",
+      "fill",
+      "padding_mode"
+    ]
+  },
+  "torchvision.transforms.RandomErasing": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.RandomErasing",
+    "args_list": [
+      "p",
+      "scale",
+      "ratio",
+      "value",
+      "inplace"
+    ],
+    "kwargs_change": {
+      "p": "prob"
+    }
+  },
+  "torchvision.transforms.RandomHorizontalFlip": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.RandomHorizontalFlip",
+    "args_list": [
+      "p"
+    ],
+    "kwargs_change": {
+      "p": "prob"
+    }
+  },
+  "torchvision.transforms.RandomPerspective": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.RandomPerspective",
+    "args_list": [
+      "distortion_scale",
+      "p",
+      "interpolation",
+      "fill"
+    ],
+    "kwargs_change": {
+      "p": "prob"
+    }
+  },
+  "torchvision.transforms.RandomResizedCrop": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.RandomResizedCrop",
+    "args_list": [
+      "size",
+      "scale",
+      "ratio",
+      "interpolation"
+    ],
+    "unsupport_args": [
+      "antialias"
+    ]
+  },
+  "torchvision.transforms.RandomRotation": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.RandomRotation",
+    "args_list": [
+      "degrees",
+      "interpolation",
+      "expand",
+      "center",
+      "fill"
+    ]
+  },
+  "torchvision.transforms.RandomVerticalFlip": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.RandomVerticalFlip",
+    "args_list": [
+      "p"
+    ],
+    "kwargs_change": {
+      "p": "prob"
+    }
+  },
+  "torchvision.transforms.Resize": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.Resize",
+    "args_list": [
+      "size",
+      "interpolation"
+    ],
+    "unsupport_args": [
+      "max_size",
+      "antialias"
+    ]
+  },
+  "torchvision.transforms.ToTensor": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.ToTensor"
+  },
+  "torchvision.transforms.functional.adjust_brightness": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.adjust_brightness",
+    "args_list": [
+      "img",
+      "brightness_factor"
+    ]
+  },
+  "torchvision.transforms.functional.adjust_contrast": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.adjust_contrast",
+    "args_list": [
+      "img",
+      "contrast_factor"
+    ]
+  },
+  "torchvision.transforms.functional.adjust_hue": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.adjust_hue",
+    "args_list": [
+      "img",
+      "hue_factor"
+    ]
+  },
+  "torchvision.transforms.functional.affine": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.affine",
+    "args_list": [
+      "img",
+      "angle",
+      "translate",
+      "scale",
+      "shear",
+      "interpolation",
+      "fill",
+      "center"
+    ]
+  },
+  "torchvision.transforms.functional.center_crop": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.center_crop",
+    "args_list": [
+      "img",
+      "output_size"
+    ]
+  },
+  "torchvision.transforms.functional.crop": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.crop",
+    "args_list": [
+      "img",
+      "top",
+      "left",
+      "height",
+      "width"
+    ]
+  },
+  "torchvision.transforms.functional.erase": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.erase",
+    "args_list": [
+      "img",
+      "i",
+      "j",
+      "h",
+      "w",
+      "v",
+      "inplace"
+    ]
+  },
+  "torchvision.transforms.functional.hflip": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.hflip",
+    "args_list": [
+      "img"
+    ]
+  },
+  "torchvision.transforms.functional.normalize": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.normalize",
+    "args_list": [
+      "img",
+      "mean",
+      "std"
+    ],
+    "unsupport_args": [
+      "inplace"
+    ]
+  },
+  "torchvision.transforms.functional.pad": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.pad",
+    "args_list": [
+      "img",
+      "padding",
+      "fill",
+      "padding_mode"
+    ]
+  },
+  "torchvision.transforms.functional.perspective": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.perspective",
+    "args_list": [
+      "img",
+      "startpoints",
+      "endpoints",
+      "interpolation",
+      "fill"
+    ]
+  },
+  "torchvision.transforms.functional.resize": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.resize",
+    "args_list": [
+      "img",
+      "size",
+      "interpolation"
+    ],
+    "unsupport_args": [
+      "max_size",
+      "antialias"
+    ]
+  },
+  "torchvision.transforms.functional.rotate": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.rotate",
+    "args_list": [
+      "img",
+      "i",
+      "j",
+      "h",
+      "w",
+      "v",
+      "inplace"
+    ]
+  },
+  "torchvision.transforms.functional.to_grayscale": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.to_grayscale",
+    "args_list": [
+      "img",
+      "num_output_channels"
+    ]
+  },
+  "torchvision.transforms.functional.to_tensor": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.to_tensor",
+    "args_list": [
+      "pic"
+    ]
+  },
+  "torchvision.transforms.functional.vflip": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.vflip",
+    "args_list": [
+      "img"
+    ]
+  },
   "transformers.AddedToken": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddlenlp.transformers.AddedToken",
