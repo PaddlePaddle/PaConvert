@@ -2780,8 +2780,8 @@ class AddMRMatcher(BaseMatcher):
                 kwargs["input"],
                 kwargs["alpha"],
                 self.get_paddle_api(),
-                kwargs["vec1"],
-                kwargs["vec2"],
+                param1,
+                param2,
                 kwargs["out"],
             )
         else:
