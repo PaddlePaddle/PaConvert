@@ -4856,7 +4856,7 @@ class SetNumInteropThreadsMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             import os
-            os.environ['OMP_NUM_THREADS'] = '{}'
+            os.environ['OMP_NUM_THREADS'] = {}
             """
         )
         code = API_TEMPLATE.format(kwargs["int"])
@@ -4865,13 +4865,13 @@ class SetNumInteropThreadsMatcher(BaseMatcher):
 
 class SetNumThreadsMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "int" not in kwargs:
-            kwargs["int"] = self.paddleClass
+        if "input" not in kwargs:
+            kwargs["input"] = self.paddleClass
         API_TEMPLATE = textwrap.dedent(
             """
             import os
-            os.environ['CPU_NUM'] = '{}'
+            os.environ['CPU_NUM'] = {}
             """
         )
-        code = API_TEMPLATE.format(kwargs["int"])
+        code = API_TEMPLATE.format(kwargs["input"])
         return code

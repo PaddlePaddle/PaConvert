@@ -7335,7 +7335,7 @@
   },
   "torch.frombuffer": {
     "Matcher": "FromBufferMatcher",
-    "min_input_args": 2,
+    "min_input_args": 1,
     "args_list": [
       "buffer",
       "dtype",
@@ -7345,8 +7345,12 @@
     ],
     "unsupport_args": [
       "count",
-      "offset"
-    ]
+      "offset",
+      "requires_grad"
+    ],
+    "kwargs_change": {
+      "dtype": "dtype"
+    }
   },
   "torch.full": {
     "Matcher": "GenericMatcher",
@@ -14622,7 +14626,7 @@
     "Matcher": "SetNumThreadsMatcher",
     "min_input_args": 1,
     "args_list": [
-      "int"
+      "input"
     ]
   },
   "torch.set_printoptions": {
