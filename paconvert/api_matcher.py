@@ -4815,7 +4815,7 @@ class FromBufferMatcher(BaseMatcher):
             """
             import numpy
             def _frombuffer(**kwargs):
-                buffer = kwargs.pop("buffer)
+                buffer = kwargs.pop("buffer")
                 return paddle.to_tensor(numpy.frombuffer(numpy.array(buffer), dtype = numpy.int32)
             """
         )
@@ -4854,8 +4854,7 @@ class SetNumInteropThreadsMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            import numpy
-            from itertools import repeat
+            import os
             def _set_num_interop_threads(int):
                 os.environ['OMP_NUM_THREADS'] = ("int")
             """
@@ -4878,8 +4877,7 @@ class SetNumThreadsMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            import numpy
-            from itertools import repeat
+            import os
             def _set_num_threads(int):
                 os.environ['CPU_NUM'] = ("int")
             """
