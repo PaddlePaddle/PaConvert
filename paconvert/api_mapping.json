@@ -7335,7 +7335,7 @@
   },
   "torch.frombuffer": {
     "Matcher": "FromBufferMatcher",
-    "min_input_args": 1,
+    "min_input_args": 2,
     "args_list": [
       "buffer",
       "dtype",

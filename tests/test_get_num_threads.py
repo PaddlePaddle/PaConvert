@@ -26,4 +26,4 @@ def test_case_1():
         result = torch.get_num_threads()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)

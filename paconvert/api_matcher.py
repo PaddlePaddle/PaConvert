@@ -3347,7 +3347,11 @@ class SpecialNdtriMatcher(BaseMatcher):
         )
         code = API_TEMPLATE.format(kwargs["input"])
         if "out" in kwargs and kwargs["out"] != "None":
-            code = "paddle.assign({}, output={})".format(code, kwargs["out"])
+            code = (
+                "paddle.assign({}, outpcode = API_TEMPLATE.format(kwargsut={})".format(
+                    code, kwargs["out"]
+                )
+            )
 
         return code
 
@@ -4847,6 +4851,8 @@ class GetNumInteropThreadsMatcher(BaseMatcher):
 
 class SetNumInteropThreadsMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        if "int" not in kwargs:
+            kwargs["int"] = self.paddleClass
         API_TEMPLATE = textwrap.dedent(
             """
             import os
@@ -4859,6 +4865,8 @@ class SetNumInteropThreadsMatcher(BaseMatcher):
 
 class SetNumThreadsMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        if "int" not in kwargs:
+            kwargs["int"] = self.paddleClass
         API_TEMPLATE = textwrap.dedent(
             """
             import os
