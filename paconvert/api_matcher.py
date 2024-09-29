@@ -2755,14 +2755,6 @@ class AddMRMatcher(BaseMatcher):
         if "input" not in kwargs:
             kwargs["input"] = self.paddleClass
 
-        params1 = ["mat1", "mat", "vec1", "batch1"]
-        params2 = ["mat2", "vec", "vec2", "batch2"]
-        param1, param2 = None, None
-        for i, param in enumerate(params1):
-            if param in kwargs:
-                param1 = kwargs[params1[i]]
-                param2 = kwargs[params2[i]]
-
         if "beta" not in kwargs:
             kwargs["beta"] = 1
 
@@ -2780,8 +2772,8 @@ class AddMRMatcher(BaseMatcher):
                 kwargs["input"],
                 kwargs["alpha"],
                 self.get_paddle_api(),
-                param1,
-                param2,
+                kwargs["vec1"],
+                kwargs["vec2"],
                 kwargs["out"],
             )
         else:
@@ -2795,8 +2787,8 @@ class AddMRMatcher(BaseMatcher):
                 kwargs["input"],
                 kwargs["alpha"],
                 self.get_paddle_api(),
-                param1,
-                param2,
+                kwargs["vec1"],
+                kwargs["vec2"],
             )
 
         return code
@@ -2806,14 +2798,6 @@ class AddMR_Matcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" not in kwargs:
             kwargs["input"] = self.paddleClass
-
-        params1 = ["mat1", "mat", "vec1", "batch1"]
-        params2 = ["mat2", "vec", "vec2", "batch2"]
-        param1, param2 = None, None
-        for i, param in enumerate(params1):
-            if param in kwargs:
-                param1 = kwargs[params1[i]]
-                param2 = kwargs[params2[i]]
 
         if "beta" in kwargs:
             kwargs[
@@ -2835,8 +2819,8 @@ class AddMR_Matcher(BaseMatcher):
             kwargs["beta"],
             kwargs["alpha"],
             self.get_paddle_api(),
-            param1,
-            param2,
+            kwargs["vec1"],
+            kwargs["vec2"],
         )
 
         return code
