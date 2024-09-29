@@ -7335,16 +7335,10 @@
   },
   "torch.frombuffer": {
     "Matcher": "FromBufferMatcher",
-    "min_input_args": 1,
     "args_list": [
       "buffer",
       "*",
       "dtype",
-      "count",
-      "offset",
-      "requires_grad"
-    ],
-    "unsupport_args": [
       "count",
       "offset",
       "requires_grad"

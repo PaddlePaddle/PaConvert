@@ -4814,24 +4814,16 @@ class FromBufferMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             import numpy
-            import paddle
-            def _frombuffer(buffer):
-                result = paddle.to_tensor(numpy.frombuffer(numpy.array(buffer), dtype = numpy.int32)
-                return result
+            def _frombuffer(**kwargs):
+                buffer = kwargs.pop("buffer)
+                return paddle.to_tensor(numpy.frombuffer(numpy.array(buffer), dtype = numpy.int32)
             """
         )
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
         self.write_aux_code()
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle_aux._frombuffer({})
-            """
-        )
-        code = API_TEMPLATE.format(kwargs["buffer"])
-
-        return code
+        return "paddle_aux._frombuffer({})".format(self.kwargs_to_str(kwargs))
 
 
 class GetNumThreadsMatcher(BaseMatcher):
