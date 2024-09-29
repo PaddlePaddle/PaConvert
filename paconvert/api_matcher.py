@@ -4810,14 +4810,27 @@ class BHHWindowMatcher(BaseMatcher):
 
 
 class FromBufferMatcher(BaseMatcher):
-    def genrate_code(self, kwargs):
-        API_TEMPLATE = textwrap.dedent(
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
             """
             import numpy
-            paddle.to_tensor(numpy.frombuffer(numpy.array({}), {})
+            from itertools import repeat
+            def _frombuffer(buffer):
+                result = paddle.to_tensor(numpy.frombuffer(numpy.array(buffer), dtype = numpy.int32)
+            return result
             """
         )
-        code = API_TEMPLATE.format(kwargs["buffer"], kwargs["dtype"])
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux._frombuffer({})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["buffer"])
+
         return code
 
 

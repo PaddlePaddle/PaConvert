@@ -7348,10 +7348,7 @@
       "count",
       "offset",
       "requires_grad"
-    ],
-    "kwargs_change": {
-      "dtype": "dtype"
-    }
+    ]
   },
   "torch.full": {
     "Matcher": "GenericMatcher",
