@@ -10505,8 +10505,7 @@
       "remove_duplicate"
     ],
     "kwargs_change": {
-      "recurse": "include_sublayers",
-      "remove_duplicate": ""
+      "recurse": "include_sublayers"
     },
     "min_input_args": 0
   },
@@ -10523,10 +10522,12 @@
       "prefix",
       "remove_duplicate"
     ],
-    "unsupport_args": [
-      "memo",
-      "remove_duplicate"
-    ],
+    "kwargs_change": {
+      "memo": "layers_set"
+    },
+    "paddle_default_kwargs": {
+      "include_self": "True"
+    },
     "min_input_args": 0
   },
   "torch.nn.Module.named_parameters": {
@@ -10539,8 +10540,7 @@
       "remove_duplicate"
     ],
     "kwargs_change": {
-      "recurse": "include_sublayers",
-      "remove_duplicate": ""
+      "recurse": "include_sublayers"
     }
   },
   "torch.nn.Module.parameters": {
