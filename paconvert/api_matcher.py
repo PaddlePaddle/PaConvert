@@ -4816,7 +4816,7 @@ class FromBufferMatcher(BaseMatcher):
             import numpy
             def _frombuffer(**kwargs):
                 buffer = kwargs.pop("buffer")
-                return paddle.to_tensor(numpy.frombuffer(numpy.array(buffer), dtype = numpy.int32)
+                return paddle.to_tensor(numpy.frombuffer(numpy.array(buffer), dtype = numpy.int32))
             """
         )
         return CODE_TEMPLATE
