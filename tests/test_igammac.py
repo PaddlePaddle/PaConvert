@@ -16,15 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.t")
+obj = APIBase("torch.igammac")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.zeros(2, 3)
-        result = torch.t(x)
+        input=torch.tensor([1.0,2.0])
+        other=torch.tensor([3.0,4.0])
+        result=torch.igammac(input,other)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,28 +35,37 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.zeros(2)
-        result = torch.t(x)
+        input=torch.tensor([1.0,2.0])
+        other=torch.tensor([3.0,4.0])
+        out=torch.tensor([])
+        result=torch.igammac(input=input, other=other, out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.t(torch.zeros(2, 3))
+
+        input = torch.tensor([[2.0,9.0],[10.0, 12.0]])
+        other = torch.tensor([[3.0, 4.0],[2.0, 5.0]])
+        out = torch.tensor([])
+        result = torch.igammac(input=input, other=other, out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"], atol=1e-5)
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.t(input=torch.zeros(2, 3))
+        input=torch.tensor([1.0,2.0])
+        other=torch.tensor([3.0,4.0])
+        out=torch.tensor([])
+        result=torch.igammac(other=other, input=input, out=out)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "out"])

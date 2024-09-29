@@ -16,15 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.t")
+obj = APIBase("torch.channel_shuffle")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.zeros(2, 3)
-        result = torch.t(x)
+        input = torch.tensor([[[[1, 2], [3, 4]], [[5, 6], [7, 8]], [[9, 10], [11, 12]], [[13, 14], [15, 16]]]],dtype=torch.float32)
+        result=torch.channel_shuffle(input,2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.zeros(2)
-        result = torch.t(x)
+        input = torch.tensor([[[[1, 2], [3, 4]], [[5, 6], [7, 8]], [[9, 10], [11, 12]], [[13, 14], [15, 16]]]],dtype=torch.float32)
+        result=torch.channel_shuffle(input=input, groups=2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,17 +45,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.t(torch.zeros(2, 3))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.t(input=torch.zeros(2, 3))
+        input = torch.tensor([[[[1, 2], [3, 4]], [[5, 6], [7, 8]], [[9, 10], [11, 12]], [[13, 14], [15, 16]]]],dtype=torch.float32)
+        result=torch.channel_shuffle(groups=4, input=input)
         """
     )
     obj.run(pytorch_code, ["result"])
