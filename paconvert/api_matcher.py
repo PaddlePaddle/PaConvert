@@ -4813,7 +4813,7 @@ class GetNumThreadsMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             import os
-            os.environ['CPU_NUM']
+            int(os.environ['CPU_NUM'])
             """
         )
         code = API_TEMPLATE.format()
@@ -4825,7 +4825,7 @@ class GetNumInteropThreadsMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             import os
-            os.environ['OMP_NUM_THREADS']
+            int(os.environ['OMP_NUM_THREADS'])
             """
         )
         code = API_TEMPLATE.format()
@@ -4833,26 +4833,46 @@ class GetNumInteropThreadsMatcher(BaseMatcher):
 
 
 class SetNumInteropThreadsMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        API_TEMPLATE = textwrap.dedent(
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
             """
             import os
-            os.environ['OMP_NUM_THREADS'] = "{}"
+            def _set_num_interop_threads(int):
+                os.environ['OMP_NUM_THREADS'] = "int"
             """
         )
-        code = API_TEMPLATE.format(str(kwargs["int"]).strip("()"))
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux._set_num_interop_threads({})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["int"])
 
         return code
 
 
 class SetNumThreadsMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        API_TEMPLATE = textwrap.dedent(
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
             """
             import os
-            os.environ['CPU_NUM'] = {}
+            def _set_num_threads(int):
+                os.environ['CPU_NUM'] = "int"
             """
         )
-        code = API_TEMPLATE.format(str(kwargs["int"]).strip("()"))
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux._set_num_threads({})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["int"])
 
         return code

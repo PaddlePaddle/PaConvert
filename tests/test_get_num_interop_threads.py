@@ -23,7 +23,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.get_num_threads()
+        result = torch.get_num_interop_threads()
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
