@@ -2328,7 +2328,8 @@ class ReverseMomentumMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "momentum" in kwargs:
             kwargs["momentum"] = f"1 - {kwargs.pop('momentum')}"
-
+        if "periodic" in kwargs:
+            kwargs["fftbins"] = f"1 - {kwargs.pop('periodic')}"
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -4794,44 +4795,25 @@ class HistogramMatcher(BaseMatcher):
         return code
 
 
-class BHHWindowMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        new_kwargs = {}
-        if "blackman_window" in self.torch_api:
-            new_kwargs["window"] = "'blackman'"
-        if "hann_window" in self.torch_api:
-            new_kwargs["window"] = "'hann'"
-        if "hamming_window" in self.torch_api:
-            new_kwargs["window"] = "'hamming'"
-        if "periodic" in kwargs:
-            new_kwargs["fftbins"] = f"not {kwargs.pop('periodic')}"
-        new_kwargs.update(kwargs)
-        return GenericMatcher.generate_code(self, new_kwargs)
-
-
 class FromBufferMatcher(BaseMatcher):
-    def generate_aux_code(self):
-        CODE_TEMPLATE = textwrap.dedent(
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
             """
-            import numpy
-            def _frombuffer(**kwargs):
-                buffer = kwargs.pop("buffer")
-                return paddle.to_tensor(numpy.frombuffer(numpy.array(buffer), dtype = numpy.int32))
+            import numpy as np
+            paddle.to_tensor(np.frombuffer(np.array({}), dtype = np.int32))
             """
         )
-        return CODE_TEMPLATE
+        code = API_TEMPLATE.format(kwargs["buffer"])
 
-    def generate_code(self, kwargs):
-        self.write_aux_code()
-        return "paddle_aux._frombuffer({})".format(self.kwargs_to_str(kwargs))
+        return code
 
 
 class GetNumThreadsMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            import multiprocessing
-            multiprocessing.cpu_count()
+            import os
+            os.environ['CPU_NUM']
             """
         )
         code = API_TEMPLATE.format()
@@ -4851,46 +4833,26 @@ class GetNumInteropThreadsMatcher(BaseMatcher):
 
 
 class SetNumInteropThreadsMatcher(BaseMatcher):
-    def generate_aux_code(self):
-        CODE_TEMPLATE = textwrap.dedent(
-            """
-            import os
-            def _set_num_interop_threads(int):
-                os.environ['OMP_NUM_THREADS'] = ("int")
-            """
-        )
-        return CODE_TEMPLATE
-
     def generate_code(self, kwargs):
-        self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux._set_num_interop_threads({})
+            import os
+            os.environ['OMP_NUM_THREADS'] = "{}"
             """
         )
-        code = API_TEMPLATE.format(kwargs["int"])
+        code = API_TEMPLATE.format(str(kwargs["int"]).strip("()"))
 
         return code
 
 
 class SetNumThreadsMatcher(BaseMatcher):
-    def generate_aux_code(self):
-        CODE_TEMPLATE = textwrap.dedent(
-            """
-            import os
-            def _set_num_threads(int):
-                os.environ['CPU_NUM'] = ("int")
-            """
-        )
-        return CODE_TEMPLATE
-
     def generate_code(self, kwargs):
-        self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux._set_num_threads({})
+            import os
+            os.environ['CPU_NUM'] = {}
             """
         )
-        code = API_TEMPLATE.format(kwargs["int"])
+        code = API_TEMPLATE.format(str(kwargs["int"]).strip("()"))
 
         return code
