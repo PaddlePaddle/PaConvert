@@ -929,7 +929,7 @@ class ADVariableMatcher(BaseMatcher):
 
         if "requires_grad" in kwargs:
             return API_TEMPLATE.format(
-                kwargs["data"], kwargs["requires_grad"], kwargs["input"]
+                kwargs["data"], kwargs["requires_grad"], kwargs["data"]
             )
         return kwargs["data"]
 
