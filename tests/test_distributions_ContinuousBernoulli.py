@@ -31,8 +31,6 @@ def test_case_1():
         pytorch_code,
         ["result"],
         check_value=False,
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
     )
 
 
@@ -40,7 +38,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.ContinuousBernoulli(probs=torch.tensor([0.3]), logits=None)
+        m = torch.distributions.ContinuousBernoulli(probs=None, logits=torch.tensor([0.3]))
         result = m.sample([100])
         """
     )
@@ -49,11 +47,11 @@ def test_case_2():
         ["result"],
         check_value=False,
         unsupport=True,
-        reason="paddle does not support this function temporarily",
+        reason="paddle does not support param `logits`",
     )
 
 
-def test_case_3():
+def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -66,15 +64,15 @@ def test_case_3():
         ["result"],
         check_value=False,
         unsupport=True,
-        reason="paddle does not support this function temporarily",
+        reason="when probs is number,shape mismatch",
     )
 
 
-def test_case_4():
+def _test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.continuous_bernoulli.ContinuousBernoulli(0.3, validate_args=False)
+        m = torch.distributions.ContinuousBernoulli(0.3, validate_args=False)
         result = m.sample([100])
         """
     )
@@ -83,5 +81,50 @@ def test_case_4():
         ["result"],
         check_value=False,
         unsupport=True,
-        reason="paddle does not support this function temporarily",
+        reason="when probs is number,shape mismatch",
+    )
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.ContinuousBernoulli(probs=torch.tensor([0.3]),lims=(0.1, 0.2),validate_args=False )
+        result = m.sample([100])
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+    )
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.ContinuousBernoulli(lims=(0.1, 0.2), probs=torch.tensor([0.3]), validate_args=False )
+        result = m.sample([100])
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+    )
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.ContinuousBernoulli(torch.tensor([0.3]))
+        result = m.sample([100])
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
     )

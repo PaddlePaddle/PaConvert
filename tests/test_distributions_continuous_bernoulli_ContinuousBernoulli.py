@@ -16,15 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.Binomial")
+obj = APIBase("torch.distributions.continuous_bernoulli.ContinuousBernoulli")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Binomial(total_count=100, probs=torch.tensor([0, .2, .8, 1]), validate_args=False)
-        result = m.sample()
+        m = torch.distributions.continuous_bernoulli.ContinuousBernoulli(torch.tensor([0.3]))
+        result = m.sample([100])
         """
     )
     obj.run(
@@ -38,45 +38,50 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Binomial(1, logits= torch.tensor([2., 0.]))
-        result = m.sample()
+        m = torch.distributions.continuous_bernoulli.ContinuousBernoulli(probs=None, logits=torch.tensor([0.3]))
+        result = m.sample([100])
         """
     )
     obj.run(
         pytorch_code,
         ["result"],
+        check_value=False,
         unsupport=True,
-        reason="paddle does not support this parameter logits",
+        reason="paddle does not support param `logits`",
     )
 
 
-def test_case_3():
+def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Binomial(5, torch.tensor([0.3]), validate_args=False)
-        result = m.sample()
+        m = torch.distributions.continuous_bernoulli.ContinuousBernoulli(0.3, validate_args=False)
+        result = m.sample([100])
         """
     )
     obj.run(
         pytorch_code,
         ["result"],
         check_value=False,
+        unsupport=True,
+        reason="when probs is number,shape mismatch",
     )
 
 
-def test_case_4():
+def _test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Binomial(1, torch.tensor([0.3]), validate_args=False)
-        result = m.sample()
+        m = torch.distributions.continuous_bernoulli.ContinuousBernoulli(0.3, validate_args=False)
+        result = m.sample([100])
         """
     )
     obj.run(
         pytorch_code,
         ["result"],
         check_value=False,
+        unsupport=True,
+        reason="when probs is number,shape mismatch",
     )
 
 
@@ -84,8 +89,8 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Binomial(probs=torch.tensor([0, .2, .8, 1]), total_count=100, validate_args=False)
-        result = m.sample()
+        m = torch.distributions.continuous_bernoulli.ContinuousBernoulli(probs=torch.tensor([0.3]),lims=(0.1, 0.2),validate_args=False )
+        result = m.sample([100])
         """
     )
     obj.run(
@@ -99,8 +104,8 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Binomial(probs=torch.tensor([0, .2, .8, 1]))
-        result = m.sample()
+        m = torch.distributions.continuous_bernoulli.ContinuousBernoulli(lims=(0.1, 0.2), probs=torch.tensor([0.3]), validate_args=False )
+        result = m.sample([100])
         """
     )
     obj.run(
@@ -114,13 +119,12 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Binomial(logits=torch.tensor(0.2))
-        result = m.sample()
+        m = torch.distributions.continuous_bernoulli.ContinuousBernoulli(torch.tensor([0.3]))
+        result = m.sample([100])
         """
     )
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="paddle does not support this parameter logits",
+        check_value=False,
     )

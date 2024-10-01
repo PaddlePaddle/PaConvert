@@ -39,12 +39,7 @@ def test_case_1():
         result = name_list
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="doesn't support param remove_duplicate",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -65,12 +60,7 @@ def test_case_2():
         result = name_list
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle only support to output remove duplicate version",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -92,9 +82,4 @@ def test_case_3():
         result = name_list
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle doesn't support the memo parameter",
-    )
+    obj.run(pytorch_code, ["result"])
