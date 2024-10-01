@@ -23,8 +23,8 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([0.5, 0.5, 0.5, 0.5, 0.5], dtype=torch.float)
-        y = torch.tensor([0, 1, 10, 100, 1000], dtype=torch.float)
+        x = torch.tensor([0.5, 0.5, 0.5, 0.5, 0.5], dtype=torch.float64)
+        y = torch.tensor([0., 1., 10., 100., 1000.], dtype=torch.float64)
         result = x.igammac_(y)
         """
     )
@@ -35,8 +35,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([0.5, 0.5, 0.5, 0.5, 0.5], dtype=torch.float)
-        y = torch.tensor([0, 1, 10, 100, 1000], dtype=torch.float)
+        x = torch.tensor([0.5, 0.5, 0.5, 0.5, 0.5], dtype=torch.float64)
+        y = torch.tensor([0., 1., 10., 100., 1000.], dtype=torch.float64)
         result = x.igammac_(other=y)
         """
     )
