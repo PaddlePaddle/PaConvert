@@ -24,9 +24,9 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1.1481, 0.9974, 0.9413],
-                [0.9974, 1.3924, 0.6773],
-                [0.9413, 0.6773, 1.1315]])
+        a = torch.tensor([ 0.27238953, -0.66377389,  0.49408659],
+        [-0.68942541, -0.26639470, -0.52720863],
+        [-0.62677491, -0.13987818,  0.07873359]])
         out, info = torch.linalg.cholesky_ex(a)
         """
     )
@@ -37,9 +37,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1.1481, 0.9974, 0.9413],
-                [0.9974, 1.3924, 0.6773],
-                [0.9413, 0.6773, 1.1315]])
+        a = torch.tensor([ 0.27238953, -0.66377389,  0.49408659],
+        [-0.68942541, -0.26639470, -0.52720863],
+        [-0.62677491, -0.13987818,  0.07873359]])
         out, info = torch.linalg.cholesky_ex(a, upper=False)
         """
     )
@@ -50,23 +50,24 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1.1481, 0.9974, 0.9413],
-                [0.9974, 1.3924, 0.6773],
-                [0.9413, 0.6773, 1.1315]])
-        out = torch.randn(3, 3)
-        out1, info = torch.linalg.cholesky_ex(a, upper=True, out=out)
+        a = torch.tensor([ 0.27238953, -0.66377389,  0.49408659],
+        [-0.68942541, -0.26639470, -0.52720863],
+        [-0.62677491, -0.13987818,  0.07873359]])
+        out1 = torch.randn(3, 3)
+        info1 = torch.tensor([1, 2, 3], dtype=torch.int32)
+        out1, info1 = torch.linalg.cholesky_ex(a, upper=True, out=(out1, info1))
         """
     )
-    obj.run(pytorch_code, ["out1", "info"])
+    obj.run(pytorch_code, ["out1", "info1"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1.1481, 0.9974, 0.9413],
-                [0.9974, 1.3924, 0.6773],
-                [0.9413, 0.6773, 1.1315]])
+        a = torch.tensor([ 0.27238953, -0.66377389,  0.49408659],
+        [-0.68942541, -0.26639470, -0.52720863],
+        [-0.62677491, -0.13987818,  0.07873359]])
         out = torch.randn(3, 3)
         result = torch.linalg.cholesky_ex(a, check_errors=False, upper=True, out=out)
         """

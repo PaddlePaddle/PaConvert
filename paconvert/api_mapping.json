@@ -15799,8 +15799,8 @@
     "min_input_args": 3,
     "args_list": [
       "shape",
-      "dtype",
       "device",
+      "dtype",
       "low",
       "high",
       "requires_grad",

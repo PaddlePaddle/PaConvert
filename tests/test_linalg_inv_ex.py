@@ -52,11 +52,12 @@ def test_case_3():
         x = torch.tensor([[0.02773777, 0.93004224, 0.06911496],
                 [0.24831591, 0.45733623, 0.07717843],
                 [0.48016702, 0.14235102, 0.42620817]])
-        out = torch.tensor([])
-        out1, info = torch.linalg.inv_ex(x, out=out)
+        out1 = torch.tensor([])
+        info1 = torch.tensor([1, 2, 3], dtype=torch.int32)
+        out1, info1 = torch.linalg.inv_ex(x, out=(out1, info1))
         """
     )
-    obj.run(pytorch_code, ["out1", "info"])
+    obj.run(pytorch_code, ["out1", "info1"])
 
 
 def test_case_4():
@@ -66,13 +67,14 @@ def test_case_4():
         x = torch.tensor([[0.02773777, 0.93004224, 0.06911496],
                 [0.24831591, 0.45733623, 0.07717843],
                 [0.48016702, 0.14235102, 0.42620817]])
-        out = torch.tensor([])
-        out1, info = torch.linalg.inv_ex(x, check_errors=False, out=out)
+        out1 = torch.tensor([])
+        info1 = torch.tensor([1, 2, 3], dtype=torch.int32)
+        out1, info1 = torch.linalg.inv_ex(x, check_errors=False, out=(out1, info1))
         """
     )
     obj.run(
         pytorch_code,
-        ["out1", "info"],
+        ["out1", "info1"],
         unsupport=True,
         reason="paddle does not support this function temporarily",
     )
