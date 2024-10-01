@@ -838,14 +838,14 @@ class AssertMatcher(BaseMatcher):
 class MakeTMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "requires_grad" not in kwargs.keys():
-            kwargs['requires_grad'] = False
+            kwargs["requires_grad"] = False
 
         if "dtype" not in kwargs.keys():
             kwargs["dtype"] = "float32"
-        
+
         if "low" not in kwargs.keys():
             kwargs["low"] = 0
-        
+
         if "high" not in kwargs.keys():
             kwargs["high"] = 1
 
@@ -862,7 +862,7 @@ class MakeTMatcher(BaseMatcher):
             kwargs["low"],
             kwargs["high"],
             kwargs["device"],
-            kwargs['requires_grad'],
+            kwargs["requires_grad"],
         )
         return code
 
@@ -3450,9 +3450,7 @@ class LinalgInvExMatcher(BaseMatcher):
                 paddle.assign(out1, output={}[0]), paddle.assign(out2, output={}[1])
                 """
             )
-            code = API_TEMPLATE.format(
-                kwargs["A"], kwargs["A"], out_v, out_v
-            )
+            code = API_TEMPLATE.format(kwargs["A"], kwargs["A"], out_v, out_v)
             return code
         else:
             API_TEMPLATE = textwrap.dedent(
@@ -3509,7 +3507,7 @@ class OrmqrMatcher(BaseMatcher):
             kwargs["left"] = True
         if "transpose" not in kwargs.keys():
             kwargs["transpose"] = False
-        
+
         code = API_TEMPLATE.format(
             self.get_paddle_api(),
             kwargs["x"],
