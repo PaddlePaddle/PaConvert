@@ -958,6 +958,10 @@
     "paddle_api": "paddle.Tensor.coalesce",
     "min_input_args": 0
   },
+  "torch.Tensor.col_indices": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.cols"
+  },
   "torch.Tensor.conj": {
     "Matcher": "UnchangeMatcher",
     "min_input_args": 0
@@ -1064,6 +1068,10 @@
       "dim": "axis"
     }
   },
+  "torch.Tensor.crow_indices": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.crows"
+  },
   "torch.Tensor.cuda": {
     "Matcher": "TensorCudaMatcher",
     "paddle_api": "paddle.Tensor.cuda",
@@ -1135,9 +1143,6 @@
       "dim": "axis",
       "dtype": "dtype"
     }
-  },
-  "torch.Tensor.dim_order":{
-    "Matcher": "DimOrderMatcher"
   },
   "torch.Tensor.cumsum_": {
     "Matcher": "GenericMatcher",
@@ -1264,6 +1269,9 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.dim",
     "min_input_args": 0
+  },
+  "torch.Tensor.dim_order": {
+    "Matcher": "DimOrderMatcher"
   },
   "torch.Tensor.dist": {
     "Matcher": "GenericMatcher",
@@ -2065,14 +2073,6 @@
       "length",
       "return_complex"
     ]
-  },
-  "torch.Tensor.col_indices":{
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.cols"
-  },
-  "torch.Tensor.crow_indices":{
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.crows"
   },
   "torch.Tensor.item": {
     "Matcher": "UnchangeMatcher",
@@ -3579,39 +3579,6 @@
       "dim"
     ]
   },
-  "torch.bitwise_left_shift":{
-    "Matcher": "GenericMatcher",
-    "paddle_api":"paddle.bitwise_left_shift",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "other",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "other": "y"
-    }
-  },
-  "torch.bitwise_right_shift":{
-    "Matcher": "GenericMatcher",
-    "paddle_api":"paddle.bitwise_right_shift",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "other",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "other": "y"
-    }
-  },
-  "torch.Tensor.to_sparse_coo":{
-    "Matcher": "TensorToSparseCooMatcher"
-  },
   "torch.Tensor.subtract": {
     "Matcher": "TensorSubtractMatcher",
     "paddle_api": "paddle.Tensor.subtract",
@@ -3795,6 +3762,9 @@
     "args_list": [
       "sparse_dim"
     ]
+  },
+  "torch.Tensor.to_sparse_coo": {
+    "Matcher": "TensorToSparseCooMatcher"
   },
   "torch.Tensor.tolist": {
     "Matcher": "UnchangeMatcher",
@@ -4937,6 +4907,21 @@
       "other": "y"
     }
   },
+  "torch.bitwise_left_shift": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.bitwise_left_shift",
+    "min_input_args": 2,
+    "args_list": [
+      "input",
+      "other",
+      "*",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "other": "y"
+    }
+  },
   "torch.bitwise_not": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.bitwise_not",
@@ -4953,6 +4938,21 @@
   "torch.bitwise_or": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.bitwise_or",
+    "min_input_args": 2,
+    "args_list": [
+      "input",
+      "other",
+      "*",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "other": "y"
+    }
+  },
+  "torch.bitwise_right_shift": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.bitwise_right_shift",
     "min_input_args": 2,
     "args_list": [
       "input",

@@ -29,10 +29,7 @@ def test_case_1():
         result = input.bitwise_right_shift_(other)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -44,10 +41,7 @@ def test_case_2():
         result = input.bitwise_right_shift_(other=other)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -59,7 +53,4 @@ def test_case_3():
         result = input.bitwise_right_shift_(other=other)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])

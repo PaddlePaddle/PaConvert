@@ -35,16 +35,22 @@
     "Matcher": "Attribute2Func",
     "paddle_api": "paddle.Tensor.is_sparse"
   },
+  "torch.Tensor.is_sparse_csr": {
+    "Matcher": "IsSparseCsrMatcher"
+  },
+  "torch.Tensor.itemsize": {
+    "Matcher": "TensorItemsizeMatcher"
+  },
   "torch.Tensor.mH": {
     "Matcher": "TensorMhMatcher"
   },
   "torch.Tensor.mT": {
     "Matcher": "TensorMtMatcher"
   },
-  "torch.Tensor.itemsize": {
-    "Matcher": "TensorItemsizeMatcher"
-  },
   "torch.Tensor.names": {},
+  "torch.Tensor.nbytes": {
+    "Matcher": "TensorNbytesMatcher"
+  },
   "torch.Tensor.ndim": {
     "Matcher": "UnchangeMatcher"
   },
@@ -56,18 +62,12 @@
     "Matcher": "TensorRequiresGradMatcher",
     "paddle_api": "paddle.Tensor.stop_gradient"
   },
-  "torch.Tensor.nbytes":{
-    "Matcher":"TensorNbytesMatcher"
-  },
   "torch.Tensor.shape": {
     "Matcher": "TensorShapeMatcher"
   },
   "torch.__version__": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.__version__"
-  },
-  "torch.Tensor.is_sparse_csr":{
-    "Matcher":"IsSparseCsrMatcher"
   },
   "torch.autograd.function.FunctionCtx.saved_tensors": {},
   "torch.autograd.profiler.profile.self_cpu_time_total": {},

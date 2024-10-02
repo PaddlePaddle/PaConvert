@@ -450,7 +450,7 @@ class TensorStrideMatcher(BaseMatcher):
         if "dim" in kwargs.keys() and kwargs["dim"] != "None":
             code = "{}.get_strides()[{}]".format(self.paddleClass, kwargs["dim"])
         elif len(args) > 0 and args[0] != "None":
-            code = "{}.get_strides()[{}]".format(self.paddleClass,args[0])
+            code = "{}.get_strides()[{}]".format(self.paddleClass, args[0])
         else:
             code = "{}.get_strides()".format(self.paddleClass)
 
@@ -471,7 +471,9 @@ class TensorToSparseCooMatcher(BaseMatcher):
 class TensorNbytesMatcher(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
-        code = "int(paddle.numel({}) * {}.element_size())".format(self.paddleClass, self.paddleClass)
+        code = "int(paddle.numel({}) * {}.element_size())".format(
+            self.paddleClass, self.paddleClass
+        )
         return ast.parse(code).body
 
 
@@ -491,7 +493,6 @@ class TensorItemsizeMatcher(BaseMatcher):
         self.parse_func(node)
         paddle_class = self.paddleClass
 
-
         API_TEMPLATE = textwrap.dedent(
             """
             {}.element_size()
@@ -499,7 +500,6 @@ class TensorItemsizeMatcher(BaseMatcher):
         )
         code = API_TEMPLATE.format(paddle_class)
         return ast.parse(code).body
-
 
 
 class TRFMPreTrainedTokenizerMatcher(BaseMatcher):

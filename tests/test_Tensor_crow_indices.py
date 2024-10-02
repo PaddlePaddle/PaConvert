@@ -28,7 +28,4 @@ def test_case_1():
         result = a.crow_indices()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])

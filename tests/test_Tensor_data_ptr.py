@@ -28,10 +28,8 @@ def test_case_1():
         result = a.data_ptr()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"], check_value=False
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
@@ -41,7 +39,4 @@ def test_case_2():
         result = a.data_ptr()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"], check_value=False
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
