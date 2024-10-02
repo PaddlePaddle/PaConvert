@@ -41,6 +41,9 @@
   "torch.Tensor.mT": {
     "Matcher": "TensorMtMatcher"
   },
+  "torch.Tensor.itemsize": {
+    "Matcher": "TensorItemsizeMatcher"
+  },
   "torch.Tensor.names": {},
   "torch.Tensor.ndim": {
     "Matcher": "UnchangeMatcher"

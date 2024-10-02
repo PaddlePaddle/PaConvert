@@ -694,8 +694,28 @@
       "other": "y"
     }
   },
-  "torch.Tensor.bitwise_left_shift": {},
-  "torch.Tensor.bitwise_left_shift_": {},
+  "torch.Tensor.bitwise_left_shift": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.bitwise_left_shift",
+    "min_input_args": 1,
+    "args_list": [
+      "other"
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
+  },
+  "torch.Tensor.bitwise_left_shift_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.bitwise_left_shift_",
+    "min_input_args": 1,
+    "args_list": [
+      "other"
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
+  },
   "torch.Tensor.bitwise_not": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.bitwise_not",
@@ -728,8 +748,28 @@
       "other": "y"
     }
   },
-  "torch.Tensor.bitwise_right_shift": {},
-  "torch.Tensor.bitwise_right_shift_": {},
+  "torch.Tensor.bitwise_right_shift": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.bitwise_right_shift",
+    "min_input_args": 1,
+    "args_list": [
+      "other"
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
+  },
+  "torch.Tensor.bitwise_right_shift_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.bitwise_right_shift_",
+    "min_input_args": 1,
+    "args_list": [
+      "other"
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
+  },
   "torch.Tensor.bitwise_xor": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.bitwise_xor",
@@ -1110,7 +1150,10 @@
     },
     "min_input_args": 1
   },
-  "torch.Tensor.data_ptr": {},
+  "torch.Tensor.data_ptr": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.data_ptr"
+  },
   "torch.Tensor.deg2rad": {
     "Matcher": "UnchangeMatcher",
     "min_input_args": 0
@@ -2020,13 +2063,16 @@
       "return_complex"
     ]
   },
+  "torch.Tensor.col_indices":{
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.cols"
+  },
+  "torch.Tensor.crow_indices":{
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.crows"
+  },
   "torch.Tensor.item": {
     "Matcher": "UnchangeMatcher",
-    "min_input_args": 0
-  },
-  "torch.Tensor.itemsize": {
-    "Matcher": "TensorItemsizeMatcher",
-    "paddle_api": "paddle.Tensor.element_size",
     "min_input_args": 0
   },
   "torch.Tensor.kthvalue": {

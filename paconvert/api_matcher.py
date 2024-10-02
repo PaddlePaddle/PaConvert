@@ -437,14 +437,19 @@ class InitEyeMatcher(InitMatcher):
 
 
 class TensorItemsizeMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+        paddle_class = self.paddleClass
+
+
         API_TEMPLATE = textwrap.dedent(
             """
             {}.element_size()
             """
         )
-        code = API_TEMPLATE.format(self.paddleClass)
-        return code
+        code = API_TEMPLATE.format(paddle_class)
+        return ast.parse(code).body
+
 
 
 class TRFMPreTrainedTokenizerMatcher(BaseMatcher):

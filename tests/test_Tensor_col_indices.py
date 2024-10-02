@@ -11,41 +11,24 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.itemsize")
+obj = APIBase("torch.Tensor.col_indices")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 3, 2]).itemsize
+        a = a = torch.tensor([[1, 2, 3], [1, 2, 3]]).to_sparse_csr()
+        result = a.col_indices()
         """
     )
-    obj.run(pytorch_code, ["x"])
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1, 3, 2], dtype=torch.int64)
-        result = x.itemsize
-        """
+    obj.run(
+        pytorch_code,
+        ["result"]
     )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1., 3., 2.], dtype=torch.float64)
-        result = x.itemsize
-        """
-    )
-    obj.run(pytorch_code, ["result"])
