@@ -1,4 +1,4 @@
-# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
+# Copyright (c) 2024 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,49 +17,36 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.bitwise_right_shift")
+obj = APIBase("torch.Tensor.dim_order")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([-2, -7, 31], dtype=torch.int8)
-        other = torch.tensor([1, 0, 3], dtype=torch.int8)
-        result = torch.bitwise_right_shift(input, other)
+        result = torch.tensor([1, 0.5]).dim_order()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([-2, -7, 31], dtype=torch.int8)
-        other = torch.tensor([1, 0, 3], dtype=torch.int8)
-        result = torch.bitwise_right_shift(input=input, other=other)
+        a = torch.tensor([1, 0.5])
+        result = a.dim_order()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([-2, -7, 31], dtype=torch.int32)
-        other = torch.tensor([1, 0, 3], dtype=torch.int32)
-        result = torch.bitwise_right_shift(input=input, other=other)
+        a = torch.tensor([[1, 0.5], [1, 0.5]])
+        result = a.dim_order()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])

@@ -1136,6 +1136,9 @@
       "dtype": "dtype"
     }
   },
+  "torch.Tensor.dim_order":{
+    "Matcher": "DimOrderMatcher"
+  },
   "torch.Tensor.cumsum_": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.cumsum_",
@@ -3568,7 +3571,47 @@
   "torch.Tensor.storage_type": {
     "min_input_args": 0
   },
-  "torch.Tensor.stride": {},
+  "torch.Tensor.stride": {
+    "Matcher": "TensorStrideMatcher",
+    "paddle_api": "paddle.Tensor.get_strides",
+    "min_input_args": 0,
+    "args_list": [
+      "dim"
+    ]
+  },
+  "torch.bitwise_left_shift":{
+    "Matcher": "GenericMatcher",
+    "paddle_api":"paddle.bitwise_left_shift",
+    "min_input_args": 2,
+    "args_list": [
+      "input",
+      "other",
+      "*",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "other": "y"
+    }
+  },
+  "torch.bitwise_right_shift":{
+    "Matcher": "GenericMatcher",
+    "paddle_api":"paddle.bitwise_right_shift",
+    "min_input_args": 2,
+    "args_list": [
+      "input",
+      "other",
+      "*",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "other": "y"
+    }
+  },
+  "torch.Tensor.to_sparse_coo":{
+    "Matcher": "TensorToSparseCooMatcher"
+  },
   "torch.Tensor.subtract": {
     "Matcher": "TensorSubtractMatcher",
     "paddle_api": "paddle.Tensor.subtract",

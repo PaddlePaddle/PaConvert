@@ -56,12 +56,18 @@
     "Matcher": "TensorRequiresGradMatcher",
     "paddle_api": "paddle.Tensor.stop_gradient"
   },
+  "torch.Tensor.nbytes":{
+    "Matcher":"TensorNbytesMatcher"
+  },
   "torch.Tensor.shape": {
     "Matcher": "TensorShapeMatcher"
   },
   "torch.__version__": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.__version__"
+  },
+  "torch.Tensor.is_sparse_csr":{
+    "Matcher":"IsSparseCsrMatcher"
   },
   "torch.autograd.function.FunctionCtx.saved_tensors": {},
   "torch.autograd.profiler.profile.self_cpu_time_total": {},
