@@ -3464,14 +3464,14 @@ class LinalgInvExMatcher(BaseMatcher):
 
 class LinalgCholeskyExMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "upper" not in kwargs.keys():
+        if "upper" not in kwargs:
             kwargs["upper"] = False
-        if "out" in kwargs.keys() and kwargs["out"] != "None":
+        if "out" in kwargs and kwargs["out"] != "None":
             out_v = kwargs["out"]
             API_TEMPLATE = textwrap.dedent(
                 """
                 out1 = paddle.linalg.cholesky(x={}, upper={})
-                out2 = paddle.zeros({}.shape[:-2], dtype='int64')
+                out2 = paddle.zeros({}.shape[:-2], dtype='int32')
                 paddle.assign(out1, output={}[0]), paddle.assign(out2, output={}[1])
                 """
             )
@@ -3482,7 +3482,7 @@ class LinalgCholeskyExMatcher(BaseMatcher):
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
-                (paddle.linalg.cholesky(x={}, upper={}), paddle.zeros({}.shape[:-2], dtype='int64'))
+                (paddle.linalg.cholesky(x={}, upper={}), paddle.zeros({}.shape[:-2], dtype='int32'))
                 """
             )
             code = API_TEMPLATE.format(
