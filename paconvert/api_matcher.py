@@ -348,6 +348,45 @@ class InferenceModeMatcher(BaseMatcher):
         return code
 
 
+class RpcRemoteMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            import paddle
+            import paddle.distributed.rpc as rpc
+            class rpc_remote:
+                def __init__(to, func, args=None, kwargs=None, timeout=-1):
+                    self.remote = rpc.rpc_async(to=to, fn=func, args=args, kwargs=kwargs, timeout=timeout)
+
+                def to_here():
+                    return self.remote.wait()
+            """
+        )
+        return CODE_TEMPLATE
+    
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        if "args" not in kwargs.keys():
+            kwargs["args"] = None
+        if "kwargs" not in kwargs.keys():
+            kwargs["kwargs"] = None
+        if "timeout" not in kwargs.keys():
+            kwargs["timeout"] = -1
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.rpc_remote(to={}, func={}, args={}, kwargs={}, timeout={})
+            """
+        )
+        code = API_TEMPLATE.format(
+            kwargs["to"],
+            kwargs["func"],
+            kwargs["args"],
+            kwargs["kwargs"],
+            kwargs["timeout"]
+        )
+        return code
+
+
 class AtleastMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         new_args = self.parse_args(args)
