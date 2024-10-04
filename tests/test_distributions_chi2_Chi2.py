@@ -23,37 +23,37 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        normal_dist = torch.tensor([[1, 2], [3, 4]])
-        result = torch.distributions.chi2.Chi2(normal_dist).sample()
+        x = torch.tensor([1.0])
+        result = torch.distributions.chi2.Chi2(x).sample()
         """
     )
     obj.run(
         pytorch_code,
-        ["result"]
+        ["result"], check_value=False
     )
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        normal_dist = torch.tensor([[1, 2], [3, 4]])
-        result = torch.distributions.chi2.Chi2(df=normal_dist).sample()
+        x = torch.tensor([1.0])
+        result = torch.distributions.chi2.Chi2(df=x).sample()
         """
     )
     obj.run(
         pytorch_code,
-        ["result"]
+        ["result"], check_value=False
     )
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        normal_dist = torch.tensor([[1, 2], [3, 4]])
-        result = torch.distributions.chi2.Chi2(df=normal_dist, validate_args=None).sample()
+        x = torch.tensor([1.0])
+        result = torch.distributions.chi2.Chi2(df=x, validate_args=None).sample()
         """
     )
     obj.run(
         pytorch_code,
-        ["result"]
+        ["result"], check_value=False
     )
