@@ -737,6 +737,44 @@ class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
         return API_TEMPLATE
 
 
+class Is_InferenceMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import paddle
+            def is_inference(x):
+                return not x.stop_gradient
+            """
+        )
+
+        return API_TEMPLATE
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.is_inference({})
+            """
+        )
+        code = API_TEMPLATE.format(self.paddleClass)
+        return code
+
+
+class TensorRandom_Matcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.assign(paddle.cast(paddle.randint(low={}, high={}, shape={}.shape), dtype='float32'), {})
+            """
+        )
+        code = API_TEMPLATE.format(
+            kwargs["from"],
+            kwargs["to"],
+            self.paddleClass,
+            self.paddleClass,
+        )
+        return code
+
 class TransposeMatcher(BaseMatcher):
     def generate_aux_code(self):
         API_TEMPLATE = textwrap.dedent(

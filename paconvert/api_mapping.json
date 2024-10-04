@@ -791,7 +791,22 @@
       "memory_format"
     ]
   },
-  "torch.Tensor.cauchy_": {},
+  "torch.Tensor.cauchy_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.cauchy_",
+    "min_input_args": 0,
+    "args_list": [
+      "median",
+      "sigma",
+      "*",
+      "generator"
+    ],
+    "kwargs_change": {
+      "median": "loc",
+      "sigma":"scale",
+      "generator":""
+    }
+  },
   "torch.Tensor.cdouble": {
     "Matcher": "TensorCdoubleMatcher",
     "paddle_api": "paddle.Tensor.astype",
@@ -1621,7 +1636,20 @@
       "other": "y"
     }
   },
-  "torch.Tensor.geometric_": {},
+  "torch.Tensor.geometric_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.geometric_",
+    "min_input_args": 1,
+    "args_list": [
+      "p",
+      "*",
+      "generator"
+    ],
+    "kwargs_change": {
+      "p": "probs",
+      "generator":""
+    }
+  },
   "torch.Tensor.geqrf": {},
   "torch.Tensor.ger": {
     "Matcher": "GenericMatcher",
@@ -1957,7 +1985,10 @@
     "paddle_api": "paddle.Tensor.is_floating_point",
     "min_input_args": 0
   },
-  "torch.Tensor.is_inference": {},
+  "torch.Tensor.is_inference": {
+    "Matcher": "Is_InferenceMatcher",
+    "paddle_api": "paddle.Tensor.stop_gradient"
+  },
   "torch.Tensor.is_pinned": {
     "Matcher": "Is_PinnedMatcher",
     "min_input_args": 0
@@ -2995,7 +3026,16 @@
     "Matcher": "UnchangeMatcher",
     "min_input_args": 0
   },
-  "torch.Tensor.random_": {},
+  "torch.Tensor.random_": {
+    "Matcher": "TensorRandom_Matcher",
+    "min_input_args": 0,
+    "args_list": [
+      "from",
+      "to",
+      "*",
+      "generator"
+    ]
+  },
   "torch.Tensor.ravel": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.flatten",
