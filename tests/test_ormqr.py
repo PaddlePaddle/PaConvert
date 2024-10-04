@@ -52,7 +52,7 @@ def test_case_3():
         x = torch.tensor([[-114.6, 10.9, 1.1], [-0.304, 38.07, 69.38], [-0.45, -0.17, 62]])
         tau = torch.tensor([1.55, 1.94, 3.0])
         y = torch.tensor([[-114.6, 10.9, 1.1], [-0.304, 38.07, 69.38], [-0.45, -0.17, 62]])
-        result = torch.ormqr(x, input2=tau, input3=y, left=False)
+        result = torch.ormqr(x, input2=tau, input3=y, left=True)
         """
     )
     obj.run(pytorch_code, ["result"])
