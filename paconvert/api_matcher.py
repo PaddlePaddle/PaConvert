@@ -705,6 +705,38 @@ class DistributionsConstrainMatcher(BaseMatcher):
         return API_TEMPLATE
 
 
+class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import paddle
+            from paddle import Tensor
+            class TransformsPositiveDefiniteTransform:
+                def __call__(self, x: Tensor):
+                    x = x.tril(-1) + x.diagonal(axis1=-2, axis2=-1).exp().diag_embed()
+                    shape_list = list(range(x.ndim))
+                    shape_list[-1], shape_list[-2] = shape_list[-2], shape_list[-1]
+                    y = x.transpose(perm=shape_list)
+                    return x @ y
+
+                def inv(self, y):
+                    y = paddle.linalg.cholesky(y)
+                    return y.tril(-1) + y.diagonal(axis1=-2, axis2=-1).log().diag_embed()
+                
+            """
+        )
+
+        return API_TEMPLATE
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.TransformsPositiveDefiniteTransform()
+            """
+        )
+        return API_TEMPLATE
+
+
 class TransposeMatcher(BaseMatcher):
     def generate_aux_code(self):
         API_TEMPLATE = textwrap.dedent(
