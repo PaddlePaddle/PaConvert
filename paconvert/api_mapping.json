@@ -6185,6 +6185,11 @@
       "validate_args": ""
     }
   },
+  "torch.distributions.constraints.Constraint" : {
+    "Matcher": "DistributionsConstrainMatcher",
+    "paddle_api": "paddle.distribution.constraint.Constraint",
+    "abstract": true
+  },
   "torch.distributions.Categorical": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Categorical",

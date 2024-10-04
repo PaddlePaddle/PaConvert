@@ -681,6 +681,30 @@ class TensorDivideMatcher(BaseMatcher):
         return "unchange"
 
 
+class DistributionsConstrainMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import paddle
+            def Distributions_Constraint():
+                class DistributionsConstrain:
+                    def check(self, value):
+                        return paddle.distribution.constraint.Constraint()(value)
+                return DistributionsConstrain()
+            """
+        )
+
+        return API_TEMPLATE
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.Distributions_Constraint()
+            """
+        )
+        return API_TEMPLATE
+
+
 class TransposeMatcher(BaseMatcher):
     def generate_aux_code(self):
         API_TEMPLATE = textwrap.dedent(
