@@ -6238,6 +6238,25 @@
       "validate_args": ""
     }
   },
+  "torch.distributions.Binomial": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Binomial",
+    "args_list": [
+      "total_count",
+      "probs",
+      "logits",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    },
+    "unsupport_args": [
+      "logits"
+    ],
+    "paddle_default_kwargs": {
+      "total_count": "1"
+    }
+  },
   "torch.distributions.constraints.Constraint" : {
     "Matcher": "DistributionsConstrainMatcher",
     "paddle_api": "paddle.distribution.constraint.Constraint",

@@ -24,8 +24,9 @@ def test_case_1():
         """
         import torch
         x = torch.tensor([[1.0, 0.0], [2.0, 1.0]])
-        result = torch.distributions.transforms.PositiveDefiniteTransform()(x)
-        result_inv = torch.distributions.transforms.PositiveDefiniteTransform().inv(result)
+        a = torch.distributions.transforms.PositiveDefiniteTransform()
+        result = a(x)
+        result_inv = a.inv(result)
         """
     )
     obj.run(
@@ -38,8 +39,9 @@ def test_case_2():
         """
         import torch
         x = torch.tensor([[1.0, 0.0], [2.0, 1.0]])
-        result = torch.distributions.transforms.PositiveDefiniteTransform(cache_size=0)(x)
-        result_inv = torch.distributions.transforms.PositiveDefiniteTransform(cache_size=0).inv(result)
+        a = torch.distributions.transforms.PositiveDefiniteTransform(cache_size=0)
+        result = a(x)
+        result_inv = a.inv(result)
         """
     )
     obj.run(
