@@ -1918,7 +1918,7 @@ class TensorTypeMatcher(BaseMatcher):
 class TensorIsCudaMatcher(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
-        code = "'gpu' in str({}.place)".format(self.paddleClass)
+        code = "{}.place.is_gpu_place()".format(self.paddleClass)
         return ast.parse(code).body
 
 
@@ -4003,13 +4003,6 @@ class Get_EnumMatcher(BaseMatcher):
         code = API_TEMPLATE.format(kwargs["reduction"])
 
         return code
-
-
-class UnpoolMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        kwargs["indices"] = "{}.astype('int32')".format(kwargs["indices"])
-
-        return GenericMatcher.generate_code(self, kwargs)
 
 
 class SoftmaxMatcher(BaseMatcher):
