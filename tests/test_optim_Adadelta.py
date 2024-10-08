@@ -76,9 +76,7 @@ def test_case_6():
     )
 
 
-# if `weight_decay` set as int rather than float,
-# paddle will raise TypeError: 'int' object is not callable
-def _test_case_7():
+def test_case_7():
     pytorch_code = textwrap.dedent(
         generate_optimizer_test_code(
             "torch.optim.Adadelta(params=conv.parameters(), weight_decay=0)"

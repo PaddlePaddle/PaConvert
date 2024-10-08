@@ -144,8 +144,7 @@ def test_case_10():
     obj.run(pytorch_code, ["result"])
 
 
-# result is different when n != 1
-def _test_case_11():
+def test_case_11():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -157,27 +156,25 @@ def _test_case_11():
     obj.run(pytorch_code, ["result"])
 
 
-# result is different when n != 1
-def _test_case_12():
+def test_case_12():
     pytorch_code = textwrap.dedent(
         """
         import torch
         x = torch.tensor([1, 3, 2, 10])
         b = torch.tensor([4, 5])
-        result = torch.diff(input=x, n=3, prepend=b)
+        result = torch.diff(input=x, n=3, append=b)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# result is different when n != 1
-def _test_case_13():
+def test_case_13():
     pytorch_code = textwrap.dedent(
         """
         import torch
         x = torch.tensor([1, 3, 2, 10])
         b = torch.tensor([4, 5])
-        result = torch.diff(input=x, n=4, prepend=b)
+        result = torch.diff(input=x, n=4, prepend=b, append=b)
         """
     )
     obj.run(pytorch_code, ["result"])
