@@ -14,6 +14,7 @@
 
 import textwrap
 
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.nn.functional.lp_pool2d")
@@ -123,6 +124,10 @@ def test_case_5():
     obj.run(pytorch_code, ["result"], atol=1e-05, rtol=1e-06)
 
 
+@pytest.mark.skipif(
+    condition=True,
+    reason="`lp_pool` in PyTorch has a wrong implementation which will return a tensor full of 1.",
+)
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """
