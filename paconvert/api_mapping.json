@@ -16354,6 +16354,114 @@
       "dtype": "dtype"
     }
   },
+  "torchvision.datasets.CIFAR10": {
+    "Matcher": "Cifar10Matcher",
+    "paddle_api": "paddle.vision.datasets.Cifar10",
+    "args_list": [
+      "root",
+      "train",
+      "transform",
+      "target_transform",
+      "download"
+    ],
+    "kwargs_change": {
+      "root": "data_file",
+      "train": "mode"
+    },
+    "unsupport_args": [
+      "target_transform"
+    ]
+  },
+  "torchvision.datasets.CIFAR100": {
+    "Matcher": "Cifar100Matcher",
+    "paddle_api": "paddle.vision.datasets.Cifar100",
+    "args_list": [
+      "root",
+      "train",
+      "transform",
+      "target_transform",
+      "download"
+    ],
+    "unsupport_args": [
+      "target_transform"
+    ]
+  },
+  "torchvision.datasets.DatasetFolder": {
+    "Matcher": "DatasetFolderMatcher",
+    "paddle_api": "paddle.vision.datasets.DatasetFolder",
+    "args_list": [
+      "root",
+      "loader",
+      "extensions",
+      "transform",
+      "target_transform",
+      "is_valid_file",
+      "allow_empty "
+    ],
+    "unsupport_args": [
+      "target_transform",
+      "allow_empty"
+    ]
+  },
+  "torchvision.datasets.FashionMNIST": {
+    "Matcher": "FashionMNISTMatcher",
+    "paddle_api": "paddle.vision.datasets.FashionMNIST",
+    "args_list": [
+      "root",
+      "train",
+      "download",
+      "transform",
+      "target_transform"
+    ],
+    "unsupport_args": [
+      "target_transform"
+    ]
+  },
+  "torchvision.datasets.ImageFolder": {
+    "Matcher": "ImageFolderMatcher",
+    "paddle_api": "paddle.vision.datasets.ImageFolder",
+    "args_list": [
+      "root",
+      "transform",
+      "target_transform",
+      "loader",
+      "is_valid_file",
+      "allow_empty "
+    ],
+    "unsupport_args": [
+      "target_transform",
+      "allow_empty"
+    ]
+  },
+  "torchvision.datasets.MNIST": {
+    "Matcher": "MNISTMatcher",
+    "paddle_api": "paddle.vision.datasets.MNIST",
+    "args_list": [
+      "root",
+      "train",
+      "download",
+      "transform",
+      "target_transform"
+    ],
+    "unsupport_args": [
+      "target_transform"
+    ]
+  },
+  "torchvision.io.ImageReadMode.GRAY": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'gray'",
+    "min_input_args": 0
+  },
+  "torchvision.io.ImageReadMode.RGB": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'rgb'",
+    "min_input_args": 0
+  },
+  "torchvision.io.ImageReadMode.UNCHANGED": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'unchanged'",
+    "min_input_args": 0
+  },
   "torchvision.transforms.CenterCrop": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.vision.transforms.CenterCrop",

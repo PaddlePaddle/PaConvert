@@ -4792,3 +4792,129 @@ class HistogramMatcher(BaseMatcher):
                     self.kwargs_to_str(kwargs_bin_edges),
                 )
         return code
+
+
+class DatasetFolderMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "root" in kwargs:
+            kwargs["root"] = "str(Path({}))".format(kwargs["root"])
+        API_TEMPLATE = textwrap.dedent(
+            """
+            from pathlib import Path
+            {}({})
+            """
+        )
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class ImageFolderMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "root" in kwargs:
+            kwargs["root"] = "str(Path({}))".format(kwargs["root"])
+        API_TEMPLATE = textwrap.dedent(
+            """
+            from pathlib import Path
+            {}({})
+            """
+        )
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class Cifar10Matcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "root" in kwargs:
+            root = kwargs.pop("root")
+            data_file = "cifar-10-python.tar.gz"
+            kwargs["data_file"] = "str(Path({}) / '{}')".format(root, data_file)
+        if "train" in kwargs:
+            kwargs["mode"] = "'train' if {} else 'test'".format(kwargs.pop("train"))
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            from pathlib import Path
+            {}({})
+            """
+        )
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class Cifar100Matcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "root" in kwargs:
+            root = kwargs.pop("root")
+            data_file = "cifar-100-python.tar.gz"
+            kwargs["data_file"] = "str(Path({}) / '{}')".format(root, data_file)
+        if "train" in kwargs:
+            kwargs["mode"] = "'train' if {} else 'test'".format(kwargs.pop("train"))
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            from pathlib import Path
+            {}({})
+            """
+        )
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class MNISTMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        train = True
+        if "train" in kwargs:
+            train = kwargs.pop("train")
+            kwargs["mode"] = "'train' if {} else 'test'".format(train)
+        if "root" in kwargs:
+            root = kwargs.pop("root")
+            file_paths = {
+                "train_image": "MNIST/raw/train-images-idx3-ubyte.gz",
+                "train_label": "MNIST/raw/train-labels-idx1-ubyte.gz",
+                "test_image": "MNIST/raw/t10k-images-idx3-ubyte.gz",
+                "test_label": "MNIST/raw/t10k-labels-idx1-ubyte.gz",
+            }
+            kwargs["image_path"] = (
+                f"str(Path({root}) / '{file_paths['train_image']}') if {train} else "
+                f"str(Path({root}) / '{file_paths['test_image']}')"
+            )
+            kwargs["label_path"] = (
+                f"str(Path({root}) / '{file_paths['train_label']}') if {train} else "
+                f"str(Path({root}) / '{file_paths['test_label']}')"
+            )
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            from pathlib import Path
+            {}({})
+            """
+        )
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class FashionMNISTMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        train = True
+        if "train" in kwargs:
+            train = kwargs.pop("train")
+            kwargs["mode"] = "'train' if {} else 'test'".format(train)
+        if "root" in kwargs:
+            root = kwargs.pop("root")
+            file_paths = {
+                "train_image": "FashionMNIST/raw/train-images-idx3-ubyte.gz",
+                "train_label": "FashionMNIST/raw/train-labels-idx1-ubyte.gz",
+                "test_image": "FashionMNIST/raw/t10k-images-idx3-ubyte.gz",
+                "test_label": "FashionMNIST/raw/t10k-labels-idx1-ubyte.gz",
+            }
+            kwargs["image_path"] = (
+                f"str(Path({root}) / '{file_paths['train_image']}') if {train} else "
+                f"str(Path({root}) / '{file_paths['test_image']}')"
+            )
+            kwargs["label_path"] = (
+                f"str(Path({root}) / '{file_paths['train_label']}') if {train} else "
+                f"str(Path({root}) / '{file_paths['test_label']}')"
+            )
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            from pathlib import Path
+            {}({})
+            """
+        )
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
