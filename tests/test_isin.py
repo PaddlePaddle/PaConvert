@@ -27,70 +27,47 @@ def test_case_1():
         result = torch.isin(torch.tensor([[1, 2], [3, 4]]), torch.tensor([2, 3]))
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.isin(elements=torch.tensor([[1, 2], [3, 4]]), test_elements=torch.tensor([2, 3]))
+        result = torch.isin(torch.tensor([[1, 2], [3, 4]]), torch.tensor([2, 3]), assume_unique=True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.isin(test_elements=torch.tensor([2, 3]), elements=torch.tensor([[1, 2], [3, 4]]))
+        result = torch.isin(torch.tensor([[1, 2], [3, 4]]), torch.tensor([2, 3]), invert=True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.isin(torch.tensor([[1, 2], [3, 4]]), torch.tensor([2, 3]), assume_unique=False, invert=False)
+        result = torch.isin(torch.tensor([[1, 2], [3, 4]]), torch.tensor([2, 3]), assume_unique=True, invert=True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.isin(elements=torch.tensor([[1, 2], [3, 4]]), test_elements=torch.tensor([2, 3]),
-                            assume_unique=False, invert=False)
+        x = torch.tensor([0., 1., 2.]*20).reshape([20, 3])
+        test_x = torch.tensor([0., 1.]*20)
+        correct_result = torch.isin(x, test_x, assume_unique=False)
+        incorrect_result = torch.isin(x, test_x, assume_unique=True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["correct_result", "incorrect_result"])
