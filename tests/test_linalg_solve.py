@@ -127,3 +127,52 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[3.0, 1],[1, 2]])
+        y = torch.tensor([[9.0, 8, 3], [-4.0, 6, 2]])
+        out = torch.tensor([])
+        result = torch.linalg.solve(A=x, B=y, out=out, left=True)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[3.0, 1],[1, 2]])
+        y = torch.tensor([[9.0, 8, 3], [-4.0, 6, 2]])
+        result = torch.linalg.solve(x, y, left=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[3.0, 1],[1, 2]])
+        y = torch.tensor([[9.0, 8, 3], [-4.0, 6, 2]])
+        result = torch.linalg.solve(A=x, B=y, left=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[3.0, 1],[1, 2]])
+        y = torch.tensor([[9.0, 8, 3], [-4.0, 6, 2]])
+        result = torch.linalg.solve(B=y, left=True, A=x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
