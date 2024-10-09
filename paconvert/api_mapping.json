@@ -4905,7 +4905,7 @@
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
-      "dtype": "paddle.float64",
+      "dtype": "'float32'",
       "window": "'blackman'"
     }
   },
@@ -7606,7 +7606,7 @@
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
-      "dtype": "paddle.float64",
+      "dtype": "'float32'",
       "window": "'hamming'"
     }
   },
@@ -7629,7 +7629,7 @@
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
-      "dtype": "paddle.float64",
+      "dtype": "'float32'",
       "window": "'hamming'"
     }
   },

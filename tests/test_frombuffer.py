@@ -41,3 +41,39 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import array
+        a =array.array('h', [1, 2])
+        result = torch.frombuffer(a, dtype=torch.int32)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import array
+        a =array.array('d', [0.1, 0.4, 0.3, 0.2, 0.5, 0.8, 0.6, 0.9])
+        result = torch.frombuffer(a, dtype=torch.int32)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import array
+        a =array.array('l', [2, 1, 4, 3])
+        result = torch.frombuffer(a, dtype=torch.int32)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

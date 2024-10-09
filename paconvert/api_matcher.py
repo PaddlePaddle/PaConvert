@@ -4813,7 +4813,7 @@ class GetNumThreadsMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             import os
-            int(os.environ['CPU_NUM'])
+            os.getenv("CPU_NUM",1)
             """
         )
         code = API_TEMPLATE.format()
