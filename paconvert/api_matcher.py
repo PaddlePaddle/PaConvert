@@ -348,6 +348,45 @@ class InferenceModeMatcher(BaseMatcher):
         return code
 
 
+class RpcRemoteMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            import paddle
+            import paddle.distributed.rpc as rpc
+            class rpc_remote:
+                def __init__(to, func, args=None, kwargs=None, timeout=-1):
+                    self.remote = rpc.rpc_async(to=to, fn=func, args=args, kwargs=kwargs, timeout=timeout)
+
+                def to_here():
+                    return self.remote.wait()
+            """
+        )
+        return CODE_TEMPLATE
+    
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        if "args" not in kwargs.keys():
+            kwargs["args"] = None
+        if "kwargs" not in kwargs.keys():
+            kwargs["kwargs"] = None
+        if "timeout" not in kwargs.keys():
+            kwargs["timeout"] = -1
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.rpc_remote(to={}, func={}, args={}, kwargs={}, timeout={})
+            """
+        )
+        code = API_TEMPLATE.format(
+            kwargs["to"],
+            kwargs["func"],
+            kwargs["args"],
+            kwargs["kwargs"],
+            kwargs["timeout"]
+        )
+        return code
+
+
 class AtleastMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         new_args = self.parse_args(args)
@@ -680,6 +719,101 @@ class TensorDivideMatcher(BaseMatcher):
         self.write_aux_code()
         return "unchange"
 
+
+class DistributionsConstrainMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import paddle
+            def Distributions_Constraint():
+                class DistributionsConstrain:
+                    def check(self, value):
+                        return paddle.distribution.constraint.Constraint()(value)
+                return DistributionsConstrain()
+            """
+        )
+
+        return API_TEMPLATE
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.Distributions_Constraint()
+            """
+        )
+        return API_TEMPLATE
+
+
+class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import paddle
+            from paddle import Tensor
+            def get_positivedefinite():
+                class TransformsPositiveDefiniteTransform:
+                    def __call__(self, x: Tensor):
+                        x = x.tril(-1) + x.diagonal(axis1=-2, axis2=-1).exp().diag_embed()
+                        shape_list = list(range(x.ndim))
+                        shape_list[-1], shape_list[-2] = shape_list[-2], shape_list[-1]
+                        y = x.transpose(perm=shape_list)
+                        return x @ y
+
+                    def inv(self, y):
+                        y = paddle.linalg.cholesky(y)
+                        return y.tril(-1) + y.diagonal(axis1=-2, axis2=-1).log().diag_embed()
+                return TransformsPositiveDefiniteTransform()
+            """
+        )
+
+        return API_TEMPLATE
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.get_positivedefinite()
+            """
+        )
+        return API_TEMPLATE
+
+
+class Is_InferenceMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import paddle
+            def is_inference(x):
+                return not x.stop_gradient
+            """
+        )
+
+        return API_TEMPLATE
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.is_inference({})
+            """
+        )
+        code = API_TEMPLATE.format(self.paddleClass)
+        return code
+
+
+class TensorRandom_Matcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.assign(paddle.cast(paddle.randint(low={}, high={}, shape={}.shape), dtype='float32'), {})
+            """
+        )
+        code = API_TEMPLATE.format(
+            kwargs["from"],
+            kwargs["to"],
+            self.paddleClass,
+            self.paddleClass,
+        )
+        return code
 
 class TransposeMatcher(BaseMatcher):
     def generate_aux_code(self):

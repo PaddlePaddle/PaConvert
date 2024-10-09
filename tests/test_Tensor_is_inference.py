@@ -11,25 +11,30 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.constraints.Constraint")
+obj = APIBase("torch.Tensor.is_inference")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        try:
-            result = torch.distributions.constraints.Constraint().check(1)
-        except NotImplementedError:
-            result = torch.tensor(1)
+        x = torch.tensor([-0.6341, -1.4208, -1.0900,  0.5826])
+        result = x.is_inference()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
+    obj.run(pytorch_code, ["result"], check_stop_gradient=False)
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([-0.6341, -1.4208, -1.0900,  0.5826]).is_inference()
+        """
     )
+    obj.run(pytorch_code, ["result"], check_stop_gradient=False)

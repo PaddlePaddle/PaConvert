@@ -844,7 +844,22 @@
       "memory_format"
     ]
   },
-  "torch.Tensor.cauchy_": {},
+  "torch.Tensor.cauchy_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.cauchy_",
+    "min_input_args": 0,
+    "args_list": [
+      "median",
+      "sigma",
+      "*",
+      "generator"
+    ],
+    "kwargs_change": {
+      "median": "loc",
+      "sigma":"scale",
+      "generator":""
+    }
+  },
   "torch.Tensor.cdouble": {
     "Matcher": "TensorCdoubleMatcher",
     "paddle_api": "paddle.Tensor.astype",
@@ -1711,7 +1726,20 @@
       "other": "y"
     }
   },
-  "torch.Tensor.geometric_": {},
+  "torch.Tensor.geometric_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.geometric_",
+    "min_input_args": 1,
+    "args_list": [
+      "p",
+      "*",
+      "generator"
+    ],
+    "kwargs_change": {
+      "p": "probs",
+      "generator":""
+    }
+  },
   "torch.Tensor.geqrf": {},
   "torch.Tensor.ger": {
     "Matcher": "GenericMatcher",
@@ -2048,7 +2076,10 @@
     "paddle_api": "paddle.Tensor.is_floating_point",
     "min_input_args": 0
   },
-  "torch.Tensor.is_inference": {},
+  "torch.Tensor.is_inference": {
+    "Matcher": "Is_InferenceMatcher",
+    "paddle_api": "paddle.Tensor.stop_gradient"
+  },
   "torch.Tensor.is_pinned": {
     "Matcher": "Is_PinnedMatcher",
     "min_input_args": 0
@@ -3084,7 +3115,16 @@
     "Matcher": "UnchangeMatcher",
     "min_input_args": 0
   },
-  "torch.Tensor.random_": {},
+  "torch.Tensor.random_": {
+    "Matcher": "TensorRandom_Matcher",
+    "min_input_args": 0,
+    "args_list": [
+      "from",
+      "to",
+      "*",
+      "generator"
+    ]
+  },
   "torch.Tensor.ravel": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.flatten",
@@ -6185,6 +6225,19 @@
     ],
     "min_input_args": 1
   },
+  "torch.distributed.rpc.remote":{
+    "Matcher": "RpcRemoteMatcher",
+    "paddle_api": "paddle.distributed.rpc.rpc_async",
+    "min_input_args": 2,
+    "args_list": [
+      "to",
+      "func",
+      "args",
+      "kwargs",
+      "timeout"
+    ]
+  },
+  "torch.distributed.optim.DistributedOptimizer":{},
   "torch.distributed.rpc.shutdown": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.rpc.shutdown",
@@ -6299,6 +6352,18 @@
       "validate_args": ""
     }
   },
+  "torch.distributions.chi2.Chi2":{
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Chi2",
+    "min_input_args": 1,
+    "args_list": [
+      "df",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
   "torch.distributions.Binomial": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Binomial",
@@ -6316,6 +6381,73 @@
     ],
     "paddle_default_kwargs": {
       "total_count": "1"
+    }
+  },
+  "torch.distributions.constraints.Constraint" : {
+    "Matcher": "DistributionsConstrainMatcher",
+    "paddle_api": "paddle.distribution.constraint.Constraint",
+    "abstract": true
+  },
+  "torch.distributions.gamma.Gamma":{
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Gamma",
+    "min_input_args": 2,
+    "args_list": [
+      "concentration",
+      "rate",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.poisson.Poisson":{
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Poisson",
+    "min_input_args": 1,
+    "args_list": [
+      "rate",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.lkj_cholesky.LKJCholesky":{
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.LKJCholesky",
+    "min_input_args": 1,
+    "args_list": [
+      "dim",
+      "concentration",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.studentT.StudentT":{
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.StudentT",
+    "min_input_args": 1,
+    "args_list": [
+      "df",
+      "loc",
+      "scale",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.transforms.PositiveDefiniteTransform":{
+    "Matcher": "TransformsPositiveDefiniteTransformMatcher",
+    "min_input_args": 0,
+    "args_list": [
+      "cache_size"
+    ],
+    "kwargs_change": {
+      "cache_size": ""
     }
   },
   "torch.distributions.Categorical": {
