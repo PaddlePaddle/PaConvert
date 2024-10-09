@@ -134,7 +134,7 @@ def test_case_12():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.general_cosine(M=10, a=[0.5, 1 - 0.5], sym=False, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
+        result = torch.signal.windows.general_cosine(M=10, sym=False, a=[0.5, 1 - 0.5], layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
