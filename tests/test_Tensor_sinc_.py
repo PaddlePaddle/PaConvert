@@ -11,21 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.xlogy")
+obj = APIBase("torch.Tensor.sinc_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., 3., 4., 5.])
-        b = torch.tensor([1., 2., 3., 4., 5.])
-        result = a.xlogy(b)
+        a = torch.tensor([ 0.5950,-0.0872, 0, -0.2972])
+        result = a.sinc_()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,38 +34,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1., 2., 3., 4., 5.]).xlogy(other=torch.tensor([1., 2., 3., 4., 5.]))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.tensor([1.]).xlogy(torch.tensor([1., 2., 3., 4., 5.]))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.tensor([1., 2. ,3.]).xlogy(other=3.0)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([1., 2., 3., 4., 5.])
-        result = a.xlogy(3.0)
+        result = torch.tensor([ 0.5950,-0.0872, 0, -0.2972]).sinc_()
         """
     )
     obj.run(pytorch_code, ["result"])

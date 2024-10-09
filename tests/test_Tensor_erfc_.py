@@ -11,62 +11,40 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.xlogy")
+obj = APIBase("torch.Tensor.erfc_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., 3., 4., 5.])
-        b = torch.tensor([1., 2., 3., 4., 5.])
-        result = a.xlogy(b)
+        a = torch.tensor([1., 2., -3., -4., 5.])
+        a.erfc_()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["a"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1., 2., 3., 4., 5.]).xlogy(other=torch.tensor([1., 2., 3., 4., 5.]))
+        a = torch.tensor([[1., 2., -3., -4., 5.], [1., 2., -3., -4., 5.]])
+        a.erfc_()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["a"], rtol=1.0e-5, atol=1.0e-8)
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1.]).xlogy(torch.tensor([1., 2., 3., 4., 5.]))
+        result = torch.tensor([1., 2., -3., -4., 5.]).erfc_()
         """
     )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.tensor([1., 2. ,3.]).xlogy(other=3.0)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.tensor([1., 2., 3., 4., 5.])
-        result = a.xlogy(3.0)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
