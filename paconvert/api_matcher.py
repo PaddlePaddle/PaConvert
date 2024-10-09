@@ -3489,7 +3489,7 @@ class OrmqrMatcher(BaseMatcher):
         if "input" not in kwargs.keys():
             kwargs["x"] = self.paddleClass
         else:
-            kwargs["x"] = kwargs["input"]
+            kwargs["x"] = kwargs.pop("input")
         kwargs["tau"] = kwargs.pop("input2")
         kwargs["other"] = kwargs.pop("input3")
         kwargs = self.set_paddle_default_kwargs(kwargs)
