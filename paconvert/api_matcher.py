@@ -3491,7 +3491,7 @@ class OrmqrMatcher(BaseMatcher):
         else:
             kwargs["x"] = kwargs.pop("input")
         kwargs["tau"] = kwargs.pop("input2")
-        kwargs["other"] = kwargs.pop("input3")
+        kwargs["y"] = kwargs.pop("input3")
         kwargs = self.set_paddle_default_kwargs(kwargs)
 
         code = API_TEMPLATE.format(
