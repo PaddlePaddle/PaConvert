@@ -4547,7 +4547,7 @@
   "torch.autograd.Variable": {
     "Matcher": "ADVariableMatcher",
     "args_list": [
-      "input",
+      "data",
       "requires_grad"
     ],
     "min_input_args": 1
@@ -5959,10 +5959,6 @@
       "pg_options": ""
     },
     "min_input_args": 0
-  },
-  "torch.distributed.initialized": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.distributed.initialized"
   },
   "torch.distributed.irecv": {
     "Matcher": "GenericMatcher",
