@@ -11,46 +11,39 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.bitwise_left_shift_")
+obj = APIBase("torch.Tensor.to_sparse_coo")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([-2, -7, 31], dtype=torch.int8)
-        other = torch.tensor([1, 0, 3], dtype=torch.int8)
-        result = input.bitwise_left_shift_(other)
+        a = torch.Tensor([[1.,2.], [3.,4.]])
+        b = a.to_sparse_coo()
+        result = b.to_dense()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+    )
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([-2, -7, 31], dtype=torch.int8)
-        other = torch.tensor([1, 0, 3], dtype=torch.int8)
-        result = input.bitwise_left_shift_(other=other)
+        a = torch.Tensor([[1.,2.], [3.,4.]])
+        b = a.to_sparse_coo()
+        result = b.to_dense()
         """
     )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        input = torch.tensor([-2, -7, 31], dtype=torch.int32)
-        other = torch.tensor([1, 0, 3], dtype=torch.int32)
-        result = input.bitwise_left_shift_(other=other)
-        """
+    obj.run(
+        pytorch_code,
+        ["result"],
     )
-    obj.run(pytorch_code, ["result"])

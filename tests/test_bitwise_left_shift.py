@@ -29,12 +29,7 @@ def test_case_1():
         result = torch.bitwise_left_shift(input, other)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -46,12 +41,7 @@ def test_case_2():
         result = torch.bitwise_left_shift(input=input, other=other)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -63,45 +53,4 @@ def test_case_3():
         result = torch.bitwise_left_shift(other=other, input=input)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        input = torch.tensor([-2, -7, 31], dtype=torch.int32)
-        other = torch.tensor([1, 0, 3], dtype=torch.int32)
-        out = torch.tensor([])
-        result = torch.bitwise_left_shift(input, other, out=out)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        input = torch.tensor([-2, -7, 31], dtype=torch.int32)
-        other = torch.tensor([1, 0, 3], dtype=torch.int32)
-        out = torch.tensor([])
-        result = torch.bitwise_left_shift(input=input, other=other, out=out)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])

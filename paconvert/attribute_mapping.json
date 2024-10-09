@@ -35,6 +35,12 @@
     "Matcher": "Attribute2Func",
     "paddle_api": "paddle.Tensor.is_sparse"
   },
+  "torch.Tensor.is_sparse_csr": {
+    "Matcher": "IsSparseCsrMatcher"
+  },
+  "torch.Tensor.itemsize": {
+    "Matcher": "TensorItemsizeMatcher"
+  },
   "torch.Tensor.mH": {
     "Matcher": "TensorMhMatcher"
   },
@@ -42,6 +48,9 @@
     "Matcher": "TensorMtMatcher"
   },
   "torch.Tensor.names": {},
+  "torch.Tensor.nbytes": {
+    "Matcher": "TensorNbytesMatcher"
+  },
   "torch.Tensor.ndim": {
     "Matcher": "UnchangeMatcher"
   },
