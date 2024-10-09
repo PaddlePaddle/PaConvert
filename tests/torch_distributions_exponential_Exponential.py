@@ -16,14 +16,14 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.Exponential")
+obj = APIBase("torch.distributions.exponential.Exponential")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Exponential(torch.tensor([1.0]))
+        m = torch.distributions.exponential.Exponential(torch.tensor([1.0]))
         result = m.sample([100])
         """
     )
@@ -34,7 +34,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Exponential(rate=torch.tensor([1.0]))
+        m = torch.distributions.exponential.Exponential(rate=torch.tensor([1.0]))
         result = m.sample([100])
         """
     )
@@ -45,7 +45,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Exponential(torch.tensor([1.0]), validate_args=False)
+        m = torch.distributions.exponential.Exponential(torch.tensor([1.0]), validate_args=False)
         result = m.sample([100])
         """
     )
@@ -56,7 +56,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Exponential(torch.tensor([1.0]), False)
+        m = torch.distributions.exponential.Exponential(torch.tensor([1.0]), False)
         result = m.sample([100])
         """
     )
@@ -67,7 +67,7 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Exponential(rate=torch.tensor([1.0]), validate_args=False)
+        m = torch.distributions.exponential.Exponential(rate=torch.tensor([1.0]), validate_args=False)
         result = m.sample([100])
         """
     )
@@ -78,7 +78,7 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Exponential(validate_args=True, rate=torch.tensor([1.0]))
+        m = torch.distributions.exponential.Exponential(validate_args=True, rate=torch.tensor([1.0]))
         result = m.sample([100])
         """
     )

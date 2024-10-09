@@ -57,8 +57,7 @@ def test_case_2():
     obj.run(pytorch_code, ["result"], atol=1e-4)
 
 
-# when training=True, paddle has bug
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch.nn.functional as F
@@ -70,8 +69,11 @@ def _test_case_3():
         [[ 0.1024, -0.4482,  0.4137],
          [ 0.9385,  0.4565,  0.7702],
          [ 0.4135, -0.2587,  0.0482]]])
-        data = torch.tensor([1., 1., 1.])
-        result = F.batch_norm(input=input, running_mean=data, running_var=data, weight=data, bias=data, training=True, momentum=0.5)
+        running_mean = torch.tensor([1., 1., 1.])
+        running_var = torch.tensor([1., 1., 1.])
+        weight = torch.tensor([1., 1., 1.])
+        bias = torch.tensor([1., 1., 1.])
+        result = F.batch_norm(input=input, running_mean=running_mean, running_var=running_var, weight=weight, bias=bias, training=True, momentum=0.5)
         """
     )
     obj.run(pytorch_code, ["result"], atol=1e-4)
@@ -170,6 +172,28 @@ def test_case_8():
                                 [ 0.4135, -0.2587,  0.0482]]])
         data = torch.tensor([1., 1., 1.])
         result = F.batch_norm(input, data, data)
+        """
+    )
+    obj.run(pytorch_code, ["result"], atol=1e-4)
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn.functional as F
+        import torch
+        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857],
+         [-1.2533, -0.9829, -1.0981],
+         [ 0.1507, -1.1431, -2.0361]],
+
+        [[ 0.1024, -0.4482,  0.4137],
+         [ 0.9385,  0.4565,  0.7702],
+         [ 0.4135, -0.2587,  0.0482]]])
+        running_mean = torch.tensor([1., 1., 1.])
+        running_var = torch.tensor([0.5, 0.5, 0.5])
+        weight = torch.tensor([1.5, 1.5, 1.5])
+        bias = torch.tensor([0.5, 0.5, 0.5])
+        result = F.batch_norm(input, running_mean, running_var, weight, bias, True, 0.5, 1e-4)
         """
     )
     obj.run(pytorch_code, ["result"], atol=1e-4)

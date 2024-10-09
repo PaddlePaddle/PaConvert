@@ -16,14 +16,14 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.Binomial")
+obj = APIBase("torch.distributions.binomial.Binomial")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Binomial(total_count=100, probs=torch.tensor([0, .2, .8, 1]), validate_args=False)
+        m = torch.distributions.binomial.Binomial(total_count=100, probs=torch.tensor([0, .2, .8, 1]), validate_args=False)
         result = m.sample()
         """
     )
@@ -38,7 +38,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Binomial(1, logits= torch.tensor([2., 0.]))
+        m = torch.distributions.binomial.Binomial(1, probs=None, logits=torch.tensor([0.3]))
         result = m.sample()
         """
     )
@@ -54,7 +54,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Binomial(5, torch.tensor([0.3]), validate_args=False)
+        m = torch.distributions.binomial.Binomial(5, torch.tensor([0.3]), validate_args=False)
         result = m.sample()
         """
     )
@@ -69,7 +69,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Binomial(1, torch.tensor([0.3]), validate_args=False)
+        m = torch.distributions.binomial.Binomial(1, torch.tensor([0.3]), validate_args=False)
         result = m.sample()
         """
     )
@@ -84,7 +84,7 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Binomial(probs=torch.tensor([0, .2, .8, 1]), total_count=100, validate_args=False)
+        m = torch.distributions.binomial.Binomial(probs=torch.tensor([0, .2, .8, 1]), total_count=100, validate_args=False)
         result = m.sample()
         """
     )
@@ -99,7 +99,7 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Binomial(probs=torch.tensor([0, .2, .8, 1]))
+        m = torch.distributions.binomial.Binomial(probs=torch.tensor([0, .2, .8, 1]))
         result = m.sample()
         """
     )
@@ -114,7 +114,7 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        m = torch.distributions.Binomial(logits=torch.tensor(0.2))
+        m = torch.distributions.binomial.Binomial(logits=torch.tensor(0.2))
         result = m.sample()
         """
     )
