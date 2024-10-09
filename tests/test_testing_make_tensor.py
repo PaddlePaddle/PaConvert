@@ -56,12 +56,7 @@ def test_case_4():
                                            memory_format=None)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_5():
@@ -73,9 +68,4 @@ def test_case_5():
                                            memory_format=None)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)

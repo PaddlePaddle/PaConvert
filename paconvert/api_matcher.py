@@ -3426,19 +3426,6 @@ class SpecialNdtrMatcher(BaseMatcher):
         return code
 
 
-class TensorMatrixExpMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle.linalg.matrix_exp({})
-            """
-        )
-
-        code = API_TEMPLATE.format(self.paddleClass)
-
-        return code
-
-
 class LinalgInvExMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "out" in kwargs and kwargs["out"] != "None":
@@ -3495,7 +3482,7 @@ class OrmqrMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            {}({}, {}, {}, left={}, transpose={})
+            {}({})
             """
         )
 
@@ -3503,18 +3490,13 @@ class OrmqrMatcher(BaseMatcher):
             kwargs["x"] = self.paddleClass
         else:
             kwargs["x"] = kwargs["input"]
-        if "left" not in kwargs.keys():
-            kwargs["left"] = True
-        if "transpose" not in kwargs.keys():
-            kwargs["transpose"] = False
+        kwargs["tau"] = kwargs.pop("input2")
+        kwargs["other"] = kwargs.pop("input3")
+        kwargs = self.set_paddle_default_kwargs(kwargs)
 
         code = API_TEMPLATE.format(
             self.get_paddle_api(),
-            kwargs["x"],
-            kwargs["input2"],
-            kwargs["input3"],
-            kwargs["left"],
-            kwargs["transpose"],
+            self.kwargs_to_str(kwargs)
         )
 
         return code

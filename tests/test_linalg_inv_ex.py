@@ -72,9 +72,4 @@ def test_case_4():
         out1, info1 = torch.linalg.inv_ex(x, check_errors=False, out=(out1, info1))
         """
     )
-    obj.run(
-        pytorch_code,
-        ["out1", "info1"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["out1", "info1"])

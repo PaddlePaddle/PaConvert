@@ -2439,7 +2439,7 @@
     }
   },
   "torch.Tensor.matrix_exp": {
-    "Matcher": "TensorMatrixExpMatcher",
+    "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.linalg.matrix_exp",
     "min_input_args": 0
   },
@@ -8199,9 +8199,6 @@
       "upper",
       "check_errors",
       "out"
-    ],
-    "unsupport_args": [
-      "check_errors"
     ]
   },
   "torch.linalg.cond": {
@@ -8362,9 +8359,6 @@
       "check_errors",
       "*",
       "out"
-    ],
-    "unsupport_args": [
-      "check_errors"
     ]
   },
   "torch.linalg.ldl_factor": {},
@@ -15804,11 +15798,6 @@
       "low",
       "high",
       "requires_grad",
-      "noncontiguous",
-      "exclude_zero",
-      "memory_format"
-    ],
-    "unsupport_args": [
       "noncontiguous",
       "exclude_zero",
       "memory_format"
