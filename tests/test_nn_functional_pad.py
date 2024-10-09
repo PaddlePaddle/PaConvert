@@ -214,3 +214,72 @@ def test_case_15():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_16():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x_shape = (3, 3, 4)
+        x = torch.arange(torch.prod(torch.Tensor(x_shape)), dtype=torch.float32).reshape(x_shape) + 1
+        result = F.pad(x, [0, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_17():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x_shape = (3, 3, 4)
+        x = torch.arange(torch.prod(torch.Tensor(x_shape)), dtype=torch.float32).reshape(x_shape) + 1
+        result = F.pad(x, [0, 2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_18():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x_shape = (3, 3, 4, 2, 2)
+        x = torch.arange(torch.prod(torch.Tensor(x_shape)), dtype=torch.float32).reshape(x_shape) + 1
+        result = F.pad(x, [0, 2, 1, 3, 2, 0])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_19():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x_shape = (3, 3, 4)
+        x = torch.arange(torch.prod(torch.Tensor(x_shape)), dtype=torch.float32).reshape(x_shape) + 1
+        result1 = F.pad(x, [0, 2], mode='reflect')
+        result2 = F.pad(x, [0, 2], mode='replicate')
+        result3 = F.pad(x, [0, 2], mode='circular')
+        """
+    )
+    obj.run(pytorch_code, ["result1", "result2", "result3"])
+
+
+def test_case_20():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x_shape = (3, 3, 4, 4, 3)
+        x = torch.arange(torch.prod(torch.Tensor(x_shape)), dtype=torch.float32).reshape(x_shape) + 1
+        result1 = F.pad(x, [0, 2, 1, 3, 2, 0], mode='reflect')
+        result2 = F.pad(x, [0, 2, 1, 3, 2, 0], mode='replicate')
+        result3 = F.pad(x, [0, 2, 1, 3, 2, 0], mode='circular')
+        """
+    )
+    obj.run(pytorch_code, ["result1", "result2", "result3"])

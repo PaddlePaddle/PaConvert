@@ -181,3 +181,99 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        result = []
+        class TestForHook(nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.register_parameter('w1', nn.Parameter(torch.randn(2, 3)))
+                self.register_parameter('w1', nn.Parameter(torch.randn(3, 3)))
+                self.register_parameter('w2', nn.Parameter(torch.randn(1, 3)))
+                self.register_parameter('w2', nn.Parameter(torch.randn(1, 2)))
+            def forward(self, x):
+                return x
+
+        a = TestForHook()
+        for a,b in a.named_parameters(remove_duplicate=False):
+            result.append(b)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        result = []
+        class TestForHook(nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.register_parameter('w1', nn.Parameter(torch.randn(2, 3)))
+                self.register_parameter('w1', nn.Parameter(torch.randn(3, 3)))
+                self.register_parameter('w2', nn.Parameter(torch.randn(1, 3)))
+                self.register_parameter('w2', nn.Parameter(torch.randn(1, 2)))
+            def forward(self, x):
+                return x
+
+        a = TestForHook()
+        for a,b in a.named_parameters(remove_duplicate=True):
+            result.append(b)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        result = []
+        class TestForHook(nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.register_parameter('w1', nn.Parameter(torch.randn(2, 3)))
+                self.register_parameter('w1', nn.Parameter(torch.randn(3, 3)))
+                self.register_parameter('w2', nn.Parameter(torch.randn(1, 3)))
+                self.register_parameter('w2', nn.Parameter(torch.randn(1, 2)))
+            def forward(self, x):
+                return x
+
+        a = TestForHook()
+        for a,b in a.named_parameters(prefix = "wfs", recurse = False, remove_duplicate = False):
+            result.append(b)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        result = []
+        class TestForHook(nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.register_parameter('w1', nn.Parameter(torch.randn(2, 3)))
+                self.register_parameter('w1', nn.Parameter(torch.randn(3, 3)))
+                self.register_parameter('w2', nn.Parameter(torch.randn(1, 3)))
+                self.register_parameter('w2', nn.Parameter(torch.randn(1, 2)))
+            def forward(self, x):
+                return x
+
+        a = TestForHook()
+        for a,b in a.named_parameters(remove_duplicate = False, recurse = True, prefix = "wfs"):
+            result.append(b)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

@@ -70,9 +70,7 @@ def test_case_6():
     obj.run(pytorch_code, ["result"], rtol=1.0e-5)
 
 
-# if `weight_decay` set as int rather than float,
-# paddle will raise TypeError: 'int' object is not callable
-def _test_case_7():
+def test_case_7():
     pytorch_code = textwrap.dedent(
         generate_optimizer_test_code(
             "torch.optim.Adagrad(params=conv.parameters(), weight_decay=0)"

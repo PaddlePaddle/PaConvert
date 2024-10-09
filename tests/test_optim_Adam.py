@@ -77,3 +77,21 @@ def test_case_7():
         )
     )
     obj.run(pytorch_code, ["result"], rtol=1.0e-5)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        generate_optimizer_test_code(
+            "torch.optim.Adam(conv.parameters(), weight_decay=1)"
+        )
+    )
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5)
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        generate_optimizer_test_code(
+            "torch.optim.Adam(params=conv.parameters(), lr=0.001, betas=(0.9, 0.999), eps=1e-08, weight_decay=0)"
+        )
+    )
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5)
