@@ -6111,7 +6111,17 @@
       "timeout"
     ]
   },
-  "torch.distributed.optim.DistributedOptimizer":{},
+  "torch.distributed.optim.DistributedOptimizer":{
+    "Matcher": "DistributedOptimizerMatcher",
+    "paddle_api": "paddle.distributed.shard_optimizer",
+    "min_input_args": 3,
+    "args_list": [
+      "optimizer_class",
+      "params_rref",
+      "args",
+      "kwargs"
+    ]
+  },
   "torch.distributed.rpc.shutdown": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.rpc.shutdown",

@@ -777,6 +777,22 @@ class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
         return API_TEMPLATE
 
 
+class DistributedOptimizerMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'lr' in kwargs.keys():
+            kwargs['learning_rate'] = kwargs.pop('lr')
+        kwargs.pop('params_rref')
+        opt_class = kwargs.pop('optimizer_class')
+        API_TEMPLATE = textwrap.dedent(
+            """
+            opt = {}({})
+            paddle.distributed.shard_optimizer)(opt)
+            """
+        )
+        code = API_TEMPLATE.format(opt_class, **kwargs)
+        return code
+
+
 class Is_InferenceMatcher(BaseMatcher):
     def generate_aux_code(self):
         API_TEMPLATE = textwrap.dedent(
