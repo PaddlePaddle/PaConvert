@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.xlogy")
+obj = APIBase("torch.Tensor.xlogy_")
 
 
 def test_case_1():
@@ -25,7 +25,7 @@ def test_case_1():
         import torch
         a = torch.tensor([1., 2., 3., 4., 5.])
         b = torch.tensor([1., 2., 3., 4., 5.])
-        result = a.xlogy(b)
+        result = a.xlogy_(b)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,7 +35,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1., 2., 3., 4., 5.]).xlogy(other=torch.tensor([1., 2., 3., 4., 5.]))
+        result = torch.tensor([1., 2., 3., 4., 5.]).xlogy_(other=torch.tensor([1., 2., 3., 4., 5.]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,7 +45,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1.]).xlogy(torch.tensor([1., 2., 3., 4., 5.]))
+        result = torch.tensor([1., 2. ,3.]).xlogy_(other=3.0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,18 +55,8 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1., 2. ,3.]).xlogy(other=3.0)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
         a = torch.tensor([1., 2., 3., 4., 5.])
-        result = a.xlogy(3.0)
+        result = a.xlogy_(3.0)
         """
     )
     obj.run(pytorch_code, ["result"])
