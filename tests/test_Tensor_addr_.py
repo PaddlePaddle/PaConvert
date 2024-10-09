@@ -11,21 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.xlogy")
+obj = APIBase("torch.Tensor.addr_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., 3., 4., 5.])
-        b = torch.tensor([1., 2., 3., 4., 5.])
-        result = a.xlogy(b)
+        a = torch.tensor([4., 5., 6.])
+        b = torch.tensor([1., 2., 3.])
+        input = torch.tensor([[1., 2., 3.], [7., 8., 9.], [10., 11., 12.]])
+        result = input.addr_(a, b)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,7 +35,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1., 2., 3., 4., 5.]).xlogy(other=torch.tensor([1., 2., 3., 4., 5.]))
+        a = torch.tensor([4., 5., 6.])
+        b = torch.tensor([1., 2., 3.])
+        input = torch.tensor([[1., 2., 3.], [7., 8., 9.], [10., 11., 12.]])
+        result = input.addr_(a, b, beta=3)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,7 +48,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1.]).xlogy(torch.tensor([1., 2., 3., 4., 5.]))
+        a = torch.tensor([4., 5., 6.])
+        b = torch.tensor([1., 2., 3.])
+        input = torch.tensor([[1., 2., 3.], [7., 8., 9.], [10., 11., 12.]])
+        result = input.addr_(vec1=a, vec2=b, beta=3, alpha=3)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,7 +61,8 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1., 2. ,3.]).xlogy(other=3.0)
+        input = torch.tensor([[1., 2.], [10., 11.]])
+        result = input.addr_(vec1=torch.tensor([4., 5.]), vec2=torch.tensor([1., 2.]), beta=3, alpha=3)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -65,8 +72,10 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., 2., 3., 4., 5.])
-        result = a.xlogy(3.0)
+        a = torch.tensor([4., 5.])
+        b = torch.tensor([1., 2.])
+        input = torch.tensor([[1., 2.], [10., 11.]])
+        result = input.addr_(vec1=a, alpha=3, vec2=b, beta=3)
         """
     )
     obj.run(pytorch_code, ["result"])
