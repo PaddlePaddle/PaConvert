@@ -26,20 +26,10 @@ def test_case_1():
         result = torch.signal.windows.general_cosine(10, a=[0.46, 0.23, 0.31])
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False, check_dtype=False)
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.signal.windows.general_cosine(10, a=[0.5, 1 - 0.5], sym=False, dtype=torch.float64)
-        """
-    )
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
-def test_case_3():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -49,11 +39,22 @@ def test_case_3():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m=10
+        result = torch.signal.windows.general_cosine(m, a=[0.46, 0.23, 0.31], dtype=torch.float64)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.general_cosine(10, a=[0.46, 0.23, 0.31], dtype=torch.float64, requires_grad=True)
+        result = torch.signal.windows.general_cosine(M=10, a=[0.46, 0.23, 0.31], dtype=torch.float64)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -63,7 +64,7 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.general_cosine(10, a=[0.46, 0.23, 0.31], dtype=torch.float64, layout=torch.strided, requires_grad=True)
+        result = torch.signal.windows.general_cosine(10, a=[0.46, 0.23, 0.31], dtype=torch.float64, requires_grad=True)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -73,7 +74,67 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        result = torch.signal.windows.general_cosine(10, a=[0.46, 0.23, 0.31], dtype=torch.float64, layout=torch.strided, requires_grad=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
         result = torch.signal.windows.general_cosine(10, a=[0.46, 0.23, 0.31], dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.signal.windows.general_cosine(10, a=[0.5, 1 - 0.5], sym=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.signal.windows.general_cosine(10, a=[0.5, 1 - 0.5], sym=False, dtype=torch.float64)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.signal.windows.general_cosine(10, a=[0.5, 1 - 0.5], sym=False, requires_grad=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.signal.windows.general_cosine(10, a=[0.5, 1 - 0.5], sym=False, layout=torch.strided, requires_grad=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.signal.windows.general_cosine(10, a=[0.5, 1 - 0.5], sym=False, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)

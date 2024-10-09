@@ -26,7 +26,7 @@ def test_case_1():
         result = torch.signal.windows.hann(10)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False, check_dtype=False)
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
@@ -43,7 +43,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.hann(10, sym=False, dtype=torch.float64)
+        a=10
+        result = torch.signal.windows.hann(a, dtype=torch.float64)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -53,7 +54,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.hann(10, dtype=torch.float64, requires_grad=True)
+        result = torch.signal.windows.hann(M=10, dtype=torch.float64)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -63,7 +64,7 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.hann(10, dtype=torch.float64, layout=torch.strided, requires_grad=True)
+        result = torch.signal.windows.hann(10, sym=False, dtype=torch.float64)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -73,7 +74,57 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        result = torch.signal.windows.hann(10, dtype=torch.float64, requires_grad=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.signal.windows.hann(10, dtype=torch.float64, layout=torch.strided, requires_grad=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
         result = torch.signal.windows.hann(10, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.signal.windows.hann(10, sym=False, requires_grad=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.signal.windows.hann(10, sym=False, dtype=torch.float64, layout=torch.strided, requires_grad=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.signal.windows.hann(10, sym=False, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
