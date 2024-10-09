@@ -144,7 +144,7 @@ def test_case_13():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.gaussian(10, std=0.6, sym=False)
+        result = torch.signal.windows.gaussian(M=10, std=0.6, sym=False)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -154,7 +154,7 @@ def test_case_14():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.gaussian(10, std=0.6, sym=False, requires_grad=True)
+        result = torch.signal.windows.gaussian(M=10, std=0.6, sym=False, requires_grad=True)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -164,7 +164,7 @@ def test_case_15():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.gaussian(10, std=0.6, sym=False, layout=torch.strided, requires_grad=True)
+        result = torch.signal.windows.gaussian(M=10, std=0.6, sym=False, layout=torch.strided, requires_grad=True)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -174,7 +174,17 @@ def test_case_16():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.gaussian(10, std=0.6, sym=False, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
+        result = torch.signal.windows.gaussian(M=10, std=0.7, sym=False, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_17():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.signal.windows.gaussian(requires_grad=True, std=0.5, sym=False, M=10, layout=torch.strided, device=torch.device('cpu'))
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)

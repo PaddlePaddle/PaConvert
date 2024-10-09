@@ -94,7 +94,7 @@ def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.exponential(10, tau=0.5)
+        result = torch.signal.windows.exponential(M=10, tau=0.5)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -184,7 +184,17 @@ def test_case_17():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.exponential(10, tau=0.5, sym=False, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
+        result = torch.signal.windows.exponential(M=10, sym=False, tau=0.5, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_18():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.signal.windows.exponential(requires_grad=True, sym=False, M=10, layout=torch.strided, device=torch.device('cpu'), tau=0.5)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)

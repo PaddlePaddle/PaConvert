@@ -104,7 +104,7 @@ def test_case_9():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.general_cosine(10, a=[0.5, 1 - 0.5], sym=False, dtype=torch.float64)
+        result = torch.signal.windows.general_cosine(M=10, a=[0.5, 1 - 0.5], sym=False, dtype=torch.float64)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -114,7 +114,7 @@ def test_case_10():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.general_cosine(10, a=[0.5, 1 - 0.5], sym=False, requires_grad=True)
+        result = torch.signal.windows.general_cosine(M=10, a=[0.5, 1 - 0.5], sym=False, requires_grad=True)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -124,7 +124,7 @@ def test_case_11():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.general_cosine(10, a=[0.5, 1 - 0.5], sym=False, layout=torch.strided, requires_grad=True)
+        result = torch.signal.windows.general_cosine(M=10, a=[0.5, 1 - 0.5], sym=False, layout=torch.strided, requires_grad=True)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -134,7 +134,17 @@ def test_case_12():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.general_cosine(10, a=[0.5, 1 - 0.5], sym=False, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
+        result = torch.signal.windows.general_cosine(M=10, a=[0.5, 1 - 0.5], sym=False, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.signal.windows.general_cosine(sym=False, requires_grad=True, a=[0.5, 1 - 0.5], M=10, layout=torch.strided, device=torch.device('cpu'))
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
