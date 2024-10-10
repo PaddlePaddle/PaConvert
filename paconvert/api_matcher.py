@@ -807,6 +807,66 @@ class SwapAxesMatcher(BaseMatcher):
         return code
 
 
+class TensorOrgqrMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}.householder_product(tau={})
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.paddleClass,
+            kwargs["input2"],
+        )
+        return code
+
+
+class AssertMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            assert {}, '{}'
+            """
+        )
+        code = API_TEMPLATE.format(
+            kwargs["condition"],
+            kwargs["message"],
+        )
+        return code
+
+
+class MakeTMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "requires_grad" not in kwargs.keys():
+            kwargs["requires_grad"] = False
+
+        if "dtype" not in kwargs.keys():
+            kwargs["dtype"] = "float32"
+
+        if "low" not in kwargs.keys():
+            kwargs["low"] = 0
+
+        if "high" not in kwargs.keys():
+            kwargs["high"] = 1
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            out = paddle.uniform({}, dtype={}, min={}, max={}).to({})
+            out.stop_gradient = not {}
+            out
+            """
+        )
+        code = API_TEMPLATE.format(
+            kwargs["shape"],
+            kwargs["dtype"],
+            kwargs["low"],
+            kwargs["high"],
+            kwargs["device"],
+            kwargs["requires_grad"],
+        )
+        return code
+
+
 class CreateMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         kwargs = self.parse_kwargs(kwargs)
@@ -3475,6 +3535,96 @@ class SpecialNdtriMatcher(BaseMatcher):
         code = API_TEMPLATE.format(kwargs["input"])
         if "out" in kwargs and kwargs["out"] != "None":
             code = "paddle.assign({}, output={})".format(code, kwargs["out"])
+
+        return code
+
+
+class SpecialNdtrMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            (paddle.erf({}/paddle.sqrt(paddle.to_tensor(2.)))-paddle.erf(paddle.to_tensor(-float('inf'))))/2
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["input"])
+        if "out" in kwargs and kwargs["out"] != "None":
+            code = "paddle.assign({}, output={})".format(code, kwargs["out"])
+
+        return code
+
+
+class LinalgInvExMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "out" in kwargs and kwargs["out"] != "None":
+            out_v = kwargs["out"]
+            API_TEMPLATE = textwrap.dedent(
+                """
+                out1 = paddle.linalg.inv({})
+                out2 = paddle.zeros({}.shape[:-2], dtype='int32')
+                paddle.assign(out1, output={}[0]), paddle.assign(out2, output={}[1])
+                """
+            )
+            code = API_TEMPLATE.format(kwargs["A"], kwargs["A"], out_v, out_v)
+            return code
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                (paddle.linalg.inv({}), paddle.zeros({}.shape[:-2], dtype='int32'))
+                """
+            )
+            code = API_TEMPLATE.format(kwargs["A"], kwargs["A"])
+            return code
+
+
+class LinalgCholeskyExMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "upper" not in kwargs:
+            kwargs["upper"] = False
+        if "out" in kwargs and kwargs["out"] != "None":
+            out_v = kwargs["out"]
+            API_TEMPLATE = textwrap.dedent(
+                """
+                out1 = paddle.linalg.cholesky(x={}, upper={})
+                out2 = paddle.zeros({}.shape[:-2], dtype='int32')
+                paddle.assign(out1, output={}[0]), paddle.assign(out2, output={}[1])
+                """
+            )
+            code = API_TEMPLATE.format(
+                kwargs["input"], kwargs["upper"], kwargs["input"], out_v, out_v
+            )
+            return code
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                (paddle.linalg.cholesky(x={}, upper={}), paddle.zeros({}.shape[:-2], dtype='int32'))
+                """
+            )
+            code = API_TEMPLATE.format(
+                kwargs["input"], kwargs["upper"], kwargs["input"]
+            )
+            return code
+
+
+class OrmqrMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}({})
+            """
+        )
+
+        if "input" not in kwargs.keys():
+            kwargs["x"] = self.paddleClass
+        else:
+            kwargs["x"] = kwargs.pop("input")
+        kwargs["tau"] = kwargs.pop("input2")
+        kwargs["y"] = kwargs.pop("input3")
+        kwargs = self.set_paddle_default_kwargs(kwargs)
+
+        code = API_TEMPLATE.format(
+            self.get_paddle_api(),
+            self.kwargs_to_str(kwargs)
+        )
 
         return code
 
