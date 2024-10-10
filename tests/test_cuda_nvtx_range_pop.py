@@ -14,18 +14,22 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.cuda.nvtx.range_pop")
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if torch.cuda.is_available():
-            torch.cuda.nvtx.range_pop()
-        result = None
+        result = torch.cuda.nvtx.range_pop()
         """
     )
     obj.run(pytorch_code, ["result"])

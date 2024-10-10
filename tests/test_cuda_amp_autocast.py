@@ -21,6 +21,10 @@ from apibase import APIBase
 obj = APIBase("torch.cuda.amp.autocast")
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
@@ -28,16 +32,18 @@ def test_case_1():
         import torch.nn as nn
         x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                             [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        result = None
-        if torch.cuda.is_available():
-            with torch.cuda.amp.autocast(enabled=False):
-                result = x*x
+        with torch.cuda.amp.autocast(enabled=False):
+            result = x*x
 
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -45,16 +51,18 @@ def test_case_2():
         import torch.nn as nn
         x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                             [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        result = None
-        if torch.cuda.is_available():
-            with torch.cuda.amp.autocast():
-                result = x*x
+        with torch.cuda.amp.autocast():
+            result = x*x
 
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
@@ -62,16 +70,19 @@ def test_case_3():
         import torch.nn as nn
         x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                             [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        result = None
-        if torch.cuda.is_available():
-            with torch.cuda.amp.autocast(dtype=torch.float16):
-                result = x*x
+
+        with torch.cuda.amp.autocast(dtype=torch.float16):
+            result = x*x
 
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
@@ -79,10 +90,8 @@ def test_case_4():
         import torch.nn as nn
         x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
                             [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
-        result = None
-        if torch.cuda.is_available():
-            with torch.cuda.amp.autocast(cache_enabled=True):
-                result = x*x
+        with torch.cuda.amp.autocast(cache_enabled=True):
+            result = x*x
 
         """
     )
