@@ -64,7 +64,7 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.general_hamming(10, alpha=0.5, dtype=torch.float64)
+        result = torch.signal.windows.general_hamming(M=10, sym=True)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -74,7 +74,7 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.general_hamming(M=10, alpha=0.8, dtype=torch.float64)
+        result = torch.signal.windows.general_hamming(M=10, sym=True, alpha=0.8, dtype=torch.float64)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -84,7 +84,7 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.general_hamming(10, dtype=torch.float64, requires_grad=True)
+        result = torch.signal.windows.general_hamming(M=10, sym=True, alpha=0.8, dtype=torch.float64, requires_grad=True)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -94,7 +94,7 @@ def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.general_hamming(10, dtype=torch.float64, layout=torch.strided, requires_grad=True)
+        result = torch.signal.windows.general_hamming(M=10, sym=True, alpha=0.8, dtype=torch.float64, layout=torch.strided, requires_grad=True)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -104,7 +104,7 @@ def test_case_9():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.general_hamming(10, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
+        result = torch.signal.windows.general_hamming(M=10, sym=True, alpha=0.8, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -114,7 +114,7 @@ def test_case_10():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.general_hamming(M=10, alpha=0.8, dtype=torch.float64, requires_grad=True)
+        result = torch.signal.windows.general_hamming(M=10, sym=True, alpha=0.8, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=False)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -124,7 +124,7 @@ def test_case_11():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.general_hamming(M=10, alpha=0.8, dtype=torch.float64, layout=torch.strided, requires_grad=True)
+        result = torch.signal.windows.general_hamming(M=10, sym=False)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -134,7 +134,7 @@ def test_case_12():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.general_hamming(M=10, alpha=0.8, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
+        result = torch.signal.windows.general_hamming(M=10, sym=False, alpha=0.8, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -144,7 +144,7 @@ def test_case_13():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.general_hamming(10, sym=False)
+        result = torch.signal.windows.general_hamming(M=10, sym=False, alpha=0.8, layout=torch.strided, requires_grad=True)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -154,7 +154,7 @@ def test_case_14():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.general_hamming(M=10, alpha=0.8, sym=False)
+        result = torch.signal.windows.general_hamming(M=10, sym=False, alpha=0.8, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -164,37 +164,7 @@ def test_case_15():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.general_hamming(M=10, alpha=0.8, sym=False, requires_grad=True)
-        """
-    )
-    obj.run(pytorch_code, ["result"], check_value=False)
-
-
-def test_case_16():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.signal.windows.general_hamming(M=10, alpha=0.8, sym=False, layout=torch.strided, requires_grad=True)
-        """
-    )
-    obj.run(pytorch_code, ["result"], check_value=False)
-
-
-def test_case_17():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.signal.windows.general_hamming(M=10, alpha=0.8, sym=False, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
-        """
-    )
-    obj.run(pytorch_code, ["result"], check_value=False)
-
-
-def test_case_18():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.signal.windows.general_hamming(requires_grad=True, alpha=0.2, sym=False, M=5, layout=torch.strided, device=torch.device('cpu'))
+        result = torch.signal.windows.general_hamming(requires_grad=False, alpha=0.2, sym=False, M=5, layout=torch.strided, device=torch.device('cpu'))
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
