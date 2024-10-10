@@ -85,7 +85,7 @@ def test_case_6():
         import numpy
         a = torch.tensor([0.25, 0.5, 0.75])
         out = torch.tensor([0.25, 0.5, 0.75])
-        result = torch.special.ndtr(a, out)
+        result = torch.special.ndtr(a, out=out)
         """
     )
     obj.run(pytorch_code, ["out"])

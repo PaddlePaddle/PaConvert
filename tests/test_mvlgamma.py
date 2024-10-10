@@ -47,7 +47,7 @@ def test_case_3():
         import torch
         x = torch.tensor([2.5, 3.5, 4, 6.5, 7.8, 10.23, 34.25])
         result = torch.tensor([2.5, 3.5, 4, 6.5, 7.8, 10.23, 34.25])
-        torch.mvlgamma(x, 2, result)
+        torch.mvlgamma(x, 2, out=result)
         """
     )
     obj.run(pytorch_code, ["result"])
