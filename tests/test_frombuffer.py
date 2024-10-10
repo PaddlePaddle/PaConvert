@@ -102,12 +102,23 @@ def test_case_7():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_9():
+def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
         import array
         result = torch.frombuffer(buffer=array.array('h', [1, 2]), dtype=torch.float32)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import array
+        result = torch.frombuffer(buffer=array.array('h', [1, 2]), dtype=torch.uint8)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -119,6 +130,28 @@ def test_case_10():
         import torch
         import array
         result = torch.frombuffer(dtype=torch.float64, buffer=array.array('i', [1, 2, 3, 4]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import array
+        result = torch.frombuffer(dtype=torch.complex64, buffer=array.array('i', [1, 2, 3, 4]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import array
+        result = torch.frombuffer(buffer=array.array('b', [-1, 0, 0, 0]), dtype=torch.bool)
         """
     )
     obj.run(pytorch_code, ["result"])

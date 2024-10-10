@@ -4800,7 +4800,7 @@ class FromBufferMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             import numpy as np
-            paddle.to_tensor(np.frombuffer(np.array({}), np.dtype({})))
+            paddle.to_tensor(np.frombuffer(np.array({}), {}))
             """
         )
         code = API_TEMPLATE.format(kwargs["buffer"], kwargs["dtype"])
