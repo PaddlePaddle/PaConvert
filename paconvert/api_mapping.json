@@ -14776,6 +14776,195 @@
       "input": "x"
     }
   },
+  "torch.signal.windows.blackman": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.audio.functional.get_window",
+    "min_input_args": 1,
+    "args_list": [
+      "M",
+      "*",
+      "sym",
+      "dtype",
+      "layout",
+      "device",
+      "requires_grad"
+    ],
+    "kwargs_change": {
+      "M": "win_length",
+      "sym": "fftbins",
+      "dtype": "dtype"
+    },
+    "paddle_default_kwargs": {
+      "dtype": "'float32'",
+      "window": "'blackman'"
+    }
+  },
+  "torch.signal.windows.cosine": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.audio.functional.get_window",
+    "min_input_args": 1,
+    "args_list": [
+      "M",
+      "*",
+      "sym",
+      "dtype",
+      "layout",
+      "device",
+      "requires_grad"
+    ],
+    "kwargs_change": {
+      "M": "win_length",
+      "sym": "fftbins",
+      "dtype": "dtype"
+    },
+    "paddle_default_kwargs": {
+      "dtype": "'float32'",
+      "window": "'cosine'"
+    }
+  },
+  "torch.signal.windows.exponential": {
+    "Matcher": "SignalWindowsWatcher",
+    "paddle_api": "paddle.audio.functional.get_window",
+    "min_input_args": 1,
+    "args_list": [
+      "M",
+      "*",
+      "center",
+      "tau",
+      "sym",
+      "dtype",
+      "layout",
+      "device",
+      "requires_grad"
+    ],
+    "unsupport_args": [
+      "center"
+    ],
+    "kwargs_change": {
+      "M": "win_length",
+      "sym": "fftbins",
+      "dtype": "dtype"
+    },
+    "paddle_default_kwargs": {
+      "dtype": "'float32'"
+    }
+  },
+  "torch.signal.windows.gaussian": {
+    "Matcher": "SignalWindowsWatcher",
+    "paddle_api": "paddle.audio.functional.get_window",
+    "min_input_args": 1,
+    "args_list": [
+      "M",
+      "*",
+      "std",
+      "sym",
+      "dtype",
+      "layout",
+      "device",
+      "requires_grad"
+    ],
+    "kwargs_change": {
+      "M": "win_length",
+      "sym": "fftbins",
+      "dtype": "dtype"
+    },
+    "paddle_default_kwargs": {
+      "dtype": "'float32'"
+    }
+  },
+  "torch.signal.windows.general_cosine": {
+    "Matcher": "SignalWindowsWatcher",
+    "paddle_api": "paddle.audio.functional.get_window",
+    "min_input_args": 1,
+    "args_list": [
+      "M",
+      "*",
+      "a",
+      "sym",
+      "dtype",
+      "layout",
+      "device",
+      "requires_grad"
+    ],
+    "kwargs_change": {
+      "M": "win_length",
+      "a": "",
+      "sym": "fftbins",
+      "dtype": "dtype"
+    },
+    "paddle_default_kwargs": {
+      "dtype": "'float32'"
+    }
+  },
+  "torch.signal.windows.general_hamming": {
+    "Matcher": "SignalWindowsWatcher",
+    "paddle_api": "paddle.audio.functional.get_window",
+    "min_input_args": 1,
+    "args_list": [
+      "M",
+      "*",
+      "alpha",
+      "sym",
+      "dtype",
+      "layout",
+      "device",
+      "requires_grad"
+    ],
+    "kwargs_change": {
+      "M": "win_length",
+      "sym": "fftbins",
+      "dtype": "dtype"
+    },
+    "paddle_default_kwargs": {
+      "dtype": "'float32'"
+    }
+  },
+  "torch.signal.windows.hamming": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.audio.functional.get_window",
+    "min_input_args": 1,
+    "args_list": [
+      "M",
+      "*",
+      "sym",
+      "dtype",
+      "layout",
+      "device",
+      "requires_grad"
+    ],
+    "kwargs_change": {
+      "M": "win_length",
+      "sym": "fftbins",
+      "dtype": "dtype"
+    },
+    "paddle_default_kwargs": {
+      "dtype": "'float32'",
+      "window": "'hamming'"
+    }
+  },
+  "torch.signal.windows.hann": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.audio.functional.get_window",
+    "min_input_args": 1,
+    "args_list": [
+      "M",
+      "*",
+      "sym",
+      "dtype",
+      "layout",
+      "device",
+      "requires_grad"
+    ],
+    "kwargs_change": {
+      "M": "win_length",
+      "sym": "fftbins",
+      "dtype": "dtype"
+    },
+    "paddle_default_kwargs": {
+      "dtype": "'float32'",
+      "window": "'hann'"
+    }
+  },
   "torch.signbit": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.signbit",

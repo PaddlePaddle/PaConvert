@@ -519,6 +519,40 @@ class InitKaimingMatcher(InitMatcher):
         return super().generate_code(kwargs)
 
 
+class SignalWindowsWatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        new_kwargs = {}
+        if "exponential" in self.torch_api:
+            if "sym" in kwargs and kwargs["sym"] == "(False)":
+                if "tau" in kwargs:
+                    tau_value = float(str(kwargs.pop("tau")).strip("()"))
+                    new_kwargs["window"] = ("exponential", None, tau_value)
+                else:
+                    new_kwargs["window"] = ("exponential", None, 1.0)
+            else:
+                if "tau" in kwargs:
+                    tau_value = float(str(kwargs.pop("tau")).strip("()"))
+                    new_kwargs["window"] = ("exponential", tau_value)
+                else:
+                    new_kwargs["window"] = ("exponential", 1.0)
+        if "gaussian" in self.torch_api:
+            if "std" in kwargs:
+                std_value = float(str(kwargs.pop("std")).strip("()"))
+                new_kwargs["window"] = ("gaussian", std_value)
+            else:
+                new_kwargs["window"] = ("gaussian", 1.0)
+        if "general_hamming" in self.torch_api:
+            if "alpha" in kwargs:
+                alpha_value = float(str(kwargs.pop("alpha")).strip("()"))
+                new_kwargs["window"] = ("general_hamming", alpha_value)
+            else:
+                new_kwargs["window"] = ("general_hamming", 0.54)
+        if "general_cosine" in self.torch_api:
+            new_kwargs["window"] = ("general_cosine", kwargs.pop("a"))
+        new_kwargs.update(kwargs)
+        return GenericMatcher.generate_code(self, new_kwargs)
+
+
 class Num2TensorBinaryWithAlphaMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs_change = self.api_mapping.get("kwargs_change", {})
