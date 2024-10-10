@@ -2324,7 +2324,7 @@ class IndexCopyMatcher(BaseMatcher):
         return code
 
 
-class ReverseMomentumMatcher(BaseMatcher):
+class ReverseMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "momentum" in kwargs:
             kwargs["momentum"] = f"1 - {kwargs.pop('momentum')}"
@@ -4800,10 +4800,10 @@ class FromBufferMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             import numpy as np
-            paddle.to_tensor(np.frombuffer(np.array({}), dtype = np.int32))
+            paddle.to_tensor(np.frombuffer(np.array({}), np.dtype({})))
             """
         )
-        code = API_TEMPLATE.format(kwargs["buffer"])
+        code = API_TEMPLATE.format(kwargs["buffer"], kwargs["dtype"])
 
         return code
 
@@ -4838,7 +4838,7 @@ class SetNumInteropThreadsMatcher(BaseMatcher):
             """
             import os
             def _set_num_interop_threads(int):
-                os.environ['OMP_NUM_THREADS'] = "int"
+                os.environ['OMP_NUM_THREADS'] = str(int)
             """
         )
         return CODE_TEMPLATE
@@ -4861,7 +4861,7 @@ class SetNumThreadsMatcher(BaseMatcher):
             """
             import os
             def _set_num_threads(int):
-                os.environ['CPU_NUM'] = "int"
+                os.environ['CPU_NUM'] = str(int)
             """
         )
         return CODE_TEMPLATE

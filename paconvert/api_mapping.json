@@ -4887,7 +4887,7 @@
     }
   },
   "torch.blackman_window": {
-    "Matcher": "ReverseMomentumMatcher",
+    "Matcher": "ReverseMatcher",
     "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
@@ -7582,7 +7582,7 @@
     ]
   },
   "torch.hamming_window": {
-    "Matcher": "ReverseMomentumMatcher",
+    "Matcher": "ReverseMatcher",
     "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
@@ -7611,7 +7611,7 @@
     }
   },
   "torch.hann_window": {
-    "Matcher": "ReverseMomentumMatcher",
+    "Matcher": "ReverseMatcher",
     "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
@@ -9562,7 +9562,7 @@
     ]
   },
   "torch.nn.BatchNorm1d": {
-    "Matcher": "ReverseMomentumMatcher",
+    "Matcher": "ReverseMatcher",
     "paddle_api": "paddle.nn.BatchNorm1D",
     "min_input_args": 1,
     "args_list": [
@@ -9586,7 +9586,7 @@
     }
   },
   "torch.nn.BatchNorm2d": {
-    "Matcher": "ReverseMomentumMatcher",
+    "Matcher": "ReverseMatcher",
     "paddle_api": "paddle.nn.BatchNorm2D",
     "min_input_args": 1,
     "args_list": [
@@ -9610,7 +9610,7 @@
     }
   },
   "torch.nn.BatchNorm3d": {
-    "Matcher": "ReverseMomentumMatcher",
+    "Matcher": "ReverseMatcher",
     "paddle_api": "paddle.nn.BatchNorm3D",
     "min_input_args": 1,
     "args_list": [
@@ -10163,7 +10163,7 @@
     ]
   },
   "torch.nn.InstanceNorm1d": {
-    "Matcher": "ReverseMomentumMatcher",
+    "Matcher": "ReverseMatcher",
     "paddle_api": "paddle.nn.InstanceNorm1D",
     "min_input_args": 1,
     "args_list": [
@@ -10187,7 +10187,7 @@
     }
   },
   "torch.nn.InstanceNorm2d": {
-    "Matcher": "ReverseMomentumMatcher",
+    "Matcher": "ReverseMatcher",
     "paddle_api": "paddle.nn.InstanceNorm2D",
     "min_input_args": 1,
     "args_list": [
@@ -10211,7 +10211,7 @@
     }
   },
   "torch.nn.InstanceNorm3d": {
-    "Matcher": "ReverseMomentumMatcher",
+    "Matcher": "ReverseMatcher",
     "paddle_api": "paddle.nn.InstanceNorm3D",
     "min_input_args": 1,
     "args_list": [
@@ -11249,7 +11249,7 @@
     "min_input_args": 0
   },
   "torch.nn.SyncBatchNorm": {
-    "Matcher": "ReverseMomentumMatcher",
+    "Matcher": "ReverseMatcher",
     "paddle_api": "paddle.nn.SyncBatchNorm",
     "args_list": [
       "num_features",
@@ -11670,7 +11670,7 @@
     ]
   },
   "torch.nn.functional.batch_norm": {
-    "Matcher": "ReverseMomentumMatcher",
+    "Matcher": "ReverseMatcher",
     "paddle_api": "paddle.nn.functional.batch_norm",
     "args_list": [
       "input",
@@ -12229,7 +12229,7 @@
     "min_input_args": 2
   },
   "torch.nn.functional.instance_norm": {
-    "Matcher": "ReverseMomentumMatcher",
+    "Matcher": "ReverseMatcher",
     "paddle_api": "paddle.nn.functional.instance_norm",
     "args_list": [
       "input",
@@ -13251,7 +13251,7 @@
     }
   },
   "torch.nn.modules.batchnorm._BatchNorm": {
-    "Matcher": "ReverseMomentumMatcher",
+    "Matcher": "ReverseMatcher",
     "paddle_api": "paddle.nn.layer.norm._BatchNormBase",
     "args_list": [
       "num_features",
