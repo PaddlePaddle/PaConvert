@@ -76,3 +76,16 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["out"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import numpy
+        a = torch.tensor([0.25, 0.5, 0.75])
+        out = torch.tensor([0.25, 0.5, 0.75])
+        result = torch.special.ndtr(a, out)
+        """
+    )
+    obj.run(pytorch_code, ["out"])

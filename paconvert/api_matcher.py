@@ -807,7 +807,7 @@ class SwapAxesMatcher(BaseMatcher):
         return code
 
 
-class OrgqrMatcher(BaseMatcher):
+class TensorOrgqrMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """

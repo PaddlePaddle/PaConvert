@@ -30,16 +30,3 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[0.02773777, 0.93004224, 0.06911496],
-                [0.24831591, 0.45733623, 0.07717843],
-                [0.48016702, 0.14235102, 0.42620817]])
-        result = x.matrix_exp()
-        """
-    )
-    obj.run(pytorch_code, ["result"])

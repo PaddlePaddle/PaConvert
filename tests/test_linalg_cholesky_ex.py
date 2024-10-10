@@ -74,3 +74,18 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["out1", "info1"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1.07676095, 1.34574506, 0.74611458],
+        [1.34574506, 2.00152669, 1.24800785],
+        [0.74611458, 1.24800785, 0.88039371]])
+        out1 = torch.randn(3, 3)
+        info1 = torch.tensor([1, 2, 3], dtype=torch.int32)
+        torch.linalg.cholesky_ex(a, check_errors=True, out=(out1, info1), upper=True)
+        """
+    )
+    obj.run(pytorch_code, ["out1", "info1"])

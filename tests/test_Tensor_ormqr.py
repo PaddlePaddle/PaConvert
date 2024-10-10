@@ -45,14 +45,14 @@ def test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_3():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
         x = torch.tensor([[-114.6, 10.9, 1.1], [-0.304, 38.07, 69.38], [-0.45, -0.17, 62]])
         tau = torch.tensor([1.55, 1.94, 3.0])
         y = torch.tensor([[-114.6, 10.9, 1.1], [-0.304, 38.07, 69.38], [-0.45, -0.17, 62]])
-        result = x.ormqr(input2=tau, input3=y, left=True)
+        result = x.ormqr(tau, y, True, False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -65,7 +65,7 @@ def test_case_4():
         x = torch.tensor([[-114.6, 10.9, 1.1], [-0.304, 38.07, 69.38], [-0.45, -0.17, 62]])
         tau = torch.tensor([1.55, 1.94, 3.0])
         y = torch.tensor([[-114.6, 10.9, 1.1], [-0.304, 38.07, 69.38], [-0.45, -0.17, 62]])
-        result = x.ormqr(input2=tau, input3=y, transpose=True)
+        result = x.ormqr(left=True, input2=tau, input3=y)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -78,7 +78,20 @@ def test_case_5():
         x = torch.tensor([[-114.6, 10.9, 1.1], [-0.304, 38.07, 69.38], [-0.45, -0.17, 62]])
         tau = torch.tensor([1.55, 1.94, 3.0])
         y = torch.tensor([[-114.6, 10.9, 1.1], [-0.304, 38.07, 69.38], [-0.45, -0.17, 62]])
-        result = x.ormqr(input2=tau, input3=y, left=True, transpose=True)
+        result = x.ormqr(input2=tau, transpose=True, input3=y)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[-114.6, 10.9, 1.1], [-0.304, 38.07, 69.38], [-0.45, -0.17, 62]])
+        tau = torch.tensor([1.55, 1.94, 3.0])
+        y = torch.tensor([[-114.6, 10.9, 1.1], [-0.304, 38.07, 69.38], [-0.45, -0.17, 62]])
+        result = x.ormqr(input2=tau, left=True, transpose=True, input3=y)
         """
     )
     obj.run(pytorch_code, ["result"])

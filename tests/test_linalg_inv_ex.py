@@ -73,3 +73,18 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["out1", "info1"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0.02773777, 0.93004224, 0.06911496],
+                [0.24831591, 0.45733623, 0.07717843],
+                [0.48016702, 0.14235102, 0.42620817]])
+        out1 = torch.tensor([])
+        info1 = torch.tensor([1, 2, 3], dtype=torch.int32)
+        out1, info1 = torch.linalg.inv_ex(x, out=(out1, info1), check_errors=True)
+        """
+    )
+    obj.run(pytorch_code, ["out1", "info1"])

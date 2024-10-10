@@ -47,7 +47,7 @@ def test_case_3():
         import torch
         x = torch.tensor([2.5, 3.5, 4, 6.5, 7.8, 10.23, 34.25])
         result = torch.tensor([2.5, 3.5, 4, 6.5, 7.8, 10.23, 34.25])
-        torch.mvlgamma(x, p=2, out=result)
+        torch.mvlgamma(x, 2, result)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -60,6 +60,18 @@ def test_case_4():
         x = torch.tensor([2.5, 3.5, 4, 6.5, 7.8, 10.23, 34.25])
         result = torch.tensor([2.5, 3.5, 4, 6.5, 7.8, 10.23, 34.25])
         torch.mvlgamma(input=x, p=2, out=result)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([2.5, 3.5, 4, 6.5, 7.8, 10.23, 34.25])
+        result = torch.tensor([2.5, 3.5, 4, 6.5, 7.8, 10.23, 34.25])
+        torch.mvlgamma(out=result, input=x, p=2)
         """
     )
     obj.run(pytorch_code, ["result"])

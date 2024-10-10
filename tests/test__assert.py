@@ -59,6 +59,18 @@ def test_case_4():
         import torch
         x = torch.tensor([1., 2., float('nan')])
         y = x
+        torch._assert(message="not equal", condition=(x==y))
+        """
+    )
+    obj.run(pytorch_code)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., float('nan')])
+        y = x
         torch._assert(message="not equal", (x==y))
         """
     )
