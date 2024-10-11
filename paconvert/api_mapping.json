@@ -2940,7 +2940,7 @@
     ]
   },
   "torch.Tensor.ormqr": {
-    "Matcher": "OrmqrMatcher",
+    "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.linalg.ormqr",
     "min_input_args": 2,
     "args_list": [
@@ -2948,7 +2948,11 @@
       "input3",
       "left",
       "transpose"
-    ]
+    ],
+    "kwargs_change": {
+      "input2": "tau",
+      "input3": "y"
+    }
   },
   "torch.Tensor.outer": {
     "Matcher": "GenericMatcher",
@@ -14052,7 +14056,7 @@
     ]
   },
   "torch.ormqr": {
-    "Matcher": "OrmqrMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linalg.ormqr",
     "min_input_args": 3,
     "args_list": [
@@ -14061,7 +14065,12 @@
       "input3",
       "left",
       "transpose"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "input2": "tau",
+      "input3": "y"
+    }
   },
   "torch.outer": {
     "Matcher": "GenericMatcher",

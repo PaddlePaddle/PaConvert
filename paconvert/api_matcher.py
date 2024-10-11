@@ -837,9 +837,6 @@ class AssertMatcher(BaseMatcher):
 
 class MakeTMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "requires_grad" not in kwargs.keys():
-            kwargs["requires_grad"] = False
-
         if "dtype" not in kwargs.keys():
             kwargs["dtype"] = "float32"
 
@@ -849,22 +846,38 @@ class MakeTMatcher(BaseMatcher):
         if "high" not in kwargs.keys():
             kwargs["high"] = 1
 
-        API_TEMPLATE = textwrap.dedent(
-            """
-            out = paddle.uniform({}, dtype={}, min={}, max={}).to({})
-            out.stop_gradient = not {}
-            out
-            """
-        )
-        code = API_TEMPLATE.format(
-            kwargs["shape"],
-            kwargs["dtype"],
-            kwargs["low"],
-            kwargs["high"],
-            kwargs["device"],
-            kwargs["requires_grad"],
-        )
-        return code
+        if "requires_grad" not in kwargs.keys():
+            API_TEMPLATE = textwrap.dedent(
+                """
+                paddle.uniform({}, dtype={}, min={}, max={}).to({})
+                """
+            )
+            code = API_TEMPLATE.format(
+                kwargs["shape"],
+                kwargs["dtype"],
+                kwargs["low"],
+                kwargs["high"],
+                kwargs["device"],
+            )
+            return code
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                out = paddle.uniform({}, dtype={}, min={}, max={}).to({})
+                out.stop_gradient = not {}
+                out
+                """
+            )
+            code = API_TEMPLATE.format(
+                kwargs["shape"],
+                kwargs["dtype"],
+                kwargs["low"],
+                kwargs["high"],
+                kwargs["device"],
+                kwargs["requires_grad"],
+            )
+            return code
+
 
 
 class CreateMatcher(BaseMatcher):
@@ -3476,30 +3489,6 @@ class LinalgCholeskyExMatcher(BaseMatcher):
                 kwargs["input"], kwargs["upper"], kwargs["input"]
             )
             return code
-
-
-class OrmqrMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {}({})
-            """
-        )
-
-        if "input" not in kwargs.keys():
-            kwargs["x"] = self.paddleClass
-        else:
-            kwargs["x"] = kwargs.pop("input")
-        kwargs["tau"] = kwargs.pop("input2")
-        kwargs["y"] = kwargs.pop("input3")
-        kwargs = self.set_paddle_default_kwargs(kwargs)
-
-        code = API_TEMPLATE.format(
-            self.get_paddle_api(),
-            self.kwargs_to_str(kwargs)
-        )
-
-        return code
 
 
 class AdjointMatcher(BaseMatcher):
