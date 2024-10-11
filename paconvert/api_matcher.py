@@ -2328,8 +2328,8 @@ class ReverseMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "momentum" in kwargs:
             kwargs["momentum"] = f"1 - {kwargs.pop('momentum')}"
-        if "periodic" in kwargs:
-            kwargs["fftbins"] = f"1 - {kwargs.pop('periodic')}"
+        if "sym" in kwargs:
+            kwargs["fftbins"] = f"1 - {kwargs.pop('sym')}"
         return GenericMatcher.generate_code(self, kwargs)
 
 

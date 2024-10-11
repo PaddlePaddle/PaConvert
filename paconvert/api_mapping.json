@@ -4887,7 +4887,7 @@
     }
   },
   "torch.blackman_window": {
-    "Matcher": "ReverseMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
@@ -7578,7 +7578,7 @@
     ]
   },
   "torch.hamming_window": {
-    "Matcher": "ReverseMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
@@ -7607,7 +7607,7 @@
     }
   },
   "torch.hann_window": {
-    "Matcher": "ReverseMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.audio.functional.get_window",
     "min_input_args": 1,
     "args_list": [
@@ -7626,7 +7626,7 @@
     },
     "paddle_default_kwargs": {
       "dtype": "'float32'",
-      "window": "'hamming'"
+      "window": "'hann'"
     }
   },
   "torch.heaviside": {

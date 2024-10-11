@@ -26,7 +26,7 @@ def test_case_1():
         result = torch.blackman_window(10)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False, check_dtype=False)
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
