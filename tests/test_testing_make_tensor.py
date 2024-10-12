@@ -81,3 +81,27 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.testing.make_tensor(3, device='cpu', dtype=torch.float32,
+                                           low=-1, requires_grad=False, exclude_zero=False, noncontiguous=False, high=1,
+                                           memory_format=None)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.testing.make_tensor(3, 3, device='cpu', dtype=torch.float32,
+                                           low=-1, requires_grad=False, exclude_zero=False, noncontiguous=False, high=1,
+                                           memory_format=None)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

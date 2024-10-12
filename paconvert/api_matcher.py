@@ -807,20 +807,6 @@ class SwapAxesMatcher(BaseMatcher):
         return code
 
 
-class TensorOrgqrMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {}.householder_product(tau={})
-            """
-        )
-        code = API_TEMPLATE.format(
-            self.paddleClass,
-            kwargs["input2"],
-        )
-        return code
-
-
 class AssertMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
@@ -836,16 +822,26 @@ class AssertMatcher(BaseMatcher):
 
 
 class MakeTMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "dtype" not in kwargs.keys():
+    def get_paddle_nodes(self, args, kwargs):
+        kwargs = self.parse_kwargs(kwargs)
+        if "shape" not in kwargs:
+            if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
+                shape = self.parse_args(args)
+            elif isinstance(args[0], ast.Starred):
+                shape = astor.to_source(args[0].value).strip("\n")
+            else:
+                shape = self.parse_args(args)[0]
+            kwargs = {"shape": str(shape).replace("'", ""), **kwargs}
+        
+        if "dtype" not in kwargs:
             kwargs["dtype"] = "float32"
 
-        if "low" not in kwargs.keys():
+        if "low" not in kwargs:
             kwargs["low"] = 0
 
-        if "high" not in kwargs.keys():
+        if "high" not in kwargs:
             kwargs["high"] = 1
-
+        
         if "requires_grad" not in kwargs.keys():
             API_TEMPLATE = textwrap.dedent(
                 """
@@ -859,7 +855,6 @@ class MakeTMatcher(BaseMatcher):
                 kwargs["high"],
                 kwargs["device"],
             )
-            return code
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
@@ -876,8 +871,8 @@ class MakeTMatcher(BaseMatcher):
                 kwargs["device"],
                 kwargs["requires_grad"],
             )
-            return code
-
+        
+        return ast.parse(code).body
 
 
 class CreateMatcher(BaseMatcher):
