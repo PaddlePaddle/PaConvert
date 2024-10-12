@@ -1450,11 +1450,28 @@ class ScatterMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-class ScatterReduceMatcher(BaseMatcher):
+class ScatterReduceMatcher(BaseMatcher):   
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def reduce_type(type):
+                map = {"sum": "add", "prod": "multiply"}
+                if type == "sum" or type == "prod":
+                    type = map[type]
+                return type
+            setattr(paddle, 'reduce_type', reduce_type)
+            """
+        )
+        return CODE_TEMPLATE
+
     def generate_code(self, kwargs):
+        allowed_reduce_type = ['"""sum"""', '"""prod"""', '"""amax"""', '"""amin"""', '"""mean"""']
         reduce_mapping = {'"""sum"""': '"add"', '"""prod"""': '"multiply"'}
         if "reduce" in kwargs and kwargs["reduce"] in reduce_mapping:
             kwargs["reduce"] = reduce_mapping[kwargs["reduce"]]
+        elif "reduce" in kwargs and kwargs["reduce"] not in allowed_reduce_type:
+            self.write_aux_code()
+            kwargs["reduce"] = "paddle_aux.reduce_type({})".format(kwargs["reduce"])
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -3149,10 +3166,7 @@ class Num2TensorBinaryMatcher(BaseMatcher):
 class CartesianProdMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         new_args = self.parse_args(args)
-        code = "paddle.cartesian_prod([ {}".format(new_args[0])
-        for arg in new_args[1:]:
-            code = code + ", {}".format(arg)
-        code = code + "])"
+        code = "paddle.cartesian_prod([{}])".format(", ".join(new_args))
         return ast.parse(code).body
 
 
@@ -4289,175 +4303,175 @@ class CanCastMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def can_cast(from_, to):
+            def can_cast(from_, to):                
                 can_cast_dict = {
-                    paddle.bfloat16: {
-                        paddle.bfloat16: True,
-                        paddle.float16: True,
-                        paddle.float32: True,
-                        paddle.float64: True,
-                        paddle.complex64: True,
-                        paddle.complex128: True,
-                        paddle.uint8: False,
-                        paddle.int8: False,
-                        paddle.int16: False,
-                        paddle.int32: False,
-                        paddle.int64: False,
-                        paddle.bool: False
+                    'bfloat16': {
+                        'bfloat16': True,
+                        'float16': True,
+                        'float32': True,
+                        'float64': True,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': False,
+                        'int8': False,
+                        'int16': False,
+                        'int32': False,
+                        'int64': False,
+                        'bool': False
                     },
-                    paddle.float16: {
-                        paddle.bfloat16: True,
-                        paddle.float16: True,
-                        paddle.float32: True,
-                        paddle.float64: True,
-                        paddle.complex64: True,
-                        paddle.complex128: True,
-                        paddle.uint8: False,
-                        paddle.int8: False,
-                        paddle.int16: False,
-                        paddle.int32: False,
-                        paddle.int64: False,
-                        paddle.bool: False,
+                    'float16': {
+                        'bfloat16': True,
+                        'float16': True,
+                        'float32': True,
+                        'float64': True,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': False,
+                        'int8': False,
+                        'int16': False,
+                        'int32': False,
+                        'int64': False,
+                        'bool': False,
                     },
-                    paddle.float32: {
-                        paddle.bfloat16: True,
-                        paddle.float16: True,
-                        paddle.float32: True,
-                        paddle.float64: True,
-                        paddle.complex64: True,
-                        paddle.complex128: True,
-                        paddle.uint8: False,
-                        paddle.int8: False,
-                        paddle.int16: False,
-                        paddle.int32: False,
-                        paddle.int64: False,
-                        paddle.bool: False,
+                    'float32': {
+                        'bfloat16': True,
+                        'float16': True,
+                        'float32': True,
+                        'float64': True,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': False,
+                        'int8': False,
+                        'int16': False,
+                        'int32': False,
+                        'int64': False,
+                        'bool': False,
                     },
-                    paddle.float64: {
-                        paddle.bfloat16: True,
-                        paddle.float16: True,
-                        paddle.float32: True,
-                        paddle.float64: True,
-                        paddle.complex64: True,
-                        paddle.complex128: True,
-                        paddle.uint8: False,
-                        paddle.int8: False,
-                        paddle.int16: False,
-                        paddle.int32: False,
-                        paddle.int64: False,
-                        paddle.bool: False,
+                    'float64': {
+                        'bfloat16': True,
+                        'float16': True,
+                        'float32': True,
+                        'float64': True,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': False,
+                        'int8': False,
+                        'int16': False,
+                        'int32': False,
+                        'int64': False,
+                        'bool': False,
                     },
-                    paddle.complex64: {
-                        paddle.bfloat16: False,
-                        paddle.float16: False,
-                        paddle.float32: False,
-                        paddle.float64: False,
-                        paddle.complex64: True,
-                        paddle.complex128: True,
-                        paddle.uint8: False,
-                        paddle.int8: False,
-                        paddle.int16: False,
-                        paddle.int32: False,
-                        paddle.int64: False,
-                        paddle.bool: False,
+                    'complex64': {
+                        'bfloat16': False,
+                        'float16': False,
+                        'float32': False,
+                        'float64': False,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': False,
+                        'int8': False,
+                        'int16': False,
+                        'int32': False,
+                        'int64': False,
+                        'bool': False,
                     },
-                    paddle.complex128: {
-                        paddle.bfloat16: False,
-                        paddle.float16: False,
-                        paddle.float32: False,
-                        paddle.float64: False,
-                        paddle.complex64: True,
-                        paddle.complex128: True,
-                        paddle.uint8: False,
-                        paddle.int8: False,
-                        paddle.int16: False,
-                        paddle.int32: False,
-                        paddle.int64: False,
-                        paddle.bool: False,
+                    'complex128': {
+                        'bfloat16': False,
+                        'float16': False,
+                        'float32': False,
+                        'float64': False,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': False,
+                        'int8': False,
+                        'int16': False,
+                        'int32': False,
+                        'int64': False,
+                        'bool': False,
                     },
-                    paddle.uint8: {
-                        paddle.bfloat16: True,
-                        paddle.float16: True,
-                        paddle.float32: True,
-                        paddle.float64: True,
-                        paddle.complex64: True,
-                        paddle.complex128: True,
-                        paddle.uint8: True,
-                        paddle.int8: True,
-                        paddle.int16: True,
-                        paddle.int32: True,
-                        paddle.int64: True,
-                        paddle.bool: False,
+                    'uint8': {
+                        'bfloat16': True,
+                        'float16': True,
+                        'float32': True,
+                        'float64': True,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': True,
+                        'int8': True,
+                        'int16': True,
+                        'int32': True,
+                        'int64': True,
+                        'bool': False,
                     },
-                    paddle.int8: {
-                        paddle.bfloat16: True,
-                        paddle.float16: True,
-                        paddle.float32: True,
-                        paddle.float64: True,
-                        paddle.complex64: True,
-                        paddle.complex128: True,
-                        paddle.uint8: True,
-                        paddle.int8: True,
-                        paddle.int16: True,
-                        paddle.int32: True,
-                        paddle.int64: True,
-                        paddle.bool: False,
+                    'int8': {
+                        'bfloat16': True,
+                        'float16': True,
+                        'float32': True,
+                        'float64': True,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': True,
+                        'int8': True,
+                        'int16': True,
+                        'int32': True,
+                        'int64': True,
+                        'bool': False,
                     },
-                    paddle.int16: {
-                        paddle.bfloat16: True,
-                        paddle.float16: True,
-                        paddle.float32: True,
-                        paddle.float64: True,
-                        paddle.complex64: True,
-                        paddle.complex128: True,
-                        paddle.uint8: True,
-                        paddle.int8: True,
-                        paddle.int16: True,
-                        paddle.int32: True,
-                        paddle.int64: True,
-                        paddle.bool: False,
+                    'int16': {
+                        'bfloat16': True,
+                        'float16': True,
+                        'float32': True,
+                        'float64': True,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': True,
+                        'int8': True,
+                        'int16': True,
+                        'int32': True,
+                        'int64': True,
+                        'bool': False,
                     },
-                    paddle.int32: {
-                        paddle.bfloat16: True,
-                        paddle.float16: True,
-                        paddle.float32: True,
-                        paddle.float64: True,
-                        paddle.complex64: True,
-                        paddle.complex128: True,
-                        paddle.uint8: True,
-                        paddle.int8: True,
-                        paddle.int16: True,
-                        paddle.int32: True,
-                        paddle.int64: True,
-                        paddle.bool: False,
+                    'int32': {
+                        'bfloat16': True,
+                        'float16': True,
+                        'float32': True,
+                        'float64': True,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': True,
+                        'int8': True,
+                        'int16': True,
+                        'int32': True,
+                        'int64': True,
+                        'bool': False,
                     },
-                    paddle.int64: {
-                        paddle.bfloat16: True,
-                        paddle.float16: True,
-                        paddle.float32: True,
-                        paddle.float64: True,
-                        paddle.complex64: True,
-                        paddle.complex128: True,
-                        paddle.uint8: True,
-                        paddle.int8: True,
-                        paddle.int16: True,
-                        paddle.int32: True,
-                        paddle.int64: True,
-                        paddle.bool: False,
+                    'int64': {
+                        'bfloat16': True,
+                        'float16': True,
+                        'float32': True,
+                        'float64': True,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': True,
+                        'int8': True,
+                        'int16': True,
+                        'int32': True,
+                        'int64': True,
+                        'bool': False,
                     },
-                    paddle.bool: {
-                        paddle.bfloat16: True,
-                        paddle.float16: True,
-                        paddle.float32: True,
-                        paddle.float64: True,
-                        paddle.complex64: True,
-                        paddle.complex128: True,
-                        paddle.uint8: True,
-                        paddle.int8: True,
-                        paddle.int16: True,
-                        paddle.int32: True,
-                        paddle.int64: True,
-                        paddle.bool: True,
+                    'bool': {
+                        'bfloat16': True,
+                        'float16': True,
+                        'float32': True,
+                        'float64': True,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': True,
+                        'int8': True,
+                        'int16': True,
+                        'int32': True,
+                        'int64': True,
+                        'bool': True,
                     }
                 }
                 return can_cast_dict[from_][to]
@@ -4465,66 +4479,61 @@ class CanCastMatcher(BaseMatcher):
             """
         )
         return CODE_TEMPLATE
-
-    def generate_code(self, kwargs):
+    def get_paddle_nodes(self, args, kwargs):
         self.write_aux_code()
-        _from_dtype = kwargs["from_"][3:-3]
-        _to_dtype = kwargs["to"][3:-3]
-        code = "paddle_aux.can_cast(paddle.{}, paddle.{})".format(
-            _from_dtype, _to_dtype
-        )
-        return code
+        new_args = self.parse_args(args)
+        new_kwargs = self.parse_kwargs(kwargs)
+        can_cast_template = "paddle_aux.can_cast({}, {})"
+        from_type = new_kwargs.get("from_", new_args[0] if new_args else None)
+        to_type = new_kwargs.get("to", new_args[1] if len(new_args) > 1 else None)
+        code = can_cast_template.format(from_type, to_type)
+        return ast.parse(code).body
     
 
 class PositiveMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        API_TEMPLATE = textwrap.dedent(
-            """
-            def positive({}):
-                if {}.dtype != paddle.bool:
-                    return {}
-                else:
-                    raise RuntimeError("boolean tensors is not supported.")
-            positive({})
-            """
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+        """
+        def positive(x):
+            if x.dtype != paddle.bool:
+                return x
+            else:
+                raise RuntimeError("boolean tensors is not supported.")
+        setattr(paddle, "positive", positive)
+        """
         )
-        if "input" not in kwargs:
-            code = API_TEMPLATE.format(
-                self.paddleClass, self.paddleClass, self.paddleClass, self.paddleClass
-            )
-        else:
-            code = API_TEMPLATE.format(
-                kwargs["input"], kwargs["input"], kwargs["input"], kwargs["input"]
-            )
+        return CODE_TEMPLATE
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        if "input" in kwargs and kwargs["input"] is not None:
+            code = "paddle_aux.positive({})".format(kwargs["input"])
+        else :
+            code =  "paddle_aux.positive({})".format(self.paddleClass)
         return code
 
 
 class FloatPowerMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+        """
+        def get_exponent(exponent):
+            return exponent.cast(paddle.float64) if isinstance(exponent, paddle.Tensor) else exponent
+        setattr(paddle, "get_exponent", get_exponent)
+        """
+        )
+        return CODE_TEMPLATE
+    
     def generate_code(self, kwargs):
-        if "input" not in kwargs:
-            return "{}.cast(paddle.float64).pow({}.cast(paddle.float64) if isinstance({}, paddle.Tensor) else {})".format(
-                self.paddleClass,
-                kwargs["exponent"],
-                kwargs["exponent"],
-                kwargs["exponent"],
-            )
+        self.write_aux_code()
+        pow_expression = "paddle.pow({}.cast(paddle.float64), paddle_aux.get_exponent({}))".format(
+            kwargs["input"],
+            kwargs["exponent"]
+        )
+        if "out" in kwargs and kwargs["out"] is not None:
+            code = "paddle.assign({}, {})".format(pow_expression, kwargs["out"])
         else:
-            if "out" not in kwargs:
-                return "paddle.pow({}.cast(paddle.float64), {}.cast(paddle.float64) if isinstance({}, paddle.Tensor) else {})".format(
-                    kwargs["input"],
-                    kwargs["exponent"],
-                    kwargs["exponent"],
-                    kwargs["exponent"],
-                )
-            else:
-                return "paddle.assign(paddle.pow({}.cast(paddle.float64), {}.cast(paddle.float64) if isinstance({}, paddle.Tensor) else {}), {})".format(
-                    kwargs["input"],
-                    kwargs["exponent"],
-                    kwargs["exponent"],
-                    kwargs["exponent"],
-                    kwargs["out"],
-                )
-
+            code = pow_expression
+        return code
 
 class FloatPowerInplaceMatcher(BaseMatcher):
     def generate_code(self, kwargs):

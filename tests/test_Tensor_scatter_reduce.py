@@ -26,7 +26,8 @@ def test_case_1():
         src = torch.tensor([1., 2., 3., 4., 5., 6.])
         index = torch.tensor([0, 1, 0, 1, 2, 1])
         input = torch.tensor([1., 2., 3., 4.])
-        result = input.scatter_reduce(0, index, src, reduce="sum")
+        type = "sum"
+        result = input.scatter_reduce(0, index, src, reduce=type)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -39,7 +40,8 @@ def test_case_2():
         src = torch.tensor([1., 2., 3., 4., 5., 6.])
         index = torch.tensor([0, 1, 0, 1, 2, 1])
         input = torch.tensor([1., 2., 3., 4.])
-        result = input.scatter_reduce(0, index, src, reduce="sum", include_self=False)
+        re_type = "sum"
+        result = input.scatter_reduce(dim=0, index=index, src=src, reduce=re_type, include_self=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -52,7 +54,7 @@ def test_case_3():
         src = torch.tensor([1., 2., 3., 4., 5., 6.])
         index = torch.tensor([0, 1, 0, 1, 2, 1])
         input = torch.tensor([1., 2., 3., 4.])
-        result = input.scatter_reduce(0, index, src, reduce="amax")
+        result = input.scatter_reduce(0, index, src, "amax")
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -91,7 +93,7 @@ def test_case_6():
         src = torch.tensor([[1., 2.],[3., 4.]])
         index = torch.tensor([[0, 0], [0, 0]])
         input = torch.tensor([[10., 30., 20.], [60., 40., 50.]])
-        result = input.scatter_reduce(0, index, src, reduce="sum")
+        result = input.scatter_reduce(index=index, src=src, reduce="sum", dim=0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -105,6 +107,19 @@ def test_case_7():
         index = torch.tensor([[0, 0], [0, 0]])
         input = torch.tensor([[10., 30., 20.], [60., 40., 50.]])
         result = input.scatter_reduce(0, index, src, reduce="prod", include_self=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([[1., 2.],[3., 4.]])
+        index = torch.tensor([[0, 0], [0, 0]])
+        input = torch.tensor([[10., 30., 20.], [60., 40., 50.]])
+        re_type = "prod"
+        result = input.scatter_reduce(0, index, src, re_type)
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -33,7 +33,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.can_cast(torch.float, torch.int)
+        result = torch.can_cast(from_=torch.complex64, to=torch.complex128)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -43,7 +43,31 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.can_cast(torch.complex64, torch.complex128)
+        from_type = torch.float
+        to_type = torch.int
+        result = torch.can_cast(from_type, to=to_type)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        from_type = torch.int
+        to_type = torch.bool
+        result = torch.can_cast(to=to_type, from_=from_type)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.can_cast(to=torch.bool, from_=torch.int)
         """
     )
     obj.run(pytorch_code, ["result"])

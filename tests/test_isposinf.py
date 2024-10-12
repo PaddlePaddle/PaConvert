@@ -36,7 +36,7 @@ def test_case_2():
         import torch
         out = torch.tensor([False, False, False])
         x = torch.tensor([-float('inf'), float('inf'), 1.2])
-        result = torch.isposinf(x, out = out)
+        result = torch.isposinf(input=x, out = out)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -46,10 +46,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[-float('inf'), float('inf'), 1.2, 0., 2.5],
-                        [-1.35 , -float('inf') ,  0.18, -0.33,  float('inf')],
-                        [-float('inf'), float('inf'), 1., 2., 4.]])
-        result = torch.isposinf(x)
+        result = torch.isposinf(torch.tensor([[-float('inf'), float('inf'), 1.2, 0., 2.5],
+                                            [-1.35 , -float('inf') ,  0.18, -0.33,  float('inf')],
+                                            [-float('inf'), float('inf'), 1., 2., 4.]])
+                                            )
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -63,7 +63,7 @@ def test_case_4():
         x = torch.tensor([[-float('inf'), float('inf'), 1.2, 0., 2.5],
                         [-1.35 , -float('inf') ,  0.18, -0.33,  float('inf')],
                         [-float('inf'), float('inf'), 1., 2., 4.]])
-        result = torch.isposinf(x, out = out)
+        result = torch.isposinf(out = out, input=x)
         """
     )
     obj.run(pytorch_code, ["result"])

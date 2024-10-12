@@ -41,7 +41,9 @@ def test_case_2():
         A = torch.tensor([[4], [3], [2]])
         B = torch.tensor([7, 6, 5])
         C = torch.tensor(1)
-        result = torch.block_diag(A, B, C)
+        result = torch.block_diag(torch.tensor([[4], [3], [2]]), 
+                                torch.tensor([7, 6, 5]), 
+                                torch.tensor(1))
         """
     )
     obj.run(pytorch_code, ["result"])

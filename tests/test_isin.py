@@ -54,13 +54,25 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.isin(torch.tensor([[1, 2], [3, 4]]), torch.tensor([2, 3]), assume_unique=True, invert=True)
+        result = torch.isin(elements=torch.tensor([[1, 2], [3, 4]]), test_elements=torch.tensor([2, 3]), assume_unique=True, invert=True)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        elemnts = torch.tensor([[1, 2], [3, 4]])
+        test_elemnts = torch.tensor([2, 3])
+        result = torch.isin(assume_unique=True, invert=True, test_elements=test_elemnts, elements=elemnts)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -71,3 +83,7 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["correct_result", "incorrect_result"])
+
+
+if __name__ == "__main__":
+    test_case_5()

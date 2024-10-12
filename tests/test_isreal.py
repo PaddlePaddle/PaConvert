@@ -33,7 +33,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.isreal(torch.tensor([-0., -2.1, 2.5]))
+        result = torch.isreal(input=torch.tensor([-0., -2.1, 2.5]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,6 +45,17 @@ def test_case_3():
         import torch
         x = torch.tensor([(-0.+1j), (-2.1+0.2j), (2.5-3.1j)])
         result = torch.isreal(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([(-0.+1j), (-2.1+0.2j), (2.5-3.1j)])
+        result = torch.isreal(input=x)
         """
     )
     obj.run(pytorch_code, ["result"])

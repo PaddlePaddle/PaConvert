@@ -46,9 +46,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        tensor_a = torch.tensor([1, 2, 4, 5])
-        tensor_b = torch.tensor([5, 6])
-        result = torch.cartesian_prod(tensor_a, tensor_b)
+        result = torch.cartesian_prod(torch.tensor([1, 2, 4, 5]), torch.tensor([5, 6]), torch.tensor([7]))
         """
     )
     obj.run(pytorch_code, ["result"])

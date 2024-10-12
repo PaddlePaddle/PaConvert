@@ -35,7 +35,7 @@ def test_case_2():
         """
         import torch
         x = torch.tensor([4, 6, 7, 1])
-        out = torch.zeros([4, 1], dtype=torch.double)
+        out = torch.zeros([4], dtype=torch.double)
         result = torch.float_power(x, 2, out=out)
         """
     )
@@ -58,10 +58,8 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([4, 6, 7, 1])
-        y = torch.tensor([2, -3, 4, -5])
-        out = torch.zeros([4, 1], dtype=torch.double)
-        result = torch.float_power(x, y, out=out)
+        out = torch.zeros([4], dtype=torch.double)
+        result = torch.float_power(torch.tensor([4, 6, 7, 1]), torch.tensor([2, -3, 4, -5]), out=out)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -72,7 +70,7 @@ def test_case_5():
         """
         import torch
         x = torch.tensor([[1, -2], [2, 5]])
-        result = torch.float_power(x, 2)
+        result = torch.float_power(x, exponent=2)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -84,7 +82,7 @@ def test_case_6():
         import torch
         x = torch.tensor([[1., -2.], [2., 5.]])
         out = torch.zeros([2, 2], dtype=torch.double)
-        result = torch.float_power(x, 2, out=out)
+        result = torch.float_power(input=x, exponent=2, out=out)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -97,7 +95,7 @@ def test_case_7():
         x = torch.tensor([[1, -2], [2, 5]])
         y = torch.tensor([[-2, 3], [-1, 2]])
         out = torch.zeros([2, 2], dtype=torch.double)
-        result = torch.float_power(x, y, out=out)
+        result = torch.float_power(out=out, exponent=y, input=x)
         """
     )
     obj.run(pytorch_code, ["result"])
