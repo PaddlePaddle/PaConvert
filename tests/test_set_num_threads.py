@@ -26,7 +26,7 @@ def test_case_1():
         result = torch.set_num_threads(1)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -36,4 +36,4 @@ def test_case_2():
         result = torch.set_num_threads(2)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
