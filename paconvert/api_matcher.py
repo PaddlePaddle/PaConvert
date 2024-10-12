@@ -522,19 +522,24 @@ class InitKaimingMatcher(InitMatcher):
 class SignalWindowsWatcher(BaseMatcher):
     def generate_code(self, kwargs):
         new_kwargs = {}
+        if "sym" not in kwargs or kwargs["sym"] == "(True)":
+            kwargs["fftbins"] = "(False)"
+        elif kwargs["sym"] == "(False)":
+            kwargs["fftbins"] = "(True)"
         if "exponential" in self.torch_api:
-            if "sym" in kwargs and kwargs["sym"] == "(False)":
+            if "sym" not in kwargs or kwargs["sym"] == "(True)":
                 if "tau" in kwargs:
                     tau_value = float(str(kwargs.pop("tau")).strip("()"))
                     new_kwargs["window"] = ("exponential", None, tau_value)
                 else:
                     new_kwargs["window"] = ("exponential", None, 1.0)
             else:
+                c_value = float(str(kwargs["M"]).strip("()")) / 2
                 if "tau" in kwargs:
                     tau_value = float(str(kwargs.pop("tau")).strip("()"))
-                    new_kwargs["window"] = ("exponential", tau_value)
+                    new_kwargs["window"] = ("exponential", c_value, tau_value)
                 else:
-                    new_kwargs["window"] = ("exponential", 1.0)
+                    new_kwargs["window"] = ("exponential", c_value, 1.0)
         if "gaussian" in self.torch_api:
             if "std" in kwargs:
                 std_value = float(str(kwargs.pop("std")).strip("()"))
@@ -548,7 +553,7 @@ class SignalWindowsWatcher(BaseMatcher):
             else:
                 new_kwargs["window"] = ("general_hamming", 0.54)
         if "general_cosine" in self.torch_api:
-            new_kwargs["window"] = ("general_cosine", kwargs.pop("a"))
+            new_kwargs["window"] = ("general_cosine", eval(kwargs["a"]))
         new_kwargs.update(kwargs)
         return GenericMatcher.generate_code(self, new_kwargs)
 

@@ -26,7 +26,7 @@ def test_case_1():
         result = torch.signal.windows.exponential(10)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -37,7 +37,7 @@ def test_case_2():
         result = torch.signal.windows.exponential(a)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -47,7 +47,7 @@ def test_case_3():
         result = torch.signal.windows.exponential(M=10)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -57,7 +57,7 @@ def test_case_4():
         result = torch.signal.windows.exponential(M=10, sym=True)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -67,7 +67,7 @@ def test_case_5():
         result = torch.signal.windows.exponential(M=10, sym=True, dtype=torch.float32)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_6():
@@ -77,7 +77,7 @@ def test_case_6():
         result = torch.signal.windows.exponential(M=10, sym=True, dtype=torch.float64)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_7():
@@ -87,7 +87,7 @@ def test_case_7():
         result = torch.signal.windows.exponential(M=10, sym=True, dtype=torch.float64, layout=torch.strided)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_8():
@@ -97,7 +97,7 @@ def test_case_8():
         result = torch.signal.windows.exponential(M=10, sym=True, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'))
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_9():
@@ -107,7 +107,7 @@ def test_case_9():
         result = torch.signal.windows.exponential(M=10, sym=True, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_10():
@@ -117,7 +117,7 @@ def test_case_10():
         result = torch.signal.windows.exponential(M=10, sym=True, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=False)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_11():
@@ -127,7 +127,7 @@ def test_case_11():
         result = torch.signal.windows.exponential(M=10, tau=0.5)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_12():
@@ -137,7 +137,7 @@ def test_case_12():
         result = torch.signal.windows.exponential(10, tau=0.5, sym=True)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_13():
@@ -147,7 +147,7 @@ def test_case_13():
         result = torch.signal.windows.exponential(10, tau=0.5, sym=False, dtype=torch.float64)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_14():
@@ -157,7 +157,7 @@ def test_case_14():
         result = torch.signal.windows.exponential(10, tau=0.5, sym=False, dtype=torch.float64, layout=torch.strided, requires_grad=True)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_15():
@@ -167,7 +167,7 @@ def test_case_15():
         result = torch.signal.windows.exponential(10, tau=0.5, sym=False, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_16():
@@ -177,7 +177,7 @@ def test_case_16():
         result = torch.signal.windows.exponential(10, tau=0.5, sym=False, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=False)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_17():
@@ -187,7 +187,7 @@ def test_case_17():
         result = torch.signal.windows.exponential(requires_grad=False, sym=True, M=10, layout=torch.strided, device=torch.device('cpu'), tau=0.6)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_18():
@@ -197,4 +197,4 @@ def test_case_18():
         result = torch.signal.windows.exponential(requires_grad=True, sym=False, M=10, layout=torch.strided, device=torch.device('cpu'), tau=0.3)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"])
