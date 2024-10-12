@@ -2344,11 +2344,10 @@ class IndexCopyMatcher(BaseMatcher):
         return code
 
 
-class ReverseMomentumMatcher(BaseMatcher):
+class ReverseMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "momentum" in kwargs:
             kwargs["momentum"] = f"1 - {kwargs.pop('momentum')}"
-
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -4918,4 +4917,87 @@ class HistogramMatcher(BaseMatcher):
                     self.kwargs_to_str(kwargs),
                     self.kwargs_to_str(kwargs_bin_edges),
                 )
+        return code
+
+
+class FromBufferMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import numpy as np
+            paddle.to_tensor(np.frombuffer(np.array({}), {}))
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["buffer"], kwargs["dtype"])
+
+        return code
+
+
+class GetNumThreadsMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            os.getenv("CPU_NUM",1)
+            """
+        )
+        code = API_TEMPLATE.format()
+        return code
+
+
+class GetNumInteropThreadsMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            int(os.environ['OMP_NUM_THREADS'])
+            """
+        )
+        code = API_TEMPLATE.format()
+        return code
+
+
+class SetNumInteropThreadsMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            def _set_num_interop_threads(int):
+                os.environ['OMP_NUM_THREADS'] = str(int)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux._set_num_interop_threads({})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["int"])
+
+        return code
+
+
+class SetNumThreadsMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            def _set_num_threads(int):
+                os.environ['CPU_NUM'] = str(int)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux._set_num_threads({})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["int"])
+
         return code
