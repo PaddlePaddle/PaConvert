@@ -26,7 +26,7 @@ def test_case_1():
         result = torch.hann_window(10)
         """
     )
-    obj.run(pytorch_code, ["result"], rtol=1.0e-5)
+    obj.run(pytorch_code, ["result"], atol=1.0e-5)
 
 
 def test_case_2():
@@ -47,7 +47,7 @@ def test_case_3():
         result = torch.hann_window(window_length=a)
         """
     )
-    obj.run(pytorch_code, ["result"], rtol=1.0e-5)
+    obj.run(pytorch_code, ["result"], atol=1.0e-5)
 
 
 def test_case_4():
@@ -57,7 +57,7 @@ def test_case_4():
         result = torch.hann_window(window_length=10)
         """
     )
-    obj.run(pytorch_code, ["result"], rtol=1.0e-5)
+    obj.run(pytorch_code, ["result"], atol=1.0e-5)
 
 
 def test_case_5():

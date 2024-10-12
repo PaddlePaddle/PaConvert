@@ -26,7 +26,7 @@ def test_case_1():
         result = torch.blackman_window(10)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"], atol=1e-05)
 
 
 def test_case_2():
@@ -36,7 +36,7 @@ def test_case_2():
         result = torch.blackman_window(10, dtype=torch.float64)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"], atol=1e-05)
 
 
 def test_case_3():
@@ -47,7 +47,7 @@ def test_case_3():
         result = torch.blackman_window(window_length=a)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"], atol=1e-05)
 
 
 def test_case_4():
@@ -57,7 +57,7 @@ def test_case_4():
         result = torch.blackman_window(window_length=10)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"], atol=1e-05)
 
 
 def test_case_5():
@@ -67,7 +67,7 @@ def test_case_5():
         result = torch.blackman_window(10, periodic=False)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"], atol=1e-05)
 
 
 def test_case_6():
@@ -77,7 +77,7 @@ def test_case_6():
         result = torch.blackman_window(10, periodic=False, dtype=torch.float64, layout=torch.strided, requires_grad=True)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"], atol=1e-05)
 
 
 def test_case_7():
@@ -87,7 +87,7 @@ def test_case_7():
         result = torch.blackman_window(10, periodic=False, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=True)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"], atol=1e-05)
 
 
 def test_case_8():
@@ -97,7 +97,7 @@ def test_case_8():
         result = torch.blackman_window(dtype=torch.float64, layout=torch.strided, window_length=5, requires_grad=True, device=torch.device('cpu'))
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"], atol=1e-05)
 
 
 def test_case_9():
@@ -107,4 +107,4 @@ def test_case_9():
         result = torch.blackman_window(layout=torch.strided, dtype=torch.float64, requires_grad=True, device=torch.device('cpu'), window_length=5, periodic=False)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"], atol=1e-05)
