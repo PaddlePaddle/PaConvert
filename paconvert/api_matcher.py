@@ -749,19 +749,17 @@ class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             import paddle
-            def PositiveDefiniteTransform():
-                class TransformsPositiveDefiniteTransform:
-                    def __call__(self, x):
-                        x = x.tril(-1) + x.diagonal(axis1=-2, axis2=-1).exp().diag_embed()
-                        shape_list = list(range(x.ndim))
-                        shape_list[-1], shape_list[-2] = shape_list[-2], shape_list[-1]
-                        y = x.transpose(perm=shape_list)
-                        return x @ y
+            class TransformsPositiveDefiniteTransform:
+                def __call__(self, x):
+                    x = x.tril(-1) + x.diagonal(axis1=-2, axis2=-1).exp().diag_embed()
+                    shape_list = list(range(x.ndim))
+                    shape_list[-1], shape_list[-2] = shape_list[-2], shape_list[-1]
+                    y = x.transpose(perm=shape_list)
+                    return x @ y
 
-                    def inv(self, y):
-                        y = paddle.linalg.cholesky(y)
-                        return y.tril(-1) + y.diagonal(axis1=-2, axis2=-1).log().diag_embed()
-                return TransformsPositiveDefiniteTransform()
+                def inv(self, y):
+                    y = paddle.linalg.cholesky(y)
+                    return y.tril(-1) + y.diagonal(axis1=-2, axis2=-1).log().diag_embed()
             """
         )
 
@@ -770,7 +768,7 @@ class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.PositiveDefiniteTransform()
+            paddle_aux.TransformsPositiveDefiniteTransform()
             """
         )
         return API_TEMPLATE
