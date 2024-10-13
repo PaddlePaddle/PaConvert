@@ -749,7 +749,7 @@ class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             import paddle
-            def get_positivedefinite():
+            def PositiveDefiniteTransform():
                 class TransformsPositiveDefiniteTransform:
                     def __call__(self, x):
                         x = x.tril(-1) + x.diagonal(axis1=-2, axis2=-1).exp().diag_embed()
@@ -770,7 +770,7 @@ class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.get_positivedefinite()
+            paddle_aux.PositiveDefiniteTransform()
             """
         )
         return API_TEMPLATE
