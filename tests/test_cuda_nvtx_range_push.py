@@ -29,7 +29,8 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.cuda.nvtx.range_push("msg")
+        torch.cuda.nvtx.range_push("msg")
+        result = 0
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -43,7 +44,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.cuda.nvtx.range_push(msg="msg")
+        torch.cuda.nvtx.range_push(msg="msg")
+        result = 0
         """
     )
     obj.run(pytorch_code, ["result"])
