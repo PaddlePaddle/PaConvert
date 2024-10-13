@@ -749,10 +749,9 @@ class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             import paddle
-            from paddle import Tensor
             def get_positivedefinite():
                 class TransformsPositiveDefiniteTransform:
-                    def __call__(self, x: Tensor):
+                    def __call__(self, x):
                         x = x.tril(-1) + x.diagonal(axis1=-2, axis2=-1).exp().diag_embed()
                         shape_list = list(range(x.ndim))
                         shape_list[-1], shape_list[-2] = shape_list[-2], shape_list[-1]
