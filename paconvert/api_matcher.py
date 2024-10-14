@@ -795,20 +795,22 @@ class Is_InferenceMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             import paddle
-            def is_inference(x):
-                return not x.stop_gradient
+            def is_inference(input):
+                return not input.stop_gradient
             """
         )
 
         return API_TEMPLATE
     def generate_code(self, kwargs):
         self.write_aux_code()
+        if "input" not in kwargs:
+            kwargs = {"input": self.paddleClass}
         API_TEMPLATE = textwrap.dedent(
             """
             paddle_aux.is_inference({})
             """
         )
-        code = API_TEMPLATE.format(self.paddleClass)
+        code = API_TEMPLATE.format(**kwargs)
         return code
 
 

@@ -2080,6 +2080,10 @@
     "Matcher": "Is_InferenceMatcher",
     "paddle_api": "paddle.Tensor.stop_gradient"
   },
+  "torch.is_inference": {
+    "Matcher": "Is_InferenceMatcher",
+    "paddle_api": "paddle.Tensor.stop_gradient"
+  },
   "torch.Tensor.is_pinned": {
     "Matcher": "Is_PinnedMatcher",
     "min_input_args": 0
