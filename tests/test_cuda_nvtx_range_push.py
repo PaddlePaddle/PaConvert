@@ -19,6 +19,7 @@ import pytest
 from apibase import APIBase
 
 
+
 class cudaNvxtRangePushAPI(APIBase):
     def compare(
         self,
