@@ -48,8 +48,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.cuda.nvtx.range_pop()
-        result = 0
+        result = torch.cuda.nvtx.range_pop()
         """
     )
     obj.run(pytorch_code, ["result"])

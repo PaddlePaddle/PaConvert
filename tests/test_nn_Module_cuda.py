@@ -32,8 +32,7 @@ def _test_case_1():
         x = torch.tensor([1., 2., 3.])
         module1 = torch.nn.Module()
         module1.register_buffer('buffer', x)
-        module1.cuda()
-        result = None
+        result = module1.cuda()
         """
     )
     obj.run(
@@ -53,8 +52,7 @@ def _test_case_2():
         x = torch.tensor([1., 2., 3.])
         module1 = torch.nn.Module()
         module1.register_buffer('buffer', x)
-        module1.cuda(device=0)
-        result = None
+        result = module1.cuda(device=0)
         """
     )
     obj.run(
@@ -74,8 +72,7 @@ def _test_case_3():
         x = torch.tensor([1., 2., 3.])
         module1 = torch.nn.Module()
         module1.register_buffer('buffer', x)
-        module1.cuda(device=None)
-        result = None
+        result = module1.cuda(device=None)
         """
     )
     obj.run(
