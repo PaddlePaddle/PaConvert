@@ -14,7 +14,6 @@
 
 import textwrap
 
-
 import paddle
 import pytest
 from apibase import APIBase
