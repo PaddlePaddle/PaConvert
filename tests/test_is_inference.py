@@ -31,20 +31,17 @@ def test_case_1():
             result = torch.tensor([0])
         """
     )
-    obj.run(pytorch_code, ["result"], unsupport=True,
-        reason="paddle does not support this function temporarily",)
+    obj.run(pytorch_code, ["result"])
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
         x = torch.tensor([-0.6341, -1.4208, -1.0900,  0.5826])
-        condition = torch.is_inference(input=x)
-        if condition:
+        if torch.is_inference(input = x):
             result = torch.tensor([1])
         else:
             result = torch.tensor([0])
         """
     )
-    obj.run(pytorch_code, ["result"], unsupport=True,
-        reason="paddle does not support this function temporarily",)
+    obj.run(pytorch_code, ["result"])

@@ -2082,7 +2082,11 @@
   },
   "torch.is_inference": {
     "Matcher": "Is_InferenceMatcher",
-    "paddle_api": "paddle.Tensor.stop_gradient"
+    "paddle_api": "paddle.Tensor.stop_gradient",
+    "min_input_args": 1,
+    "args_list":[
+      "input"
+    ]
   },
   "torch.Tensor.is_pinned": {
     "Matcher": "Is_PinnedMatcher",
