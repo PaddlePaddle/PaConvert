@@ -22,62 +22,41 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.testing.make_tensor((3,), device='cpu', dtype=torch.float32)
+        result = torch.testing.make_tensor((3, 3), device='cpu', dtype=torch.float32)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.testing.make_tensor((3,), dtype=torch.float32, device='cpu')
+        result = torch.testing.make_tensor((3,), dtype=torch.float32, device='cpu', requires_grad=False)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.testing.make_tensor((2, 2), device='cuda', dtype=torch.bool)
+        result = torch.testing.make_tensor((2, 2), device='cpu', dtype=torch.float32, low=0., high=5.0)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.testing.make_tensor((3,), dtype=torch.float32, device='cpu',
-                                           low=None, high=None, requires_grad=False, noncontiguous=False, exclude_zero=False,
+        result = torch.testing.make_tensor((3,), dtype=torch.float32, device='cpu', requires_grad=False, noncontiguous=False, exclude_zero=False,
                                            memory_format=None)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_5():
@@ -89,9 +68,40 @@ def test_case_5():
                                            memory_format=None)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.testing.make_tensor((3,), device='cpu', dtype=torch.float32,
+                                           low=-1, requires_grad=False, exclude_zero=False, noncontiguous=False, high=1,
+                                           memory_format=None)
+        """
     )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.testing.make_tensor(3, device='cpu', dtype=torch.float32,
+                                           low=-1, requires_grad=False, exclude_zero=False, noncontiguous=False, high=1,
+                                           memory_format=None)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.testing.make_tensor(3, 3, device='cpu', dtype=torch.float32,
+                                           low=-1, requires_grad=False, exclude_zero=False, noncontiguous=False, high=1,
+                                           memory_format=None)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
