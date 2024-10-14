@@ -14778,7 +14778,6 @@
     ],
     "kwargs_change": {
       "M": "win_length",
-      "a": "",
       "sym": "fftbins",
       "dtype": "dtype"
     },

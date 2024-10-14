@@ -198,3 +198,26 @@ def test_case_18():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_19():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a=False
+        result = torch.signal.windows.exponential(requires_grad=True, sym=a, M=10, layout=torch.strided, device=torch.device('cpu'), tau=0.3)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_20():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a=False
+        m=10
+        result = torch.signal.windows.exponential(requires_grad=True, sym=a, M=m, layout=torch.strided, device=torch.device('cpu'), tau=0.3)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
