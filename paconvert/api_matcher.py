@@ -757,11 +757,11 @@ class Is_InferenceMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def is_inference(x):
+            def is_inference_aux_func(x):
                 return not x.stop_gradient
-
             """
         )
+
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
@@ -770,7 +770,7 @@ class Is_InferenceMatcher(BaseMatcher):
             kwargs = {"input": self.paddleClass}
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.is_inference(x={})
+            paddle_aux.is_inference_aux_func(x={})
             """
         )
         code = API_TEMPLATE.format(kwargs["input"])
