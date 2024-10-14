@@ -25,10 +25,7 @@ def test_case_1():
         """
         import torch
         x = torch.tensor([-0.6341, -1.4208, -1.0900,  0.5826])
-        if torch.is_inference(x):
-            result = torch.tensor([1])
-        else:
-            result = torch.tensor([0])
+        result = torch.is_inference(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -38,10 +35,7 @@ def test_case_2():
         """
         import torch
         x = torch.tensor([-0.6341, -1.4208, -1.0900,  0.5826])
-        if torch.is_inference(input = x):
-            result = torch.tensor([1])
-        else:
-            result = torch.tensor([0])
+        result = torch.is_inference(input = x)
         """
     )
     obj.run(pytorch_code, ["result"])
