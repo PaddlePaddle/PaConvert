@@ -753,6 +753,31 @@ class BroadcastShapesMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
+class Is_InferenceMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            def is_inference(input):
+                x = not input.stop_gradient
+                return x
+            """
+        )
+
+        return API_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        if len(kwargs) == 0:
+            kwargs = {"input": self.paddleClass}
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.is_inference({})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["input"])
+        return code
+
+
 class IInfoMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         return "{}(dtype={})".format(self.get_paddle_api(), kwargs["type"])
