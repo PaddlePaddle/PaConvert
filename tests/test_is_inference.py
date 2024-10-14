@@ -31,7 +31,8 @@ def test_case_1():
             result = torch.tensor([0])
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], unsupport=True,
+        reason="paddle does not support this function temporarily",)
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
@@ -45,4 +46,5 @@ def test_case_2():
             result = torch.tensor([0])
         """
     )
-    obj.run(pytorch_code, ["result"], check_stop_gradient=False)
+    obj.run(pytorch_code, ["result"], unsupport=True,
+        reason="paddle does not support this function temporarily",)

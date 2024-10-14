@@ -37,11 +37,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        condition = torch.tensor([-0.6341, -1.4208, -1.0900,  0.5826]).is_inference()
-        if condition:
+        if torch.tensor([-0.6341, -1.4208, -1.0900,  0.5826]).is_inference():
             result = torch.tensor([1])
         else:
             result = torch.tensor([0])
         """
     )
-    obj.run(pytorch_code, ["result"], check_stop_gradient=False)
+    obj.run(pytorch_code, ["result"])
