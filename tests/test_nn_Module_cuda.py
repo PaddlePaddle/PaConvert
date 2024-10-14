@@ -21,6 +21,7 @@ from apibase import APIBase
 obj = APIBase("torch.nn.Module.cuda")
 
 
+
 @pytest.mark.skipif(
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
