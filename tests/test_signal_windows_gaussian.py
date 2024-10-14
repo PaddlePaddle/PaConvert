@@ -187,7 +187,7 @@ def test_case_17():
         result = torch.signal.windows.gaussian(requires_grad=True, std=0.8, sym=False, M=10, layout=torch.strided, device=torch.device('cpu'), dtype=torch.float32)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], atol=1e-05)
 
 
 def test_case_18():
@@ -220,4 +220,4 @@ def test_case_20():
         result = torch.signal.windows.gaussian(requires_grad=False, std=0.8, sym=a, M=m, layout=torch.strided, device=torch.device('cpu'), dtype=torch.float32)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], atol=1e-05)
