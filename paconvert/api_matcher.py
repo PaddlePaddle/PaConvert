@@ -810,7 +810,7 @@ class Is_InferenceMatcher(BaseMatcher):
             paddle_aux.is_inference({})
             """
         )
-        code = API_TEMPLATE.format(**kwargs)
+        code = API_TEMPLATE.format(kwargs["input"])
         return code
 
 
