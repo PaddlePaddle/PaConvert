@@ -791,23 +791,12 @@ class DistributedOptimizerMatcher(BaseMatcher):
 
 
 class Is_InferenceMatcher(BaseMatcher):
-    def generate_aux_code(self):
-        API_TEMPLATE = textwrap.dedent(
-            """
-            import paddle
-            def is_inference(input):
-                return not input.stop_gradient
-            """
-        )
-
-        return API_TEMPLATE
     def generate_code(self, kwargs):
-        self.write_aux_code()
         if "input" not in kwargs:
             kwargs = {"input": self.paddleClass}
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.is_inference({})
+            not {}.stop_gradient
             """
         )
         code = API_TEMPLATE.format(kwargs["input"])
