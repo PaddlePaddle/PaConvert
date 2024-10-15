@@ -57,7 +57,7 @@ def test_case_4():
         """
         import torch
         input = torch.tensor([-0.6341, -1.4208, -1.0900,  0.5826])
-        result = input.random_(from=0, to=5, generator=None)
+        result = input.random_(0, to=5, generator=None)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -68,7 +68,7 @@ def test_case_5():
         """
         import torch
         input = torch.tensor([1, 2, 3])
-        result = input.random_(from=0, generator=None, to=5)
+        result = input.random_(0, generator=None, to=5)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
