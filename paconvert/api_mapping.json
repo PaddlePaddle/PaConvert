@@ -3204,7 +3204,22 @@
     "Matcher": "UnchangeMatcher",
     "min_input_args": 0
   },
-  "torch.Tensor.random_": {},
+  "torch.Tensor.random_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.uniform_",
+    "min_input_args": 0,
+    "args_list": [
+      "from",
+      "to",
+      "*",
+      "generator"
+    ],
+    "kwargs_change": {
+      "from": "min",
+      "to": "max",
+      "generator": ""
+    }
+  },
   "torch.Tensor.ravel": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.flatten",
