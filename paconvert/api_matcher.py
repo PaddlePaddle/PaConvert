@@ -523,7 +523,7 @@ class SignalWindowsWatcher(BaseMatcher):
     def generate_code(self, kwargs):
         new_kwargs = {}
         if "sym" in kwargs:
-            kwargs["fftbins"] = "not " + kwargs["sym"]
+            kwargs["fftbins"] = "not " + kwargs.pop("sym")
         if "exponential" in self.torch_api:
             if "tau" in kwargs:
                 new_kwargs["window"] = ("exponential", None, eval(kwargs.pop("tau")))
