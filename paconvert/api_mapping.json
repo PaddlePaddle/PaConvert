@@ -1711,7 +1711,20 @@
       "other": "y"
     }
   },
-  "torch.Tensor.geometric_": {},
+  "torch.Tensor.geometric_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.geometric_",
+    "min_input_args": 1,
+    "args_list": [
+      "p",
+      "*",
+      "generator"
+    ],
+    "kwargs_change": {
+      "p": "probs",
+      "generator":""
+    }
+  },
   "torch.Tensor.geqrf": {},
   "torch.Tensor.ger": {
     "Matcher": "GenericMatcher",
