@@ -4743,7 +4743,7 @@ class CanCastMatcher(BaseMatcher):
         self.write_aux_code()
         new_args = self.parse_args(args)
         new_kwargs = self.parse_kwargs(kwargs)
-        can_cast_template = "paddle_aux.can_cast({}, {})"
+        can_cast_template = "paddle_aux.can_cast(from_={}, to={})"
         from_type = new_kwargs.get("from_", new_args[0] if new_args else None)
         to_type = new_kwargs.get("to", new_args[1] if len(new_args) > 1 else None)
         code = can_cast_template.format(from_type, to_type)
@@ -4785,14 +4785,19 @@ class FloatPowerMatcher(BaseMatcher):
     
     def generate_code(self, kwargs):
         self.write_aux_code()
-        pow_expression = "paddle.pow({}.cast(paddle.float64), paddle_aux.get_exponent({}))".format(
-            kwargs["input"],
-            kwargs["exponent"]
-        )
-        if "out" in kwargs and kwargs["out"] is not None:
-            code = "paddle.assign({}, {})".format(pow_expression, kwargs["out"])
-        else:
-            code = pow_expression
+        if "input" in kwargs and kwargs["input"] is not None:
+            pow_expression = "paddle.pow({}.cast(paddle.float64), paddle_aux.get_exponent({}))".format(
+                kwargs["input"],
+                kwargs["exponent"]
+            )
+            if "out" in kwargs and kwargs["out"] is not None:
+                code = "paddle.assign({}, {})".format(pow_expression, kwargs["out"])
+            else:
+                code = pow_expression
+        else :
+            code = "{}.cast(paddle.float64).pow(paddle_aux.get_exponent({}))".format(
+            self.paddleClass, kwargs["exponent"]
+            )
         return code
 
 
