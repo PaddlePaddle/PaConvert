@@ -768,12 +768,80 @@ class TensorIs_InferenceMatcher(BaseMatcher):
         self.write_aux_code()
         code = "paddle_aux.Tensor_Is_Inference(x={})".format(self.paddleClass)
         return code
+    
+
+class StudentTMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import paddle
+            def StudentT_Aux_Func(df, loc, scale):
+                class StudentT_Aux_Class:
+                    def __init__(self, df, loc, scale):
+                        self.df = df
+                        self.loc = paddle.to_tensor(loc)
+                        self.scale = paddle.to_tensor(scale)
+                        self.sT = paddle.distribution.StudentT(self.df, self.loc, self.scale)
+                    def sample(self):
+                        return paddle.reshape(self.sT.sample(), self.df.shape)
+                return StudentT_Aux_Class(df, loc, scale)
+            """
+        )
+
+        return API_TEMPLATE
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        if "validate_args" in kwargs:
+            del kwargs["validate_args"]
+        if "loc" not in kwargs:
+            kwargs["loc"] = 0.1
+        if "scale" not in kwargs:
+            kwargs["scale"] = 1.0
+        kwargs = self.kwargs_to_str(kwargs)
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.StudentT_Aux_Func({})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs)
+        return code
+
+
+class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import paddle
+            class TransformsPositiveDefiniteTransform:
+                def __call__(self, x):
+                    x = x.tril(-1) + x.diagonal(axis1=-2, axis2=-1).exp().diag_embed()
+                    shape_list = list(range(x.ndim))
+                    shape_list[-1], shape_list[-2] = shape_list[-2], shape_list[-1]
+                    y = x.transpose(perm=shape_list)
+                    return x @ y
+
+                def inv(self, y):
+                    y = paddle.linalg.cholesky(y)
+                    return y.tril(-1) + y.diagonal(axis1=-2, axis2=-1).log().diag_embed()
+            """
+        )
+
+        return API_TEMPLATE
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.TransformsPositiveDefiniteTransform()
+            """
+        )
+        return API_TEMPLATE
 
 
 class LKJCholeskyMatcher(BaseMatcher):
     def generate_aux_code(self):
         API_TEMPLATE = textwrap.dedent(
             """
+            import paddle
             def LKJCholesky_Aux_Func(dim, concentration, sample_method='onion'):
                 class LKJCholesky_Aux_Class:
                     def __init__(self, dim, concentration, sample_method='onion'):

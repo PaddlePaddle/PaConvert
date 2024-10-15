@@ -6444,6 +6444,30 @@
       "validate_args"
     ]
   },
+  "torch.distributions.studentT.StudentT":{
+    "Matcher": "StudentTMatcher",
+    "paddle_api": "paddle.distribution.StudentT",
+    "min_input_args": 1,
+    "args_list": [
+      "df",
+      "loc",
+      "scale",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.transforms.PositiveDefiniteTransform":{
+    "Matcher": "TransformsPositiveDefiniteTransformMatcher",
+    "min_input_args": 0,
+    "args_list": [
+      "cache_size"
+    ],
+    "kwargs_change": {
+      "cache_size": ""
+    }
+  },
   "torch.distributions.poisson.Poisson":{
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Poisson",
