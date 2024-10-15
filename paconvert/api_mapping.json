@@ -844,7 +844,22 @@
       "memory_format"
     ]
   },
-  "torch.Tensor.cauchy_": {},
+  "torch.Tensor.cauchy_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.cauchy_",
+    "min_input_args": 0,
+    "args_list": [
+      "median",
+      "sigma",
+      "*",
+      "generator"
+    ],
+    "kwargs_change": {
+      "median": "loc",
+      "sigma":"scale",
+      "generator":""
+    }
+  },  
   "torch.Tensor.cdouble": {
     "Matcher": "TensorCdoubleMatcher",
     "paddle_api": "paddle.Tensor.astype",
