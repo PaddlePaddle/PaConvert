@@ -24,29 +24,39 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([4., 1., 1., 16.], )
+        x = torch.tensor([4., 1., 1., 16.])
         result = torch.positive(x)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([[1, 2, 4, 8], [10, 20, 40, 80]])
-        result = torch.positive(t)
+        result = torch.positive(torch.tensor([[1, 2, 4, 8], [10, 20, 40, 80]]))
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[-4., 1., 1., 16.]])
+        result = torch.positive(input=x)
+        """
     )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.positive(input=torch.tensor([[-4., 1., 1., 16.]]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])

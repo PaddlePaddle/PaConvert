@@ -48,6 +48,7 @@
   "torch.bilinear": "torch.nn.functional.bilinear",
   "torch.celu_": "torch.nn.functional.celu_",
   "torch.channel_shuffle": "torch.nn.functional.channel_shuffle",
+  "torch.concatenate": "torch.cat",
   "torch.clip": "torch.clamp",
   "torch.conv1d": "torch.nn.functional.conv1d",
   "torch.conv2d": "torch.nn.functional.conv2d",

@@ -1518,6 +1518,31 @@ class ScatterMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class ScatterReduceMatcher(BaseMatcher):   
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def reduce_type(type):
+                map = {"sum": "add", "prod": "multiply"}
+                if type == "sum" or type == "prod":
+                    type = map[type]
+                return type
+            setattr(paddle, 'reduce_type', reduce_type)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        allowed_reduce_type = ['"""sum"""', '"""prod"""', '"""amax"""', '"""amin"""', '"""mean"""']
+        reduce_mapping = {'"""sum"""': '"add"', '"""prod"""': '"multiply"'}
+        if "reduce" in kwargs and kwargs["reduce"] in reduce_mapping:
+            kwargs["reduce"] = reduce_mapping[kwargs["reduce"]]
+        elif "reduce" in kwargs and kwargs["reduce"] not in allowed_reduce_type:
+            self.write_aux_code()
+            kwargs["reduce"] = "paddle_aux.reduce_type({})".format(kwargs["reduce"])
+        return GenericMatcher.generate_code(self, kwargs)
+
+
 class SparseSoftmaxMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         code = ""
@@ -3332,6 +3357,13 @@ class Num2TensorBinaryMatcher(BaseMatcher):
         return code
 
 
+class CartesianProdMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        new_args = self.parse_args(args)
+        code = "paddle.cartesian_prod([{}])".format(", ".join(new_args))
+        return ast.parse(code).body
+
+
 class Chain_MatmulMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         if len(args) == 1 and isinstance(args[0], ast.Starred):
@@ -4527,11 +4559,241 @@ class SymeigMatcher(BaseMatcher):
         return "paddle_aux._CONVERT_SYMEIG({})".format(self.kwargs_to_str(kwargs))
 
 
-class FloatPowerMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        return "{}.cast(paddle.float64).pow({})".format(
-            self.paddleClass, kwargs["exponent"]
+class CanCastMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def can_cast(from_, to):                
+                can_cast_dict = {
+                    'bfloat16': {
+                        'bfloat16': True,
+                        'float16': True,
+                        'float32': True,
+                        'float64': True,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': False,
+                        'int8': False,
+                        'int16': False,
+                        'int32': False,
+                        'int64': False,
+                        'bool': False
+                    },
+                    'float16': {
+                        'bfloat16': True,
+                        'float16': True,
+                        'float32': True,
+                        'float64': True,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': False,
+                        'int8': False,
+                        'int16': False,
+                        'int32': False,
+                        'int64': False,
+                        'bool': False,
+                    },
+                    'float32': {
+                        'bfloat16': True,
+                        'float16': True,
+                        'float32': True,
+                        'float64': True,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': False,
+                        'int8': False,
+                        'int16': False,
+                        'int32': False,
+                        'int64': False,
+                        'bool': False,
+                    },
+                    'float64': {
+                        'bfloat16': True,
+                        'float16': True,
+                        'float32': True,
+                        'float64': True,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': False,
+                        'int8': False,
+                        'int16': False,
+                        'int32': False,
+                        'int64': False,
+                        'bool': False,
+                    },
+                    'complex64': {
+                        'bfloat16': False,
+                        'float16': False,
+                        'float32': False,
+                        'float64': False,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': False,
+                        'int8': False,
+                        'int16': False,
+                        'int32': False,
+                        'int64': False,
+                        'bool': False,
+                    },
+                    'complex128': {
+                        'bfloat16': False,
+                        'float16': False,
+                        'float32': False,
+                        'float64': False,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': False,
+                        'int8': False,
+                        'int16': False,
+                        'int32': False,
+                        'int64': False,
+                        'bool': False,
+                    },
+                    'uint8': {
+                        'bfloat16': True,
+                        'float16': True,
+                        'float32': True,
+                        'float64': True,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': True,
+                        'int8': True,
+                        'int16': True,
+                        'int32': True,
+                        'int64': True,
+                        'bool': False,
+                    },
+                    'int8': {
+                        'bfloat16': True,
+                        'float16': True,
+                        'float32': True,
+                        'float64': True,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': True,
+                        'int8': True,
+                        'int16': True,
+                        'int32': True,
+                        'int64': True,
+                        'bool': False,
+                    },
+                    'int16': {
+                        'bfloat16': True,
+                        'float16': True,
+                        'float32': True,
+                        'float64': True,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': True,
+                        'int8': True,
+                        'int16': True,
+                        'int32': True,
+                        'int64': True,
+                        'bool': False,
+                    },
+                    'int32': {
+                        'bfloat16': True,
+                        'float16': True,
+                        'float32': True,
+                        'float64': True,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': True,
+                        'int8': True,
+                        'int16': True,
+                        'int32': True,
+                        'int64': True,
+                        'bool': False,
+                    },
+                    'int64': {
+                        'bfloat16': True,
+                        'float16': True,
+                        'float32': True,
+                        'float64': True,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': True,
+                        'int8': True,
+                        'int16': True,
+                        'int32': True,
+                        'int64': True,
+                        'bool': False,
+                    },
+                    'bool': {
+                        'bfloat16': True,
+                        'float16': True,
+                        'float32': True,
+                        'float64': True,
+                        'complex64': True,
+                        'complex128': True,
+                        'uint8': True,
+                        'int8': True,
+                        'int16': True,
+                        'int32': True,
+                        'int64': True,
+                        'bool': True,
+                    }
+                }
+                return can_cast_dict[from_][to]
+            setattr(paddle, 'can_cast', can_cast)
+            """
         )
+        return CODE_TEMPLATE
+    def get_paddle_nodes(self, args, kwargs):
+        self.write_aux_code()
+        new_args = self.parse_args(args)
+        new_kwargs = self.parse_kwargs(kwargs)
+        can_cast_template = "paddle_aux.can_cast({}, {})"
+        from_type = new_kwargs.get("from_", new_args[0] if new_args else None)
+        to_type = new_kwargs.get("to", new_args[1] if len(new_args) > 1 else None)
+        code = can_cast_template.format(from_type, to_type)
+        return ast.parse(code).body
+    
+
+class PositiveMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+        """
+        def positive(x):
+            if x.dtype != paddle.bool:
+                return x
+            else:
+                raise RuntimeError("boolean tensors is not supported.")
+        setattr(paddle, "positive", positive)
+        """
+        )
+        return CODE_TEMPLATE
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        if "input" in kwargs and kwargs["input"] is not None:
+            code = "paddle_aux.positive({})".format(kwargs["input"])
+        else :
+            code =  "paddle_aux.positive({})".format(self.paddleClass)
+        return code
+
+
+class FloatPowerMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+        """
+        def get_exponent(exponent):
+            return exponent.cast(paddle.float64) if isinstance(exponent, paddle.Tensor) else exponent
+        setattr(paddle, "get_exponent", get_exponent)
+        """
+        )
+        return CODE_TEMPLATE
+    
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        pow_expression = "paddle.pow({}.cast(paddle.float64), paddle_aux.get_exponent({}))".format(
+            kwargs["input"],
+            kwargs["exponent"]
+        )
+        if "out" in kwargs and kwargs["out"] is not None:
+            code = "paddle.assign({}, {})".format(pow_expression, kwargs["out"])
+        else:
+            code = pow_expression
+        return code
 
 
 class FloatPowerInplaceMatcher(BaseMatcher):

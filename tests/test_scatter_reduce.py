@@ -26,15 +26,11 @@ def test_case_1():
         src = torch.tensor([1., 2., 3., 4., 5., 6.])
         index = torch.tensor([0, 1, 0, 1, 2, 1])
         input = torch.tensor([1., 2., 3., 4.])
-        result = torch.scatter_reduce(input, 0, index, src, reduce="sum")
+        type = "sum"
+        result = torch.scatter_reduce(input, 0, index, src, reduce=type)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -44,15 +40,10 @@ def test_case_2():
         src = torch.tensor([1., 2., 3., 4., 5., 6.])
         index = torch.tensor([0, 1, 0, 1, 2, 1])
         input = torch.tensor([1., 2., 3., 4.])
-        result = torch.scatter_reduce(input, 0, index, src, reduce="sum", include_self=False)
+        result = torch.scatter_reduce(input=input, dim=0, index=index, src=src, reduce="sum", include_self=False)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -62,12 +53,73 @@ def test_case_3():
         src = torch.tensor([1., 2., 3., 4., 5., 6.])
         index = torch.tensor([0, 1, 0, 1, 2, 1])
         input = torch.tensor([1., 2., 3., 4.])
-        result = torch.scatter_reduce(input, 0, index, src, reduce="amax")
+        result = torch.scatter_reduce(input, 0, index, src, "amax")
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([1., 2., 3., 4., 5., 6.])
+        index = torch.tensor([0, 1, 0, 1, 2, 1])
+        input = torch.tensor([1., 2., 3., 4.])
+        result = torch.scatter_reduce(input, 0, index, src, reduce="amin")
+        """
     )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([1., 2., 3., 4., 5., 6.])
+        index = torch.tensor([0, 1, 0, 1, 2, 1])
+        input = torch.tensor([1., 2., 3., 4.])
+        re_type = "prod"
+        result = torch.scatter_reduce(input, 0, index, src, reduce=re_type)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([[1., 2.],[3., 4.]])
+        index = torch.tensor([[0, 0], [0, 0]])
+        input = torch.tensor([[10., 30., 20.], [60., 40., 50.]])
+        result = torch.scatter_reduce(input, 0, index, src, reduce="sum")
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([[1., 2.],[3., 4.]])
+        index = torch.tensor([[0, 0], [0, 0]])
+        input = torch.tensor([[10., 30., 20.], [60., 40., 50.]])
+        result = torch.scatter_reduce(input, 0, index, src, reduce="prod", include_self=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([[1., 2.],[3., 4.]])
+        index = torch.tensor([[0, 0], [0, 0]])
+        input = torch.tensor([[10., 30., 20.], [60., 40., 50.]])
+        re_type = "prod"
+        result = torch.scatter_reduce(input, 0, index, src, re_type)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
