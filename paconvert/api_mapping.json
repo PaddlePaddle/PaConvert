@@ -6434,6 +6434,31 @@
     },
     "min_input_args": 2
   },
+  "torch.distributions.lkj_cholesky.LKJCholesky":{
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.LKJCholesky",
+    "min_input_args": 1,
+    "args_list": [
+      "dim",
+      "concentration",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.poisson.Poisson":{
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Poisson",
+    "min_input_args": 1,
+    "args_list": [
+      "rate",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
   "torch.distributions.Bernoulli": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Bernoulli",

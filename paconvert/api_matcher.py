@@ -757,7 +757,7 @@ class TensorIs_InferenceMatcher(BaseMatcher):
     def generate_aux_code(self):
         API_TEMPLATE = textwrap.dedent(
             """
-            def Is_Inference(x):
+            def Tensor_Is_Inference(x):
                 is_inference = not x.stop_gradient
                 return is_inference
             """
@@ -766,7 +766,7 @@ class TensorIs_InferenceMatcher(BaseMatcher):
         return API_TEMPLATE
     def generate_code(self, kwargs):
         self.write_aux_code()
-        code = "paddle_aux.Is_Inference(x={})".format(self.paddleClass)
+        code = "paddle_aux.Tensor_Is_Inference(x={})".format(self.paddleClass)
         return code
 
 
