@@ -6538,6 +6538,11 @@
       "cache_size": ""
     }
   },
+  "torch.distributions.constraints.Constraint" : {
+    "Matcher": "DistributionsConstrainMatcher",
+    "paddle_api": "paddle.distribution.constraint.Constraint",
+    "abstract": true
+  },
   "torch.distributions.ContinuousBernoulli": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.ContinuousBernoulli",
