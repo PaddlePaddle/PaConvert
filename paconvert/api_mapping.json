@@ -2090,12 +2090,10 @@
   },
   "torch.Tensor.is_inference": {
     "Matcher": "Is_InferenceMatcher",
-    "paddle_api": "paddle.Tensor.stop_gradient",
     "min_input_args": 0
   },
   "torch.is_inference": {
     "Matcher": "Is_InferenceMatcher",
-    "paddle_api": "paddle.Tensor.stop_gradient",
     "min_input_args": 1,
     "args_list":[
       "input"
