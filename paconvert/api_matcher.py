@@ -526,23 +526,17 @@ class SignalWindowsWatcher(BaseMatcher):
             kwargs["fftbins"] = "not " + kwargs["sym"]
         if "exponential" in self.torch_api:
             if "tau" in kwargs:
-                new_kwargs["window"] = (
-                    "exponential",
-                    None,
-                    kwargs.pop("tau").strip("()"),
-                )
+                new_kwargs["window"] = ("exponential", None, eval(kwargs.pop("tau")))
             else:
                 new_kwargs["window"] = ("exponential", None, 1.0)
         if "gaussian" in self.torch_api:
             if "std" in kwargs:
-                std_value = float(kwargs.pop("std").strip("()"))
-                new_kwargs["window"] = ("gaussian", std_value)
+                new_kwargs["window"] = ("gaussian", eval(kwargs.pop("std")))
             else:
                 new_kwargs["window"] = ("gaussian", 1.0)
         if "general_hamming" in self.torch_api:
             if "alpha" in kwargs:
-                alpha_value = float(kwargs.pop("alpha").strip("()"))
-                new_kwargs["window"] = ("general_hamming", alpha_value)
+                new_kwargs["window"] = ("general_hamming", eval(kwargs.pop("alpha")))
             else:
                 new_kwargs["window"] = ("general_hamming", 0.54)
         if "general_cosine" in self.torch_api:
