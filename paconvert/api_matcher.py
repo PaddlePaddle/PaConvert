@@ -770,6 +770,36 @@ class TensorIs_InferenceMatcher(BaseMatcher):
         return code
 
 
+class LKJCholeskyMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            def LKJCholesky_Aux_Func(dim, concentration, sample_method='onion'):
+                class LKJCholesky_Aux_Class:
+                    def __init__(self, dim, concentration, sample_method='onion'):
+                        self.lkj = paddle.distribution.LKJCholesky(dim, concentration, sample_method)
+                    def sample(self):
+                        return paddle.unsqueeze(self.lkj.sample(), axis=0)
+                return LKJCholesky_Aux_Class(dim, concentration, sample_method)
+            """
+        )
+
+        return API_TEMPLATE
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        if "validate_args" in kwargs:
+            del kwargs["validate_args"]
+        kwargs = self.kwargs_to_str(kwargs)
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.LKJCholesky_Aux_Func({})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs)
+        return code
+
+
+
 class Is_InferenceMatcher(BaseMatcher):
     def generate_aux_code(self):
         API_TEMPLATE = textwrap.dedent(

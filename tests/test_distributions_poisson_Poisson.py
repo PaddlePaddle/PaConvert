@@ -66,7 +66,7 @@ def test_case_4():
         """
         import torch
         x = torch.tensor([1.0])
-        result = torch.distributions.poisson.Poisson(validate_args=None, rate=x, validate_args=None).sample()
+        result = torch.distributions.poisson.Poisson(validate_args=None, rate=x).sample()
         """
     )
     obj.run(
