@@ -14,18 +14,22 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.cuda.mem_get_info")
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            result = torch.cuda.mem_get_info()
+        result = torch.cuda.mem_get_info()
         """
     )
     obj.run(
@@ -36,14 +40,16 @@ def test_case_1():
     )
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.mem_get_info()
+        t = torch.tensor([1,2,3]).cuda()
+        result = torch.cuda.mem_get_info()
         """
     )
     obj.run(
@@ -54,14 +60,16 @@ def test_case_2():
     )
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.mem_get_info(0)
+        t = torch.tensor([1,2,3]).cuda()
+        result = torch.cuda.mem_get_info(0)
         """
     )
     obj.run(
@@ -72,14 +80,16 @@ def test_case_3():
     )
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.mem_get_info(device=0)
+        t = torch.tensor([1,2,3]).cuda()
+        result = torch.cuda.mem_get_info(device=0)
         """
     )
     obj.run(
@@ -90,14 +100,16 @@ def test_case_4():
     )
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.mem_get_info(torch.device("cuda:0"))
+        t = torch.tensor([1,2,3]).cuda()
+        result = torch.cuda.mem_get_info(torch.device("cuda:0"))
         """
     )
     obj.run(
@@ -108,14 +120,16 @@ def test_case_5():
     )
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            t = torch.tensor([1,2,3]).cuda()
-            result = torch.cuda.mem_get_info(device=torch.device("cuda:0"))
+        t = torch.tensor([1,2,3]).cuda()
+        result = torch.cuda.mem_get_info(device=torch.device("cuda:0"))
         """
     )
     obj.run(

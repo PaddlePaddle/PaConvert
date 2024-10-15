@@ -14,18 +14,41 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
-obj = APIBase("torch.cuda.nvtx.range_pop")
+
+class cudaNvxtRangePopAPI(APIBase):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
+    ):
+        if paddle_result is not None and paddle_result != pytorch_result:
+            assert (
+                False
+            ), f"Results do not match: PaddlePaddle result is {paddle_result}, PyTorch result is {pytorch_result}"
 
 
+obj = cudaNvxtRangePopAPI("torch.cuda.nvtx.range_pop")
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if torch.cuda.is_available():
-            torch.cuda.nvtx.range_pop()
-        result = None
+        result = torch.cuda.nvtx.range_pop()
         """
     )
     obj.run(pytorch_code, ["result"])
