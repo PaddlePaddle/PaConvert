@@ -523,38 +523,30 @@ class SignalWindowsWatcher(BaseMatcher):
     def generate_code(self, kwargs):
         new_kwargs = {}
         if "sym" in kwargs:
-            kwargs["fftbins"] = f"1 - {kwargs.pop('sym')}"
-        else:
-            kwargs["fftbins"] = "(False)"
+            kwargs["fftbins"] = "not " + kwargs["sym"]
         if "exponential" in self.torch_api:
-            if "sym" not in kwargs or kwargs["sym"] == "(True)":
-                if "tau" in kwargs:
-                    tau_value = float(str(kwargs.pop("tau")).strip("()"))
-                    new_kwargs["window"] = ("exponential", None, tau_value)
-                else:
-                    new_kwargs["window"] = ("exponential", None, 1.0)
+            if "tau" in kwargs:
+                new_kwargs["window"] = (
+                    "exponential",
+                    None,
+                    kwargs.pop("tau").strip("()"),
+                )
             else:
-                c_value = float(str(kwargs.pop("tau")).strip("()")) / 2
-                if "tau" in kwargs:
-                    tau_value = float(str(kwargs.pop("tau")).strip("()"))
-                    new_kwargs["window"] = ("exponential", c_value, tau_value)
-                else:
-                    new_kwargs["window"] = ("exponential", c_value, 1.0)
+                new_kwargs["window"] = ("exponential", None, 1.0)
         if "gaussian" in self.torch_api:
             if "std" in kwargs:
-                std_value = float(str(kwargs.pop("std")).strip("()"))
+                std_value = float(kwargs.pop("std").strip("()"))
                 new_kwargs["window"] = ("gaussian", std_value)
             else:
                 new_kwargs["window"] = ("gaussian", 1.0)
         if "general_hamming" in self.torch_api:
             if "alpha" in kwargs:
-                alpha_value = float(str(kwargs.pop("alpha")).strip("()"))
+                alpha_value = float(kwargs.pop("alpha").strip("()"))
                 new_kwargs["window"] = ("general_hamming", alpha_value)
             else:
                 new_kwargs["window"] = ("general_hamming", 0.54)
         if "general_cosine" in self.torch_api:
-            a_value = str(kwargs.pop("a")).strip("()")
-            new_kwargs["window"] = ("general_cosine", eval(a_value))
+            new_kwargs["window"] = ("general_cosine", eval(kwargs.pop("a")))
         new_kwargs.update(kwargs)
         return GenericMatcher.generate_code(self, new_kwargs)
 

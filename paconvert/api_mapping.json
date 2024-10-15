@@ -14686,6 +14686,7 @@
     },
     "paddle_default_kwargs": {
       "dtype": "'float32'",
+      "fftbins": "False",
       "window": "'blackman'"
     }
   },
@@ -14709,6 +14710,7 @@
     },
     "paddle_default_kwargs": {
       "dtype": "'float32'",
+      "fftbins": "False",
       "window": "'cosine'"
     }
   },
@@ -14736,7 +14738,8 @@
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
-      "dtype": "'float32'"
+      "dtype": "'float32'",
+      "fftbins": "False"
     }
   },
   "torch.signal.windows.gaussian": {
@@ -14759,7 +14762,8 @@
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
-      "dtype": "'float32'"
+      "dtype": "'float32'",
+      "fftbins": "False"
     }
   },
   "torch.signal.windows.general_cosine": {
@@ -14782,7 +14786,8 @@
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
-      "dtype": "'float32'"
+      "dtype": "'float32'",
+      "fftbins": "False"
     }
   },
   "torch.signal.windows.general_hamming": {
@@ -14805,7 +14810,8 @@
       "dtype": "dtype"
     },
     "paddle_default_kwargs": {
-      "dtype": "'float32'"
+      "dtype": "'float32'",
+      "fftbins": "False"
     }
   },
   "torch.signal.windows.hamming": {
@@ -14828,6 +14834,7 @@
     },
     "paddle_default_kwargs": {
       "dtype": "'float32'",
+      "fftbins": "False",
       "window": "'hamming'"
     }
   },
@@ -14851,6 +14858,7 @@
     },
     "paddle_default_kwargs": {
       "dtype": "'float32'",
+      "fftbins": "False",
       "window": "'hann'"
     }
   },

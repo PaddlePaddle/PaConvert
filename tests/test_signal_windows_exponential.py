@@ -144,7 +144,7 @@ def test_case_13():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.exponential(10, tau=0.5, sym=False, dtype=torch.float64)
+        result = torch.signal.windows.exponential(10, sym=False, tau=0.5, dtype=torch.float64)
         """
     )
     obj.run(pytorch_code, ["result"])
