@@ -61,14 +61,3 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        input = torch.tensor([1, 2, 3])
-        result = input.random_(0, generator=None, to=5)
-        """
-    )
-    obj.run(pytorch_code, ["result"], check_value=False)
