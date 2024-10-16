@@ -14,32 +14,38 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.cuda.manual_seed_all")
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            torch.cuda.manual_seed_all(123)
-            result = torch.cuda.initial_seed()
+        torch.cuda.manual_seed_all(123)
+        result = torch.cuda.initial_seed()
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            torch.cuda.manual_seed_all(seed=123)
-            result = torch.cuda.initial_seed()
+        torch.cuda.manual_seed_all(seed=123)
+        result = torch.cuda.initial_seed()
         """
     )
     obj.run(pytorch_code, ["result"])
