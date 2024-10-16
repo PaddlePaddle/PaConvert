@@ -52,7 +52,7 @@ def test_case_1():
             args=(torch.tensor(2), torch.tensor(3))
         )
         result = r.to_here()
-        result = rpc.shutdown()
+        rpc.shutdown()
         """
     )
     obj.run(
@@ -95,6 +95,7 @@ def test_case_2():
             timeout=-1
         )
         result = r.to_here()
+        rpc.shutdown()
         """
     )
     obj.run(
@@ -138,6 +139,7 @@ def test_case_3():
             kwargs=None
         )
         result = r.to_here()
+        rpc.shutdown()
         """
     )
     obj.run(
