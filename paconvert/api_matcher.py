@@ -5215,10 +5215,10 @@ class RpcRemoteMatcher(BaseMatcher):
             import paddle
             import paddle.distributed.rpc as rpc
             class rpc_remote:
-                def __init__(to, func, args=None, kwargs=None, timeout=-1):
+                def __init__(self, to, func, args=None, kwargs=None, timeout=-1):
                     self.remote = rpc.rpc_async(to=to, fn=func, args=args, kwargs=kwargs, timeout=timeout)
 
-                def to_here():
+                def to_here(self):
                     return self.remote.wait()
             """
         )
