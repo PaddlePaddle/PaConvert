@@ -486,20 +486,6 @@ class DimOrderMatcher(BaseMatcher):
         return code
 
 
-class TensorItemsizeMatcher(BaseMatcher):
-    def get_paddle_class_attribute_nodes(self, node):
-        self.parse_func(node)
-        paddle_class = self.paddleClass
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {}.element_size()
-            """
-        )
-        code = API_TEMPLATE.format(paddle_class)
-        return ast.parse(code).body
-
-
 class TRFMPreTrainedTokenizerMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
