@@ -24,10 +24,23 @@ def test_case_1():
         """
         import os
         import torch
+        import socket
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        start = 25000
+        end = 30000
+        for port in range(start, end):
+            try:
+                s.bind(('localhost', port))
+                s.close()
+                break
+            except socket.error:
+                continue
+        print("port: " + str(port))
+
         from torch.distributed import rpc
         os.environ['MASTER_ADDR'] = 'localhost'
-        os.environ['MASTER_PORT'] = '29500'
-        os.environ['PADDLE_MASTER_ENDPOINT'] = 'localhost:29501'
+        os.environ['MASTER_PORT'] = str(port)
+        os.environ['PADDLE_MASTER_ENDPOINT'] = 'localhost:' + str(port)
         rpc.init_rpc(
             "worker1",
             rank=0,
@@ -39,6 +52,7 @@ def test_case_1():
             args=(torch.tensor(2), torch.tensor(3))
         )
         result = r.to_here()
+        result = rpc.shutdown()
         """
     )
     obj.run(
@@ -51,10 +65,23 @@ def test_case_2():
         """
         import os
         import torch
+        import socket
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        start = 25000
+        end = 30000
+        for port in range(start, end):
+            try:
+                s.bind(('localhost', port))
+                s.close()
+                break
+            except socket.error:
+                continue
+        print("port: " + str(port))
+
         from torch.distributed import rpc
         os.environ['MASTER_ADDR'] = 'localhost'
-        os.environ['MASTER_PORT'] = '29500'
-        os.environ['PADDLE_MASTER_ENDPOINT'] = 'localhost:29501'
+        os.environ['MASTER_PORT'] = str(port)
+        os.environ['PADDLE_MASTER_ENDPOINT'] = 'localhost:' + str(port)
         rpc.init_rpc(
             "worker1",
             rank=0,
@@ -81,10 +108,23 @@ def test_case_3():
         """
         import os
         import torch
+        import socket
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        start = 25000
+        end = 30000
+        for port in range(start, end):
+            try:
+                s.bind(('localhost', port))
+                s.close()
+                break
+            except socket.error:
+                continue
+        print("port: " + str(port))
+
         from torch.distributed import rpc
         os.environ['MASTER_ADDR'] = 'localhost'
-        os.environ['MASTER_PORT'] = '29500'
-        os.environ['PADDLE_MASTER_ENDPOINT'] = 'localhost:29501'
+        os.environ['MASTER_PORT'] = str(port)
+        os.environ['PADDLE_MASTER_ENDPOINT'] = 'localhost:' + str(port)
         rpc.init_rpc(
             "worker1",
             rank=0,
