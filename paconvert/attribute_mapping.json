@@ -36,10 +36,12 @@
     "paddle_api": "paddle.Tensor.is_sparse"
   },
   "torch.Tensor.is_sparse_csr": {
-    "Matcher": "IsSparseCsrMatcher"
+    "Matcher": "Attribute2Func",
+    "paddle_api": "paddle.Tensor.is_sparse_csr"
   },
   "torch.Tensor.itemsize": {
-    "Matcher": "TensorItemsizeMatcher"
+    "Matcher": "Attribute2Func",
+    "paddle_api": "paddle.Tensor.element_size"
   },
   "torch.Tensor.mH": {
     "Matcher": "TensorMhMatcher"

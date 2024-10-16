@@ -436,25 +436,23 @@ class InitEyeMatcher(InitMatcher):
         return super().generate_code(kwargs)
 
 
-class IsSparseCsrMatcher(BaseMatcher):
-    def get_paddle_class_attribute_nodes(self, node):
-        self.parse_func(node)
-        code = "{}.is_sparse_csr()".format(self.paddleClass)
-        return ast.parse(code).body
-
-
 class TensorStrideMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        kwargs = self.parse_kwargs(kwargs)
-        args = self.parse_args(args)
-        if "dim" in kwargs.keys() and kwargs["dim"] != "None":
-            code = "{}.get_strides()[{}]".format(self.paddleClass, kwargs["dim"])
-        elif len(args) > 0 and args[0] != "None":
-            code = "{}.get_strides()[{}]".format(self.paddleClass, args[0])
+    def generate_code(self, kwargs):
+        if 'dim' not in kwargs or kwargs['dim'] == 'None':
+            API_TEMPLATE = textwrap.dedent(
+                """
+                {}.get_strides()
+                """
+            )
+            code = API_TEMPLATE.format(self.paddleClass)
         else:
-            code = "{}.get_strides()".format(self.paddleClass)
-
-        return ast.parse(code).body
+            API_TEMPLATE = textwrap.dedent(
+                """
+                {}.get_strides()[{}]
+                """
+            )
+            code = API_TEMPLATE.format(self.paddleClass, kwargs['dim'])
+        return code
 
 
 class TensorToSparseCooMatcher(BaseMatcher):
@@ -471,7 +469,7 @@ class TensorToSparseCooMatcher(BaseMatcher):
 class TensorNbytesMatcher(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
-        code = "int(paddle.numel({}) * {}.element_size())".format(
+        code = "{}.size * {}.element_size()".format(
             self.paddleClass, self.paddleClass
         )
         return ast.parse(code).body
