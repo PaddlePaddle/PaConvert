@@ -526,21 +526,25 @@ class SignalWindowsWatcher(BaseMatcher):
             kwargs["fftbins"] = "not " + kwargs.pop("sym")
         if "exponential" in self.torch_api:
             if "tau" in kwargs:
-                new_kwargs["window"] = ("exponential", None, eval(kwargs.pop("tau")))
+                new_kwargs["window"] = "('exponential', None, {})".format(
+                    kwargs.pop("tau")
+                )
             else:
                 new_kwargs["window"] = ("exponential", None, 1.0)
         if "gaussian" in self.torch_api:
             if "std" in kwargs:
-                new_kwargs["window"] = ("gaussian", eval(kwargs.pop("std")))
+                new_kwargs["window"] = "('gaussian', {})".format(kwargs.pop("std"))
             else:
                 new_kwargs["window"] = ("gaussian", 1.0)
         if "general_hamming" in self.torch_api:
             if "alpha" in kwargs:
-                new_kwargs["window"] = ("general_hamming", eval(kwargs.pop("alpha")))
+                new_kwargs["window"] = "('general_hamming', {})".format(
+                    kwargs.pop("alpha")
+                )
             else:
                 new_kwargs["window"] = ("general_hamming", 0.54)
         if "general_cosine" in self.torch_api:
-            new_kwargs["window"] = ("general_cosine", eval(kwargs.pop("a")))
+            new_kwargs["window"] = "('general_cosine', {})".format(kwargs.pop("a"))
         new_kwargs.update(kwargs)
         return GenericMatcher.generate_code(self, new_kwargs)
 

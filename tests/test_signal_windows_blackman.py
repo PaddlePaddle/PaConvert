@@ -164,26 +164,6 @@ def test_case_15():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.signal.windows.blackman(M=5, sym=False, dtype=torch.float64, layout=torch.strided, device=torch.device('cpu'), requires_grad=False)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_16():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.signal.windows.blackman(dtype=torch.float32, layout=torch.strided, device=torch.device('cpu'), M=5, sym=False, requires_grad=False)
-        """
-    )
-    obj.run(pytorch_code, ["result"], atol=1e-05)
-
-
-def test_case_17():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
         a=False
         result = torch.signal.windows.blackman(M=5, sym=a, dtype=torch.float32, layout=torch.strided, device=torch.device('cpu'), requires_grad=False)
         """
@@ -191,13 +171,13 @@ def test_case_17():
     obj.run(pytorch_code, ["result"], atol=1e-05)
 
 
-def test_case_18():
+def test_case_16():
     pytorch_code = textwrap.dedent(
         """
         import torch
         a=False
         m=5
-        result = torch.signal.windows.blackman(M=m, sym=a, dtype=torch.float32, layout=torch.strided, device=torch.device('cpu'), requires_grad=False)
+        result = torch.signal.windows.blackman(dtype=torch.float32, M=m, sym=a, layout=torch.strided, device=torch.device('cpu'), requires_grad=False)
         """
     )
     obj.run(pytorch_code, ["result"], atol=1e-05)

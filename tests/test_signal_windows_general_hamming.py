@@ -191,3 +191,18 @@ def test_case_17():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_18():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a=False
+        m=10
+        c=0.4
+        e=torch.device('cpu')
+        g=False
+        result = torch.signal.windows.general_hamming(requires_grad=g, alpha=c, sym=a, M=m, layout=torch.strided, device=e)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
