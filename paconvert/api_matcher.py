@@ -5212,11 +5212,9 @@ class RpcRemoteMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            import paddle
-            import paddle.distributed.rpc as rpc
             class rpc_remote:
-                def __init__(self, to, func, args=None, kwargs=None, timeout=-1):
-                    self.remote = rpc.rpc_async(to=to, fn=func, args=args, kwargs=kwargs, timeout=timeout)
+                def __init__(self, remote_obj):
+                    self.remote = remote_obj
 
                 def to_here(self):
                     return self.remote.wait()
@@ -5226,23 +5224,15 @@ class RpcRemoteMatcher(BaseMatcher):
     
     def generate_code(self, kwargs):
         self.write_aux_code()
-        if "args" not in kwargs.keys():
-            kwargs["args"] = None
-        if "kwargs" not in kwargs.keys():
-            kwargs["kwargs"] = None
-        if "timeout" not in kwargs.keys():
-            kwargs["timeout"] = -1
+        kwargs = self.kwargs_to_str(kwargs)
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.rpc_remote(to={}, func={}, args={}, kwargs={}, timeout={})
+            remote_obj = paddle.distributed.rpc.rpc_async({})
+            paddle_aux.rpc_remote(remote_obj)
             """
         )
         code = API_TEMPLATE.format(
-            kwargs["to"],
-            kwargs["func"],
-            kwargs["args"],
-            kwargs["kwargs"],
-            kwargs["timeout"]
+            kwargs
         )
         return code
 
