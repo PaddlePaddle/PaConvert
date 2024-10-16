@@ -37,9 +37,6 @@ def test_case_1():
                 continue
         print("port: " + str(port))
 
-        def add(a, b):
-            return a+b
-
         from torch.distributed import rpc
         os.environ['MASTER_ADDR'] = 'localhost'
         os.environ['MASTER_PORT'] = str(port)
@@ -51,8 +48,8 @@ def test_case_1():
         )
         r = rpc.remote(
             "worker1",
-            add,
-            args=(2, 3)
+            min,
+            args=(2, 1)
         )
         result = r.to_here()
         rpc.shutdown()
@@ -81,9 +78,6 @@ def test_case_2():
                 continue
         print("port: " + str(port))
 
-        def add(a, b):
-            return a+b
-
         from torch.distributed import rpc
         os.environ['MASTER_ADDR'] = 'localhost'
         os.environ['MASTER_PORT'] = str(port)
@@ -95,8 +89,8 @@ def test_case_2():
         )
         r = rpc.remote(
             to="worker1",
-            func=torch.add,
-            args=(2, 3),
+            func=min,
+            args=(2, 1),
             kwargs=None,
             timeout=-1
         )
@@ -128,9 +122,6 @@ def test_case_3():
                 continue
         print("port: " + str(port))
 
-        def add(a, b):
-            return a+b
-
         from torch.distributed import rpc
         os.environ['MASTER_ADDR'] = 'localhost'
         os.environ['MASTER_PORT'] = str(port)
@@ -142,8 +133,8 @@ def test_case_3():
         )
         r = rpc.remote(
             to="worker1",
-            func=add,
-            args=(2, 3),
+            func=min,
+            args=(2, 1),
             timeout=-1,
             kwargs=None
         )
