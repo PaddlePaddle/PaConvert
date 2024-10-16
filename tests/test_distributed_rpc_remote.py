@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributed.rpc.remote")
+obj = APIBase("torch.distributed.rpc.remote", is_aux_api=True)
 
 
 def test_case_1():
