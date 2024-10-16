@@ -6351,6 +6351,18 @@
     ],
     "min_input_args": 1
   },
+  "torch.distributed.rpc.remote":{
+    "Matcher": "RpcRemoteMatcher",
+    "paddle_api": "paddle.distributed.rpc.rpc_async",
+    "min_input_args": 2,
+    "args_list": [
+      "to",
+      "func",
+      "args",
+      "kwargs",
+      "timeout"
+    ]
+  },
   "torch.distributed.rpc.shutdown": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.rpc.shutdown",
