@@ -2117,7 +2117,7 @@
     "min_input_args": 0
   },
   "torch.Tensor.is_inference": {
-    "Matcher": "TensorIs_InferenceMatcher",
+    "Matcher": "Is_InferenceMatcher",
     "min_input_args": 0
   },
   "torch.is_inference": {

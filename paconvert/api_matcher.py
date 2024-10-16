@@ -751,24 +751,7 @@ class BroadcastShapesMatcher(BaseMatcher):
         for i in range(1, len(new_args)):
             code = "{}({}, {})".format(self.get_paddle_api(), code, new_args[i])
         return ast.parse(code).body
-
-
-class TensorIs_InferenceMatcher(BaseMatcher):
-    def generate_aux_code(self):
-        API_TEMPLATE = textwrap.dedent(
-            """
-            def Tensor_Is_Inference(x):
-                is_inference = not x.stop_gradient
-                return is_inference
-            """
-        )
-
-        return API_TEMPLATE
-    def generate_code(self, kwargs):
-        self.write_aux_code()
-        code = "paddle_aux.Tensor_Is_Inference(x={})".format(self.paddleClass)
-        return code
-    
+ 
 
 class StudentTMatcher(BaseMatcher):
     def generate_aux_code(self):
@@ -881,7 +864,8 @@ class Is_InferenceMatcher(BaseMatcher):
         return API_TEMPLATE
     def generate_code(self, kwargs):
         self.write_aux_code()
-        perm = get_unique_name("perm")
+        if "input" not in kwargs:
+            kwargs["input"] = self.paddleClass
         code = "paddle_aux.Is_Inference(x={})".format(kwargs["input"])
         return code
 
