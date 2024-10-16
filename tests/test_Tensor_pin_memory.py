@@ -14,19 +14,23 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.Tensor.pin_memory")
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
         a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = None
-        if torch.cuda.is_available():
-            result = a.pin_memory()
+        result = a.pin_memory()
         """
     )
     obj.run(pytorch_code, ["result"])
