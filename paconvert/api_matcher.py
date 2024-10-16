@@ -530,19 +530,19 @@ class SignalWindowsWatcher(BaseMatcher):
                     kwargs.pop("tau")
                 )
             else:
-                new_kwargs["window"] = ("exponential", None, 1.0)
+                new_kwargs["window"] = "('exponential', None, 1.0)"
         if "gaussian" in self.torch_api:
             if "std" in kwargs:
                 new_kwargs["window"] = "('gaussian', {})".format(kwargs.pop("std"))
             else:
-                new_kwargs["window"] = ("gaussian", 1.0)
+                new_kwargs["window"] = "('gaussian', 1.0)"
         if "general_hamming" in self.torch_api:
             if "alpha" in kwargs:
                 new_kwargs["window"] = "('general_hamming', {})".format(
                     kwargs.pop("alpha")
                 )
             else:
-                new_kwargs["window"] = ("general_hamming", 0.54)
+                new_kwargs["window"] = "('general_hamming', 0.54)"
         if "general_cosine" in self.torch_api:
             new_kwargs["window"] = "('general_cosine', {})".format(kwargs.pop("a"))
         new_kwargs.update(kwargs)
@@ -862,7 +862,7 @@ class MakeTMatcher(BaseMatcher):
             else:
                 shape = self.parse_args(args)[0]
             kwargs = {"shape": str(shape).replace("'", ""), **kwargs}
-        
+
         if "dtype" not in kwargs:
             kwargs["dtype"] = "float32"
 
@@ -871,7 +871,7 @@ class MakeTMatcher(BaseMatcher):
 
         if "high" not in kwargs:
             kwargs["high"] = 1
-        
+
         if "requires_grad" not in kwargs.keys():
             API_TEMPLATE = textwrap.dedent(
                 """
@@ -901,7 +901,7 @@ class MakeTMatcher(BaseMatcher):
                 kwargs["device"],
                 kwargs["requires_grad"],
             )
-        
+
         return ast.parse(code).body
 
 
