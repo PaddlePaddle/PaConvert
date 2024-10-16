@@ -5224,6 +5224,7 @@ class RpcRemoteMatcher(BaseMatcher):
     
     def generate_code(self, kwargs):
         self.write_aux_code()
+        kwargs['fn'] = kwargs.pop('func')
         kwargs = self.kwargs_to_str(kwargs)
         API_TEMPLATE = textwrap.dedent(
             """
