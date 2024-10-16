@@ -497,7 +497,7 @@ class BitwiseShiftMatcher(BaseMatcher):
                 self.get_paddle_api(), kwargs["input"], kwargs["other"]
             )
         if "out" in kwargs:
-            code = "paddle.assign({}.astype('float32'), {})".format(code, kwargs["out"])
+            code = "paddle.assign({}, {})".format(code, kwargs["out"])
         return code
 
 
