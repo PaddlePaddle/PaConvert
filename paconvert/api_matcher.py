@@ -486,6 +486,21 @@ class DimOrderMatcher(BaseMatcher):
         return code
 
 
+class BitwiseShiftMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}(x={}, y={})
+            """
+        )
+        code = API_TEMPLATE.format(
+                self.paddle_api, kwargs["input"], kwargs["other"]
+            )
+        if "out" in kwargs:
+            code = "paddle.assign({}.astype('float32'), {})".format(code, kwargs["out"])
+        return code
+
+
 class TRFMPreTrainedTokenizerMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
