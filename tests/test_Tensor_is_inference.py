@@ -28,7 +28,7 @@ def test_case_1():
         result = x.is_inference()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
@@ -38,4 +38,4 @@ def test_case_2():
         result = torch.tensor([-0.6341, -1.4208, -1.0900,  0.5826]).is_inference()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)

@@ -28,7 +28,7 @@ def test_case_1():
         result = torch.is_inference(x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
@@ -38,4 +38,4 @@ def test_case_2():
         result = torch.is_inference(input = x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)

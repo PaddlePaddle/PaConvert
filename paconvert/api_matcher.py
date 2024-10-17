@@ -784,7 +784,7 @@ class StudentTMatcher(BaseMatcher):
             def StudentT_Aux_Func(df, loc, scale):
                 class StudentT_Aux_Class:
                     def __init__(self, df, loc, scale):
-                        self.df = df
+                        self.df = paddle.to_tensor(df)
                         self.loc = paddle.to_tensor(loc)
                         self.scale = paddle.to_tensor(scale)
                         self.sT = paddle.distribution.StudentT(self.df, self.loc, self.scale)
