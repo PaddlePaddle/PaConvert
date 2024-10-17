@@ -5018,7 +5018,7 @@
     }
   },
   "torch.bitwise_left_shift": {
-    "Matcher": "BitwiseShiftMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.bitwise_left_shift",
     "min_input_args": 2,
     "args_list": [
@@ -5026,7 +5026,11 @@
       "other",
       "*",
       "out"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "other": "y"
+    }
   },
   "torch.bitwise_not": {
     "Matcher": "GenericMatcher",
@@ -5057,7 +5061,7 @@
     }
   },
   "torch.bitwise_right_shift": {
-    "Matcher": "BitwiseShiftMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.bitwise_right_shift",
     "min_input_args": 2,
     "args_list": [
@@ -5065,7 +5069,11 @@
       "other",
       "*",
       "out"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "other": "y"
+    }
   },
   "torch.bitwise_xor": {
     "Matcher": "GenericMatcher",
