@@ -436,6 +436,56 @@ class InitEyeMatcher(InitMatcher):
         return super().generate_code(kwargs)
 
 
+class TensorStrideMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if 'dim' not in kwargs or kwargs['dim'] == 'None':
+            API_TEMPLATE = textwrap.dedent(
+                """
+                {}.get_strides()
+                """
+            )
+            code = API_TEMPLATE.format(self.paddleClass)
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                {}.get_strides()[{}]
+                """
+            )
+            code = API_TEMPLATE.format(self.paddleClass, kwargs['dim'])
+        return code
+
+
+class TensorToSparseCooMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}.to_sparse_coo(len({}.shape))
+            """
+        )
+        code = API_TEMPLATE.format(self.paddleClass, self.paddleClass)
+        return code
+
+
+class TensorNbytesMatcher(BaseMatcher):
+    def get_paddle_class_attribute_nodes(self, node):
+        self.parse_func(node)
+        code = "{}.size * {}.element_size()".format(
+            self.paddleClass, self.paddleClass
+        )
+        return ast.parse(code).body
+
+
+class DimOrderMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            tuple([i for i in range(len({}.shape))])
+            """
+        )
+        code = API_TEMPLATE.format(self.paddleClass)
+        return code
+
+
 class TRFMPreTrainedTokenizerMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
