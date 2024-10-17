@@ -28,51 +28,33 @@ def test_case_1():
         import torch.distributed as dist
         import torch.nn as nn
         import torch.distributed.rpc as rpc
-        from torch.optim import SGD
         from torch.distributed.optim import DistributedOptimizer
 
         os.environ['MASTER_ADDR'] = 'localhost'
         os.environ['MASTER_PORT'] = '29500'
         os.environ['PADDLE_MASTER_ENDPOINT'] = 'localhost:29501'
-        # 初始化RPC
         rpc.init_rpc(
             "worker1",
             rank=0,
             world_size=1
         )
 
-        class SimpleModel(torch.nn.Module):
-            def __init__(self):
-                super(SimpleModel, self).__init__()
-                self.param = nn.Linear(10, 1)
+        data = nn.Parameter(torch.tensor([[-0.4229,  1.2159, -1.3944,  0.8764, -2.5841, -2.1045, -0.7999,  0.1856,
+                0.6989,  0.3954]]), requires_grad=True)
+        rref1 = rpc.remote("worker1", torch.add, args=(data, 3))
+        target = torch.tensor([[1.1352]])
+        Loss_fuc = torch.nn.MSELoss()
 
-            def forward(self, x):
-                return self.param(x)
-        
-        # 初始化
-        data = torch.randn(1, 10)
-        target = torch.randn(1, 1)
-        model = SimpleModel()
+        optimizer = DistributedOptimizer(
+                torch.optim.SGD,
+                [rref1],
+                lr=0.01
+            )
 
-        # 创建远程模型
-        remote_model_rref = rpc.remote("worker1", model, args=(data))
-        # 创建分布式优化器
-        optimizer_class = SGD
-        optimizer_args = (params_rref,)
-        optimizer_kwargs = {'lr': 0.01}
-        optimizer = DistributedOptimizer(optimizer_class, params_rref, *optimizer_args, **optimizer_kwargs)
-
-        # 输出
-        output = remote_model_rref.to_here()
-        loss_fn = nn.MSELoss()
-        loss = loss_fn(output, target)
-
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step(worker1)
+        # 打印损失
+        print(f"Iteration {i}, Loss: {loss.item()}")
         rpc.shutdown()
-
-        result = 1
+        result = True
         """
     )
     obj.run(pytorch_code, ["result"])

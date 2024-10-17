@@ -6365,7 +6365,7 @@
   },
   "torch.distributed.optim.DistributedOptimizer":{
     "Matcher": "DistributedOptimizerMatcher",
-    "paddle_api": "paddle.distributed.shard_optimizer",
+    "paddle_api": "paddle.distributed.fleet.distributed_optimizer",
     "min_input_args": 3,
     "args_list": [
       "optimizer_class",
