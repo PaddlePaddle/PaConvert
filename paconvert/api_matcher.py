@@ -821,10 +821,7 @@ class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
             class TransformsPositiveDefiniteTransform:
                 def __call__(self, x):
                     x = x.tril(-1) + x.diagonal(axis1=-2, axis2=-1).exp().diag_embed()
-                    shape_list = list(range(x.ndim))
-                    shape_list[-1], shape_list[-2] = shape_list[-2], shape_list[-1]
-                    y = x.transpose(perm=shape_list)
-                    return x @ y
+                    return x @ x.T
 
                 def inv(self, y):
                     y = paddle.linalg.cholesky(y)
@@ -875,21 +872,10 @@ class LKJCholeskyMatcher(BaseMatcher):
 
 
 class Is_InferenceMatcher(BaseMatcher):
-    def generate_aux_code(self):
-        API_TEMPLATE = textwrap.dedent(
-            """
-            def Is_Inference(x):
-                is_inference = not x.stop_gradient
-                return is_inference
-            """
-        )
-
-        return API_TEMPLATE
     def generate_code(self, kwargs):
-        self.write_aux_code()
         if "input" not in kwargs:
             kwargs["input"] = self.paddleClass
-        code = "paddle_aux.Is_Inference(x={})".format(kwargs["input"])
+        code = "{}.stop_gradient".format(kwargs["input"])
         return code
 
 

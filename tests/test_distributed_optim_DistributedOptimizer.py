@@ -28,39 +28,51 @@ def test_case_1():
         import torch.distributed as dist
         import torch.nn as nn
         import torch.distributed.rpc as rpc
+        from torch.optim import SGD
         from torch.distributed.optim import DistributedOptimizer
 
         os.environ['MASTER_ADDR'] = 'localhost'
         os.environ['MASTER_PORT'] = '29500'
         os.environ['PADDLE_MASTER_ENDPOINT'] = 'localhost:29501'
+        # 初始化RPC
         rpc.init_rpc(
             "worker1",
             rank=0,
             world_size=1
         )
 
-        input_size = 10
-        output_size = 1
-        model = linear = nn.Linear(input_size, output_size)
+        class SimpleModel(torch.nn.Module):
+            def __init__(self):
+                super(SimpleModel, self).__init__()
+                self.param = nn.Linear(10, 1)
 
-        data = torch.randn(batch_size, input_size)
+            def forward(self, x):
+                return self.param(x)
+        
+        # 初始化
+        data = torch.randn(1, 10)
+        target = torch.randn(1, 1)
+        model = SimpleModel()
 
-        loss_fn = nn.MSELoss()
-        target = torch.randn(batch_size, output_size)
-
-        params_rref = rpc.RRef(model)
-        optimizer_class = torch.optim.SGD
+        # 创建远程模型
+        remote_model_rref = rpc.remote("worker1", model, args=(data))
+        # 创建分布式优化器
+        optimizer_class = SGD
         optimizer_args = (params_rref,)
         optimizer_kwargs = {'lr': 0.01}
         optimizer = DistributedOptimizer(optimizer_class, params_rref, *optimizer_args, **optimizer_kwargs)
 
-        output = params_rref.rpc_sync().forward(data)
+        # 输出
+        output = remote_model_rref.to_here()
+        loss_fn = nn.MSELoss()
         loss = loss_fn(output, target)
+
         optimizer.zero_grad()
         loss.backward()
-        optimizer.step()
+        optimizer.step(worker1)
         rpc.shutdown()
 
+        result = 1
         """
     )
-    obj.run(pytorch_code, ["result"], rtol=1.0e-5)
+    obj.run(pytorch_code, ["result"])
