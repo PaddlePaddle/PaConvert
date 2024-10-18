@@ -16,22 +16,20 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.constraints.Constraint", is_aux_api=True)
+obj = APIBase("torch.distributions.poisson.Poisson")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        try:
-            result = torch.distributions.constraints.Constraint().check(1)
-        except NotImplementedError:
-            result = torch.tensor(1)
+        x = torch.tensor([1.0])
+        result = torch.distributions.poisson.Poisson(x).sample()
         """
     )
     obj.run(
         pytorch_code,
-        ["result"]
+        ["result"], check_value=False
     )
 
 
@@ -39,14 +37,39 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        try:
-            con = torch.distributions.constraints.Constraint()
-            result = con.check(value=1)
-        except NotImplementedError:
-            result = torch.tensor(1)
+        x = torch.tensor([1.0])
+        result = torch.distributions.poisson.Poisson(rate=x).sample()
         """
     )
     obj.run(
         pytorch_code,
-        ["result"]
+        ["result"], check_value=False
+    )
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1.0])
+        result = torch.distributions.poisson.Poisson(rate=x, validate_args=None).sample()
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"], check_value=False
+    )
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1.0])
+        result = torch.distributions.poisson.Poisson(validate_args=None, rate=x).sample()
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"], check_value=False
     )
