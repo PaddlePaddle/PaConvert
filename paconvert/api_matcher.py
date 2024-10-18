@@ -4776,15 +4776,12 @@ class CanCastMatcher(BaseMatcher):
         )
         return CODE_TEMPLATE
 
-    def get_paddle_nodes(self, args, kwargs):
+    def generate_code(self, kwargs):
         self.write_aux_code()
-        new_args = self.parse_args(args)
-        new_kwargs = self.parse_kwargs(kwargs)
-        can_cast_template = "paddle_aux.can_cast(from_={}, to={})"
-        from_type = new_kwargs.get("from_", new_args[0] if new_args else None)
-        to_type = new_kwargs.get("to", new_args[1] if len(new_args) > 1 else None)
-        code = can_cast_template.format(from_type, to_type)
-        return ast.parse(code).body
+        code = "paddle_aux.can_cast(from_={}, to={})".format(
+            kwargs["from_"], kwargs["to"]
+        )
+        return code
 
 
 class PositiveMatcher(BaseMatcher):
