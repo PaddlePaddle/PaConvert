@@ -741,29 +741,6 @@ class TensorTransposeMatcher(BaseMatcher):
         return code
 
 
-class DistributedOptimizerMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        print(kwargs)
-        if 'lr' in kwargs.keys():
-            kwargs['learning_rate'] = kwargs.pop('lr')
-        if 'params' in kwargs.keys():
-            kwargs['parameters'] = kwargs.pop('params')
-        if 'eps' in kwargs.keys():
-            kwargs['epsilon'] = kwargs.pop('eps')
-        kwargs.pop('params_rref')
-        opt_class = kwargs.pop('optimizer_class')
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle.distributed.fleet.init(is_collective=True)
-            strategy = fleet.DistributedStrategy()
-            opt = {}({})
-            paddle.distributed.fleet.distributed_optimizer(opt, strategy=strategy)
-            """
-        )
-        code = API_TEMPLATE.format(opt_class, **kwargs)
-        return code
-
-
 class BroadcastShapesMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         if len(args) == 1 and isinstance(args[0], ast.Starred):
