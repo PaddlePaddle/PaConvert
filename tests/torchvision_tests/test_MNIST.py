@@ -24,6 +24,103 @@ def test_case_1():
         """
         import torchvision
         root_path = './data'
+        train_dataset = torchvision.datasets.MNIST(root=root_path, train=True, transform=None, download=False)
+        """
+    )
+    paddle_code = textwrap.dedent(
+        """
+        from pathlib import Path
+        import paddle
+        root_path = './data'
+        train_dataset = paddle.vision.datasets.MNIST(transform=None, download=False,
+            mode='train', image_path=Path(root_path) /
+            'MNIST/raw/train-images-idx3-ubyte.gz', label_path=Path(root_path) /
+            'MNIST/raw/train-labels-idx1-ubyte.gz')
+        """
+    )
+    obj.run(
+        pytorch_code,
+        expect_paddle_code=paddle_code,
+    )
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torchvision
+        root_path = './data'
+        train_dataset = torchvision.datasets.MNIST(root_path, True, None, download=False)
+        """
+    )
+    paddle_code = textwrap.dedent(
+        """
+        from pathlib import Path
+        import paddle
+        root_path = './data'
+        train_dataset = paddle.vision.datasets.MNIST(download=False, mode='train',
+            image_path=Path(root_path) / 'MNIST/raw/train-images-idx3-ubyte.gz',
+            label_path=Path(root_path) / 'MNIST/raw/train-labels-idx1-ubyte.gz')
+        """
+    )
+    obj.run(
+        pytorch_code,
+        expect_paddle_code=paddle_code,
+    )
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torchvision
+        root_path = './data'
+        train_dataset = torchvision.datasets.MNIST(train=True, root=root_path, download=False)
+        """
+    )
+    paddle_code = textwrap.dedent(
+        """
+        from pathlib import Path
+        import paddle
+        root_path = './data'
+        train_dataset = paddle.vision.datasets.MNIST(download=False, mode='train',
+            image_path=Path(root_path) / 'MNIST/raw/train-images-idx3-ubyte.gz',
+            label_path=Path(root_path) / 'MNIST/raw/train-labels-idx1-ubyte.gz')
+        """
+    )
+    obj.run(
+        pytorch_code,
+        expect_paddle_code=paddle_code,
+    )
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torchvision
+        root_path = './data'
+        train_dataset = torchvision.datasets.MNIST(root=root_path)
+        """
+    )
+    paddle_code = textwrap.dedent(
+        """
+        from pathlib import Path
+        import paddle
+        root_path = './data'
+        train_dataset = paddle.vision.datasets.MNIST(mode='train', image_path=Path(
+            root_path) / 'MNIST/raw/train-images-idx3-ubyte.gz', label_path=Path(
+            root_path) / 'MNIST/raw/train-labels-idx1-ubyte.gz')
+        """
+    )
+    obj.run(
+        pytorch_code,
+        expect_paddle_code=paddle_code,
+    )
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torchvision
+        root_path = './data'
         train_dataset = torchvision.datasets.MNIST(root=root_path, train=True)
         """
     )
@@ -43,7 +140,7 @@ def test_case_1():
     )
 
 
-def test_case_2():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
@@ -72,7 +169,7 @@ def test_case_2():
     )
 
 
-def test_case_3():
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torchvision

@@ -114,7 +114,7 @@ def test_case_5():
         import torch
         from torchvision.transforms import RandomPerspective, InterpolationMode
         torch.manual_seed(4)
-        transform = RandomPerspective(distortion_scale=0.4, p=0.3, interpolation=InterpolationMode.BILINEAR, fill=[0, 0, 0])
+        transform = RandomPerspective(p=0.3, interpolation=InterpolationMode.BILINEAR, fill=[0, 0, 0], distortion_scale=0.4)
         img = torch.tensor([
             [
                 [[10, 20, 30, 40, 50],
@@ -164,7 +164,7 @@ def test_case_6():
         from torchvision.transforms import RandomPerspective, InterpolationMode
         import random
         random.seed(5)
-        transform = RandomPerspective(distortion_scale=0.9, p=0.9, interpolation=InterpolationMode.BILINEAR, fill=(255, 255, 255, 255))
+        transform = RandomPerspective(0.9, 0.9, InterpolationMode.BILINEAR, (255, 255, 255, 255))
         img = Image.new('RGBA', (6, 6), color=(0, 0, 255, 128))
         img.putpixel((0, 0), (255, 0, 0, 255))
         img.putpixel((5, 5), (0, 255, 0, 255))

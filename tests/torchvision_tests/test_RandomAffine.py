@@ -25,6 +25,21 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        from torchvision.transforms import RandomAffine, InterpolationMode
+        from PIL import Image
+
+        img = Image.new('RGB', (10, 10), color=(255, 0, 255))
+        transform = RandomAffine(45, (0.1, 0.1), (0.5, 1.5), 20, InterpolationMode.BILINEAR, 255, (2, 2))
+        result = transform(img)
+        """
+    )
+    img_obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
         from torchvision.transforms import RandomAffine
         from PIL import Image
 
@@ -36,7 +51,7 @@ def test_case_1():
     img_obj.run(pytorch_code, ["result"], check_value=False)
 
 
-def test_case_2():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -51,7 +66,7 @@ def test_case_2():
     img_obj.run(pytorch_code, ["result"], check_value=False)
 
 
-def test_case_3():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -66,7 +81,7 @@ def test_case_3():
     img_obj.run(pytorch_code, ["result"], check_value=False)
 
 
-def test_case_4():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -81,7 +96,7 @@ def test_case_4():
     img_obj.run(pytorch_code, ["result"], check_value=False)
 
 
-def test_case_5():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -96,7 +111,7 @@ def test_case_5():
     img_obj.run(pytorch_code, ["result"], check_value=False)
 
 
-def test_case_6():
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -105,6 +120,21 @@ def test_case_6():
 
         img = Image.new('RGB', (10, 10), color=(0, 255, 255))
         transform = RandomAffine(degrees=(-30, 30), center=(2, 2))
+        result = transform(img)
+        """
+    )
+    img_obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        from torchvision.transforms import RandomAffine, InterpolationMode
+        from PIL import Image
+
+        img = Image.new('RGB', (10, 10), color=(255, 0, 255))
+        transform = RandomAffine(interpolation=InterpolationMode.BILINEAR, degrees=45, translate=(0.1, 0.1), scale=(0.5, 1.5), shear=20, fill=255)
         result = transform(img)
         """
     )

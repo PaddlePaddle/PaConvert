@@ -135,3 +135,26 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torchvision.transforms.functional as F
+        i, j, h, w = 0, 0, 3, 3
+        v = 1.0
+        inplace = True
+        img = torch.tensor([
+            [
+                [5, 10, 15, 20, 25],
+                [30, 35, 40, 45, 50],
+                [55, 60, 65, 70, 75],
+                [80, 85, 90, 95, 100],
+                [105, 110, 115, 120, 125]
+            ]
+        ], dtype=torch.float)
+        result = F.erase(img=img, h=h, w=w, v=v, i=i, j=j, inplace=inplace)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

@@ -36,7 +36,7 @@ def test_case_1():
             [[0.5, 0.5],
              [0.5, 0.5]]
         ])
-        result = F.normalize(img, mean=mean, std=std)
+        result = F.normalize(img, mean, std)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -51,7 +51,7 @@ def test_case_2():
             [[0.2, 0.4],
              [0.6, 0.8]]
         ])
-        result = F.normalize(img, mean=0.5, std=[0.5])
+        result = F.normalize(tensor=img, mean=0.5, std=[0.5])
         """
     )
     obj.run(pytorch_code, ["result"])

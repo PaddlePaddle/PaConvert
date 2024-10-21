@@ -110,3 +110,47 @@ def test_case_4():
         """
     )
     img_obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        from torchvision.transforms import RandomCrop
+        torch.manual_seed(5)
+        size = (4, 4)
+        padding = 2
+        pad_if_needed = True
+        padding_mode = 'edge'
+        fill = 0
+        crop = RandomCrop(size, padding, pad_if_needed, fill, padding_mode)
+        from PIL import Image
+        img = Image.new('RGB', (6, 6), color=(50, 100, 150))
+        img.putpixel((0, 0), (255, 0, 0))
+        img.putpixel((5, 5), (0, 255, 0))
+        result = crop(img)
+        """
+    )
+    img_obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        from torchvision.transforms import RandomCrop
+        torch.manual_seed(5)
+        size = (4, 4)
+        padding = 2
+        pad_if_needed = True
+        padding_mode = 'edge'
+        fill = 0
+        crop = RandomCrop(pad_if_needed=pad_if_needed, size=size, padding=padding, fill=fill, padding_mode=padding_mode)
+        from PIL import Image
+        img = Image.new('RGB', (6, 6), color=(50, 100, 150))
+        img.putpixel((0, 0), (255, 0, 0))
+        img.putpixel((5, 5), (0, 255, 0))
+        result = crop(img)
+        """
+    )
+    img_obj.run(pytorch_code, ["result"], check_value=False)

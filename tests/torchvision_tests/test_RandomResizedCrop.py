@@ -78,7 +78,7 @@ def test_case_3():
         size = [3, 3]
         scale = (0.5, 0.9)
         ratio = (0.8, 1.2)
-        crop = RandomResizedCrop(size=size, scale=scale, ratio=ratio, interpolation=InterpolationMode.BILINEAR)
+        crop = RandomResizedCrop(size, scale, ratio, InterpolationMode.BILINEAR)
         from PIL import Image
         img = Image.new('RGB', (4, 4), color=(255, 255, 255))  # White image
         img.putpixel((0, 0), (255, 0, 0))  # Red
@@ -98,7 +98,7 @@ def test_case_4():
         size = (3, 3)
         scale = (0.8, 0.8)  # Fixed scale
         ratio = (1.0, 1.0)  # Fixed aspect ratio
-        crop = RandomResizedCrop(size=size, scale=scale, ratio=ratio, interpolation=InterpolationMode.BICUBIC)
+        crop = RandomResizedCrop(interpolation=InterpolationMode.BICUBIC, size=size, scale=scale, ratio=ratio)
         from PIL import Image
         img = Image.new('L', (3, 3))
         img.putpixel((0, 0), 50)

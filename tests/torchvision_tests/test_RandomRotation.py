@@ -108,3 +108,43 @@ def test_case_4():
         """
     )
     img_obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        from torchvision.transforms import RandomRotation, InterpolationMode
+        from PIL import Image
+        import random
+        random.seed(1)
+        degrees = [-30, 30]
+        rotation = RandomRotation(degrees, InterpolationMode.BILINEAR, True, (2, 2))
+        img = Image.new('RGB', (3, 3), color=(255, 0, 0))
+        img.putpixel((0, 0), (0, 255, 0))
+        img.putpixel((2, 2), (0, 0, 255))
+        result = rotation(img)
+        """
+    )
+    img_obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        from torchvision.transforms import RandomRotation, InterpolationMode
+        from PIL import Image
+        import random
+        random.seed(5)
+        degrees = (-90, 90)
+        center = (2, 2)
+        fill = (0, 0, 255, 128)
+        rotation = RandomRotation(interpolation=InterpolationMode.BICUBIC, degrees=degrees, expand=True, center=center, fill=fill)
+        img = Image.new('RGBA', (5, 5), color=(0, 0, 255, 128))
+        img.putpixel((0, 0), (255, 0, 0, 255))
+        img.putpixel((4, 4), (0, 255, 0, 255))
+        result = rotation(img)
+        """
+    )
+    img_obj.run(pytorch_code, ["result"], check_value=False)

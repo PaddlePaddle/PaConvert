@@ -31,11 +31,9 @@ def test_case_1():
         transform = ToTensor()
         img = Image.new('RGB', (3, 3), color=(255, 0, 0))
         result = transform(img)
-        assert isinstance(result, torch.Tensor)
-        assert result.shape == (3, 3, 3)
         """
     )
-    img_obj.run(pytorch_code, [])
+    img_obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -48,11 +46,9 @@ def test_case_2():
         transform = ToTensor()
         img = Image.new('L', (4, 4), color=128)
         result = transform(img)
-        assert isinstance(result, torch.Tensor)
-        assert result.shape == (1, 4, 4)
         """
     )
-    img_obj.run(pytorch_code, [])
+    img_obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -73,11 +69,9 @@ def test_case_3():
         ], dtype=np.uint8)
         img = Image.fromarray(img_np)
         result = transform(img)
-        assert isinstance(result, torch.Tensor)
-        assert result.shape == (3, 5, 5)
         """
     )
-    obj.run(pytorch_code, [])
+    img_obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -90,11 +84,9 @@ def test_case_4():
         transform = ToTensor()
         img = Image.new('RGBA', (2, 4), color=(0, 0, 255, 128))
         result = transform(img)
-        assert isinstance(result, torch.Tensor)
-        assert result.shape == (4, 2, 4)
         """
     )
-    img_obj.run(pytorch_code, [])
+    img_obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -113,8 +105,6 @@ def test_case_5():
         ], dtype=np.uint8)
         img = Image.fromarray(img_np)
         result = transform(img)
-        assert isinstance(result, torch.Tensor)
-        assert result.shape == (3, 3, 1)
         """
     )
-    obj.run(pytorch_code, [])
+    img_obj.run(pytorch_code, ["result"])

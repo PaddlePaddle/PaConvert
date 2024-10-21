@@ -53,3 +53,15 @@ def test_case_3():
         """
     )
     img_obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        from PIL import Image
+        import torchvision.transforms.functional as F
+        img = Image.new('RGB', (2, 2), color=(50, 100, 150))
+        result = F.adjust_hue(hue_factor=-0.25, img=img)
+        """
+    )
+    img_obj.run(pytorch_code, ["result"])

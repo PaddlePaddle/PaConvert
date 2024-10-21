@@ -23,6 +23,107 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
+        from torchvision import transforms
+        train_dataset = torchvision.datasets.CIFAR10(
+            root='./data',
+            train=True,
+            transform=transforms.Normalize((0.5,), (0.5,)),
+            download=True
+        )
+        """
+    )
+    paddle_code = textwrap.dedent(
+        """
+        from pathlib import Path
+        import paddle
+        train_dataset = paddle.vision.datasets.Cifar10(transform=paddle.vision.
+            transforms.Normalize(mean=(0.5,), std=(0.5,)), download=True, data_file
+            =str(Path('./data') / 'cifar-10-python.tar.gz'), mode='train')
+        """
+    )
+    obj.run(
+        pytorch_code,
+        expect_paddle_code=paddle_code,
+    )
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torchvision
+        from torchvision import transforms
+        train_dataset = torchvision.datasets.CIFAR10('./data', True, transforms.Normalize((0.5,), (0.5,)))
+
+        """
+    )
+    paddle_code = textwrap.dedent(
+        """
+        from pathlib import Path
+        import paddle
+        train_dataset = paddle.vision.datasets.Cifar10(transform=paddle.vision.
+            transforms.Normalize(mean=(0.5,), std=(0.5,)), data_file=str(Path(
+            './data') / 'cifar-10-python.tar.gz'), mode='train')
+        """
+    )
+    obj.run(
+        pytorch_code,
+        expect_paddle_code=paddle_code,
+    )
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torchvision
+        from torchvision import transforms
+        train_dataset = torchvision.datasets.CIFAR10(
+            train=True,
+            root='./data',
+            download=True,
+            transform=transforms.Normalize((0.5,), (0.5,)),
+        )
+        """
+    )
+    paddle_code = textwrap.dedent(
+        """
+        from pathlib import Path
+        import paddle
+        train_dataset = paddle.vision.datasets.Cifar10(download=True, transform=
+            paddle.vision.transforms.Normalize(mean=(0.5,), std=(0.5,)), data_file=
+            str(Path('./data') / 'cifar-10-python.tar.gz'), mode='train')
+        """
+    )
+    obj.run(
+        pytorch_code,
+        expect_paddle_code=paddle_code,
+    )
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torchvision
+        train_dataset = torchvision.datasets.CIFAR10(root='./data')
+        """
+    )
+    paddle_code = textwrap.dedent(
+        """
+        from pathlib import Path
+        import paddle
+        train_dataset = paddle.vision.datasets.Cifar10(data_file=str(Path('./data') /
+            'cifar-10-python.tar.gz'))
+        """
+    )
+    obj.run(
+        pytorch_code,
+        expect_paddle_code=paddle_code,
+    )
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torchvision
         root_path = './data'
         train_dataset = torchvision.datasets.CIFAR10(root=root_path, train=True)
         """
@@ -42,7 +143,7 @@ def test_case_1():
     )
 
 
-def test_case_2():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
@@ -57,47 +158,6 @@ def test_case_2():
         train = True
         train_dataset = paddle.vision.datasets.Cifar10(data_file=str(Path('./data') /
             'cifar-10-python.tar.gz'), mode='train' if train else 'test')
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torchvision
-        train_dataset = torchvision.datasets.CIFAR10(train=True, download=True)
-        """
-    )
-    paddle_code = textwrap.dedent(
-        """
-        from pathlib import Path
-        import paddle
-        train_dataset = paddle.vision.datasets.Cifar10(download=True, mode='train')
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torchvision
-        train_dataset = torchvision.datasets.CIFAR10(root='./data', train=True)
-        """
-    )
-    paddle_code = textwrap.dedent(
-        """
-        from pathlib import Path
-        import paddle
-        train_dataset = paddle.vision.datasets.Cifar10(data_file=str(Path('./data') /
-            'cifar-10-python.tar.gz'), mode='train')
         """
     )
     obj.run(

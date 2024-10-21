@@ -84,7 +84,7 @@ def test_case_3():
         ratio = (0.5, 2.0)
         value = (255, 255, 255)
         inplace = False
-        transform = RandomErasing(p=0.5, scale=scale, ratio=ratio, value=value, inplace=inplace)
+        transform = RandomErasing(p=0.5, scale=scale, value=value, inplace=inplace, ratio=ratio)
         img = torch.tensor([
             [
                 [100, 150, 200],

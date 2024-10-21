@@ -17045,12 +17045,14 @@
       "target_transform",
       "loader",
       "is_valid_file",
-      "allow_empty "
+      "allow_empty"
     ],
     "unsupport_args": [
-      "target_transform",
-      "allow_empty"
-    ]
+      "target_transform"
+    ],
+    "kwargs_change": {
+      "allow_empty": ""
+    }
   },
   "torchvision.datasets.MNIST": {
     "Matcher": "MNISTMatcher",
@@ -17208,7 +17210,8 @@
       "size",
       "scale",
       "ratio",
-      "interpolation"
+      "interpolation",
+      "antialias"
     ],
     "unsupport_args": [
       "antialias"
@@ -17240,12 +17243,18 @@
     "paddle_api": "paddle.vision.transforms.Resize",
     "args_list": [
       "size",
-      "interpolation"
+      "interpolation",
+      "max_size",
+      "antialias"
     ],
     "unsupport_args": [
       "max_size",
       "antialias"
     ]
+  },
+  "torchvision.transforms.ToTensor": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.ToTensor"
   },
   "torchvision.transforms.functional.adjust_brightness": {
     "Matcher": "GenericMatcher",
@@ -17364,7 +17373,9 @@
     "args_list": [
       "img",
       "size",
-      "interpolation"
+      "interpolation",
+      "max_size",
+      "antialias"
     ],
     "unsupport_args": [
       "max_size",

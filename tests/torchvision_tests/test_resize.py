@@ -91,7 +91,7 @@ def test_case_3():
             ]
         ], dtype=torch.float)
         img = img[0]
-        result = resize(size=size, img=img, interpolation=InterpolationMode.NEAREST)
+        result = resize(img=img, size=size, interpolation=InterpolationMode.NEAREST)
         """
     )
     obj.run(pytorch_code, ["result"])

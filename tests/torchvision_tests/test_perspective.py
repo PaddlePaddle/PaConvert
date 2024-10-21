@@ -56,7 +56,7 @@ def test_case_2():
         img.putpixel((0, 0), (255, 0, 0))  # Red
         img.putpixel((4, 4), (0, 255, 0))  # Green
         img.putpixel((2, 2), (0, 0, 255))  # Blue
-        result = perspective(img, startpoints, endpoints, interpolation=InterpolationMode.BILINEAR, fill=(0, 0, 0))
+        result = perspective(img=img, startpoints=startpoints, endpoints=endpoints, interpolation=InterpolationMode.BILINEAR, fill=(0, 0, 0))
         """
     )
     img_obj.run(pytorch_code, ["result"])
@@ -100,7 +100,7 @@ def test_case_3():
                  [128, 256, 512, 1024]]
             ]
         ], dtype=torch.float)
-        result = perspective(img, startpoints, endpoints, interpolation=InterpolationMode.NEAREST, fill=None)
+        result = perspective(img=img, interpolation=InterpolationMode.NEAREST, startpoints=startpoints, endpoints=endpoints, fill=None)
         """
     )
     obj.run(pytorch_code, ["result"])
