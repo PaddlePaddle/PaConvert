@@ -25,8 +25,7 @@ def test_case_1():
         """
         import os
         import torch
-        import torch.distributed as dist
-        import torch.nn as nn
+        from torch import optim
         import torch.distributed.rpc as rpc
         from torch.distributed.optim import DistributedOptimizer
 
@@ -38,35 +37,15 @@ def test_case_1():
             rank=0,
             world_size=1
         )
-
-        class SimpleLinearModel(nn.Module):
-            def __init__(self, input_size, output_size):
-                super(SimpleLinearModel, self).__init__()
-                self.linear = nn.Linear(input_size, output_size)
-    
-            def forward(self, x):
-                return self.linear(x)
-
-        input_size = 10
-        output_size = 1
-        model = SimpleLinearModel(input_size, output_size)
-
-        data = torch.randn(batch_size, input_size)
-
-        loss_fn = nn.MSELoss()
-        target = torch.randn(batch_size, output_size)
-
-        params_rref = rpc.RRef(model)
-        optimizer_class = torch.optim.SGD
-        optimizer_args = (params_rref,)
-        optimizer_kwargs = {'lr': 0.01}
-        optimizer = DistributedOptimizer(optimizer_class, params_rref, *optimizer_args, **optimizer_kwargs)
-
-        output = params_rref.rpc_sync().forward(data)
-        loss = loss_fn(output, target)
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
+        # Forward pass.
+        rref1 = rpc.remote("worker1", torch.add, args=(torch.ones(2), 3))
+        rref2 = rpc.remote("worker1", torch.add, args=(torch.ones(2), 1))
+        # Optimizer.
+        dist_optim = DistributedOptimizer(
+            optim.SGD,
+            [rref1, rref2],
+            lr=0.05,
+        )
         rpc.shutdown()
 
         """
