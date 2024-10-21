@@ -27,7 +27,6 @@ def test_case_1():
         import torch
         from torch import optim
         import torch.distributed.rpc as rpc
-        from torch.distributed.optim import DistributedOptimizer
 
         os.environ['MASTER_ADDR'] = 'localhost'
         os.environ['MASTER_PORT'] = '29500'
@@ -41,7 +40,7 @@ def test_case_1():
         rref1 = rpc.remote("worker1", torch.add, args=(torch.ones(2), 3))
         rref2 = rpc.remote("worker1", torch.add, args=(torch.ones(2), 1))
         # Optimizer.
-        dist_optim = DistributedOptimizer(
+        dist_optim = torch.distributed.optim.DistributedOptimizer(
             optim.SGD,
             [rref1, rref2],
             lr=0.05,
