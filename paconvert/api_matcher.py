@@ -758,16 +758,14 @@ class StudentTMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             import paddle
-            def StudentT_Aux_Func(df, loc, scale):
-                class StudentT_Aux_Class:
-                    def __init__(self, df, loc, scale):
-                        self.df = paddle.to_tensor(df)
-                        self.loc = paddle.to_tensor(loc)
-                        self.scale = paddle.to_tensor(scale)
-                        self.sT = paddle.distribution.StudentT(self.df, self.loc, self.scale)
-                    def sample(self):
-                        return paddle.reshape(self.sT.sample(), self.df.shape)
-                return StudentT_Aux_Class(df, loc, scale)
+            class StudentT_Aux_Class:
+                def __init__(self, df, loc, scale):
+                    self.df = paddle.to_tensor(df)
+                    self.loc = paddle.to_tensor(loc)
+                    self.scale = paddle.to_tensor(scale)
+                    self.sT = paddle.distribution.StudentT(self.df, self.loc, self.scale)
+                def sample(self):
+                    return paddle.reshape(self.sT.sample(), self.df.shape)
             """
         )
 
@@ -783,7 +781,7 @@ class StudentTMatcher(BaseMatcher):
         kwargs = self.kwargs_to_str(kwargs)
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.StudentT_Aux_Func({})
+            paddle_aux.StudentT_Aux_Class({})
             """
         )
         code = API_TEMPLATE.format(kwargs)
@@ -822,13 +820,11 @@ class LKJCholeskyMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             import paddle
-            def LKJCholesky_Aux_Func(dim, concentration, sample_method='onion'):
-                class LKJCholesky_Aux_Class:
-                    def __init__(self, dim, concentration, sample_method='onion'):
-                        self.lkj = paddle.distribution.LKJCholesky(dim, concentration, sample_method)
-                    def sample(self):
-                        return paddle.unsqueeze(self.lkj.sample(), axis=0)
-                return LKJCholesky_Aux_Class(dim, concentration, sample_method)
+            class LKJCholesky_Aux_Class:
+                def __init__(self, dim, concentration, sample_method='onion'):
+                    self.lkj = paddle.distribution.LKJCholesky(dim, concentration, sample_method)
+                def sample(self):
+                    return paddle.unsqueeze(self.lkj.sample(), axis=0)
             """
         )
 
@@ -840,7 +836,7 @@ class LKJCholeskyMatcher(BaseMatcher):
         kwargs = self.kwargs_to_str(kwargs)
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.LKJCholesky_Aux_Func({})
+            paddle_aux.LKJCholesky_Aux_Class({})
             """
         )
         code = API_TEMPLATE.format(kwargs)
@@ -861,11 +857,9 @@ class DistributionsConstrainMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             import paddle
-            def Distributions_Constraint():
-                class DistributionsConstrain:
-                    def check(self, value):
-                        return paddle.distribution.constraint.Constraint()(value)
-                return DistributionsConstrain()
+            class DistributionsConstrain:
+                def check(self, value):
+                    return paddle.distribution.constraint.Constraint()(value)
             """
         )
 
@@ -874,7 +868,7 @@ class DistributionsConstrainMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.Distributions_Constraint()
+            paddle_aux.DistributionsConstrain()
             """
         )
         return API_TEMPLATE
