@@ -16,37 +16,35 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.constraints.Constraint", is_aux_api=True)
+obj = APIBase("torch.distributions.transforms.PositiveDefiniteTransform", is_aux_api=True)
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        try:
-            result = torch.distributions.constraints.Constraint().check(1)
-        except NotImplementedError:
-            result = torch.tensor(1)
+        x = torch.tensor([[1.0, 0.0], [2.0, 1.0]])
+        a = torch.distributions.transforms.PositiveDefiniteTransform()
+        result = a(x)
+        result_inv = a.inv(result)
         """
     )
     obj.run(
         pytorch_code,
-        ["result"]
+        ["result", "result_inv"]
     )
-
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        try:
-            con = torch.distributions.constraints.Constraint()
-            result = con.check(value=1)
-        except NotImplementedError:
-            result = torch.tensor(1)
+        x = torch.tensor([[1.0, 0.0], [2.0, 1.0]])
+        a = torch.distributions.transforms.PositiveDefiniteTransform(cache_size=0)
+        result = a(x)
+        result_inv = a.inv(result)
         """
     )
     obj.run(
         pytorch_code,
-        ["result"]
+        ["result", "result_inv"]
     )
