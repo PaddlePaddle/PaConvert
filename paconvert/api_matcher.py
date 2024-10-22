@@ -5208,8 +5208,7 @@ class RpcRemoteMatcher(BaseMatcher):
         kwargs = self.kwargs_to_str(kwargs)
         API_TEMPLATE = textwrap.dedent(
             """
-            remote_obj = paddle.distributed.rpc.rpc_async({})
-            paddle_aux.rpc_remote(remote_obj)
+            paddle_aux.rpc_remote(paddle.distributed.rpc.rpc_async({}))
             """
         )
         code = API_TEMPLATE.format(
