@@ -5220,7 +5220,7 @@ class Cifar10Matcher(BaseMatcher):
         if "root" in kwargs:
             root = kwargs.pop("root")
             data_file = "cifar-10-python.tar.gz"
-            kwargs["data_file"] = "str(Path({}) / '{}')".format(root, data_file)
+            kwargs["data_file"] = "os.path.join({}, '{}')".format(root, data_file)
 
         if "train" in kwargs:
             train_value = kwargs.pop("train").strip()
@@ -5233,7 +5233,7 @@ class Cifar10Matcher(BaseMatcher):
 
         API_TEMPLATE = textwrap.dedent(
             """
-            from pathlib import Path
+            import os
             {}({})
             """
         )
@@ -5259,24 +5259,32 @@ class MNISTMatcher(BaseMatcher):
                 "test_label": "MNIST/raw/t10k-labels-idx1-ubyte.gz",
             }
             if train_value == "(True)":
-                kwargs["image_path"] = f"Path({root}) / '{file_paths['train_image']}'"
-                kwargs["label_path"] = f"Path({root}) / '{file_paths['train_label']}'"
+                kwargs[
+                    "image_path"
+                ] = f"os.path.join({root}, '{file_paths['train_image']}')"
+                kwargs[
+                    "label_path"
+                ] = f"os.path.join({root}, '{file_paths['train_label']}')"
             elif train_value == "(False)":
-                kwargs["image_path"] = f"Path({root}) / '{file_paths['test_image']}'"
-                kwargs["label_path"] = f"Path({root}) / '{file_paths['test_label']}'"
+                kwargs[
+                    "image_path"
+                ] = f"os.path.join({root}, '{file_paths['test_image']}')"
+                kwargs[
+                    "label_path"
+                ] = f"os.path.join({root}, '{file_paths['test_label']}')"
             else:
                 kwargs["image_path"] = (
-                    f"Path({root}) / '{file_paths['train_image']}' if {train_value} else "
-                    f"Path({root}) / '{file_paths['test_image']}'"
+                    f"os.path.join({root}, '{file_paths['train_image']}') if {train_value} else "
+                    f"os.path.join({root}, '{file_paths['test_image']}')"
                 )
                 kwargs["label_path"] = (
-                    f"Path({root}) / '{file_paths['train_label']}' if {train_value} else "
-                    f"Path({root}) / '{file_paths['test_label']}'"
+                    f"os.path.join({root}, '{file_paths['train_label']}') if {train_value} else "
+                    f"os.path.join({root}, '{file_paths['test_label']}')"
                 )
 
         API_TEMPLATE = textwrap.dedent(
             """
-            from pathlib import Path
+            import os
             {}({})
             """
         )

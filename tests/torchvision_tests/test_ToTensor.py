@@ -15,10 +15,8 @@
 import textwrap
 
 from apibase import APIBase
-from torchvision_tests.image_apibase import ImageAPIBase
 
 obj = APIBase("torchvision.transforms.ToTensor")
-img_obj = ImageAPIBase("torchvision.transforms.ToTensor")
 
 
 def test_case_1():
@@ -33,7 +31,7 @@ def test_case_1():
         result = transform(img)
         """
     )
-    img_obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -48,7 +46,7 @@ def test_case_2():
         result = transform(img)
         """
     )
-    img_obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -71,7 +69,7 @@ def test_case_3():
         result = transform(img)
         """
     )
-    img_obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -86,7 +84,7 @@ def test_case_4():
         result = transform(img)
         """
     )
-    img_obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -107,4 +105,4 @@ def test_case_5():
         result = transform(img)
         """
     )
-    img_obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"])
