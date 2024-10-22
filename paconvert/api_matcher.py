@@ -438,7 +438,7 @@ class InitEyeMatcher(InitMatcher):
 
 class TensorStrideMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if 'dim' not in kwargs or kwargs['dim'] == 'None':
+        if "dim" not in kwargs or kwargs["dim"] == "None":
             API_TEMPLATE = textwrap.dedent(
                 """
                 {}.get_strides()
@@ -451,7 +451,7 @@ class TensorStrideMatcher(BaseMatcher):
                 {}.get_strides()[{}]
                 """
             )
-            code = API_TEMPLATE.format(self.paddleClass, kwargs['dim'])
+            code = API_TEMPLATE.format(self.paddleClass, kwargs["dim"])
         return code
 
 
@@ -469,9 +469,7 @@ class TensorToSparseCooMatcher(BaseMatcher):
 class TensorNbytesMatcher(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
-        code = "{}.size * {}.element_size()".format(
-            self.paddleClass, self.paddleClass
-        )
+        code = "{}.size * {}.element_size()".format(self.paddleClass, self.paddleClass)
         return ast.parse(code).body
 
 
@@ -5215,3 +5213,79 @@ class SetNumThreadsMatcher(BaseMatcher):
         code = API_TEMPLATE.format(kwargs["int"])
 
         return code
+
+
+class Cifar10Matcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "root" in kwargs:
+            root = kwargs.pop("root")
+            data_file = "cifar-10-python.tar.gz"
+            kwargs["data_file"] = "os.path.join({}, '{}')".format(root, data_file)
+
+        if "train" in kwargs:
+            train_value = kwargs.pop("train").strip()
+            if train_value == "(True)":
+                kwargs["mode"] = "'train'"
+            elif train_value == "(False)":
+                kwargs["mode"] = "'test'"
+            else:
+                kwargs["mode"] = "'train' if {} else 'test'".format(train_value)
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            {}({})
+            """
+        )
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class MNISTMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        train_value = kwargs.pop("train", "(True)")
+        if train_value == "(True)":
+            kwargs["mode"] = "'train'"
+        elif train_value == "(False)":
+            kwargs["mode"] = "'test'"
+        else:
+            kwargs["mode"] = "'train' if {} else 'test'".format(train_value)
+
+        if "root" in kwargs:
+            root = kwargs.pop("root")
+            file_paths = {
+                "train_image": "MNIST/raw/train-images-idx3-ubyte.gz",
+                "train_label": "MNIST/raw/train-labels-idx1-ubyte.gz",
+                "test_image": "MNIST/raw/t10k-images-idx3-ubyte.gz",
+                "test_label": "MNIST/raw/t10k-labels-idx1-ubyte.gz",
+            }
+            if train_value == "(True)":
+                kwargs[
+                    "image_path"
+                ] = f"os.path.join({root}, '{file_paths['train_image']}')"
+                kwargs[
+                    "label_path"
+                ] = f"os.path.join({root}, '{file_paths['train_label']}')"
+            elif train_value == "(False)":
+                kwargs[
+                    "image_path"
+                ] = f"os.path.join({root}, '{file_paths['test_image']}')"
+                kwargs[
+                    "label_path"
+                ] = f"os.path.join({root}, '{file_paths['test_label']}')"
+            else:
+                kwargs["image_path"] = (
+                    f"os.path.join({root}, '{file_paths['train_image']}') if {train_value} else "
+                    f"os.path.join({root}, '{file_paths['test_image']}')"
+                )
+                kwargs["label_path"] = (
+                    f"os.path.join({root}, '{file_paths['train_label']}') if {train_value} else "
+                    f"os.path.join({root}, '{file_paths['test_label']}')"
+                )
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            {}({})
+            """
+        )
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
