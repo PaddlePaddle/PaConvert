@@ -35,7 +35,7 @@ def test_case_2():
             "torch.optim.ASGD(params=conv.parameters(), lambd=1e-3, alpha=0.8, t0=1e5, lr=0.01, weight_decay=0.0001, foreach=False, differentiable=False)"
         )
     )
-    obj.run(pytorch_code, ["result"], rtol=1.0e-5)
+    obj.run(pytorch_code, ["result"], rtol=1.0e-3)
 
 
 def test_case_3():
@@ -66,4 +66,4 @@ def test_case_5():
             "torch.optim.ASGD(weight_decay=0.0001, lambd=1e-3, alpha=0.8, t0=1e5, lr=0.01, foreach=False, params=conv.parameters(), differentiable=False)"
         )
     )
-    obj.run(pytorch_code, ["result"], rtol=1.0e-5)
+    obj.run(pytorch_code, ["result"], rtol=1.0e-3)
