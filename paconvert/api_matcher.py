@@ -5215,6 +5215,82 @@ class SetNumThreadsMatcher(BaseMatcher):
         return code
 
 
+class Cifar10Matcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "root" in kwargs:
+            root = kwargs.pop("root")
+            data_file = "cifar-10-python.tar.gz"
+            kwargs["data_file"] = "os.path.join({}, '{}')".format(root, data_file)
+
+        if "train" in kwargs:
+            train_value = kwargs.pop("train").strip()
+            if train_value == "(True)":
+                kwargs["mode"] = "'train'"
+            elif train_value == "(False)":
+                kwargs["mode"] = "'test'"
+            else:
+                kwargs["mode"] = "'train' if {} else 'test'".format(train_value)
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            {}({})
+            """
+        )
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class MNISTMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        train_value = kwargs.pop("train", "(True)")
+        if train_value == "(True)":
+            kwargs["mode"] = "'train'"
+        elif train_value == "(False)":
+            kwargs["mode"] = "'test'"
+        else:
+            kwargs["mode"] = "'train' if {} else 'test'".format(train_value)
+
+        if "root" in kwargs:
+            root = kwargs.pop("root")
+            file_paths = {
+                "train_image": "MNIST/raw/train-images-idx3-ubyte.gz",
+                "train_label": "MNIST/raw/train-labels-idx1-ubyte.gz",
+                "test_image": "MNIST/raw/t10k-images-idx3-ubyte.gz",
+                "test_label": "MNIST/raw/t10k-labels-idx1-ubyte.gz",
+            }
+            if train_value == "(True)":
+                kwargs[
+                    "image_path"
+                ] = f"os.path.join({root}, '{file_paths['train_image']}')"
+                kwargs[
+                    "label_path"
+                ] = f"os.path.join({root}, '{file_paths['train_label']}')"
+            elif train_value == "(False)":
+                kwargs[
+                    "image_path"
+                ] = f"os.path.join({root}, '{file_paths['test_image']}')"
+                kwargs[
+                    "label_path"
+                ] = f"os.path.join({root}, '{file_paths['test_label']}')"
+            else:
+                kwargs["image_path"] = (
+                    f"os.path.join({root}, '{file_paths['train_image']}') if {train_value} else "
+                    f"os.path.join({root}, '{file_paths['test_image']}')"
+                )
+                kwargs["label_path"] = (
+                    f"os.path.join({root}, '{file_paths['train_label']}') if {train_value} else "
+                    f"os.path.join({root}, '{file_paths['test_label']}')"
+                )
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            {}({})
+            """
+        )
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
 class CopySignMatcher(BaseMatcher):
     def generate_code(self, kwargs):
 
