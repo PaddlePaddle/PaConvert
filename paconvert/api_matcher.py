@@ -438,7 +438,7 @@ class InitEyeMatcher(InitMatcher):
 
 class TensorStrideMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if 'dim' not in kwargs or kwargs['dim'] == 'None':
+        if "dim" not in kwargs or kwargs["dim"] == "None":
             API_TEMPLATE = textwrap.dedent(
                 """
                 {}.get_strides()
@@ -451,7 +451,7 @@ class TensorStrideMatcher(BaseMatcher):
                 {}.get_strides()[{}]
                 """
             )
-            code = API_TEMPLATE.format(self.paddleClass, kwargs['dim'])
+            code = API_TEMPLATE.format(self.paddleClass, kwargs["dim"])
         return code
 
 
@@ -469,9 +469,7 @@ class TensorToSparseCooMatcher(BaseMatcher):
 class TensorNbytesMatcher(BaseMatcher):
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)
-        code = "{}.size * {}.element_size()".format(
-            self.paddleClass, self.paddleClass
-        )
+        code = "{}.size * {}.element_size()".format(self.paddleClass, self.paddleClass)
         return ast.parse(code).body
 
 
@@ -5214,4 +5212,86 @@ class SetNumThreadsMatcher(BaseMatcher):
         )
         code = API_TEMPLATE.format(kwargs["int"])
 
+        return code
+
+
+class CopySignMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+
+        if "out" in kwargs and kwargs["out"] != "None":
+            API_TEMPLATE = textwrap.dedent(
+                """
+                if isinstance({}, (int, float)):
+                    signflag = paddle.to_tensor({})
+                else:
+                    signflag = {}
+                paddle.assign(paddle.abs({}) * paddle.sign(paddle.cast(signflag,dtype={}.dtype)), {})
+                """
+            )
+            code = API_TEMPLATE.format(
+                kwargs["other"],
+                kwargs["other"],
+                kwargs["other"],
+                kwargs["input"],
+                kwargs["input"],
+                kwargs["out"],
+            )
+
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                if isinstance({}, (int, float)):
+                    signflag = paddle.to_tensor({})
+                else:
+                    signflag = {}
+                paddle.abs({}) * paddle.sign(paddle.cast(signflag,dtype={}.dtype))
+                """
+            )
+            code = API_TEMPLATE.format(
+                kwargs["other"],
+                kwargs["other"],
+                kwargs["other"],
+                kwargs["input"],
+                kwargs["input"],
+            )
+        return code
+
+
+class CudaDeviceMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        number = next((int(c) for c in kwargs["device"] if c.isdigit()), 0)
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            paddle.CUDAPlace({})
+            """
+        )
+        code = CODE_TEMPLATE.format(number)
+        return code
+
+
+class MultiLabelMarginLossMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "size_average" not in kwargs and "reduce" not in kwargs:
+            reduction = kwargs["reduction"]
+        else:
+            if "size_average" not in kwargs:
+                size_average = True
+            else:
+                size_average = kwargs["size_average"]
+            if "reduce" not in kwargs:
+                reduce = True
+            else:
+                reduce = kwargs["reduce"]
+            if size_average and reduce:
+                reduction = "mean"
+            elif reduce:
+                reduction = "sum"
+            else:
+                reduction = "none"
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            paddle.nn.MultiLabelSoftMarginLoss(reduction="{}")
+            """
+        )
+        code = CODE_TEMPLATE.format(reduction)
         return code

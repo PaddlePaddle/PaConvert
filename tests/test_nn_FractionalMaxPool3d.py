@@ -17,59 +17,40 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.vsplit")
+obj = APIBase("torch.nn.FractionalMaxPool3d")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(16.0).reshape(2, 2, 4)
-        result = torch.vsplit(a, 2)
+        x = torch.randn(20, 16, 50, 32, 16)
+        result = torch.nn.FractionalMaxPool3d(3, output_size=[5, 5, 5], return_indices=True)
+        result = result(x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False, check_dtype=False)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(16.0).reshape(2, 2, 4)
-        result = torch.vsplit(a, [2, 3])
+        x = torch.randn(20, 16, 50, 32, 16)
+        result = torch.nn.FractionalMaxPool3d(kernel_size=3, output_size=[5, 5, 5], return_indices=False)
+        result = result(x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False, check_dtype=False)
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(12).reshape(3, 2, 2)
-        result = torch.vsplit(a, indices=[1, 2])
+        x = torch.randn(20, 16, 50, 32, 16)
+        result = torch.nn.FractionalMaxPool3d(output_size=[5, 5, 5], kernel_size=3, return_indices=False)
+        result = result(x)
         """
     )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(12).reshape(3, 2, 2)
-        result = torch.vsplit(input=a, indices=[1, 2])
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(16.0).reshape(2, 2, 4)
-        result = torch.vsplit(input=a, sections=2)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False, check_dtype=False)

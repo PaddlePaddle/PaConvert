@@ -16,17 +16,16 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.MultiLabelMarginLoss")
+obj = APIBase("torch.distributed.get_world_size")
 
 
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        loss = torch.nn.MultiLabelMarginLoss(size_average=True, reduce=False, reduction="mean")
-        input = torch.tensor([[1, -2, 3], [0, -1, 2], [1, 0, 1]]).to(dtype=torch.float32)
-        label = torch.LongTensor([[-1, 1, -1], [1, 1, 1], [1, -1, 1]])
-        result = loss(input, label)
+        import torch.distributed as dist
+        dist.init_process_group(backend='nccl')
+        result = dist.get_world_size()
         """
     )
     obj.run(pytorch_code, ["result"])
