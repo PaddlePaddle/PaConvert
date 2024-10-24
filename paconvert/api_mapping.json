@@ -5571,13 +5571,18 @@
     }
   },
   "torch.copysign": {
-    "Matcher": "CopySignMatcher",
-    "min_input_args": 1,
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.copysign",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "other",
       "out"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "other": "y"
+    }
   },
   "torch.corrcoef": {
     "Matcher": "GenericMatcher",

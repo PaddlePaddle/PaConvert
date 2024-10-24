@@ -829,7 +829,7 @@ class BroadcastShapesMatcher(BaseMatcher):
         for i in range(1, len(new_args)):
             code = "{}({}, {})".format(self.get_paddle_api(), code, new_args[i])
         return ast.parse(code).body
- 
+
 
 class StudentTMatcher(BaseMatcher):
     def generate_aux_code(self):
@@ -848,6 +848,7 @@ class StudentTMatcher(BaseMatcher):
         )
 
         return API_TEMPLATE
+
     def generate_code(self, kwargs):
         self.write_aux_code()
         if "validate_args" in kwargs:
@@ -883,6 +884,7 @@ class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
         )
 
         return API_TEMPLATE
+
     def generate_code(self, kwargs):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
@@ -907,6 +909,7 @@ class LKJCholeskyMatcher(BaseMatcher):
         )
 
         return API_TEMPLATE
+
     def generate_code(self, kwargs):
         self.write_aux_code()
         if "validate_args" in kwargs:
@@ -919,7 +922,6 @@ class LKJCholeskyMatcher(BaseMatcher):
         )
         code = API_TEMPLATE.format(kwargs)
         return code
-
 
 
 class Is_InferenceMatcher(BaseMatcher):
@@ -942,6 +944,7 @@ class DistributionsConstrainMatcher(BaseMatcher):
         )
 
         return API_TEMPLATE
+
     def generate_code(self, kwargs):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
@@ -1205,9 +1208,9 @@ class SequentialMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         # nn.Sequential(OrderedDict([...]) / nn.Sequential(OrderedDict(blocks))
         if (
-            len(args) == 1
-            and isinstance(args[0], ast.Call)
-            and self.get_full_attr(args[0].func).endswith("OrderedDict")
+                len(args) == 1
+                and isinstance(args[0], ast.Call)
+                and self.get_full_attr(args[0].func).endswith("OrderedDict")
         ):
             new_args = self.parse_args(args[0].args)
             new_args = ["*{}".format(new_args[0])]
@@ -1577,7 +1580,7 @@ class TRFMGenerationConfigMatcher(BaseMatcher):
 class TensorMatcher(BaseMatcher):
     def get_paddle_api(self):
         if isinstance(
-            self.transformer.parent_node, (ast.Tuple, ast.Index, ast.arg, ast.Subscript)
+                self.transformer.parent_node, (ast.Tuple, ast.Index, ast.arg, ast.Subscript)
         ):
             return "paddle.Tensor"
         return super().get_paddle_api()
@@ -1601,43 +1604,43 @@ class TensorMatcher(BaseMatcher):
                     data = self.parse_args(args)[0]
 
                 if (
-                    "torch.IntTensor" == self.torch_api
-                    or "torch.cuda.IntTensor" == self.torch_api
+                        "torch.IntTensor" == self.torch_api
+                        or "torch.cuda.IntTensor" == self.torch_api
                 ):
                     code = "paddle.to_tensor(data={}, dtype='int32')".format(data)
                 elif ("torch.ShortTensor" == self.torch_api) or (
-                    "torch.cuda.ShortTensor" == self.torch_api
+                        "torch.cuda.ShortTensor" == self.torch_api
                 ):
                     code = "paddle.to_tensor(data={}, dtype='int16')".format(data)
                 elif (
-                    "torch.LongTensor" == self.torch_api
-                    or "torch.cuda.LongTensor" == self.torch_api
+                        "torch.LongTensor" == self.torch_api
+                        or "torch.cuda.LongTensor" == self.torch_api
                 ):
                     code = "paddle.to_tensor(data={}, dtype='int64')".format(data)
                 elif ("torch.HalfTensor" == self.torch_api) or (
-                    "torch.cuda.HalfTensor" == self.torch_api
+                        "torch.cuda.HalfTensor" == self.torch_api
                 ):
                     code = "paddle.to_tensor(data={}, dtype='float16')".format(data)
                 elif (
-                    "torch.FloatTensor" == self.torch_api
-                    or "torch.cuda.FloatTensor" == self.torch_api
+                        "torch.FloatTensor" == self.torch_api
+                        or "torch.cuda.FloatTensor" == self.torch_api
                 ):
                     code = "paddle.to_tensor(data={}, dtype='float32')".format(data)
                 elif ("torch.DoubleTensor" == self.torch_api) or (
-                    "torch.cuda.DoubleTensor" == self.torch_api
+                        "torch.cuda.DoubleTensor" == self.torch_api
                 ):
                     code = "paddle.to_tensor(data={}, dtype='float64')".format(data)
                 elif (
-                    "torch.ByteTensor" == self.torch_api
-                    or "torch.cuda.ByteTensor" == self.torch_api
+                        "torch.ByteTensor" == self.torch_api
+                        or "torch.cuda.ByteTensor" == self.torch_api
                 ):
                     code = "paddle.to_tensor(data={}, dtype='uint8')".format(data)
                 elif ("torch.BoolTensor" == self.torch_api) or (
-                    "torch.cuda.BoolTensor" == self.torch_api
+                        "torch.cuda.BoolTensor" == self.torch_api
                 ):
                     code = "paddle.to_tensor(data={}, dtype='bool')".format(data)
                 elif ("torch.BFloat16Tensor" == self.torch_api) or (
-                    "torch.cuda.BFloat16Tensor" == self.torch_api
+                        "torch.cuda.BFloat16Tensor" == self.torch_api
                 ):
                     code = "paddle.to_tensor(data={}, dtype='bfloat16')".format(data)
                 else:
@@ -1650,46 +1653,46 @@ class TensorMatcher(BaseMatcher):
             shape = str(shape).replace("'", "")
 
         if (
-            "torch.IntTensor" == self.torch_api
-            or "torch.cuda.IntTensor" == self.torch_api
+                "torch.IntTensor" == self.torch_api
+                or "torch.cuda.IntTensor" == self.torch_api
         ):
             code = "paddle.empty(shape={}, dtype='int32')".format(shape)
         elif (
-            "torch.ShortTensor" == self.torch_api
-            or "torch.cuda.ShortTensor" == self.torch_api
+                "torch.ShortTensor" == self.torch_api
+                or "torch.cuda.ShortTensor" == self.torch_api
         ):
             code = "paddle.empty(shape={}, dtype='int16')".format(shape)
         elif (
-            "torch.LongTensor" == self.torch_api
-            or "torch.cuda.LongTensor" == self.torch_api
+                "torch.LongTensor" == self.torch_api
+                or "torch.cuda.LongTensor" == self.torch_api
         ):
             code = "paddle.empty(shape={}, dtype='int64')".format(shape)
         elif (
-            "torch.HalfTensor" == self.torch_api
-            or "torch.cuda.HalfTensor" == self.torch_api
+                "torch.HalfTensor" == self.torch_api
+                or "torch.cuda.HalfTensor" == self.torch_api
         ):
             code = "paddle.empty(shape={}, dtype='float16')".format(shape)
         elif (
-            "torch.FloatTensor" == self.torch_api
-            or "torch.cuda.FloatTensor" == self.torch_api
+                "torch.FloatTensor" == self.torch_api
+                or "torch.cuda.FloatTensor" == self.torch_api
         ):
             code = "paddle.empty(shape={}, dtype='float32')".format(shape)
         elif (
-            "torch.DoubleTensor" == self.torch_api
-            or "torch.cuda.DoubleTensor" == self.torch_api
+                "torch.DoubleTensor" == self.torch_api
+                or "torch.cuda.DoubleTensor" == self.torch_api
         ):
             code = "paddle.empty(shape={}, dtype='float64')".format(shape)
         elif (
-            "torch.ByteTensor" == self.torch_api
-            or "torch.cuda.ByteTensor" == self.torch_api
+                "torch.ByteTensor" == self.torch_api
+                or "torch.cuda.ByteTensor" == self.torch_api
         ):
             code = "paddle.empty(shape={}, dtype='uint8')".format(shape)
         elif ("torch.BFloat16Tensor" == self.torch_api) or (
-            "torch.cuda.BFloat16Tensor" == self.torch_api
+                "torch.cuda.BFloat16Tensor" == self.torch_api
         ):
             code = "paddle.empty(shape={}, dtype='bfloat16')".format(shape)
         elif ("torch.BoolTensor" == self.torch_api) or (
-            "torch.cuda.BoolTensor" == self.torch_api
+                "torch.cuda.BoolTensor" == self.torch_api
         ):
             code = "paddle.randint(0, 2, shape={}).astype('bool')".format(shape)
         else:
@@ -4761,7 +4764,7 @@ class TensorToBoolMatcher(BaseMatcher):
             kwargs["axis"] = kwargs.pop("dim")
 
         paddle_api = self.get_paddle_api()
-        paddle_api_name = paddle_api[paddle_api.rfind(".") :]
+        paddle_api_name = paddle_api[paddle_api.rfind("."):]
         code = "{}({})".format(
             self.paddleClass + ".astype('bool')" + paddle_api_name,
             self.kwargs_to_str(kwargs),
@@ -4970,7 +4973,7 @@ class TensorViewMatcher(BaseMatcher):
                 if isinstance(args[0], (ast.Tuple, ast.List)):
                     return "unchange"
                 if isinstance(args[0], (ast.Constant)) and isinstance(
-                    args[0].value, str
+                        args[0].value, str
                 ):
                     return "unchange"
 
@@ -5279,7 +5282,7 @@ class RpcRemoteMatcher(BaseMatcher):
             """
         )
         return CODE_TEMPLATE
-    
+
     def generate_code(self, kwargs):
         self.write_aux_code()
         kwargs['fn'] = kwargs.pop('func')
@@ -5439,48 +5442,6 @@ class MNISTMatcher(BaseMatcher):
             """
         )
         return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-
-
-class CopySignMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-
-        if "out" in kwargs and kwargs["out"] != "None":
-            API_TEMPLATE = textwrap.dedent(
-                """
-                if isinstance({}, (int, float)):
-                    signflag = paddle.to_tensor({})
-                else:
-                    signflag = {}
-                paddle.assign(paddle.abs({}) * paddle.sign(paddle.cast(signflag,dtype={}.dtype)), {})
-                """
-            )
-            code = API_TEMPLATE.format(
-                kwargs["other"],
-                kwargs["other"],
-                kwargs["other"],
-                kwargs["input"],
-                kwargs["input"],
-                kwargs["out"],
-            )
-
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                if isinstance({}, (int, float)):
-                    signflag = paddle.to_tensor({})
-                else:
-                    signflag = {}
-                paddle.abs({}) * paddle.sign(paddle.cast(signflag,dtype={}.dtype))
-                """
-            )
-            code = API_TEMPLATE.format(
-                kwargs["other"],
-                kwargs["other"],
-                kwargs["other"],
-                kwargs["input"],
-                kwargs["input"],
-            )
-        return code
 
 
 class CudaDeviceMatcher(BaseMatcher):
