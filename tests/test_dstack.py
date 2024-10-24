@@ -28,12 +28,7 @@ def test_case_1():
         result = torch.dstack((a, b))
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -45,12 +40,7 @@ def test_case_2():
         result = torch.dstack((a, b))
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -62,12 +52,7 @@ def test_case_3():
         result = torch.dstack((a, b))
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -77,12 +62,7 @@ def test_case_4():
         result = torch.dstack((torch.tensor([[[1, 1],[2, 2],[3, 3]]]), torch.tensor([[[4],[5],[6]]])))
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -93,9 +73,4 @@ def test_case_5():
         result = torch.dstack((torch.tensor([[[1, 1],[2, 2],[3, 3]]]), torch.tensor([[[4],[5],[6]]])), out=out)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result", "out"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result", "out"])

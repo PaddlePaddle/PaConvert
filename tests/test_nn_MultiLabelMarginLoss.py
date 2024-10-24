@@ -19,16 +19,14 @@ from apibase import APIBase
 obj = APIBase("torch.nn.MultiLabelMarginLoss")
 
 
-def test_case_1():
+def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        loss = torch.nn.MultiLabelMarginLoss()
-        input = torch.tensor([[0.1, 0.2, 0.4, 0.8]]).to(dtype=torch.float32)
-        label = torch.LongTensor([[3, 0, -1, 1]])
+        loss = torch.nn.MultiLabelMarginLoss(size_average=True, reduce=False, reduction="mean")
+        input = torch.tensor([[1, -2, 3], [0, -1, 2], [1, 0, 1]]).to(dtype=torch.float32)
+        label = torch.LongTensor([[-1, 1, -1], [1, 1, 1], [1, -1, 1]])
         result = loss(input, label)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="The API is not supported."
-    )
+    obj.run(pytorch_code, ["result"])

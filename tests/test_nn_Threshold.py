@@ -30,12 +30,7 @@ def test_case_1():
         result = model(x)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support value != 0.0 and value is mandatory in torch",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -49,12 +44,7 @@ def test_case_2():
         result = model(x)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support value != 0.0 and value is mandatory in torch",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -68,12 +58,7 @@ def test_case_3():
         result = model(x)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support value != 0.0 and value is mandatory in torch",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -90,8 +75,6 @@ def test_case_4():
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="paddle does not support value != 0.0 and value is mandatory in torch",
     )
 
 
@@ -109,6 +92,4 @@ def test_case_5():
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="paddle does not support value != 0.0 and value is mandatory in torch",
     )

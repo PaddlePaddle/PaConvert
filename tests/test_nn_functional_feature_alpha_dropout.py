@@ -11,32 +11,32 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.vsplit")
+obj = APIBase("torch.nn.functional.feature_alpha_dropout")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(16.0).reshape(2, 2, 4)
-        result = torch.vsplit(a, 2)
+        x = torch.tensor([[1, -2, 3], [0, -1, 2], [1, 0, 1]], dtype=torch.float32)
+        result = torch.nn.functional.feature_alpha_dropout(input=x, p=0.5, training=True, inplace=False)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(16.0).reshape(2, 2, 4)
-        result = torch.vsplit(a, [2, 3])
+        import torch
+        x = torch.tensor([[1, -2, 3], [0, -1, 2], [1, 0, 1]], dtype=torch.float32)
+        result = torch.nn.functional.feature_alpha_dropout(x, 0.5, False, True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -46,8 +46,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(12).reshape(3, 2, 2)
-        result = torch.vsplit(a, indices=[1, 2])
+        import torch
+        x = torch.tensor([[1, -2, 3], [0, -1, 2], [1, 0, 1]], dtype=torch.float32)
+        result = torch.nn.functional.feature_alpha_dropout(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -57,19 +58,24 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(12).reshape(3, 2, 2)
-        result = torch.vsplit(input=a, indices=[1, 2])
+        import torch
+        x = torch.tensor([[1, -2, 3], [0, -1, 2], [1, 0, 1]], dtype=torch.float32)
+        result = torch.nn.functional.feature_alpha_dropout(training=True, input=x, p=0.5, inplace=False)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(16.0).reshape(2, 2, 4)
-        result = torch.vsplit(input=a, sections=2)
+        import torch
+        x = torch.tensor([[1, -2, 3], [0, -1, 2], [1, 0, 1]], dtype=torch.float32)
+        result = torch.nn.functional.feature_alpha_dropout(input=x, p=0.4, inplace=False)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+    )

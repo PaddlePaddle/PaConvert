@@ -11,65 +11,69 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
-obj = APIBase("torch.vsplit")
+
+class CudaDeviceAPIBase(APIBase):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
+    ):
+        assert pytorch_result.idx == paddle_result.get_device_id()
 
 
+obj = CudaDeviceAPIBase("torch.cuda.device")
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(16.0).reshape(2, 2, 4)
-        result = torch.vsplit(a, 2)
+        result = torch.cuda.device(0)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(16.0).reshape(2, 2, 4)
-        result = torch.vsplit(a, [2, 3])
+        result = torch.cuda.device(device=0)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.arange(12).reshape(3, 2, 2)
-        result = torch.vsplit(a, indices=[1, 2])
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(12).reshape(3, 2, 2)
-        result = torch.vsplit(input=a, indices=[1, 2])
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(16.0).reshape(2, 2, 4)
-        result = torch.vsplit(input=a, sections=2)
+        result = torch.cuda.device(torch.device('cuda', index=0))
         """
     )
     obj.run(pytorch_code, ["result"])
