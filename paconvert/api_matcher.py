@@ -5291,6 +5291,7 @@ class MNISTMatcher(BaseMatcher):
         return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
 
+
 class CopySignMatcher(BaseMatcher):
     def generate_code(self, kwargs):
 
