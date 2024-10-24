@@ -17,7 +17,7 @@ import textwrap
 from apibase import APIBase
 from optimizer_helper import generate_optimizer_test_code
 
-obj = APIBase("torch.optim.Adam")
+obj = APIBase("torch.optim.ASGD")
 
 
 def test_case_1():
