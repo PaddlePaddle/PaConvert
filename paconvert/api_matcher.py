@@ -829,6 +829,127 @@ class BroadcastShapesMatcher(BaseMatcher):
         for i in range(1, len(new_args)):
             code = "{}({}, {})".format(self.get_paddle_api(), code, new_args[i])
         return ast.parse(code).body
+ 
+
+class StudentTMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import paddle
+            class StudentT_Aux_Class:
+                def __init__(self, df, loc, scale):
+                    self.df = paddle.to_tensor(df)
+                    self.loc = paddle.to_tensor(loc)
+                    self.scale = paddle.to_tensor(scale)
+                    self.sT = paddle.distribution.StudentT(self.df, self.loc, self.scale)
+                def sample(self):
+                    return paddle.reshape(self.sT.sample(), self.df.shape)
+            """
+        )
+
+        return API_TEMPLATE
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        if "validate_args" in kwargs:
+            del kwargs["validate_args"]
+        if "loc" not in kwargs:
+            kwargs["loc"] = 0.1
+        if "scale" not in kwargs:
+            kwargs["scale"] = 1.0
+        kwargs = self.kwargs_to_str(kwargs)
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.StudentT_Aux_Class({})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs)
+        return code
+
+
+class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import paddle
+            class TransformsPositiveDefiniteTransform:
+                def __call__(self, x):
+                    x = x.tril(-1) + x.diagonal(axis1=-2, axis2=-1).exp().diag_embed()
+                    return x @ x.T
+
+                def inv(self, y):
+                    y = paddle.linalg.cholesky(y)
+                    return y.tril(-1) + y.diagonal(axis1=-2, axis2=-1).log().diag_embed()
+            """
+        )
+
+        return API_TEMPLATE
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.TransformsPositiveDefiniteTransform()
+            """
+        )
+        return API_TEMPLATE
+
+
+class LKJCholeskyMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import paddle
+            class LKJCholesky_Aux_Class:
+                def __init__(self, dim, concentration, sample_method='onion'):
+                    self.lkj = paddle.distribution.LKJCholesky(dim, concentration, sample_method)
+                def sample(self):
+                    return paddle.unsqueeze(self.lkj.sample(), axis=0)
+            """
+        )
+
+        return API_TEMPLATE
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        if "validate_args" in kwargs:
+            del kwargs["validate_args"]
+        kwargs = self.kwargs_to_str(kwargs)
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.LKJCholesky_Aux_Class({})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs)
+        return code
+
+
+
+class Is_InferenceMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "input" not in kwargs:
+            kwargs["input"] = self.paddleClass
+        code = "{}.stop_gradient".format(kwargs["input"])
+        return code
+
+
+class DistributionsConstrainMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import paddle
+            class DistributionsConstrain:
+                def check(self, value):
+                    return paddle.distribution.constraint.Constraint()(value)
+            """
+        )
+
+        return API_TEMPLATE
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.DistributionsConstrain()
+            """
+        )
+        return API_TEMPLATE
 
 
 class IInfoMatcher(BaseMatcher):
@@ -5142,6 +5263,35 @@ class FromBufferMatcher(BaseMatcher):
         )
         code = API_TEMPLATE.format(kwargs["buffer"], kwargs["dtype"])
 
+        return code
+
+
+class RpcRemoteMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            class rpc_remote:
+                def __init__(self, remote_obj):
+                    self.remote = remote_obj
+
+                def to_here(self):
+                    return self.remote.wait()
+            """
+        )
+        return CODE_TEMPLATE
+    
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        kwargs['fn'] = kwargs.pop('func')
+        kwargs = self.kwargs_to_str(kwargs)
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.rpc_remote(paddle.distributed.rpc.rpc_async({}))
+            """
+        )
+        code = API_TEMPLATE.format(
+            kwargs
+        )
         return code
 
 
