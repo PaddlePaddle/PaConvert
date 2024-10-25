@@ -5456,7 +5456,6 @@ class CudaDeviceMatcher(BaseMatcher):
         return code
 
 
-
 class MultiLabelMarginLossMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "size_average" not in kwargs and "reduce" not in kwargs:
