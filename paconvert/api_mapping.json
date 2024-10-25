@@ -12604,7 +12604,8 @@
       "inplace"
     ],
     "kwargs_change": {
-      "input": "x"
+      "input": "x",
+      "inplace": ""
     },
     "paddle_default_kwargs": {
       "training": "False"
