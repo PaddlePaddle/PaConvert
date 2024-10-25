@@ -3916,7 +3916,7 @@ class SoftmaxMatcher(BaseMatcher):
 
 class SoftminMatcher(SoftmaxMatcher):
     def generate_code(self, kwargs):
-        self.paddle_api = "paddle.nn.Softmin"
+        self.paddle_api = "paddle_aux.Softmin"
         return super().generate_code(kwargs)
 
     def generate_aux_code(self):
@@ -3938,7 +3938,6 @@ class SoftminMatcher(SoftmaxMatcher):
             class Softmin(paddle.nn.Softmax):
                 def forward(self, x):
                     return super().forward(-x)
-            setattr(paddle.nn, 'Softmin', Softmin)
             """
         )
         return CODE_TEMPLATE
