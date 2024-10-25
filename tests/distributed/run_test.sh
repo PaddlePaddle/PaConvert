@@ -14,7 +14,7 @@
 # 
 
 
-echo "Insalling develop version paddle"
+echo "Insalling develop gpu version paddle"
 python -m pip uninstall -y paddlepaddle
 python -m pip uninstall -y paddlepaddle-gpu
 python load_lib.py
