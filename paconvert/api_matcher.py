@@ -3703,7 +3703,7 @@ class SLogDetMatcher(BaseMatcher):
             API_TEMPLATE = textwrap.dedent(
                 """
                 res = paddle.linalg.slogdet({})
-                res[0], res[1]
+                res[0], res[1].astype('float32')
                 """
             )
             code = API_TEMPLATE.format(x_v)
