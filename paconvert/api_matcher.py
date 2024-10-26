@@ -4821,7 +4821,6 @@ class CanCastMatcher(BaseMatcher):
                     }
                 }
                 return can_cast_dict[from_][to]
-            setattr(paddle, 'can_cast', can_cast)
             """
         )
         return CODE_TEMPLATE
@@ -4837,7 +4836,7 @@ class CanCastMatcher(BaseMatcher):
 class PositiveMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
-            """
+        """
         def positive(x):
             if x.dtype != paddle.bool:
                 return x
