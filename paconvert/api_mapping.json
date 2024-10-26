@@ -896,10 +896,10 @@
     ],
     "kwargs_change": {
       "median": "loc",
-      "sigma":"scale",
-      "generator":""
+      "sigma": "scale",
+      "generator": ""
     }
-  },  
+  },
   "torch.Tensor.cdouble": {
     "Matcher": "TensorCdoubleMatcher",
     "paddle_api": "paddle.Tensor.astype",
@@ -1791,7 +1791,7 @@
     ],
     "kwargs_change": {
       "p": "probs",
-      "generator":""
+      "generator": ""
     }
   },
   "torch.Tensor.geqrf": {},
@@ -2173,13 +2173,6 @@
   "torch.Tensor.is_inference": {
     "Matcher": "Is_InferenceMatcher",
     "min_input_args": 0
-  },
-  "torch.is_inference": {
-    "Matcher": "Is_InferenceMatcher",
-    "min_input_args": 1,
-    "args_list":[
-      "input"
-    ]
   },
   "torch.Tensor.is_pinned": {
     "Matcher": "Is_PinnedMatcher",
@@ -6472,7 +6465,7 @@
     ],
     "min_input_args": 1
   },
-  "torch.distributed.rpc.remote":{
+  "torch.distributed.rpc.remote": {
     "Matcher": "RpcRemoteMatcher",
     "paddle_api": "paddle.distributed.rpc.rpc_async",
     "min_input_args": 2,
@@ -6567,52 +6560,6 @@
     },
     "min_input_args": 2
   },
-  "torch.distributions.lkj_cholesky.LKJCholesky":{
-    "Matcher": "LKJCholeskyMatcher",
-    "paddle_api": "paddle.distribution.LKJCholesky",
-    "min_input_args": 1,
-    "args_list": [
-      "dim",
-      "concentration",
-      "validate_args"
-    ]
-  },
-  "torch.distributions.studentT.StudentT":{
-    "Matcher": "StudentTMatcher",
-    "paddle_api": "paddle.distribution.StudentT",
-    "min_input_args": 1,
-    "args_list": [
-      "df",
-      "loc",
-      "scale",
-      "validate_args"
-    ],
-    "kwargs_change": {
-      "validate_args": ""
-    }
-  },
-  "torch.distributions.transforms.PositiveDefiniteTransform":{
-    "Matcher": "TransformsPositiveDefiniteTransformMatcher",
-    "min_input_args": 0,
-    "args_list": [
-      "cache_size"
-    ],
-    "kwargs_change": {
-      "cache_size": ""
-    }
-  },
-  "torch.distributions.poisson.Poisson":{
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.distribution.Poisson",
-    "min_input_args": 1,
-    "args_list": [
-      "rate",
-      "validate_args"
-    ],
-    "kwargs_change": {
-      "validate_args": ""
-    }
-  },
   "torch.distributions.Bernoulli": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Bernoulli",
@@ -6663,18 +6610,6 @@
       "total_count": "1"
     }
   },
-  "torch.distributions.chi2.Chi2":{
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.distribution.Chi2",
-    "min_input_args": 1,
-    "args_list": [
-      "df",
-      "validate_args"
-    ],
-    "kwargs_change": {
-      "validate_args": ""
-    }
-  },
   "torch.distributions.Categorical": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Categorical",
@@ -6715,24 +6650,6 @@
     "kwargs_change": {
       "parts": "transforms",
       "cache_size": ""
-    }
-  },
-  "torch.distributions.constraints.Constraint" : {
-    "Matcher": "DistributionsConstrainMatcher",
-    "paddle_api": "paddle.distribution.constraint.Constraint",
-    "abstract": true
-  },
-  "torch.distributions.gamma.Gamma":{
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.distribution.Gamma",
-    "min_input_args": 2,
-    "args_list": [
-      "concentration",
-      "rate",
-      "validate_args"
-    ],
-    "kwargs_change": {
-      "validate_args": ""
     }
   },
   "torch.distributions.ContinuousBernoulli": {
@@ -7123,6 +7040,36 @@
       "validate_args": ""
     }
   },
+  "torch.distributions.chi2.Chi2": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Chi2",
+    "min_input_args": 1,
+    "args_list": [
+      "df",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.constraints.Constraint": {
+    "Matcher": "DistributionsConstrainMatcher",
+    "paddle_api": "paddle.distribution.constraint.Constraint",
+    "abstract": true
+  },
+  "torch.distributions.gamma.Gamma": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Gamma",
+    "min_input_args": 2,
+    "args_list": [
+      "concentration",
+      "rate",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
   "torch.distributions.kl.kl_divergence": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.kl_divergence",
@@ -7143,6 +7090,52 @@
     "kwargs_change": {
       "type_p": "cls_p",
       "type_q": "cls_q"
+    }
+  },
+  "torch.distributions.lkj_cholesky.LKJCholesky": {
+    "Matcher": "LKJCholeskyMatcher",
+    "paddle_api": "paddle.distribution.LKJCholesky",
+    "min_input_args": 1,
+    "args_list": [
+      "dim",
+      "concentration",
+      "validate_args"
+    ]
+  },
+  "torch.distributions.poisson.Poisson": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Poisson",
+    "min_input_args": 1,
+    "args_list": [
+      "rate",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.studentT.StudentT": {
+    "Matcher": "StudentTMatcher",
+    "paddle_api": "paddle.distribution.StudentT",
+    "min_input_args": 1,
+    "args_list": [
+      "df",
+      "loc",
+      "scale",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.transforms.PositiveDefiniteTransform": {
+    "Matcher": "TransformsPositiveDefiniteTransformMatcher",
+    "min_input_args": 0,
+    "args_list": [
+      "cache_size"
+    ],
+    "kwargs_change": {
+      "cache_size": ""
     }
   },
   "torch.divide": {
@@ -8443,6 +8436,13 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.is_grad_enabled",
     "min_input_args": 0
+  },
+  "torch.is_inference": {
+    "Matcher": "Is_InferenceMatcher",
+    "min_input_args": 1,
+    "args_list": [
+      "input"
+    ]
   },
   "torch.is_nonzero": {
     "Matcher": "IsNonzeroMatcher",

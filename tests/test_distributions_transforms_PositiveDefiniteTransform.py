@@ -16,7 +16,9 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.transforms.PositiveDefiniteTransform", is_aux_api=True)
+obj = APIBase(
+    "torch.distributions.transforms.PositiveDefiniteTransform", is_aux_api=True
+)
 
 
 def test_case_1():
@@ -29,10 +31,8 @@ def test_case_1():
         result_inv = a.inv(result)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result", "result_inv"]
-    )
+    obj.run(pytorch_code, ["result", "result_inv"])
+
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
@@ -44,7 +44,4 @@ def test_case_2():
         result_inv = a.inv(result)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result", "result_inv"]
-    )
+    obj.run(pytorch_code, ["result", "result_inv"])

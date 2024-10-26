@@ -27,10 +27,7 @@ def test_case_1():
         result = torch.distributions.chi2.Chi2(x).sample()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"], check_value=False
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
@@ -41,10 +38,7 @@ def test_case_2():
         result = torch.distributions.chi2.Chi2(df=x).sample()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"], check_value=False
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
@@ -55,10 +49,7 @@ def test_case_3():
         result = torch.distributions.chi2.Chi2(df=x, validate_args=None).sample()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"], check_value=False
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_4():
@@ -69,7 +60,4 @@ def test_case_4():
         result = torch.distributions.chi2.Chi2(validate_args=None, df=x).sample()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"], check_value=False
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
