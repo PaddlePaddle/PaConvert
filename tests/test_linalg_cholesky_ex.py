@@ -30,7 +30,7 @@ def test_case_1():
         out, info = torch.linalg.cholesky_ex(a)
         """
     )
-    obj.run(pytorch_code, ["out", "info"],atol = 1e-3)
+    obj.run(pytorch_code, ["out", "info"], atol=1e-3)
 
 
 def test_case_2():
@@ -43,7 +43,7 @@ def test_case_2():
         out, info = torch.linalg.cholesky_ex(a, upper=False)
         """
     )
-    obj.run(pytorch_code, ["out", "info"],atol = 1e-3)
+    obj.run(pytorch_code, ["out", "info"], atol=1e-3)
 
 
 def test_case_3():
@@ -58,7 +58,7 @@ def test_case_3():
         out1, info1 = torch.linalg.cholesky_ex(a, upper=True, out=(out1, info1))
         """
     )
-    obj.run(pytorch_code, ["out1", "info1"],atol = 1e-3)
+    obj.run(pytorch_code, ["out1", "info1"], atol=1e-3)
 
 
 def test_case_4():
@@ -73,7 +73,7 @@ def test_case_4():
         torch.linalg.cholesky_ex(a, check_errors=False, upper=True, out=(out1, info1))
         """
     )
-    obj.run(pytorch_code, ["out1", "info1"],atol = 1e-3)
+    obj.run(pytorch_code, ["out1", "info1"], atol=1e-3)
 
 
 def test_case_5():
@@ -88,4 +88,4 @@ def test_case_5():
         torch.linalg.cholesky_ex(a, check_errors=True, out=(out1, info1), upper=True)
         """
     )
-    obj.run(pytorch_code, ["out1", "info1"],atol = 1e-3)
+    obj.run(pytorch_code, ["out1", "info1"], atol=1e-3)

@@ -61,4 +61,3 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
-
