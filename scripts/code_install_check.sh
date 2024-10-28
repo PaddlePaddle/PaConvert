@@ -19,7 +19,7 @@ export FLAGS_set_to_1d=0
 cd /workspace/$1/PaConvert/
 
 python -m pip install --upgrade pip
-echo "Insalling develop version paddle"
+echo "Insalling develop cpu version paddle"
 python -m pip uninstall -y paddlepaddle
 python -m pip uninstall -y paddlepaddle-gpu
 rm -rf /root/anaconda3/lib/python*/site-packages/paddlepaddle-0.0.0.dist-info/
