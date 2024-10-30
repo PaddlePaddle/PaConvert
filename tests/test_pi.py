@@ -16,16 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.square_")
+obj = APIBase("torch.pi")
 
 
-# AttributeError: module 'paddle.base.libpaddle.eager.ops.legacy' has no attribute 'square_'
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([0.2970,  1.5420, 4])
-        x.square_()
+        import numpy
+        result = torch.pi
         """
     )
-    obj.run(pytorch_code, ["x"])
+    obj.run(pytorch_code, ["result"])
