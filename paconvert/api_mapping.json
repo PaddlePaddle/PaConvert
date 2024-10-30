@@ -11386,7 +11386,7 @@
     "min_input_args": 0
   },
   "torch.nn.MultiLabelMarginLoss": {
-    "Matcher": "MultiLabelMarginLossMatcher",
+    "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.MultiLabelSoftMarginLoss",
     "min_input_args": 0,
     "args_list": [

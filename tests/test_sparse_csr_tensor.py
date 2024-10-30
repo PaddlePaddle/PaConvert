@@ -119,7 +119,11 @@ def test_case_6():
 
 
 # paddle not support convert without shape
-def _test_case_7():
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch

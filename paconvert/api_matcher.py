@@ -5444,39 +5444,16 @@ class MNISTMatcher(BaseMatcher):
 
 class CudaDeviceMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        number = next((int(c) for c in kwargs["device"] if c.isdigit()), 0)
         CODE_TEMPLATE = textwrap.dedent(
             """
-            paddle.CUDAPlace({})
+            if isinstance({}, paddle.CUDAPlace):
+                number = {}.get_device_id()
+            else:
+                number = {}
+            paddle.CUDAPlace(number)
             """
         )
-        code = CODE_TEMPLATE.format(number)
-        return code
-
-
-class MultiLabelMarginLossMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "size_average" not in kwargs and "reduce" not in kwargs:
-            reduction = kwargs["reduction"]
-        else:
-            if "size_average" not in kwargs:
-                size_average = True
-            else:
-                size_average = kwargs["size_average"]
-            if "reduce" not in kwargs:
-                reduce = True
-            else:
-                reduce = kwargs["reduce"]
-            if size_average and reduce:
-                reduction = "mean"
-            elif reduce:
-                reduction = "sum"
-            else:
-                reduction = "none"
-        CODE_TEMPLATE = textwrap.dedent(
-            """
-            paddle.nn.MultiLabelSoftMarginLoss(reduction="{}")
-            """
+        code = CODE_TEMPLATE.format(
+            kwargs["device"], kwargs["device"], kwargs["device"]
         )
-        code = CODE_TEMPLATE.format(reduction)
         return code

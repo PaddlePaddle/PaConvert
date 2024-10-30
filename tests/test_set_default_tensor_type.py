@@ -14,6 +14,8 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.set_default_tensor_type")
@@ -76,7 +78,11 @@ def _test_case_5():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_6():
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
