@@ -78,7 +78,6 @@ def _test_case_5():
     obj.run(pytorch_code, ["result"])
 
 
-
 @pytest.mark.skipif(
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
