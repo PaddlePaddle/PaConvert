@@ -829,7 +829,7 @@ class BroadcastShapesMatcher(BaseMatcher):
         for i in range(1, len(new_args)):
             code = "{}({}, {})".format(self.get_paddle_api(), code, new_args[i])
         return ast.parse(code).body
- 
+
 
 class StudentTMatcher(BaseMatcher):
     def generate_aux_code(self):
@@ -848,6 +848,7 @@ class StudentTMatcher(BaseMatcher):
         )
 
         return API_TEMPLATE
+
     def generate_code(self, kwargs):
         self.write_aux_code()
         if "validate_args" in kwargs:
@@ -883,6 +884,7 @@ class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
         )
 
         return API_TEMPLATE
+
     def generate_code(self, kwargs):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
@@ -907,6 +909,7 @@ class LKJCholeskyMatcher(BaseMatcher):
         )
 
         return API_TEMPLATE
+
     def generate_code(self, kwargs):
         self.write_aux_code()
         if "validate_args" in kwargs:
@@ -919,7 +922,6 @@ class LKJCholeskyMatcher(BaseMatcher):
         )
         code = API_TEMPLATE.format(kwargs)
         return code
-
 
 
 class Is_InferenceMatcher(BaseMatcher):
@@ -942,6 +944,7 @@ class DistributionsConstrainMatcher(BaseMatcher):
         )
 
         return API_TEMPLATE
+
     def generate_code(self, kwargs):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
@@ -5279,19 +5282,17 @@ class RpcRemoteMatcher(BaseMatcher):
             """
         )
         return CODE_TEMPLATE
-    
+
     def generate_code(self, kwargs):
         self.write_aux_code()
-        kwargs['fn'] = kwargs.pop('func')
+        kwargs["fn"] = kwargs.pop("func")
         kwargs = self.kwargs_to_str(kwargs)
         API_TEMPLATE = textwrap.dedent(
             """
             paddle_aux.rpc_remote(paddle.distributed.rpc.rpc_async({}))
             """
         )
-        code = API_TEMPLATE.format(
-            kwargs
-        )
+        code = API_TEMPLATE.format(kwargs)
         return code
 
 
@@ -5390,6 +5391,31 @@ class Cifar10Matcher(BaseMatcher):
         return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
 
+class Cifar100Matcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "root" in kwargs:
+            root = kwargs.pop("root")
+            data_file = "cifar-100-python.tar.gz"
+            kwargs["data_file"] = "os.path.join({}, '{}')".format(root, data_file)
+
+        if "train" in kwargs:
+            train_value = kwargs.pop("train").strip()
+            if train_value == "(True)":
+                kwargs["mode"] = "'train'"
+            elif train_value == "(False)":
+                kwargs["mode"] = "'test'"
+            else:
+                kwargs["mode"] = "'train' if {} else 'test'".format(train_value)
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            {}({})
+            """
+        )
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
 class MNISTMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         train_value = kwargs.pop("train", "(True)")
@@ -5439,3 +5465,171 @@ class MNISTMatcher(BaseMatcher):
             """
         )
         return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class FashionMNISTMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        train_value = kwargs.pop("train", "(True)")
+        if train_value == "(True)":
+            kwargs["mode"] = "'train'"
+        elif train_value == "(False)":
+            kwargs["mode"] = "'test'"
+        else:
+            kwargs["mode"] = "'train' if {} else 'test'".format(train_value)
+
+        if "root" in kwargs:
+            root = kwargs.pop("root")
+            file_paths = {
+                "train_image": "FashionMNIST/raw/train-images-idx3-ubyte.gz",
+                "train_label": "FashionMNIST/raw/train-labels-idx1-ubyte.gz",
+                "test_image": "FashionMNIST/raw/t10k-images-idx3-ubyte.gz",
+                "test_label": "FashionMNIST/raw/t10k-labels-idx1-ubyte.gz",
+            }
+            if train_value == "(True)":
+                kwargs[
+                    "image_path"
+                ] = f"os.path.join({root}, '{file_paths['train_image']}')"
+                kwargs[
+                    "label_path"
+                ] = f"os.path.join({root}, '{file_paths['train_label']}')"
+            elif train_value == "(False)":
+                kwargs[
+                    "image_path"
+                ] = f"os.path.join({root}, '{file_paths['test_image']}')"
+                kwargs[
+                    "label_path"
+                ] = f"os.path.join({root}, '{file_paths['test_label']}')"
+            else:
+                kwargs["image_path"] = (
+                    f"os.path.join({root}, '{file_paths['train_image']}') if {train_value} else "
+                    f"os.path.join({root}, '{file_paths['test_image']}')"
+                )
+                kwargs["label_path"] = (
+                    f"os.path.join({root}, '{file_paths['train_label']}') if {train_value} else "
+                    f"os.path.join({root}, '{file_paths['test_label']}')"
+                )
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            {}({})
+            """
+        )
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class Flowers102Matcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        split_value = kwargs.pop("split", '"""train"""')
+        if split_value == '"""val"""':
+            kwargs["mode"] = "'valid'"
+        elif split_value == '"""test"""':
+            kwargs["mode"] = "'test'"
+        elif split_value == '"""train"""':
+            kwargs["mode"] = "'train'"
+        else:
+            kwargs["mode"] = f"{split_value} if {split_value} != 'val' else 'valid'"
+
+        if "root" in kwargs:
+            root = kwargs.pop("root")
+            file_paths = {
+                "data_file": "flowers-102/102flowers.tgz",
+                "label_file": "flowers-102/imagelabels.mat",
+                "setid_file": "flowers-102/setid.mat",
+            }
+            kwargs["data_file"] = f"os.path.join({root}, '{file_paths['data_file']}')"
+            kwargs["label_file"] = f"os.path.join({root}, '{file_paths['label_file']}')"
+            kwargs["setid_file"] = f"os.path.join({root}, '{file_paths['setid_file']}')"
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            {}({})
+            """
+        )
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class VOCDetectionMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        root = kwargs.pop("root")
+        data_file = f"os.path.join({root}, 'voc2012/VOCtrainval_11-May-2012.tar')"
+
+        image_set = kwargs.pop("image_set", '"""train"""')
+        if image_set == '"""trainval"""':
+            kwargs["mode"] = "'train'"
+        elif image_set == '"""train"""':
+            kwargs["mode"] = "'test'"
+        elif image_set == '"""val"""':
+            kwargs["mode"] = "'valid'"
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                import os
+                if {} == "trainval":
+                    mode = "train"
+                elif {} == "train":
+                    mode = "test"
+                elif {} == "val":
+                    mode = "valid"
+                {}(data_file={}, mode=mode, {})
+                """
+            )
+            return API_TEMPLATE.format(
+                image_set,
+                image_set,
+                image_set,
+                self.get_paddle_api(),
+                data_file,
+                self.kwargs_to_str(kwargs),
+            )
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            {}({})
+            """
+        )
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class DecodeJpegMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["x"] = kwargs.pop("input")
+        device = kwargs.pop("device", "cpu")
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}({}).to({})
+            """
+        )
+        return API_TEMPLATE.format(
+            self.get_paddle_api(), self.kwargs_to_str(kwargs), device
+        )
+
+
+class RoiPoolMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["x"] = kwargs.pop("input")
+        boxes_v = kwargs.pop("boxes")
+        API_TEMPLATE = textwrap.dedent(
+            """
+            batch_size = {}.shape[0]
+            if isinstance({}, list):
+                boxes_num = [len(box) for box in {}] + [0] * (batch_size - len({}))
+                boxes = paddle.concat({}) if {} else paddle.zeros([0, 4])
+            else:
+                boxes_num = [(boxes[:, 0] == i).sum() for i in range(batch_size)]
+                boxes = boxes[:, 1:]
+            boxes_num = paddle.to_tensor(boxes_num, dtype='int32')
+            {}(boxes=boxes, boxes_num=boxes_num, {})
+            """
+        )
+        return API_TEMPLATE.format(
+            kwargs["x"],
+            boxes_v,
+            boxes_v,
+            boxes_v,
+            boxes_v,
+            boxes_v,
+            self.get_paddle_api(),
+            self.kwargs_to_str(kwargs),
+        )

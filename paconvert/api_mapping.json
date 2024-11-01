@@ -896,10 +896,10 @@
     ],
     "kwargs_change": {
       "median": "loc",
-      "sigma":"scale",
-      "generator":""
+      "sigma": "scale",
+      "generator": ""
     }
-  },  
+  },
   "torch.Tensor.cdouble": {
     "Matcher": "TensorCdoubleMatcher",
     "paddle_api": "paddle.Tensor.astype",
@@ -1791,7 +1791,7 @@
     ],
     "kwargs_change": {
       "p": "probs",
-      "generator":""
+      "generator": ""
     }
   },
   "torch.Tensor.geqrf": {},
@@ -2173,13 +2173,6 @@
   "torch.Tensor.is_inference": {
     "Matcher": "Is_InferenceMatcher",
     "min_input_args": 0
-  },
-  "torch.is_inference": {
-    "Matcher": "Is_InferenceMatcher",
-    "min_input_args": 1,
-    "args_list":[
-      "input"
-    ]
   },
   "torch.Tensor.is_pinned": {
     "Matcher": "Is_PinnedMatcher",
@@ -6445,7 +6438,7 @@
     ],
     "min_input_args": 1
   },
-  "torch.distributed.rpc.remote":{
+  "torch.distributed.rpc.remote": {
     "Matcher": "RpcRemoteMatcher",
     "paddle_api": "paddle.distributed.rpc.rpc_async",
     "min_input_args": 2,
@@ -6540,52 +6533,6 @@
     },
     "min_input_args": 2
   },
-  "torch.distributions.lkj_cholesky.LKJCholesky":{
-    "Matcher": "LKJCholeskyMatcher",
-    "paddle_api": "paddle.distribution.LKJCholesky",
-    "min_input_args": 1,
-    "args_list": [
-      "dim",
-      "concentration",
-      "validate_args"
-    ]
-  },
-  "torch.distributions.studentT.StudentT":{
-    "Matcher": "StudentTMatcher",
-    "paddle_api": "paddle.distribution.StudentT",
-    "min_input_args": 1,
-    "args_list": [
-      "df",
-      "loc",
-      "scale",
-      "validate_args"
-    ],
-    "kwargs_change": {
-      "validate_args": ""
-    }
-  },
-  "torch.distributions.transforms.PositiveDefiniteTransform":{
-    "Matcher": "TransformsPositiveDefiniteTransformMatcher",
-    "min_input_args": 0,
-    "args_list": [
-      "cache_size"
-    ],
-    "kwargs_change": {
-      "cache_size": ""
-    }
-  },
-  "torch.distributions.poisson.Poisson":{
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.distribution.Poisson",
-    "min_input_args": 1,
-    "args_list": [
-      "rate",
-      "validate_args"
-    ],
-    "kwargs_change": {
-      "validate_args": ""
-    }
-  },
   "torch.distributions.Bernoulli": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Bernoulli",
@@ -6636,18 +6583,6 @@
       "total_count": "1"
     }
   },
-  "torch.distributions.chi2.Chi2":{
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.distribution.Chi2",
-    "min_input_args": 1,
-    "args_list": [
-      "df",
-      "validate_args"
-    ],
-    "kwargs_change": {
-      "validate_args": ""
-    }
-  },
   "torch.distributions.Categorical": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.Categorical",
@@ -6688,24 +6623,6 @@
     "kwargs_change": {
       "parts": "transforms",
       "cache_size": ""
-    }
-  },
-  "torch.distributions.constraints.Constraint" : {
-    "Matcher": "DistributionsConstrainMatcher",
-    "paddle_api": "paddle.distribution.constraint.Constraint",
-    "abstract": true
-  },
-  "torch.distributions.gamma.Gamma":{
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.distribution.Gamma",
-    "min_input_args": 2,
-    "args_list": [
-      "concentration",
-      "rate",
-      "validate_args"
-    ],
-    "kwargs_change": {
-      "validate_args": ""
     }
   },
   "torch.distributions.ContinuousBernoulli": {
@@ -7096,6 +7013,36 @@
       "validate_args": ""
     }
   },
+  "torch.distributions.chi2.Chi2": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Chi2",
+    "min_input_args": 1,
+    "args_list": [
+      "df",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.constraints.Constraint": {
+    "Matcher": "DistributionsConstrainMatcher",
+    "paddle_api": "paddle.distribution.constraint.Constraint",
+    "abstract": true
+  },
+  "torch.distributions.gamma.Gamma": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Gamma",
+    "min_input_args": 2,
+    "args_list": [
+      "concentration",
+      "rate",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
   "torch.distributions.kl.kl_divergence": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.kl_divergence",
@@ -7116,6 +7063,52 @@
     "kwargs_change": {
       "type_p": "cls_p",
       "type_q": "cls_q"
+    }
+  },
+  "torch.distributions.lkj_cholesky.LKJCholesky": {
+    "Matcher": "LKJCholeskyMatcher",
+    "paddle_api": "paddle.distribution.LKJCholesky",
+    "min_input_args": 1,
+    "args_list": [
+      "dim",
+      "concentration",
+      "validate_args"
+    ]
+  },
+  "torch.distributions.poisson.Poisson": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distribution.Poisson",
+    "min_input_args": 1,
+    "args_list": [
+      "rate",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.studentT.StudentT": {
+    "Matcher": "StudentTMatcher",
+    "paddle_api": "paddle.distribution.StudentT",
+    "min_input_args": 1,
+    "args_list": [
+      "df",
+      "loc",
+      "scale",
+      "validate_args"
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
+  },
+  "torch.distributions.transforms.PositiveDefiniteTransform": {
+    "Matcher": "TransformsPositiveDefiniteTransformMatcher",
+    "min_input_args": 0,
+    "args_list": [
+      "cache_size"
+    ],
+    "kwargs_change": {
+      "cache_size": ""
     }
   },
   "torch.divide": {
@@ -8404,6 +8397,13 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.is_grad_enabled",
     "min_input_args": 0
+  },
+  "torch.is_inference": {
+    "Matcher": "Is_InferenceMatcher",
+    "min_input_args": 1,
+    "args_list": [
+      "input"
+    ]
   },
   "torch.is_nonzero": {
     "Matcher": "IsNonzeroMatcher",
@@ -17177,6 +17177,48 @@
       "target_transform"
     ]
   },
+  "torchvision.datasets.CIFAR100": {
+    "Matcher": "Cifar100Matcher",
+    "paddle_api": "paddle.vision.datasets.Cifar100",
+    "args_list": [
+      "root",
+      "train",
+      "transform",
+      "target_transform",
+      "download"
+    ],
+    "unsupport_args": [
+      "target_transform"
+    ]
+  },
+  "torchvision.datasets.FashionMNIST": {
+    "Matcher": "FashionMNISTMatcher",
+    "paddle_api": "paddle.vision.datasets.FashionMNIST",
+    "args_list": [
+      "root",
+      "train",
+      "download",
+      "transform",
+      "target_transform"
+    ],
+    "unsupport_args": [
+      "target_transform"
+    ]
+  },
+  "torchvision.datasets.Flowers102": {
+    "Matcher": "Flowers102Matcher",
+    "paddle_api": "paddle.vision.datasets.Flowers",
+    "args_list": [
+      "root",
+      "split",
+      "download",
+      "transform",
+      "target_transform"
+    ],
+    "unsupport_args": [
+      "target_transform"
+    ]
+  },
   "torchvision.datasets.ImageFolder": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.vision.datasets.ImageFolder",
@@ -17209,11 +17251,175 @@
       "target_transform"
     ]
   },
+  "torchvision.datasets.VOCDetection": {
+    "Matcher": "VOCDetectionMatcher",
+    "paddle_api": "paddle.vision.datasets.VOCDetection",
+    "args_list": [
+      "root",
+      "year",
+      "image_set",
+      "transform",
+      "target_transform",
+      "download"
+    ],
+    "unsupport_args": [
+      "year",
+      "target_transform"
+    ]
+  },
+  "torchvision.io.ImageReadMode.GRAY": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'gray'",
+    "min_input_args": 0
+  },
+  "torchvision.io.ImageReadMode.RGB": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'rgb'",
+    "min_input_args": 0
+  },
+  "torchvision.io.ImageReadMode.UNCHANGED": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'unchanged'",
+    "min_input_args": 0
+  },
+  "torchvision.io.decode_jpeg": {
+    "Matcher": "DecodeJpegMatcher",
+    "paddle_api": "paddle.vision.ops.decode_jpeg",
+    "args_list": [
+      "input",
+      "mode",
+      "device",
+      "apply_exif_orientation"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    },
+    "unsupport_args": [
+      "apply_exif_orientation"
+    ]
+  },
+  "torchvision.io.read_file": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.ops.read_file",
+    "args_list": [
+      "path"
+    ],
+    "kwargs_change": {
+      "path": "filename"
+    }
+  },
+  "torchvision.ops.DeformConv2d": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.ops.DeformConv2D",
+    "args_list": [
+      "in_channels",
+      "out_channels",
+      "kernel_size",
+      "stride",
+      "padding",
+      "dilation",
+      "groups",
+      "bias"
+    ],
+    "unsupport_args": [
+      "bias"
+    ]
+  },
+  "torchvision.ops.RoIAlign": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.ops.RoIAlign",
+    "args_list": [
+      "output_size",
+      "spatial_scale",
+      "sampling_ratio",
+      "aligned"
+    ],
+    "unsupport_args": [
+      "sampling_ratio",
+      "aligned"
+    ]
+  },
+  "torchvision.ops.RoIPool": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.ops.RoIPool",
+    "args_list": [
+      "output_size",
+      "spatial_scale"
+    ]
+  },
+  "torchvision.ops.deform_conv2d": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.ops.deform_conv2d",
+    "args_list": [
+      "input",
+      "offset",
+      "weight",
+      "bias",
+      "stride",
+      "padding",
+      "dilation",
+      "mask"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+  "torchvision.ops.nms": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.ops.nms",
+    "args_list": [
+      "boxes",
+      "scores",
+      "iou_threshold"
+    ]
+  },
+  "torchvision.ops.ps_roi_pool": {
+    "Matcher": "RoiPoolMatcher",
+    "paddle_api": "paddle.vision.ops.psroi_pool",
+    "args_list": [
+      "input",
+      "boxes",
+      "output_size",
+      "spatial_scale"
+    ]
+  },
+  "torchvision.ops.roi_align": {
+    "Matcher": "RoiPoolMatcher",
+    "paddle_api": "paddle.vision.ops.roi_align",
+    "args_list": [
+      "input",
+      "boxes",
+      "output_size",
+      "spatial_scale",
+      "sampling_ratio",
+      "aligned"
+    ]
+  },
+  "torchvision.ops.roi_pool": {
+    "Matcher": "RoiPoolMatcher",
+    "paddle_api": "paddle.vision.ops.roi_pool",
+    "args_list": [
+      "input",
+      "boxes",
+      "output_size",
+      "spatial_scale"
+    ]
+  },
   "torchvision.transforms.CenterCrop": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.vision.transforms.CenterCrop",
     "args_list": [
       "size"
+    ]
+  },
+  "torchvision.transforms.ColorJitter": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.ColorJitter",
+    "args_list": [
+      "brightness",
+      "contrast",
+      "saturation",
+      "hue"
     ]
   },
   "torchvision.transforms.Compose": {
@@ -17521,6 +17727,18 @@
     "unsupport_args": [
       "max_size",
       "antialias"
+    ]
+  },
+  "torchvision.transforms.functional.rotate": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.rotate",
+    "args_list": [
+      "img",
+      "angle",
+      "interpolation",
+      "expand",
+      "center",
+      "fill"
     ]
   },
   "torchvision.transforms.functional.to_grayscale": {
