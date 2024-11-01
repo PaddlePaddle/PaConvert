@@ -11,3 +11,4 @@ RUN ln -sf `which pip3.10` /usr/local/bin/pip
 RUN python -m pip install astor 
 
 RUN python -m pip install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+
