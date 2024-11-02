@@ -5443,17 +5443,24 @@ class MNISTMatcher(BaseMatcher):
 
 
 class CudaDeviceMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
+    def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            if isinstance({}, paddle.CUDAPlace):
-                number = {}.get_device_id()
-            else:
-                number = {}
-            paddle.CUDAPlace(number)
+            def cuda_device(device):
+                if isinstance(device, paddle.CUDAPlace):
+                    return paddle.CUDAPlace(device.get_device_id())
+                return paddle.CUDAPlace(device)
             """
         )
-        code = CODE_TEMPLATE.format(
-            kwargs["device"], kwargs["device"], kwargs["device"]
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.cuda_device({})
+            """
         )
+        code = API_TEMPLATE.format(kwargs["device"])
+
         return code
