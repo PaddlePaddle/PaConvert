@@ -14,11 +14,17 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.nn.Module.cuda")
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
@@ -26,9 +32,7 @@ def _test_case_1():
         x = torch.tensor([1., 2., 3.])
         module1 = torch.nn.Module()
         module1.register_buffer('buffer', x)
-        if torch.cuda.is_available():
-            module1.cuda()
-        result = None
+        result = module1.cuda()
         """
     )
     obj.run(
@@ -37,6 +41,10 @@ def _test_case_1():
     )
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -44,9 +52,7 @@ def _test_case_2():
         x = torch.tensor([1., 2., 3.])
         module1 = torch.nn.Module()
         module1.register_buffer('buffer', x)
-        if torch.cuda.is_available():
-            module1.cuda(device=0)
-        result = None
+        result = module1.cuda(device=0)
         """
     )
     obj.run(
@@ -55,6 +61,10 @@ def _test_case_2():
     )
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
@@ -62,9 +72,7 @@ def _test_case_3():
         x = torch.tensor([1., 2., 3.])
         module1 = torch.nn.Module()
         module1.register_buffer('buffer', x)
-        if torch.cuda.is_available():
-            module1.cuda(device=None)
-        result = None
+        result = module1.cuda(device=None)
         """
     )
     obj.run(

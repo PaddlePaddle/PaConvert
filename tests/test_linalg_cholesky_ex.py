@@ -1,4 +1,4 @@
-# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
+# Copyright (c) 2024 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,52 +24,68 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1.1481, 0.9974, 0.9413],
-                [0.9974, 1.3924, 0.6773],
-                [0.9413, 0.6773, 1.1315]])
-        result = torch.linalg.cholesky_ex(a)
+        a = torch.tensor([[1.07676095, 1.34574506, 0.74611458],
+        [1.34574506, 2.00152669, 1.24800785],
+        [0.74611458, 1.24800785, 0.88039371]])
+        out, info = torch.linalg.cholesky_ex(a)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["out", "info"], atol=1e-3)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1.1481, 0.9974, 0.9413],
-                [0.9974, 1.3924, 0.6773],
-                [0.9413, 0.6773, 1.1315]])
-        result = torch.linalg.cholesky_ex(a, upper=False)
+        a = torch.tensor([[1.07676095, 1.34574506, 0.74611458],
+        [1.34574506, 2.00152669, 1.24800785],
+        [0.74611458, 1.24800785, 0.88039371]])
+        out, info = torch.linalg.cholesky_ex(a, upper=False)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["out", "info"], atol=1e-3)
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[1.1481, 0.9974, 0.9413],
-                [0.9974, 1.3924, 0.6773],
-                [0.9413, 0.6773, 1.1315]])
-        out = torch.randn(3, 3)
-        result = torch.linalg.cholesky_ex(a, upper=True, out=out)
+        a = torch.tensor([[1.07676095, 1.34574506, 0.74611458],
+        [1.34574506, 2.00152669, 1.24800785],
+        [0.74611458, 1.24800785, 0.88039371]])
+        out1 = torch.randn(3, 3)
+        info1 = torch.tensor([1, 2, 3], dtype=torch.int32)
+        out1, info1 = torch.linalg.cholesky_ex(a, upper=True, out=(out1, info1))
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result", "out"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
+    obj.run(pytorch_code, ["out1", "info1"], atol=1e-3)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1.07676095, 1.34574506, 0.74611458],
+        [1.34574506, 2.00152669, 1.24800785],
+        [0.74611458, 1.24800785, 0.88039371]])
+        out1 = torch.randn(3, 3)
+        info1 = torch.tensor([1, 2, 3], dtype=torch.int32)
+        torch.linalg.cholesky_ex(a, check_errors=False, upper=True, out=(out1, info1))
+        """
     )
+    obj.run(pytorch_code, ["out1", "info1"], atol=1e-3)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1.07676095, 1.34574506, 0.74611458],
+        [1.34574506, 2.00152669, 1.24800785],
+        [0.74611458, 1.24800785, 0.88039371]])
+        out1 = torch.randn(3, 3)
+        info1 = torch.tensor([1, 2, 3], dtype=torch.int32)
+        torch.linalg.cholesky_ex(a, check_errors=True, out=(out1, info1), upper=True)
+        """
+    )
+    obj.run(pytorch_code, ["out1", "info1"], atol=1e-3)

@@ -29,12 +29,7 @@ def test_case_1():
         result = input.bitwise_left_shift(other)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -46,12 +41,7 @@ def test_case_2():
         result = input.bitwise_left_shift(other=other)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -63,9 +53,4 @@ def test_case_3():
         result = input.bitwise_left_shift(other=other)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])

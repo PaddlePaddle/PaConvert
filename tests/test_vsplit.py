@@ -28,12 +28,7 @@ def test_case_1():
         result = torch.vsplit(a, 2)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -44,12 +39,7 @@ def test_case_2():
         result = torch.vsplit(a, [2, 3])
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -60,9 +50,26 @@ def test_case_3():
         result = torch.vsplit(a, indices=[1, 2])
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(12).reshape(3, 2, 2)
+        result = torch.vsplit(input=a, indices=[1, 2])
+        """
     )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(16.0).reshape(2, 2, 4)
+        result = torch.vsplit(input=a, sections=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

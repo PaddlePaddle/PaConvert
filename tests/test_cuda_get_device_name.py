@@ -14,19 +14,23 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.cuda.get_device_name")
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            current_device = torch.cuda.current_device()
-            result = torch.cuda.get_device_name(current_device)
+        current_device = torch.cuda.current_device()
+        result = torch.cuda.get_device_name(current_device)
         """
     )
     obj.run(
@@ -35,13 +39,15 @@ def test_case_1():
     )
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            result = torch.cuda.get_device_name()
+        result = torch.cuda.get_device_name()
         """
     )
     obj.run(
@@ -50,13 +56,15 @@ def test_case_2():
     )
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            result = torch.cuda.get_device_name(0)
+        result = torch.cuda.get_device_name(0)
         """
     )
     obj.run(
@@ -65,14 +73,16 @@ def test_case_3():
     )
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        if torch.cuda.is_available():
-            current_device = torch.cuda.current_device()
-            result = torch.cuda.get_device_name(device=current_device)
+        current_device = torch.cuda.current_device()
+        result = torch.cuda.get_device_name(device=current_device)
         """
     )
     obj.run(
