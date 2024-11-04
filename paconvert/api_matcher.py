@@ -3647,40 +3647,6 @@ class SearchsortedMatcher(BaseMatcher):
 
         return GenericMatcher.generate_code(self, kwargs)
 
-
-class SincMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "input" not in kwargs:
-            kwargs["input"] = self.paddleClass
-
-        if "out" in kwargs and kwargs["out"] != "None":
-            API_TEMPLATE = textwrap.dedent(
-                """
-                import numpy
-                paddle.assign(paddle.where({}==0, x=paddle.to_tensor([1.], dtype={}.dtype), y=paddle.sin(numpy.pi * {}) / (numpy.pi * {})), output={})
-                """
-            )
-            code = API_TEMPLATE.format(
-                kwargs["input"],
-                kwargs["input"],
-                kwargs["input"],
-                kwargs["input"],
-                kwargs["out"],
-            )
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                import numpy
-                paddle.where({}==0, x=paddle.to_tensor([1.], dtype={}.dtype), y=paddle.sin(numpy.pi * {}) / (numpy.pi * {}))
-                """
-            )
-            code = API_TEMPLATE.format(
-                kwargs["input"], kwargs["input"], kwargs["input"], kwargs["input"]
-            )
-
-        return code
-
-
 class SLogDetMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" in kwargs:

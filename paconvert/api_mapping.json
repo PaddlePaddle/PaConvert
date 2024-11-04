@@ -3630,13 +3630,13 @@
     "min_input_args": 0
   },
   "torch.Tensor.sinc": {
-    "Matcher": "TensorFunc2PaddleFunc",
-    "paddle_api": "paddle.sinc",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.sinc",
     "min_input_args": 0
   },
   "torch.Tensor.sinc_": {
-    "Matcher": "TensorFunc2PaddleFunc",
-    "paddle_api": "paddle.sinc_",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.sinc_",
     "min_input_args": 0
   },
   "torch.Tensor.sinh": {

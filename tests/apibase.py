@@ -83,8 +83,6 @@ class APIBase(object):
                     )
                     + paddle_code
                 )
-            print(paddle_code)
-            exec(paddle_code, locals())
             paddle_result = [loc[name] for name in compared_tensor_names]
             for i in range(len(compared_tensor_names)):
                 self.compare(
