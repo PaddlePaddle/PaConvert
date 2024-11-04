@@ -55,10 +55,8 @@ def test_case_1():
         rpc.shutdown()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
+
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
@@ -98,10 +96,7 @@ def test_case_2():
         rpc.shutdown()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -142,7 +137,4 @@ def test_case_3():
         rpc.shutdown()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"]
-    )
+    obj.run(pytorch_code, ["result"])

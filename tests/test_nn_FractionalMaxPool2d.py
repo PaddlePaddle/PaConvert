@@ -1,4 +1,4 @@
-# Copyright (c) 2024 PaddlePaddle Authors. All Rights Reserved.
+# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,53 +11,46 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.chi2.Chi2")
+obj = APIBase("torch.nn.FractionalMaxPool2d")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1.0])
-        result = torch.distributions.chi2.Chi2(x).sample()
+        x = torch.rand(8,3,8,9)
+        result = torch.nn.FractionalMaxPool2d(2, output_size=[5, 5], return_indices=True)
+        result = result(x)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"], check_value=False, check_dtype=False)
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1.0])
-        result = torch.distributions.chi2.Chi2(df=x).sample()
+        x = torch.rand(8,3,8,9)
+        result = torch.nn.FractionalMaxPool2d(kernel_size=2, output_size=[5, 5], return_indices=True)
+        result = result(x)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"], check_value=False, check_dtype=False)
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1.0])
-        result = torch.distributions.chi2.Chi2(df=x, validate_args=None).sample()
+        x = torch.rand(8,3,8,9)
+        result = torch.nn.FractionalMaxPool2d(output_size=[5, 5], kernel_size=2, return_indices=True)
+        result = result(x)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1.0])
-        result = torch.distributions.chi2.Chi2(validate_args=None, df=x).sample()
-        """
-    )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"], check_value=False, check_dtype=False)

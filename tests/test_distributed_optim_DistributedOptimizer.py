@@ -15,7 +15,6 @@
 import textwrap
 
 from apibase import APIBase
-from optimizer_helper import generate_optimizer_test_code
 
 obj = APIBase("torch.distributed.optim.DistributedOptimizer")
 
@@ -50,7 +49,8 @@ def test_case_1():
         """
     )
     obj.run(
-        pytorch_code, 
+        pytorch_code,
         ["result"],
         unsupport=True,
-        reason="paddle does not support tensor in DistributedOptimizer",)
+        reason="paddle does not support tensor in DistributedOptimizer",
+    )
