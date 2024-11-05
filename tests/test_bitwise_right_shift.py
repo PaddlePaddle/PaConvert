@@ -66,9 +66,7 @@ def test_case_4():
         result = torch.bitwise_right_shift(input, other, out=out)
         """
     )
-    obj.run(
-        pytorch_code, ["out"]
-    )
+    obj.run(pytorch_code, ["out"])
 
 
 def test_case_5():
@@ -81,6 +79,4 @@ def test_case_5():
         result = torch.bitwise_right_shift(other=other, input=input, out=out)
         """
     )
-    obj.run(
-        pytorch_code, ["out"]
-    )
+    obj.run(pytorch_code, ["out"])

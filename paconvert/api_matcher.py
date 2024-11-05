@@ -5633,3 +5633,27 @@ class RoiPoolMatcher(BaseMatcher):
             self.get_paddle_api(),
             self.kwargs_to_str(kwargs),
         )
+
+
+class CudaDeviceMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def cuda_device(device):
+                if isinstance(device, paddle.CUDAPlace):
+                    return paddle.CUDAPlace(device.get_device_id())
+                return paddle.CUDAPlace(device)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.cuda_device({})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["device"])
+
+        return code
