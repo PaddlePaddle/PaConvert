@@ -27,20 +27,15 @@ def test_case_1():
         import torch
         from torchvision.transforms import InterpolationMode
         from torchvision.transforms.functional import rotate
-        torch.manual_seed(0)
-        img = torch.tensor([
-            [[1, 2],
-             [3, 4]],
-            [[5, 6],
-             [7, 8]],
-            [[9, 10],
-             [11, 12]]
-        ], dtype=torch.float)
-        result = rotate(img=img, angle=45, interpolation=InterpolationMode.BILINEAR,
-                       expand=True, center=(1,1), fill=[0, 0, 0])
+        from PIL import Image
+        img = Image.new('RGB', (3, 3), color=(255, 0, 0))
+        img.putpixel((0, 0), (0, 255, 0))
+        img.putpixel((2, 2), (0, 0, 255))
+        result = rotate(img=img, angle=30, interpolation=InterpolationMode.BILINEAR,
+                       expand=True, center=(1,1), fill=[128, 128, 128])
         """
     )
-    obj.run(pytorch_code, ["result"])
+    img_obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -65,18 +60,14 @@ def test_case_3():
         import torch
         from torchvision.transforms import InterpolationMode
         from torchvision.transforms.functional import rotate
-        torch.manual_seed(2)
-        img = torch.tensor([
-            [[10, 20],
-             [30, 40]],
-            [[50, 60],
-             [70, 80]]
-        ], dtype=torch.float)
-        result = rotate(fill=[255, 255], center=(0,0), expand=True,
-                       interpolation=InterpolationMode.NEAREST, angle=90, img=img)
+        from PIL import Image
+        img = Image.new('RGB', (3, 3), color=(255, 0, 0))
+        img.putpixel((0, 0), (0, 255, 0))
+        img.putpixel((2, 2), (0, 0, 255))
+        result = rotate(fill=[128, 128, 128], img=img, center=(1,1), angle=30, interpolation=InterpolationMode.BILINEAR, expand=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    img_obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():

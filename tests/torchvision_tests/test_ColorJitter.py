@@ -25,7 +25,7 @@ def test_case_1():
         import torch
         from torchvision.transforms import ColorJitter
         img = torch.tensor([[[0.5, 0.5], [0.5, 0.5]], [[0.5, 0.5], [0.5, 0.5]], [[0.5, 0.5], [0.5, 0.5]]])
-        jitter = ColorJitter(brightness=0.2, contrast=0.3, saturation=0.4, hue=0.1)
+        jitter = ColorJitter(brightness=0.2, contrast=0.3, saturation=0.4, hue=0)
         result = jitter(img)
         """
     )
@@ -38,7 +38,7 @@ def test_case_2():
         import torch
         from torchvision.transforms import ColorJitter
         img = torch.tensor([[[0.1, 0.2], [0.3, 0.4]], [[0.5, 0.6], [0.7, 0.8]], [[0.9, 1.0], [1.0, 1.0]]])
-        jitter = ColorJitter(0.2, 0.3, 0.4, 0.1)
+        jitter = ColorJitter(0, 0.3, 0.4, 0.1)
         result = jitter(img)
         """
     )
@@ -51,7 +51,7 @@ def test_case_3():
         import torch
         from torchvision.transforms import ColorJitter
         img = torch.tensor([[[0.1, 0.2], [0.3, 0.4]], [[0.5, 0.6], [0.7, 0.8]], [[0.9, 1.0], [1.0, 1.0]]])
-        jitter = ColorJitter(hue=0.1, contrast=0.3, brightness=0.2, saturation=0.4)
+        jitter = ColorJitter(hue=0, contrast=0.3, brightness=0.2, saturation=0.4)
         result = jitter(img)
         """
     )
