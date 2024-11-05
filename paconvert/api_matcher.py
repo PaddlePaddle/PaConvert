@@ -1721,30 +1721,18 @@ class ScatterReduceMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def reduce_type(type):
+            def get_reduce_type(type):
                 map = {"sum": "add", "prod": "multiply"}
                 if type == "sum" or type == "prod":
                     type = map[type]
                 return type
-            setattr(paddle, 'reduce_type', reduce_type)
             """
         )
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        allowed_reduce_type = [
-            '"""sum"""',
-            '"""prod"""',
-            '"""amax"""',
-            '"""amin"""',
-            '"""mean"""',
-        ]
-        reduce_mapping = {'"""sum"""': '"add"', '"""prod"""': '"multiply"'}
-        if "reduce" in kwargs and kwargs["reduce"] in reduce_mapping:
-            kwargs["reduce"] = reduce_mapping[kwargs["reduce"]]
-        elif "reduce" in kwargs and kwargs["reduce"] not in allowed_reduce_type:
-            self.write_aux_code()
-            kwargs["reduce"] = "paddle_aux.reduce_type({})".format(kwargs["reduce"])
+        self.write_aux_code()
+        kwargs["reduce"] = "paddle_aux.get_reduce_type({})".format(kwargs["reduce"])
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -3564,8 +3552,20 @@ class Num2TensorBinaryMatcher(BaseMatcher):
 
 class CartesianProdMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
-        new_args = self.parse_args(args)
-        code = "paddle.cartesian_prod([{}])".format(", ".join(new_args))
+        kwargs = self.parse_kwargs(kwargs)
+        if kwargs is None:
+            return None
+        if "tensors" in kwargs:
+            kwargs = {"x": kwargs.pop("tensors"), **kwargs}
+        else:
+            if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
+                x = self.parse_args(args)
+            elif isinstance(args[0], ast.Starred):
+                x = astor.to_source(args[0].value).strip("\n")
+            else:
+                x = self.parse_args(args)
+            kwargs = {"x": str(x).replace("'", ""), **kwargs}
+        code = GenericMatcher.generate_code(self, kwargs)
         return ast.parse(code).body
 
 
@@ -4961,14 +4961,13 @@ class PositiveMatcher(BaseMatcher):
                 return x
             else:
                 raise RuntimeError("boolean tensors is not supported.")
-        setattr(paddle, "positive", positive)
         """
         )
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
         self.write_aux_code()
-        if "input" in kwargs and kwargs["input"] is not None:
+        if "input" in kwargs:
             code = "paddle_aux.positive({})".format(kwargs["input"])
         else:
             code = "paddle_aux.positive({})".format(self.paddleClass)
@@ -4979,17 +4978,16 @@ class FloatPowerMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def get_exponent(exponent):
+            def cast_exponent(exponent):
                 return exponent.cast(paddle.float64) if isinstance(exponent, paddle.Tensor) else exponent
-            setattr(paddle, "get_exponent", get_exponent)
             """
         )
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
         self.write_aux_code()
-        if "input" in kwargs and kwargs["input"] is not None:
-            pow_expression = "paddle.pow({}.cast(paddle.float64), paddle_aux.get_exponent({}))".format(
+        if "input" in kwargs:
+            pow_expression = "paddle.pow({}.cast(paddle.float64), paddle_aux.cast_exponent({}))".format(
                 kwargs["input"], kwargs["exponent"]
             )
             if "out" in kwargs and kwargs["out"] is not None:
@@ -4997,7 +4995,7 @@ class FloatPowerMatcher(BaseMatcher):
             else:
                 code = pow_expression
         else:
-            code = "{}.cast(paddle.float64).pow(paddle_aux.get_exponent({}))".format(
+            code = "{}.cast(paddle.float64).pow(paddle_aux.cast_exponent({}))".format(
                 self.paddleClass, kwargs["exponent"]
             )
         return code
