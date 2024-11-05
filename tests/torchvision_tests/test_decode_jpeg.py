@@ -14,11 +14,17 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torchvision.io.decode_jpeg")
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
@@ -30,12 +36,16 @@ def test_case_1():
         fake_img = np.ones((400, 300, 3), dtype='uint8') * 255
         cv2.imwrite('fake.jpg', fake_img)
         img_bytes = io.read_file('fake.jpg')
-        result = io.decode_jpeg(input=img_bytes, mode=ImageReadMode.RGB, device='cpu')
+        result = io.decode_jpeg(input=img_bytes, mode=ImageReadMode.RGB, device=torch.device('cuda'))
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -47,12 +57,16 @@ def test_case_2():
         fake_img = np.zeros((400, 300, 3), dtype='uint8')
         cv2.imwrite('fake.jpg', fake_img)
         img_bytes = io.read_file('fake.jpg')
-        result = io.decode_jpeg(img_bytes, ImageReadMode.GRAY, 'cpu')
+        result = io.decode_jpeg(img_bytes, ImageReadMode.GRAY, torch.device('cuda'))
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
@@ -64,12 +78,16 @@ def test_case_3():
         fake_img = np.ones((400, 300, 3), dtype='uint8') * 128
         cv2.imwrite('fake.jpg', fake_img)
         img_bytes = io.read_file('fake.jpg')
-        result = io.decode_jpeg(img_bytes, device='cpu', mode=ImageReadMode.UNCHANGED)
+        result = io.decode_jpeg(img_bytes, device=torch.device('cuda'), mode=ImageReadMode.UNCHANGED)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
@@ -86,6 +104,10 @@ def test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
