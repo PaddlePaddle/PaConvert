@@ -52,7 +52,6 @@ def test_case_3():
     obj.run(pytorch_code, ["Q", "R"])
 
 
-# when mode='r', torch return empty Q and R, but paddle only return R, should fix Matcher to adapt
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """

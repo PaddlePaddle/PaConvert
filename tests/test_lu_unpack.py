@@ -55,7 +55,6 @@ def test_case_3():
     obj.run(pytorch_code, ["P", "L", "U"])
 
 
-# paddle not support out
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """

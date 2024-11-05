@@ -19,11 +19,11 @@ export FLAGS_set_to_1d=0
 cd /workspace/$1/PaConvert/
 export LD_LIBRARY_PATH=/root/anaconda3/lib:$LD_LIBRARY_PATH
 
-echo "Insalling cpu version torch"
-python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+echo "Insalling latest release cpu version torch"
+python -m pip install -U torch torchaudio torchvision --index-url https://download.pytorch.org/whl/cpu
 python -c "import torch; print('torch version information:' ,torch.__version__)"
 
-echo "Insalling develop version paddle"
+echo "Insalling develop cpu version paddle"
 python -m pip uninstall -y paddlepaddle
 python -m pip uninstall -y paddlepaddle-gpu
 rm -rf /root/anaconda3/lib/python*/site-packages/paddlepaddle-0.0.0.dist-info/

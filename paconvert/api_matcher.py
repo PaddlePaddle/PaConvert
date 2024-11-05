@@ -829,7 +829,7 @@ class BroadcastShapesMatcher(BaseMatcher):
         for i in range(1, len(new_args)):
             code = "{}({}, {})".format(self.get_paddle_api(), code, new_args[i])
         return ast.parse(code).body
- 
+
 
 class StudentTMatcher(BaseMatcher):
     def generate_aux_code(self):
@@ -848,6 +848,7 @@ class StudentTMatcher(BaseMatcher):
         )
 
         return API_TEMPLATE
+
     def generate_code(self, kwargs):
         self.write_aux_code()
         if "validate_args" in kwargs:
@@ -883,6 +884,7 @@ class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
         )
 
         return API_TEMPLATE
+
     def generate_code(self, kwargs):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
@@ -907,6 +909,7 @@ class LKJCholeskyMatcher(BaseMatcher):
         )
 
         return API_TEMPLATE
+
     def generate_code(self, kwargs):
         self.write_aux_code()
         if "validate_args" in kwargs:
@@ -919,7 +922,6 @@ class LKJCholeskyMatcher(BaseMatcher):
         )
         code = API_TEMPLATE.format(kwargs)
         return code
-
 
 
 class Is_InferenceMatcher(BaseMatcher):
@@ -942,6 +944,7 @@ class DistributionsConstrainMatcher(BaseMatcher):
         )
 
         return API_TEMPLATE
+
     def generate_code(self, kwargs):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
@@ -3682,40 +3685,6 @@ class SearchsortedMatcher(BaseMatcher):
 
         return GenericMatcher.generate_code(self, kwargs)
 
-
-class SincMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "input" not in kwargs:
-            kwargs["input"] = self.paddleClass
-
-        if "out" in kwargs and kwargs["out"] != "None":
-            API_TEMPLATE = textwrap.dedent(
-                """
-                import numpy
-                paddle.assign(paddle.where({}==0, x=paddle.to_tensor([1.], dtype={}.dtype), y=paddle.sin(numpy.pi * {}) / (numpy.pi * {})), output={})
-                """
-            )
-            code = API_TEMPLATE.format(
-                kwargs["input"],
-                kwargs["input"],
-                kwargs["input"],
-                kwargs["input"],
-                kwargs["out"],
-            )
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                import numpy
-                paddle.where({}==0, x=paddle.to_tensor([1.], dtype={}.dtype), y=paddle.sin(numpy.pi * {}) / (numpy.pi * {}))
-                """
-            )
-            code = API_TEMPLATE.format(
-                kwargs["input"], kwargs["input"], kwargs["input"], kwargs["input"]
-            )
-
-        return code
-
-
 class SLogDetMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" in kwargs:
@@ -5547,19 +5516,17 @@ class RpcRemoteMatcher(BaseMatcher):
             """
         )
         return CODE_TEMPLATE
-    
+
     def generate_code(self, kwargs):
         self.write_aux_code()
-        kwargs['fn'] = kwargs.pop('func')
+        kwargs["fn"] = kwargs.pop("func")
         kwargs = self.kwargs_to_str(kwargs)
         API_TEMPLATE = textwrap.dedent(
             """
             paddle_aux.rpc_remote(paddle.distributed.rpc.rpc_async({}))
             """
         )
-        code = API_TEMPLATE.format(
-            kwargs
-        )
+        code = API_TEMPLATE.format(kwargs)
         return code
 
 
@@ -5707,3 +5674,27 @@ class MNISTMatcher(BaseMatcher):
             """
         )
         return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class CudaDeviceMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def cuda_device(device):
+                if isinstance(device, paddle.CUDAPlace):
+                    return paddle.CUDAPlace(device.get_device_id())
+                return paddle.CUDAPlace(device)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.cuda_device({})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["device"])
+
+        return code

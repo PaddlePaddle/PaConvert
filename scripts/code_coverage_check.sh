@@ -17,12 +17,12 @@ set +x
 export FLAGS_set_to_1d=0
 cd /workspace/$1/PaConvert/
 
-echo "Insalling cpu version torch"
+echo "Insalling latest release cpu version torch"
 python tests/distributed/load_lib.py
 python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
 python -c "import torch; print('torch version information:' ,torch.__version__)"
 
-echo "Insalling develop version paddle"
+echo "Insalling develop cpu version paddle"
 python -m pip uninstall -y paddlepaddle
 python -m pip uninstall -y paddlepaddle-gpu
 rm -rf /root/anaconda3/lib/python*/site-packages/paddlepaddle-0.0.0.dist-info/
