@@ -82,7 +82,7 @@ def test_case_6():
         """
         import torch
         a = torch.tensor([[4, 9], [23, 2]])
-        result = torch.is_tensor(obj=a)
+        result = torch.is_tensor(a)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -97,7 +97,7 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.is_tensor(obj=torch.tensor([[4, 9], [23, 2]]))
+        result = torch.is_tensor(torch.tensor([[4, 9], [23, 2]]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -112,7 +112,7 @@ def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.is_tensor(obj=[[4, 9], [23, 2]])
+        result = torch.is_tensor([[4, 9], [23, 2]])
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -127,7 +127,7 @@ def test_case_9():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.is_tensor(obj=(1, 0, 3, 8))
+        result = torch.is_tensor((1, 0, 3, 8))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -142,7 +142,7 @@ def test_case_10():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.is_tensor(obj=3)
+        result = torch.is_tensor(3)
         """
     )
     obj.run(pytorch_code, ["result"])

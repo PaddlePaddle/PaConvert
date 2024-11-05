@@ -74,7 +74,7 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.set_default_dtype(d=torch.float64)
+        torch.set_default_dtype(torch.float64)
         result = torch.tensor([1.2, 3])
         """
     )
@@ -90,7 +90,7 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.set_default_dtype(d=torch.float64)
+        torch.set_default_dtype(torch.float64)
         result = torch.tensor([1.2, 3j])
         """
     )
@@ -106,7 +106,7 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.set_default_dtype(d=torch.float32)
+        torch.set_default_dtype(torch.float32)
         result = torch.tensor([1.2, 3.8])
         """
     )
@@ -122,7 +122,7 @@ def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.set_default_dtype(d=torch.float32)
+        torch.set_default_dtype(torch.float32)
         result = torch.tensor([1.2, 3j])
         """
     )

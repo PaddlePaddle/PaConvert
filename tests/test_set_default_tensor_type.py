@@ -86,7 +86,7 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.set_default_tensor_type(t="torch.FloatTensor")
+        torch.set_default_tensor_type("torch.FloatTensor")
         result = torch.tensor([1.2, 3.8])
         """
     )
