@@ -3630,11 +3630,13 @@
     "min_input_args": 0
   },
   "torch.Tensor.sinc": {
-    "Matcher": "SincMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.sinc",
     "min_input_args": 0
   },
   "torch.Tensor.sinc_": {
-    "Matcher": "SincMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.sinc_",
     "min_input_args": 0
   },
   "torch.Tensor.sinh": {
@@ -3742,6 +3744,11 @@
   "torch.Tensor.square_": {
     "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.square_",
+    "min_input_args": 0
+  },
+  "torch.pi": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "numpy.pi",
     "min_input_args": 0
   },
   "torch.Tensor.squeeze": {
@@ -16195,13 +16202,17 @@
   "torch.special.scaled_modified_bessel_k0": {},
   "torch.special.scaled_modified_bessel_k1": {},
   "torch.special.sinc": {
-    "Matcher": "SincMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.sinc",
     "min_input_args": 1,
     "args_list": [
       "input",
       "*",
       "out"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
   },
   "torch.special.softmax": {
     "Matcher": "GenericMatcher",
