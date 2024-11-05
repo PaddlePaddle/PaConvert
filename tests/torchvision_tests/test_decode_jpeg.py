@@ -98,7 +98,7 @@ def test_case_4():
         fake_img = np.full((400, 300, 3), 200, dtype='uint8')
         cv2.imwrite('fake.jpg', fake_img)
         img_bytes = io.read_file('fake.jpg')
-        result = io.decode_jpeg(img_bytes)
+        result = io.decode_jpeg(img_bytes, device=torch.device('cuda'))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -120,7 +120,7 @@ def test_case_5():
         fake_img[::2, ::2] = 255
         cv2.imwrite('fake.jpg', fake_img)
         img_bytes = io.read_file('fake.jpg')
-        result = io.decode_jpeg(input=img_bytes, mode=ImageReadMode.RGB)
+        result = io.decode_jpeg(input=img_bytes, mode=ImageReadMode.RGB, device=torch.device('cuda'))
         """
     )
     obj.run(pytorch_code, ["result"])
