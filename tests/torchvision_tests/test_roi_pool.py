@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torchvision.ops.roi_pool")
+obj = APIBase("torchvision.ops.roi_pool", is_aux_api=True)
 
 
 def test_case_1():
