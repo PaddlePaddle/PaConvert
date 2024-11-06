@@ -57,8 +57,8 @@ def test_case_2():
         import os
         import paddle
         root_path = './data'
-        train_dataset = paddle.vision.datasets.FashionMNIST(download=False, mode=
-            'train', image_path=os.path.join(root_path,
+        train_dataset = paddle.vision.datasets.FashionMNIST(transform=None,
+            download=False, mode='train', image_path=os.path.join(root_path,
             'FashionMNIST/raw/train-images-idx3-ubyte.gz'), label_path=os.path.join
             (root_path, 'FashionMNIST/raw/train-labels-idx1-ubyte.gz'))
         """

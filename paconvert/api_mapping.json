@@ -17361,7 +17361,7 @@
     }
   },
   "torchvision.datasets.CIFAR10": {
-    "Matcher": "Cifar10Matcher",
+    "Matcher": "CifarMatcher",
     "paddle_api": "paddle.vision.datasets.Cifar10",
     "args_list": [
       "root",
@@ -17375,7 +17375,7 @@
     ]
   },
   "torchvision.datasets.CIFAR100": {
-    "Matcher": "Cifar100Matcher",
+    "Matcher": "CifarMatcher",
     "paddle_api": "paddle.vision.datasets.Cifar100",
     "args_list": [
       "root",
@@ -17389,14 +17389,14 @@
     ]
   },
   "torchvision.datasets.FashionMNIST": {
-    "Matcher": "FashionMNISTMatcher",
+    "Matcher": "MNISTMatcher",
     "paddle_api": "paddle.vision.datasets.FashionMNIST",
     "args_list": [
       "root",
       "train",
-      "download",
       "transform",
-      "target_transform"
+      "target_transform",
+      "download"
     ],
     "unsupport_args": [
       "target_transform"
@@ -17440,9 +17440,9 @@
     "args_list": [
       "root",
       "train",
-      "download",
       "transform",
-      "target_transform"
+      "target_transform",
+      "download"
     ],
     "unsupport_args": [
       "target_transform"
