@@ -5371,9 +5371,9 @@ class CifarMatcher(BaseMatcher):
         if "root" in kwargs:
             root = kwargs.pop("root")
             data_file = (
-                "cifar-10-python.tar.gz"
-                if "Cifar10" in self.get_paddle_api()
-                else "cifar-100-python.tar.gz"
+                "cifar-100-python.tar.gz"
+                if "Cifar100" in self.get_paddle_api()
+                else "cifar-10-python.tar.gz"
             )
             kwargs["data_file"] = "os.path.join({}, '{}')".format(root, data_file)
 
@@ -5537,33 +5537,43 @@ class DecodeJpegMatcher(BaseMatcher):
         )
 
 
-class RoiPoolMatcher(BaseMatcher):
+class BoxesConvertMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        api_name = self.get_paddle_api().split(".")[-1]
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def {}(*args, **kwargs):
+                input = args[0] if len(args) > 0 else kwargs.get('input')
+                boxes = args[1] if len(args) > 1 else kwargs.get('boxes')
+
+                batch_size = input.shape[0]
+                if isinstance(boxes, list):
+                    boxes_num = [len(box) for box in boxes] + [0] * (batch_size - len(boxes))
+                    boxes = paddle.concat(boxes) if boxes else paddle.zeros([0, 4])
+                else:
+                    boxes_num = [(boxes[:, 0] == i).sum() for i in range(batch_size)]
+                    boxes = boxes[:, 1:]
+                boxes_num = paddle.to_tensor(boxes_num, dtype='int32')
+
+                kwargs['x'] = kwargs.pop('input')
+                kwargs['boxes'] = boxes
+                kwargs['boxes_num'] = boxes_num
+                return paddle.vision.ops.{}(**kwargs)
+            """
+        ).format(api_name, api_name)
+        return CODE_TEMPLATE
+
     def generate_code(self, kwargs):
-        kwargs["x"] = kwargs.pop("input")
-        boxes_v = kwargs.pop("boxes")
+        self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            batch_size = {}.shape[0]
-            if isinstance({}, list):
-                boxes_num = [len(box) for box in {}] + [0] * (batch_size - len({}))
-                boxes = paddle.concat({}) if {} else paddle.zeros([0, 4])
-            else:
-                boxes_num = [(boxes[:, 0] == i).sum() for i in range(batch_size)]
-                boxes = boxes[:, 1:]
-            boxes_num = paddle.to_tensor(boxes_num, dtype='int32')
-            {}(boxes=boxes, boxes_num=boxes_num, {})
+            paddle_aux.{}({})
             """
         )
-        return API_TEMPLATE.format(
-            kwargs["x"],
-            boxes_v,
-            boxes_v,
-            boxes_v,
-            boxes_v,
-            boxes_v,
-            self.get_paddle_api(),
-            self.kwargs_to_str(kwargs),
+        code = API_TEMPLATE.format(
+            self.get_paddle_api().split(".")[-1], self.kwargs_to_str(kwargs)
         )
+        return code
 
 
 class CudaDeviceMatcher(BaseMatcher):

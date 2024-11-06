@@ -17571,7 +17571,7 @@
     ]
   },
   "torchvision.ops.ps_roi_pool": {
-    "Matcher": "RoiPoolMatcher",
+    "Matcher": "BoxesConvertMatcher",
     "paddle_api": "paddle.vision.ops.psroi_pool",
     "args_list": [
       "input",
@@ -17581,7 +17581,7 @@
     ]
   },
   "torchvision.ops.roi_align": {
-    "Matcher": "RoiPoolMatcher",
+    "Matcher": "BoxesConvertMatcher",
     "paddle_api": "paddle.vision.ops.roi_align",
     "args_list": [
       "input",
@@ -17593,7 +17593,7 @@
     ]
   },
   "torchvision.ops.roi_pool": {
-    "Matcher": "RoiPoolMatcher",
+    "Matcher": "BoxesConvertMatcher",
     "paddle_api": "paddle.vision.ops.roi_pool",
     "args_list": [
       "input",
