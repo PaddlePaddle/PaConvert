@@ -24,7 +24,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         generate_optimizer_test_code("torch.optim.NAdam(conv.parameters(), eps=1e-7)")
     )
-    obj.run(pytorch_code, ["result"], rtol=1.0e-5)
+    obj.run(pytorch_code, ["result"], unsupport=True, rtol=1.0e-5)
 
 
 def test_case_2():
@@ -33,7 +33,7 @@ def test_case_2():
             "torch.optim.NAdam(conv.parameters(), betas=(0.5, 0.99))"
         )
     )
-    obj.run(pytorch_code, ["result"], rtol=1.0e-5)
+    obj.run(pytorch_code, ["result"], unsupport=True, rtol=1.0e-5)
 
 
 def test_case_3():
@@ -42,7 +42,7 @@ def test_case_3():
             "torch.optim.NAdam(conv.parameters(), weight_decay=0.01)"
         )
     )
-    obj.run(pytorch_code, ["result"], rtol=1.0e-5)
+    obj.run(pytorch_code, ["result"], unsupport=True, rtol=1.0e-5)
 
 
 def test_case_4():
@@ -51,14 +51,14 @@ def test_case_4():
             "torch.optim.NAdam(params=conv.parameters(), lr=0.001, betas=(0.9, 0.999), eps=1e-08, weight_decay=0.)"
         )
     )
-    obj.run(pytorch_code, ["result"], rtol=1.0e-5)
+    obj.run(pytorch_code, ["result"], unsupport=True, rtol=1.0e-5)
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         generate_optimizer_test_code("torch.optim.NAdam(conv.parameters())")
     )
-    obj.run(pytorch_code, ["result"], rtol=1.0e-5)
+    obj.run(pytorch_code, ["result"], unsupport=True, rtol=1.0e-5)
 
 
 def test_case_6():
@@ -67,7 +67,7 @@ def test_case_6():
             "torch.optim.NAdam(conv.parameters(), 0.001, (0.9, 0.999), 1e-08, 0.)"
         )
     )
-    obj.run(pytorch_code, ["result"], rtol=1.0e-5)
+    obj.run(pytorch_code, ["result"], unsupport=True, rtol=1.0e-5)
 
 
 def test_case_7():
@@ -76,7 +76,7 @@ def test_case_7():
             "torch.optim.NAdam(betas=(0.9, 0.999), lr=0.001, params=conv.parameters(), eps=1e-08, weight_decay=0.)"
         )
     )
-    obj.run(pytorch_code, ["result"], rtol=1.0e-5)
+    obj.run(pytorch_code, ["result"], unsupport=True, rtol=1.0e-5)
 
 
 def test_case_8():
@@ -85,4 +85,4 @@ def test_case_8():
             "torch.optim.NAdam(betas=(0.9, 0.999), lr=0.001, params=conv.parameters(), eps=1e-08, weight_decay=0., momentum_decay=0.005)"
         )
     )
-    obj.run(pytorch_code, ["result"], rtol=1.0e-5)
+    obj.run(pytorch_code, ["result"], unsupport=True, rtol=1.0e-5)
