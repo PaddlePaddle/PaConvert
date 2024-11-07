@@ -3746,11 +3746,6 @@
     "paddle_api": "paddle.square_",
     "min_input_args": 0
   },
-  "torch.pi": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "numpy.pi",
-    "min_input_args": 0
-  },
   "torch.Tensor.squeeze": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.squeeze",
@@ -7060,7 +7055,7 @@
     }
   },
   "torch.distributions.constraints.Constraint": {
-    "Matcher": "DistributionsConstrainMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.constraint.Constraint",
     "abstract": true
   },
@@ -14741,6 +14736,11 @@
       "input": "x",
       "dims": "perm"
     }
+  },
+  "torch.pi": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "numpy.pi",
+    "min_input_args": 0
   },
   "torch.pinverse": {
     "Matcher": "GenericMatcher",

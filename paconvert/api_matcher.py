@@ -832,39 +832,15 @@ class BroadcastShapesMatcher(BaseMatcher):
 
 
 class StudentTMatcher(BaseMatcher):
-    def generate_aux_code(self):
-        API_TEMPLATE = textwrap.dedent(
-            """
-            import paddle
-            class StudentT_Aux_Class:
-                def __init__(self, df, loc, scale):
-                    self.df = paddle.to_tensor(df)
-                    self.loc = paddle.to_tensor(loc)
-                    self.scale = paddle.to_tensor(scale)
-                    self.sT = paddle.distribution.StudentT(self.df, self.loc, self.scale)
-                def sample(self):
-                    return paddle.reshape(self.sT.sample(), self.df.shape)
-            """
-        )
-
-        return API_TEMPLATE
-
     def generate_code(self, kwargs):
         self.write_aux_code()
         if "validate_args" in kwargs:
             del kwargs["validate_args"]
         if "loc" not in kwargs:
-            kwargs["loc"] = 0.1
+            kwargs["loc"] = 0.0
         if "scale" not in kwargs:
             kwargs["scale"] = 1.0
-        kwargs = self.kwargs_to_str(kwargs)
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle_aux.StudentT_Aux_Class({})
-            """
-        )
-        code = API_TEMPLATE.format(kwargs)
-        return code
+        return GenericMatcher.generate_code(self, kwargs)
 
 
 class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
@@ -930,29 +906,6 @@ class Is_InferenceMatcher(BaseMatcher):
             kwargs["input"] = self.paddleClass
         code = "{}.stop_gradient".format(kwargs["input"])
         return code
-
-
-class DistributionsConstrainMatcher(BaseMatcher):
-    def generate_aux_code(self):
-        API_TEMPLATE = textwrap.dedent(
-            """
-            import paddle
-            class DistributionsConstrain:
-                def check(self, value):
-                    return paddle.distribution.constraint.Constraint()(value)
-            """
-        )
-
-        return API_TEMPLATE
-
-    def generate_code(self, kwargs):
-        self.write_aux_code()
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle_aux.DistributionsConstrain()
-            """
-        )
-        return API_TEMPLATE
 
 
 class IInfoMatcher(BaseMatcher):
@@ -3646,6 +3599,7 @@ class SearchsortedMatcher(BaseMatcher):
             ] = f"{kwargs['sorted_sequence']}.take_along_axis(axis=-1, indices={kwargs.pop('sorter')})"
 
         return GenericMatcher.generate_code(self, kwargs)
+
 
 class SLogDetMatcher(BaseMatcher):
     def generate_code(self, kwargs):
