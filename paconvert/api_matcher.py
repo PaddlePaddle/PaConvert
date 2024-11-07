@@ -5482,45 +5482,44 @@ class Flowers102Matcher(BaseMatcher):
 
 
 class VOCDetectionMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        root = kwargs.pop("root")
-        data_file = f"os.path.join({root}, 'voc2012/VOCtrainval_11-May-2012.tar')"
-
-        image_set = kwargs.pop("image_set", '"""train"""')
-        if image_set == '"""trainval"""':
-            kwargs["mode"] = "'train'"
-        elif image_set == '"""train"""':
-            kwargs["mode"] = "'test'"
-        elif image_set == '"""val"""':
-            kwargs["mode"] = "'valid'"
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                import os
-                if {} == "trainval":
-                    mode = "train"
-                elif {} == "train":
-                    mode = "test"
-                elif {} == "val":
-                    mode = "valid"
-                {}(data_file={}, mode=mode, {})
-                """
-            )
-            return API_TEMPLATE.format(
-                image_set,
-                image_set,
-                image_set,
-                self.get_paddle_api(),
-                data_file,
-                self.kwargs_to_str(kwargs),
-            )
-        API_TEMPLATE = textwrap.dedent(
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
             """
             import os
-            {}({})
+
+            def VOCDetection(*args, **kwargs):
+                root = kwargs.pop('root')
+                year = kwargs.pop('year', '2012')
+                if year != '2012':
+                    raise ValueError("PaddlePaddle only supports VOC2012 dataset")
+                image_set = kwargs.pop('image_set', 'train')
+                download = kwargs.pop('download', True)
+                transform = kwargs.pop('transform', None)
+
+                if image_set == "trainval":
+                    mode = "train"
+                elif image_set == "train":
+                    mode = "test"
+                elif image_set == "val":
+                    mode = "valid"
+                else:
+                    raise ValueError("Only supports image_set in ['trainval', 'train', 'val']")
+
+                data_file = os.path.join(root, 'VOCtrainval_11-May-2012.tar')
+                return paddle.vision.datasets.VOC2012(data_file=data_file, mode=mode, transform=transform, download=download, backend=None)
             """
         )
-        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.VOCDetection({})
+            """
+        )
+        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
+        return code
 
 
 class DecodeJpegMatcher(BaseMatcher):

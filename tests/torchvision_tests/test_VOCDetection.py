@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torchvision.datasets.VOCDetection")
+obj = APIBase("torchvision.datasets.VOCDetection", is_aux_api=True)
 
 
 def test_case_1():
@@ -34,11 +34,15 @@ def test_case_1():
     )
     paddle_code = textwrap.dedent(
         """
-        import os
-        import paddle
-        train_dataset = paddle.vision.datasets.VOCDetection(transform=paddle.vision
-            .transforms.Normalize(mean=(0.5,), std=(0.5,)), download=True, mode='train'
+        import sys
+        sys.path.append(
+            '/home/rocco/github/PaConvert-dev/tests/torchvision_tests/test_project/utils'
             )
+        import paddle_aux
+        import paddle
+        train_dataset = paddle_aux.VOCDetection(root='./data', image_set='trainval',
+            transform=paddle.vision.transforms.Normalize(mean=(0.5,), std=(0.5,)),
+            download=True)
         """
     )
     obj.run(
@@ -62,11 +66,15 @@ def test_case_2():
     )
     paddle_code = textwrap.dedent(
         """
-        import os
+        import sys
+        sys.path.append(
+            '/home/rocco/github/PaConvert-dev/tests/torchvision_tests/test_project/utils'
+            )
+        import paddle_aux
         import paddle
-        train_dataset = paddle.vision.datasets.VOCDetection(download=True,
-            transform=paddle.vision.transforms.Normalize(mean=(0.5,), std=(0.5,)),
-            mode='test')
+        train_dataset = paddle_aux.VOCDetection(root='./data', image_set='train',
+            download=True, transform=paddle.vision.transforms.Normalize(mean=(0.5,),
+            std=(0.5,)))
         """
     )
     obj.run(
@@ -84,9 +92,13 @@ def test_case_3():
     )
     paddle_code = textwrap.dedent(
         """
-        import os
+        import sys
+        sys.path.append(
+            '/home/rocco/github/PaConvert-dev/tests/torchvision_tests/test_project/utils'
+            )
+        import paddle_aux
         import paddle
-        train_dataset = paddle.vision.datasets.VOCDetection(mode='test')
+        train_dataset = paddle_aux.VOCDetection(root='./data')
         """
     )
     obj.run(
@@ -105,10 +117,14 @@ def test_case_4():
     )
     paddle_code = textwrap.dedent(
         """
-        import os
+        import sys
+        sys.path.append(
+            '/home/rocco/github/PaConvert-dev/tests/torchvision_tests/test_project/utils'
+            )
+        import paddle_aux
         import paddle
         root_path = './data'
-        train_dataset = paddle.vision.datasets.VOCDetection(mode='test')
+        train_dataset = paddle_aux.VOCDetection(root=root_path)
         """
     )
     obj.run(
@@ -127,10 +143,14 @@ def test_case_5():
     )
     paddle_code = textwrap.dedent(
         """
-        import os
+        import sys
+        sys.path.append(
+            '/home/rocco/github/PaConvert-dev/tests/torchvision_tests/test_project/utils'
+            )
+        import paddle_aux
         import paddle
         train = True
-        train_dataset = paddle.vision.datasets.VOCDetection(mode='test')
+        train_dataset = paddle_aux.VOCDetection(root='./data', image_set='train')
         """
     )
     obj.run(
@@ -149,17 +169,14 @@ def test_case_6():
     )
     paddle_code = textwrap.dedent(
         """
-        import os
+        import sys
+        sys.path.append(
+            '/home/rocco/github/PaConvert-dev/tests/torchvision_tests/test_project/utils'
+            )
+        import paddle_aux
         import paddle
         imageset = 'train'
-        if imageset == 'trainval':
-            mode = 'train'
-        elif imageset == 'train':
-            mode = 'test'
-        elif imageset == 'val':
-            mode = 'valid'
-        train_dataset = paddle.vision.datasets.VOCDetection(data_file=os.path.join(
-            './data', 'voc2012/VOCtrainval_11-May-2012.tar'), mode=mode)
+        train_dataset = paddle_aux.VOCDetection(root='./data', image_set=imageset)
         """
     )
     obj.run(
@@ -182,18 +199,15 @@ def test_case_7():
     )
     paddle_code = textwrap.dedent(
         """
-        import os
+        import sys
+        sys.path.append(
+            '/home/rocco/github/PaConvert-dev/tests/torchvision_tests/test_project/utils'
+            )
+        import paddle_aux
         import paddle
         image_set_val = 'val'
-        if image_set_val == 'trainval':
-            mode = 'train'
-        elif image_set_val == 'train':
-            mode = 'test'
-        elif image_set_val == 'val':
-            mode = 'valid'
-        train_dataset = paddle.vision.datasets.VOCDetection(data_file=os.path.join(
-            './data', 'voc2012/VOCtrainval_11-May-2012.tar'), mode=mode, transform=None
-            )
+        train_dataset = paddle_aux.VOCDetection(root='./data', image_set=
+            image_set_val, transform=None)
         """
     )
     obj.run(
@@ -212,17 +226,14 @@ def test_case_8():
     )
     paddle_code = textwrap.dedent(
         """
-        import os
+        import sys
+        sys.path.append(
+            '/home/rocco/github/PaConvert-dev/tests/torchvision_tests/test_project/utils'
+            )
+        import paddle_aux
         import paddle
         trainval_set = 'trainval'
-        if trainval_set == 'trainval':
-            mode = 'train'
-        elif trainval_set == 'train':
-            mode = 'test'
-        elif trainval_set == 'val':
-            mode = 'valid'
-        train_dataset = paddle.vision.datasets.VOCDetection(data_file=os.path.join(
-            './data', 'voc2012/VOCtrainval_11-May-2012.tar'), mode=mode)
+        train_dataset = paddle_aux.VOCDetection(root='./data', image_set=trainval_set)
         """
     )
     obj.run(

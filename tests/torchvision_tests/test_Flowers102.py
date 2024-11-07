@@ -51,7 +51,7 @@ def test_case_2():
         import torchvision
         root_path = './data'
         split = 'train'
-        train_dataset = torchvision.datasets.Flowers102(root_path, split, None, download=False)
+        train_dataset = torchvision.datasets.Flowers102(root_path, split, None)
         """
     )
     paddle_code = textwrap.dedent(
@@ -60,7 +60,7 @@ def test_case_2():
         import paddle
         root_path = './data'
         split = 'train'
-        train_dataset = paddle.vision.datasets.Flowers(download=False, mode=split if
+        train_dataset = paddle.vision.datasets.Flowers(transform=None, mode=split if
             split != 'val' else 'valid', data_file=os.path.join(root_path,
             'flowers-102/102flowers.tgz'), label_file=os.path.join(root_path,
             'flowers-102/imagelabels.mat'), setid_file=os.path.join(root_path,

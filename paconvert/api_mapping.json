@@ -17408,9 +17408,9 @@
     "args_list": [
       "root",
       "split",
-      "download",
       "transform",
-      "target_transform"
+      "target_transform",
+      "download"
     ],
     "unsupport_args": [
       "target_transform"
@@ -17455,13 +17455,15 @@
       "root",
       "year",
       "image_set",
+      "download",
       "transform",
       "target_transform",
-      "download"
+      "transforms"
     ],
     "unsupport_args": [
       "year",
-      "target_transform"
+      "target_transform",
+      "transforms"
     ]
   },
   "torchvision.io.ImageReadMode.GRAY": {
