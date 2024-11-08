@@ -3553,25 +3553,6 @@ class Num2TensorBinaryMatcher(BaseMatcher):
         return code
 
 
-class CartesianProdMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        kwargs = self.parse_kwargs(kwargs)
-        if kwargs is None:
-            return None
-        if "tensors" in kwargs:
-            kwargs = {"x": kwargs.pop("tensors"), **kwargs}
-        else:
-            if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
-                x = self.parse_args(args)
-            elif isinstance(args[0], ast.Starred):
-                x = astor.to_source(args[0].value).strip("\n")
-            else:
-                x = self.parse_args(args)
-            kwargs = {"x": str(x).replace("'", ""), **kwargs}
-        code = GenericMatcher.generate_code(self, kwargs)
-        return ast.parse(code).body
-
-
 class Chain_MatmulMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         if len(args) == 1 and isinstance(args[0], ast.Starred):
@@ -4956,13 +4937,11 @@ class FloatPowerMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         self.write_aux_code()
         if "input" in kwargs:
-            pow_expression = "paddle.pow({}.cast(paddle.float64), paddle_aux.cast_exponent({}))".format(
+            code = "paddle.pow({}.cast(paddle.float64), paddle_aux.cast_exponent({}))".format(
                 kwargs["input"], kwargs["exponent"]
             )
-            if "out" in kwargs and kwargs["out"] is not None:
-                code = "paddle.assign({}, {})".format(pow_expression, kwargs["out"])
-            else:
-                code = pow_expression
+            if "out" in kwargs:
+                code = "paddle.assign({}, {})".format(code, kwargs["out"])
         else:
             code = "{}.cast(paddle.float64).pow(paddle_aux.cast_exponent({}))".format(
                 self.paddleClass, kwargs["exponent"]
@@ -5301,7 +5280,7 @@ class ScalableVarMatcher(BaseMatcher):
             elif len(args) == 1 and isinstance(args[0], ast.Starred):
                 dest_var_arg_value = astor.to_source(args[0].value).strip("\n")
             else:
-                dest_var_arg_value = self.parse_args(args)[0]
+                dest_var_arg_value = self.parse_args(args)
 
             kwargs = {dest_var_arg_name: str(dest_var_arg_value).replace("'", "")}
 
@@ -5330,7 +5309,7 @@ class ScalableVarMatcher(BaseMatcher):
             elif len(args) == 1 and isinstance(args[0], ast.Starred):
                 dest_var_arg_value = astor.to_source(args[0].value).strip("\n")
             else:
-                dest_var_arg_value = self.parse_args(args)[0]
+                dest_var_arg_value = self.parse_args(args)
 
             kwargs = {dest_var_arg_name: str(dest_var_arg_value).replace("'", "")}
 

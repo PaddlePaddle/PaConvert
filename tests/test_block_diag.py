@@ -56,7 +56,7 @@ def test_case_3():
         A = torch.tensor([[4], [3], [2]])
         B = torch.tensor([[5, 6], [9, 1]])
         C = torch.tensor([1, 2, 3])
-        result = torch.block_diag(A, B, C)
+        result = torch.block_diag(A)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -68,8 +68,31 @@ def test_case_4():
         import torch
         A = torch.tensor([[4], [3], [2]])
         B = torch.tensor([[5], [6]])
-        C = torch.tensor([1, 2, 3])
-        result = torch.block_diag(A, B, C)
+        result = torch.block_diag(A, B, torch.tensor([1, 2, 3]))
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        tensors = torch.tensor([[0,1,2]]), torch.tensor([[0],[1]]), torch.tensor([[20]])
+        result = torch.block_diag(*tensors)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.block_diag(torch.tensor([[4], [3], [2]]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+if __name__ == "__main__":
+    test_case_6()
