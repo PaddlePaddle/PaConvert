@@ -93,6 +93,3 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
-
-if __name__ == "__main__":
-    test_case_6()
