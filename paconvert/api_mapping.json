@@ -7117,7 +7117,7 @@
     }
   },
   "torch.distributions.studentT.StudentT": {
-    "Matcher": "StudentTMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.StudentT",
     "min_input_args": 1,
     "args_list": [
@@ -7128,6 +7128,10 @@
     ],
     "kwargs_change": {
       "validate_args": ""
+    },
+    "paddle_default_kwargs": {
+      "loc": 0.0,
+      "scale": 1.0
     }
   },
   "torch.distributions.transforms.PositiveDefiniteTransform": {

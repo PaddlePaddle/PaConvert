@@ -831,18 +831,6 @@ class BroadcastShapesMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
-class StudentTMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        self.write_aux_code()
-        if "validate_args" in kwargs:
-            del kwargs["validate_args"]
-        if "loc" not in kwargs:
-            kwargs["loc"] = 0.0
-        if "scale" not in kwargs:
-            kwargs["scale"] = 1.0
-        return GenericMatcher.generate_code(self, kwargs)
-
-
 class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
     def generate_aux_code(self):
         API_TEMPLATE = textwrap.dedent(
