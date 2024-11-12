@@ -1739,6 +1739,19 @@ class ScatterReduceMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class CartesianProdMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
+            x = self.parse_args(args)
+        elif isinstance(args[0], ast.Starred):
+            x = astor.to_source(args[0].value).strip("\n")
+        else:
+            x = self.parse_args(args)
+        kwargs = {"x": str(x).replace("'", ""), **kwargs}
+        code = GenericMatcher.generate_code(self, kwargs)
+        return ast.parse(code).body
+
+
 class SparseSoftmaxMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         code = ""
@@ -5253,16 +5266,7 @@ class SetDefaultTensorTypeMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-class ScalableVarMatcher(BaseMatcher):
-    def generate_aux_code(self):
-        CODE_TEMPLATE = textwrap.dedent(
-            """
-            def is_tuple_list(x):
-                return isinstance(x, (tuple, list))
-            """
-        )
-        return CODE_TEMPLATE
-    
+class ScalableVarMatcher(BaseMatcher): 
     def get_scalable_var(self):
         args_list = self.api_mapping.get("args_list", [])
         if len(args_list) != 1:
@@ -5289,15 +5293,7 @@ class ScalableVarMatcher(BaseMatcher):
             elif len(args) == 1 and isinstance(args[0], ast.Starred):
                 dest_var_arg_value = astor.to_source(args[0].value).strip("\n")
             else:
-                if isinstance(args[0], (ast.List, ast.Tuple)):
-                    dest_var_arg_value = self.parse_args(args)[0]
-                else :
-                    self.write_aux_code()
-                    dest_var_arg_value = "{} if paddle_aux.is_tuple_list({}) else {}".format(
-                        self.parse_args(args)[0], 
-                        str(self.parse_args(args)[0]).replace("'", ""), 
-                        self.parse_args(args)
-                    )
+                dest_var_arg_value = self.parse_args(args)[0]
 
             kwargs = {dest_var_arg_name: str(dest_var_arg_value).replace("'", "")}
 
@@ -5326,15 +5322,7 @@ class ScalableVarMatcher(BaseMatcher):
             elif len(args) == 1 and isinstance(args[0], ast.Starred):
                 dest_var_arg_value = astor.to_source(args[0].value).strip("\n")
             else:
-                if isinstance(args[0], (ast.List, ast.Tuple)):
-                    dest_var_arg_value = self.parse_args(args)[0]
-                else :
-                    self.write_aux_code()
-                    dest_var_arg_value = "{} if paddle_aux.is_tuple_list({}) else {}".format(
-                        self.parse_args(args)[0], 
-                        str(self.parse_args(args)[0]).replace("'", ""), 
-                        self.parse_args(args)
-                    )
+                dest_var_arg_value = self.parse_args(args)[0]
 
             kwargs = {dest_var_arg_name: str(dest_var_arg_value).replace("'", "")}
 

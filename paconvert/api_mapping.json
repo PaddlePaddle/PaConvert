@@ -5373,7 +5373,7 @@
     ]
   },
   "torch.cartesian_prod": {
-    "Matcher": "ScalableVarMatcher",
+    "Matcher": "CartesianProdMatcher",
     "paddle_api": "paddle.cartesian_prod",
     "min_input_args": 1,
     "args_list": [
