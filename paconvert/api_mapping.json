@@ -5291,7 +5291,7 @@
     }
   },
   "torch.block_diag": {
-    "Matcher": "BlockDiagMatcher",
+    "Matcher": "SimpleScalableVarMatcher",
     "paddle_api": "paddle.block_diag",
     "min_input_args": 1,
     "args_list": [
@@ -5373,7 +5373,7 @@
     ]
   },
   "torch.cartesian_prod": {
-    "Matcher": "CartesianProdMatcher",
+    "Matcher": "SimpleScalableVarMatcher",
     "paddle_api": "paddle.cartesian_prod",
     "min_input_args": 1,
     "args_list": [

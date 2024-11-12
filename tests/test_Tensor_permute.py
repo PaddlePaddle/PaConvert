@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.permute", is_aux_api=True)
+obj = APIBase("torch.Tensor.permute")
 
 
 def test_case_1():

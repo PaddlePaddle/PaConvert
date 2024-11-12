@@ -1739,32 +1739,6 @@ class ScatterReduceMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-class CartesianProdMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
-            x = self.parse_args(args)
-        elif isinstance(args[0], ast.Starred):
-            x = astor.to_source(args[0].value).strip("\n")
-        else:
-            x = self.parse_args(args)
-            kwargs = {"x": str(x).replace("'", "")}
-        code = GenericMatcher.generate_code(self, kwargs)
-        return ast.parse(code).body
-    
-
-class BlockDiagMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
-            x = self.parse_args(args)
-        elif isinstance(args[0], ast.Starred):
-            x = astor.to_source(args[0].value).strip("\n")
-        else:
-            x = self.parse_args(args)
-            kwargs = {"inputs": str(x).replace("'", "")}
-        code = GenericMatcher.generate_code(self, kwargs)
-        return ast.parse(code).body
-
-
 class SparseSoftmaxMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         code = ""
@@ -5277,6 +5251,33 @@ class SetDefaultTensorTypeMatcher(BaseMatcher):
         ]:
             kwargs["t"] = '"""bfloat16"""'
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class SimpleScalableVarMatcher(BaseMatcher):
+    def get_scalable_var(self):
+        args_list = self.api_mapping.get("args_list", [])
+        if len(args_list) != 1:
+            return None
+        arg_name = args_list[0]
+        if not (arg_name.startswith("*") and len(arg_name) > 1):
+            return None
+        return arg_name[1:]
+    
+    def get_paddle_nodes(self, args, kwargs):
+        var_arg_name = self.get_scalable_var()
+        dest_var_arg_name = self.api_mapping.get("kwargs_change", {}).get(
+            var_arg_name, var_arg_name
+        )
+        if len(args) > 1:
+            x = self.parse_args(args)
+        else:
+            if isinstance(args[0], ast.Starred):
+                x = astor.to_source(args[0].value).strip("\n")
+            else:
+                x = self.parse_args(args)
+        kwargs = {dest_var_arg_name: str(x).replace("'", "")}
+        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        return ast.parse(code).body
 
 
 class ScalableVarMatcher(BaseMatcher): 
