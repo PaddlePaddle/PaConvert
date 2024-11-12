@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.float_power")
+obj = APIBase("torch.Tensor.float_power", is_aux_api=True)
 
 
 def test_case_1():
@@ -48,6 +48,30 @@ def test_case_3():
         x = torch.tensor([[1, -2], [2, 5]])
         exp = 2
         result = x.float_power(exponent=exp)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([4, 6, 7, 1])
+        out = torch.zeros([4], dtype=torch.double)
+        result = x.float_power(torch.tensor([2, -3, 4, -5]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([4, 6, 7, 1])
+        y = torch.tensor([2, -3, 4, -5])
+        result = x.float_power(y)
         """
     )
     obj.run(pytorch_code, ["result"])
