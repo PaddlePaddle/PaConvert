@@ -5548,11 +5548,15 @@ class SetNumThreadsMatcher(BaseMatcher):
         return code
 
 
-class Cifar10Matcher(BaseMatcher):
+class CifarMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "root" in kwargs:
             root = kwargs.pop("root")
-            data_file = "cifar-10-python.tar.gz"
+            data_file = (
+                "cifar-100-python.tar.gz"
+                if "Cifar100" in self.get_paddle_api()
+                else "cifar-10-python.tar.gz"
+            )
             kwargs["data_file"] = "os.path.join({}, '{}')".format(root, data_file)
 
         if "train" in kwargs:
@@ -5585,11 +5589,14 @@ class MNISTMatcher(BaseMatcher):
 
         if "root" in kwargs:
             root = kwargs.pop("root")
+            dataset_name = (
+                "FashionMNIST" if "FashionMNIST" in self.get_paddle_api() else "MNIST"
+            )
             file_paths = {
-                "train_image": "MNIST/raw/train-images-idx3-ubyte.gz",
-                "train_label": "MNIST/raw/train-labels-idx1-ubyte.gz",
-                "test_image": "MNIST/raw/t10k-images-idx3-ubyte.gz",
-                "test_label": "MNIST/raw/t10k-labels-idx1-ubyte.gz",
+                "train_image": f"{dataset_name}/raw/train-images-idx3-ubyte.gz",
+                "train_label": f"{dataset_name}/raw/train-labels-idx1-ubyte.gz",
+                "test_image": f"{dataset_name}/raw/t10k-images-idx3-ubyte.gz",
+                "test_label": f"{dataset_name}/raw/t10k-labels-idx1-ubyte.gz",
             }
             if train_value == "(True)":
                 kwargs[
@@ -5622,6 +5629,132 @@ class MNISTMatcher(BaseMatcher):
             """
         )
         return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class Flowers102Matcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        split_value = kwargs.pop("split", '"""train"""')
+        if split_value == '"""val"""':
+            kwargs["mode"] = "'valid'"
+        elif split_value == '"""test"""':
+            kwargs["mode"] = "'test'"
+        elif split_value == '"""train"""':
+            kwargs["mode"] = "'train'"
+        else:
+            kwargs["mode"] = f"{split_value} if {split_value} != 'val' else 'valid'"
+
+        if "root" in kwargs:
+            root = kwargs.pop("root")
+            file_paths = {
+                "data_file": "flowers-102/102flowers.tgz",
+                "label_file": "flowers-102/imagelabels.mat",
+                "setid_file": "flowers-102/setid.mat",
+            }
+            kwargs["data_file"] = f"os.path.join({root}, '{file_paths['data_file']}')"
+            kwargs["label_file"] = f"os.path.join({root}, '{file_paths['label_file']}')"
+            kwargs["setid_file"] = f"os.path.join({root}, '{file_paths['setid_file']}')"
+
+        API_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            {}({})
+            """
+        )
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class VOCDetectionMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            import os
+
+            def VOCDetection(*args, **kwargs):
+                root = kwargs.pop('root')
+                year = kwargs.pop('year', '2012')
+                if year != '2012':
+                    raise ValueError("PaddlePaddle only supports VOC2012 dataset")
+                image_set = kwargs.pop('image_set', 'train')
+                download = kwargs.pop('download', True)
+                transform = kwargs.pop('transform', None)
+
+                if image_set == "trainval":
+                    mode = "train"
+                elif image_set == "train":
+                    mode = "test"
+                elif image_set == "val":
+                    mode = "valid"
+                else:
+                    raise ValueError("Only supports image_set in ['trainval', 'train', 'val']")
+
+                data_file = os.path.join(root, 'VOCtrainval_11-May-2012.tar')
+                return paddle.vision.datasets.VOC2012(data_file=data_file, mode=mode, transform=transform, download=download, backend=None)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.VOCDetection({})
+            """
+        )
+        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
+        return code
+
+
+class DecodeJpegMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["x"] = kwargs.pop("input")
+        device = kwargs.pop("device", "cpu")
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}({}).to({})
+            """
+        )
+        return API_TEMPLATE.format(
+            self.get_paddle_api(), self.kwargs_to_str(kwargs), device
+        )
+
+
+class BoxesConvertMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        api_name = self.get_paddle_api().split(".")[-1]
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def {}(*args, **kwargs):
+                input = args[0] if len(args) > 0 else kwargs.get('input')
+                boxes = args[1] if len(args) > 1 else kwargs.get('boxes')
+
+                batch_size = input.shape[0]
+                if isinstance(boxes, list):
+                    boxes_num = [len(box) for box in boxes] + [0] * (batch_size - len(boxes))
+                    boxes = paddle.concat(boxes) if boxes else paddle.zeros([0, 4])
+                else:
+                    boxes_num = [(boxes[:, 0] == i).sum() for i in range(batch_size)]
+                    boxes = boxes[:, 1:]
+                boxes_num = paddle.to_tensor(boxes_num, dtype='int32')
+
+                kwargs['x'] = kwargs.pop('input')
+                kwargs['boxes'] = boxes
+                kwargs['boxes_num'] = boxes_num
+                return paddle.vision.ops.{}(**kwargs)
+            """
+        ).format(api_name, api_name)
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle_aux.{}({})
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.get_paddle_api().split(".")[-1], self.kwargs_to_str(kwargs)
+        )
+        return code
 
 
 class CudaDeviceMatcher(BaseMatcher):
