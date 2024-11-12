@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.constraints.Constraint", is_aux_api=True)
+obj = APIBase("torch.distributions.constraints.Constraint")
 
 
 def test_case_1():
