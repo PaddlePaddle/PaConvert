@@ -56,8 +56,9 @@ def test_case_2():
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
-        import paddle
-        roi_pool = paddle.vision.ops.RoIPool(spatial_scale=1.0, output_size=(7, 7))
+        import torch
+        from torchvision.ops import RoIPool
+        roi_pool = RoIPool(spatial_scale=1.0, output_size=(7, 7))
         """
     )
     paddle_code = textwrap.dedent(

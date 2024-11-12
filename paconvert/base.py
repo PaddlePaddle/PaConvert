@@ -22,7 +22,7 @@ from itertools import groupby
 
 import astor
 
-from paconvert.utils import AuxFileHelper, log_debug, log_warning
+from paconvert.utils import AuxFileHelper, log_debug
 
 json_file = os.path.dirname(__file__) + "/api_mapping.json"
 with open(json_file, "r") as file:
@@ -369,7 +369,7 @@ class BaseMatcher(object):
         for node in kwargs:
             k = node.arg
             if k in new_kwargs:
-                log_warning(
+                log_debug(
                     self.logger,
                     f"Parameter '{k}' specified multiple times - cannot be both positional and keyword argument",
                     self.transformer.file_name,

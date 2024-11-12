@@ -56,8 +56,9 @@ def test_case_2():
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
-        import paddle
-        roi_align = paddle.vision.ops.RoIAlign(spatial_scale=1.0, output_size=(7, 7))
+        import torch
+        from torchvision.ops import RoIAlign
+        roi_align = RoIAlign(spatial_scale=1.0, output_size=(7, 7))
         """
     )
     paddle_code = textwrap.dedent(
