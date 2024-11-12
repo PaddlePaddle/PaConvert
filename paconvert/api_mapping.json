@@ -5291,7 +5291,7 @@
     }
   },
   "torch.block_diag": {
-    "Matcher": "ScalableVarMatcher",
+    "Matcher": "BlockDiagMatcher",
     "paddle_api": "paddle.block_diag",
     "min_input_args": 1,
     "args_list": [

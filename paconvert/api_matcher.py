@@ -1747,7 +1747,20 @@ class CartesianProdMatcher(BaseMatcher):
             x = astor.to_source(args[0].value).strip("\n")
         else:
             x = self.parse_args(args)
-        kwargs = {"x": str(x).replace("'", ""), **kwargs}
+            kwargs = {"x": str(x).replace("'", "")}
+        code = GenericMatcher.generate_code(self, kwargs)
+        return ast.parse(code).body
+    
+
+class BlockDiagMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
+            x = self.parse_args(args)
+        elif isinstance(args[0], ast.Starred):
+            x = astor.to_source(args[0].value).strip("\n")
+        else:
+            x = self.parse_args(args)
+            kwargs = {"inputs": str(x).replace("'", "")}
         code = GenericMatcher.generate_code(self, kwargs)
         return ast.parse(code).body
 
