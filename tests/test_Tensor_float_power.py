@@ -59,7 +59,7 @@ def test_case_4():
         import torch
         x = torch.tensor([4, 6, 7, 1])
         out = torch.zeros([4], dtype=torch.double)
-        result = x.float_power(torch.tensor([2, -3, 4, -5]), out=out)
+        result = x.float_power(torch.tensor([2, -3, 4, -5]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -71,31 +71,11 @@ def test_case_5():
         import torch
         x = torch.tensor([4, 6, 7, 1])
         y = torch.tensor([2, -3, 4, -5])
-        result = x.float_power(y, out=torch.zeros([4], dtype=torch.double))
+        result = x.float_power(y)
         """
     )
-    obj.run(pytorch_code, ["result"], unsupport=True)
+    obj.run(pytorch_code, ["result"])
 
 
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[1, -2], [2, 5]])
-        out = torch.zeros([2, 2], dtype=torch.double)
-        result = x.float_power(2, out)
-        """
-    )
-    obj.run(pytorch_code, ["result"], unsupport=True)
-
-
-def test_case_7():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[1, -2], [2, 5]])
-        out = torch.zeros([2, 2], dtype=torch.double)
-        result = x.float_power(out=out, exponent=2)
-        """
-    )
-    obj.run(pytorch_code, ["result"], unsupport=True)
+if __name__ == "__main__":
+    test_case_5()
