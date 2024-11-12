@@ -35,7 +35,7 @@ def test_case_2():
         """
         import torch
         x = torch.tensor([1.0])
-        result = torch.distributions.studentT.StudentT(df=x, loc=0.1, scale=1.0).sample()
+        result = torch.distributions.studentT.StudentT(df=x, loc=0.0, scale=1.0).sample()
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -46,7 +46,7 @@ def test_case_3():
         """
         import torch
         x = torch.tensor([1.0])
-        result = torch.distributions.studentT.StudentT(df=x, loc=0.1, scale=1.0, validate_args=None).sample()
+        result = torch.distributions.studentT.StudentT(df=x, loc=0.0, scale=1.0, validate_args=None).sample()
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
