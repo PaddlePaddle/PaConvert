@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torchvision.datasets.MNIST")
+obj = APIBase("torchvision.datasets.Flowers102")
 
 
 def test_case_1():
@@ -24,7 +24,7 @@ def test_case_1():
         """
         import torchvision
         root_path = './data'
-        train_dataset = torchvision.datasets.MNIST(root=root_path, train=True, transform=None, download=False)
+        train_dataset = torchvision.datasets.Flowers102(root=root_path, split='train', transform=None, download=False)
         """
     )
     paddle_code = textwrap.dedent(
@@ -32,10 +32,11 @@ def test_case_1():
         import os
         import paddle
         root_path = './data'
-        train_dataset = paddle.vision.datasets.MNIST(transform=None, download=False,
-            mode='train', image_path=os.path.join(root_path,
-            'MNIST/raw/train-images-idx3-ubyte.gz'), label_path=os.path.join(
-            root_path, 'MNIST/raw/train-labels-idx1-ubyte.gz'))
+        train_dataset = paddle.vision.datasets.Flowers(transform=None, download=
+            False, mode='train', data_file=os.path.join(root_path,
+            'flowers-102/102flowers.tgz'), label_file=os.path.join(root_path,
+            'flowers-102/imagelabels.mat'), setid_file=os.path.join(root_path,
+            'flowers-102/setid.mat'))
         """
     )
     obj.run(
@@ -49,7 +50,8 @@ def test_case_2():
         """
         import torchvision
         root_path = './data'
-        train_dataset = torchvision.datasets.MNIST(root_path, True, None, download=False)
+        split = 'train'
+        train_dataset = torchvision.datasets.Flowers102(root_path, split, None)
         """
     )
     paddle_code = textwrap.dedent(
@@ -57,10 +59,12 @@ def test_case_2():
         import os
         import paddle
         root_path = './data'
-        train_dataset = paddle.vision.datasets.MNIST(transform=None, download=False,
-            mode='train', image_path=os.path.join(root_path,
-            'MNIST/raw/train-images-idx3-ubyte.gz'), label_path=os.path.join(
-            root_path, 'MNIST/raw/train-labels-idx1-ubyte.gz'))
+        split = 'train'
+        train_dataset = paddle.vision.datasets.Flowers(transform=None, mode=split if
+            split != 'val' else 'valid', data_file=os.path.join(root_path,
+            'flowers-102/102flowers.tgz'), label_file=os.path.join(root_path,
+            'flowers-102/imagelabels.mat'), setid_file=os.path.join(root_path,
+            'flowers-102/setid.mat'))
         """
     )
     obj.run(
@@ -73,19 +77,17 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        root_path = './data'
-        train_dataset = torchvision.datasets.MNIST(train=True, root=root_path, download=False)
+        train_dataset = torchvision.datasets.Flowers102(split='train', root='./data', download=False)
         """
     )
     paddle_code = textwrap.dedent(
         """
         import os
         import paddle
-        root_path = './data'
-        train_dataset = paddle.vision.datasets.MNIST(download=False, mode='train',
-            image_path=os.path.join(root_path,
-            'MNIST/raw/train-images-idx3-ubyte.gz'), label_path=os.path.join(
-            root_path, 'MNIST/raw/train-labels-idx1-ubyte.gz'))
+        train_dataset = paddle.vision.datasets.Flowers(download=False, mode='train',
+            data_file=os.path.join('./data', 'flowers-102/102flowers.tgz'),
+            label_file=os.path.join('./data', 'flowers-102/imagelabels.mat'),
+            setid_file=os.path.join('./data', 'flowers-102/setid.mat'))
         """
     )
     obj.run(
@@ -99,7 +101,7 @@ def test_case_4():
         """
         import torchvision
         root_path = './data'
-        train_dataset = torchvision.datasets.MNIST(root=root_path)
+        train_dataset = torchvision.datasets.Flowers102(root=root_path)
         """
     )
     paddle_code = textwrap.dedent(
@@ -107,9 +109,10 @@ def test_case_4():
         import os
         import paddle
         root_path = './data'
-        train_dataset = paddle.vision.datasets.MNIST(mode='train', image_path=os.
-            path.join(root_path, 'MNIST/raw/train-images-idx3-ubyte.gz'),
-            label_path=os.path.join(root_path, 'MNIST/raw/train-labels-idx1-ubyte.gz'))
+        train_dataset = paddle.vision.datasets.Flowers(mode='train', data_file=os.
+            path.join(root_path, 'flowers-102/102flowers.tgz'), label_file=os.path.
+            join(root_path, 'flowers-102/imagelabels.mat'), setid_file=os.path.join
+            (root_path, 'flowers-102/setid.mat'))
         """
     )
     obj.run(
@@ -123,7 +126,7 @@ def test_case_5():
         """
         import torchvision
         root_path = './data'
-        train_dataset = torchvision.datasets.MNIST(root=root_path, train=True)
+        train_dataset = torchvision.datasets.Flowers102(root=root_path, split='test')
         """
     )
     paddle_code = textwrap.dedent(
@@ -131,9 +134,10 @@ def test_case_5():
         import os
         import paddle
         root_path = './data'
-        train_dataset = paddle.vision.datasets.MNIST(mode='train', image_path=os.
-            path.join(root_path, 'MNIST/raw/train-images-idx3-ubyte.gz'),
-            label_path=os.path.join(root_path, 'MNIST/raw/train-labels-idx1-ubyte.gz'))
+        train_dataset = paddle.vision.datasets.Flowers(mode='test', data_file=os.
+            path.join(root_path, 'flowers-102/102flowers.tgz'), label_file=os.path.
+            join(root_path, 'flowers-102/imagelabels.mat'), setid_file=os.path.join
+            (root_path, 'flowers-102/setid.mat'))
         """
     )
     obj.run(
@@ -148,7 +152,7 @@ def test_case_6():
         import torchvision
         root_path = './data'
         train = True
-        train_dataset = torchvision.datasets.MNIST(root=root_path, train=train)
+        train_dataset = torchvision.datasets.Flowers102(root=root_path, split='val')
         """
     )
     paddle_code = textwrap.dedent(
@@ -157,12 +161,10 @@ def test_case_6():
         import paddle
         root_path = './data'
         train = True
-        train_dataset = paddle.vision.datasets.MNIST(mode='train' if train else
-            'test', image_path=os.path.join(root_path,
-            'MNIST/raw/train-images-idx3-ubyte.gz') if train else os.path.join(
-            root_path, 'MNIST/raw/t10k-images-idx3-ubyte.gz'), label_path=os.path.
-            join(root_path, 'MNIST/raw/train-labels-idx1-ubyte.gz') if train else
-            os.path.join(root_path, 'MNIST/raw/t10k-labels-idx1-ubyte.gz'))
+        train_dataset = paddle.vision.datasets.Flowers(mode='valid', data_file=os.
+            path.join(root_path, 'flowers-102/102flowers.tgz'), label_file=os.path.
+            join(root_path, 'flowers-102/imagelabels.mat'), setid_file=os.path.join
+            (root_path, 'flowers-102/setid.mat'))
         """
     )
     obj.run(
@@ -176,9 +178,9 @@ def test_case_7():
         """
         import torchvision
         root_path = './data'
-        train = True
+        split = 'val'
         download = False
-        train_dataset = torchvision.datasets.MNIST(root=root_path, train=train, download=download)
+        train_dataset = torchvision.datasets.Flowers102(root=root_path, split=split, download=download)
         """
     )
     paddle_code = textwrap.dedent(
@@ -186,14 +188,13 @@ def test_case_7():
         import os
         import paddle
         root_path = './data'
-        train = True
+        split = 'val'
         download = False
-        train_dataset = paddle.vision.datasets.MNIST(download=download, mode=
-            'train' if train else 'test', image_path=os.path.join(root_path,
-            'MNIST/raw/train-images-idx3-ubyte.gz') if train else os.path.join(
-            root_path, 'MNIST/raw/t10k-images-idx3-ubyte.gz'), label_path=os.path.
-            join(root_path, 'MNIST/raw/train-labels-idx1-ubyte.gz') if train else
-            os.path.join(root_path, 'MNIST/raw/t10k-labels-idx1-ubyte.gz'))
+        train_dataset = paddle.vision.datasets.Flowers(download=download, mode=
+            split if split != 'val' else 'valid', data_file=os.path.join(root_path,
+            'flowers-102/102flowers.tgz'), label_file=os.path.join(root_path,
+            'flowers-102/imagelabels.mat'), setid_file=os.path.join(root_path,
+            'flowers-102/setid.mat'))
         """
     )
     obj.run(

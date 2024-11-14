@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.studentT.StudentT", is_aux_api=True)
+obj = APIBase("torch.distributions.studentT.StudentT")
 
 
 def test_case_1():
@@ -35,7 +35,7 @@ def test_case_2():
         """
         import torch
         x = torch.tensor([1.0])
-        result = torch.distributions.studentT.StudentT(df=x, loc=0.1, scale=1.0).sample()
+        result = torch.distributions.studentT.StudentT(df=x, loc=0.0, scale=1.0).sample()
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -46,7 +46,7 @@ def test_case_3():
         """
         import torch
         x = torch.tensor([1.0])
-        result = torch.distributions.studentT.StudentT(df=x, loc=0.1, scale=1.0, validate_args=None).sample()
+        result = torch.distributions.studentT.StudentT(df=x, loc=0.0, scale=1.0, validate_args=None).sample()
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -58,6 +58,52 @@ def test_case_4():
         import torch
         x = torch.tensor([1.0])
         result = torch.distributions.studentT.StudentT(scale=1.0, loc=0.1, df=x, validate_args=None).sample()
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor(1.0)
+        result = torch.distributions.studentT.StudentT(x).sample()
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = 1.0
+        result = torch.distributions.studentT.StudentT(df=x, loc=0.1, scale=1.0).sample()
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = 2.0
+        loc = torch.tensor([0.2, 0.3])
+        result = torch.distributions.studentT.StudentT(df=x, loc=loc, scale=1.0, validate_args=None).sample()
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = 2.0
+        scale = torch.tensor([[0.2, 0.3], [0.2, 0.3]])
+        result = torch.distributions.studentT.StudentT(scale=scale, loc=0.1, df=x, validate_args=None).sample()
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)

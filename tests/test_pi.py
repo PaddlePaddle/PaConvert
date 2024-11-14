@@ -1,4 +1,4 @@
-# Copyright (c) 2024 PaddlePaddle Authors. All Rights Reserved.
+# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,31 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.constraints.Constraint")
+obj = APIBase("torch.pi")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        try:
-            result = torch.distributions.constraints.Constraint().check(1)
-        except NotImplementedError:
-            result = torch.tensor(1)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        try:
-            con = torch.distributions.constraints.Constraint()
-            result = con.check(value=1)
-        except NotImplementedError:
-            result = torch.tensor(1)
+        import numpy
+        result = torch.pi
         """
     )
     obj.run(pytorch_code, ["result"])
