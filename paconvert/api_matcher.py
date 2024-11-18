@@ -859,35 +859,6 @@ class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
         return API_TEMPLATE
 
 
-class LKJCholeskyMatcher(BaseMatcher):
-    def generate_aux_code(self):
-        API_TEMPLATE = textwrap.dedent(
-            """
-            import paddle
-            class LKJCholesky_Aux_Class:
-                def __init__(self, dim, concentration, sample_method='onion'):
-                    self.lkj = paddle.distribution.LKJCholesky(dim, concentration, sample_method)
-                def sample(self):
-                    return paddle.unsqueeze(self.lkj.sample(), axis=0)
-            """
-        )
-
-        return API_TEMPLATE
-
-    def generate_code(self, kwargs):
-        self.write_aux_code()
-        if "validate_args" in kwargs:
-            del kwargs["validate_args"]
-        kwargs = self.kwargs_to_str(kwargs)
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle_aux.LKJCholesky_Aux_Class({})
-            """
-        )
-        code = API_TEMPLATE.format(kwargs)
-        return code
-
-
 class Is_InferenceMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" not in kwargs:
@@ -4847,7 +4818,7 @@ class CanCastMatcher(BaseMatcher):
 class PositiveMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
-        """
+            """
         def positive(x):
             if x.dtype != paddle.bool:
                 return x
@@ -5204,7 +5175,7 @@ class SimpleScalableVarMatcher(BaseMatcher):
         if not (arg_name.startswith("*") and len(arg_name) > 1):
             return None
         return arg_name[1:]
-    
+
     def get_paddle_nodes(self, args, kwargs):
         var_arg_name = self.get_scalable_var()
         dest_var_arg_name = self.api_mapping.get("kwargs_change", {}).get(
@@ -5222,7 +5193,7 @@ class SimpleScalableVarMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
-class ScalableVarMatcher(BaseMatcher): 
+class ScalableVarMatcher(BaseMatcher):
     def get_scalable_var(self):
         args_list = self.api_mapping.get("args_list", [])
         if len(args_list) != 1:
