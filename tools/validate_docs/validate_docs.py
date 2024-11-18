@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 import argparse
 import json
 import os
@@ -137,7 +136,6 @@ IGNORE_KWARGS_CHANGE_PAIRS = {
     ("time_major", "batch_first"),
 }
 
-
 # 如果参数映射在这个里面，则进行参数映射的转换
 KWARGS_CHANGE_CHANGE_DICT = {
     # for *split
@@ -150,7 +148,6 @@ KWARGS_CHANGE_CHANGE_DICT = {
         "sections": "num_or_indices",
     },
 }
-
 
 PRESET_MATCHER_KWARGS_CHANGE_PAIRS = {
     "CreateMatcher": {"size": "shape"},
@@ -170,7 +167,6 @@ PRESET_MATCHER_KWARGS_CHANGE_PAIRS = {
     "FunctionalSmoothL1LossMatcher": {"beta": "delta"},
     "OptimOptimizerMatcher": {"params": "parameters"},
 }
-
 
 overloadable_api_aux_set = {
     "torch.mean",
@@ -236,11 +232,11 @@ def check_mapping_args(paconvert_item, doc_item):
 
     args_list = [
         extract_doc_arg(a["arg_name"], remove_star=False)
-        for a in doc_item["src_signature"].get("args", [])
+        for a in doc_item["src_signature"][0].get("args", [])
     ]
     if args_list == []:
         assert (
-            len(paconvert_item.get("args_list", [])) == 0
+                len(paconvert_item.get("args_list", [])) == 0
         ), "`args_list` should not be in paconvert_item."
         # assert 'args_mapping' not in doc_item, f'`args_mapping` should not be in doc_item.'
 
@@ -318,7 +314,7 @@ def check_api_mapping(paconvert_item, doc_item):
 
         if "paddle_api" not in paconvert_item:
             raise PaConvertDataError(
-                f"{torch_api}: `paddle_api` is not in paconvert_item: {paconvert_item}, but doc `paddle_api` is {doc_item['paddle_api']}"
+                f"{torch_api}: `paddle_api` is not in paconvert_item: {paconvert_item}, but doc `paddle_api` is {doc_item['dst_api']}"
             )
         if doc_item["dst_api"] != paconvert_item["paddle_api"]:
             raise ValidateError(
@@ -431,7 +427,7 @@ if __name__ == "__main__":
             )
         # 允许有多个原 api，但只有一个目标 api
 
-    with open(args.docs_mappings, "r") as f:
+    with open(args.docs_mappings, "r", encoding="utf-8") as f:
         docs_mapping_data = json.load(f)
         docs_mapping = dict([(i["src_api"], i) for i in docs_mapping_data])
 
@@ -507,7 +503,7 @@ if __name__ == "__main__":
         if len(paconvert_errors) > 0:
             verbose_print(f"ERROR: {len(paconvert_errors)} api paconvert data error.")
             with open(
-                os.path.join(tool_dir, "paconvert_data_error_list.log"), "w"
+                    os.path.join(tool_dir, "paconvert_data_error_list.log"), "w"
             ) as f:
                 for pe in paconvert_errors:
                     print(pe, file=f)
