@@ -14,10 +14,6 @@
 
 set +x
 
-export FLAGS_set_to_1d=0
-
-cd /workspace/$1/PaConvert/
-
 python -m pip install --upgrade pip
 echo "Insalling develop cpu version paddle"
 python -m pip uninstall -y paddlepaddle

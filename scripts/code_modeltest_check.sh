@@ -14,10 +14,6 @@
 
 set +x
 
-export FLAGS_set_to_1d=0
-
-cd /workspace/$1/PaConvert/
-
 echo "Insalling latest release cpu version torch"
 python -m pip install -U torch --index-url https://download.pytorch.org/whl/cpu
 python -c "import torch; print('torch version information:' ,torch.__version__)"

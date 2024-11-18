@@ -14,10 +14,6 @@
 
 set +x
 
-export FLAGS_set_to_1d=0
-
-cd /workspace/$1/PaConvert/
-
 # pre-commit multi-thread running.
 echo "Checking code style by pre-commit ..."
 python tests/distributed/load_lib.py
