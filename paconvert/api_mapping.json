@@ -2221,9 +2221,21 @@
     "paddle_api": "paddle.Tensor.isnan",
     "min_input_args": 0
   },
-  "torch.Tensor.isneginf": {},
-  "torch.Tensor.isposinf": {},
-  "torch.Tensor.isreal": {},
+  "torch.Tensor.isneginf": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.isneginf",
+    "min_input_args": 0
+  },
+  "torch.Tensor.isposinf": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.isposinf",
+    "min_input_args": 0
+  },
+  "torch.Tensor.isreal": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.isreal",
+    "min_input_args": 0
+  },
   "torch.Tensor.istft": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.istft",
@@ -3185,7 +3197,9 @@
       "n"
     ]
   },
-  "torch.Tensor.positive": {},
+  "torch.Tensor.positive": {
+	  "Matcher": "PositiveMatcher"
+  },
   "torch.Tensor.pow": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.pow",
@@ -3562,7 +3576,27 @@
       "reduce": "'add'"
     }
   },
-  "torch.Tensor.scatter_reduce": {},
+  "torch.Tensor.scatter_reduce": {
+	  "Matcher": "ScatterReduceMatcher",
+    "paddle_api": "paddle.Tensor.put_along_axis",
+    "min_input_args": 3,
+    "args_list": [
+      "dim",
+      "index",
+      "src",
+      "reduce",
+      "*",
+      "include_self"
+    ],
+    "kwargs_change": {
+      "dim": "axis",
+      "index": "indices",
+      "src": "values"
+    },
+    "paddle_default_kwargs": {
+      "broadcast": "False"
+    }
+  },
   "torch.Tensor.scatter_reduce_": {},
   "torch.Tensor.select": {
     "Matcher": "SelectMatcher",
@@ -3750,11 +3784,6 @@
   "torch.Tensor.square_": {
     "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.square_",
-    "min_input_args": 0
-  },
-  "torch.pi": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "numpy.pi",
     "min_input_args": 0
   },
   "torch.Tensor.squeeze": {
@@ -5263,6 +5292,17 @@
       "window": "'blackman'"
     }
   },
+  "torch.block_diag": {
+    "Matcher": "SimpleScalableVarMatcher",
+    "paddle_api": "paddle.block_diag",
+    "min_input_args": 1,
+    "args_list": [
+      "*tensors"
+    ],
+    "kwargs_change": {
+      "tensors": "inputs"
+    }
+  },
   "torch.bmm": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.bmm",
@@ -5325,6 +5365,24 @@
     "kwargs_change": {
       "input": "x",
       "boundaries": "sorted_sequence"
+    }
+  },
+  "torch.can_cast": {
+    "Matcher": "CanCastMatcher",
+    "args_list": [
+      "from_",
+      "to"
+    ]
+  },
+  "torch.cartesian_prod": {
+    "Matcher": "SimpleScalableVarMatcher",
+    "paddle_api": "paddle.cartesian_prod",
+    "min_input_args": 1,
+    "args_list": [
+      "*tensors"
+    ],
+    "kwargs_change": {
+      "tensors": "x"
     }
   },
   "torch.cat": {
@@ -7067,7 +7125,7 @@
     }
   },
   "torch.distributions.constraints.Constraint": {
-    "Matcher": "DistributionsConstrainMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.constraint.Constraint",
     "abstract": true
   },
@@ -7129,7 +7187,7 @@
     }
   },
   "torch.distributions.studentT.StudentT": {
-    "Matcher": "StudentTMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.StudentT",
     "min_input_args": 1,
     "args_list": [
@@ -7140,6 +7198,10 @@
     ],
     "kwargs_change": {
       "validate_args": ""
+    },
+    "paddle_default_kwargs": {
+      "loc": 0.0,
+      "scale": 1.0
     }
   },
   "torch.distributions.transforms.PositiveDefiniteTransform": {
@@ -7793,6 +7855,16 @@
     "kwargs_change": {
       "input": "x"
     }
+  },
+  "torch.float_power": {
+    "Matcher": "FloatPowerMatcher",
+    "min_input_args": 2,
+    "args_list": [
+      "input",
+      "exponent",
+      "*",
+      "out"
+    ]
   },
   "torch.floor_divide": {
     "Matcher": "Num2TensorBinaryMatcher",
@@ -8504,6 +8576,22 @@
       "input": "x"
     }
   },
+  "torch.isin": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.isin",
+    "min_input_args": 2,
+    "args_list": [
+      "elements",
+      "test_elements",
+      "*",
+      "assume_unique",
+      "invert"
+    ],
+    "kwargs_change": {
+      "elements": "x",
+      "test_elements": "test_x"
+    }
+  },
   "torch.isinf": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.isinf",
@@ -8518,6 +8606,43 @@
   "torch.isnan": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.isnan",
+    "min_input_args": 1,
+    "args_list": [
+      "input"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+  "torch.isneginf": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.isneginf",
+    "min_input_args": 1,
+    "args_list": [
+      "input",
+      "*",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+  "torch.isposinf": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.isposinf",
+    "min_input_args": 1,
+    "args_list": [
+      "input",
+      "*",
+      "out"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+  "torch.isreal": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.isreal",
     "min_input_args": 1,
     "args_list": [
       "input"
@@ -14750,6 +14875,11 @@
       "dims": "perm"
     }
   },
+  "torch.pi": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "numpy.pi",
+    "min_input_args": 0
+  },
   "torch.pinverse": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linalg.pinv",
@@ -14783,6 +14913,12 @@
       "angle",
       "*",
       "out"
+    ]
+  },
+  "torch.positive": {
+    "Matcher": "PositiveMatcher",
+    "args_list": [
+      "input"
     ]
   },
   "torch.pow": {
@@ -15302,6 +15438,29 @@
     },
     "paddle_default_kwargs": {
       "reduce": "'add'"
+    }
+  },
+  "torch.scatter_reduce": {
+    "Matcher": "ScatterReduceMatcher",
+    "paddle_api": "paddle.put_along_axis",
+    "min_input_args": 4,
+    "args_list": [
+      "input",
+      "dim",
+      "index",
+      "src",
+      "reduce",
+      "*",
+      "include_self"
+    ],
+    "kwargs_change": {
+      "input": "arr",
+      "dim": "axis",
+      "index": "indices",
+      "src": "values"
+    },
+    "paddle_default_kwargs": {
+      "broadcast": "False"
     }
   },
   "torch.searchsorted": {
@@ -17380,11 +17539,53 @@
     }
   },
   "torchvision.datasets.CIFAR10": {
-    "Matcher": "Cifar10Matcher",
+    "Matcher": "CifarMatcher",
     "paddle_api": "paddle.vision.datasets.Cifar10",
     "args_list": [
       "root",
       "train",
+      "transform",
+      "target_transform",
+      "download"
+    ],
+    "unsupport_args": [
+      "target_transform"
+    ]
+  },
+  "torchvision.datasets.CIFAR100": {
+    "Matcher": "CifarMatcher",
+    "paddle_api": "paddle.vision.datasets.Cifar100",
+    "args_list": [
+      "root",
+      "train",
+      "transform",
+      "target_transform",
+      "download"
+    ],
+    "unsupport_args": [
+      "target_transform"
+    ]
+  },
+  "torchvision.datasets.FashionMNIST": {
+    "Matcher": "MNISTMatcher",
+    "paddle_api": "paddle.vision.datasets.FashionMNIST",
+    "args_list": [
+      "root",
+      "train",
+      "transform",
+      "target_transform",
+      "download"
+    ],
+    "unsupport_args": [
+      "target_transform"
+    ]
+  },
+  "torchvision.datasets.Flowers102": {
+    "Matcher": "Flowers102Matcher",
+    "paddle_api": "paddle.vision.datasets.Flowers",
+    "args_list": [
+      "root",
+      "split",
       "transform",
       "target_transform",
       "download"
@@ -17417,12 +17618,168 @@
     "args_list": [
       "root",
       "train",
-      "download",
       "transform",
-      "target_transform"
+      "target_transform",
+      "download"
     ],
     "unsupport_args": [
       "target_transform"
+    ]
+  },
+  "torchvision.datasets.VOCDetection": {
+    "Matcher": "VOCDetectionMatcher",
+    "paddle_api": "paddle.vision.datasets.VOCDetection",
+    "args_list": [
+      "root",
+      "year",
+      "image_set",
+      "download",
+      "transform",
+      "target_transform",
+      "transforms"
+    ],
+    "unsupport_args": [
+      "year",
+      "target_transform",
+      "transforms"
+    ]
+  },
+  "torchvision.io.ImageReadMode.GRAY": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'gray'",
+    "min_input_args": 0
+  },
+  "torchvision.io.ImageReadMode.RGB": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'rgb'",
+    "min_input_args": 0
+  },
+  "torchvision.io.ImageReadMode.UNCHANGED": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'unchanged'",
+    "min_input_args": 0
+  },
+  "torchvision.io.decode_jpeg": {
+    "Matcher": "DecodeJpegMatcher",
+    "paddle_api": "paddle.vision.ops.decode_jpeg",
+    "args_list": [
+      "input",
+      "mode",
+      "device",
+      "apply_exif_orientation"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    },
+    "unsupport_args": [
+      "apply_exif_orientation"
+    ]
+  },
+  "torchvision.io.read_file": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.ops.read_file",
+    "args_list": [
+      "path"
+    ],
+    "kwargs_change": {
+      "path": "filename"
+    }
+  },
+  "torchvision.ops.DeformConv2d": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.ops.DeformConv2D",
+    "args_list": [
+      "in_channels",
+      "out_channels",
+      "kernel_size",
+      "stride",
+      "padding",
+      "dilation",
+      "groups",
+      "bias"
+    ],
+    "unsupport_args": [
+      "bias"
+    ]
+  },
+  "torchvision.ops.RoIAlign": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.ops.RoIAlign",
+    "args_list": [
+      "output_size",
+      "spatial_scale",
+      "sampling_ratio",
+      "aligned"
+    ],
+    "unsupport_args": [
+      "sampling_ratio",
+      "aligned"
+    ]
+  },
+  "torchvision.ops.RoIPool": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.ops.RoIPool",
+    "args_list": [
+      "output_size",
+      "spatial_scale"
+    ]
+  },
+  "torchvision.ops.deform_conv2d": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.ops.deform_conv2d",
+    "args_list": [
+      "input",
+      "offset",
+      "weight",
+      "bias",
+      "stride",
+      "padding",
+      "dilation",
+      "mask"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
+  },
+  "torchvision.ops.nms": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.ops.nms",
+    "args_list": [
+      "boxes",
+      "scores",
+      "iou_threshold"
+    ]
+  },
+  "torchvision.ops.ps_roi_pool": {
+    "Matcher": "BoxesConvertMatcher",
+    "paddle_api": "paddle.vision.ops.psroi_pool",
+    "args_list": [
+      "input",
+      "boxes",
+      "output_size",
+      "spatial_scale"
+    ]
+  },
+  "torchvision.ops.roi_align": {
+    "Matcher": "BoxesConvertMatcher",
+    "paddle_api": "paddle.vision.ops.roi_align",
+    "args_list": [
+      "input",
+      "boxes",
+      "output_size",
+      "spatial_scale",
+      "sampling_ratio",
+      "aligned"
+    ]
+  },
+  "torchvision.ops.roi_pool": {
+    "Matcher": "BoxesConvertMatcher",
+    "paddle_api": "paddle.vision.ops.roi_pool",
+    "args_list": [
+      "input",
+      "boxes",
+      "output_size",
+      "spatial_scale"
     ]
   },
   "torchvision.transforms.CenterCrop": {
@@ -17430,6 +17787,16 @@
     "paddle_api": "paddle.vision.transforms.CenterCrop",
     "args_list": [
       "size"
+    ]
+  },
+  "torchvision.transforms.ColorJitter": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.ColorJitter",
+    "args_list": [
+      "brightness",
+      "contrast",
+      "saturation",
+      "hue"
     ]
   },
   "torchvision.transforms.Compose": {
@@ -17737,6 +18104,18 @@
     "unsupport_args": [
       "max_size",
       "antialias"
+    ]
+  },
+  "torchvision.transforms.functional.rotate": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.transforms.rotate",
+    "args_list": [
+      "img",
+      "angle",
+      "interpolation",
+      "expand",
+      "center",
+      "fill"
     ]
   },
   "torchvision.transforms.functional.to_grayscale": {

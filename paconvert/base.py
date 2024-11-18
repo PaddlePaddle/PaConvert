@@ -368,6 +368,12 @@ class BaseMatcher(object):
 
         for node in kwargs:
             k = node.arg
+            if k in new_kwargs:
+                log_debug(
+                    self.logger,
+                    f"Parameter '{k}' specified multiple times - cannot be both positional and keyword argument",
+                    self.transformer.file_name,
+                )
             v = astor.to_source(node.value).replace("\n", "")
             new_kwargs[k] = v
 

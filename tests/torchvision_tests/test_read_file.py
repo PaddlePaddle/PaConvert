@@ -16,17 +16,18 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.constraints.Constraint")
+obj = APIBase("torchvision.io.read_file")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        try:
-            result = torch.distributions.constraints.Constraint().check(1)
-        except NotImplementedError:
-            result = torch.tensor(1)
+        from torchvision import io
+        from PIL import Image
+        test_img = Image.new('RGB', (100, 100), color='red')
+        test_img.save('test.jpg')
+        result = io.read_file(path="test.jpg")
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -36,11 +37,11 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        try:
-            con = torch.distributions.constraints.Constraint()
-            result = con.check(value=1)
-        except NotImplementedError:
-            result = torch.tensor(1)
+        from torchvision import io
+        from PIL import Image
+        test_img = Image.new('RGB', (100, 100), color='red')
+        test_img.save('test.jpg')
+        result = io.read_file("test.jpg")
         """
     )
     obj.run(pytorch_code, ["result"])
