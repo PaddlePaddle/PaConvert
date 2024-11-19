@@ -200,7 +200,19 @@
   },
   "setuptools.setup": {
     "Matcher": "SetUpMatcher",
-    "min_input_args": 0
+    "min_input_args": 0,
+    "args_list": [
+      "name",
+      "version",
+      "author",
+      "url",
+      "description",
+      "packages",
+      "ext_modules",
+      "cmdclass",
+      "install_requires",
+      "entry_points"
+    ]
   },
   "torch.BFloat16Tensor": {
     "Matcher": "TensorMatcher",
