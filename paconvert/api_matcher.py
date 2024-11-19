@@ -3238,19 +3238,26 @@ class LogDetMatcher(BaseMatcher):
 
 class AvgPoolMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "input" in kwargs:
-            kwargs["x"] = kwargs.pop("input")
+        new_kwargs = {}
+        for k in list(kwargs.keys()):
+            if k == "input":
+                new_kwargs["x"] = kwargs.pop(k)
+            else:
+                new_kwargs[k] = kwargs.pop(k)
 
-        if "count_include_pad" in kwargs:
-            kwargs["exclusive"] = "not " + kwargs.pop("count_include_pad")
+        if "count_include_pad" in new_kwargs:
+            new_kwargs["exclusive"] = "not " + new_kwargs.pop("count_include_pad")
         else:
-            kwargs["exclusive"] = "False"
+            new_kwargs["exclusive"] = "False"
+
         API_TEMPLATE = textwrap.dedent(
             """
             {}({})
             """
         )
-        code = API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        code = API_TEMPLATE.format(
+            self.get_paddle_api(), self.kwargs_to_str(new_kwargs)
+        )
 
         return code
 
@@ -4358,13 +4365,18 @@ class Optim2LrSchedulerMatcher(LRSchedulerMatcher):
 class ConstantLRMatcher(LRSchedulerMatcher):
     def generate_code(self, kwargs):
         optim = kwargs["optimizer"]
-        factor = 0.3333333333333333
         total_iters = 5
         if "factor" in kwargs:
             factor = kwargs.pop("factor")
+            kwargs["values"] = "[{}*{}.get_lr(), {}.get_lr()]".format(
+                factor, optim, optim
+            )
+        else:
+            kwargs["values"] = "[{}.get_lr()/3, {}.get_lr()]".format(optim, optim)
+
         if "total_iters" in kwargs:
             total_iters = kwargs.pop("total_iters")
-        kwargs["values"] = "[{}*{}.get_lr(), {}.get_lr()]".format(factor, optim, optim)
+
         kwargs["boundaries"] = "[{}]".format(total_iters)
         return super().generate_code(kwargs)
 
@@ -4847,7 +4859,7 @@ class CanCastMatcher(BaseMatcher):
 class PositiveMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
-        """
+            """
         def positive(x):
             if x.dtype != paddle.bool:
                 return x
@@ -5204,7 +5216,7 @@ class SimpleScalableVarMatcher(BaseMatcher):
         if not (arg_name.startswith("*") and len(arg_name) > 1):
             return None
         return arg_name[1:]
-    
+
     def get_paddle_nodes(self, args, kwargs):
         var_arg_name = self.get_scalable_var()
         dest_var_arg_name = self.api_mapping.get("kwargs_change", {}).get(
@@ -5222,7 +5234,7 @@ class SimpleScalableVarMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
-class ScalableVarMatcher(BaseMatcher): 
+class ScalableVarMatcher(BaseMatcher):
     def get_scalable_var(self):
         args_list = self.api_mapping.get("args_list", [])
         if len(args_list) != 1:

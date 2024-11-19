@@ -3198,7 +3198,7 @@
     ]
   },
   "torch.Tensor.positive": {
-	  "Matcher": "PositiveMatcher"
+    "Matcher": "PositiveMatcher"
   },
   "torch.Tensor.pow": {
     "Matcher": "GenericMatcher",
@@ -3577,7 +3577,7 @@
     }
   },
   "torch.Tensor.scatter_reduce": {
-	  "Matcher": "ScatterReduceMatcher",
+    "Matcher": "ScatterReduceMatcher",
     "paddle_api": "paddle.Tensor.put_along_axis",
     "min_input_args": 3,
     "args_list": [
@@ -7843,6 +7843,16 @@
       "axis": 0
     }
   },
+  "torch.float_power": {
+    "Matcher": "FloatPowerMatcher",
+    "min_input_args": 2,
+    "args_list": [
+      "input",
+      "exponent",
+      "*",
+      "out"
+    ]
+  },
   "torch.floor": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.floor",
@@ -7855,16 +7865,6 @@
     "kwargs_change": {
       "input": "x"
     }
-  },
-  "torch.float_power": {
-    "Matcher": "FloatPowerMatcher",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "exponent",
-      "*",
-      "out"
-    ]
   },
   "torch.floor_divide": {
     "Matcher": "Num2TensorBinaryMatcher",
@@ -14874,11 +14874,6 @@
       "input": "x",
       "dims": "perm"
     }
-  },
-  "torch.pi": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "numpy.pi",
-    "min_input_args": 0
   },
   "torch.pinverse": {
     "Matcher": "GenericMatcher",

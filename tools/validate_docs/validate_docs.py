@@ -236,7 +236,7 @@ def check_mapping_args(paconvert_item, doc_item):
     ]
     if args_list == []:
         assert (
-                len(paconvert_item.get("args_list", [])) == 0
+            len(paconvert_item.get("args_list", [])) == 0
         ), "`args_list` should not be in paconvert_item."
         # assert 'args_mapping' not in doc_item, f'`args_mapping` should not be in doc_item.'
 
@@ -503,7 +503,7 @@ if __name__ == "__main__":
         if len(paconvert_errors) > 0:
             verbose_print(f"ERROR: {len(paconvert_errors)} api paconvert data error.")
             with open(
-                    os.path.join(tool_dir, "paconvert_data_error_list.log"), "w"
+                os.path.join(tool_dir, "paconvert_data_error_list.log"), "w"
             ) as f:
                 for pe in paconvert_errors:
                     print(pe, file=f)

@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import textwrap
+
 import paddle
 from apibase import APIBase
 
@@ -31,9 +32,8 @@ class GRUCellAPIBase(APIBase):
     ):
         assert pytorch_result.input_size == paddle_result.input_size
         assert pytorch_result.hidden_size == paddle_result.hidden_size
-        assert pytorch_result.bias !=  paddle.all(paddle_result.bias_hh==0).item()
-        assert pytorch_result.bias !=  paddle.all(paddle_result.bias_ih == 0).item()
-
+        assert pytorch_result.bias != paddle.all(paddle_result.bias_hh == 0).item()
+        assert pytorch_result.bias != paddle.all(paddle_result.bias_ih == 0).item()
 
 
 obj = GRUCellAPIBase("torch.nn.GRUCell")
