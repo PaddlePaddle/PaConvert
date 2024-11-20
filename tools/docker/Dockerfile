@@ -19,4 +19,3 @@ RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86
 RUN apt-get update && \
     apt-get install -y \
     cudnn9-cuda-11
-
