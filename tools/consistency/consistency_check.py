@@ -40,6 +40,7 @@ def convert_pytorch_code_to_paddle():
 
 
 def _compare_content(actual_dir, expect_dir):
+    result = True
     if os.path.isfile(actual_dir):
         assert os.path.isfile(expect_dir), f"{expect_dir} shoule be a file!"
         with open(actual_dir, "r") as f1, open(expect_dir, "r") as f2:
@@ -68,9 +69,9 @@ def _compare_content(actual_dir, expect_dir):
         for item in os.listdir(actual_dir):
             new_actual_dir = os.path.join(actual_dir, item)
             new_expect_dir = os.path.join(expect_dir, item)
-            _compare_content(new_actual_dir, new_expect_dir)
+            result *= _compare_content(new_actual_dir, new_expect_dir)
 
-    return True
+    return result
 
 
 def compare_code_consistency():
