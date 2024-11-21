@@ -24,7 +24,8 @@ python -m pip uninstall -y paddlepaddle
 python -m pip uninstall -y paddlepaddle-gpu
 python load_lib.py
 rm -rf /root/anaconda3/lib/python*/site-packages/paddlepaddle-0.0.0.dist-info/
-python -m pip install --pre paddlepaddle-gpu -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/
+# python -m pip install --pre paddlepaddle-gpu -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/
+python -m pip install paddlepaddle-gpu==3.0.0.dev20241113 -f https://www.paddlepaddle.org.cn/packages/nightly/cu118/paddlepaddle-gpu/
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
 python ../../paconvert/main.py --in_dir . --out_dir /tmp/paddle --log_level "DEBUG"
