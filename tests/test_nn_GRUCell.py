@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.GRUCell")
+obj = APIBase("torch.nn.GRUCell", is_aux_api=True)
 
 
 def test_case_1():
