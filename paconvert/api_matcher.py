@@ -5791,3 +5791,27 @@ class CudaDeviceMatcher(BaseMatcher):
         code = API_TEMPLATE.format(kwargs["device"])
 
         return code
+
+
+class CellMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            class LSTMCell_1(paddle.nn.LSTMCell):
+                def forward(self, inputs, states = None):
+                    return super().forward(inputs, states)[1]
+
+            class GRUCell_1(paddle.nn.GRUCell):
+                def forward(self, inputs, states = None):
+                    return super().forward(inputs, states)[0]
+
+            class SimpleRNNCell_1(paddle.nn.SimpleRNNCell):
+                def forward(self, inputs, states = None):
+                    return super().forward(inputs, states)[0]
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        return GenericMatcher.generate_code(self, kwargs)
