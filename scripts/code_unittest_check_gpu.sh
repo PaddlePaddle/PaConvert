@@ -29,34 +29,34 @@ python -c "import paddle; print('paddle version information:' , paddle.__version
 
 echo "Checking code unit test by pytest ..."
 python -m pip install pytest-timeout pytest-xdist pytest-rerunfailures
-# python -m pytest -n 1 --reruns=3 ./tests; check_error=$?
-# if [ ${check_error} != 0 ];then
-#     echo "Rerun unit test check." 
-#     python -m pytest --lf  -n 1 ./tests; check_error=$?
-# fi
+python -m pytest -n 1 --reruns=3 ./tests; check_error=$?
+if [ ${check_error} != 0 ];then
+    echo "Rerun unit test check." 
+    python -m pytest --lf  -n 1 ./tests; check_error=$?
+fi
 
-# echo '************************************************************************************'
-# echo "______      _____                          _   "
-# echo "| ___ \    / ____|                        | |  "
-# echo "| |_/ /_ _| |     ___  _ ____   _____ _ __| |_ "
-# echo "|  __/ _  | |    / _ \\| \\_ \\ \\ / / _ \\ \\__| __|"
-# echo "| | | (_| | |___| (_) | | | \\ V /  __/ |  | |_ "
-# echo "\\_|  \\__,_|\\_____\\___/|_| |_|\\_/ \\___|_|   \\__|"
-# echo -e '\n************************************************************************************' 
-# if [ ${check_error} != 0 ];then
-#     echo "Your PR code unit test check failed." 
-#     echo "Please run the following command." 
-#     echo "" 
-#     echo "    python -m pytest tests" 
-#     echo "" 
-#     echo "For more information, please refer to our check guide:" 
-#     echo "https://github.com/PaddlePaddle/PaConvert#readme." 
-# else
-#     echo "Your PR code unit test check passed."
-# fi
-# echo '************************************************************************************'
+echo '************************************************************************************'
+echo "______      _____                          _   "
+echo "| ___ \    / ____|                        | |  "
+echo "| |_/ /_ _| |     ___  _ ____   _____ _ __| |_ "
+echo "|  __/ _  | |    / _ \\| \\_ \\ \\ / / _ \\ \\__| __|"
+echo "| | | (_| | |___| (_) | | | \\ V /  __/ |  | |_ "
+echo "\\_|  \\__,_|\\_____\\___/|_| |_|\\_/ \\___|_|   \\__|"
+echo -e '\n************************************************************************************' 
+if [ ${check_error} != 0 ];then
+    echo "Your PR code unit test check failed." 
+    echo "Please run the following command." 
+    echo "" 
+    echo "    python -m pytest tests" 
+    echo "" 
+    echo "For more information, please refer to our check guide:" 
+    echo "https://github.com/PaddlePaddle/PaConvert#readme." 
+else
+    echo "Your PR code unit test check passed."
+fi
+echo '************************************************************************************'
 
-# exit ${check_error}
+exit ${check_error}
 
                                              
                                              
