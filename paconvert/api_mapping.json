@@ -18076,7 +18076,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.alexnet",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18088,7 +18087,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.densenet121",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18100,7 +18098,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.densenet161",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18112,7 +18109,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.densenet169",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18124,7 +18120,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.densenet201",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18136,7 +18131,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.googlenet",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18148,7 +18142,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.inception_v3",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18160,7 +18153,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.mobilenet_v2",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18172,7 +18164,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.mobilenet_v3_large",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18184,7 +18175,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.mobilenet_v3_small",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18196,7 +18186,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.resnet101",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18208,7 +18197,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.resnet152",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18220,7 +18208,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.resnet18",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18232,7 +18219,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.resnet34",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18244,7 +18230,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.resnet50",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18256,7 +18241,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.resnext101_64x4d",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18268,7 +18252,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.resnext50_32x4d",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18280,7 +18263,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.shufflenet_v2_x0_5",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18292,7 +18274,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.shufflenet_v2_x1_0",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18304,7 +18285,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.shufflenet_v2_x1_5",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18316,7 +18296,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.shufflenet_v2_x2_0",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18328,7 +18307,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.squeezenet1_0",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18340,7 +18318,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.squeezenet1_1",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18352,7 +18329,6 @@
     "Matcher": "VGGMatcher",
     "paddle_api": "paddle.vision.models.vgg11",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18364,7 +18340,6 @@
     "Matcher": "VGGMatcher",
     "paddle_api": "paddle.vision.models.vgg11",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18376,7 +18351,6 @@
     "Matcher": "VGGMatcher",
     "paddle_api": "paddle.vision.models.vgg13",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18388,7 +18362,6 @@
     "Matcher": "VGGMatcher",
     "paddle_api": "paddle.vision.models.vgg13",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18400,7 +18373,6 @@
     "Matcher": "VGGMatcher",
     "paddle_api": "paddle.vision.models.vgg16",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18412,7 +18384,6 @@
     "Matcher": "VGGMatcher",
     "paddle_api": "paddle.vision.models.vgg16",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18424,7 +18395,6 @@
     "Matcher": "VGGMatcher",
     "paddle_api": "paddle.vision.models.vgg19",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18436,7 +18406,6 @@
     "Matcher": "VGGMatcher",
     "paddle_api": "paddle.vision.models.vgg19",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18448,7 +18417,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.wide_resnet101_2",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
@@ -18460,7 +18428,6 @@
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.wide_resnet50_2",
     "args_list": [
-      "*",
       "weights",
       "progress"
     ],
