@@ -10731,8 +10731,8 @@
     "min_input_args": 0
   },
   "torch.nn.GRUCell": {
-    "Matcher": "CellMatcher",
-    "paddle_api": "paddle_aux.GRUCell_1",
+    "Matcher": "GRUCellMatcher",
+    "paddle_api": "paddle.nn.GRUCell",
     "args_list": [
       "input_size",
       "hidden_size",
@@ -10975,8 +10975,8 @@
     "min_input_args": 0
   },
   "torch.nn.LSTMCell": {
-    "Matcher": "CellMatcher",
-    "paddle_api": "paddle_aux.LSTMCell_1",
+    "Matcher": "LSTMCellMatcher",
+    "paddle_api": "paddle.nn.LSTMCell",
     "args_list": [
       "input_size",
       "hidden_size",
@@ -11739,8 +11739,8 @@
     "min_input_args": 3
   },
   "torch.nn.RNNCell": {
-    "Matcher": "CellMatcher",
-    "paddle_api": "paddle_aux.SimpleRNNCell_1",
+    "Matcher": "RNNCellMatcher",
+    "paddle_api": "paddle.SimpleRNNCell",
     "args_list": [
       "input_size",
       "hidden_size",
