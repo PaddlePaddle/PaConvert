@@ -172,8 +172,7 @@ def test_case_8():
     obj.run(pytorch_code, ["result"], atol=1e-05, rtol=1e-06)
 
 
-# if eps != 1e-5, result is different, which has bug
-def _test_case_9():
+def test_case_9():
     pytorch_code = textwrap.dedent(
         """
         import torch.nn as nn

@@ -200,7 +200,19 @@
   },
   "setuptools.setup": {
     "Matcher": "SetUpMatcher",
-    "min_input_args": 0
+    "min_input_args": 0,
+    "args_list": [
+      "name",
+      "version",
+      "author",
+      "url",
+      "description",
+      "packages",
+      "ext_modules",
+      "cmdclass",
+      "install_requires",
+      "entry_points"
+    ]
   },
   "torch.BFloat16Tensor": {
     "Matcher": "TensorMatcher",
@@ -7158,14 +7170,17 @@
     }
   },
   "torch.distributions.lkj_cholesky.LKJCholesky": {
-    "Matcher": "LKJCholeskyMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distribution.LKJCholesky",
     "min_input_args": 1,
     "args_list": [
       "dim",
       "concentration",
       "validate_args"
-    ]
+    ],
+    "kwargs_change": {
+      "validate_args": ""
+    }
   },
   "torch.distributions.poisson.Poisson": {
     "Matcher": "GenericMatcher",

@@ -86,8 +86,9 @@ class BasicTransformer(BaseTransformer):
             ]:
                 super(BasicTransformer, self).generic_visit(node)
             # 7.  x.data.cuda()  / avoid  torch.utils.data.*
-            elif node.value.attr == "data" and "torch.utils" not in self.get_full_attr(
-                node.value
+            elif (
+                node.value.attr == "data"
+                and "torch.utils" not in self.get_full_attr_for_apiname(node.value)
             ):
                 super(BasicTransformer, self).generic_visit(node)
 
@@ -99,7 +100,7 @@ class BasicTransformer(BaseTransformer):
         # only need to convert:
         #   1. x.device...
         #   2. torch.Tensor/torch.nn.Module/torch.add...
-        full_attr = self.get_full_attr(node)
+        full_attr = self.get_full_attr_for_apiname(node)
 
         # Torch Package Attribute, include torch third_party
         #   such as torch.Tensor/torch.nn.Module/torch.add...
@@ -407,7 +408,7 @@ class BasicTransformer(BaseTransformer):
         # Use Postorder traversal
         super(BasicTransformer, self).generic_visit(node)
 
-        full_attr = self.get_full_attr(node.func)
+        full_attr = self.get_full_attr_for_apiname(node.func)
 
         # Torch Package Call, include torch third_party
         #   such as : torch.add(x, y) / torch.add(torch.abs(x), y)
