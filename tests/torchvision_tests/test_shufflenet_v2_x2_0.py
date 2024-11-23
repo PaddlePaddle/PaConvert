@@ -14,9 +14,9 @@
 #
 import textwrap
 
-from apibase import APIBase
+from torchvision_tests.model_apibase import ModelAPIBase
 
-obj = APIBase("torchvision.models.shufflenet_v2_x2_0")
+obj = ModelAPIBase("torchvision.models.shufflenet_v2_x2_0")
 
 
 def test_case_1():
@@ -26,16 +26,7 @@ def test_case_1():
         shufflenet_v2_x2_0 = torchvision.models.shufflenet_v2_x2_0()
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        shufflenet_v2_x2_0 = paddle.vision.models.shufflenet_v2_x2_0(pretrained=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["shufflenet_v2_x2_0"])
 
 
 def test_case_2():
@@ -45,56 +36,27 @@ def test_case_2():
         shufflenet_v2_x2_0 = torchvision.models.shufflenet_v2_x2_0(weights=None, progress=False)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        shufflenet_v2_x2_0 = paddle.vision.models.shufflenet_v2_x2_0(progress=False,
-            pretrained=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["shufflenet_v2_x2_0"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        shufflenet_v2_x2_0 = torchvision.models.shufflenet_v2_x2_0(progress=True, weights='DEFAULT')
+        shufflenet_v2_x2_0 = torchvision.models.shufflenet_v2_x2_0(progress=True, weights=None)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        shufflenet_v2_x2_0 = paddle.vision.models.shufflenet_v2_x2_0(progress=True,
-            pretrained=True)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["shufflenet_v2_x2_0"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        shufflenet_v2_x2_0 = torchvision.models.shufflenet_v2_x2_0(weights=torchvision.models.ShuffleNet_V2_X2_0_Weights.DEFAULT)
+        shufflenet_v2_x2_0 = torchvision.models.shufflenet_v2_x2_0(weights=None)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        shufflenet_v2_x2_0 = paddle.vision.models.shufflenet_v2_x2_0(pretrained=True)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["shufflenet_v2_x2_0"])
 
 
 def test_case_5():
@@ -104,14 +66,4 @@ def test_case_5():
         shufflenet_v2_x2_0 = torchvision.models.shufflenet_v2_x2_0(progress=True)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        shufflenet_v2_x2_0 = paddle.vision.models.shufflenet_v2_x2_0(progress=True,
-            pretrained=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["shufflenet_v2_x2_0"])

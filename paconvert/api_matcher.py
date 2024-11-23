@@ -5732,6 +5732,7 @@ class WeightsMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs["pretrained"] = bool("weights" in kwargs and kwargs["weights"] != "None")
         kwargs.pop("weights", None)
+        kwargs.pop("progress", None)
         API_TEMPLATE = textwrap.dedent(
             """
             {}({})
@@ -5744,6 +5745,7 @@ class VGGMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs["pretrained"] = bool("weights" in kwargs and kwargs["weights"] != "None")
         kwargs["batch_norm"] = bool("bn" in self.torch_api)
+        kwargs.pop("progress", None)
         kwargs.pop("weights", None)
         API_TEMPLATE = textwrap.dedent(
             """

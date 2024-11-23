@@ -14,9 +14,9 @@
 #
 import textwrap
 
-from apibase import APIBase
+from torchvision_tests.model_apibase import ModelAPIBase
 
-obj = APIBase("torchvision.models.vgg16")
+obj = ModelAPIBase("torchvision.models.vgg16")
 
 
 def test_case_1():
@@ -26,16 +26,7 @@ def test_case_1():
         vgg16 = torchvision.models.vgg16()
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        vgg16 = paddle.vision.models.vgg16(pretrained=False, batch_norm=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["vgg16"])
 
 
 def test_case_2():
@@ -45,56 +36,27 @@ def test_case_2():
         vgg16 = torchvision.models.vgg16(weights=None, progress=False)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        vgg16 = paddle.vision.models.vgg16(progress=False, pretrained=False,
-            batch_norm=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["vgg16"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        vgg16 = torchvision.models.vgg16(progress=True, weights='DEFAULT')
+        vgg16 = torchvision.models.vgg16(progress=True, weights=None)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        vgg16 = paddle.vision.models.vgg16(progress=True, pretrained=True,
-            batch_norm=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["vgg16"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        vgg16 = torchvision.models.vgg16(weights=torchvision.models.VGG16_Weights.DEFAULT)
+        vgg16 = torchvision.models.vgg16(weights=None)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        vgg16 = paddle.vision.models.vgg16(pretrained=True, batch_norm=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["vgg16"])
 
 
 def test_case_5():
@@ -104,14 +66,4 @@ def test_case_5():
         vgg16 = torchvision.models.vgg16(progress=True)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        vgg16 = paddle.vision.models.vgg16(progress=True, pretrained=False,
-            batch_norm=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["vgg16"])

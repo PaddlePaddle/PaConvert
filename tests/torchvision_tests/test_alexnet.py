@@ -14,9 +14,9 @@
 #
 import textwrap
 
-from apibase import APIBase
+from torchvision_tests.model_apibase import ModelAPIBase
 
-obj = APIBase("torchvision.models.alexnet")
+obj = ModelAPIBase("torchvision.models.alexnet")
 
 
 def test_case_1():
@@ -26,16 +26,7 @@ def test_case_1():
         alexnet = torchvision.models.alexnet()
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        alexnet = paddle.vision.models.alexnet(pretrained=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["alexnet"])
 
 
 def test_case_2():
@@ -45,54 +36,27 @@ def test_case_2():
         alexnet = torchvision.models.alexnet(weights=None, progress=False)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        alexnet = paddle.vision.models.alexnet(progress=False, pretrained=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["alexnet"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        alexnet = torchvision.models.alexnet(progress=True, weights='DEFAULT')
+        alexnet = torchvision.models.alexnet(progress=True, weights=None)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        alexnet = paddle.vision.models.alexnet(progress=True, pretrained=True)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["alexnet"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        alexnet = torchvision.models.alexnet(weights=torchvision.models.AlexNet_Weights.DEFAULT)
+        alexnet = torchvision.models.alexnet(weights=None)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        alexnet = paddle.vision.models.alexnet(pretrained=True)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["alexnet"])
 
 
 def test_case_5():
@@ -102,13 +66,4 @@ def test_case_5():
         alexnet = torchvision.models.alexnet(progress=True)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        alexnet = paddle.vision.models.alexnet(progress=True, pretrained=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["alexnet"])

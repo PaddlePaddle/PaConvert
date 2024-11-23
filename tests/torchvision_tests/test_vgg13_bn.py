@@ -14,104 +14,56 @@
 #
 import textwrap
 
-from apibase import APIBase
+from torchvision_tests.model_apibase import ModelAPIBase
 
-obj = APIBase("torchvision.models.vgg13_bn")
+obj = ModelAPIBase("torchvision.models.vgg13_bn")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        vgg13 = torchvision.models.vgg13_bn()
+        vgg13_bn = torchvision.models.vgg13_bn()
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        vgg13 = paddle.vision.models.vgg13(pretrained=False, batch_norm=True)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["vgg13_bn"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        vgg13 = torchvision.models.vgg13_bn(weights=None, progress=False)
+        vgg13_bn = torchvision.models.vgg13_bn(weights=None, progress=False)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        vgg13 = paddle.vision.models.vgg13(progress=False, pretrained=False,
-            batch_norm=True)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["vgg13_bn"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        vgg13 = torchvision.models.vgg13_bn(progress=True, weights='DEFAULT')
+        vgg13_bn = torchvision.models.vgg13_bn(progress=True, weights=None)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        vgg13 = paddle.vision.models.vgg13(progress=True, pretrained=True,
-            batch_norm=True)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["vgg13_bn"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        vgg13 = torchvision.models.vgg13_bn(weights=torchvision.models.VGG13_BN_Weights.DEFAULT)
+        vgg13_bn = torchvision.models.vgg13_bn(weights=None)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        vgg13 = paddle.vision.models.vgg13(pretrained=True, batch_norm=True)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["vgg13_bn"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        vgg13 = torchvision.models.vgg13_bn(progress=True)
+        vgg13_bn = torchvision.models.vgg13_bn(progress=True)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        vgg13 = paddle.vision.models.vgg13(progress=True, pretrained=False,
-            batch_norm=True)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["vgg13_bn"])

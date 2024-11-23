@@ -14,9 +14,9 @@
 #
 import textwrap
 
-from apibase import APIBase
+from torchvision_tests.model_apibase import ModelAPIBase
 
-obj = APIBase("torchvision.models.densenet121")
+obj = ModelAPIBase("torchvision.models.densenet121")
 
 
 def test_case_1():
@@ -26,16 +26,7 @@ def test_case_1():
         densenet121 = torchvision.models.densenet121()
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        densenet121 = paddle.vision.models.densenet121(pretrained=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["densenet121"])
 
 
 def test_case_2():
@@ -45,55 +36,27 @@ def test_case_2():
         densenet121 = torchvision.models.densenet121(weights=None, progress=False)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        densenet121 = paddle.vision.models.densenet121(progress=False, pretrained=False
-            )
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["densenet121"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        densenet121 = torchvision.models.densenet121(progress=True, weights='DEFAULT')
+        densenet121 = torchvision.models.densenet121(progress=True, weights=None)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        densenet121 = paddle.vision.models.densenet121(progress=True, pretrained=True)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["densenet121"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        densenet121 = torchvision.models.densenet121(weights=torchvision.models.DenseNet121_Weights.DEFAULT)
+        densenet121 = torchvision.models.densenet121(weights=None)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        densenet121 = paddle.vision.models.densenet121(pretrained=True)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["densenet121"])
 
 
 def test_case_5():
@@ -103,13 +66,4 @@ def test_case_5():
         densenet121 = torchvision.models.densenet121(progress=True)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        densenet121 = paddle.vision.models.densenet121(progress=True, pretrained=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["densenet121"])

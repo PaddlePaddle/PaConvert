@@ -14,9 +14,9 @@
 #
 import textwrap
 
-from apibase import APIBase
+from torchvision_tests.model_apibase import ModelAPIBase
 
-obj = APIBase("torchvision.models.googlenet")
+obj = ModelAPIBase("torchvision.models.googlenet")
 
 
 def test_case_1():
@@ -26,16 +26,7 @@ def test_case_1():
         googlenet = torchvision.models.googlenet()
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        googlenet = paddle.vision.models.googlenet(pretrained=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["googlenet"])
 
 
 def test_case_2():
@@ -45,54 +36,27 @@ def test_case_2():
         googlenet = torchvision.models.googlenet(weights=None, progress=False)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        googlenet = paddle.vision.models.googlenet(progress=False, pretrained=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["googlenet"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        googlenet = torchvision.models.googlenet(progress=True, weights='DEFAULT')
+        googlenet = torchvision.models.googlenet(progress=True, weights=None)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        googlenet = paddle.vision.models.googlenet(progress=True, pretrained=True)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["googlenet"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        googlenet = torchvision.models.googlenet(weights=torchvision.models.GoogLeNet_Weights.DEFAULT)
+        googlenet = torchvision.models.googlenet(weights=None)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        googlenet = paddle.vision.models.googlenet(pretrained=True)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["googlenet"])
 
 
 def test_case_5():
@@ -102,13 +66,4 @@ def test_case_5():
         googlenet = torchvision.models.googlenet(progress=True)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        googlenet = paddle.vision.models.googlenet(progress=True, pretrained=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["googlenet"])

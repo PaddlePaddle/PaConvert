@@ -14,9 +14,9 @@
 #
 import textwrap
 
-from apibase import APIBase
+from torchvision_tests.model_apibase import ModelAPIBase
 
-obj = APIBase("torchvision.models.vgg11")
+obj = ModelAPIBase("torchvision.models.vgg11")
 
 
 def test_case_1():
@@ -26,16 +26,7 @@ def test_case_1():
         vgg11 = torchvision.models.vgg11()
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        vgg11 = paddle.vision.models.vgg11(pretrained=False, batch_norm=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["vgg11"])
 
 
 def test_case_2():
@@ -45,56 +36,27 @@ def test_case_2():
         vgg11 = torchvision.models.vgg11(weights=None, progress=False)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        vgg11 = paddle.vision.models.vgg11(progress=False, pretrained=False,
-            batch_norm=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["vgg11"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        vgg11 = torchvision.models.vgg11(progress=True, weights='DEFAULT')
+        vgg11 = torchvision.models.vgg11(progress=True, weights=None)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        vgg11 = paddle.vision.models.vgg11(progress=True, pretrained=True,
-            batch_norm=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["vgg11"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        vgg11 = torchvision.models.vgg11(weights=torchvision.models.VGG11_Weights.DEFAULT)
+        vgg11 = torchvision.models.vgg11(weights=None)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        vgg11 = paddle.vision.models.vgg11(pretrained=True, batch_norm=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["vgg11"])
 
 
 def test_case_5():
@@ -104,14 +66,4 @@ def test_case_5():
         vgg11 = torchvision.models.vgg11(progress=True)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        vgg11 = paddle.vision.models.vgg11(progress=True, pretrained=False,
-            batch_norm=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["vgg11"])

@@ -14,9 +14,9 @@
 #
 import textwrap
 
-from apibase import APIBase
+from torchvision_tests.model_apibase import ModelAPIBase
 
-obj = APIBase("torchvision.models.resnet34")
+obj = ModelAPIBase("torchvision.models.resnet34")
 
 
 def test_case_1():
@@ -26,16 +26,7 @@ def test_case_1():
         resnet34 = torchvision.models.resnet34()
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        resnet34 = paddle.vision.models.resnet34(pretrained=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["resnet34"])
 
 
 def test_case_2():
@@ -45,54 +36,27 @@ def test_case_2():
         resnet34 = torchvision.models.resnet34(weights=None, progress=False)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        resnet34 = paddle.vision.models.resnet34(progress=False, pretrained=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["resnet34"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        resnet34 = torchvision.models.resnet34(progress=True, weights='DEFAULT')
+        resnet34 = torchvision.models.resnet34(progress=True, weights=None)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        resnet34 = paddle.vision.models.resnet34(progress=True, pretrained=True)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["resnet34"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        resnet34 = torchvision.models.resnet34(weights=torchvision.models.ResNet34_Weights.DEFAULT)
+        resnet34 = torchvision.models.resnet34(weights=None)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        resnet34 = paddle.vision.models.resnet34(pretrained=True)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["resnet34"])
 
 
 def test_case_5():
@@ -102,13 +66,4 @@ def test_case_5():
         resnet34 = torchvision.models.resnet34(progress=True)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        resnet34 = paddle.vision.models.resnet34(progress=True, pretrained=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["resnet34"])

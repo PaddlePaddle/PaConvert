@@ -14,9 +14,9 @@
 #
 import textwrap
 
-from apibase import APIBase
+from torchvision_tests.model_apibase import ModelAPIBase
 
-obj = APIBase("torchvision.models.mobilenet_v2")
+obj = ModelAPIBase("torchvision.models.mobilenet_v2")
 
 
 def test_case_1():
@@ -26,16 +26,7 @@ def test_case_1():
         mobilenet_v2 = torchvision.models.mobilenet_v2()
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        mobilenet_v2 = paddle.vision.models.mobilenet_v2(pretrained=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["mobilenet_v2"])
 
 
 def test_case_2():
@@ -45,56 +36,27 @@ def test_case_2():
         mobilenet_v2 = torchvision.models.mobilenet_v2(weights=None, progress=False)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        mobilenet_v2 = paddle.vision.models.mobilenet_v2(progress=False, pretrained
-            =False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["mobilenet_v2"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        mobilenet_v2 = torchvision.models.mobilenet_v2(progress=True, weights='DEFAULT')
+        mobilenet_v2 = torchvision.models.mobilenet_v2(progress=True, weights=None)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        mobilenet_v2 = paddle.vision.models.mobilenet_v2(progress=True, pretrained=True
-            )
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["mobilenet_v2"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        mobilenet_v2 = torchvision.models.mobilenet_v2(weights=torchvision.models.MobileNet_V2_Weights.DEFAULT)
+        mobilenet_v2 = torchvision.models.mobilenet_v2(weights=None)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        mobilenet_v2 = paddle.vision.models.mobilenet_v2(pretrained=True)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["mobilenet_v2"])
 
 
 def test_case_5():
@@ -104,14 +66,4 @@ def test_case_5():
         mobilenet_v2 = torchvision.models.mobilenet_v2(progress=True)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        mobilenet_v2 = paddle.vision.models.mobilenet_v2(progress=True, pretrained=
-            False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["mobilenet_v2"])

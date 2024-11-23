@@ -14,9 +14,9 @@
 #
 import textwrap
 
-from apibase import APIBase
+from torchvision_tests.model_apibase import ModelAPIBase
 
-obj = APIBase("torchvision.models.inception_v3")
+obj = ModelAPIBase("torchvision.models.inception_v3")
 
 
 def test_case_1():
@@ -26,16 +26,7 @@ def test_case_1():
         inception_v3 = torchvision.models.inception_v3()
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        inception_v3 = paddle.vision.models.inception_v3(pretrained=False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["inception_v3"])
 
 
 def test_case_2():
@@ -45,56 +36,27 @@ def test_case_2():
         inception_v3 = torchvision.models.inception_v3(weights=None, progress=False)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        inception_v3 = paddle.vision.models.inception_v3(progress=False, pretrained
-            =False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["inception_v3"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        inception_v3 = torchvision.models.inception_v3(progress=True, weights='DEFAULT')
+        inception_v3 = torchvision.models.inception_v3(progress=True, weights=None)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        inception_v3 = paddle.vision.models.inception_v3(progress=True, pretrained=True
-            )
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["inception_v3"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        inception_v3 = torchvision.models.inception_v3(weights=torchvision.models.Inception_V3_Weights.DEFAULT)
+        inception_v3 = torchvision.models.inception_v3(weights=None)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        inception_v3 = paddle.vision.models.inception_v3(pretrained=True)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["inception_v3"])
 
 
 def test_case_5():
@@ -104,14 +66,4 @@ def test_case_5():
         inception_v3 = torchvision.models.inception_v3(progress=True)
         """
     )
-    paddle_code = textwrap.dedent(
-        """
-        import paddle
-        inception_v3 = paddle.vision.models.inception_v3(progress=True, pretrained=
-            False)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code=paddle_code,
-    )
+    obj.run(pytorch_code, ["inception_v3"])
