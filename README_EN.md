@@ -5,7 +5,7 @@ The principle is to use Python syntax tree analysis to generate the source code 
 
 The conversion logic is static code scanning. Keep the style and structure of the original code unchanged, only convert the Python API, while other Python codes remain unchanged.
 
-Note that only Python native APIs can be converted. For other third-party libraries (such as mmdet, mmcv, torchvision, etc.) encapsulated based on the Pytorch API cannot be converted, and these APIs rely on manual conversion. It is recommended to copy this part of code and then use tools to convert it.
+Note that only Python native APIs can be converted. For other third-party libraries (such as mmdet, mmcv, etc.) encapsulated based on the Pytorch API cannot be converted, and these APIs rely on manual conversion. It is recommended to copy this part of code and then use tools to convert it.
 
 The conversion adopts a non-inplace method, convert the original project files one by one to the folder specified by `out_dir`. And the original file will not be changed to facilitate comparison and debugging before and after:
 
