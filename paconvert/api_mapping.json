@@ -17692,6 +17692,749 @@
       "path": "filename"
     }
   },
+  "torchvision.models.AlexNet_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.AlexNet_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.DenseNet121_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.DenseNet121_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.DenseNet161_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.DenseNet161_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.DenseNet169_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.DenseNet169_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.DenseNet201_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.DenseNet201_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.GoogLeNet_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.GoogLeNet_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.Inception_V3_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.Inception_V3_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.MobileNet_V2_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.MobileNet_V2_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.MobileNet_V2_Weights.IMAGENET1K_V2": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V2'",
+    "min_input_args": 0
+  },
+  "torchvision.models.MobileNet_V3_Large_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.MobileNet_V3_Large_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.MobileNet_V3_Large_Weights.IMAGENET1K_V2": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V2'",
+    "min_input_args": 0
+  },
+  "torchvision.models.MobileNet_V3_Small_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.MobileNet_V3_Small_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.MobileNet_V3_Small_Weights.IMAGENET1K_V2": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V2'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ResNeXt50_32X4D_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ResNeXt50_32X4D_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ResNeXt50_32X4D_Weights.IMAGENET1K_V2": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V2'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ResNet101_64x4d_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ResNet101_64x4d_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ResNet101_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ResNet101_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ResNet101_Weights.IMAGENET1K_V2": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V2'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ResNet152_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ResNet152_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ResNet152_Weights.IMAGENET1K_V2": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V2'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ResNet18_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ResNet18_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ResNet34_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ResNet34_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ResNet50_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ResNet50_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ResNet50_Weights.IMAGENET1K_V2": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V2'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ShuffleNet_V2_X0_5_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ShuffleNet_V2_X0_5_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ShuffleNet_V2_X1_0_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ShuffleNet_V2_X1_0_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ShuffleNet_V2_X1_5_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ShuffleNet_V2_X1_5_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ShuffleNet_V2_X2_0_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.ShuffleNet_V2_X2_0_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.SqueezeNet1_0_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.SqueezeNet1_0_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.SqueezeNet1_1_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.SqueezeNet1_1_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.VGG11_BN_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.VGG11_BN_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.VGG11_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.VGG11_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.VGG13_BN_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.VGG13_BN_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.VGG13_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.VGG13_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.VGG16_BN_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.VGG16_BN_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.VGG16_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.VGG16_Weights.IMAGENET1K_FEATURES": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_FEATURES'",
+    "min_input_args": 0
+  },
+  "torchvision.models.VGG16_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.VGG19_BN_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.VGG19_BN_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.VGG19_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.VGG19_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.Wide_ResNet101_2_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.Wide_ResNet101_2_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.Wide_ResNet101_2_Weights.IMAGENET1K_V2": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V2'",
+    "min_input_args": 0
+  },
+  "torchvision.models.Wide_ResNet50_2_Weights.DEFAULT": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'DEFAULT'",
+    "min_input_args": 0
+  },
+  "torchvision.models.Wide_ResNet50_2_Weights.IMAGENET1K_V1": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V1'",
+    "min_input_args": 0
+  },
+  "torchvision.models.Wide_ResNet50_2_Weights.IMAGENET1K_V2": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'IMAGENET1K_V2'",
+    "min_input_args": 0
+  },
+  "torchvision.models.alexnet": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.alexnet",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.densenet121": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.densenet121",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.densenet161": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.densenet161",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.densenet169": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.densenet169",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.densenet201": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.densenet201",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.googlenet": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.googlenet",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.inception_v3": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.inception_v3",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.mobilenet_v2": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.mobilenet_v2",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.mobilenet_v3_large": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.mobilenet_v3_large",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.mobilenet_v3_small": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.mobilenet_v3_small",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.resnet101": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.resnet101",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.resnet152": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.resnet152",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.resnet18": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.resnet18",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.resnet34": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.resnet34",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.resnet50": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.resnet50",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.resnext101_64x4d": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.resnext101_64x4d",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.resnext50_32x4d": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.resnext50_32x4d",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.shufflenet_v2_x0_5": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.shufflenet_v2_x0_5",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.shufflenet_v2_x1_0": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.shufflenet_v2_x1_0",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.shufflenet_v2_x1_5": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.shufflenet_v2_x1_5",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.shufflenet_v2_x2_0": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.shufflenet_v2_x2_0",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.squeezenet1_0": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.squeezenet1_0",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.squeezenet1_1": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.squeezenet1_1",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.vgg11": {
+    "Matcher": "VGGMatcher",
+    "paddle_api": "paddle.vision.models.vgg11",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.vgg11_bn": {
+    "Matcher": "VGGMatcher",
+    "paddle_api": "paddle.vision.models.vgg11",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.vgg13": {
+    "Matcher": "VGGMatcher",
+    "paddle_api": "paddle.vision.models.vgg13",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.vgg13_bn": {
+    "Matcher": "VGGMatcher",
+    "paddle_api": "paddle.vision.models.vgg13",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.vgg16": {
+    "Matcher": "VGGMatcher",
+    "paddle_api": "paddle.vision.models.vgg16",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.vgg16_bn": {
+    "Matcher": "VGGMatcher",
+    "paddle_api": "paddle.vision.models.vgg16",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.vgg19": {
+    "Matcher": "VGGMatcher",
+    "paddle_api": "paddle.vision.models.vgg19",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.vgg19_bn": {
+    "Matcher": "VGGMatcher",
+    "paddle_api": "paddle.vision.models.vgg19",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.wide_resnet101_2": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.wide_resnet101_2",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
+  "torchvision.models.wide_resnet50_2": {
+    "Matcher": "WeightsMatcher",
+    "paddle_api": "paddle.vision.models.wide_resnet50_2",
+    "args_list": [
+      "weights",
+      "progress"
+    ],
+    "kwargs_change": {
+      "progress": ""
+    }
+  },
   "torchvision.ops.DeformConv2d": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.vision.ops.DeformConv2D",

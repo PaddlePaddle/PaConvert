@@ -19,6 +19,9 @@ DOWNLOAD_DATASET_IF="OFF"
 cd /workspace/$1/PaConvert/
 TORCH_PROJECT_PATH=$2
 
+python -c "import torch; print('torch version information:' ,torch.__version__)"
+python -c "import torchvision; print('torchvision version information:' ,torchvision.__version__)"
+
 echo "Installing dependencies"
 python -m pip install pandas openpyxl
 

@@ -5728,6 +5728,33 @@ class BoxesConvertMatcher(BaseMatcher):
         return code
 
 
+class WeightsMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["pretrained"] = bool("weights" in kwargs and kwargs["weights"] != "None")
+        kwargs.pop("weights", None)
+        kwargs.pop("progress", None)
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}({})
+            """
+        )
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class VGGMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["pretrained"] = bool("weights" in kwargs and kwargs["weights"] != "None")
+        kwargs["batch_norm"] = bool("bn" in self.torch_api)
+        kwargs.pop("progress", None)
+        kwargs.pop("weights", None)
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}({})
+            """
+        )
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
 class CudaDeviceMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
