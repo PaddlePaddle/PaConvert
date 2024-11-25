@@ -115,3 +115,18 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[[-0.5743, 0.4889, -0.0878, 0.4210, -0.0844],
+                                [0.3614, 0.8458, -0.6152, 0.6894, 0.2927],
+                                [-0.0087, 0.1098, 0.1783, -0.6953, 0.5519],
+                                [0.3789, -0.0560, -0.4090, -0.1070, -1.0139],
+                                [0.9204, 1.0817, -2.6126, 0.4244, 0.3272]]])
+        result = torch.nn.functional.lp_pool1d(input=input, kernel_size=3, stride=2, ceil_mode=True, norm_type=4)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

@@ -11955,7 +11955,7 @@
       "dim": "axis"
     },
     "paddle_default_kwargs": {
-      "axis": 0
+      "axis": null
     }
   },
   "torch.nn.Softmax2d": {
@@ -11976,7 +11976,7 @@
       "dim": "axis"
     },
     "paddle_default_kwargs": {
-      "axis": 0
+      "axis": null
     },
     "min_input_args": 0
   },

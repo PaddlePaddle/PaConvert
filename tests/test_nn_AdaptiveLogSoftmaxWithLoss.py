@@ -81,3 +81,19 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["out", "loss"], check_value=False)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        input = torch.tensor([[ 0.9368637 , -0.0361056 , -0.98917043,  0.06605113,  1.5254455 ],
+                            [-1.0518035 , -1.0024613 ,  0.18699688, -0.35807893,  0.25628588],
+                            [-0.900478  , -0.41495147,  0.84707606, -1.7883497 ,  1.3243382 ]])
+        target = torch.tensor([1, 1, 1])
+        asfm = torch.nn.AdaptiveLogSoftmaxWithLoss(n_classes=8, in_features=5, div_value=3.8, cutoffs=[5], head_bias=True)
+        out, loss = asfm(input,target)
+        """
+    )
+    obj.run(pytorch_code, ["out", "loss"], check_value=False)
