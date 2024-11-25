@@ -84,9 +84,9 @@ class Converter:
                 exclude_dir_list.append(os.path.abspath(item))
 
         if out_dir.endswith(".py"):
-            AuxFileHelper(os.path.dirname(out_dir) + "/utils/paddle_aux.py")
+            AuxFileHelper(os.path.dirname(out_dir) + "/utils.py", is_dir_mode=False)
         else:
-            AuxFileHelper(out_dir + "/utils/paddle_aux.py")
+            AuxFileHelper(out_dir + "/utils.py", is_dir_mode=True)
 
         self.transfer_dir(in_dir, out_dir, exclude_dir_list)
         if self.show_unsupport:
