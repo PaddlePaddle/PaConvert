@@ -102,5 +102,5 @@ add_to_dict(
 
 
 # this part is about custom op
-cur_dir = os.path.dirname(__file__)
-add_to_dict(os.path.join(cur_dir, "custom_op/torch_code/"), os.path.join(cur_dir, "custom_op/paddle_code/"))
+# cur_dir = os.path.dirname(__file__)
+# add_to_dict(os.path.join(cur_dir, "custom_op/torch_code/"), os.path.join(cur_dir, "custom_op/paddle_code/"))
