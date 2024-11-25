@@ -14,17 +14,7 @@
 
 set +x
 
-export FLAGS_set_to_1d=0
-
 cd /workspace/$1/PaConvert/
-
-python -m pip install --upgrade pip
-echo "Insalling develop cpu version paddle"
-python -m pip uninstall -y paddlepaddle
-python -m pip uninstall -y paddlepaddle-gpu
-rm -rf /root/anaconda3/lib/python*/site-packages/paddlepaddle-0.0.0.dist-info/
-python -m pip install --pre paddlepaddle -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/
-python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
 echo "start pipline testing..."
 echo '*******************start generating source and wheel distribution*******************'

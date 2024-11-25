@@ -859,35 +859,6 @@ class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
         return API_TEMPLATE
 
 
-class LKJCholeskyMatcher(BaseMatcher):
-    def generate_aux_code(self):
-        API_TEMPLATE = textwrap.dedent(
-            """
-            import paddle
-            class LKJCholesky_Aux_Class:
-                def __init__(self, dim, concentration, sample_method='onion'):
-                    self.lkj = paddle.distribution.LKJCholesky(dim, concentration, sample_method)
-                def sample(self):
-                    return paddle.unsqueeze(self.lkj.sample(), axis=0)
-            """
-        )
-
-        return API_TEMPLATE
-
-    def generate_code(self, kwargs):
-        self.write_aux_code()
-        if "validate_args" in kwargs:
-            del kwargs["validate_args"]
-        kwargs = self.kwargs_to_str(kwargs)
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle_aux.LKJCholesky_Aux_Class({})
-            """
-        )
-        code = API_TEMPLATE.format(kwargs)
-        return code
-
-
 class Is_InferenceMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" not in kwargs:
@@ -3238,19 +3209,26 @@ class LogDetMatcher(BaseMatcher):
 
 class AvgPoolMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "input" in kwargs:
-            kwargs["x"] = kwargs.pop("input")
+        new_kwargs = {}
+        for k in list(kwargs.keys()):
+            if k == "input":
+                new_kwargs["x"] = kwargs.pop(k)
+            else:
+                new_kwargs[k] = kwargs.pop(k)
 
-        if "count_include_pad" in kwargs:
-            kwargs["exclusive"] = "not " + kwargs.pop("count_include_pad")
+        if "count_include_pad" in new_kwargs:
+            new_kwargs["exclusive"] = "not " + new_kwargs.pop("count_include_pad")
         else:
-            kwargs["exclusive"] = "False"
+            new_kwargs["exclusive"] = "False"
+
         API_TEMPLATE = textwrap.dedent(
             """
             {}({})
             """
         )
-        code = API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        code = API_TEMPLATE.format(
+            self.get_paddle_api(), self.kwargs_to_str(new_kwargs)
+        )
 
         return code
 
@@ -4388,13 +4366,18 @@ class Optim2LrSchedulerMatcher(LRSchedulerMatcher):
 class ConstantLRMatcher(LRSchedulerMatcher):
     def generate_code(self, kwargs):
         optim = kwargs["optimizer"]
-        factor = 0.3333333333333333
         total_iters = 5
         if "factor" in kwargs:
             factor = kwargs.pop("factor")
+            kwargs["values"] = "[{}*{}.get_lr(), {}.get_lr()]".format(
+                factor, optim, optim
+            )
+        else:
+            kwargs["values"] = "[{}.get_lr()/3, {}.get_lr()]".format(optim, optim)
+
         if "total_iters" in kwargs:
             total_iters = kwargs.pop("total_iters")
-        kwargs["values"] = "[{}*{}.get_lr(), {}.get_lr()]".format(factor, optim, optim)
+
         kwargs["boundaries"] = "[{}]".format(total_iters)
         return super().generate_code(kwargs)
 
@@ -5787,6 +5770,33 @@ class BoxesConvertMatcher(BaseMatcher):
         return code
 
 
+class WeightsMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["pretrained"] = bool("weights" in kwargs and kwargs["weights"] != "None")
+        kwargs.pop("weights", None)
+        kwargs.pop("progress", None)
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}({})
+            """
+        )
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
+class VGGMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["pretrained"] = bool("weights" in kwargs and kwargs["weights"] != "None")
+        kwargs["batch_norm"] = bool("bn" in self.torch_api)
+        kwargs.pop("progress", None)
+        kwargs.pop("weights", None)
+        API_TEMPLATE = textwrap.dedent(
+            """
+            {}({})
+            """
+        )
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+
+
 class CudaDeviceMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -5809,3 +5819,54 @@ class CudaDeviceMatcher(BaseMatcher):
         code = API_TEMPLATE.format(kwargs["device"])
 
         return code
+
+
+class GRUCellMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            class GRUCell(paddle.nn.GRUCell):
+                def forward(self, inputs, states = None):
+                    return super().forward(inputs, states)[0]
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        self.set_paddle_api("paddle_aux.GRUCell")
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class LSTMCellMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            class LSTMCell(paddle.nn.LSTMCell):
+                def forward(self, inputs, states = None):
+                    return super().forward(inputs, states)[1]
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        self.set_paddle_api("paddle_aux.LSTMCell")
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class RNNCellMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            class SimpleRNNCell(paddle.nn.SimpleRNNCell):
+                def forward(self, inputs, states = None):
+                    return super().forward(inputs, states)[0]
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.write_aux_code()
+        self.set_paddle_api("paddle_aux.SimpleRNNCell")
+        return GenericMatcher.generate_code(self, kwargs)

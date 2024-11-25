@@ -190,6 +190,10 @@
   "torch.optim.Optimizer.state_dict": {
     "Matcher": "UnchangeMatcher"
   },
+  "torch.pi": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "numpy.pi"
+  },
   "torch.short": {
     "Matcher": "GenericMatcher",
     "paddle_api": "'int16'"

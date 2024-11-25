@@ -14,16 +14,13 @@
 
 set +x
 
-export FLAGS_set_to_1d=0
-
 cd /workspace/$1/PaConvert/
 
 # pre-commit multi-thread running.
 echo "Checking code style by pre-commit ..."
-python tests/distributed/load_lib.py
 pip install pre-commit==2.17.0
 pre-commit install
-pre-commit run --all-files;check_error=$?
+pre-commit run --all-files -v;check_error=$?
 echo '************************************************************************************'
 echo "______      _____                          _   "
 echo "| ___ \    / ____|                        | |  "

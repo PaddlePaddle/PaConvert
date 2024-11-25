@@ -197,10 +197,18 @@ class BaseTransformer(ast.NodeTransformer):
         return True
 
     def get_full_attr(self, node):
+        if isinstance(node, ast.Attribute):
+            return self.get_full_attr(node.value) + "." + node.attr
+        elif isinstance(node, ast.Name):
+            return node.id
+        else:
+            return "None"
+
+    def get_full_attr_for_apiname(self, node):
         if len(self.imports_map[self.file]["torch_packages"]) == 0:
             return "NonTorchClass"
         if isinstance(node, ast.Attribute):
-            return self.get_full_attr(node.value) + "." + node.attr
+            return self.get_full_attr_for_apiname(node.value) + "." + node.attr
         # x.abs() -> 'x'
         elif isinstance(node, ast.Name):
             # np.array(1.) -> 'np'
@@ -239,7 +247,7 @@ class BaseTransformer(ast.NodeTransformer):
             return "NonTorchClass"
 
     def get_full_api_from_node(self, node):
-        full_attr = self.get_full_attr(node)
+        full_attr = self.get_full_attr_for_apiname(node)
         attr_list = full_attr.split(".")
         old_module = attr_list[0]
         if old_module in self.imports_map[self.file]:
