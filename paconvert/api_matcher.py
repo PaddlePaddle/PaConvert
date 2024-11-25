@@ -5806,10 +5806,8 @@ class GRUCellMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.write_aux_code()
+        self.set_paddle_api("paddle_aux.GRUCell")
         return GenericMatcher.generate_code(self, kwargs)
-
-    def get_paddle_api(self):
-        return "paddle_aux.GRUCell"
 
 
 class LSTMCellMatcher(BaseMatcher):
@@ -5825,10 +5823,8 @@ class LSTMCellMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.write_aux_code()
+        self.set_paddle_api("paddle_aux.LSTMCell")
         return GenericMatcher.generate_code(self, kwargs)
-
-    def get_paddle_api(self):
-        return "paddle_aux.LSTMCell"
 
 
 class RNNCellMatcher(BaseMatcher):
@@ -5844,7 +5840,5 @@ class RNNCellMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.write_aux_code()
+        self.set_paddle_api("paddle_aux.SimpleRNNCell")
         return GenericMatcher.generate_code(self, kwargs)
-
-    def get_paddle_api(self):
-        return "paddle_aux.SimpleRNNCell"
