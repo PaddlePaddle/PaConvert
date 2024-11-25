@@ -5642,6 +5642,7 @@
     "args_list": [
       "input",
       "other",
+      "*",
       "out"
     ],
     "kwargs_change": {
@@ -5870,7 +5871,10 @@
     "min_input_args": 1,
     "args_list": [
       "device"
-    ]
+    ],
+    "kwargs_change": {
+      "device": "id"
+    }
   },
   "torch.cuda.device_count": {
     "Matcher": "GenericMatcher",
@@ -6395,6 +6399,9 @@
   "torch.distributed.get_world_size": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.get_world_size",
+    "args_list": [
+      "group"
+    ],
     "min_input_args": 0
   },
   "torch.distributed.init_process_group": {
@@ -6547,7 +6554,10 @@
       "args",
       "kwargs",
       "timeout"
-    ]
+    ],
+    "kwargs_change": {
+      "func": "fn"
+    }
   },
   "torch.distributed.rpc.shutdown": {
     "Matcher": "GenericMatcher",
@@ -7277,6 +7287,7 @@
     "min_input_args": 1,
     "args_list": [
       "tensors",
+      "*",
       "out"
     ],
     "kwargs_change": {
@@ -8818,7 +8829,10 @@
       "upper",
       "check_errors",
       "out"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
   },
   "torch.linalg.cond": {
     "Matcher": "GenericMatcher",
@@ -8978,7 +8992,10 @@
       "*",
       "check_errors",
       "out"
-    ]
+    ],
+    "kwargs_change": {
+      "A": "x"
+    }
   },
   "torch.linalg.ldl_factor": {},
   "torch.linalg.ldl_factor_ex": {},
@@ -14825,7 +14842,9 @@
       "input2",
       "input3",
       "left",
-      "transpose"
+      "transpose",
+      "*",
+      "out"
     ],
     "kwargs_change": {
       "input": "x",
@@ -15927,7 +15946,7 @@
     ],
     "kwargs_change": {
       "size": "shape",
-      "device": ""
+      "device": "place"
     }
   },
   "torch.sparse.addmm": {
@@ -17063,12 +17082,20 @@
     }
   },
   "torch.utils.checkpoint.checkpoint": {
-    "Matcher": "UnchangeMatcher",
+    "Matcher": "CheckpointMatcher",
     "paddle_api": "paddle.distributed.fleet.utils.recompute",
     "min_input_args": 1,
-    "unsupport_args": [
-      "determinism_check"
-    ]
+    "args_list": [
+      "function",
+      "*args",
+      "preserve_rng_state",
+      "use_reentrant",
+      "determinism_check",
+      "**kwargs"
+    ],
+    "kwargs_change": {
+      "determinism_check": ""
+    }
   },
   "torch.utils.cpp_extension.BuildExtension": {
     "Matcher": "GenericMatcher",
@@ -17623,7 +17650,7 @@
   },
   "torchvision.datasets.VOCDetection": {
     "Matcher": "VOCDetectionMatcher",
-    "paddle_api": "paddle.vision.datasets.VOCDetection",
+    "paddle_api": "paddle.vision.datasets.VOC2012",
     "args_list": [
       "root",
       "year",

@@ -5842,3 +5842,19 @@ class RNNCellMatcher(BaseMatcher):
         self.write_aux_code()
         self.set_paddle_api("paddle_aux.SimpleRNNCell")
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class CheckpointMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        new_args = self.parse_args(args)
+        new_kwargs = self.parse_kwargs(kwargs)
+        if "determinism_check" in new_kwargs:
+            new_kwargs.pop("determinism_check")
+        args_str = ",".join(map(str, new_args))
+        if new_kwargs:
+            code = "paddle.distributed.fleet.utils.recompute({},{})".format(
+                args_str, self.kwargs_to_str(new_kwargs)
+            )
+        else:
+            code = "paddle.distributed.fleet.utils.recompute({})".format(args_str)
+        return ast.parse(code).body
