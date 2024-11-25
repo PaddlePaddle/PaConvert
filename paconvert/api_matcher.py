@@ -4306,6 +4306,7 @@ class SoftmaxMatcher(BaseMatcher):
 class SoftminMatcher(SoftmaxMatcher):
     def generate_code(self, kwargs):
         self.paddle_api = "paddle_aux.Softmin"
+        self.write_aux_code()
         return super().generate_code(kwargs)
 
     def generate_aux_code(self):
@@ -4876,7 +4877,7 @@ class CanCastMatcher(BaseMatcher):
 class PositiveMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
-        """
+            """
         def positive(x):
             if x.dtype != paddle.bool:
                 return x
@@ -5233,7 +5234,7 @@ class SimpleScalableVarMatcher(BaseMatcher):
         if not (arg_name.startswith("*") and len(arg_name) > 1):
             return None
         return arg_name[1:]
-    
+
     def get_paddle_nodes(self, args, kwargs):
         var_arg_name = self.get_scalable_var()
         dest_var_arg_name = self.api_mapping.get("kwargs_change", {}).get(
@@ -5251,7 +5252,7 @@ class SimpleScalableVarMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
-class ScalableVarMatcher(BaseMatcher): 
+class ScalableVarMatcher(BaseMatcher):
     def get_scalable_var(self):
         args_list = self.api_mapping.get("args_list", [])
         if len(args_list) != 1:
