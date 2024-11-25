@@ -58,6 +58,7 @@
       "num_embeddings",
       "embedding_dim",
       "padding_idx",
+      "max_norm",
       "norm_type",
       "scale_grad_by_freq",
       "sparse",
@@ -72,7 +73,8 @@
       "padding_idx",
       "norm_type",
       "scale_grad_by_freq",
-      "sparse"
+      "sparse",
+      "max_norm"
     ]
   },
   "fairscale.nn.model_parallel.layers.RowParallelLinear": {
@@ -125,14 +127,14 @@
     "unsupport_args": [
       "window_size",
       "alibi_slopes",
-      "deterministic",
-      "return_attn_probs"
+      "deterministic"
     ],
     "kwargs_change": {
       "q": "query",
       "k": "key",
       "v": "value",
-      "dropout_p": "dropout"
+      "dropout_p": "dropout",
+      "return_attn_probs": "return_softmax"
     }
   },
   "flash_attn.flash_attn_interface.flash_attn_unpadded_func": {
@@ -157,15 +159,15 @@
     "unsupport_args": [
       "window_size",
       "alibi_slopes",
-      "deterministic",
-      "return_attn_probs"
+      "deterministic"
     ],
     "kwargs_change": {
       "q": "query",
       "k": "key",
       "v": "value",
       "dropout_p": "dropout",
-      "softmax_scale": "scale"
+      "softmax_scale": "scale",
+      "return_attn_probs": "return_softmax"
     }
   },
   "flash_attn.layers.rotary.apply_rotary_emb_func": {
@@ -189,7 +191,10 @@
       "x",
       "weight",
       "epsilon"
-    ]
+    ],
+    "kwargs_change": {
+      "weight": "norm_weight"
+    }
   },
   "os.environ.get": {
     "Matcher": "OsEnvironGetMatcher",
@@ -2184,6 +2189,7 @@
   },
   "torch.Tensor.is_inference": {
     "Matcher": "Is_InferenceMatcher",
+    "paddle_api": "paddle.Tensor.stop_gradient",
     "min_input_args": 0
   },
   "torch.Tensor.is_pinned": {
@@ -4036,7 +4042,8 @@
     ]
   },
   "torch.Tensor.to_sparse_coo": {
-    "Matcher": "TensorToSparseCooMatcher"
+    "Matcher": "TensorToSparseCooMatcher",
+    "paddle_api": "paddle.Tensor.to_sparse_coo"
   },
   "torch.Tensor.tolist": {
     "Matcher": "UnchangeMatcher",
@@ -8533,6 +8540,7 @@
   },
   "torch.is_inference": {
     "Matcher": "Is_InferenceMatcher",
+    "paddle_api": "paddle.Tensor.stop_gradient",
     "min_input_args": 1,
     "args_list": [
       "input"
@@ -10738,7 +10746,7 @@
     "min_input_args": 0
   },
   "torch.nn.GRUCell": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "GRUCellMatcher",
     "paddle_api": "paddle.nn.GRUCell",
     "args_list": [
       "input_size",
@@ -10982,7 +10990,7 @@
     "min_input_args": 0
   },
   "torch.nn.LSTMCell": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "LSTMCellMatcher",
     "paddle_api": "paddle.nn.LSTMCell",
     "args_list": [
       "input_size",
@@ -11746,7 +11754,7 @@
     "min_input_args": 3
   },
   "torch.nn.RNNCell": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "RNNCellMatcher",
     "paddle_api": "paddle.nn.SimpleRNNCell",
     "args_list": [
       "input_size",
@@ -14881,11 +14889,6 @@
       "input": "x",
       "dims": "perm"
     }
-  },
-  "torch.pi": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "numpy.pi",
-    "min_input_args": 0
   },
   "torch.pinverse": {
     "Matcher": "GenericMatcher",
