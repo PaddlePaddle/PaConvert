@@ -17693,9 +17693,9 @@
       "groups",
       "bias"
     ],
-    "unsupport_args": [
-      "bias"
-    ]
+    "kwargs_change": {
+      "bias": "bias_attr"
+    }
   },
   "torchvision.ops.RoIAlign": {
     "Matcher": "GenericMatcher",
