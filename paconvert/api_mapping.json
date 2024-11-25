@@ -11740,7 +11740,7 @@
   },
   "torch.nn.RNNCell": {
     "Matcher": "RNNCellMatcher",
-    "paddle_api": "paddle.SimpleRNNCell",
+    "paddle_api": "paddle.nn.SimpleRNNCell",
     "args_list": [
       "input_size",
       "hidden_size",
@@ -17693,9 +17693,9 @@
       "groups",
       "bias"
     ],
-    "kwargs_change": {
-      "bias": "bias_attr"
-    }
+    "unsupport_args": [
+      "bias"
+    ]
   },
   "torchvision.ops.RoIAlign": {
     "Matcher": "GenericMatcher",

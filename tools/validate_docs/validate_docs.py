@@ -165,8 +165,7 @@ PRESET_MATCHER_KWARGS_CHANGE_PAIRS = {
     "RoundMatcher": {"input": "x"},
     "FunctionalPadMatcher": {"input": "x"},
     "FunctionalSmoothL1LossMatcher": {"beta": "delta"},
-    "OptimOptimizerMatcher": {"params": "parameters"},
-    "BoxesConvertMatcher": {"input": "x"},
+    "OptimOptimizerMatcher": {"params": "parameters"}
 }
 
 overloadable_api_aux_set = {
