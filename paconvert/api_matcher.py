@@ -5840,3 +5840,31 @@ class RNNCellMatcher(BaseMatcher):
         self.write_aux_code()
         self.set_paddle_api("paddle_aux.SimpleRNNCell")
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class ChangeKwargsMatcher(UnchangeMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        new_args = self.parse_args(args)
+        old_kwargs = self.parse_kwargs(kwargs)
+        new_kwargs = {}
+        kwargs_change = self.api_mapping["kwargs_change"]
+        for k in list(old_kwargs.keys()):
+            if k in kwargs_change:
+                if kwargs_change[k]:
+                    if isinstance(kwargs_change[k], list):
+                        for v in kwargs_change[k]:
+                            new_kwargs[v] = old_kwargs[k]
+                    else:
+                        new_kwargs[kwargs_change[k]] = old_kwargs[k]
+                else:
+                    # remove in new_kwargs
+                    old_kwargs.pop(k)
+            else:
+                # copy to new_kwargs
+                new_kwargs[k] = old_kwargs.pop(k)
+        if new_kwargs is not None:
+            code = "{}({})".format(
+                self.get_paddle_api(), self.args_and_kwargs_to_str(new_args, new_kwargs)
+            )
+            return ast.parse(code).body
+        return None
