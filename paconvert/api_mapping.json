@@ -17097,7 +17097,7 @@
     }
   },
   "torch.utils.checkpoint.checkpoint": {
-    "Matcher": "CheckpointMatcher",
+    "Matcher": "ChangeKwargsMatcher",
     "paddle_api": "paddle.distributed.fleet.utils.recompute",
     "min_input_args": 1,
     "args_list": [

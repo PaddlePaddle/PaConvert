@@ -5842,17 +5842,29 @@ class RNNCellMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-class CheckpointMatcher(BaseMatcher):
+class ChangeKwargsMatcher(UnchangeMatcher):
     def get_paddle_nodes(self, args, kwargs):
         new_args = self.parse_args(args)
-        new_kwargs = self.parse_kwargs(kwargs)
-        if "determinism_check" in new_kwargs:
-            new_kwargs.pop("determinism_check")
-        args_str = ",".join(map(str, new_args))
-        if new_kwargs:
-            code = "paddle.distributed.fleet.utils.recompute({},{})".format(
-                args_str, self.kwargs_to_str(new_kwargs)
+        old_kwargs = self.parse_kwargs(kwargs)
+        new_kwargs = {}
+        kwargs_change = self.api_mapping["kwargs_change"]
+        for k in list(old_kwargs.keys()):
+            if k in kwargs_change:
+                if kwargs_change[k]:
+                    if isinstance(kwargs_change[k], list):
+                        for v in kwargs_change[k]:
+                            new_kwargs[v] = old_kwargs[k]
+                    else:
+                        new_kwargs[kwargs_change[k]] = old_kwargs[k]
+                else:
+                    # remove in new_kwargs
+                    old_kwargs.pop(k)
+            else:
+                # copy to new_kwargs
+                new_kwargs[k] = old_kwargs.pop(k)
+        if new_kwargs is not None:
+            code = "{}({})".format(
+                self.get_paddle_api(), self.args_and_kwargs_to_str(new_args, new_kwargs)
             )
-        else:
-            code = "paddle.distributed.fleet.utils.recompute({})".format(args_str)
-        return ast.parse(code).body
+            return ast.parse(code).body
+        return None
