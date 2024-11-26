@@ -4281,11 +4281,11 @@ class SoftmaxMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-class SoftminMatcher(SoftmaxMatcher):
+class SoftminMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         self.paddle_api = "paddle_aux.Softmin"
         self.write_aux_code()
-        return super().generate_code(kwargs)
+        return GenericMatcher.generate_code(self, kwargs)
 
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
