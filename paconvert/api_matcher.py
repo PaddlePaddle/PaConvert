@@ -4297,15 +4297,11 @@ class SoftminMatcher(BaseMatcher):
                     ret = 1
                 return ret
 
-            def forward(self,x):
-                if self._axis is None:
-                    return paddle.nn.functional.softmax(x, _get_softmax_dim(x.ndim))
-                return paddle.nn.functional.softmax(x, self._axis)
-            setattr(paddle.nn.Softmax, 'forward', forward)
-
             class Softmin(paddle.nn.Softmax):
                 def forward(self, x):
-                    return super().forward(-x)
+                    if self._axis is None:
+                        return paddle.nn.functional.softmax(-x, _get_softmax_dim(x.ndim))
+                    return paddle.nn.functional.softmax(-x, self._axis)
             """
         )
         return CODE_TEMPLATE
