@@ -4281,6 +4281,32 @@ class SoftmaxMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class SoftminMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        self.paddle_api = "paddle_aux.Softmin"
+        self.write_aux_code()
+        return GenericMatcher.generate_code(self, kwargs)
+
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def _get_softmax_dim(axis: int) -> int:
+                if axis == 0 or axis == 1 or axis == 3:
+                    ret = 0
+                else:
+                    ret = 1
+                return ret
+
+            class Softmin(paddle.nn.Softmax):
+                def forward(self, x):
+                    if self._axis is None:
+                        return paddle.nn.functional.softmax(-x, _get_softmax_dim(x.ndim))
+                    return paddle.nn.functional.softmax(-x, self._axis)
+            """
+        )
+        return CODE_TEMPLATE
+
+
 class OptimOptimizerMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         code = "paddle.optimizer.Optimizer(parameters={}, **{})".format(
