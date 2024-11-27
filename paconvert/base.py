@@ -187,17 +187,19 @@ class BaseTransformer(ast.NodeTransformer):
 
         if import_nodes:
             self.record_scope((self.root, "body", 0), import_nodes)
-            
+
         if not other_nodes:
             return True
-            
+
         # allow inserting single line of code in list comprehensions
         in_comprehension = isinstance(self.parent_node, (ast.DictComp, ast.ListComp))
-        is_single_line = len(other_nodes) == 1 and isinstance(other_nodes[0], (ast.Expr, ast.Assign))
-        
+        is_single_line = len(other_nodes) == 1 and isinstance(
+            other_nodes[0], (ast.Expr, ast.Assign)
+        )
+
         if in_comprehension and not is_single_line:
             return False
-            
+
         self.record_scope(self.scope_body_index(), other_nodes)
         return True
 
