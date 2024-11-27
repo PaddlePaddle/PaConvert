@@ -175,9 +175,6 @@ class BaseTransformer(ast.NodeTransformer):
         if len(node_list) == 0:
             return True
 
-        if isinstance(self.parent_node, (ast.DictComp, ast.ListComp)):
-            return False
-
         import_nodes = []
         other_nodes = []
         for node in node_list:
@@ -192,6 +189,8 @@ class BaseTransformer(ast.NodeTransformer):
             self.record_scope((self.root, "body", 0), import_nodes)
 
         if len(other_nodes) > 0:
+            if isinstance(self.parent_node, (ast.DictComp, ast.ListComp)):
+                return False
             self.record_scope(self.scope_body_index(), other_nodes)
 
         return True
