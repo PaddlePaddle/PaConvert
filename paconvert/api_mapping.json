@@ -717,10 +717,7 @@
     "kwargs_change": {
       "generator": "",
       "input": "x"
-    },
-    "unsupport_args": [
-      "p"
-    ]
+    }
   },
   "torch.Tensor.bernoulli_": {},
   "torch.Tensor.bfloat16": {
@@ -5174,10 +5171,7 @@
     ],
     "kwargs_change": {
       "input": "x"
-    },
-    "unsupport_args": [
-      "p"
-    ]
+    }
   },
   "torch.binary_cross_entropy_with_logits": {},
   "torch.bincount": {

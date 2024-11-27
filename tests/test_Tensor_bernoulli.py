@@ -69,12 +69,7 @@ def test_case_5():
         result = a.bernoulli(1.0)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["a", "result"],
-        unsupport=True,
-        reason="paddle not support parameter 'p' ",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_6():
@@ -85,12 +80,7 @@ def test_case_6():
         result = torch.bernoulli(a, p=0.0)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["a", "result"],
-        unsupport=True,
-        reason="paddle not support parameter 'p' ",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_7():
