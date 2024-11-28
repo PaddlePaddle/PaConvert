@@ -172,7 +172,7 @@ class BaseTransformer(ast.NodeTransformer):
             self.scope_insert_lines[scope_node][body] = {index: node_list}
 
     def insert_multi_node(self, node_list):
-        if not node_list:
+        if len(node_list) == 0:
             return True
 
         import_nodes = []
@@ -185,22 +185,17 @@ class BaseTransformer(ast.NodeTransformer):
             else:
                 other_nodes.append(node)
 
-        if import_nodes:
+        if len(import_nodes) > 0:
             self.record_scope((self.root, "body", 0), import_nodes)
 
-        if not other_nodes:
-            return True
+        if len(other_nodes) > 1:
+            if isinstance(self.parent_node, (ast.DictComp, ast.ListComp)):
+                return False
+            self.record_scope(self.scope_body_index(), other_nodes)
+        elif len(other_nodes) == 1:
+            # allow inserting single line of code in list comprehensions
+            self.record_scope(self.scope_body_index(), other_nodes)
 
-        # allow inserting single line of code in list comprehensions
-        in_comprehension = isinstance(self.parent_node, (ast.DictComp, ast.ListComp))
-        is_single_line = len(other_nodes) == 1 and isinstance(
-            other_nodes[0], (ast.Expr, ast.Assign)
-        )
-
-        if in_comprehension and not is_single_line:
-            return False
-
-        self.record_scope(self.scope_body_index(), other_nodes)
         return True
 
     def get_full_attr(self, node):
