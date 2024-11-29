@@ -326,7 +326,6 @@ class FSParallelEmbeddingMatcher(BaseMatcher):
         return code
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class InferenceModeMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -341,7 +340,7 @@ class InferenceModeMatcher(BaseMatcher):
         if "mode" in kwargs:
             if kwargs["mode"] == "(False)":
                 self.write_aux_code()
-                code = "paddle_aux.empty_decorator"
+                code = "utils.empty_decorator"
             else:
                 code = "paddle.no_grad()"
         else:
@@ -485,7 +484,6 @@ class DimOrderMatcher(BaseMatcher):
         return code
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class TRFMPreTrainedTokenizerMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -504,7 +502,6 @@ class TRFMPreTrainedTokenizerMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class TRFMPreTrainedModelMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -762,13 +759,12 @@ class TensorDivideMatcher(BaseMatcher):
         return "unchange"
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class TransposeMatcher(BaseMatcher):
     def generate_aux_code(self):
         API_TEMPLATE = textwrap.dedent(
             """
-            def transpose_aux_func(dims,dim0, dim1):
-                perm = list(range(dims))
+            def dim2perm(ndim, dim0, dim1):
+                perm = list(range(ndim))
                 perm[dim0], perm[dim1] = perm[dim1], perm[dim0]
                 return perm
             """
@@ -780,7 +776,7 @@ class TransposeMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            {}(x={}, perm=utils.transpose_aux_func({}.ndim,{}, {}))
+            {}(x={}, perm=utils.dim2perm({}.ndim,{}, {}))
             """
         )
         perm = get_unique_name("perm")
@@ -794,13 +790,12 @@ class TransposeMatcher(BaseMatcher):
         return code
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class TensorTransposeMatcher(BaseMatcher):
     def generate_aux_code(self):
         API_TEMPLATE = textwrap.dedent(
             """
-            def transpose_aux_func(dims,dim0, dim1):
-                perm = list(range(dims))
+            def dim2perm(ndim, dim0, dim1):
+                perm = list(range(ndim))
                 perm[dim0], perm[dim1] = perm[dim1], perm[dim0]
                 return perm
             """
@@ -812,7 +807,7 @@ class TensorTransposeMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            {}(perm=paddle_aux.transpose_aux_func({}.ndim,{}, {}))
+            {}(perm=utils.dim2perm({}.ndim,{}, {}))
             """
         )
         code = API_TEMPLATE.format(
@@ -836,13 +831,11 @@ class BroadcastShapesMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
     def generate_aux_code(self):
         API_TEMPLATE = textwrap.dedent(
             """
-            import paddle
-            class TransformsPositiveDefiniteTransform:
+            class PositiveDefiniteTransform:
                 def __call__(self, x):
                     x = x.tril(-1) + x.diagonal(axis1=-2, axis2=-1).exp().diag_embed()
                     return x @ x.T
@@ -852,14 +845,13 @@ class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
                     return y.tril(-1) + y.diagonal(axis1=-2, axis2=-1).log().diag_embed()
             """
         )
-
         return API_TEMPLATE
 
     def generate_code(self, kwargs):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.TransformsPositiveDefiniteTransform()
+            utils.PositiveDefiniteTransform()
             """
         )
         return API_TEMPLATE
@@ -1162,7 +1154,6 @@ class PadMatcher(BaseMatcher):
         return code
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class MaxMinMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -1229,7 +1220,6 @@ class MaxMinMatcher(BaseMatcher):
                         else:
                             ret = paddle.max(*args, **kwargs), paddle.argmax(*args, **kwargs)
                             return ret
-                        return out_v
                     else:
                         ret = paddle.max(*args, **kwargs)
                         return ret
@@ -1330,7 +1320,7 @@ class MaxMinMatcher(BaseMatcher):
             return ast.parse(code).body
 
         self.write_aux_code()
-        self.set_paddle_api(paddle_api.replace("paddle", "paddle_aux"))
+        self.set_paddle_api(paddle_api.replace("paddle", "utils"))
         return UnchangeMatcher.get_paddle_nodes(self, args, kwargs)
 
 
@@ -1639,7 +1629,6 @@ class ScatterMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class ScatterReduceMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -1655,7 +1644,7 @@ class ScatterReduceMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.write_aux_code()
-        kwargs["reduce"] = "paddle_aux.get_reduce_type({})".format(kwargs["reduce"])
+        kwargs["reduce"] = "utils.get_reduce_type({})".format(kwargs["reduce"])
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -1943,7 +1932,6 @@ class CudnnIsAvailableMatcher(BaseMatcher):
         return code
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class SplitMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -1960,9 +1948,7 @@ class SplitMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.write_aux_code()
-        return GenericMatcher.generate_code(self, kwargs).replace(
-            "paddle", "paddle_aux"
-        )
+        return GenericMatcher.generate_code(self, kwargs).replace("paddle", "utils")
 
 
 class RangeMatcher(BaseMatcher):
@@ -4068,7 +4054,6 @@ class NonzeroMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-# TODO(guozixu): need to refactor paddle_aux
 # This auxiliary function is not a completely equivalent transformation,
 # which only implements the functional usage used by Qwen，not a complete
 # implementation of flash_attn.layers.rotary.apply_rotary_emb_func.
@@ -4076,7 +4061,7 @@ class FAApplyRotaryEmbFuncMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def apply_rotary_emb_func(x, cos, sin):
+            def apply_rotary_position_embeddings(x, cos, sin):
                 if not isinstance(cos, paddle.Tensor):
                     cos = paddle.to_tensor(cos)
                 if not isinstance(sin, paddle.Tensor):
@@ -4108,14 +4093,14 @@ class FAApplyRotaryEmbFuncMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.apply_rotary_emb_func({})
+            utils.apply_rotary_position_embeddings({})
             """
         )
         return API_TEMPLATE.format(self.kwargs_to_str(kwargs))
 
     def get_paddle_api(self):
         self.write_aux_code()
-        return "paddle_aux.apply_rotary_emb_func"
+        return "utils.apply_rotary_position_embeddings"
 
 
 class FARmsNorm(BaseMatcher):
@@ -4182,21 +4167,20 @@ class WhereMatcher(BaseMatcher):
             return GenericMatcher.generate_code(self, kwargs)
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class NTupleMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             import collections
             from itertools import repeat
-            def _ntuple(n, name="parse"):
-                def parse(x):
+            def create_tuple_converter(n, name="parse"):
+                def convert_to_tuple(x):
                     if isinstance(x, collections.abc.Iterable):
                         return tuple(x)
                     return tuple(repeat(x, n))
 
-                parse.__name__ = name
-                return parse
+                convert_to_tuple.__name__ = name
+                return convert_to_tuple
             """
         )
         return CODE_TEMPLATE
@@ -4206,7 +4190,7 @@ class NTupleMatcher(BaseMatcher):
         if "x" not in kwargs:
             API_TEMPLATE = textwrap.dedent(
                 """
-                paddle_aux._ntuple({})
+                utils.create_tuple_converter({})
                 """
             )
             code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
@@ -4214,7 +4198,7 @@ class NTupleMatcher(BaseMatcher):
             kwargs = self.set_paddle_default_kwargs(kwargs)
             API_TEMPLATE = textwrap.dedent(
                 """
-                paddle_aux._ntuple({})({})
+                utils.create_tuple_converter({})({})
                 """
             )
             code = API_TEMPLATE.format(kwargs["n"], kwargs["x"])
@@ -4222,7 +4206,6 @@ class NTupleMatcher(BaseMatcher):
         return code
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class Get_EnumMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -4249,7 +4232,7 @@ class Get_EnumMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.get_enum({})
+            utils.get_enum({})
             """
         )
         code = API_TEMPLATE.format(kwargs["reduction"])
@@ -4257,7 +4240,6 @@ class Get_EnumMatcher(BaseMatcher):
         return code
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class SoftmaxMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -4288,7 +4270,7 @@ class SoftmaxMatcher(BaseMatcher):
         if "dim" not in kwargs or kwargs["dim"] == "None":
             self.write_aux_code()
             if "functional" in self.get_paddle_api():
-                kwargs["dim"] = "paddle_aux._get_softmax_dim({}.ndim)".format(
+                kwargs["dim"] = "utils._get_softmax_dim({}.ndim)".format(
                     kwargs["input"]
                 )
         return GenericMatcher.generate_code(self, kwargs)
@@ -4624,12 +4606,11 @@ class SvdMatcher(BaseMatcher):
         return code
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class SymeigMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def _CONVERT_SYMEIG(**kwargs):
+            def convert_symeig(**kwargs):
                 out_v = kwargs.pop("out", None)
                 upper = kwargs.pop("upper", True)
                 UPLO = "U" if upper else "L"
@@ -4650,10 +4631,9 @@ class SymeigMatcher(BaseMatcher):
         self.write_aux_code()
         if "input" not in kwargs:
             kwargs["input"] = self.paddleClass
-        return "paddle_aux._CONVERT_SYMEIG({})".format(self.kwargs_to_str(kwargs))
+        return "utils.convert_symeig({})".format(self.kwargs_to_str(kwargs))
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class CanCastMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -4836,13 +4816,10 @@ class CanCastMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.write_aux_code()
-        code = "paddle_aux.can_cast(from_={}, to={})".format(
-            kwargs["from_"], kwargs["to"]
-        )
+        code = "utils.can_cast(from_={}, to={})".format(kwargs["from_"], kwargs["to"])
         return code
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class PositiveMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -4859,13 +4836,12 @@ class PositiveMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         self.write_aux_code()
         if "input" in kwargs:
-            code = "paddle_aux.positive({})".format(kwargs["input"])
+            code = "utils.positive({})".format(kwargs["input"])
         else:
-            code = "paddle_aux.positive({})".format(self.paddleClass)
+            code = "utils.positive({})".format(self.paddleClass)
         return code
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class FloatPowerMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -4879,13 +4855,15 @@ class FloatPowerMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         self.write_aux_code()
         if "input" in kwargs:
-            code = "paddle.pow({}.cast(paddle.float64), paddle_aux.cast_exponent({}))".format(
-                kwargs["input"], kwargs["exponent"]
+            code = (
+                "paddle.pow({}.cast(paddle.float64), utils.cast_exponent({}))".format(
+                    kwargs["input"], kwargs["exponent"]
+                )
             )
             if "out" in kwargs:
                 code = "paddle.assign({}, {})".format(code, kwargs["out"])
         else:
-            code = "{}.cast(paddle.float64).pow(paddle_aux.cast_exponent({}))".format(
+            code = "{}.cast(paddle.float64).pow(utils.cast_exponent({}))".format(
                 self.paddleClass, kwargs["exponent"]
             )
         return code
@@ -5138,7 +5116,6 @@ class TensorViewMatcher(BaseMatcher):
         return "misidentify"
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class EmbeddingMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -5452,7 +5429,6 @@ class FromBufferMatcher(BaseMatcher):
         return code
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class RpcRemoteMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -5473,7 +5449,7 @@ class RpcRemoteMatcher(BaseMatcher):
         kwargs = self.kwargs_to_str(kwargs)
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.rpc_remote(paddle.distributed.rpc.rpc_async({}))
+            utils.rpc_remote(paddle.distributed.rpc.rpc_async({}))
             """
         )
         code = API_TEMPLATE.format(kwargs)
@@ -5504,7 +5480,6 @@ class GetNumInteropThreadsMatcher(BaseMatcher):
         return code
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class SetNumInteropThreadsMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -5520,7 +5495,7 @@ class SetNumInteropThreadsMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux._set_num_interop_threads({})
+            utils._set_num_interop_threads({})
             """
         )
         code = API_TEMPLATE.format(kwargs["int"])
@@ -5528,7 +5503,6 @@ class SetNumInteropThreadsMatcher(BaseMatcher):
         return code
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class SetNumThreadsMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -5544,7 +5518,7 @@ class SetNumThreadsMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux._set_num_threads({})
+            utils._set_num_threads({})
             """
         )
         code = API_TEMPLATE.format(kwargs["int"])
@@ -5667,7 +5641,6 @@ class Flowers102Matcher(BaseMatcher):
         return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class VOCDetectionMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -5702,7 +5675,7 @@ class VOCDetectionMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.VOCDetection({})
+            utils.VOCDetection({})
             """
         )
         code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
@@ -5723,7 +5696,6 @@ class DecodeJpegMatcher(BaseMatcher):
         )
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class BoxesConvertMatcher(BaseMatcher):
     def generate_aux_code(self):
         api_name = self.get_paddle_api().split(".")[-1]
@@ -5754,7 +5726,7 @@ class BoxesConvertMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.{}({})
+            utils.{}({})
             """
         )
         code = API_TEMPLATE.format(
@@ -5790,7 +5762,6 @@ class VGGMatcher(BaseMatcher):
         return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
 
-# TODO(guozixu): need to refactor paddle_aux
 class CudaDeviceMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -5807,7 +5778,7 @@ class CudaDeviceMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.cuda_device({})
+            utils.cuda_device({})
             """
         )
         code = API_TEMPLATE.format(kwargs["device"])
@@ -5828,7 +5799,7 @@ class GRUCellMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.write_aux_code()
-        self.set_paddle_api("paddle_aux.GRUCell")
+        self.set_paddle_api("utils.GRUCell")
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -5845,7 +5816,7 @@ class LSTMCellMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.write_aux_code()
-        self.set_paddle_api("paddle_aux.LSTMCell")
+        self.set_paddle_api("utils.LSTMCell")
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -5862,5 +5833,5 @@ class RNNCellMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.write_aux_code()
-        self.set_paddle_api("paddle_aux.SimpleRNNCell")
+        self.set_paddle_api("utils.SimpleRNNCell")
         return GenericMatcher.generate_code(self, kwargs)
