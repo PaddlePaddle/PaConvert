@@ -76,9 +76,9 @@ class APIBase(object):
                         """
                     import sys
                     import importlib
-                    sys.path.append('test_project/utils')
-                    import paddle_aux
-                    paddle_aux=importlib.reload(paddle_aux)
+                    sys.path.append('test_project')
+                    import utils
+                    utils=importlib.reload(utils)
                     """
                     )
                     + paddle_code

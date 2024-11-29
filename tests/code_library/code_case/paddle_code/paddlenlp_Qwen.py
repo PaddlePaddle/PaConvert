@@ -1,6 +1,4 @@
-import sys
-sys.path.append('/workspace/PaConvert/paddle_project/utils')
-import paddle_aux
+import utils
 import paddle
 import paddlenlp
 print('#########################case1#########################')
@@ -94,7 +92,7 @@ class QWenTokenizer(paddlenlp.transformers.PretrainedTokenizer):
 
 
 print('#########################case16#########################')
-paddle_aux.apply_rotary_emb_func(x=x, cos=cos, sin=sin)
+utils.apply_rotary_position_embeddings(x=x, cos=cos, sin=sin)
 print('#########################case17#########################')
 paddle.incubate.nn.functional.fused_rms_norm(x, weight, paddle.zeros_like(
     weight), eps, len(x.shape) - 1)[0]
