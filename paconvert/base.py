@@ -188,12 +188,9 @@ class BaseTransformer(ast.NodeTransformer):
         if len(import_nodes) > 0:
             self.record_scope((self.root, "body", 0), import_nodes)
 
-        if len(other_nodes) > 1:
+        if len(other_nodes) > 0:
             if isinstance(self.parent_node, (ast.DictComp, ast.ListComp)):
                 return False
-            self.record_scope(self.scope_body_index(), other_nodes)
-        elif len(other_nodes) == 1:
-            # allow inserting single line of code in list comprehensions
             self.record_scope(self.scope_body_index(), other_nodes)
 
         return True
