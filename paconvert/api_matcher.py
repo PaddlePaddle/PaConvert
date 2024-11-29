@@ -4278,7 +4278,7 @@ class SoftmaxMatcher(BaseMatcher):
 
 class SoftminMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        self.paddle_api = "paddle_aux.Softmin"
+        self.paddle_api = "utils.Softmin"
         self.write_aux_code()
         return GenericMatcher.generate_code(self, kwargs)
 
