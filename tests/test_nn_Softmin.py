@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Softmax", is_aux_api=True)
+obj = APIBase("torch.nn.Softmin", is_aux_api=True)
 
 
 def test_case_1():
@@ -30,7 +30,7 @@ def test_case_1():
                         [[1.0, 2.0, 3.0, 4.0],
                         [5.0, 6.0, 7.0, 8.0],
                         [6.0, 7.0, 8.0, 9.0]]])
-        model = nn.Softmax(-1)
+        model = nn.Softmin(-1)
         result = model(x)
         """
     )
@@ -48,7 +48,7 @@ def test_case_2():
                         [[1.0, 2.0, 3.0, 4.0],
                         [5.0, 6.0, 7.0, 8.0],
                         [6.0, 7.0, 8.0, 9.0]]])
-        model = nn.Softmax(dim=1)
+        model = nn.Softmin(dim=1)
         result = model(x)
         """
     )
@@ -66,7 +66,7 @@ def test_case_3():
                         [[1.0, 2.0, 3.0, 4.0],
                         [5.0, 6.0, 7.0, 8.0],
                         [6.0, 7.0, 8.0, 9.0]]])
-        model = nn.Softmax()
+        model = nn.Softmin()
         result = model(x)
         """
     )
@@ -84,7 +84,7 @@ def test_case_4():
                         [[1.0, 2.0, 3.0, 4.0],
                         [5.0, 6.0, 7.0, 8.0],
                         [6.0, 7.0, 8.0, 9.0]]])
-        model = nn.Softmax(dim=None)
+        model = nn.Softmin(dim=None)
         result = model(x)
         """
     )
@@ -99,7 +99,7 @@ def test_case_5():
         x = torch.tensor([[2.0, 3.0, 4.0, 5.0],
                         [3.0, 4.0, 5.0, 6.0],
                         [7.0, 8.0, 8.0, 10.0]])
-        model = nn.Softmax()
+        model = nn.Softmin()
         result = model(x)
         """
     )

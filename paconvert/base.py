@@ -175,9 +175,6 @@ class BaseTransformer(ast.NodeTransformer):
         if len(node_list) == 0:
             return True
 
-        if isinstance(self.parent_node, (ast.DictComp, ast.ListComp)):
-            return False
-
         import_nodes = []
         other_nodes = []
         for node in node_list:
@@ -192,6 +189,8 @@ class BaseTransformer(ast.NodeTransformer):
             self.record_scope((self.root, "body", 0), import_nodes)
 
         if len(other_nodes) > 0:
+            if isinstance(self.parent_node, (ast.DictComp, ast.ListComp)):
+                return False
             self.record_scope(self.scope_body_index(), other_nodes)
 
         return True
@@ -487,19 +486,19 @@ class BaseMatcher(object):
             )
             aux_file_helper.write_code(aux_code, self.torch_api)
 
-            CODE_TEMPLATE = textwrap.dedent(
-                """
-                import sys
-                sys.path.append(r'{}')
-                import paddle_aux
-                """
-            )
-            code = CODE_TEMPLATE.format(
-                self.get_aux_dir(),
-            )
-            log_debug(
-                self.logger, "add 'import paddle_aux'", self.transformer.file_name
-            )
+            if aux_file_helper.is_dir_mode:
+                CODE_TEMPLATE = textwrap.dedent(
+                    """
+                    import sys
+                    sys.path.append(r'{}')
+                    import utils
+                    """
+                )
+                code = CODE_TEMPLATE.format(self.get_aux_dir())
+            else:
+                code = "import utils"
+
+            log_debug(self.logger, "add 'import utils'", self.transformer.file_name)
             self.transformer.insert_multi_node(ast.parse(code).body)
 
     def set_paddle_api(self, paddle_api):

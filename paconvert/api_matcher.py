@@ -340,7 +340,7 @@ class InferenceModeMatcher(BaseMatcher):
         if "mode" in kwargs:
             if kwargs["mode"] == "(False)":
                 self.write_aux_code()
-                code = "paddle_aux.empty_decorator"
+                code = "utils.empty_decorator"
             else:
                 code = "paddle.no_grad()"
         else:
@@ -763,8 +763,8 @@ class TransposeMatcher(BaseMatcher):
     def generate_aux_code(self):
         API_TEMPLATE = textwrap.dedent(
             """
-            def transpose_aux_func(dims,dim0, dim1):
-                perm = list(range(dims))
+            def dim2perm(ndim, dim0, dim1):
+                perm = list(range(ndim))
                 perm[dim0], perm[dim1] = perm[dim1], perm[dim0]
                 return perm
             """
@@ -776,7 +776,7 @@ class TransposeMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            {}(x={}, perm=paddle_aux.transpose_aux_func({}.ndim,{}, {}))
+            {}(x={}, perm=utils.dim2perm({}.ndim,{}, {}))
             """
         )
         perm = get_unique_name("perm")
@@ -794,8 +794,8 @@ class TensorTransposeMatcher(BaseMatcher):
     def generate_aux_code(self):
         API_TEMPLATE = textwrap.dedent(
             """
-            def transpose_aux_func(dims,dim0, dim1):
-                perm = list(range(dims))
+            def dim2perm(ndim, dim0, dim1):
+                perm = list(range(ndim))
                 perm[dim0], perm[dim1] = perm[dim1], perm[dim0]
                 return perm
             """
@@ -807,7 +807,7 @@ class TensorTransposeMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            {}(perm=paddle_aux.transpose_aux_func({}.ndim,{}, {}))
+            {}(perm=utils.dim2perm({}.ndim,{}, {}))
             """
         )
         code = API_TEMPLATE.format(
@@ -835,8 +835,7 @@ class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
     def generate_aux_code(self):
         API_TEMPLATE = textwrap.dedent(
             """
-            import paddle
-            class TransformsPositiveDefiniteTransform:
+            class PositiveDefiniteTransform:
                 def __call__(self, x):
                     x = x.tril(-1) + x.diagonal(axis1=-2, axis2=-1).exp().diag_embed()
                     return x @ x.T
@@ -846,14 +845,13 @@ class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
                     return y.tril(-1) + y.diagonal(axis1=-2, axis2=-1).log().diag_embed()
             """
         )
-
         return API_TEMPLATE
 
     def generate_code(self, kwargs):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.TransformsPositiveDefiniteTransform()
+            utils.PositiveDefiniteTransform()
             """
         )
         return API_TEMPLATE
@@ -1222,7 +1220,6 @@ class MaxMinMatcher(BaseMatcher):
                         else:
                             ret = paddle.max(*args, **kwargs), paddle.argmax(*args, **kwargs)
                             return ret
-                        return out_v
                     else:
                         ret = paddle.max(*args, **kwargs)
                         return ret
@@ -1323,7 +1320,7 @@ class MaxMinMatcher(BaseMatcher):
             return ast.parse(code).body
 
         self.write_aux_code()
-        self.set_paddle_api(paddle_api.replace("paddle", "paddle_aux"))
+        self.set_paddle_api(paddle_api.replace("paddle", "utils"))
         return UnchangeMatcher.get_paddle_nodes(self, args, kwargs)
 
 
@@ -1647,7 +1644,7 @@ class ScatterReduceMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.write_aux_code()
-        kwargs["reduce"] = "paddle_aux.get_reduce_type({})".format(kwargs["reduce"])
+        kwargs["reduce"] = "utils.get_reduce_type({})".format(kwargs["reduce"])
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -1951,9 +1948,7 @@ class SplitMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.write_aux_code()
-        return GenericMatcher.generate_code(self, kwargs).replace(
-            "paddle", "paddle_aux"
-        )
+        return GenericMatcher.generate_code(self, kwargs).replace("paddle", "utils")
 
 
 class RangeMatcher(BaseMatcher):
@@ -4066,7 +4061,7 @@ class FAApplyRotaryEmbFuncMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def apply_rotary_emb_func(x, cos, sin):
+            def apply_rotary_position_embeddings(x, cos, sin):
                 if not isinstance(cos, paddle.Tensor):
                     cos = paddle.to_tensor(cos)
                 if not isinstance(sin, paddle.Tensor):
@@ -4098,14 +4093,14 @@ class FAApplyRotaryEmbFuncMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.apply_rotary_emb_func({})
+            utils.apply_rotary_position_embeddings({})
             """
         )
         return API_TEMPLATE.format(self.kwargs_to_str(kwargs))
 
     def get_paddle_api(self):
         self.write_aux_code()
-        return "paddle_aux.apply_rotary_emb_func"
+        return "utils.apply_rotary_position_embeddings"
 
 
 class FARmsNorm(BaseMatcher):
@@ -4178,14 +4173,14 @@ class NTupleMatcher(BaseMatcher):
             """
             import collections
             from itertools import repeat
-            def _ntuple(n, name="parse"):
-                def parse(x):
+            def create_tuple_converter(n, name="parse"):
+                def convert_to_tuple(x):
                     if isinstance(x, collections.abc.Iterable):
                         return tuple(x)
                     return tuple(repeat(x, n))
 
-                parse.__name__ = name
-                return parse
+                convert_to_tuple.__name__ = name
+                return convert_to_tuple
             """
         )
         return CODE_TEMPLATE
@@ -4195,7 +4190,7 @@ class NTupleMatcher(BaseMatcher):
         if "x" not in kwargs:
             API_TEMPLATE = textwrap.dedent(
                 """
-                paddle_aux._ntuple({})
+                utils.create_tuple_converter({})
                 """
             )
             code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
@@ -4203,7 +4198,7 @@ class NTupleMatcher(BaseMatcher):
             kwargs = self.set_paddle_default_kwargs(kwargs)
             API_TEMPLATE = textwrap.dedent(
                 """
-                paddle_aux._ntuple({})({})
+                utils.create_tuple_converter({})({})
                 """
             )
             code = API_TEMPLATE.format(kwargs["n"], kwargs["x"])
@@ -4237,7 +4232,7 @@ class Get_EnumMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.get_enum({})
+            utils.get_enum({})
             """
         )
         code = API_TEMPLATE.format(kwargs["reduction"])
@@ -4275,10 +4270,36 @@ class SoftmaxMatcher(BaseMatcher):
         if "dim" not in kwargs or kwargs["dim"] == "None":
             self.write_aux_code()
             if "functional" in self.get_paddle_api():
-                kwargs["dim"] = "paddle_aux._get_softmax_dim({}.ndim)".format(
+                kwargs["dim"] = "utils._get_softmax_dim({}.ndim)".format(
                     kwargs["input"]
                 )
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class SoftminMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        self.paddle_api = "utils.Softmin"
+        self.write_aux_code()
+        return GenericMatcher.generate_code(self, kwargs)
+
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def _get_softmax_dim(axis: int) -> int:
+                if axis == 0 or axis == 1 or axis == 3:
+                    ret = 0
+                else:
+                    ret = 1
+                return ret
+
+            class Softmin(paddle.nn.Softmax):
+                def forward(self, x):
+                    if self._axis is None:
+                        return paddle.nn.functional.softmax(-x, _get_softmax_dim(x.ndim))
+                    return paddle.nn.functional.softmax(-x, self._axis)
+            """
+        )
+        return CODE_TEMPLATE
 
 
 class OptimOptimizerMatcher(BaseMatcher):
@@ -4615,7 +4636,7 @@ class SymeigMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def _CONVERT_SYMEIG(**kwargs):
+            def convert_symeig(**kwargs):
                 out_v = kwargs.pop("out", None)
                 upper = kwargs.pop("upper", True)
                 UPLO = "U" if upper else "L"
@@ -4636,7 +4657,7 @@ class SymeigMatcher(BaseMatcher):
         self.write_aux_code()
         if "input" not in kwargs:
             kwargs["input"] = self.paddleClass
-        return "paddle_aux._CONVERT_SYMEIG({})".format(self.kwargs_to_str(kwargs))
+        return "utils.convert_symeig({})".format(self.kwargs_to_str(kwargs))
 
 
 class CanCastMatcher(BaseMatcher):
@@ -4821,9 +4842,7 @@ class CanCastMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.write_aux_code()
-        code = "paddle_aux.can_cast(from_={}, to={})".format(
-            kwargs["from_"], kwargs["to"]
-        )
+        code = "utils.can_cast(from_={}, to={})".format(kwargs["from_"], kwargs["to"])
         return code
 
 
@@ -4843,9 +4862,9 @@ class PositiveMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         self.write_aux_code()
         if "input" in kwargs:
-            code = "paddle_aux.positive({})".format(kwargs["input"])
+            code = "utils.positive({})".format(kwargs["input"])
         else:
-            code = "paddle_aux.positive({})".format(self.paddleClass)
+            code = "utils.positive({})".format(self.paddleClass)
         return code
 
 
@@ -4862,13 +4881,15 @@ class FloatPowerMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         self.write_aux_code()
         if "input" in kwargs:
-            code = "paddle.pow({}.cast(paddle.float64), paddle_aux.cast_exponent({}))".format(
-                kwargs["input"], kwargs["exponent"]
+            code = (
+                "paddle.pow({}.cast(paddle.float64), utils.cast_exponent({}))".format(
+                    kwargs["input"], kwargs["exponent"]
+                )
             )
             if "out" in kwargs:
                 code = "paddle.assign({}, {})".format(code, kwargs["out"])
         else:
-            code = "{}.cast(paddle.float64).pow(paddle_aux.cast_exponent({}))".format(
+            code = "{}.cast(paddle.float64).pow(utils.cast_exponent({}))".format(
                 self.paddleClass, kwargs["exponent"]
             )
         return code
@@ -5454,7 +5475,7 @@ class RpcRemoteMatcher(BaseMatcher):
         kwargs = self.kwargs_to_str(kwargs)
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.rpc_remote(paddle.distributed.rpc.rpc_async({}))
+            utils.rpc_remote(paddle.distributed.rpc.rpc_async({}))
             """
         )
         code = API_TEMPLATE.format(kwargs)
@@ -5500,7 +5521,7 @@ class SetNumInteropThreadsMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux._set_num_interop_threads({})
+            utils._set_num_interop_threads({})
             """
         )
         code = API_TEMPLATE.format(kwargs["int"])
@@ -5523,7 +5544,7 @@ class SetNumThreadsMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux._set_num_threads({})
+            utils._set_num_threads({})
             """
         )
         code = API_TEMPLATE.format(kwargs["int"])
@@ -5680,7 +5701,7 @@ class VOCDetectionMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.VOCDetection({})
+            utils.VOCDetection({})
             """
         )
         code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
@@ -5731,7 +5752,7 @@ class BoxesConvertMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.{}({})
+            utils.{}({})
             """
         )
         code = API_TEMPLATE.format(
@@ -5783,7 +5804,7 @@ class CudaDeviceMatcher(BaseMatcher):
         self.write_aux_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle_aux.cuda_device({})
+            utils.cuda_device({})
             """
         )
         code = API_TEMPLATE.format(kwargs["device"])
@@ -5804,7 +5825,7 @@ class GRUCellMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.write_aux_code()
-        self.set_paddle_api("paddle_aux.GRUCell")
+        self.set_paddle_api("utils.GRUCell")
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -5821,7 +5842,7 @@ class LSTMCellMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.write_aux_code()
-        self.set_paddle_api("paddle_aux.LSTMCell")
+        self.set_paddle_api("utils.LSTMCell")
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -5838,7 +5859,7 @@ class RNNCellMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.write_aux_code()
-        self.set_paddle_api("paddle_aux.SimpleRNNCell")
+        self.set_paddle_api("utils.SimpleRNNCell")
         return GenericMatcher.generate_code(self, kwargs)
 
 

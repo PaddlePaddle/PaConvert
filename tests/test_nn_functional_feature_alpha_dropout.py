@@ -34,7 +34,6 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch
         x = torch.tensor([[1, -2, 3], [0, -1, 2], [1, 0, 1]], dtype=torch.float32)
         result = torch.nn.functional.feature_alpha_dropout(x, 0.5, False, True)
         """
@@ -45,7 +44,6 @@ def test_case_2():
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
-        import torch
         import torch
         x = torch.tensor([[1, -2, 3], [0, -1, 2], [1, 0, 1]], dtype=torch.float32)
         result = torch.nn.functional.feature_alpha_dropout(x)
@@ -58,7 +56,6 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch
         x = torch.tensor([[1, -2, 3], [0, -1, 2], [1, 0, 1]], dtype=torch.float32)
         result = torch.nn.functional.feature_alpha_dropout(training=True, input=x, p=0.5, inplace=False)
         """
@@ -69,7 +66,6 @@ def test_case_4():
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
-        import torch
         import torch
         x = torch.tensor([[1, -2, 3], [0, -1, 2], [1, 0, 1]], dtype=torch.float32)
         result = torch.nn.functional.feature_alpha_dropout(input=x, p=0.4, inplace=False)
