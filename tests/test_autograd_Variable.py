@@ -63,3 +63,25 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1.1, 2.2, 3.3])
+        result = torch.autograd.Variable(x, False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1.1, 2.2, 3.3])
+        result = torch.autograd.Variable(requires_grad=False, data=x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

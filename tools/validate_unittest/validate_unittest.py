@@ -95,6 +95,7 @@ overloadable_api_aux_set = {
     "torch.dsplit",
     "torch.Tensor.hsplit",
     "torch.hsplit",
+    "torch.bernoulli",
 }
 
 cornercase_api_aux_dict = {
@@ -122,6 +123,7 @@ cornercase_api_aux_dict = {
     "torch.utils.cpp_extension.CppExtension": "args_list is configured by python built-in library",
     "torch.utils.dlpack.to_dlpack": 'arg "tensor" only accept position argument',
     "torch.var": "this api has breaking change in pytorch 2.0",
+    "torch.broadcast_shapes": "`*shapes` must be specified",
 }
 
 
@@ -827,7 +829,7 @@ if __name__ == "__main__":
 
         if args.report:
             report_outpath = os.path.join(output_dir, "validation_report.md")
-            with open(report_outpath, "w") as f:
+            with open(report_outpath, "w", encoding="utf-8") as f:
                 f.write("# Unittest Validation Report\n\n")
 
                 columns = [

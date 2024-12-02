@@ -39,3 +39,29 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result", "ex"], check_dtype=False)
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[128.0, 64.0], [-32.0, 16.0]])
+        y = torch.tensor([],dtype=torch.int)
+        out = [x,y]
+        torch.frexp(input=x, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["out"], check_dtype=False)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[128.0, 64.0], [-32.0, 16.0]])
+        y = torch.tensor([],dtype=torch.int)
+        out = [x,y]
+        torch.frexp(out=out, input=x)
+        """
+    )
+    obj.run(pytorch_code, ["out"], check_dtype=False)

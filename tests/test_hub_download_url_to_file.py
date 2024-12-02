@@ -98,3 +98,14 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.hub.download_url_to_file('https://paddle-paconvert.bj.bcebos.com/model.params', '/tmp/temporary_file',
+                "e1bf0a03102811bb2168e9952fe4edfa09cceb3343278bd4e5876b33b6889e9b", False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

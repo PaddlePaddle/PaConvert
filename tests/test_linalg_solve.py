@@ -176,3 +176,16 @@ def test_case_13():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[3.0, 1],[1, 2]])
+        y = torch.tensor([[9.0, 8]])
+        out = torch.tensor([])
+        result = torch.linalg.solve(A=x, B=y, left=False, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

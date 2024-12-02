@@ -40,3 +40,16 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, 1.0, 1.0],
+                        [2.0, 2.0, 2.0],
+                        [3.0, 3.0, 3.0]], requires_grad=True)
+        result = torch.detach(input=x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

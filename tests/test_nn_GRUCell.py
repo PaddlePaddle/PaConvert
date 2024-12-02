@@ -140,7 +140,7 @@ def test_case_9():
         """
         import torch
         from torch import nn
-        rnn = torch.nn.GRUCell(2, 2)
+        rnn = torch.nn.GRUCell(2, 2, True)
         inp = torch.tensor([[0.,0.],[0.,0.]])
         h0 = torch.tensor([[0.,0.],[0.,0.]])
         result = rnn(inp, h0)
