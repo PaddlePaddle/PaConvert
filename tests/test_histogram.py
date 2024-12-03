@@ -152,3 +152,33 @@ def test_case_10():
         """
     )
     obj.run(pytorch_code, ["hist", "bin"], check_dtype=False)
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        bins = 4
+        out1 = torch.zeros([bins], dtype=torch.float64)
+        out2 = torch.zeros([bins + 1], dtype=torch.float64)
+        weight = torch.tensor([1., 2., 4.], dtype=torch.float64)
+        density = True
+        result = torch.histogram(input=torch.tensor([1., 2, 1], dtype=torch.float64), bins=4, range=(0, 3), weight=weight, density=density, out=(out1, out2))
+        """
+    )
+    obj.run(pytorch_code, ["out1", "out2"], check_dtype=False)
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        bins = 4
+        out1 = torch.zeros([bins], dtype=torch.float64)
+        out2 = torch.zeros([bins + 1], dtype=torch.float64)
+        weight = torch.tensor([1., 2., 4.], dtype=torch.float64)
+        density = True
+        result = torch.histogram(weight=weight, density=density, bins=4, range=(0, 3), input=torch.tensor([1., 2, 1], dtype=torch.float64), out=(out1, out2))
+        """
+    )
+    obj.run(pytorch_code, ["out1", "out2"], check_dtype=False)

@@ -33,7 +33,7 @@ class DownloadAPIBase(APIBase):
         assert isinstance(paddle_result, dict)
 
 
-obj = DownloadAPIBase("torch.hub.download_url_to_file")
+obj = DownloadAPIBase("torch.hub.load_state_dict_from_url")
 
 
 # The format of the model parameter file is different and can't be automatically converted.

@@ -63,3 +63,14 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        normal_dist = torch.distributions.Normal(0, 1)
+        result = normal_dist.rsample(sample_shape=[2,5])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

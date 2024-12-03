@@ -5075,13 +5075,15 @@
       "create_graph",
       "only_inputs",
       "allow_unused",
-      "is_grads_batched"
+      "is_grads_batched",
+      "materialize_grads"
     ],
     "kwargs_change": {
       "is_grads_batched": ""
     },
     "unsupport_args": [
-      "only_inputs"
+      "only_inputs",
+      "materialize_grads"
     ]
   },
   "torch.autograd.graph.saved_tensors_hooks": {
@@ -6252,6 +6254,7 @@
   "torch.diff": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.diff",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "n",
@@ -6451,7 +6454,8 @@
   },
   "torch.distributed.is_initialized": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.distributed.is_initialized"
+    "paddle_api": "paddle.distributed.is_initialized",
+    "min_input_args": 0
   },
   "torch.distributed.isend": {
     "Matcher": "GenericMatcher",
@@ -7956,7 +7960,7 @@
     }
   },
   "torch.frexp": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.frexp",
     "args_list": [
       "input",
@@ -8104,7 +8108,8 @@
   },
   "torch.get_default_dtype": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.get_default_dtype"
+    "paddle_api": "paddle.get_default_dtype",
+    "min_input_args": 0
   },
   "torch.get_num_interop_threads": {
     "Matcher": "GetNumInteropThreadsMatcher"
@@ -8479,6 +8484,7 @@
   },
   "torch.inference_mode": {
     "Matcher": "InferenceModeMatcher",
+    "min_input_args": 0,
     "args_list": [
       "mode"
     ]
@@ -9731,6 +9737,7 @@
   },
   "torch.median": {
     "Matcher": "DoubleAssignMatcher",
+    "min_input_args": 1,
     "paddle_api": "paddle.median",
     "args_list": [
       "input",
