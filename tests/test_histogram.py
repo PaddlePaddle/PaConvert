@@ -172,7 +172,6 @@ def test_case_12():
         weight = torch.tensor([1., 2., 4.], dtype=torch.float64)
         density = True
         result = torch.histogram(weight=weight, density=density, bins=4, range=(0, 3), input=torch.tensor([1., 2, 1], dtype=torch.float64), out=(out1, out2))
-        hist, bin = torch.histogram(torch.tensor([1., 2, 1], dtype=torch.float64), 4, range=(0, 3), weight=weight, density=density)
         """
     )
     obj.run(pytorch_code, ["out1", "out2"])
