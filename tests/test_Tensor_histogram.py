@@ -69,3 +69,56 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["hist", "bin"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1, 2], [3, 4]], dtype=torch.float64)
+        hist, bin = input.histogram(bins=4, range=[0., 3.])
+        """
+    )
+    obj.run(pytorch_code, ["hist", "bin"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        bins = 4
+        input = torch.tensor([1., 2, 1], dtype=torch.float64)
+        weight = torch.tensor([1., 2., 4.], dtype=torch.float64)
+        density = True
+        hist, bin = input.histogram(bins=4, range=[0., 3.], weight=weight, density=density)
+        """
+    )
+    obj.run(pytorch_code, ["hist", "bin"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        bins = 4
+        input = torch.tensor([1., 2, 1], dtype=torch.float64)
+        weight = torch.tensor([1., 2., 4.], dtype=torch.float64)
+        density = False
+        hist, bin = input.histogram(bins=4, range=[0., 3.], weight=weight, density=density)
+        """
+    )
+    obj.run(pytorch_code, ["hist", "bin"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        bins = 4
+        input = torch.tensor([1., 2, 1])
+        weight = None
+        density = True
+        hist, bin = input.histogram(bins=4, range=[0., 3.], weight=weight, density=density)
+        """
+    )
+    obj.run(pytorch_code, ["hist", "bin"])

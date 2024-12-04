@@ -5389,11 +5389,6 @@ class HistogramMatcher(BaseMatcher):
                 kwargs[kwargs_change[k][1]] = f"{kwargs['range']}[1]"
                 kwargs.pop(k)
 
-        cast_result = True
-        if "weight" in kwargs and "density" in kwargs:
-            if kwargs["weight"] is not None or kwargs["density"] is True:
-                cast_result = False
-
         kwargs_bin_edges = kwargs.copy()
         if "weight" in kwargs_bin_edges:
             kwargs_bin_edges.pop("weight")
@@ -5445,19 +5440,19 @@ class HistogramMatcher(BaseMatcher):
                 code = "{}.histogram({}){}, {}.histogram_bin_edges({}){}".format(
                     self.paddleClass,
                     self.kwargs_to_str(kwargs),
-                    f".cast({cast_dtype})" if cast_result else "",
+                    f".cast({cast_dtype})",
                     self.paddleClass,
                     self.kwargs_to_str(kwargs_bin_edges),
-                    f".cast({cast_dtype})" if cast_result else "",
+                    f".cast({cast_dtype})",
                 )
             else:
                 cast_dtype = kwargs["input"] + ".dtype"
                 code = (
                     "paddle.histogram({}){}, paddle.histogram_bin_edges({}){}".format(
                         self.kwargs_to_str(kwargs),
-                        f".cast({cast_dtype})" if cast_result else "",
+                        f".cast({cast_dtype})",
                         self.kwargs_to_str(kwargs_bin_edges),
-                        f".cast({cast_dtype})" if cast_result else "",
+                        f".cast({cast_dtype})",
                     )
                 )
         return code
