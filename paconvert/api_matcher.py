@@ -5401,59 +5401,40 @@ class HistogramMatcher(BaseMatcher):
             if "Tensor" in self.torch_api:
                 API_TEMPLATE = textwrap.dedent(
                     """
-                    out1, out2 = {}.histogram({}){}, {}.histogram_bin_edges({}){}
-                    paddle.assign(out1, {}[0]), paddle.assign(out2, {}[1])
+                    out1, out2 = {paddleclass}.histogram({kwargs}).cast({out_v}[0].dtype), {paddleclass}.histogram_bin_edges({kwargs_bin_edges}).cast({out_v}[0].dtype)
+                    paddle.assign(out1, {out_v}[0]), paddle.assign(out2, {out_v}[1])
                     """
                 )
-                hist_dtype = out_v + "[0].dtype"
-                bin_dtype = out_v + "[1].dtype"
                 code = API_TEMPLATE.format(
-                    self.paddleClass,
-                    self.kwargs_to_str(kwargs),
-                    f".cast({hist_dtype})",
-                    self.paddleClass,
-                    self.kwargs_to_str(kwargs_bin_edges),
-                    f".cast({bin_dtype})",
-                    out_v,
-                    out_v,
+                    paddleclass=self.paddleClass,
+                    kwargs=self.kwargs_to_str(kwargs),
+                    kwargs_bin_edges=self.kwargs_to_str(kwargs_bin_edges),
+                    out_v=out_v,
                 )
             else:
                 API_TEMPLATE = textwrap.dedent(
                     """
-                    out1, out2 = paddle.histogram({}){}, paddle.histogram_bin_edges({}){}
-                    paddle.assign(out1, {}[0]), paddle.assign(out2, {}[1])
+                    out1, out2 = paddle.histogram({kwargs}).cast({out_v}[0].dtype), paddle.histogram_bin_edges({kwargs_bin_edges}).cast({out_v}[1].dtype)
+                    paddle.assign(out1, {out_v}[0]), paddle.assign(out2, {out_v}[1])
                     """
                 )
-                hist_dtype = out_v + "[0].dtype"
-                bin_dtype = out_v + "[1].dtype"
                 code = API_TEMPLATE.format(
-                    self.kwargs_to_str(kwargs),
-                    f".cast({hist_dtype})",
-                    self.kwargs_to_str(kwargs_bin_edges),
-                    f".cast({bin_dtype})",
-                    out_v,
-                    out_v,
+                    kwargs=self.kwargs_to_str(kwargs),
+                    kwargs_bin_edges=self.kwargs_to_str(kwargs_bin_edges),
+                    out_v=out_v,
                 )
         else:
             if "Tensor" in self.torch_api:
-                cast_dtype = self.paddleClass + ".dtype"
-                code = "{}.histogram({}){}, {}.histogram_bin_edges({}){}".format(
-                    self.paddleClass,
-                    self.kwargs_to_str(kwargs),
-                    f".cast({cast_dtype})",
-                    self.paddleClass,
-                    self.kwargs_to_str(kwargs_bin_edges),
-                    f".cast({cast_dtype})",
+                code = "{paddleclass}.histogram({kwargs}).cast({paddleclass}.dtype), {paddleclass}.histogram_bin_edges({kwargs_bin_edges}).cast({paddleclass}.dtype)".format(
+                    paddleclass=self.paddleClass,
+                    kwargs=self.kwargs_to_str(kwargs),
+                    kwargs_bin_edges=self.kwargs_to_str(kwargs_bin_edges),
                 )
             else:
-                cast_dtype = kwargs["input"] + ".dtype"
-                code = (
-                    "paddle.histogram({}){}, paddle.histogram_bin_edges({}){}".format(
-                        self.kwargs_to_str(kwargs),
-                        f".cast({cast_dtype})",
-                        self.kwargs_to_str(kwargs_bin_edges),
-                        f".cast({cast_dtype})",
-                    )
+                code = "paddle.histogram({kwargs}).cast({input}.dtype), paddle.histogram_bin_edges({kwargs_bin_edges}).cast({input}.dtype)".format(
+                    kwargs=self.kwargs_to_str(kwargs),
+                    kwargs_bin_edges=self.kwargs_to_str(kwargs_bin_edges),
+                    input=kwargs["input"],
                 )
         return code
 
