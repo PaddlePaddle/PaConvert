@@ -5389,6 +5389,11 @@ class HistogramMatcher(BaseMatcher):
                 kwargs[kwargs_change[k][1]] = f"{kwargs['range']}[1]"
                 kwargs.pop(k)
 
+        cast_result = True
+        if "weight" in kwargs and "density" in kwargs:
+            if kwargs["weight"] is not None or kwargs["density"] is True:
+                cast_result = False
+
         kwargs_bin_edges = kwargs.copy()
         if "weight" in kwargs_bin_edges:
             kwargs_bin_edges.pop("weight")
@@ -5401,43 +5406,59 @@ class HistogramMatcher(BaseMatcher):
             if "Tensor" in self.torch_api:
                 API_TEMPLATE = textwrap.dedent(
                     """
-                    out1, out2 = {}.histogram({}), {}.histogram_bin_edges({})
+                    out1, out2 = {}.histogram({}){}, {}.histogram_bin_edges({}){}
                     paddle.assign(out1, {}[0]), paddle.assign(out2, {}[1])
                     """
                 )
+                hist_dtype = out_v + "[0].dtype"
+                bin_dtype = out_v + "[1].dtype"
                 code = API_TEMPLATE.format(
                     self.paddleClass,
                     self.kwargs_to_str(kwargs),
+                    f".cast({hist_dtype})",
                     self.paddleClass,
                     self.kwargs_to_str(kwargs_bin_edges),
+                    f".cast({bin_dtype})",
                     out_v,
                     out_v,
                 )
             else:
                 API_TEMPLATE = textwrap.dedent(
                     """
-                    out1, out2 = paddle.histogram({}), paddle.histogram_bin_edges({})
+                    out1, out2 = paddle.histogram({}){}, paddle.histogram_bin_edges({}){}
                     paddle.assign(out1, {}[0]), paddle.assign(out2, {}[1])
                     """
                 )
+                hist_dtype = out_v + "[0].dtype"
+                bin_dtype = out_v + "[1].dtype"
                 code = API_TEMPLATE.format(
                     self.kwargs_to_str(kwargs),
+                    f".cast({hist_dtype})",
                     self.kwargs_to_str(kwargs_bin_edges),
+                    f".cast({bin_dtype})",
                     out_v,
                     out_v,
                 )
         else:
             if "Tensor" in self.torch_api:
-                code = "{}.histogram({}), {}.histogram_bin_edges({})".format(
+                cast_dtype = self.paddleClass + ".dtype"
+                code = "{}.histogram({}){}, {}.histogram_bin_edges({}){}".format(
                     self.paddleClass,
                     self.kwargs_to_str(kwargs),
+                    f".cast({cast_dtype})" if cast_result else "",
                     self.paddleClass,
                     self.kwargs_to_str(kwargs_bin_edges),
+                    f".cast({cast_dtype})" if cast_result else "",
                 )
             else:
-                code = "paddle.histogram({}), paddle.histogram_bin_edges({})".format(
-                    self.kwargs_to_str(kwargs),
-                    self.kwargs_to_str(kwargs_bin_edges),
+                cast_dtype = kwargs["input"] + ".dtype"
+                code = (
+                    "paddle.histogram({}){}, paddle.histogram_bin_edges({}){}".format(
+                        self.kwargs_to_str(kwargs),
+                        f".cast({cast_dtype})" if cast_result else "",
+                        self.kwargs_to_str(kwargs_bin_edges),
+                        f".cast({cast_dtype})" if cast_result else "",
+                    )
                 )
         return code
 
