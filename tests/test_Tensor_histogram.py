@@ -122,3 +122,13 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["hist", "bin"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        hist, bin = torch.tensor([[1., 2, 1]]).histogram(bins=4, range=(0, 3))
+        """
+    )
+    obj.run(pytorch_code, ["hist", "bin"])

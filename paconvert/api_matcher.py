@@ -5401,7 +5401,7 @@ class HistogramMatcher(BaseMatcher):
             if "Tensor" in self.torch_api:
                 API_TEMPLATE = textwrap.dedent(
                     """
-                    out1, out2 = {paddleclass}.histogram({kwargs}).cast({out_v}[0].dtype), {paddleclass}.histogram_bin_edges({kwargs_bin_edges}).cast({out_v}[0].dtype)
+                    out1, out2 = {paddleclass}.histogram({kwargs}).cast({out_v}[0].dtype), {paddleclass}.histogram_bin_edges({kwargs_bin_edges}).cast({out_v}[1].dtype)
                     paddle.assign(out1, {out_v}[0]), paddle.assign(out2, {out_v}[1])
                     """
                 )
