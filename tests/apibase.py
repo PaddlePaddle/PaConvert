@@ -92,10 +92,15 @@ class APIBase(object):
                     lineterm="",
                 )
                 diff_text = "\n".join(diff)
-                print(f"[{self.pytorch_api}]: get unexpected code\n{diff_text}")
-            assert convert_paddle_code == expect_paddle_code.lstrip(
-                "\n"
-            ), "[{}]: get unexpected code".format(self.pytorch_api)
+                error_message = (
+                    f"[{self.pytorch_api}]: get unexpected code\n"
+                    f"{'='*50}\n"
+                    f"Diff:\n{diff_text}\n"
+                    f"{'='*50}"
+                )
+                assert convert_paddle_code == expect_paddle_code.lstrip(
+                    "\n"
+                ), error_message
 
     def compare(
         self,
