@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.scatter_reduce", is_aux_api=True)
+obj = APIBase("torch.scatter_reduce")
 
 
 def test_case_1():

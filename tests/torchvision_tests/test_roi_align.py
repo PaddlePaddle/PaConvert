@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torchvision.ops.roi_align", is_aux_api=True)
+obj = APIBase("torchvision.ops.roi_align")
 
 
 def test_case_1():

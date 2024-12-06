@@ -18,20 +18,17 @@ import sys
 import numpy as np
 
 sys.path.append(os.path.dirname(__file__) + "/..")
-import textwrap
 
 from paconvert.converter import Converter
 
 
 class APIBase(object):
-    def __init__(self, pytorch_api, is_aux_api=False) -> None:
+    def __init__(self, pytorch_api) -> None:
         """
         args:
             pytorch_api: The corresponding pytorch api
-            is_aux_api: the bool value for api that need Auxiliary code
         """
         self.pytorch_api = pytorch_api
-        self.is_aux_api = is_aux_api
 
     def run(
         self,
@@ -70,19 +67,6 @@ class APIBase(object):
             pytorch_result = [loc[name] for name in compared_tensor_names]
 
             paddle_code = self.convert(pytorch_code)
-            if self.is_aux_api:
-                paddle_code = (
-                    textwrap.dedent(
-                        """
-                    import sys
-                    import importlib
-                    sys.path.append('test_project')
-                    import utils
-                    utils=importlib.reload(utils)
-                    """
-                    )
-                    + paddle_code
-                )
             exec(paddle_code, locals())
             paddle_result = [loc[name] for name in compared_tensor_names]
             for i in range(len(compared_tensor_names)):

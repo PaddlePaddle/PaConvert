@@ -17,7 +17,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.positive", is_aux_api=True)
+obj = APIBase("torch.positive")
 
 
 def test_case_1():

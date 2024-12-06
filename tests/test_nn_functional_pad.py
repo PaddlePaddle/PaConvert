@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.functional.pad", is_aux_api=True)
+obj = APIBase("torch.nn.functional.pad")
 
 
 def test_case_1():

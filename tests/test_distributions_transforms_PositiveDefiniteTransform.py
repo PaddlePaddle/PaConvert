@@ -16,9 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase(
-    "torch.distributions.transforms.PositiveDefiniteTransform", is_aux_api=True
-)
+obj = APIBase("torch.distributions.transforms.PositiveDefiniteTransform")
 
 
 def test_case_1():
