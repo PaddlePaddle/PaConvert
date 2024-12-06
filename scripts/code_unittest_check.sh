@@ -27,7 +27,7 @@ python -m pip install --pre paddlepaddle -i https://www.paddlepaddle.org.cn/pack
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
 echo "Checking code unit test by pytest ..."
-python -m pip install pytest-timeout
+python -m pip install pytest-timeout pytest-xdist
 python -m pytest -n 1 /workspace/$1/PaConvert/tests;check_error=$?
 
 echo '************************************************************************************'
