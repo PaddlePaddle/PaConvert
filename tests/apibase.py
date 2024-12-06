@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import difflib
 import os
 import sys
 
@@ -82,6 +83,16 @@ class APIBase(object):
                 )
         if expect_paddle_code:
             convert_paddle_code = self.convert(pytorch_code)
+            if convert_paddle_code != expect_paddle_code.lstrip("\n"):
+                diff = difflib.unified_diff(
+                    expect_paddle_code.lstrip("\n").splitlines(),
+                    convert_paddle_code.splitlines(),
+                    fromfile="expected",
+                    tofile="converted",
+                    lineterm="",
+                )
+                diff_text = "\n".join(diff)
+                print(f"[{self.pytorch_api}]: get unexpected code\n{diff_text}")
             assert convert_paddle_code == expect_paddle_code.lstrip(
                 "\n"
             ), "[{}]: get unexpected code".format(self.pytorch_api)
