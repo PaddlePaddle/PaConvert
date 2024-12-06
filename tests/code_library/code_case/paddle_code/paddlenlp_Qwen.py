@@ -78,7 +78,7 @@ def apply_rotary_position_embeddings(x, cos, sin):
 
     return paddle.concat(x=(t_rot, t_pass), axis=-1)
 
-# <<<<<<<<<< End of PaConvert generated content <<<<<<<<<<
+# <<<<<<<<<< End of PaConvert content <<<<<<<<<<
 
 print('#########################case1#########################')
 

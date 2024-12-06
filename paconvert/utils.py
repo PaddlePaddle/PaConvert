@@ -43,7 +43,7 @@ class AuxFileHelper(object):
     import paddle
     """
     END_CONTENT = """
-    # <<<<<<<<<< End of PaConvert generated content <<<<<<<<<<
+    # <<<<<<<<<< End of PaConvert content <<<<<<<<<<
     """
 
     def __init__(self, fileName=None, is_dir_mode=False, *args, **kwargs):
@@ -99,10 +99,12 @@ class AuxFileHelper(object):
                 existing_content = f.read()
 
             # only rewrite the content between the INIT_CONTENT and END_CONTENT
-            start_index = existing_content.find(self.INIT_CONTENT)
-            end_index = existing_content.find(self.END_CONTENT)
+            start_marker = "# >>>>>>>>>>>>> PaConvert generated >>>>>>>>>>>>>"
+            end_marker = "# <<<<<<<<<< End of PaConvert content <<<<<<<<<<"
+            start_index = existing_content.find(start_marker)
+            end_index = existing_content.find(end_marker)
             if start_index != -1 and end_index != -1:
-                end_index += len(self.END_CONTENT)
+                end_index += len(end_marker)
                 existing_content = (
                     existing_content[:start_index]
                     + existing_content[end_index:].lstrip()
@@ -112,18 +114,20 @@ class AuxFileHelper(object):
             if re.search(r"^import\s+paddle\s*$", existing_content, re.MULTILINE):
                 all_code = all_code.replace("import paddle\n", "")
 
+            # find the last import statement to insert the new code after it
             lines = existing_content.splitlines()
             insert_line = 0
-
-            # find a proper position to insert the new code(after all the import statements)
+            last_import_line = -1
             for i, line in enumerate(lines):
                 line = line.strip()
                 if not line or line.startswith("#"):
                     continue
-                if not (line.startswith("import ") or line.startswith("from ")):
-                    insert_line = i
-                    break
+                if line.startswith("import ") or line.startswith("from "):
+                    last_import_line = i
+                    continue
 
+            # insert the new code after the last import statement
+            insert_line = last_import_line + 1 if last_import_line != -1 else 0
             new_content = "\n".join(lines[:insert_line]) + "\n\n"
             new_content += all_code
             new_content += "\n".join(lines[insert_line:])
