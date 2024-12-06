@@ -44,9 +44,11 @@ def iter_fields(node):
 
 
 class BasicTransformer(BaseTransformer):
-    def __init__(self, root, file, imports_map, logger, unsupport_map=None):
+    def __init__(
+        self, root, file, imports_map, logger, unsupport_map=None, is_dir_mode=False
+    ):
         super(BasicTransformer, self).__init__(
-            root, file, imports_map, logger, unsupport_map
+            root, file, imports_map, logger, unsupport_map, is_dir_mode
         )
         # use to identify tensor method/attribute
         self.black_list = self.imports_map[self.file]["other_packages"] + [

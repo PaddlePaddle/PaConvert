@@ -83,12 +83,20 @@ class Converter:
             for item in exclude_dirs:
                 exclude_dir_list.append(os.path.abspath(item))
 
-        if out_dir.endswith(".py"):
-            AuxFileHelper(os.path.dirname(out_dir) + "/utils.py", is_dir_mode=False)
+        if in_dir.endswith(".py"):
+            self.is_dir_mode = False
+            out_file = (
+                os.path.join(out_dir, os.path.basename(in_dir))
+                if os.path.isdir(out_dir)
+                else out_dir
+            )
+            aux_file_helper = AuxFileHelper(out_file, is_dir_mode=False)
         else:
-            AuxFileHelper(out_dir + "/utils.py", is_dir_mode=True)
+            self.is_dir_mode = True
+            aux_file_helper = AuxFileHelper(out_dir + "/utils.py", is_dir_mode=True)
 
         self.transfer_dir(in_dir, out_dir, exclude_dir_list)
+        aux_file_helper.write_code()
         if self.show_unsupport:
             unsupport_map = sorted(
                 self.unsupport_map.items(), key=lambda x: x[1], reverse=True
@@ -270,7 +278,12 @@ class Converter:
         ]
         for transformer in transformers:
             trans = transformer(
-                root, file, self.imports_map, self.logger, self.unsupport_map
+                root,
+                file,
+                self.imports_map,
+                self.logger,
+                self.unsupport_map,
+                self.is_dir_mode,
             )
             trans.transform()
             self.torch_api_count += trans.torch_api_count
