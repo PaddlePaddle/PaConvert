@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.take", is_aux_api=True)
+obj = APIBase("torch.Tensor.take")
 
 
 def test_case_1():

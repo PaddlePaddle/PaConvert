@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.max", is_aux_api=True)
+obj = APIBase("torch.max")
 
 
 def test_case_1():

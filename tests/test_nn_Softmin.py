@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Softmin", is_aux_api=True)
+obj = APIBase("torch.nn.Softmin")
 
 
 def test_case_1():

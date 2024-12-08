@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.swapdims", is_aux_api=True)
+obj = APIBase("torch.swapdims")
 
 
 def test_case_1():

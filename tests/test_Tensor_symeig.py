@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.symeig", is_aux_api=True)
+obj = APIBase("torch.Tensor.symeig")
 
 
 # This function was deprecated since version 1.9 and is now removed.
