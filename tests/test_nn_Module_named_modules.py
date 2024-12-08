@@ -83,3 +83,69 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        from collections import OrderedDict
+        l = nn.Linear(2, 2)
+        net = nn.Sequential(OrderedDict([
+                        ('wfs', l),
+                        ('wfs1', l)
+                        ]))
+        memo = set()
+        z = net.named_modules(memo=memo, prefix="wfs", remove_duplicate=False)
+        name_list = []
+        for idx,m in enumerate(z):
+            name_list.append(m[0])
+        result = name_list
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        from collections import OrderedDict
+        l = nn.Linear(2, 2)
+        net = nn.Sequential(OrderedDict([
+                        ('wfs', l),
+                        ('wfs1', l)
+                        ]))
+        memo = set()
+        z = net.named_modules(memo, "wfs", False)
+        name_list = []
+        for idx,m in enumerate(z):
+            name_list.append(m[0])
+        result = name_list
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        from collections import OrderedDict
+        l = nn.Linear(2, 2)
+        net = nn.Sequential(OrderedDict([
+                        ('wfs', l),
+                        ('wfs1', l)
+                        ]))
+        memo = set()
+        z = net.named_modules()
+        name_list = []
+        for idx,m in enumerate(z):
+            name_list.append(m[0])
+        result = name_list
+        """
+    )
+    obj.run(pytorch_code, ["result"])

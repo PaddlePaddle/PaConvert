@@ -157,3 +157,26 @@ def _test_case_6():
         """
     )
     obj.run(pytorch_code, ["output", "h_n"], check_value=False)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        class SimpleRNNModel(nn.Module):
+            def __init__(self):
+                super(SimpleRNNModel, self).__init__()
+                self.gru = nn.GRU(input_size=10, hidden_size=20, num_layers=2, batch_first=True, dropout=0.5, bidirectional=True, device="cpu", dtype=torch.float)
+
+            def forward(self, x):
+                output, h_n = self.gru(x)
+                return output, h_n
+
+        x = torch.randn(5, 3, 10)  # (batch_size, seq_len, input_size)
+        model = SimpleRNNModel()
+        output, h_n = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["output", "h_n"], check_value=False)
