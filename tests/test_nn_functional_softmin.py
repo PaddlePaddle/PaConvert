@@ -95,3 +95,18 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        result = torch.nn.functional.softmin(input)
+        """
+    )
+    obj.run(
+        pytorch_code, ["result"], unsupport=True, reason="not support default value dim"
+    )

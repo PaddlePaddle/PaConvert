@@ -74,3 +74,17 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        i = torch.tensor([[0, 1, 1],
+                          [2, 0, 2]])
+        v = torch.tensor([3, 4, 5])
+        result = torch.sparse.FloatTensor(indices=i, values=v, size=[2, 4], device = "cpu")
+        result = result.to_dense()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
