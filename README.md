@@ -35,14 +35,14 @@
 
 ```bash
 pip install -U paconvert
-paconvert --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "INFO"] [--run_check 1]
+paconvert --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "INFO"] [--run_check 1] [--format]
 ```
 
 2. 使用源码安装
 
 ```bash
 git clone https://github.com/PaddlePaddle/PaConvert.git
-python paconvert/main.py --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "INFO"] [--run_check 1]
+python paconvert/main.py --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "INFO"] [--run_check 1] [--format]
 ```
 
 **参数介绍**
@@ -54,6 +54,7 @@ python paconvert/main.py --in_dir torch_project [--out_dir paddle_project] [--ex
 --log_dir       可选，输出日志的路径，默认会在终端上打印日志
 --log_level     可选，打印 log 等级，支持"WARNING"、"INFO"、"DEBUG"，默认"INFO"
 --run_check     可选，工具自检
+--format        可选，使用 black 格式化转换后的代码，默认不格式化
 ```
 
 
