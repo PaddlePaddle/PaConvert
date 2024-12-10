@@ -35,14 +35,14 @@
 
 ```bash
 pip install -U paconvert
-paconvert --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "INFO"] [--run_check 1] [--format]
+paconvert --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "INFO"] [--run_check] [--format]
 ```
 
 2. 使用源码安装
 
 ```bash
 git clone https://github.com/PaddlePaddle/PaConvert.git
-python paconvert/main.py --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "INFO"] [--run_check 1] [--format]
+python paconvert/main.py --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "INFO"] [--run_check] [--format]
 ```
 
 **参数介绍**

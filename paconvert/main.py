@@ -57,26 +57,22 @@ def main():
     )
     parser.add_argument(
         "--log_markdown",
-        default=False,
-        type=bool,
+        action="store_true",
         help="whether show log with markdown format",
     )
     parser.add_argument(
         "--run_check",
-        default=False,
-        type=bool,
+        action="store_true",
         help="run check the paddle convert tool",
     )
     parser.add_argument(
         "--show_unsupport",
-        default=False,
-        type=bool,
+        action="store_true",
         help="show these APIs which are not supported to convert now",
     )
     parser.add_argument(
         "--separate_convert",
-        default=False,
-        type=bool,
+        action="store_true",
         help="Convert Pytorch project each element Separately",
     )
     parser.add_argument(

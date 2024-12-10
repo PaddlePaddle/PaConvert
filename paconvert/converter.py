@@ -243,7 +243,13 @@ class Converter:
             code = astor.to_source(root)
             code = self.mark_unsupport(code, old_path)
             if self.format:
-                code = black.format_str(code, mode=black.Mode())
+                try:
+                    code = black.format_str(code, mode=black.Mode())
+                except Exception as e:
+                    log_warning(
+                        self.logger,
+                        "Skip format because there are unsupported pytorch APIs in the converted code",
+                    )
             with open(new_path, "w", encoding="UTF-8") as file:
                 file.write(code)
             log_info(
