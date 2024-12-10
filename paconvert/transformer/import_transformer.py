@@ -26,11 +26,9 @@ class ImportTransformer(BaseTransformer):
     Record import information
     """
 
-    def __init__(
-        self, root, file, imports_map, logger, unsupport_map=None, is_dir_mode=False
-    ):
+    def __init__(self, root, file, imports_map, logger, unsupport_map=None):
         super(ImportTransformer, self).__init__(
-            root, file, imports_map, logger, unsupport_map, is_dir_mode
+            root, file, imports_map, logger, unsupport_map
         )
         self.imports_map[self.file]["other_packages"] = []
         self.imports_map[self.file]["torch_packages"] = []

@@ -83,16 +83,14 @@ class Converter:
             for item in exclude_dirs:
                 exclude_dir_list.append(os.path.abspath(item))
 
-        if in_dir.endswith(".py"):
-            self.is_dir_mode = False
+        if os.path.isfile(in_dir):
             out_file = (
                 os.path.join(out_dir, os.path.basename(in_dir))
                 if os.path.isdir(out_dir)
                 else out_dir
             )
             aux_file_helper = AuxFileHelper(out_file, is_dir_mode=False)
-        else:
-            self.is_dir_mode = True
+        elif os.path.isdir(in_dir):
             aux_file_helper = AuxFileHelper(out_dir + "/utils.py", is_dir_mode=True)
 
         self.transfer_dir(in_dir, out_dir, exclude_dir_list)
@@ -283,7 +281,6 @@ class Converter:
                 self.imports_map,
                 self.logger,
                 self.unsupport_map,
-                self.is_dir_mode,
             )
             trans.transform()
             self.torch_api_count += trans.torch_api_count

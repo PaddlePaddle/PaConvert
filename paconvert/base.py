@@ -68,9 +68,7 @@ MAY_TORCH_PACKAGE_LIST = [
 
 
 class BaseTransformer(ast.NodeTransformer):
-    def __init__(
-        self, root, file, imports_map, logger, unsupport_map=None, is_dir_mode=False
-    ):
+    def __init__(self, root, file, imports_map, logger, unsupport_map=None):
         self.root = root
         self.file = file
         self.file_name = os.path.basename(file)
@@ -84,7 +82,6 @@ class BaseTransformer(ast.NodeTransformer):
         self.logger = logger
         self.black_list = []
         self.unsupport_map = unsupport_map
-        self.is_dir_mode = is_dir_mode
 
     def transform(self):
         self.visit(self.root)
@@ -487,12 +484,12 @@ class BaseMatcher(object):
                     self.torch_api, aux_file_helper.fileName
                 ),
             )
-            if self.transformer.is_dir_mode:
+            if aux_file_helper.is_dir_mode:
                 CODE_TEMPLATE = textwrap.dedent(
                     """
                     import sys
                     sys.path.append(r'{}')
-                    import utils
+                    from utils import *
                     """
                 )
                 code = CODE_TEMPLATE.format(self.get_aux_dir())
@@ -544,6 +541,3 @@ class BaseMatcher(object):
     def get_paddle_class_nodes(self, func, args, kwargs):
         self.parse_func(func)
         return self.get_paddle_nodes(args, kwargs)
-
-    def get_utils_prefix(self):
-        return "utils." if self.transformer.is_dir_mode else ""

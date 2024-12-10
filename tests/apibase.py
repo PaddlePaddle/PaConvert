@@ -82,25 +82,25 @@ class APIBase(object):
                     atol,
                 )
         if expect_paddle_code:
-            convert_paddle_code = self.convert(pytorch_code)
-            if convert_paddle_code != expect_paddle_code.lstrip("\n"):
+            converted_code = self.convert(pytorch_code).strip()
+            expected_code = expect_paddle_code.strip()
+            if converted_code != expected_code:
                 diff = difflib.unified_diff(
-                    expect_paddle_code.lstrip("\n").splitlines(),
-                    convert_paddle_code.splitlines(),
+                    expected_code.splitlines(),
+                    converted_code.splitlines(),
                     fromfile="expected",
                     tofile="converted",
                     lineterm="",
                 )
                 diff_text = "\n".join(diff)
-                error_message = (
-                    f"[{self.pytorch_api}]: get unexpected code\n"
-                    f"{'='*50}\n"
-                    f"Diff:\n{diff_text}\n"
-                    f"{'='*50}"
+                error_msg = (
+                    f"[{self.pytorch_api}] Code conversion result differs from expectation:\n"
+                    f"{'-'*50}\n"
+                    f"Diff comparison:\n"
+                    f"{diff_text}\n"
+                    f"{'-'*50}"
                 )
-                assert convert_paddle_code == expect_paddle_code.lstrip(
-                    "\n"
-                ), error_message
+                assert converted_code == expected_code, error_msg
 
     def compare(
         self,

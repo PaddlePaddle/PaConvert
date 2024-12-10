@@ -38,24 +38,24 @@ def get_unique_name(key):
 class AuxFileHelper(object):
     _instance = None
     INIT_CONTENT = """
-    # >>>>>>>>>>>>> PaConvert generated >>>>>>>>>>>>>
-    # !! Contents within this block are managed by 'PaConvert ToolKit', please Don't edit it! !!
+    ############################## 相关utils函数，如下 ##############################
+    ####################### PaConvert 自动生成的代码，请勿手动修改! ##################
     import paddle
     """
     END_CONTENT = """
-    # <<<<<<<<<< End of PaConvert content <<<<<<<<<<
+    ############################## 相关utils函数，如上 ##############################
     """
 
-    def __init__(self, fileName=None, is_dir_mode=False, *args, **kwargs):
+    def __init__(self, fileName=None, is_dir_mode=False):
         if not hasattr(self, "initialized"):
-            super().__init__(*args, **kwargs)
+            super().__init__()
             self.fileName = fileName
             self.is_dir_mode = is_dir_mode
             self.ids = collections.defaultdict(int)
             self.code_map = {}
             self.initialized = True
 
-    def __new__(cls, fileName=None, is_dir_mode=False, *args, **kwargs):
+    def __new__(cls, fileName=None, is_dir_mode=False):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
@@ -99,8 +99,8 @@ class AuxFileHelper(object):
                 existing_content = f.read()
 
             # only rewrite the content between the INIT_CONTENT and END_CONTENT
-            start_marker = "# >>>>>>>>>>>>> PaConvert generated >>>>>>>>>>>>>"
-            end_marker = "# <<<<<<<<<< End of PaConvert content <<<<<<<<<<"
+            start_marker = "############################## 相关utils函数，如下 ##############################"
+            end_marker = "############################## 相关utils函数，如上 ##############################"
             start_index = existing_content.find(start_marker)
             end_index = existing_content.find(end_marker)
             if start_index != -1 and end_index != -1:
