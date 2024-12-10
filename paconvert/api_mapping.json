@@ -13201,7 +13201,7 @@
     }
   },
   "torch.nn.functional.log_softmax": {
-    "Matcher": "SoftmaxMatcher",
+    "Matcher": "FSoftmaxMatcher",
     "paddle_api": "paddle.nn.functional.log_softmax",
     "args_list": [
       "input",
@@ -13741,7 +13741,7 @@
     "min_input_args": 2
   },
   "torch.nn.functional.softmax": {
-    "Matcher": "SoftmaxMatcher",
+    "Matcher": "FSoftmaxMatcher",
     "paddle_api": "paddle.nn.functional.softmax",
     "args_list": [
       "input",

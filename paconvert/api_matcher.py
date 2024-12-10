@@ -3232,9 +3232,8 @@ class FSoftMinMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def input_dim(input):
-                ndim = input.dim()
-                if ndim == 0 or ndim == 1 or ndim == 3:
+            def _get_softmin_dim(axis: int) -> int:
+                if axis == 0 or axis == 1 or axis == 3:
                     return 0
                 else:
                     return 1
@@ -3246,7 +3245,7 @@ class FSoftMinMatcher(BaseMatcher):
         kwargs["input"] = f"-{kwargs['input']}"
         if "dim" not in kwargs or kwargs["dim"] == "None":
             self.write_aux_code()
-            kwargs["dim"] = "utils.input_dim({})".format(kwargs["input"])
+            kwargs["dim"] = "utils._get_softmin_dim({}.ndim)".format(kwargs["input"])
             return GenericMatcher.generate_code(self, kwargs)
         else:
             return GenericMatcher.generate_code(self, kwargs)
@@ -4258,13 +4257,6 @@ class SoftmaxMatcher(BaseMatcher):
     def generate_aux_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def _get_softmax_dim(axis: int) -> int:
-                if axis == 0 or axis == 1 or axis == 3:
-                    ret = 0
-                else:
-                    ret = 1
-                return ret
-
             def forward(self,x):
                 if self._axis is None:
                     return paddle.nn.functional.softmax(x, _get_softmax_dim(x.ndim))
@@ -4283,10 +4275,27 @@ class SoftmaxMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "dim" not in kwargs or kwargs["dim"] == "None":
             self.write_aux_code()
-            if "functional" in self.get_paddle_api():
-                kwargs["dim"] = "utils._get_softmax_dim({}.ndim)".format(
-                    kwargs["input"]
-                )
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class FSoftmaxMatcher(BaseMatcher):
+    def generate_aux_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def _get_softmax_dim(axis: int) -> int:
+                if axis == 0 or axis == 1 or axis == 3:
+                    ret = 0
+                else:
+                    ret = 1
+                return ret
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        if "dim" not in kwargs or kwargs["dim"] == "None":
+            self.write_aux_code()
+            kwargs["dim"] = "utils._get_softmax_dim({}.ndim)".format(kwargs["input"])
         return GenericMatcher.generate_code(self, kwargs)
 
 
