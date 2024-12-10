@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.functional.softmin")
+obj = APIBase("torch.nn.functional.softmin", is_aux_api=True)
 
 
 def test_case_1():
@@ -107,6 +107,4 @@ def test_case_7():
         result = torch.nn.functional.softmin(input)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="not support default value dim"
-    )
+    obj.run(pytorch_code, ["result"])

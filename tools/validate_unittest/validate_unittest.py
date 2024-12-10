@@ -35,7 +35,7 @@ validate_whitelist = [
     r"^torch\.nn\.ParameterList",  # 该文件没有测试 torch.nn.ParameterLisaa
     r"^torch\.utils\.cpp_extension\.BuildExtension",  # 该文件测试的 api 没有调用
     r"^torch\.utils\.data\.Sampler",  # 该文件测试时仅将 api 作为基类继承
-    r"^torch\.utils\.data\.SequentialSampler",  # 该文件测试时仅将 api 作为基类继承va
+    r"^torch\.utils\.data\.SequentialSampler",  # 该文件测试时仅将 api 作为基类继承
 ]
 
 validate_whitelist_re = [re.compile(p) for p in validate_whitelist]
