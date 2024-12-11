@@ -24,6 +24,7 @@ python -c "import torchvision; print('torchvision version information:' ,torchvi
 
 echo "Installing dependencies"
 python -m pip install pandas openpyxl
+python -m pip install -r requirements.txt
 
 # obtain the model test set
 if [[ "$DOWNLOAD_DATASET_IF" == "ON" ]]; then
@@ -76,7 +77,7 @@ fi
 
 # Check the grammar mechanism of the test set and other issues
 echo '**************************start converting test case********************************'
-python paconvert/main.py --in_dir $TORCH_PROJECT_PATH --show_unsupport 1;check_error1=$?
+python paconvert/main.py --in_dir $TORCH_PROJECT_PATH --show_unsupport;check_error1=$?
 echo '************************************************************************************'
 #check whether common API transfer is successful
 
