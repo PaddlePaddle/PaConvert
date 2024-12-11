@@ -4263,7 +4263,7 @@ class SoftmaxMatcher(BaseMatcher):
                 else:
                     ret = 1
                 return ret
-                
+
             def forward(self,x):
                 if self._axis is None:
                     return paddle.nn.functional.softmax(x, _get_softmax_dim(x.ndim))
