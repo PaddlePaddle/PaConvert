@@ -17,7 +17,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.repeat", is_aux_api=True)
+obj = APIBase("torch.Tensor.repeat")
 
 
 def test_case_1():

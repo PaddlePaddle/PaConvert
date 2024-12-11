@@ -15,6 +15,6 @@
 
 from apibase import APIBase
 
-obj = APIBase("torchvision.datasets.VOCDetection", is_aux_api=True)
+obj = APIBase("torchvision.datasets.VOCDetection")
 
 # TODO(guozixu): Complete test cases after paddle_aux refactoring is done
