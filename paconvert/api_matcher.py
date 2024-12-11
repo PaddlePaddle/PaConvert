@@ -1331,7 +1331,6 @@ class MaxMinMatcher(BaseMatcher):
             return ast.parse(code).body
 
         self.enable_utils_code()
-        # TODO(guozixu): need to be tested, can paddle be replaced by ""?
         self.set_paddle_api(paddle_api.replace("paddle.", ""))
         return UnchangeMatcher.get_paddle_nodes(self, args, kwargs)
 
