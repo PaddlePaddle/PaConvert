@@ -35,7 +35,7 @@ def get_unique_name(key):
     return Generator(key)
 
 
-class AuxFileHelper(object):
+class UtilsFileHelper(object):
     _instance = None
     INIT_CONTENT = """
     ############################## 相关utils函数，如下 ##############################
@@ -104,34 +104,32 @@ class AuxFileHelper(object):
             start_index = existing_content.find(start_marker)
             end_index = existing_content.find(end_marker)
             if start_index != -1 and end_index != -1:
-                end_index += len(end_marker)
                 existing_content = (
                     existing_content[:start_index]
-                    + existing_content[end_index:].lstrip()
+                    + existing_content[end_index + len(end_marker) :].lstrip()
                 )
 
-            # remove the existing paddle import
+            # find a position to insert the new code
             if re.search(r"^import\s+paddle\s*$", existing_content, re.MULTILINE):
                 all_code = all_code.replace("import paddle\n", "")
-
-            # find the last import statement to insert the new code after it
             lines = existing_content.splitlines()
             insert_line = 0
-            last_import_line = -1
             for i, line in enumerate(lines):
                 line = line.strip()
                 if not line or line.startswith("#"):
                     continue
-                if line.startswith("import ") or line.startswith("from "):
-                    last_import_line = i
-                    continue
+                if not lines[i].startswith(" ") and not lines[i].startswith("\t"):
+                    if line.startswith("import ") or line.startswith("from "):
+                        insert_line = i + 1
 
-            # insert the new code after the last import statement
-            insert_line = last_import_line + 1 if last_import_line != -1 else 0
-            new_content = "\n".join(lines[:insert_line]) + "\n\n"
-            new_content += all_code
-            new_content += "\n".join(lines[insert_line:])
-
+            # insert the new code after all imports
+            new_content = "\n\n".join(
+                [
+                    "\n".join(lines[:insert_line]),
+                    all_code,
+                    "\n".join(lines[insert_line:]),
+                ]
+            )
             with open(self.fileName, "w") as f:
                 f.write(new_content)
         else:

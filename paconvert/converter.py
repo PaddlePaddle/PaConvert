@@ -33,7 +33,7 @@ from paconvert.transformer.custom_op_transformer import (
     PreCustomOpTransformer,
     CustomOpTransformer,
 )
-from paconvert.utils import AuxFileHelper, get_unique_name, log_info, log_warning
+from paconvert.utils import UtilsFileHelper, get_unique_name, log_info, log_warning
 
 
 def listdir_nohidden(path):
@@ -89,12 +89,12 @@ class Converter:
                 if os.path.isdir(out_dir)
                 else out_dir
             )
-            aux_file_helper = AuxFileHelper(out_file, is_dir_mode=False)
+            utils_file_helper = UtilsFileHelper(out_file, is_dir_mode=False)
         elif os.path.isdir(in_dir):
-            aux_file_helper = AuxFileHelper(out_dir + "/utils.py", is_dir_mode=True)
+            utils_file_helper = UtilsFileHelper(out_dir + "/utils.py", is_dir_mode=True)
 
         self.transfer_dir(in_dir, out_dir, exclude_dir_list)
-        aux_file_helper.write_code()
+        utils_file_helper.write_code()
         if self.show_unsupport:
             unsupport_map = sorted(
                 self.unsupport_map.items(), key=lambda x: x[1], reverse=True

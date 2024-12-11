@@ -320,11 +320,11 @@ class TransposeMatcher(BaseMatcher):
 
 **开发方式**：在 `get_paddle_class_nodes` 或 `generate_code` 增加相应的判断：
 - 对于 **不需要辅助代码** 即可运行的用法，直接返回 'unchange'
-- 对于 **需要辅助代码** 才可运行的用法，首先要额外重写 `generate_aux_code` 函数，其是模仿Pytorch类API用法的辅助代码，然后显式的调用 `write_aux_code` ，此时将在后台模块里注入辅助代码，最后再返回 'unchange' 即可
+- 对于 **需要辅助代码** 才可运行的用法，首先要额外重写 `utils_code` 函数，其是模仿Pytorch类API用法的辅助代码，然后显式的调用 `enable_utils_code` ，此时将在后台模块里注入辅助代码，最后再返回 'unchange' 即可
 
 由于 **辅助代码** 会改变原Paddle Tensor API的用法，应可能取两者功能的并集，所以在编写辅助代码的函数时，需采用 `*args、**kwargs` 来描述参数，从而可同时兼容pytorch与原paddle的参数名，例如 `paddle.Tensor.add` 被辅助函数修改后应同时可支持输入 `y` 与 `other` 作为第二个输入。
 
-另外我们需要判断用户的不同用法，在必要的情形下才 `write_aux_code` 使用辅助函数，以尽可能的减少辅助代码的使用。
+另外我们需要判断用户的不同用法，在必要的情形下才 `enable_utils_code` 使用辅助函数，以尽可能的减少辅助代码的使用。
 
 基于[Pytorch-Paddle API映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html)，我们可参考以下原则来判断是否需要辅助代码：
 
@@ -336,11 +336,12 @@ class TransposeMatcher(BaseMatcher):
 |参数不一致|未使用不一致的用法|使用了不一致的用法|
 |其他分类||全部需要辅助代码|
 
-以 `torch.Tensor.reshape` 为例，其映射关系分类属于 **参数不一致**，是由于torch的shape即可为可变参数，也可为list/tuple，而Paddle仅支持list/tuple，因此我们只需对**可变参数**的用法 `write_aux_code` 。
+以 `torch.Tensor.reshape` 为例，其映射关系分类属于 **参数不一致**，是由于torch的shape即可为可变参数，也可为list/tuple，而Paddle仅支持list/tuple，因此我们只需对**可变参数**的用法 `enable_utils_code` 。
 
 ```python
 class TensorReshapeMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def reshape(self, *args, **kwargs):
@@ -364,7 +365,7 @@ class TensorReshapeMatcher(BaseMatcher):
         if len(kwargs) == 1 and "shape" in kwargs:
             return "unchange"
 
-        self.write_aux_code()
+        self.enable_utils_code()
         return "unchange"
 
 ```
@@ -382,9 +383,22 @@ class TensorReshapeMatcher(BaseMatcher):
 x.reshape(2, 3)
 
 转换后：
-import sys
-sys.append('/paddle_project/utils')
-import paddle_aux
+############################## 相关utils函数，如下 ##############################
+####################### PaConvert 自动生成的代码，请勿手动修改! ##################
+
+def reshape(self, *args, **kwargs):
+    if args:
+        if len(args)==1 and isinstance(args[0], (tuple, list)):
+            return paddle.reshape(self, args[0])
+        else:
+            return paddle.reshape(self, list(args))
+    elif kwargs:
+        assert 'shape' in kwargs
+        return paddle.reshape(self, shape=kwargs['shape'])
+
+setattr(paddle.Tensor, 'reshape', reshape)
+
+############################## 相关utils函数，如上 ##############################
 
 x.reshape(2, 3)
 ```

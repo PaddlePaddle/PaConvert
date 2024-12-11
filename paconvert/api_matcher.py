@@ -327,7 +327,8 @@ class FSParallelEmbeddingMatcher(BaseMatcher):
 
 
 class InferenceModeMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def empty_decorator(func):
@@ -339,7 +340,7 @@ class InferenceModeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "mode" in kwargs:
             if kwargs["mode"] == "(False)":
-                self.write_aux_code()
+                self.enable_utils_code()
                 code = "empty_decorator"
             else:
                 code = "paddle.no_grad()"
@@ -485,7 +486,8 @@ class DimOrderMatcher(BaseMatcher):
 
 
 class TRFMPreTrainedTokenizerMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             import paddlenlp
@@ -498,12 +500,13 @@ class TRFMPreTrainedTokenizerMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         return GenericMatcher.generate_code(self, kwargs)
 
 
 class TRFMPreTrainedModelMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             from typing import Optional
@@ -553,7 +556,7 @@ class TRFMPreTrainedModelMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def get_paddle_nodes(self, args, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         return UnchangeMatcher.get_paddle_nodes(self, args, kwargs)
 
 
@@ -624,7 +627,8 @@ class Num2TensorBinaryWithAlphaMatcher(BaseMatcher):
 
 
 class TensorAddMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def add(self, *args, **kwargs):
@@ -654,12 +658,13 @@ class TensorAddMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         return "unchange"
 
 
 class TensorSubtractMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def sub(self, *args, **kwargs):
@@ -690,12 +695,13 @@ class TensorSubtractMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         return "unchange"
 
 
 class TensorMultiplyMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def mul(self, *args, **kwargs):
@@ -718,12 +724,13 @@ class TensorMultiplyMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         return "unchange"
 
 
 class TensorDivideMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def div(self, *args, **kwargs):
@@ -755,12 +762,13 @@ class TensorDivideMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         return "unchange"
 
 
 class TransposeMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         API_TEMPLATE = textwrap.dedent(
             """
             def dim2perm(ndim, dim0, dim1):
@@ -773,7 +781,7 @@ class TransposeMatcher(BaseMatcher):
         return API_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
             {}(x={}, perm=dim2perm({}.ndim,{}, {}))
@@ -791,7 +799,8 @@ class TransposeMatcher(BaseMatcher):
 
 
 class TensorTransposeMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         API_TEMPLATE = textwrap.dedent(
             """
             def dim2perm(ndim, dim0, dim1):
@@ -804,7 +813,7 @@ class TensorTransposeMatcher(BaseMatcher):
         return API_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
             {}(perm=dim2perm({}.ndim,{}, {}))
@@ -832,7 +841,8 @@ class BroadcastShapesMatcher(BaseMatcher):
 
 
 class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         API_TEMPLATE = textwrap.dedent(
             """
             class PositiveDefiniteTransform:
@@ -848,7 +858,7 @@ class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
         return API_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
             PositiveDefiniteTransform()
@@ -1155,7 +1165,8 @@ class PadMatcher(BaseMatcher):
 
 
 class MaxMinMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def min(*args, **kwargs):
@@ -1319,14 +1330,15 @@ class MaxMinMatcher(BaseMatcher):
 
             return ast.parse(code).body
 
-        self.write_aux_code()
+        self.enable_utils_code()
         # TODO(guozixu): need to be tested, can paddle be replaced by ""?
         self.set_paddle_api(paddle_api.replace("paddle.", ""))
         return UnchangeMatcher.get_paddle_nodes(self, args, kwargs)
 
 
 class TensorMaxMinMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def min_class_func(self, *args, **kwargs):
@@ -1373,7 +1385,7 @@ class TensorMaxMinMatcher(BaseMatcher):
         if len(kwargs) > 2:
             return "misidentify"
 
-        self.write_aux_code()
+        self.enable_utils_code()
         return "unchange"
 
 
@@ -1631,7 +1643,8 @@ class ScatterMatcher(BaseMatcher):
 
 
 class ScatterReduceMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def get_reduce_type(type):
@@ -1644,7 +1657,7 @@ class ScatterReduceMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         kwargs["reduce"] = "get_reduce_type({})".format(kwargs["reduce"])
         return GenericMatcher.generate_code(self, kwargs)
 
@@ -1934,7 +1947,8 @@ class CudnnIsAvailableMatcher(BaseMatcher):
 
 
 class SplitMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def split(x, num_or_sections, axis=0):
@@ -1948,7 +1962,7 @@ class SplitMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         return GenericMatcher.generate_code(self, kwargs).replace("paddle.", "")
 
 
@@ -3494,7 +3508,8 @@ class TensorShapeMatcher(BaseMatcher):
 
 
 class TensorReshapeMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def reshape(self, *args, **kwargs):
@@ -3523,7 +3538,7 @@ class TensorReshapeMatcher(BaseMatcher):
             if len(args) > 1 and isinstance(args[0], (ast.Tuple, ast.List)):
                 return "unchange"
             else:
-                self.write_aux_code()
+                self.enable_utils_code()
                 return "unchange"
 
         return "misidentify"
@@ -3960,7 +3975,8 @@ class LinalgSvdvalsMatcher(BaseMatcher):
 
 
 class TensorTakeMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def take(self, *args, **kwargs):
@@ -3975,12 +3991,13 @@ class TensorTakeMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         return "unchange"
 
 
 class TensorSplitMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def split_tensor_func(self, split_size, dim=0):
@@ -3999,12 +4016,13 @@ class TensorSplitMatcher(BaseMatcher):
         if '"""' in v:
             return "misidentify"
 
-        self.write_aux_code()
+        self.enable_utils_code()
         return "unchange"
 
 
 class TensorRoundMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def round(self, decimals=None):
@@ -4021,7 +4039,7 @@ class TensorRoundMatcher(BaseMatcher):
         if len(kwargs) == 0:
             return "unchange"
 
-        self.write_aux_code()
+        self.enable_utils_code()
         return "unchange"
 
 
@@ -4059,7 +4077,8 @@ class NonzeroMatcher(BaseMatcher):
 # which only implements the functional usage used by Qwen，not a complete
 # implementation of flash_attn.layers.rotary.apply_rotary_emb_func.
 class FAApplyRotaryEmbFuncMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def apply_rotary_position_embeddings(x, cos, sin):
@@ -4091,7 +4110,7 @@ class FAApplyRotaryEmbFuncMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
             apply_rotary_position_embeddings({})
@@ -4100,7 +4119,7 @@ class FAApplyRotaryEmbFuncMatcher(BaseMatcher):
         return API_TEMPLATE.format(self.kwargs_to_str(kwargs))
 
     def get_paddle_api(self):
-        self.write_aux_code()
+        self.enable_utils_code()
         return "apply_rotary_position_embeddings"
 
 
@@ -4169,7 +4188,8 @@ class WhereMatcher(BaseMatcher):
 
 
 class NTupleMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             import collections
@@ -4187,7 +4207,7 @@ class NTupleMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         if "x" not in kwargs:
             API_TEMPLATE = textwrap.dedent(
                 """
@@ -4208,7 +4228,8 @@ class NTupleMatcher(BaseMatcher):
 
 
 class Get_EnumMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def get_enum(reduction: str) -> int:
@@ -4230,7 +4251,7 @@ class Get_EnumMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
             get_enum({})
@@ -4240,7 +4261,8 @@ class Get_EnumMatcher(BaseMatcher):
 
 
 class SoftmaxMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def _get_softmax_dim(axis: int) -> int:
@@ -4267,7 +4289,7 @@ class SoftmaxMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         if "dim" not in kwargs or kwargs["dim"] == "None":
-            self.write_aux_code()
+            self.enable_utils_code()
             if "functional" in self.get_paddle_api():
                 kwargs["dim"] = "_get_softmax_dim({}.ndim)".format(kwargs["input"])
         return GenericMatcher.generate_code(self, kwargs)
@@ -4276,10 +4298,11 @@ class SoftmaxMatcher(BaseMatcher):
 class SoftminMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         self.paddle_api = "Softmin"
-        self.write_aux_code()
+        self.enable_utils_code()
         return GenericMatcher.generate_code(self, kwargs)
 
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def _get_softmax_dim(axis: int) -> int:
@@ -4630,7 +4653,8 @@ class SvdMatcher(BaseMatcher):
 
 
 class SymeigMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def convert_symeig(**kwargs):
@@ -4651,14 +4675,15 @@ class SymeigMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         if "input" not in kwargs:
             kwargs["input"] = self.paddleClass
         return "convert_symeig({})".format(self.kwargs_to_str(kwargs))
 
 
 class CanCastMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def can_cast(from_, to):
@@ -4838,12 +4863,13 @@ class CanCastMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         return "can_cast(from_={}, to={})".format(kwargs["from_"], kwargs["to"])
 
 
 class PositiveMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
         def positive(x):
@@ -4856,7 +4882,7 @@ class PositiveMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         if "input" in kwargs:
             code = "positive({})".format(kwargs["input"])
         else:
@@ -4865,7 +4891,8 @@ class PositiveMatcher(BaseMatcher):
 
 
 class FloatPowerMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def cast_exponent(exponent):
@@ -4875,7 +4902,7 @@ class FloatPowerMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         if "input" in kwargs:
             code = "paddle.pow({}.cast(paddle.float64), cast_exponent({}))".format(
                 kwargs["input"], kwargs["exponent"]
@@ -5098,7 +5125,8 @@ class SetDeviceMatcher(BaseMatcher):
 
 
 class TensorViewMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def view(self, *args, **kwargs):
@@ -5118,7 +5146,7 @@ class TensorViewMatcher(BaseMatcher):
     def get_paddle_class_nodes(self, func, args, kwargs):
         if kwargs:
             if len(kwargs) == 1:
-                self.write_aux_code()
+                self.enable_utils_code()
                 return "unchange"
 
         if args:
@@ -5130,14 +5158,15 @@ class TensorViewMatcher(BaseMatcher):
                 ):
                     return "unchange"
 
-            self.write_aux_code()
+            self.enable_utils_code()
             return "unchange"
 
         return "misidentify"
 
 
 class EmbeddingMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             class Embedding(paddle.nn.Embedding):
@@ -5150,7 +5179,7 @@ class EmbeddingMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -5450,7 +5479,8 @@ class FromBufferMatcher(BaseMatcher):
 
 
 class RpcRemoteMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             class rpc_remote:
@@ -5464,7 +5494,7 @@ class RpcRemoteMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         kwargs["fn"] = kwargs.pop("func")
         kwargs = self.kwargs_to_str(kwargs)
         API_TEMPLATE = textwrap.dedent(
@@ -5500,7 +5530,8 @@ class GetNumInteropThreadsMatcher(BaseMatcher):
 
 
 class SetNumInteropThreadsMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             import os
@@ -5511,7 +5542,7 @@ class SetNumInteropThreadsMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
             _set_num_interop_threads({})
@@ -5523,7 +5554,8 @@ class SetNumInteropThreadsMatcher(BaseMatcher):
 
 
 class SetNumThreadsMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             import os
@@ -5534,7 +5566,7 @@ class SetNumThreadsMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
             _set_num_threads({})
@@ -5661,7 +5693,8 @@ class Flowers102Matcher(BaseMatcher):
 
 
 class VOCDetectionMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             import os
@@ -5691,7 +5724,7 @@ class VOCDetectionMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
             VOCDetection({})
@@ -5716,7 +5749,8 @@ class DecodeJpegMatcher(BaseMatcher):
 
 
 class BoxesConvertMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         api_name = self.get_paddle_api().split(".")[-1]
         CODE_TEMPLATE = textwrap.dedent(
             """
@@ -5742,7 +5776,7 @@ class BoxesConvertMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
             {}({})
@@ -5782,7 +5816,8 @@ class VGGMatcher(BaseMatcher):
 
 
 class CudaDeviceMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def cuda_device(device):
@@ -5794,7 +5829,7 @@ class CudaDeviceMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
             cuda_device({})
@@ -5806,7 +5841,8 @@ class CudaDeviceMatcher(BaseMatcher):
 
 
 class GRUCellMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             class GRUCell(paddle.nn.GRUCell):
@@ -5817,13 +5853,14 @@ class GRUCellMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         self.set_paddle_api("GRUCell")
         return GenericMatcher.generate_code(self, kwargs)
 
 
 class LSTMCellMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             class LSTMCell(paddle.nn.LSTMCell):
@@ -5834,13 +5871,14 @@ class LSTMCellMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         self.set_paddle_api("LSTMCell")
         return GenericMatcher.generate_code(self, kwargs)
 
 
 class RNNCellMatcher(BaseMatcher):
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             class SimpleRNNCell(paddle.nn.SimpleRNNCell):
@@ -5851,7 +5889,7 @@ class RNNCellMatcher(BaseMatcher):
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.write_aux_code()
+        self.enable_utils_code()
         self.set_paddle_api("SimpleRNNCell")
         return GenericMatcher.generate_code(self, kwargs)
 

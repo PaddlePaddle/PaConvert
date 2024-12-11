@@ -22,7 +22,7 @@ from itertools import groupby
 
 import astor
 
-from paconvert.utils import AuxFileHelper, log_debug
+from paconvert.utils import UtilsFileHelper, log_debug
 
 json_file = os.path.dirname(__file__) + "/api_mapping.json"
 with open(json_file, "r") as file:
@@ -320,8 +320,8 @@ class BaseMatcher(object):
         self.api_mapping = api_mapping
         self.logger = logger
 
-    def get_aux_dir(self):
-        return os.path.dirname(AuxFileHelper().fileName)
+    def get_utils_dir(self):
+        return os.path.dirname(UtilsFileHelper().fileName)
 
     def parse_args_and_kwargs(self, args, kwargs):
         args_list = self.api_mapping.get("args_list") or []
@@ -471,20 +471,21 @@ class BaseMatcher(object):
 
         return kwargs
 
-    def generate_aux_code(self):
+    @property
+    def utils_code(self):
         return None
 
-    def write_aux_code(self):
-        aux_code = self.generate_aux_code()
-        if aux_code:
-            aux_file_helper = AuxFileHelper()
+    def enable_utils_code(self):
+        utils_code = self.utils_code
+        if utils_code:
+            utils_file_helper = UtilsFileHelper()
             log_debug(
                 self.logger,
-                "When convert {}, write auxiliary code to file: {}".format(
-                    self.torch_api, aux_file_helper.fileName
+                "When convert {}, write utils code to file: {}".format(
+                    self.torch_api, utils_file_helper.fileName
                 ),
             )
-            if aux_file_helper.is_dir_mode:
+            if utils_file_helper.is_dir_mode:
                 CODE_TEMPLATE = textwrap.dedent(
                     """
                     import sys
@@ -492,10 +493,10 @@ class BaseMatcher(object):
                     from utils import *
                     """
                 )
-                code = CODE_TEMPLATE.format(self.get_aux_dir())
+                code = CODE_TEMPLATE.format(self.get_utils_dir())
                 self.transformer.insert_multi_node(ast.parse(code).body)
 
-            aux_file_helper.add_code(aux_code, self.torch_api)
+            utils_file_helper.add_code(utils_code, self.torch_api)
             log_debug(self.logger, "add 'import utils'", self.transformer.file_name)
 
     def set_paddle_api(self, paddle_api):
@@ -510,9 +511,9 @@ class BaseMatcher(object):
         if (
             paddle_api
             and self.api_mapping.get("abstract")
-            and self.generate_aux_code() is not None
+            and self.utils_code is not None
         ):
-            self.write_aux_code()
+            self.enable_utils_code()
         return paddle_api
 
     def get_paddle_class_attribute_nodes(self, node):
