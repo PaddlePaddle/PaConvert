@@ -96,6 +96,7 @@ overloadable_api_aux_set = {
     "torch.Tensor.hsplit",
     "torch.hsplit",
     "torch.bernoulli",
+    "torch.nn.Module.to",
 }
 
 cornercase_api_aux_dict = {
@@ -123,7 +124,10 @@ cornercase_api_aux_dict = {
     "torch.utils.cpp_extension.CppExtension": "args_list is configured by python built-in library",
     "torch.utils.dlpack.to_dlpack": 'arg "tensor" only accept position argument',
     "torch.var": "this api has breaking change in pytorch 2.0",
-    "torch.broadcast_shapes": "`*shapes` must be specified",
+    "torch.nn.RNN": "dtype and device must be keyword arguments",
+    "torch.nn.UpsamplingBilinear2d": "only one of size or scale_factor should be defined",
+    "torch.nn.UpsamplingNearest2d": "only one of size or scale_factor should be defined",
+    "torch.set_default_tensor_type": "parameter t is positional-only arguments",
 }
 
 
