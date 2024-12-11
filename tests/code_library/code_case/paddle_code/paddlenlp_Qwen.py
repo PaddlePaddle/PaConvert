@@ -2,11 +2,12 @@ import paddle
 import paddlenlp
 
 
-# >>>>>>>>>>>>> PaConvert generated >>>>>>>>>>>>>
-# !! Contents within this block are managed by 'PaConvert ToolKit', please Don't edit it! !!
+############################## 相关utils函数，如下 ##############################
+####################### PaConvert 自动生成的代码，请勿手动修改! ##################
 
 
 from typing import Optional
+import paddlenlp
 def _convert_head_mask_to_5d(head_mask, num_hidden_layers):
     if head_mask.dim() == 1:
 
@@ -48,6 +49,7 @@ def post_init(self):
 setattr(paddlenlp.transformers.model_utils.PretrainedModel, 'post_init', post_init)
 
 
+import paddlenlp
 original_encode = paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase.encode
 def encode(self, *args, **kwargs):
     return original_encode(self, *args, **kwargs)["input_ids"]
@@ -78,7 +80,9 @@ def apply_rotary_position_embeddings(x, cos, sin):
 
     return paddle.concat(x=(t_rot, t_pass), axis=-1)
 
-# <<<<<<<<<< End of PaConvert content <<<<<<<<<<
+############################## 相关utils函数，如上 ##############################
+
+
 
 print('#########################case1#########################')
 

@@ -3259,8 +3259,8 @@ class FSoftMinMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs["input"] = f"-{kwargs['input']}"
         if "dim" not in kwargs or kwargs["dim"] == "None":
-            self.write_aux_code()
-            kwargs["dim"] = "utils._get_softmin_dim({}.ndim)".format(kwargs["input"])
+            self.enable_utils_code()
+            kwargs["dim"] = "_get_softmin_dim({}.ndim)".format(kwargs["input"])
             return GenericMatcher.generate_code(self, kwargs)
         else:
             return GenericMatcher.generate_code(self, kwargs)
@@ -4324,7 +4324,7 @@ class FSoftmaxMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "dim" not in kwargs or kwargs["dim"] == "None":
             self.enable_utils_code()
-            kwargs["dim"] = "utils._get_softmax_dim({}.ndim)".format(kwargs["input"])
+            kwargs["dim"] = "_get_softmax_dim({}.ndim)".format(kwargs["input"])
         return GenericMatcher.generate_code(self, kwargs)
 
 
