@@ -22,6 +22,8 @@ import os
 import re
 import shutil
 import black
+import autoflake
+import isort
 
 import astor
 
@@ -67,7 +69,6 @@ class Converter:
         self.show_unsupport = show_unsupport
         self.unsupport_map = collections.defaultdict(int)
         self.convert_rate = 0.0
-        self.format = format
 
         log_info(self.logger, "===========================================")
         log_info(self.logger, "PyTorch to Paddle Convert Start ------>:")
@@ -242,14 +243,20 @@ class Converter:
             self.transfer_node(root, old_path)
             code = astor.to_source(root)
             code = self.mark_unsupport(code, old_path)
-            if self.format:
-                try:
-                    code = black.format_str(code, mode=black.Mode())
-                except Exception as e:
-                    log_warning(
-                        self.logger,
-                        "Skip format because there are unsupported pytorch APIs in the converted code",
-                    )
+
+            # format code
+            try:
+                code = autoflake.fix_code(
+                    code, remove_all_unused_imports=True, remove_unused_variables=True
+                )
+                code = isort.code(code)
+                code = black.format_str(code, mode=black.Mode())
+            except Exception as e:
+                log_warning(
+                    self.logger,
+                    "Skip format because there are unsupported pytorch APIs in the converted code",
+                )
+
             with open(new_path, "w", encoding="UTF-8") as file:
                 file.write(code)
             log_info(

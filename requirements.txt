@@ -1,2 +1,4 @@
 astor
 black
+autoflake
+isort
