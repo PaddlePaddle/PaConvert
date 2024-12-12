@@ -94,10 +94,4 @@ def test_case_7():
         str1.split(',')
         """
     )
-    expect_code = textwrap.dedent(
-        """
-        import paddle
-        str1.split(',')
-        """
-    )
-    obj.run(pytorch_code, expect_paddle_code=expect_code)
+    obj.run(pytorch_code, expect_paddle_code='str1.split(",")\n')

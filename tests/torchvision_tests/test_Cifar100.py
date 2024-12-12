@@ -35,10 +35,15 @@ def test_case_1():
     paddle_code = textwrap.dedent(
         """
         import os
+
         import paddle
-        train_dataset = paddle.vision.datasets.Cifar100(transform=paddle.vision.
-            transforms.Normalize(mean=(0.5,), std=(0.5,)), download=True, data_file
-            =os.path.join('./data', 'cifar-100-python.tar.gz'), mode='train')
+
+        train_dataset = paddle.vision.datasets.Cifar100(
+            transform=paddle.vision.transforms.Normalize(mean=(0.5,), std=(0.5,)),
+            download=True,
+            data_file=os.path.join("./data", "cifar-100-python.tar.gz"),
+            mode="train",
+        )
         """
     )
     obj.run(
@@ -59,10 +64,14 @@ def test_case_2():
     paddle_code = textwrap.dedent(
         """
         import os
+
         import paddle
-        train_dataset = paddle.vision.datasets.Cifar100(transform=paddle.vision.
-            transforms.Normalize(mean=(0.5,), std=(0.5,)), data_file=os.path.join(
-            './data', 'cifar-100-python.tar.gz'), mode='train')
+
+        train_dataset = paddle.vision.datasets.Cifar100(
+            transform=paddle.vision.transforms.Normalize(mean=(0.5,), std=(0.5,)),
+            data_file=os.path.join("./data", "cifar-100-python.tar.gz"),
+            mode="train",
+        )
         """
     )
     obj.run(
@@ -87,10 +96,15 @@ def test_case_3():
     paddle_code = textwrap.dedent(
         """
         import os
+
         import paddle
-        train_dataset = paddle.vision.datasets.Cifar100(download=True, transform=
-            paddle.vision.transforms.Normalize(mean=(0.5,), std=(0.5,)), data_file=
-            os.path.join('./data', 'cifar-100-python.tar.gz'), mode='train')
+
+        train_dataset = paddle.vision.datasets.Cifar100(
+            download=True,
+            transform=paddle.vision.transforms.Normalize(mean=(0.5,), std=(0.5,)),
+            data_file=os.path.join("./data", "cifar-100-python.tar.gz"),
+            mode="train",
+        )
         """
     )
     obj.run(
@@ -109,9 +123,12 @@ def test_case_4():
     paddle_code = textwrap.dedent(
         """
         import os
+
         import paddle
-        train_dataset = paddle.vision.datasets.Cifar100(data_file=os.path.join(
-            './data', 'cifar-100-python.tar.gz'))
+
+        train_dataset = paddle.vision.datasets.Cifar100(
+            data_file=os.path.join("./data", "cifar-100-python.tar.gz")
+        )
         """
     )
     obj.run(
@@ -131,10 +148,13 @@ def test_case_5():
     paddle_code = textwrap.dedent(
         """
         import os
+
         import paddle
-        root_path = './data'
-        train_dataset = paddle.vision.datasets.Cifar100(data_file=os.path.join(
-            root_path, 'cifar-100-python.tar.gz'), mode='train')
+
+        root_path = "./data"
+        train_dataset = paddle.vision.datasets.Cifar100(
+            data_file=os.path.join(root_path, "cifar-100-python.tar.gz"), mode="train"
+        )
         """
     )
     obj.run(
@@ -154,10 +174,14 @@ def test_case_6():
     paddle_code = textwrap.dedent(
         """
         import os
+
         import paddle
+
         train = True
-        train_dataset = paddle.vision.datasets.Cifar100(data_file=os.path.join(
-            './data', 'cifar-100-python.tar.gz'), mode='train' if train else 'test')
+        train_dataset = paddle.vision.datasets.Cifar100(
+            data_file=os.path.join("./data", "cifar-100-python.tar.gz"),
+            mode="train" if train else "test",
+        )
         """
     )
     obj.run(

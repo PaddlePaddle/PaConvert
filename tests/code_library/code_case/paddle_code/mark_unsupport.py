@@ -1,4 +1,5 @@
 import paddle
+
 paddle.add
 _LOCAL_PROCESS_GROUP = None
 _MISSING_LOCAL_PG_ERROR = (
@@ -41,6 +42,7 @@ print(
     '############################################################################'
     )
 import paddlenlp
+
 >>>>>>torch.fake_api(paddlenlp.transformers.BertTokenizer.from_pretrained(
     'bert-base-chinese'), paddle.rand(shape=[2, 3, 4]), paddlenlp.
     transformers.BertTokenizer.from_pretrained('bert-base-chinese'))
