@@ -41,12 +41,12 @@ pre-commit run --file [file_name]
 相关CI的测试代码和本地scriptes的脚本文件对应如下
 |  CI名称   | repo对应脚本文件  |
 |  ----  | ----  |
-| PR-CI-ModelTest   | scripts/modeltest_check.sh |
-| PR-CI-CodeCosistency   | scripts/consistency_check.sh |
+| PR-CI-ModelTest   | scripts/code_modeltest_check.sh |
+| PR-CI-CodeCosistency   | scripts/code_consistency_check.sh |
 | PR-CI-CodeStyle   | scripts/code_style_check.sh |
-| PR-CI-UnitTest   | scripts/unittest_check.sh |
+| PR-CI-UnitTest   | scripts/code_unittest_check.sh |
 | PR-CI-Coverage   | scripts/code_coverage_check.sh |
-| PR-CI-Pipeline   | scripts/install_check.sh |
+| PR-CI-Pipeline   | scripts/code_install_check.sh |
 | PR-CI-PRTemplate   | scripts/code_PRtemplate_check.sh |
 ```
 
@@ -54,12 +54,12 @@ pre-commit run --file [file_name]
 
 ```bash
 本地单个CI测试方法
-bash scripts/modeltest_check.sh
-bash scripts/consistency_check.sh
+bash scripts/code_modeltest_check.sh
+bash scripts/code_consistency_check.sh
 bash scripts/code_style_check.sh
-bash scripts/unittest_check.sh
+bash scripts/code_unittest_check.sh
 bash scripts/code_coverage_check.sh
-bash scripts/install_check.sh
+bash scripts/code_install_check.sh
 bash scripts/code_PRtemplate_check.sh
 
 本地全部CI测试方法
