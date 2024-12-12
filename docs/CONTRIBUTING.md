@@ -340,8 +340,7 @@ class TransposeMatcher(BaseMatcher):
 
 ```python
 class TensorReshapeMatcher(BaseMatcher):
-    @property
-    def utils_code(self):
+    def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def reshape(self, *args, **kwargs):

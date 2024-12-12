@@ -471,12 +471,11 @@ class BaseMatcher(object):
 
         return kwargs
 
-    @property
-    def utils_code(self):
+    def generate_utils_code(self):
         return None
 
     def enable_utils_code(self):
-        utils_code = self.utils_code
+        utils_code = self.generate_utils_code()
         if utils_code:
             utils_file_helper = UtilsFileHelper()
             log_debug(
@@ -511,7 +510,7 @@ class BaseMatcher(object):
         if (
             paddle_api
             and self.api_mapping.get("abstract")
-            and self.utils_code is not None
+            and self.generate_utils_code() is not None
         ):
             self.enable_utils_code()
         return paddle_api
