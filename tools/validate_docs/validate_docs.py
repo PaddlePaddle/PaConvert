@@ -134,6 +134,7 @@ IGNORE_KWARGS_CHANGE_PAIRS = {
     ("track_running_stats", "use_global_stats"),
     ("async_op", "sync_op"),
     ("time_major", "batch_first"),
+    ("_random_samples", "random_u"),
 }
 
 # 如果参数映射在这个里面，则进行参数映射的转换
@@ -166,7 +167,7 @@ PRESET_MATCHER_KWARGS_CHANGE_PAIRS = {
     "FunctionalPadMatcher": {"input": "x"},
     "FunctionalSmoothL1LossMatcher": {"beta": "delta"},
     "OptimOptimizerMatcher": {"params": "parameters"},
-    "RNNMatcher": {"batch_first": "time_major"},
+    "RNNMatcher": {"batch_first": "time_major", "bidirectional": "direction"},
     "CifarMatcher": {"root": "data_file", "train": "mode"},
     "MNISTMatcher": {"train": "mode"},
     "Flowers102Matcher": {"split": "mode"},
@@ -226,6 +227,14 @@ cornercase_api_aux_dict = {
     "torch.nn.Module.named_buffers": "remove_duplicate arg is not supported in paddle.",
     "torch.nn.Module.named_modules": "remove_duplicate arg is not supported in paddle.",
     "torch.nn.Module.named_parameters": "remove_duplicate arg is not supported in paddle.",
+    "torch.distributed.ReduceOp": "torch.distributed.ReduceOp with not args",
+}
+
+missing_docs_whitelist = {
+    "os.environ.get": "prefix is not torch, Error reporting",
+    "setuptools.setup": "prefix is not torch, Error reporting",
+    "torch.Tensor.rename": "Conversion strategy still under development",
+    "torch.jit.script": "Delete Matcher",
 }
 
 
@@ -274,6 +283,7 @@ def check_mapping_args(paconvert_item, doc_item):
             continue
         if pc_kwargs_change.get(k, k) != v:
             kwargs_change_equal = False
+            print(f"{torch_api} {matcher}: `kwargs_change` not match: {k} {v}")
             break
 
     if not kwargs_change_equal:
@@ -475,8 +485,9 @@ if __name__ == "__main__":
         )
         with open(os.path.join(tool_dir, "missing_docs_list.log"), "w") as f:
             for md in missing_docs:
-                print(md, file=f)
-                verbose_print(f"INFO: api `{md}` has no mapping doc.", v_level=3)
+                if md not in missing_docs_whitelist:
+                    print(md, file=f)
+                    verbose_print(f"INFO: api `{md}` has no mapping doc.", v_level=3)
 
     if len(validated_apis) > 0:
         verbose_print(f"INFO: {len(validated_apis)} api will be validate by docs data.")
