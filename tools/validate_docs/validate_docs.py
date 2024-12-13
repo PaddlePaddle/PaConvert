@@ -238,7 +238,6 @@ missing_docs_whitelist = {
 }
 
 
-
 def check_mapping_args(paconvert_item, doc_item):
     if doc_item["mapping_type"] == "组合替代实现":
         return
