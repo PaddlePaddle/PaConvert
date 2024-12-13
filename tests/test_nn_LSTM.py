@@ -196,3 +196,48 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        class SimpleRNNModel(torch.nn.Module):
+            def __init__(self):
+                super(SimpleRNNModel, self).__init__()
+                self.lstm = torch.nn.LSTM(input_size=10, hidden_size=20, num_layers=2, bias=True, batch_first=True, dropout=0.5,
+                                          bidirectional=True, proj_size=2, device="cpu", dtype=torch.float)
+
+            def forward(self, x):
+                output, (hidden, cell) = self.lstm(x)
+                return output
+
+
+        x = torch.randn(5, 3, 10)
+        model = SimpleRNNModel()
+        result = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        class SimpleRNNModel(torch.nn.Module):
+            def __init__(self):
+                super(SimpleRNNModel, self).__init__()
+                self.lstm = torch.nn.LSTM(10, 20, 2, True, True, 0.5, True, 2, "cpu", torch.float)
+
+            def forward(self, x):
+                output, (hidden, cell) = self.lstm(x)
+                return output
+
+
+        x = torch.randn(5, 3, 10)
+        model = SimpleRNNModel()
+        result = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

@@ -4356,6 +4356,7 @@
   "torch.__version__.split": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.__version__.split",
+    "min_input_args": 0,
     "args_list": [
       "sep",
       "maxsplit"
@@ -9890,7 +9891,8 @@
     ]
   },
   "torch.multiprocessing.cpu_count": {
-    "Matcher": "MPCpuCountMatcher"
+    "Matcher": "MPCpuCountMatcher",
+    "min_input_args": 0
   },
   "torch.multiprocessing.spawn": {
     "Matcher": "GenericMatcher",
@@ -9976,6 +9978,7 @@
   "torch.nanmedian": {
     "Matcher": "DoubleAssignMatcher",
     "paddle_api": "paddle.nanmedian",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "dim",
@@ -9994,6 +9997,7 @@
   "torch.nanquantile": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nanquantile",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "q",
@@ -10786,7 +10790,7 @@
       "device": "",
       "dtype": ""
     },
-    "min_input_args": 0
+    "min_input_args": 2
   },
   "torch.nn.GRUCell": {
     "Matcher": "GRUCellMatcher",
@@ -11052,7 +11056,7 @@
       "device": "",
       "dtype": ""
     },
-    "min_input_args": 0
+    "min_input_args": 2
   },
   "torch.nn.LSTMCell": {
     "Matcher": "LSTMCellMatcher",
@@ -11792,7 +11796,7 @@
       "device": "",
       "dtype": ""
     },
-    "min_input_args": 0
+    "min_input_args": 2
   },
   "torch.nn.RNNBase": {
     "Matcher": "RNNBaseMatcher",
@@ -12308,7 +12312,7 @@
       "size",
       "scale_factor"
     ],
-    "min_input_args": 0
+    "min_input_args": 1
   },
   "torch.nn.UpsamplingNearest2d": {
     "Matcher": "GenericMatcher",
@@ -13197,7 +13201,7 @@
     }
   },
   "torch.nn.functional.log_softmax": {
-    "Matcher": "SoftmaxMatcher",
+    "Matcher": "FSoftmaxMatcher",
     "paddle_api": "paddle.nn.functional.log_softmax",
     "args_list": [
       "input",
@@ -13737,7 +13741,7 @@
     "min_input_args": 2
   },
   "torch.nn.functional.softmax": {
-    "Matcher": "SoftmaxMatcher",
+    "Matcher": "FSoftmaxMatcher",
     "paddle_api": "paddle.nn.functional.softmax",
     "args_list": [
       "input",
@@ -14323,6 +14327,7 @@
   "torch.nonzero": {
     "Matcher": "NonzeroMatcher",
     "paddle_api": "paddle.nonzero",
+    "min_input_args": 1,
     "args_list": [
       "input",
       "*",
@@ -15215,6 +15220,7 @@
   "torch.quantile": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.quantile",
+    "min_input_args": 2,
     "args_list": [
       "input",
       "q",

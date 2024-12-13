@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.functional.softmin")
+obj = APIBase("torch.nn.functional.softmin", is_aux_api=True)
 
 
 def test_case_1():
@@ -92,6 +92,19 @@ def test_case_6():
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
         result = F.softmin(_stacklevel=3, dtype=torch.float64, input=input, dim=-1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        result = torch.nn.functional.softmin(input)
         """
     )
     obj.run(pytorch_code, ["result"])
