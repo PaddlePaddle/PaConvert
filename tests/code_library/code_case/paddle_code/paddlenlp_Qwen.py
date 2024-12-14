@@ -1,6 +1,5 @@
 import paddle
 import paddlenlp
-
 import utils
 
 print("#########################case1#########################")
