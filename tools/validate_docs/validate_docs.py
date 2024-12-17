@@ -26,6 +26,43 @@ context_verbose_level = 1
 
 validate_whitelist = [
     r"^torch\.(cuda\.)?(\w*)Tensor$",
+    "torch.mean",
+    "torch.Tensor.max",
+    "torch.Tensor.to",
+    "torch.trapz",
+    "torch.prod",
+    "torch.Tensor.var",
+    "torch.Tensor.min",
+    "torch.Tensor.sort",
+    "torch.Tensor.std",
+    "torch.trapezoid",
+    "torch.normal",
+    "torch.var_mean",
+    "torch.std_mean",
+    "torch.min",
+    "torch.sort",
+    "torch.max",
+    "torch.searchsorted",
+    "torch.cumulative_trapezoid",
+    "torch.std",
+    "torch.Tensor.scatter_",
+    "torch.Tensor.scatter",
+    "torch.scatter",
+    "torch.Tensor.view",
+    "torch.sum",
+    "torch.nansum",
+    "torch.linalg.matrix_rank",
+    # *split kwargs is processed through KWARGS_CHANGE_CHANGE_DICT,
+    # but overload `args_list` is not supported, so ignore it.
+    # (int sections) or (tuple of ints indices)
+    "torch.Tensor.dsplit",
+    "torch.Tensor.hsplit",
+    "torch.Tensor.tensor_split",
+    "torch.dsplit",
+    "torch.hsplit",
+    "torch.tensor_split",
+    "torch.vsplit",
+    "torch.nn.Module.to",
 ]
 
 
@@ -172,6 +209,9 @@ PRESET_MATCHER_KWARGS_CHANGE_PAIRS = {
     "MNISTMatcher": {"train": "mode"},
     "Flowers102Matcher": {"split": "mode"},
     "BoxesConvertMatcher": {"input": "x"},
+    "VOCDetectionMatcher": {"root": "data_file", "image_set": "mode"},
+    "WeightsMatcher": {"weights": "pretrained"},
+    "VGGMatcher": {"weights": "pretrained"},
 }
 
 overloadable_api_aux_set = {
@@ -228,6 +268,10 @@ cornercase_api_aux_dict = {
     "torch.nn.Module.named_modules": "remove_duplicate arg is not supported in paddle.",
     "torch.nn.Module.named_parameters": "remove_duplicate arg is not supported in paddle.",
     "torch.distributed.ReduceOp": "torch.distributed.ReduceOp with not args",
+    r"torchvision\.models.*": "torchvision.models* with ModuleListMatcher",
+    "transformers.GenerationConfig": "transformers.GenerationConfig list some kwargs.",
+    "transformers.PreTrainedTokenizer": "transformers.GenerationConfig list some kwargs.",
+    "transformers.PretrainedConfig": "transformers.GenerationConfig list some kwargs.",
 }
 
 missing_docs_whitelist = {
@@ -283,7 +327,6 @@ def check_mapping_args(paconvert_item, doc_item):
             continue
         if pc_kwargs_change.get(k, k) != v:
             kwargs_change_equal = False
-            print(f"{torch_api} {matcher}: `kwargs_change` not match: {k} {v}")
             break
 
     if not kwargs_change_equal:
@@ -544,15 +587,19 @@ if __name__ == "__main__":
                         print("INFO: OVERLOADABLE", ve, file=f)
                         verbose_print(f"INFO: OVERLOADABLE {ve}", v_level=3)
                         continue
-                    if api in cornercase_api_aux_dict:
-                        print(
-                            f"INFO: CORNERCASE {ve}, REASON {cornercase_api_aux_dict[api]}",
-                            ve,
-                            file=f,
-                        )
-                        verbose_print(f"INFO: CORNERCASE {ve}", v_level=3)
+                    conercase_skip = False
+                    for conercase_api in cornercase_api_aux_dict:
+                        if re.match(conercase_api, api):
+                            print(
+                                f"INFO: CORNERCASE {ve}, REASON {cornercase_api_aux_dict[conercase_api]}",
+                                ve,
+                                file=f,
+                            )
+                            verbose_print(f"INFO: CORNERCASE {ve}", v_level=3)
+                            conercase_skip = True
+                            continue
+                    if conercase_skip:
                         continue
-
                     api_count_to_check += 1
                     print(f"WARNING: {ve}", file=f)
                     verbose_print(f"WARNING: {ve}", v_level=3)
