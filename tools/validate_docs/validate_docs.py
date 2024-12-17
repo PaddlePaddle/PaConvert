@@ -281,6 +281,10 @@ missing_docs_whitelist = {
     "torch.jit.script": "Delete Matcher",
 }
 
+missing_matchers_whitelist = {
+    r"torch\.nn\.Lazy*": "Lazy APIs can only be converted manually, because it Related to the previous and following code.",
+}
+
 
 def check_mapping_args(paconvert_item, doc_item):
     if doc_item["mapping_type"] == "组合替代实现":
@@ -481,17 +485,23 @@ if __name__ == "__main__":
                 api_alias_backward_mapping[v] = [k]
             else:
                 api_alias_backward_mapping[v].append(k)
+
+            if k not in api_alias_backward_mapping:
+                api_alias_backward_mapping[k] = [v]
+            else:
+                api_alias_backward_mapping[k].append(v)
         for k in api_alias_backward_mapping:
             api_alias_backward_mapping[k] = sorted(
                 api_alias_backward_mapping[k], key=lambda x: len(x)
             )
-        # 允许有多个原 api，但只有一个目标 api
+        # 列出每个api可能的所有别名api
 
     with open(args.docs_mappings, "r", encoding="utf-8") as f:
         docs_mapping_data = json.load(f)
         docs_mapping = dict([(i["src_api"], i) for i in docs_mapping_data])
 
     missing_docs = []
+    missing_matchers = []
     validated_apis = []
 
     for api in api_mapping:
@@ -531,6 +541,32 @@ if __name__ == "__main__":
                 if md not in missing_docs_whitelist:
                     print(md, file=f)
                     verbose_print(f"INFO: api `{md}` has no mapping doc.", v_level=3)
+
+    for docs_api in docs_mapping:
+        whitelist_skip = False
+        for wl in missing_matchers_whitelist:
+            if re.match(wl, docs_api):
+                whitelist_skip = True
+                break
+        if whitelist_skip:
+            continue
+
+        if docs_api not in api_mapping and docs_api not in attribute_mapping:
+            for n in api_alias_backward_mapping.get(docs_api, []):
+                if n in api_mapping:
+                    break
+            else:
+                missing_matchers.append(docs_api)
+
+    if len(missing_matchers) > 0:
+        verbose_print(
+            f"WARNING: {len(missing_matchers)} api do not have Matcher in `api_mapping.json`."
+        )
+        with open(os.path.join(tool_dir, "missing_matchers_list.log"), "w") as f:
+            for md in missing_matchers:
+                if md not in missing_matchers_whitelist:
+                    print(md, file=f)
+                    verbose_print(f"INFO: api `{md}` has no Matcher.", v_level=3)
 
     if len(validated_apis) > 0:
         verbose_print(f"INFO: {len(validated_apis)} api will be validate by docs data.")
