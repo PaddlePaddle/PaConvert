@@ -26,141 +26,7 @@ context_verbose_level = 1
 
 validate_whitelist = [
     r"^torch\.(cuda\.)?(\w*)Tensor$",
-    "torch.mean",
-    "torch.Tensor.max",
-    "torch.Tensor.to",
-    "torch.trapz",
-    "torch.prod",
-    "torch.Tensor.var",
-    "torch.Tensor.min",
-    "torch.Tensor.sort",
-    "torch.Tensor.std",
-    "torch.trapezoid",
-    "torch.normal",
-    "torch.var_mean",
-    "torch.std_mean",
-    "torch.min",
-    "torch.sort",
-    "torch.max",
-    "torch.searchsorted",
-    "torch.cumulative_trapezoid",
-    "torch.std",
-    "torch.Tensor.scatter_",
-    "torch.Tensor.scatter",
-    "torch.scatter",
-    "torch.Tensor.view",
-    "torch.sum",
-    "torch.nansum",
-    "torch.linalg.matrix_rank",
-    # *split kwargs is processed through KWARGS_CHANGE_CHANGE_DICT,
-    # but overload `args_list` is not supported, so ignore it.
-    # (int sections) or (tuple of ints indices)
-    "torch.Tensor.dsplit",
-    "torch.Tensor.hsplit",
-    "torch.Tensor.tensor_split",
-    "torch.dsplit",
-    "torch.hsplit",
-    "torch.tensor_split",
-    "torch.vsplit",
-    "torch.nn.Module.to",
 ]
-
-
-def verbose_print(*args, v_level=1, **kwargs):
-    if context_verbose_level >= v_level:
-        print(*args, **kwargs)
-
-
-class DocDataError(Exception):
-    pass
-
-
-class PaConvertDataError(Exception):
-    pass
-
-
-class ValidateError(Exception):
-    pass
-
-
-def check_unchange_matcher(paconvert_item, doc_item):
-    matcher = paconvert_item["Matcher"]
-
-    assert matcher == "UnchangeMatcher"
-
-    torch_api = doc_item["src_api"]
-    paddle_api = doc_item["dst_api"]
-
-    api_mapping_rules = {
-        "torch.optim.": "paddle.optimizer.",
-        "torch.nn.Module.": "paddle.nn.Layer.",
-        "torch.autograd.function.FunctionCtx.": "paddle.autograd.PyLayerContext.",
-        "torch.": "paddle.",
-    }
-
-    rules_key = sorted(api_mapping_rules.keys(), key=lambda k: len(k), reverse=True)
-    mapped_api = torch_api
-    for key in rules_key:
-        mapped_api = re.sub(f"^{re.escape(key)}", api_mapping_rules[key], mapped_api)
-    if "paddle_api" in paconvert_item:
-        mapped_api = paconvert_item.get("paddle_api")
-
-    if mapped_api != paddle_api:
-        raise ValidateError(
-            f"{torch_api}: `paddle_api` with UnchangeMatcher is not equal: {mapped_api} != {paddle_api}"
-        )
-
-
-DOC_ARG_PATTERN = re.compile(
-    r"<\s*font[^>]*\s*>(?P<arg_name>.*?)<\s*/\s*font\s*>", re.IGNORECASE
-)
-
-
-def extract_doc_arg(arg_str, remove_star=True):
-    arg_name = arg_str
-    m = DOC_ARG_PATTERN.match(arg_name)
-
-    if m:
-        arg_name = m["arg_name"].strip()
-    else:
-        pass
-
-    # 支持类型标注
-    if ":" in arg_name:
-        arg_name = arg_name.split(":")[0]
-
-    arg_name = arg_name.strip()
-
-    if remove_star and arg_name != "*":
-        arg_name = arg_name.lstrip("*")
-
-    return arg_name
-
-
-def get_kwargs_mapping_from_doc(doc_item):
-    args_mapping = doc_item.get("args_mapping", [])
-    kwargs_change = {}
-
-    for am in args_mapping:
-        at = extract_doc_arg(am["src_arg"])
-        ap = extract_doc_arg(am["dst_arg"])
-        note = am["note"]
-
-        if at == "-":
-            continue
-        elif ap == "-":
-            continue
-        elif at == "返回值":
-            continue
-        elif "," in at:
-            continue
-        elif "," in ap:
-            continue
-        else:
-            kwargs_change[at] = ap
-
-    return kwargs_change
-
 
 # 如果参数映射在这个里面，则忽略检查，因为不是对应关系
 IGNORE_KWARGS_CHANGE_PAIRS = {
@@ -284,6 +150,106 @@ missing_docs_whitelist = {
 missing_matchers_whitelist = {
     r"torch\.nn\.Lazy*": "Lazy APIs can only be converted manually, because it Related to the previous and following code.",
 }
+validate_whitelist.extend(cornercase_api_aux_dict.keys())
+validate_whitelist.extend(overloadable_api_aux_set)
+validate_whitelist.extend(missing_docs_whitelist.keys())
+validate_whitelist.extend(missing_matchers_whitelist.keys())
+
+
+def verbose_print(*args, v_level=1, **kwargs):
+    if context_verbose_level >= v_level:
+        print(*args, **kwargs)
+
+
+class DocDataError(Exception):
+    pass
+
+
+class PaConvertDataError(Exception):
+    pass
+
+
+class ValidateError(Exception):
+    pass
+
+
+def check_unchange_matcher(paconvert_item, doc_item):
+    matcher = paconvert_item["Matcher"]
+
+    assert matcher == "UnchangeMatcher"
+
+    torch_api = doc_item["src_api"]
+    paddle_api = doc_item["dst_api"]
+
+    api_mapping_rules = {
+        "torch.optim.": "paddle.optimizer.",
+        "torch.nn.Module.": "paddle.nn.Layer.",
+        "torch.autograd.function.FunctionCtx.": "paddle.autograd.PyLayerContext.",
+        "torch.": "paddle.",
+    }
+
+    rules_key = sorted(api_mapping_rules.keys(), key=lambda k: len(k), reverse=True)
+    mapped_api = torch_api
+    for key in rules_key:
+        mapped_api = re.sub(f"^{re.escape(key)}", api_mapping_rules[key], mapped_api)
+    if "paddle_api" in paconvert_item:
+        mapped_api = paconvert_item.get("paddle_api")
+
+    if mapped_api != paddle_api:
+        raise ValidateError(
+            f"{torch_api}: `paddle_api` with UnchangeMatcher is not equal: {mapped_api} != {paddle_api}"
+        )
+
+
+DOC_ARG_PATTERN = re.compile(
+    r"<\s*font[^>]*\s*>(?P<arg_name>.*?)<\s*/\s*font\s*>", re.IGNORECASE
+)
+
+
+def extract_doc_arg(arg_str, remove_star=True):
+    arg_name = arg_str
+    m = DOC_ARG_PATTERN.match(arg_name)
+
+    if m:
+        arg_name = m["arg_name"].strip()
+    else:
+        pass
+
+    # 支持类型标注
+    if ":" in arg_name:
+        arg_name = arg_name.split(":")[0]
+
+    arg_name = arg_name.strip()
+
+    if remove_star and arg_name != "*":
+        arg_name = arg_name.lstrip("*")
+
+    return arg_name
+
+
+def get_kwargs_mapping_from_doc(doc_item):
+    args_mapping = doc_item.get("args_mapping", [])
+    kwargs_change = {}
+
+    for am in args_mapping:
+        at = extract_doc_arg(am["src_arg"])
+        ap = extract_doc_arg(am["dst_arg"])
+        note = am["note"]
+
+        if at == "-":
+            continue
+        elif ap == "-":
+            continue
+        elif at == "返回值":
+            continue
+        elif "," in at:
+            continue
+        elif "," in ap:
+            continue
+        else:
+            kwargs_change[at] = ap
+
+    return kwargs_change
 
 
 def check_mapping_args(paconvert_item, doc_item):
@@ -544,7 +510,7 @@ if __name__ == "__main__":
 
     for docs_api in docs_mapping:
         whitelist_skip = False
-        for wl in missing_matchers_whitelist:
+        for wl in validate_whitelist:
             if re.match(wl, docs_api):
                 whitelist_skip = True
                 break
