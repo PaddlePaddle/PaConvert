@@ -28,7 +28,7 @@ def test_case_1():
     )
     obj.run(
         pytorch_code,
-        expect_paddle_code='x.rename(columns={"iids": iids})\n',
+        expect_paddle_code="import paddle\nx.rename(columns={'iids': iids})\n",
     )
 
 

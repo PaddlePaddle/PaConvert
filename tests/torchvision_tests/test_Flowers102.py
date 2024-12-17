@@ -30,18 +30,13 @@ def test_case_1():
     paddle_code = textwrap.dedent(
         """
         import os
-
         import paddle
-
-        root_path = "./data"
-        train_dataset = paddle.vision.datasets.Flowers(
-            transform=None,
-            download=False,
-            mode="train",
-            data_file=os.path.join(root_path, "flowers-102/102flowers.tgz"),
-            label_file=os.path.join(root_path, "flowers-102/imagelabels.mat"),
-            setid_file=os.path.join(root_path, "flowers-102/setid.mat"),
-        )
+        root_path = './data'
+        train_dataset = paddle.vision.datasets.Flowers(transform=None, download=
+            False, mode='train', data_file=os.path.join(root_path,
+            'flowers-102/102flowers.tgz'), label_file=os.path.join(root_path,
+            'flowers-102/imagelabels.mat'), setid_file=os.path.join(root_path,
+            'flowers-102/setid.mat'))
         """
     )
     obj.run(
@@ -62,18 +57,14 @@ def test_case_2():
     paddle_code = textwrap.dedent(
         """
         import os
-
         import paddle
-
-        root_path = "./data"
-        split = "train"
-        train_dataset = paddle.vision.datasets.Flowers(
-            transform=None,
-            mode=split if split != "val" else "valid",
-            data_file=os.path.join(root_path, "flowers-102/102flowers.tgz"),
-            label_file=os.path.join(root_path, "flowers-102/imagelabels.mat"),
-            setid_file=os.path.join(root_path, "flowers-102/setid.mat"),
-        )
+        root_path = './data'
+        split = 'train'
+        train_dataset = paddle.vision.datasets.Flowers(transform=None, mode=split if
+            split != 'val' else 'valid', data_file=os.path.join(root_path,
+            'flowers-102/102flowers.tgz'), label_file=os.path.join(root_path,
+            'flowers-102/imagelabels.mat'), setid_file=os.path.join(root_path,
+            'flowers-102/setid.mat'))
         """
     )
     obj.run(
@@ -92,16 +83,11 @@ def test_case_3():
     paddle_code = textwrap.dedent(
         """
         import os
-
         import paddle
-
-        train_dataset = paddle.vision.datasets.Flowers(
-            download=False,
-            mode="train",
-            data_file=os.path.join("./data", "flowers-102/102flowers.tgz"),
-            label_file=os.path.join("./data", "flowers-102/imagelabels.mat"),
-            setid_file=os.path.join("./data", "flowers-102/setid.mat"),
-        )
+        train_dataset = paddle.vision.datasets.Flowers(download=False, mode='train',
+            data_file=os.path.join('./data', 'flowers-102/102flowers.tgz'),
+            label_file=os.path.join('./data', 'flowers-102/imagelabels.mat'),
+            setid_file=os.path.join('./data', 'flowers-102/setid.mat'))
         """
     )
     obj.run(
@@ -121,16 +107,12 @@ def test_case_4():
     paddle_code = textwrap.dedent(
         """
         import os
-
         import paddle
-
-        root_path = "./data"
-        train_dataset = paddle.vision.datasets.Flowers(
-            mode="train",
-            data_file=os.path.join(root_path, "flowers-102/102flowers.tgz"),
-            label_file=os.path.join(root_path, "flowers-102/imagelabels.mat"),
-            setid_file=os.path.join(root_path, "flowers-102/setid.mat"),
-        )
+        root_path = './data'
+        train_dataset = paddle.vision.datasets.Flowers(mode='train', data_file=os.
+            path.join(root_path, 'flowers-102/102flowers.tgz'), label_file=os.path.
+            join(root_path, 'flowers-102/imagelabels.mat'), setid_file=os.path.join
+            (root_path, 'flowers-102/setid.mat'))
         """
     )
     obj.run(
@@ -150,16 +132,12 @@ def test_case_5():
     paddle_code = textwrap.dedent(
         """
         import os
-
         import paddle
-
-        root_path = "./data"
-        train_dataset = paddle.vision.datasets.Flowers(
-            mode="test",
-            data_file=os.path.join(root_path, "flowers-102/102flowers.tgz"),
-            label_file=os.path.join(root_path, "flowers-102/imagelabels.mat"),
-            setid_file=os.path.join(root_path, "flowers-102/setid.mat"),
-        )
+        root_path = './data'
+        train_dataset = paddle.vision.datasets.Flowers(mode='test', data_file=os.
+            path.join(root_path, 'flowers-102/102flowers.tgz'), label_file=os.path.
+            join(root_path, 'flowers-102/imagelabels.mat'), setid_file=os.path.join
+            (root_path, 'flowers-102/setid.mat'))
         """
     )
     obj.run(
@@ -180,17 +158,13 @@ def test_case_6():
     paddle_code = textwrap.dedent(
         """
         import os
-
         import paddle
-
-        root_path = "./data"
+        root_path = './data'
         train = True
-        train_dataset = paddle.vision.datasets.Flowers(
-            mode="valid",
-            data_file=os.path.join(root_path, "flowers-102/102flowers.tgz"),
-            label_file=os.path.join(root_path, "flowers-102/imagelabels.mat"),
-            setid_file=os.path.join(root_path, "flowers-102/setid.mat"),
-        )
+        train_dataset = paddle.vision.datasets.Flowers(mode='valid', data_file=os.
+            path.join(root_path, 'flowers-102/102flowers.tgz'), label_file=os.path.
+            join(root_path, 'flowers-102/imagelabels.mat'), setid_file=os.path.join
+            (root_path, 'flowers-102/setid.mat'))
         """
     )
     obj.run(
@@ -212,19 +186,15 @@ def test_case_7():
     paddle_code = textwrap.dedent(
         """
         import os
-
         import paddle
-
-        root_path = "./data"
-        split = "val"
+        root_path = './data'
+        split = 'val'
         download = False
-        train_dataset = paddle.vision.datasets.Flowers(
-            download=download,
-            mode=split if split != "val" else "valid",
-            data_file=os.path.join(root_path, "flowers-102/102flowers.tgz"),
-            label_file=os.path.join(root_path, "flowers-102/imagelabels.mat"),
-            setid_file=os.path.join(root_path, "flowers-102/setid.mat"),
-        )
+        train_dataset = paddle.vision.datasets.Flowers(download=download, mode=
+            split if split != 'val' else 'valid', data_file=os.path.join(root_path,
+            'flowers-102/102flowers.tgz'), label_file=os.path.join(root_path,
+            'flowers-102/imagelabels.mat'), setid_file=os.path.join(root_path,
+            'flowers-102/setid.mat'))
         """
     )
     obj.run(

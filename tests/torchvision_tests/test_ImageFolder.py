@@ -30,11 +30,9 @@ def test_case_1():
     )
     paddle_code = textwrap.dedent(
         """
-        from pathlib import Path
-
         import paddle
-
-        fake_data_dir = "./text_data"
+        from pathlib import Path
+        fake_data_dir = './text_data'
         image_folder = paddle.vision.datasets.ImageFolder(root=Path(fake_data_dir))
         """
     )
@@ -60,13 +58,12 @@ def test_case_2():
     )
     paddle_code = textwrap.dedent(
         """
-        import cv2
         import paddle
-
-        fake_data_dir = "./text_data"
-        image_folder = paddle.vision.datasets.ImageFolder(
-            root=fake_data_dir, loader=lambda x: cv2.imread(x), transform=transform
-        )
+        from pathlib import Path
+        import cv2
+        fake_data_dir = './text_data'
+        image_folder = paddle.vision.datasets.ImageFolder(root=fake_data_dir,
+            loader=lambda x: cv2.imread(x), transform=transform)
         """
     )
     obj.run(
@@ -93,16 +90,13 @@ def test_case_3():
     )
     paddle_code = textwrap.dedent(
         """
-        import cv2
         import paddle
-
-        fake_data_dir = "./text_data"
-        image_folder = paddle.vision.datasets.ImageFolder(
-            root=fake_data_dir,
-            transform=transform,
-            loader=lambda x: cv2.imread(x),
-            is_valid_file=lambda x: x.endswith(".jpg"),
-        )
+        from pathlib import Path
+        import cv2
+        fake_data_dir = './text_data'
+        image_folder = paddle.vision.datasets.ImageFolder(root=fake_data_dir,
+            transform=transform, loader=lambda x: cv2.imread(x), is_valid_file=lambda
+            x: x.endswith('.jpg'))
         """
     )
     obj.run(
@@ -129,16 +123,13 @@ def test_case_4():
     )
     paddle_code = textwrap.dedent(
         """
-        import cv2
         import paddle
-
-        fake_data_dir = "./text_data"
-        image_folder = paddle.vision.datasets.ImageFolder(
-            root=fake_data_dir,
-            transform=transform,
-            loader=lambda x: cv2.imread(x),
-            is_valid_file=lambda x: x.endswith(".jpg"),
-        )
+        from pathlib import Path
+        import cv2
+        fake_data_dir = './text_data'
+        image_folder = paddle.vision.datasets.ImageFolder(root=fake_data_dir,
+            transform=transform, loader=lambda x: cv2.imread(x), is_valid_file=lambda
+            x: x.endswith('.jpg'))
         """
     )
     obj.run(
@@ -165,16 +156,13 @@ def test_case_5():
     )
     paddle_code = textwrap.dedent(
         """
-        import cv2
         import paddle
-
-        fake_data_dir = "./text_data"
-        image_folder = paddle.vision.datasets.ImageFolder(
-            loader=lambda x: cv2.imread(x),
-            root=fake_data_dir,
-            transform=transform,
-            is_valid_file=lambda x: x.endswith(".jpg"),
-        )
+        from pathlib import Path
+        import cv2
+        fake_data_dir = './text_data'
+        image_folder = paddle.vision.datasets.ImageFolder(loader=lambda x: cv2.
+            imread(x), root=fake_data_dir, transform=transform, is_valid_file=lambda
+            x: x.endswith('.jpg'))
         """
     )
     obj.run(
@@ -197,8 +185,8 @@ def test_case_6():
     paddle_code = textwrap.dedent(
         """
         import paddle
-
-        fake_data_dir = "./text_data"
+        from pathlib import Path
+        fake_data_dir = './text_data'
         image_folder = paddle.vision.datasets.ImageFolder(root=fake_data_dir)
         """
     )

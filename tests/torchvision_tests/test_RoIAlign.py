@@ -30,7 +30,6 @@ def test_case_1():
     paddle_code = textwrap.dedent(
         """
         import paddle
-
         roi_align = paddle.vision.ops.RoIAlign(output_size=(7, 7), spatial_scale=1.0)
         """
     )
@@ -48,7 +47,6 @@ def test_case_2():
     paddle_code = textwrap.dedent(
         """
         import paddle
-
         roi_align = paddle.vision.ops.RoIAlign(output_size=(7, 7), spatial_scale=1.0)
         """
     )
@@ -66,7 +64,6 @@ def test_case_3():
     paddle_code = textwrap.dedent(
         """
         import paddle
-
         roi_align = paddle.vision.ops.RoIAlign(spatial_scale=1.0, output_size=(7, 7))
         """
     )
@@ -84,7 +81,6 @@ def test_case_4():
     paddle_code = textwrap.dedent(
         """
         import paddle
-
         roi_align = paddle.vision.ops.RoIAlign(output_size=7, spatial_scale=1.0)
         """
     )
@@ -102,7 +98,6 @@ def test_case_5():
     paddle_code = textwrap.dedent(
         """
         import paddle
-
         roi_align = paddle.vision.ops.RoIAlign(output_size=(7, 7), spatial_scale=2.0)
         """
     )
