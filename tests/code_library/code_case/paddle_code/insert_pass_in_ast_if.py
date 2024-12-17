@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 import paddle
 
 if TYPE_CHECKING:
+    pass
     import warnings
 if TYPE_CHECKING:
     import numpy

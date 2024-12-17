@@ -53,7 +53,7 @@ paconvert --in_dir torch_project --out_dir paddle_project [--log_dir log_dir] [-
 
 ```bash
 git clone https://github.com/PaddlePaddle/PaConvert.git
-python3.8 paconvert/main.py --in_dir torch_project --out_dir paddle_project [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level level] [--run_check] [--format]
+python3.8 paconvert/main.py --in_dir torch_project --out_dir paddle_project [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level level] [--run_check] [--no-format]
 ```
 
 **Parameters**
@@ -66,7 +66,7 @@ Parameters:
 --log_dir Optional, the path to the output log, by default convert.log will be created in the current directory
 --log_level Optional "INFO" "DEBUG", print log level, default "INFO"
 --run_check Optional, tool self-test
---format Optional, format the converted code, default is False
+--no-format Optional, disable format the converted code, default is False
 ```
 
 

@@ -75,6 +75,11 @@ def main():
         action="store_true",
         help="Convert Pytorch project each element Separately",
     )
+    parser.add_argument(
+        "--no-format",
+        action="store_true",
+        help="Disable format the converted code",
+    )
 
     args = parser.parse_args()
 
@@ -134,6 +139,7 @@ def main():
         log_level=args.log_level,
         log_markdown=args.log_markdown,
         show_unsupport=args.show_unsupport,
+        format=not args.no_format,
     )
     converter.run(args.in_dir, args.out_dir, args.exclude_dirs)
 
