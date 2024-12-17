@@ -270,7 +270,7 @@ cornercase_api_aux_dict = {
     "torch.distributed.ReduceOp": "torch.distributed.ReduceOp with not args",
     r"torchvision\.models.*": "torchvision.models* with ModuleListMatcher",
     "transformers.GenerationConfig": "transformers.GenerationConfig list some kwargs.",
-    "transformers.PreTrainedTokenizer": "transformers.GenerationConfig list some kwargs.",
+    "transformers.PreTrainedTokenizer": "transformers.PreTrainedTokenizer list some kwargs.",
     "transformers.PretrainedConfig": "transformers.GenerationConfig list some kwargs.",
 }
 
