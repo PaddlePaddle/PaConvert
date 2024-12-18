@@ -24,10 +24,6 @@ tool_dir = os.path.dirname(__file__)
 
 context_verbose_level = 1
 
-validate_whitelist = [
-    r"^torch\.(cuda\.)?(\w*)Tensor$",
-]
-
 # 如果参数映射在这个里面，则忽略检查，因为不是对应关系
 IGNORE_KWARGS_CHANGE_PAIRS = {
     ("self", "x"),
@@ -134,7 +130,7 @@ cornercase_api_aux_dict = {
     "torch.nn.Module.named_modules": "remove_duplicate arg is not supported in paddle.",
     "torch.nn.Module.named_parameters": "remove_duplicate arg is not supported in paddle.",
     "torch.distributed.ReduceOp": "torch.distributed.ReduceOp with not args",
-    r"torchvision\.models.*": "torchvision.models* with ModuleListMatcher",
+    r"^torchvision\.models\.[a-z]+": "torchvision.models.[a-z]+ list some kwargs.",
     "transformers.GenerationConfig": "transformers.GenerationConfig list some kwargs.",
     "transformers.PreTrainedTokenizer": "transformers.PreTrainedTokenizer list some kwargs.",
     "transformers.PretrainedConfig": "transformers.GenerationConfig list some kwargs.",
@@ -145,11 +141,17 @@ missing_docs_whitelist = {
     "setuptools.setup": "prefix is not torch, Error reporting",
     "torch.Tensor.rename": "Conversion strategy still under development",
     "torch.jit.script": "Delete Matcher",
+    r"^torchvision\.models\.[A-Z]+": "torchvision.models.[A-Z]+ just convert to the string",
+    r"^torchvision\.io\.ImageReadMode\..*$": "torchvision.io.ImageReadMode..* just convert to the string",
 }
 
 missing_matchers_whitelist = {
     r"torch\.nn\.Lazy*": "Lazy APIs can only be converted manually, because it Related to the previous and following code.",
 }
+
+validate_whitelist = [
+    r"^torch\.(cuda\.)?(\w*)Tensor$",
+]
 validate_whitelist.extend(cornercase_api_aux_dict.keys())
 validate_whitelist.extend(overloadable_api_aux_set)
 validate_whitelist.extend(missing_docs_whitelist.keys())
@@ -585,23 +587,6 @@ if __name__ == "__main__":
                             print("INFO: NO-UNITTEST", ve, file=f)
                             verbose_print(f"INFO: NO-UNITTEST {ve}", v_level=3)
                             continue
-                    if api in overloadable_api_aux_set:
-                        print("INFO: OVERLOADABLE", ve, file=f)
-                        verbose_print(f"INFO: OVERLOADABLE {ve}", v_level=3)
-                        continue
-                    conercase_skip = False
-                    for conercase_api in cornercase_api_aux_dict:
-                        if re.match(conercase_api, api):
-                            print(
-                                f"INFO: CORNERCASE {ve}, REASON {cornercase_api_aux_dict[conercase_api]}",
-                                ve,
-                                file=f,
-                            )
-                            verbose_print(f"INFO: CORNERCASE {ve}", v_level=3)
-                            conercase_skip = True
-                            continue
-                    if conercase_skip:
-                        continue
                     api_count_to_check += 1
                     print(f"WARNING: {ve}", file=f)
                     verbose_print(f"WARNING: {ve}", v_level=3)
