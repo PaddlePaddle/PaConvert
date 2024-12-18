@@ -10665,9 +10665,6 @@
       "scale_grad_by_freq",
       "sparse"
     ],
-    "unsupport_args": [
-      "scale_grad_by_freq"
-    ],
     "min_input_args": 2
   },
   "torch.nn.FeatureAlphaDropout": {
@@ -12826,9 +12823,6 @@
     "kwargs_change": {
       "input": "x"
     },
-    "unsupport_args": [
-      "scale_grad_by_freq"
-    ],
     "min_input_args": 2
   },
   "torch.nn.functional.feature_alpha_dropout": {
