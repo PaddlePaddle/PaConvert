@@ -46,7 +46,7 @@ Due to the use of some newer Python syntax tree features, an interpreter with >=
 
 ```bash
 python3.8 -m pip install -U paconvert
-paconvert --in_dir torch_project --out_dir paddle_project [--log_dir log_dir] [--log_level level] [--run_check] [--format]
+paconvert --in_dir torch_project --out_dir paddle_project [--log_dir log_dir] [--log_level level] [--run_check] [--no-format]
 ```
 
 2. Installation with source code

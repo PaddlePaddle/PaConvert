@@ -139,7 +139,7 @@ def main():
         log_level=args.log_level,
         log_markdown=args.log_markdown,
         show_unsupport=args.show_unsupport,
-        format=not args.no_format,
+        no_format=not args.no_format,
     )
     converter.run(args.in_dir, args.out_dir, args.exclude_dirs)
 

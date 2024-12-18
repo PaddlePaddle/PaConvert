@@ -52,7 +52,7 @@ class Converter:
         log_level="INFO",
         log_markdown=False,
         show_unsupport=False,
-        format=False,
+        no_format=False,
     ):
         self.imports_map = collections.defaultdict(dict)
         self.torch_api_count = 0
@@ -69,7 +69,7 @@ class Converter:
         self.show_unsupport = show_unsupport
         self.unsupport_map = collections.defaultdict(int)
         self.convert_rate = 0.0
-        self.format = format
+        self.no_format = no_format
 
         log_info(self.logger, "===========================================")
         log_info(self.logger, "PyTorch to Paddle Convert Start ------>:")
@@ -245,7 +245,7 @@ class Converter:
             code = astor.to_source(root)
 
             # format code
-            if self.format:
+            if not self.no_format:
                 try:
                     code = black.format_str(code, mode=black.Mode())
                 except Exception as e:
