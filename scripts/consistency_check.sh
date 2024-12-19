@@ -92,8 +92,6 @@ done
 # Check if there are failed projects
 if [ ${#failed_projects[@]} -ne 0 ]; then
     check_error1=1
-    echo "The following projects failed to convert:"
-    printf '%s\n' "${failed_projects[@]}"
 else
     check_error1=0
 fi
