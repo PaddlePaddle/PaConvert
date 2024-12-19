@@ -90,11 +90,7 @@ for project in "$TORCH_PROJECT_PATH"/*; do
 done
 
 # Check if there are failed projects
-if [ ${#failed_projects[@]} -ne 0 ]; then
-    check_error1=1
-else
-    check_error1=0
-fi
+check_error1=$(( ${#failed_projects[@]} > 0 ? 1 : 0 ))
 echo '************************************************************************************'
 #check whether common API transfer is successful
 
