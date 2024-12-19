@@ -54,7 +54,7 @@ python paconvert/main.py --in_dir torch_project [--out_dir paddle_project] [--ex
 --log_dir       可选，输出日志的路径，默认会在终端上打印日志
 --log_level     可选，打印 log 等级，支持"WARNING"、"INFO"、"DEBUG"，默认"INFO"
 --run_check     可选，工具自检
---no-format     可选，不格式化转换后的代码
+--no-format     可选，不格式化转换后的代码。使用此选项时，转换后的 Paddle 代码不进行代码格式化处理
 ```
 
 

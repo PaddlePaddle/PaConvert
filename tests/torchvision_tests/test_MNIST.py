@@ -30,12 +30,17 @@ def test_case_1():
     paddle_code = textwrap.dedent(
         """
         import os
+
         import paddle
-        root_path = './data'
-        train_dataset = paddle.vision.datasets.MNIST(transform=None, download=False,
-            mode='train', image_path=os.path.join(root_path,
-            'MNIST/raw/train-images-idx3-ubyte.gz'), label_path=os.path.join(
-            root_path, 'MNIST/raw/train-labels-idx1-ubyte.gz'))
+
+        root_path = "./data"
+        train_dataset = paddle.vision.datasets.MNIST(
+            transform=None,
+            download=False,
+            mode="train",
+            image_path=os.path.join(root_path, "MNIST/raw/train-images-idx3-ubyte.gz"),
+            label_path=os.path.join(root_path, "MNIST/raw/train-labels-idx1-ubyte.gz"),
+        )
         """
     )
     obj.run(
@@ -55,12 +60,17 @@ def test_case_2():
     paddle_code = textwrap.dedent(
         """
         import os
+
         import paddle
-        root_path = './data'
-        train_dataset = paddle.vision.datasets.MNIST(transform=None, download=False,
-            mode='train', image_path=os.path.join(root_path,
-            'MNIST/raw/train-images-idx3-ubyte.gz'), label_path=os.path.join(
-            root_path, 'MNIST/raw/train-labels-idx1-ubyte.gz'))
+
+        root_path = "./data"
+        train_dataset = paddle.vision.datasets.MNIST(
+            transform=None,
+            download=False,
+            mode="train",
+            image_path=os.path.join(root_path, "MNIST/raw/train-images-idx3-ubyte.gz"),
+            label_path=os.path.join(root_path, "MNIST/raw/train-labels-idx1-ubyte.gz"),
+        )
         """
     )
     obj.run(
@@ -80,12 +90,16 @@ def test_case_3():
     paddle_code = textwrap.dedent(
         """
         import os
+
         import paddle
-        root_path = './data'
-        train_dataset = paddle.vision.datasets.MNIST(download=False, mode='train',
-            image_path=os.path.join(root_path,
-            'MNIST/raw/train-images-idx3-ubyte.gz'), label_path=os.path.join(
-            root_path, 'MNIST/raw/train-labels-idx1-ubyte.gz'))
+
+        root_path = "./data"
+        train_dataset = paddle.vision.datasets.MNIST(
+            download=False,
+            mode="train",
+            image_path=os.path.join(root_path, "MNIST/raw/train-images-idx3-ubyte.gz"),
+            label_path=os.path.join(root_path, "MNIST/raw/train-labels-idx1-ubyte.gz"),
+        )
         """
     )
     obj.run(
@@ -105,11 +119,15 @@ def test_case_4():
     paddle_code = textwrap.dedent(
         """
         import os
+
         import paddle
-        root_path = './data'
-        train_dataset = paddle.vision.datasets.MNIST(mode='train', image_path=os.
-            path.join(root_path, 'MNIST/raw/train-images-idx3-ubyte.gz'),
-            label_path=os.path.join(root_path, 'MNIST/raw/train-labels-idx1-ubyte.gz'))
+
+        root_path = "./data"
+        train_dataset = paddle.vision.datasets.MNIST(
+            mode="train",
+            image_path=os.path.join(root_path, "MNIST/raw/train-images-idx3-ubyte.gz"),
+            label_path=os.path.join(root_path, "MNIST/raw/train-labels-idx1-ubyte.gz"),
+        )
         """
     )
     obj.run(
@@ -129,11 +147,15 @@ def test_case_5():
     paddle_code = textwrap.dedent(
         """
         import os
+
         import paddle
-        root_path = './data'
-        train_dataset = paddle.vision.datasets.MNIST(mode='train', image_path=os.
-            path.join(root_path, 'MNIST/raw/train-images-idx3-ubyte.gz'),
-            label_path=os.path.join(root_path, 'MNIST/raw/train-labels-idx1-ubyte.gz'))
+
+        root_path = "./data"
+        train_dataset = paddle.vision.datasets.MNIST(
+            mode="train",
+            image_path=os.path.join(root_path, "MNIST/raw/train-images-idx3-ubyte.gz"),
+            label_path=os.path.join(root_path, "MNIST/raw/train-labels-idx1-ubyte.gz"),
+        )
         """
     )
     obj.run(
@@ -154,15 +176,20 @@ def test_case_6():
     paddle_code = textwrap.dedent(
         """
         import os
+
         import paddle
-        root_path = './data'
+
+        root_path = "./data"
         train = True
-        train_dataset = paddle.vision.datasets.MNIST(mode='train' if train else
-            'test', image_path=os.path.join(root_path,
-            'MNIST/raw/train-images-idx3-ubyte.gz') if train else os.path.join(
-            root_path, 'MNIST/raw/t10k-images-idx3-ubyte.gz'), label_path=os.path.
-            join(root_path, 'MNIST/raw/train-labels-idx1-ubyte.gz') if train else
-            os.path.join(root_path, 'MNIST/raw/t10k-labels-idx1-ubyte.gz'))
+        train_dataset = paddle.vision.datasets.MNIST(
+            mode="train" if train else "test",
+            image_path=os.path.join(root_path, "MNIST/raw/train-images-idx3-ubyte.gz")
+            if train
+            else os.path.join(root_path, "MNIST/raw/t10k-images-idx3-ubyte.gz"),
+            label_path=os.path.join(root_path, "MNIST/raw/train-labels-idx1-ubyte.gz")
+            if train
+            else os.path.join(root_path, "MNIST/raw/t10k-labels-idx1-ubyte.gz"),
+        )
         """
     )
     obj.run(
@@ -184,16 +211,22 @@ def test_case_7():
     paddle_code = textwrap.dedent(
         """
         import os
+
         import paddle
-        root_path = './data'
+
+        root_path = "./data"
         train = True
         download = False
-        train_dataset = paddle.vision.datasets.MNIST(download=download, mode=
-            'train' if train else 'test', image_path=os.path.join(root_path,
-            'MNIST/raw/train-images-idx3-ubyte.gz') if train else os.path.join(
-            root_path, 'MNIST/raw/t10k-images-idx3-ubyte.gz'), label_path=os.path.
-            join(root_path, 'MNIST/raw/train-labels-idx1-ubyte.gz') if train else
-            os.path.join(root_path, 'MNIST/raw/t10k-labels-idx1-ubyte.gz'))
+        train_dataset = paddle.vision.datasets.MNIST(
+            download=download,
+            mode="train" if train else "test",
+            image_path=os.path.join(root_path, "MNIST/raw/train-images-idx3-ubyte.gz")
+            if train
+            else os.path.join(root_path, "MNIST/raw/t10k-images-idx3-ubyte.gz"),
+            label_path=os.path.join(root_path, "MNIST/raw/train-labels-idx1-ubyte.gz")
+            if train
+            else os.path.join(root_path, "MNIST/raw/t10k-labels-idx1-ubyte.gz"),
+        )
         """
     )
     obj.run(

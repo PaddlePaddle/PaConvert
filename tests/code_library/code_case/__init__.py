@@ -19,22 +19,22 @@ CODE_CONSISTENCY_MAPPING = {}
 SKIP_FORMAT_FILES = {} # 不需要格式化的文件列表
 cur_dir = os.path.dirname(__file__)
 
-def update_mappings(torch_file, paddle_file, update_set=None):
+def update_mappings(torch_file, paddle_file, target_dict=None):
     if not os.path.isabs(torch_file):
         torch_file = os.path.join(cur_dir, "torch_code/", torch_file)
         
     if not os.path.isabs(paddle_file):
         paddle_file = os.path.join(cur_dir, "paddle_code/", paddle_file)
 
-    update_set[torch_file] = paddle_file
+    target_dict[torch_file] = paddle_file
 
 def add_to_dict(torch_file, paddle_file):
     global CODE_CONSISTENCY_MAPPING
-    update_mappings(torch_file, paddle_file, update_set=CODE_CONSISTENCY_MAPPING)
+    update_mappings(torch_file, paddle_file, target_dict=CODE_CONSISTENCY_MAPPING)
 
 def add_to_skip_format_files(torch_file, paddle_file):
     global SKIP_FORMAT_FILES
-    update_mappings(torch_file, paddle_file, update_set=SKIP_FORMAT_FILES)
+    update_mappings(torch_file, paddle_file, target_dict=SKIP_FORMAT_FILES)
 
 # this part is about api mapping file
 add_to_dict("api_torch_equal.py", "api_paddle_equall_all.py")
