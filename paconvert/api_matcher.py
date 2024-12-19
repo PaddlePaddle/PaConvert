@@ -923,7 +923,7 @@ class AssertMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            assert {}, "{}"
+            assert {}, '{}'
             """
         )
         code = API_TEMPLATE.format(

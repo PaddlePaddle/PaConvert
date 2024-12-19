@@ -77,7 +77,26 @@ fi
 
 # Check the grammar mechanism of the test set and other issues
 echo '**************************start converting test case********************************'
-python paconvert/main.py --in_dir $TORCH_PROJECT_PATH --show_unsupport;check_error1=$?
+failed_projects=()
+for project in "$TORCH_PROJECT_PATH"/*; do
+    if [ -d "$project" ]; then
+        project_name=$(basename "$project")
+        echo "Converting project: $project_name"
+        python paconvert/main.py --in_dir "$project" --show_unsupport
+        if [ $? -ne 0 ]; then
+            failed_projects+=("$project_name")
+        fi
+    fi
+done
+
+# Check if there are failed projects
+if [ ${#failed_projects[@]} -ne 0 ]; then
+    check_error1=1
+    echo "The following projects failed to convert:"
+    printf '%s\n' "${failed_projects[@]}"
+else
+    check_error1=0
+fi
 echo '************************************************************************************'
 #check whether common API transfer is successful
 
@@ -96,6 +115,8 @@ echo -e '\n*********************************************************************
 
 if [ ${check_error1} != 0  ]; then  
     echo "Your PR code-test-set (more than 15W+ lines) convert check failed."
+    echo "The following projects failed to convert:"
+    printf '%s\n' "${failed_projects[@]}"
 else
     echo "Your PR code-test-set (more than 15W+ lines) convert check passed."
 fi
