@@ -22,15 +22,16 @@ import re
 from difflib import context_diff
 
 sys.path.append(os.path.dirname(__file__) + "/../..")
-from tests.code_library.code_case import CODE_CONSISTENCY_MAPPING
+from tests.code_library.code_case import CODE_CONSISTENCY_MAPPING, SKIP_FORMAT_FILES
 
 
 def convert_pytorch_code_to_paddle():
     convert_fail_list = []
     for pytorch_dir, _ in CODE_CONSISTENCY_MAPPING.items():
         convert_paddle_dir = pytorch_dir.replace("torch_code", "convert_paddle_code")
+        no_format_flag = "--no-format" if pytorch_dir in SKIP_FORMAT_FILES else ""
         exit_code = os.system(
-            f"python paconvert/main.py --in_dir {pytorch_dir} --out_dir {convert_paddle_dir}"
+            f"python paconvert/main.py --in_dir {pytorch_dir} --out_dir {convert_paddle_dir} {no_format_flag}"
         )
         if exit_code != 0:
             print(f"The {pytorch_dir} convert fail!")

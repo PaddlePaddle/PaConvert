@@ -23,7 +23,7 @@ python setup.py sdist bdist_wheel;check_error=$?
 if [ ${check_error} == 0 ];then
     python -m pip install dist/*.whl --force-reinstall;check_error=$?
     if [ ${check_error} == 0 ];then
-        paconvert --run_check 1;check_error=$?
+        paconvert --run_check;check_error=$?
     fi
 fi
 

@@ -28,26 +28,26 @@ from paconvert.utils import get_unique_name, process_reduce_and_size_average
 TypePromoteFunc = textwrap.dedent(
     """
     def TypePromote(x, y):
-        TYPE_PROMOTE_DICT ={
-            'INT16FP16':'float16',
-            'INT16FP32':'float32',
-            'INT16FP64':'float64',
+        TYPE_PROMOTE_DICT = {
+            "INT16FP16": "float16",
+            "INT16FP32": "float32",
+            "INT16FP64": "float64",
 
-            'INT32FP16':'float32',
-            'INT32FP32':'float32',
-            'INT32FP64':'float64',
+            "INT32FP16": "float32",
+            "INT32FP32": "float32",
+            "INT32FP64": "float64",
 
-            'INT64FP16':'float64',
-            'INT64FP32':'float64',
-            'INT64FP64':'float64',
+            "INT64FP16": "float64",
+            "INT64FP32": "float64",
+            "INT64FP64": "float64",
         }
         if x.dtype.name + y.dtype.name in TYPE_PROMOTE_DICT:
             promote_type = TYPE_PROMOTE_DICT[x.dtype.name + y.dtype.name]
         elif y.dtype.name + x.dtype.name in TYPE_PROMOTE_DICT:
             promote_type = TYPE_PROMOTE_DICT[y.dtype.name + x.dtype.name]
         else:
-            return x,y
-        return x.astype(promote_type),y.astype(promote_type)
+            return x, y
+        return x.astype(promote_type), y.astype(promote_type)
     """
 )
 
@@ -492,7 +492,7 @@ class TRFMPreTrainedTokenizerMatcher(BaseMatcher):
             original_encode = paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase.encode
             def encode(self, *args, **kwargs):
                 return original_encode(self, *args, **kwargs)["input_ids"]
-            setattr(paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase, 'encode', encode)
+            setattr(paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase, "encode", encode)
             """
         )
         return CODE_TEMPLATE
@@ -532,21 +532,21 @@ class TRFMPreTrainedModelMatcher(BaseMatcher):
                     head_mask = [None] * num_hidden_layers
 
                 return head_mask
-            setattr(paddlenlp.transformers.model_utils.PretrainedModel, 'get_head_mask', get_head_mask)
+            setattr(paddlenlp.transformers.model_utils.PretrainedModel, "get_head_mask", get_head_mask)
 
             original_generate = paddlenlp.generation.utils.GenerationMixin.generate
             def generate(self, input_ids, *args, **kwargs):
                 return paddle.concat((input_ids,original_generate(self,input_ids, *args, **kwargs)[0]),axis=-1)
-            setattr(paddlenlp.generation.utils.GenerationMixin, 'generate', generate)
+            setattr(paddlenlp.generation.utils.GenerationMixin, "generate", generate)
 
-            setattr(paddlenlp.transformers.model_utils.PretrainedModel, 'device', None)
+            setattr(paddlenlp.transformers.model_utils.PretrainedModel, "device", None)
 
             def post_init(self):
-                if hasattr(self, 'init_weights'):
+                if hasattr(self, "init_weights"):
                     self.init_weights()
-                elif hasattr(self, '_init_weights'):
+                elif hasattr(self, "_init_weights"):
                     self._init_weights()
-            setattr(paddlenlp.transformers.model_utils.PretrainedModel, 'post_init', post_init)
+            setattr(paddlenlp.transformers.model_utils.PretrainedModel, "post_init", post_init)
 
             """
         )
@@ -628,15 +628,15 @@ class TensorAddMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def add(self, *args, **kwargs):
-                if 'other' in kwargs:
-                    y = kwargs['other']
-                elif 'y' in kwargs:
-                    y = kwargs['y']
+                if "other" in kwargs:
+                    y = kwargs["other"]
+                elif "y" in kwargs:
+                    y = kwargs["y"]
                 else:
                     y = args[0]
 
-                if 'alpha' in kwargs:
-                    alpha = kwargs['alpha']
+                if "alpha" in kwargs:
+                    alpha = kwargs["alpha"]
                     if alpha != 1:
                         if not isinstance(y, paddle.Tensor):
                             y = paddle.to_tensor(alpha * y)
@@ -648,7 +648,7 @@ class TensorAddMatcher(BaseMatcher):
 
                 return paddle.add(self, y)
 
-            setattr(paddle.Tensor, 'add', add)
+            setattr(paddle.Tensor, "add", add)
             """
         )
         return CODE_TEMPLATE
@@ -663,15 +663,15 @@ class TensorSubtractMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def sub(self, *args, **kwargs):
-                if 'other' in kwargs:
-                    y = kwargs['other']
-                elif 'y' in kwargs:
-                    y = kwargs['y']
+                if "other" in kwargs:
+                    y = kwargs["other"]
+                elif "y" in kwargs:
+                    y = kwargs["y"]
                 else:
                     y = args[0]
 
-                if 'alpha' in kwargs:
-                    alpha = kwargs['alpha']
+                if "alpha" in kwargs:
+                    alpha = kwargs["alpha"]
                     if alpha != 1:
                         if not isinstance(y, paddle.Tensor):
                             y = paddle.to_tensor(alpha * y)
@@ -683,8 +683,8 @@ class TensorSubtractMatcher(BaseMatcher):
 
                 return paddle.subtract(self, y)
 
-            setattr(paddle.Tensor, 'sub', sub)
-            setattr(paddle.Tensor, 'subtract', sub)
+            setattr(paddle.Tensor, "sub", sub)
+            setattr(paddle.Tensor, "subtract", sub)
             """
         )
         return CODE_TEMPLATE
@@ -699,10 +699,10 @@ class TensorMultiplyMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def mul(self, *args, **kwargs):
-                if 'other' in kwargs:
-                    y = kwargs['other']
-                elif 'y' in kwargs:
-                    y = kwargs['y']
+                if "other" in kwargs:
+                    y = kwargs["other"]
+                elif "y" in kwargs:
+                    y = kwargs["y"]
                 else:
                     y = args[0]
 
@@ -711,8 +711,8 @@ class TensorMultiplyMatcher(BaseMatcher):
 
                 return paddle.multiply(self, y)
 
-            setattr(paddle.Tensor, 'mul', mul)
-            setattr(paddle.Tensor, 'multiply', mul)
+            setattr(paddle.Tensor, "mul", mul)
+            setattr(paddle.Tensor, "multiply", mul)
             """
         )
         return CODE_TEMPLATE
@@ -727,10 +727,10 @@ class TensorDivideMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def div(self, *args, **kwargs):
-                if 'other' in kwargs:
-                    y = kwargs['other']
-                elif 'y' in kwargs:
-                    y = kwargs['y']
+                if "other" in kwargs:
+                    y = kwargs["other"]
+                elif "y" in kwargs:
+                    y = kwargs["y"]
                 else:
                     y = args[0]
 
@@ -739,17 +739,17 @@ class TensorDivideMatcher(BaseMatcher):
 
                 res = paddle.divide(self, y)
 
-                if 'rounding_mode' in kwargs:
-                    rounding_mode = kwargs['rounding_mode']
-                    if rounding_mode=='trunc':
+                if "rounding_mode" in kwargs:
+                    rounding_mode = kwargs["rounding_mode"]
+                    if rounding_mode=="trunc":
                         res = paddle.trunc(res)
-                    elif rounding_mode=='floor':
+                    elif rounding_mode=="floor":
                         res = paddle.floor(res)
 
                 return res
 
-            setattr(paddle.Tensor, 'div', div)
-            setattr(paddle.Tensor, 'divide', div)
+            setattr(paddle.Tensor, "div", div)
+            setattr(paddle.Tensor, "divide", div)
             """
         )
         return CODE_TEMPLATE
@@ -1159,23 +1159,23 @@ class MaxMinMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def min(*args, **kwargs):
-                if 'input' in kwargs:
-                    kwargs['x'] = kwargs.pop('input')
+                if "input" in kwargs:
+                    kwargs["x"] = kwargs.pop("input")
 
                 out_v = None
-                if 'out' in kwargs:
-                    out_v = kwargs.pop('out')
+                if "out" in kwargs:
+                    out_v = kwargs.pop("out")
 
-                if 'other' in kwargs:
-                    kwargs['y'] = kwargs.pop('other')
+                if "other" in kwargs:
+                    kwargs["y"] = kwargs.pop("other")
                     ret = paddle.minimum(*args, **kwargs)
                 elif len(args)==2 and isinstance(args[1], paddle.Tensor):
                     ret = paddle.minimum(*args, **kwargs)
                 else:
-                    if 'dim' in kwargs:
-                        kwargs['axis'] = kwargs.pop('dim')
+                    if "dim" in kwargs:
+                        kwargs["axis"] = kwargs.pop("dim")
 
-                    if 'axis' in kwargs or len(args) >= 2:
+                    if "axis" in kwargs or len(args) >= 2:
                         if out_v:
                             ret = paddle.min(*args, **kwargs), paddle.argmin(*args, **kwargs)
                             paddle.assign(ret[0], out_v[0])
@@ -1195,23 +1195,23 @@ class MaxMinMatcher(BaseMatcher):
                     return ret
 
             def max(*args, **kwargs):
-                if 'input' in kwargs:
-                    kwargs['x'] = kwargs.pop('input')
+                if "input" in kwargs:
+                    kwargs["x"] = kwargs.pop("input")
 
                 out_v = None
-                if 'out' in kwargs:
-                    out_v = kwargs.pop('out')
+                if "out" in kwargs:
+                    out_v = kwargs.pop("out")
 
-                if 'other' in kwargs:
-                    kwargs['y'] = kwargs.pop('other')
+                if "other" in kwargs:
+                    kwargs["y"] = kwargs.pop("other")
                     ret = paddle.maximum(*args, **kwargs)
                 elif len(args)==2 and isinstance(args[1], paddle.Tensor):
                     ret = paddle.maximum(*args, **kwargs)
                 else:
-                    if 'dim' in kwargs:
-                        kwargs['axis'] = kwargs.pop('dim')
+                    if "dim" in kwargs:
+                        kwargs["axis"] = kwargs.pop("dim")
 
-                    if 'axis' in kwargs or len(args) >= 2:
+                    if "axis" in kwargs or len(args) >= 2:
                         if out_v:
                             ret = paddle.max(*args, **kwargs), paddle.argmax(*args, **kwargs)
                             paddle.assign(ret[0], out_v[0])
@@ -1329,16 +1329,16 @@ class TensorMaxMinMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def min_class_func(self, *args, **kwargs):
-                if 'other' in kwargs:
-                    kwargs['y'] = kwargs.pop('other')
+                if "other" in kwargs:
+                    kwargs["y"] = kwargs.pop("other")
                     ret = paddle.minimum(self, *args, **kwargs)
-                elif len(args)==1 and isinstance(args[0], paddle.Tensor):
+                elif len(args) == 1 and isinstance(args[0], paddle.Tensor):
                     ret = paddle.minimum(self, *args, **kwargs)
                 else:
-                    if 'dim' in kwargs:
-                        kwargs['axis'] = kwargs.pop('dim')
+                    if "dim" in kwargs:
+                        kwargs["axis"] = kwargs.pop("dim")
 
-                    if 'axis' in kwargs or len(args) >= 1:
+                    if "axis" in kwargs or len(args) >= 1:
                         ret = paddle.min(self, *args, **kwargs), paddle.argmin(self, *args, **kwargs)
                     else:
                         ret = paddle.min(self, *args, **kwargs)
@@ -1346,16 +1346,16 @@ class TensorMaxMinMatcher(BaseMatcher):
                 return ret
 
             def max_class_func(self, *args, **kwargs):
-                if 'other' in kwargs:
-                    kwargs['y'] = kwargs.pop('other')
+                if "other" in kwargs:
+                    kwargs["y"] = kwargs.pop("other")
                     ret = paddle.maximum(self, *args, **kwargs)
-                elif len(args)==1 and isinstance(args[0], paddle.Tensor):
+                elif len(args) == 1 and isinstance(args[0], paddle.Tensor):
                     ret = paddle.maximum(self, *args, **kwargs)
                 else:
-                    if 'dim' in kwargs:
-                        kwargs['axis'] = kwargs.pop('dim')
+                    if "dim" in kwargs:
+                        kwargs["axis"] = kwargs.pop("dim")
 
-                    if 'axis' in kwargs or len(args) >= 1:
+                    if "axis" in kwargs or len(args) >= 1:
                         ret = paddle.max(self, *args, **kwargs), paddle.argmax(self, *args, **kwargs)
                     else:
                         ret = paddle.max(self, *args, **kwargs)
@@ -1516,45 +1516,45 @@ class TensorMatcher(BaseMatcher):
                     "torch.IntTensor" == self.torch_api
                     or "torch.cuda.IntTensor" == self.torch_api
                 ):
-                    code = "paddle.to_tensor(data={}, dtype='int32')".format(data)
+                    code = 'paddle.to_tensor(data={}, dtype="int32")'.format(data)
                 elif ("torch.ShortTensor" == self.torch_api) or (
                     "torch.cuda.ShortTensor" == self.torch_api
                 ):
-                    code = "paddle.to_tensor(data={}, dtype='int16')".format(data)
+                    code = 'paddle.to_tensor(data={}, dtype="int16")'.format(data)
                 elif (
                     "torch.LongTensor" == self.torch_api
                     or "torch.cuda.LongTensor" == self.torch_api
                 ):
-                    code = "paddle.to_tensor(data={}, dtype='int64')".format(data)
+                    code = 'paddle.to_tensor(data={}, dtype="int64")'.format(data)
                 elif ("torch.HalfTensor" == self.torch_api) or (
                     "torch.cuda.HalfTensor" == self.torch_api
                 ):
-                    code = "paddle.to_tensor(data={}, dtype='float16')".format(data)
+                    code = 'paddle.to_tensor(data={}, dtype="float16")'.format(data)
                 elif (
                     "torch.FloatTensor" == self.torch_api
                     or "torch.cuda.FloatTensor" == self.torch_api
                 ):
-                    code = "paddle.to_tensor(data={}, dtype='float32')".format(data)
+                    code = 'paddle.to_tensor(data={}, dtype="float32")'.format(data)
                 elif ("torch.DoubleTensor" == self.torch_api) or (
                     "torch.cuda.DoubleTensor" == self.torch_api
                 ):
-                    code = "paddle.to_tensor(data={}, dtype='float64')".format(data)
+                    code = 'paddle.to_tensor(data={}, dtype="float64")'.format(data)
                 elif (
                     "torch.ByteTensor" == self.torch_api
                     or "torch.cuda.ByteTensor" == self.torch_api
                 ):
-                    code = "paddle.to_tensor(data={}, dtype='uint8')".format(data)
+                    code = 'paddle.to_tensor(data={}, dtype="uint8")'.format(data)
                 elif ("torch.BoolTensor" == self.torch_api) or (
                     "torch.cuda.BoolTensor" == self.torch_api
                 ):
-                    code = "paddle.to_tensor(data={}, dtype='bool')".format(data)
+                    code = 'paddle.to_tensor(data={}, dtype="bool")'.format(data)
                 elif ("torch.BFloat16Tensor" == self.torch_api) or (
                     "torch.cuda.BFloat16Tensor" == self.torch_api
                 ):
-                    code = "paddle.to_tensor(data={}, dtype='bfloat16')".format(data)
+                    code = 'paddle.to_tensor(data={}, dtype="bfloat16")'.format(data)
                 else:
                     if len(args) > 0 and not isinstance(args[0], ast.Name):
-                        code = "paddle.to_tensor(data={}, dtype='float32')".format(data)
+                        code = 'paddle.to_tensor(data={}, dtype="float32")'.format(data)
                     else:
                         code = "paddle.to_tensor(data={})".format(data)
                 return ast.parse(code).body
@@ -1565,45 +1565,45 @@ class TensorMatcher(BaseMatcher):
             "torch.IntTensor" == self.torch_api
             or "torch.cuda.IntTensor" == self.torch_api
         ):
-            code = "paddle.empty(shape={}, dtype='int32')".format(shape)
+            code = 'paddle.empty(shape={}, dtype="int32")'.format(shape)
         elif (
             "torch.ShortTensor" == self.torch_api
             or "torch.cuda.ShortTensor" == self.torch_api
         ):
-            code = "paddle.empty(shape={}, dtype='int16')".format(shape)
+            code = 'paddle.empty(shape={}, dtype="int16")'.format(shape)
         elif (
             "torch.LongTensor" == self.torch_api
             or "torch.cuda.LongTensor" == self.torch_api
         ):
-            code = "paddle.empty(shape={}, dtype='int64')".format(shape)
+            code = 'paddle.empty(shape={}, dtype="int64")'.format(shape)
         elif (
             "torch.HalfTensor" == self.torch_api
             or "torch.cuda.HalfTensor" == self.torch_api
         ):
-            code = "paddle.empty(shape={}, dtype='float16')".format(shape)
+            code = 'paddle.empty(shape={}, dtype="float16")'.format(shape)
         elif (
             "torch.FloatTensor" == self.torch_api
             or "torch.cuda.FloatTensor" == self.torch_api
         ):
-            code = "paddle.empty(shape={}, dtype='float32')".format(shape)
+            code = 'paddle.empty(shape={}, dtype="float32")'.format(shape)
         elif (
             "torch.DoubleTensor" == self.torch_api
             or "torch.cuda.DoubleTensor" == self.torch_api
         ):
-            code = "paddle.empty(shape={}, dtype='float64')".format(shape)
+            code = 'paddle.empty(shape={}, dtype="float64")'.format(shape)
         elif (
             "torch.ByteTensor" == self.torch_api
             or "torch.cuda.ByteTensor" == self.torch_api
         ):
-            code = "paddle.empty(shape={}, dtype='uint8')".format(shape)
+            code = 'paddle.empty(shape={}, dtype="uint8")'.format(shape)
         elif ("torch.BFloat16Tensor" == self.torch_api) or (
             "torch.cuda.BFloat16Tensor" == self.torch_api
         ):
-            code = "paddle.empty(shape={}, dtype='bfloat16')".format(shape)
+            code = 'paddle.empty(shape={}, dtype="bfloat16")'.format(shape)
         elif ("torch.BoolTensor" == self.torch_api) or (
             "torch.cuda.BoolTensor" == self.torch_api
         ):
-            code = "paddle.randint(0, 2, shape={}).astype('bool')".format(shape)
+            code = 'paddle.randint(0, 2, shape={}).astype("bool")'.format(shape)
         else:
             code = "paddle.empty(shape={})".format(shape)
 
@@ -1684,73 +1684,73 @@ class TensorRenameMatcher(BaseMatcher):
 
 class TensorBF16Matcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "{}.astype(dtype='bfloat16')".format(self.paddleClass)
+        code = '{}.astype(dtype="bfloat16")'.format(self.paddleClass)
         return code
 
 
 class TensorBoolMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "{}.astype(dtype='bool')".format(self.paddleClass)
+        code = '{}.astype(dtype="bool")'.format(self.paddleClass)
         return code
 
 
 class TensorByteMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "{}.astype(dtype='uint8')".format(self.paddleClass)
+        code = '{}.astype(dtype="uint8")'.format(self.paddleClass)
         return code
 
 
 class TensorCharMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "{}.astype(dtype='int8')".format(self.paddleClass)
+        code = '{}.astype(dtype="int8")'.format(self.paddleClass)
         return code
 
 
 class TensorDoubleMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "{}.astype(dtype='float64')".format(self.paddleClass)
+        code = '{}.astype(dtype="float64")'.format(self.paddleClass)
         return code
 
 
 class TensorFloatMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "{}.astype(dtype='float32')".format(self.paddleClass)
+        code = '{}.astype(dtype="float32")'.format(self.paddleClass)
         return code
 
 
 class TensorFP16Matcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "{}.astype(dtype='float16')".format(self.paddleClass)
+        code = '{}.astype(dtype="float16")'.format(self.paddleClass)
         return code
 
 
 class TensorIntMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "{}.astype(dtype='int32')".format(self.paddleClass)
+        code = '{}.astype(dtype="int32")'.format(self.paddleClass)
         return code
 
 
 class TensorLongMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "{}.astype(dtype='int64')".format(self.paddleClass)
+        code = '{}.astype(dtype="int64")'.format(self.paddleClass)
         return code
 
 
 class TensorShortMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "{}.astype(dtype='int16')".format(self.paddleClass)
+        code = '{}.astype(dtype="int16")'.format(self.paddleClass)
         return code
 
 
 class TensorCfloatMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "{}.astype(dtype='complex64')".format(self.paddleClass)
+        code = '{}.astype(dtype="complex64")'.format(self.paddleClass)
         return code
 
 
 class TensorCdoubleMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = "{}.astype(dtype='complex128')".format(self.paddleClass)
+        code = '{}.astype(dtype="complex128")'.format(self.paddleClass)
         return code
 
 
@@ -2428,7 +2428,7 @@ class IsNonzeroMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            {}.astype('bool').item()
+            {}.astype("bool").item()
             """
         )
         code = API_TEMPLATE.format(kwargs["input"])
@@ -3511,15 +3511,15 @@ class TensorReshapeMatcher(BaseMatcher):
             """
             def reshape(self, *args, **kwargs):
                 if args:
-                    if len(args)==1 and isinstance(args[0], (tuple, list)):
+                    if len(args) == 1 and isinstance(args[0], (tuple, list)):
                         return paddle.reshape(self, args[0])
                     else:
                         return paddle.reshape(self, list(args))
                 elif kwargs:
-                    assert 'shape' in kwargs
-                    return paddle.reshape(self, shape=kwargs['shape'])
+                    assert "shape" in kwargs
+                    return paddle.reshape(self, shape=kwargs["shape"])
 
-            setattr(paddle.Tensor, 'reshape', reshape)
+            setattr(paddle.Tensor, "reshape", reshape)
             """
         )
         return CODE_TEMPLATE
@@ -3616,7 +3616,7 @@ class SLogDetMatcher(BaseMatcher):
             API_TEMPLATE = textwrap.dedent(
                 """
                 res = paddle.linalg.slogdet({})
-                res[0], res[1].astype('float32')
+                res[0], res[1].astype("float32")
                 """
             )
             code = API_TEMPLATE.format(x_v)
@@ -3665,7 +3665,7 @@ class SpecialNdtrMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            (paddle.erf({}/paddle.sqrt(paddle.to_tensor(2.)))-paddle.erf(paddle.to_tensor(-float('inf'))))/2
+            (paddle.erf({}/paddle.sqrt(paddle.to_tensor(2.0)))-paddle.erf(paddle.to_tensor(-float("inf"))))/2
             """
         )
         code = API_TEMPLATE.format(kwargs["input"])
@@ -3682,7 +3682,7 @@ class LinalgInvExMatcher(BaseMatcher):
             API_TEMPLATE = textwrap.dedent(
                 """
                 out1 = paddle.linalg.inv({})
-                out2 = paddle.zeros({}.shape[:-2], dtype='int32')
+                out2 = paddle.zeros({}.shape[:-2], dtype="int32")
                 paddle.assign(out1, output={}[0]), paddle.assign(out2, output={}[1])
                 """
             )
@@ -3691,7 +3691,7 @@ class LinalgInvExMatcher(BaseMatcher):
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
-                (paddle.linalg.inv({}), paddle.zeros({}.shape[:-2], dtype='int32'))
+                (paddle.linalg.inv({}), paddle.zeros({}.shape[:-2], dtype="int32"))
                 """
             )
             code = API_TEMPLATE.format(kwargs["A"], kwargs["A"])
@@ -3707,7 +3707,7 @@ class LinalgCholeskyExMatcher(BaseMatcher):
             API_TEMPLATE = textwrap.dedent(
                 """
                 out1 = paddle.linalg.cholesky(x={}, upper={})
-                out2 = paddle.zeros({}.shape[:-2], dtype='int32')
+                out2 = paddle.zeros({}.shape[:-2], dtype="int32")
                 paddle.assign(out1, output={}[0]), paddle.assign(out2, output={}[1])
                 """
             )
@@ -3718,7 +3718,7 @@ class LinalgCholeskyExMatcher(BaseMatcher):
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
-                (paddle.linalg.cholesky(x={}, upper={}), paddle.zeros({}.shape[:-2], dtype='int32'))
+                (paddle.linalg.cholesky(x={}, upper={}), paddle.zeros({}.shape[:-2], dtype="int32"))
                 """
             )
             code = API_TEMPLATE.format(
@@ -3981,7 +3981,7 @@ class TensorTakeMatcher(BaseMatcher):
                 elif kwargs:
                     return paddle.take(self, **kwargs)
 
-            setattr(paddle.Tensor, 'take', take)
+            setattr(paddle.Tensor, "take", take)
             """
         )
         return CODE_TEMPLATE
@@ -3997,11 +3997,11 @@ class TensorSplitMatcher(BaseMatcher):
             """
             def split_tensor_func(self, split_size, dim=0):
                 if isinstance(split_size, int):
-                    return paddle.split(self, self.shape[dim]//split_size, dim)
+                    return paddle.split(self, self.shape[dim] // split_size, dim)
                 else:
                     return paddle.split(self, split_size, dim)
 
-            setattr(paddle.Tensor, 'split', split_tensor_func)
+            setattr(paddle.Tensor, "split", split_tensor_func)
             """
         )
         return CODE_TEMPLATE
@@ -4024,7 +4024,7 @@ class TensorRoundMatcher(BaseMatcher):
                     x = paddle.abs(self)//(10**-decimals)*(10**-decimals)
                     return paddle.where(self<0, -x, x)
                 return paddle.round(self)
-            setattr(paddle.Tensor, 'round', round)
+            setattr(paddle.Tensor, "round", round)
             """
         )
         return CODE_TEMPLATE
@@ -4224,14 +4224,14 @@ class Get_EnumMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def get_enum(reduction: str) -> int:
-                if reduction == 'none':
+                if reduction == "none":
                     ret = 0
-                elif reduction == 'mean':
+                elif reduction == "mean":
                     ret = 1
-                elif reduction == 'elementwise_mean':
+                elif reduction == "elementwise_mean":
                     warnings.warn("reduction='elementwise_mean' is deprecated, please use reduction='mean' instead.")
                     ret = 1
-                elif reduction == 'sum':
+                elif reduction == "sum":
                     ret = 2
                 else:
                     ret = -1
@@ -4264,17 +4264,17 @@ class SoftmaxMatcher(BaseMatcher):
                     ret = 1
                 return ret
 
-            def forward(self,x):
+            def forward(self, x):
                 if self._axis is None:
                     return paddle.nn.functional.softmax(x, _get_softmax_dim(x.ndim))
                 return paddle.nn.functional.softmax(x, self._axis)
-            setattr(paddle.nn.Softmax, 'forward', forward)
+            setattr(paddle.nn.Softmax, "forward", forward)
 
-            def forward(self,x):
+            def forward(self, x):
                 if self._axis is None:
                     return paddle.nn.functional.log_softmax(x, _get_softmax_dim(x.ndim))
                 return paddle.nn.functional.log_softmax(x, self._axis)
-            setattr(paddle.nn.LogSoftmax, 'forward', forward)
+            setattr(paddle.nn.LogSoftmax, "forward", forward)
             """
         )
         return CODE_TEMPLATE
@@ -4696,173 +4696,173 @@ class CanCastMatcher(BaseMatcher):
             """
             def can_cast(from_, to):
                 can_cast_dict = {
-                    'bfloat16': {
-                        'bfloat16': True,
-                        'float16': True,
-                        'float32': True,
-                        'float64': True,
-                        'complex64': True,
-                        'complex128': True,
-                        'uint8': False,
-                        'int8': False,
-                        'int16': False,
-                        'int32': False,
-                        'int64': False,
-                        'bool': False
+                    "bfloat16": {
+                        "bfloat16": True,
+                        "float16": True,
+                        "float32": True,
+                        "float64": True,
+                        "complex64": True,
+                        "complex128": True,
+                        "uint8": False,
+                        "int8": False,
+                        "int16": False,
+                        "int32": False,
+                        "int64": False,
+                        "bool": False
                     },
-                    'float16': {
-                        'bfloat16': True,
-                        'float16': True,
-                        'float32': True,
-                        'float64': True,
-                        'complex64': True,
-                        'complex128': True,
-                        'uint8': False,
-                        'int8': False,
-                        'int16': False,
-                        'int32': False,
-                        'int64': False,
-                        'bool': False,
+                    "float16": {
+                        "bfloat16": True,
+                        "float16": True,
+                        "float32": True,
+                        "float64": True,
+                        "complex64": True,
+                        "complex128": True,
+                        "uint8": False,
+                        "int8": False,
+                        "int16": False,
+                        "int32": False,
+                        "int64": False,
+                        "bool": False,
                     },
-                    'float32': {
-                        'bfloat16': True,
-                        'float16': True,
-                        'float32': True,
-                        'float64': True,
-                        'complex64': True,
-                        'complex128': True,
-                        'uint8': False,
-                        'int8': False,
-                        'int16': False,
-                        'int32': False,
-                        'int64': False,
-                        'bool': False,
+                    "float32": {
+                        "bfloat16": True,
+                        "float16": True,
+                        "float32": True,
+                        "float64": True,
+                        "complex64": True,
+                        "complex128": True,
+                        "uint8": False,
+                        "int8": False,
+                        "int16": False,
+                        "int32": False,
+                        "int64": False,
+                        "bool": False,
                     },
-                    'float64': {
-                        'bfloat16': True,
-                        'float16': True,
-                        'float32': True,
-                        'float64': True,
-                        'complex64': True,
-                        'complex128': True,
-                        'uint8': False,
-                        'int8': False,
-                        'int16': False,
-                        'int32': False,
-                        'int64': False,
-                        'bool': False,
+                    "float64": {
+                        "bfloat16": True,
+                        "float16": True,
+                        "float32": True,
+                        "float64": True,
+                        "complex64": True,
+                        "complex128": True,
+                        "uint8": False,
+                        "int8": False,
+                        "int16": False,
+                        "int32": False,
+                        "int64": False,
+                        "bool": False,
                     },
-                    'complex64': {
-                        'bfloat16': False,
-                        'float16': False,
-                        'float32': False,
-                        'float64': False,
-                        'complex64': True,
-                        'complex128': True,
-                        'uint8': False,
-                        'int8': False,
-                        'int16': False,
-                        'int32': False,
-                        'int64': False,
-                        'bool': False,
+                    "complex64": {
+                        "bfloat16": False,
+                        "float16": False,
+                        "float32": False,
+                        "float64": False,
+                        "complex64": True,
+                        "complex128": True,
+                        "uint8": False,
+                        "int8": False,
+                        "int16": False,
+                        "int32": False,
+                        "int64": False,
+                        "bool": False,
                     },
-                    'complex128': {
-                        'bfloat16': False,
-                        'float16': False,
-                        'float32': False,
-                        'float64': False,
-                        'complex64': True,
-                        'complex128': True,
-                        'uint8': False,
-                        'int8': False,
-                        'int16': False,
-                        'int32': False,
-                        'int64': False,
-                        'bool': False,
+                    "complex128": {
+                        "bfloat16": False,
+                        "float16": False,
+                        "float32": False,
+                        "float64": False,
+                        "complex64": True,
+                        "complex128": True,
+                        "uint8": False,
+                        "int8": False,
+                        "int16": False,
+                        "int32": False,
+                        "int64": False,
+                        "bool": False,
                     },
-                    'uint8': {
-                        'bfloat16': True,
-                        'float16': True,
-                        'float32': True,
-                        'float64': True,
-                        'complex64': True,
-                        'complex128': True,
-                        'uint8': True,
-                        'int8': True,
-                        'int16': True,
-                        'int32': True,
-                        'int64': True,
-                        'bool': False,
+                    "uint8": {
+                        "bfloat16": True,
+                        "float16": True,
+                        "float32": True,
+                        "float64": True,
+                        "complex64": True,
+                        "complex128": True,
+                        "uint8": True,
+                        "int8": True,
+                        "int16": True,
+                        "int32": True,
+                        "int64": True,
+                        "bool": False,
                     },
-                    'int8': {
-                        'bfloat16': True,
-                        'float16': True,
-                        'float32': True,
-                        'float64': True,
-                        'complex64': True,
-                        'complex128': True,
-                        'uint8': True,
-                        'int8': True,
-                        'int16': True,
-                        'int32': True,
-                        'int64': True,
-                        'bool': False,
+                    "int8": {
+                        "bfloat16": True,
+                        "float16": True,
+                        "float32": True,
+                        "float64": True,
+                        "complex64": True,
+                        "complex128": True,
+                        "uint8": True,
+                        "int8": True,
+                        "int16": True,
+                        "int32": True,
+                        "int64": True,
+                        "bool": False,
                     },
-                    'int16': {
-                        'bfloat16': True,
-                        'float16': True,
-                        'float32': True,
-                        'float64': True,
-                        'complex64': True,
-                        'complex128': True,
-                        'uint8': True,
-                        'int8': True,
-                        'int16': True,
-                        'int32': True,
-                        'int64': True,
-                        'bool': False,
+                    "int16": {
+                        "bfloat16": True,
+                        "float16": True,
+                        "float32": True,
+                        "float64": True,
+                        "complex64": True,
+                        "complex128": True,
+                        "uint8": True,
+                        "int8": True,
+                        "int16": True,
+                        "int32": True,
+                        "int64": True,
+                        "bool": False,
                     },
-                    'int32': {
-                        'bfloat16': True,
-                        'float16': True,
-                        'float32': True,
-                        'float64': True,
-                        'complex64': True,
-                        'complex128': True,
-                        'uint8': True,
-                        'int8': True,
-                        'int16': True,
-                        'int32': True,
-                        'int64': True,
-                        'bool': False,
+                    "int32": {
+                        "bfloat16": True,
+                        "float16": True,
+                        "float32": True,
+                        "float64": True,
+                        "complex64": True,
+                        "complex128": True,
+                        "uint8": True,
+                        "int8": True,
+                        "int16": True,
+                        "int32": True,
+                        "int64": True,
+                        "bool": False,
                     },
-                    'int64': {
-                        'bfloat16': True,
-                        'float16': True,
-                        'float32': True,
-                        'float64': True,
-                        'complex64': True,
-                        'complex128': True,
-                        'uint8': True,
-                        'int8': True,
-                        'int16': True,
-                        'int32': True,
-                        'int64': True,
-                        'bool': False,
+                    "int64": {
+                        "bfloat16": True,
+                        "float16": True,
+                        "float32": True,
+                        "float64": True,
+                        "complex64": True,
+                        "complex128": True,
+                        "uint8": True,
+                        "int8": True,
+                        "int16": True,
+                        "int32": True,
+                        "int64": True,
+                        "bool": False,
                     },
-                    'bool': {
-                        'bfloat16': True,
-                        'float16': True,
-                        'float32': True,
-                        'float64': True,
-                        'complex64': True,
-                        'complex128': True,
-                        'uint8': True,
-                        'int8': True,
-                        'int16': True,
-                        'int32': True,
-                        'int64': True,
-                        'bool': True,
+                    "bool": {
+                        "bfloat16": True,
+                        "float16": True,
+                        "float32": True,
+                        "float64": True,
+                        "complex64": True,
+                        "complex128": True,
+                        "uint8": True,
+                        "int8": True,
+                        "int16": True,
+                        "int32": True,
+                        "int64": True,
+                        "bool": True,
                     }
                 }
                 return can_cast_dict[from_][to]
@@ -5701,13 +5701,13 @@ class VOCDetectionMatcher(BaseMatcher):
             import os
 
             def VOCDetection(*args, **kwargs):
-                root = kwargs.pop('root')
-                year = kwargs.pop('year', '2012')
-                if year != '2012':
+                root = kwargs.pop("root")
+                year = kwargs.pop("year", "2012")
+                if year != "2012":
                     raise ValueError("PaddlePaddle only supports VOC2012 dataset")
-                image_set = kwargs.pop('image_set', 'train')
-                download = kwargs.pop('download', True)
-                transform = kwargs.pop('transform', None)
+                image_set = kwargs.pop("image_set", "train")
+                download = kwargs.pop("download", True)
+                transform = kwargs.pop("transform", None)
 
                 if image_set == "trainval":
                     mode = "train"
@@ -5718,7 +5718,7 @@ class VOCDetectionMatcher(BaseMatcher):
                 else:
                     raise ValueError("Only supports image_set in ['trainval', 'train', 'val']")
 
-                data_file = os.path.join(root, 'VOCtrainval_11-May-2012.tar')
+                data_file = os.path.join(root, "VOCtrainval_11-May-2012.tar")
                 return paddle.vision.datasets.VOC2012(data_file=data_file, mode=mode, transform=transform, download=download, backend=None)
             """
         )
@@ -5755,8 +5755,8 @@ class BoxesConvertMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def {}(*args, **kwargs):
-                input = args[0] if len(args) > 0 else kwargs.get('input')
-                boxes = args[1] if len(args) > 1 else kwargs.get('boxes')
+                input = args[0] if len(args) > 0 else kwargs.get("input")
+                boxes = args[1] if len(args) > 1 else kwargs.get("boxes")
 
                 batch_size = input.shape[0]
                 if isinstance(boxes, list):
@@ -5765,11 +5765,11 @@ class BoxesConvertMatcher(BaseMatcher):
                 else:
                     boxes_num = [(boxes[:, 0] == i).sum() for i in range(batch_size)]
                     boxes = boxes[:, 1:]
-                boxes_num = paddle.to_tensor(boxes_num, dtype='int32')
+                boxes_num = paddle.to_tensor(boxes_num, dtype="int32")
 
-                kwargs['x'] = kwargs.pop('input')
-                kwargs['boxes'] = boxes
-                kwargs['boxes_num'] = boxes_num
+                kwargs["x"] = kwargs.pop("input")
+                kwargs["boxes"] = boxes
+                kwargs["boxes_num"] = boxes_num
                 return paddle.vision.ops.{}(**kwargs)
             """
         ).format(api_name, api_name)
