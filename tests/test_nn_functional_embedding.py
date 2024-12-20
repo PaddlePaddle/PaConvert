@@ -147,7 +147,7 @@ def test_case_8():
                            [3., 3., 3.]])
         embedding_matrix.requires_grad = True
         x = torch.tensor(np.array([[0,0,0,2],[2,3,3,0]]))
-        result = torch.nn.functional.embedding(input=x, padding_idx=0, max_norm=2, weight=embedding_matrix, scale_grad_by_freq=False, norm_type=2.0, sparse=False)
+        result = torch.nn.functional.embedding(input=x, padding_idx=1, max_norm=2, weight=embedding_matrix, scale_grad_by_freq=False, norm_type=2.0, sparse=False)
         result.sum().backward()
         w_grad = embedding_matrix.grad
         """
@@ -166,7 +166,7 @@ def test_case_9():
                            [3., 3., 3.]])
         embedding_matrix.requires_grad = True
         x = torch.tensor(np.array([[0,0,0,2],[2,3,3,0]]))
-        result = torch.nn.functional.embedding(input=x, padding_idx=0, max_norm=2, weight=embedding_matrix, scale_grad_by_freq=True, norm_type=2.0, sparse=False)
+        result = torch.nn.functional.embedding(input=x, padding_idx=1, max_norm=2, weight=embedding_matrix, scale_grad_by_freq=True, norm_type=2.0, sparse=False)
         result.sum().backward()
         w_grad = embedding_matrix.grad
         """
