@@ -91,13 +91,18 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        a = torch.tensor([1, 2, 3]) # use the imported torch to avoid a useless import
+        str1 = '1,2,3'
         str1.split(',')
         """
     )
     expect_code = textwrap.dedent(
         """
         import paddle
-        str1.split(',')
+
+        a = paddle.to_tensor(data=[1, 2, 3])
+        str1 = "1,2,3"
+        str1.split(",")
         """
     )
     obj.run(pytorch_code, expect_paddle_code=expect_code)

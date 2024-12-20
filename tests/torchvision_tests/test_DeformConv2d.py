@@ -38,8 +38,16 @@ def test_case_1():
     paddle_code = textwrap.dedent(
         """
         import paddle
-        deform_conv = paddle.vision.ops.DeformConv2D(in_channels=3, out_channels=4,
-            kernel_size=3, stride=1, padding=0, dilation=1, groups=1)
+
+        deform_conv = paddle.vision.ops.DeformConv2D(
+            in_channels=3,
+            out_channels=4,
+            kernel_size=3,
+            stride=1,
+            padding=0,
+            dilation=1,
+            groups=1,
+        )
         """
     )
     obj.run(pytorch_code, expect_paddle_code=paddle_code, check_value=False)
@@ -56,8 +64,16 @@ def test_case_2():
     paddle_code = textwrap.dedent(
         """
         import paddle
-        deform_conv = paddle.vision.ops.DeformConv2D(in_channels=3, out_channels=4,
-            kernel_size=3, stride=1, padding=0, dilation=1, groups=1)
+
+        deform_conv = paddle.vision.ops.DeformConv2D(
+            in_channels=3,
+            out_channels=4,
+            kernel_size=3,
+            stride=1,
+            padding=0,
+            dilation=1,
+            groups=1,
+        )
         """
     )
     obj.run(pytorch_code, expect_paddle_code=paddle_code, check_value=False)
@@ -82,8 +98,16 @@ def test_case_3():
     paddle_code = textwrap.dedent(
         """
         import paddle
-        deform_conv = paddle.vision.ops.DeformConv2D(kernel_size=3, in_channels=3,
-            out_channels=64, padding=1, stride=1, dilation=1, groups=1)
+
+        deform_conv = paddle.vision.ops.DeformConv2D(
+            kernel_size=3,
+            in_channels=3,
+            out_channels=64,
+            padding=1,
+            stride=1,
+            dilation=1,
+            groups=1,
+        )
         """
     )
     obj.run(pytorch_code, expect_paddle_code=paddle_code, check_value=False)
@@ -100,8 +124,10 @@ def test_case_4():
     paddle_code = textwrap.dedent(
         """
         import paddle
-        deform_conv = paddle.vision.ops.DeformConv2D(in_channels=3, out_channels=64,
-            kernel_size=3)
+
+        deform_conv = paddle.vision.ops.DeformConv2D(
+            in_channels=3, out_channels=64, kernel_size=3
+        )
         """
     )
     obj.run(pytorch_code, expect_paddle_code=paddle_code, check_value=False)
@@ -126,8 +152,16 @@ def test_case_5():
     paddle_code = textwrap.dedent(
         """
         import paddle
-        deform_conv = paddle.vision.ops.DeformConv2D(groups=1, dilation=1, padding=
-            1, stride=1, kernel_size=3, out_channels=64, in_channels=3)
+
+        deform_conv = paddle.vision.ops.DeformConv2D(
+            groups=1,
+            dilation=1,
+            padding=1,
+            stride=1,
+            kernel_size=3,
+            out_channels=64,
+            in_channels=3,
+        )
         """
     )
     obj.run(pytorch_code, expect_paddle_code=paddle_code, check_value=False)
