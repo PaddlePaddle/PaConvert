@@ -30,3 +30,15 @@ def _test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+pytorch_code = textwrap.dedent(
+    """
+        import torch
+        loss = torch.nn.MultiLabelMarginLoss(size_average=True, reduce=False, reduction="mean")
+        input = torch.tensor([[1, -2, 3], [0, -1, 2], [1, 0, 1]]).to(dtype=torch.float32)
+        label = torch.LongTensor([[-1, 1, -1], [1, 1, 1], [1, -1, 1]])
+        result = loss(input, label)
+        """
+)
+print(obj.convert(pytorch_code))
