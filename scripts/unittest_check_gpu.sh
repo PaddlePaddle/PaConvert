@@ -14,24 +14,25 @@
 
 set +x
 
-cd /workspace/$1/PaConvert/
+export LD_LIBRARY_PATH=/root/anaconda3/lib:$LD_LIBRARY_PATH
 
-echo "Insalling latest release cpu version torch"
-python -m pip install -U torch torchaudio torchvision --index-url https://download.pytorch.org/whl/cpu
+echo "Insalling cpu version torch"
 python -c "import torch; print('torch version information:' ,torch.__version__)"
 
-echo "Insalling develop cpu version paddle"
+echo "Insalling develop gpu version paddle"
 python -m pip uninstall -y paddlepaddle
 python -m pip uninstall -y paddlepaddle-gpu
-python -m pip install --pre paddlepaddle -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/
+rm -rf /root/anaconda3/lib/python*/site-packages/paddlepaddle-0.0.0.dist-info/
+python -m pip install --pre paddlepaddle-gpu -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/
+python -m pip install -r requirements.txt
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
 echo "Checking code unit test by pytest ..."
 python -m pip install pytest-timeout pytest-xdist pytest-rerunfailures
-python -m pytest -n 1 --reruns=3 /workspace/$1/PaConvert/tests;check_error=$?
+python -m pytest -n 1 --reruns=3 ./tests; check_error=$?
 if [ ${check_error} != 0 ];then
     echo "Rerun unit test check." 
-    python -m pytest --lf  -n 1 /workspace/$1/PaConvert/tests;check_error=$?
+    python -m pytest --lf  -n 1 ./tests; check_error=$?
 fi
 
 echo '************************************************************************************'

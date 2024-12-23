@@ -92,12 +92,7 @@ def test_case_4():
         result = embedding.padding_idx
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="Paddle does not support parameter of scale_grad_by_freq",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -109,12 +104,7 @@ def test_case_5():
         result = embedding.padding_idx
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="Paddle does not support parameter of scale_grad_by_freq",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_6():
@@ -122,16 +112,11 @@ def test_case_6():
         """
         import torch
         padding_idx = 0
-        embedding = torch.nn.Embedding(num_embeddings=4, embedding_dim=3, padding_idx=padding_idx, norm_type=2.0, scale_grad_by_freq=False, sparse=False)
+        embedding = torch.nn.Embedding(num_embeddings=4, embedding_dim=3, padding_idx=padding_idx, norm_type=2.0, scale_grad_by_freq=False, sparse=True)
         result = embedding.padding_idx
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="Paddle does not support parameter of scale_grad_by_freq",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_7():

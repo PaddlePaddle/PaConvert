@@ -120,12 +120,14 @@
       "softmax_scale",
       "causal",
       "window_size",
+      "softcap",
       "alibi_slopes",
       "deterministic",
       "return_attn_probs"
     ],
     "unsupport_args": [
       "window_size",
+      "softcap",
       "alibi_slopes",
       "deterministic"
     ],
@@ -154,12 +156,14 @@
       "window_size",
       "alibi_slopes",
       "deterministic",
-      "return_attn_probs"
+      "return_attn_probs",
+      "block_table"
     ],
     "unsupport_args": [
       "window_size",
       "alibi_slopes",
-      "deterministic"
+      "deterministic",
+      "block_table"
     ],
     "kwargs_change": {
       "q": "query",
@@ -10665,9 +10669,6 @@
       "scale_grad_by_freq",
       "sparse"
     ],
-    "unsupport_args": [
-      "scale_grad_by_freq"
-    ],
     "min_input_args": 2
   },
   "torch.nn.FeatureAlphaDropout": {
@@ -11609,16 +11610,7 @@
     },
     "min_input_args": 0
   },
-  "torch.nn.MultiLabelMarginLoss": {
-    "Matcher": "SizeAverageMatcher",
-    "paddle_api": "paddle.nn.MultiLabelSoftMarginLoss",
-    "min_input_args": 0,
-    "args_list": [
-      "size_average",
-      "reduce",
-      "reduction"
-    ]
-  },
+  "torch.nn.MultiLabelMarginLoss": {},
   "torch.nn.MultiLabelSoftMarginLoss": {
     "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.MultiLabelSoftMarginLoss",
@@ -12826,9 +12818,6 @@
     "kwargs_change": {
       "input": "x"
     },
-    "unsupport_args": [
-      "scale_grad_by_freq"
-    ],
     "min_input_args": 2
   },
   "torch.nn.functional.feature_alpha_dropout": {
@@ -18669,9 +18658,9 @@
       "groups",
       "bias"
     ],
-    "unsupport_args": [
-      "bias"
-    ]
+    "kwargs_change": {
+      "bias": "bias_attr"
+    }
   },
   "torchvision.ops.RoIAlign": {
     "Matcher": "GenericMatcher",

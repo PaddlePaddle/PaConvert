@@ -23,12 +23,13 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        x = torch.tensor([1, 2, 3])
         x.rename(columns={'iids': iids})
         """
     )
     obj.run(
         pytorch_code,
-        expect_paddle_code="import paddle\nx.rename(columns={'iids': iids})\n",
+        expect_paddle_code='import paddle\n\nx = paddle.to_tensor(data=[1, 2, 3])\nx.rename(columns={"iids": iids})\n',
     )
 
 

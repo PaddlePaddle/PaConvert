@@ -1,5 +1,7 @@
-import paddle
 from typing import TYPE_CHECKING
+
+import paddle
+
 if TYPE_CHECKING:
     pass
     import warnings
@@ -12,5 +14,4 @@ if TYPE_CHECKING:
     d = paddle.add(x=a, y=paddle.to_tensor(b))
     numpy.array([1, 2, 3])
 else:
-    warnings.warn(
-        'The above code is meaningless, in order to pass the code style CI')
+    warnings.warn("The above code is meaningless, in order to pass the code style CI")

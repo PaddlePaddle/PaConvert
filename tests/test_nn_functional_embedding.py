@@ -81,15 +81,10 @@ def test_case_4():
                            [2., 2., 2.],
                            [3., 3., 3.]])
         x = torch.tensor(np.array([[0,1],[2,3]]))
-        result = torch.nn.functional.embedding(input=x, weight=embedding_matrix, padding_idx=0, max_norm=2, norm_type=2.0, scale_grad_by_freq=True, sparse=True)
+        result = torch.nn.functional.embedding(input=x, weight=embedding_matrix, padding_idx=0, max_norm=2, norm_type=2.0, scale_grad_by_freq=False, sparse=True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle unsupport scale_grad_by_freq ",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -102,15 +97,10 @@ def test_case_5():
                            [2., 2., 2.],
                            [3., 3., 3.]])
         x = torch.tensor(np.array([[0,1],[2,3]]))
-        result = torch.nn.functional.embedding(input=x, padding_idx=0, max_norm=2, weight=embedding_matrix, scale_grad_by_freq=True, norm_type=2.0, sparse=True)
+        result = torch.nn.functional.embedding(input=x, padding_idx=0, max_norm=2, weight=embedding_matrix, scale_grad_by_freq=False, norm_type=2.0, sparse=True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle unsupport scale_grad_by_freq ",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_6():
@@ -123,15 +113,10 @@ def test_case_6():
                            [2., 2., 2.],
                            [3., 3., 3.]])
         x = torch.tensor(np.array([[0,1],[2,3]]))
-        result = torch.nn.functional.embedding(x, embedding_matrix, 0, 2, 2.0, True, True)
+        result = torch.nn.functional.embedding(x, embedding_matrix, 0, 2, 2.0, False, True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle unsupport scale_grad_by_freq ",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_7():
@@ -149,3 +134,41 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import numpy as np
+        embedding_matrix = torch.Tensor([[0., 0., 0.],
+                           [1., 1., 1.],
+                           [2., 2., 2.],
+                           [3., 3., 3.]])
+        embedding_matrix.requires_grad = True
+        x = torch.tensor(np.array([[0,0,0,2],[2,3,3,0]]))
+        result = torch.nn.functional.embedding(input=x, padding_idx=1, max_norm=2, weight=embedding_matrix, scale_grad_by_freq=False, norm_type=2.0, sparse=False)
+        result.sum().backward()
+        w_grad = embedding_matrix.grad
+        """
+    )
+    obj.run(pytorch_code, ["result", "w_grad"], check_stop_gradient=False)
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import numpy as np
+        embedding_matrix = torch.Tensor([[0., 0., 0.],
+                           [1., 1., 1.],
+                           [2., 2., 2.],
+                           [3., 3., 3.]])
+        embedding_matrix.requires_grad = True
+        x = torch.tensor(np.array([[0,0,0,2],[2,3,3,0]]))
+        result = torch.nn.functional.embedding(input=x, padding_idx=1, max_norm=2, weight=embedding_matrix, scale_grad_by_freq=True, norm_type=2.0, sparse=False)
+        result.sum().backward()
+        w_grad = embedding_matrix.grad
+        """
+    )
+    obj.run(pytorch_code, ["result", "w_grad"], check_stop_gradient=False)

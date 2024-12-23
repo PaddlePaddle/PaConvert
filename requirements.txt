@@ -1,1 +1,4 @@
 astor
+black==22.8.0
+autoflake==1.7.7
+isort==5.11.5

@@ -1,11 +1,11 @@
 # Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,18 +17,23 @@ set +x
 cd /workspace/$1/PaConvert/
 
 echo "Insalling latest release cpu version torch"
-python -m pip install -U torch --index-url https://download.pytorch.org/whl/cpu
+python -m pip install -U torch torchaudio torchvision --index-url https://download.pytorch.org/whl/cpu
 python -c "import torch; print('torch version information:' ,torch.__version__)"
 
 echo "Insalling develop cpu version paddle"
 python -m pip uninstall -y paddlepaddle
 python -m pip uninstall -y paddlepaddle-gpu
 python -m pip install --pre paddlepaddle -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/
+python -m pip install -r requirements.txt
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
-echo '*******************************start modeltest test*********************************'
-python tools/modeltest/modeltest_check.py;check_error1=$?
-
+echo "Checking code unit test by pytest ..."
+python -m pip install pytest-timeout pytest-xdist pytest-rerunfailures
+python -m pytest -n 1 --reruns=3 /workspace/$1/PaConvert/tests;check_error=$?
+if [ ${check_error} != 0 ];then
+    echo "Rerun unit test check." 
+    python -m pytest --lf  -n 1 /workspace/$1/PaConvert/tests;check_error=$?
+fi
 
 echo '************************************************************************************'
 echo "______      _____                          _   "
@@ -37,12 +42,21 @@ echo "| |_/ /_ _| |     ___  _ ____   _____ _ __| |_ "
 echo "|  __/ _  | |    / _ \\| \\_ \\ \\ / / _ \\ \\__| __|"
 echo "| | | (_| | |___| (_) | | | \\ V /  __/ |  | |_ "
 echo "\\_|  \\__,_|\\_____\\___/|_| |_|\\_/ \\___|_|   \\__|"
-echo -e '\n************************************************************************************'
-if [ ${check_error1} != 0  ]; then  
-    echo "Your PR code model test check failed."
+echo -e '\n************************************************************************************' 
+if [ ${check_error} != 0 ];then
+    echo "Your PR code unit test check failed." 
+    echo "Please run the following command." 
+    echo "" 
+    echo "    python -m pytest tests" 
+    echo "" 
+    echo "For more information, please refer to our check guide:" 
+    echo "https://github.com/PaddlePaddle/PaConvert#readme." 
 else
-    echo "Your PR code model test check passed."
+    echo "Your PR code unit test check passed."
 fi
 echo '************************************************************************************'
 
-exit ${check_error1}
+exit ${check_error}
+
+                                             
+                                             

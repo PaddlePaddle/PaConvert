@@ -24,9 +24,138 @@ tool_dir = os.path.dirname(__file__)
 
 context_verbose_level = 1
 
+# 如果参数映射在这个里面，则忽略检查，因为不是对应关系
+IGNORE_KWARGS_CHANGE_PAIRS = {
+    ("self", "x"),
+    ("some", "mode"),
+    ("non_blocking", "blocking"),
+    ("requires_grad", "stop_gradient"),
+    ("track_running_stats", "use_global_stats"),
+    ("async_op", "sync_op"),
+    ("time_major", "batch_first"),
+    ("_random_samples", "random_u"),
+}
+
+# 如果参数映射在这个里面，则进行参数映射的转换
+KWARGS_CHANGE_CHANGE_DICT = {
+    # for *split
+    "split_size_or_sections:num_or_indices": {
+        "indices": "num_or_indices",
+        "sections": "num_or_indices",
+    },
+    "indices_or_sections:num_or_indices": {
+        "indices": "num_or_indices",
+        "sections": "num_or_indices",
+    },
+}
+
+PRESET_MATCHER_KWARGS_CHANGE_PAIRS = {
+    "CreateMatcher": {"size": "shape"},
+    "Num2TensorBinaryMatcher": {"input": "x", "other": "y"},
+    "DivideMatcher": {"input": "x", "other": "y"},
+    "IndexAddMatcher": {"source": "value"},
+    "IInfoMatcher": {"type": "dtype"},
+    "ZeroGradMatcher": {"set_to_none": "set_to_zero"},
+    "SvdMatcher": {"some": "full_matrics"},
+    "AtleastMatcher": {"tensors": "inputs"},
+    "SLogDetMatcher": {"A": "x", "input": "x"},
+    "MeshgridMatcher": {"tensors": "args"},
+    "RNNBaseMatcher": {"batch_first": "time_major", "bidirectional": "direction"},
+    "AvgPoolMatcher": {"input": "x", "count_include_pad": "exclusive"},
+    "RoundMatcher": {"input": "x"},
+    "FunctionalPadMatcher": {"input": "x"},
+    "FunctionalSmoothL1LossMatcher": {"beta": "delta"},
+    "OptimOptimizerMatcher": {"params": "parameters"},
+    "RNNMatcher": {"batch_first": "time_major", "bidirectional": "direction"},
+    "CifarMatcher": {"root": "data_file", "train": "mode"},
+    "MNISTMatcher": {"train": "mode"},
+    "Flowers102Matcher": {"split": "mode"},
+    "BoxesConvertMatcher": {"input": "x"},
+    "VOCDetectionMatcher": {"root": "data_file", "image_set": "mode"},
+    "WeightsMatcher": {"weights": "pretrained"},
+    "VGGMatcher": {"weights": "pretrained"},
+}
+
+overloadable_api_aux_set = {
+    "torch.mean",
+    "torch.Tensor.max",
+    "torch.Tensor.to",
+    "torch.trapz",
+    "torch.prod",
+    "torch.Tensor.var",
+    "torch.Tensor.min",
+    "torch.Tensor.sort",
+    "torch.Tensor.std",
+    "torch.trapezoid",
+    "torch.normal",
+    "torch.var_mean",
+    "torch.std_mean",
+    "torch.min",
+    "torch.sort",
+    "torch.max",
+    "torch.searchsorted",
+    "torch.cumulative_trapezoid",
+    "torch.std",
+    "torch.Tensor.scatter_",
+    "torch.Tensor.scatter",
+    "torch.scatter",
+    "torch.Tensor.view",
+    "torch.sum",
+    "torch.nansum",
+    "torch.linalg.matrix_rank",
+    # *split kwargs is processed through KWARGS_CHANGE_CHANGE_DICT,
+    # but overload `args_list` is not supported, so ignore it.
+    # (int sections) or (tuple of ints indices)
+    "torch.Tensor.dsplit",
+    "torch.Tensor.hsplit",
+    "torch.Tensor.tensor_split",
+    "torch.dsplit",
+    "torch.hsplit",
+    "torch.tensor_split",
+    "torch.vsplit",
+    "torch.nn.Module.to",
+}
+
+cornercase_api_aux_dict = {
+    "torch.Tensor.type": "torch.Tensor.type with TensorTypeMatcher need support torch.nn.Module.type and torch.nn.Module.type.",
+    "torch.Tensor.triangular_solve": "torch.Tensor.triangular_solve with TriangularSolveMatcher is too complex.",
+    "torch.cuda.nvtx.range_push": "paddle api only support position args, so kwargs_change not works.",
+    "torch.utils.cpp_extension.CUDAExtension": "torch.utils.cpp_extension.CUDAExtension with CUDAExtensionMatcher list some kwargs.",
+    "torch.utils.cpp_extension.CppExtension": "torch.utils.cpp_extension.CppExtension with CUDAExtensionMatcher list some kwargs.",
+    "torch.utils.cpp_extension.BuildExtension": "torch.utils.cpp_extension.BuildExtension only list some kwargs.",
+    "torch.nn.Sequential": "var_arg `arg` is processed by SequentialMatcher.",
+    # bad case, need fix
+    "torch.cuda.stream": "`paddle.device.cuda.stream_guard` args is not as same as `paddle.device.stream_guard`",
+    "torch.nn.Module.named_buffers": "remove_duplicate arg is not supported in paddle.",
+    "torch.nn.Module.named_modules": "remove_duplicate arg is not supported in paddle.",
+    "torch.nn.Module.named_parameters": "remove_duplicate arg is not supported in paddle.",
+    "torch.distributed.ReduceOp": "torch.distributed.ReduceOp with not args",
+    r"^torchvision\.models\.[a-z]+": "torchvision.models.[a-z]+ list some kwargs.",
+    "transformers.GenerationConfig": "transformers.GenerationConfig list some kwargs.",
+    "transformers.PreTrainedTokenizer": "transformers.PreTrainedTokenizer list some kwargs.",
+    "transformers.PretrainedConfig": "transformers.GenerationConfig list some kwargs.",
+}
+
+missing_docs_whitelist = {
+    "os.environ.get": "prefix is not torch, Error reporting",
+    "setuptools.setup": "prefix is not torch, Error reporting",
+    "torch.Tensor.rename": "Conversion strategy still under development",
+    "torch.jit.script": "Delete Matcher",
+    r"^torchvision\.models\.[A-Z]+": "torchvision.models.[A-Z]+ just convert to the string",
+    r"^torchvision\.io\.ImageReadMode\..*$": "torchvision.io.ImageReadMode..* just convert to the string",
+}
+
+missing_matchers_whitelist = {
+    r"torch\.nn\.Lazy*": "Lazy APIs can only be converted manually, because it Related to the previous and following code.",
+}
+
 validate_whitelist = [
     r"^torch\.(cuda\.)?(\w*)Tensor$",
 ]
+validate_whitelist.extend(cornercase_api_aux_dict.keys())
+validate_whitelist.extend(overloadable_api_aux_set)
+validate_whitelist.extend(missing_docs_whitelist.keys())
+validate_whitelist.extend(missing_matchers_whitelist.keys())
 
 
 def verbose_print(*args, v_level=1, **kwargs):
@@ -123,110 +252,6 @@ def get_kwargs_mapping_from_doc(doc_item):
             kwargs_change[at] = ap
 
     return kwargs_change
-
-
-# 如果参数映射在这个里面，则忽略检查，因为不是对应关系
-IGNORE_KWARGS_CHANGE_PAIRS = {
-    ("self", "x"),
-    ("some", "mode"),
-    ("non_blocking", "blocking"),
-    ("requires_grad", "stop_gradient"),
-    ("track_running_stats", "use_global_stats"),
-    ("async_op", "sync_op"),
-    ("time_major", "batch_first"),
-}
-
-# 如果参数映射在这个里面，则进行参数映射的转换
-KWARGS_CHANGE_CHANGE_DICT = {
-    # for *split
-    "split_size_or_sections:num_or_indices": {
-        "indices": "num_or_indices",
-        "sections": "num_or_indices",
-    },
-    "indices_or_sections:num_or_indices": {
-        "indices": "num_or_indices",
-        "sections": "num_or_indices",
-    },
-}
-
-PRESET_MATCHER_KWARGS_CHANGE_PAIRS = {
-    "CreateMatcher": {"size": "shape"},
-    "Num2TensorBinaryMatcher": {"input": "x", "other": "y"},
-    "DivideMatcher": {"input": "x", "other": "y"},
-    "IndexAddMatcher": {"source": "value"},
-    "IInfoMatcher": {"type": "dtype"},
-    "ZeroGradMatcher": {"set_to_none": "set_to_zero"},
-    "SvdMatcher": {"some": "full_matrics"},
-    "AtleastMatcher": {"tensors": "inputs"},
-    "SLogDetMatcher": {"A": "x", "input": "x"},
-    "MeshgridMatcher": {"tensors": "args"},
-    "RNNBaseMatcher": {"batch_first": "time_major", "bidirectional": "direction"},
-    "AvgPoolMatcher": {"input": "x", "count_include_pad": "exclusive"},
-    "RoundMatcher": {"input": "x"},
-    "FunctionalPadMatcher": {"input": "x"},
-    "FunctionalSmoothL1LossMatcher": {"beta": "delta"},
-    "OptimOptimizerMatcher": {"params": "parameters"},
-    "RNNMatcher": {"batch_first": "time_major"},
-    "CifarMatcher": {"root": "data_file", "train": "mode"},
-    "MNISTMatcher": {"train": "mode"},
-    "Flowers102Matcher": {"split": "mode"},
-    "BoxesConvertMatcher": {"input": "x"},
-}
-
-overloadable_api_aux_set = {
-    "torch.mean",
-    "torch.Tensor.max",
-    "torch.Tensor.to",
-    "torch.trapz",
-    "torch.prod",
-    "torch.Tensor.var",
-    "torch.Tensor.min",
-    "torch.Tensor.sort",
-    "torch.Tensor.std",
-    "torch.trapezoid",
-    "torch.normal",
-    "torch.var_mean",
-    "torch.std_mean",
-    "torch.min",
-    "torch.sort",
-    "torch.max",
-    "torch.searchsorted",
-    "torch.cumulative_trapezoid",
-    "torch.std",
-    "torch.Tensor.scatter_",
-    "torch.Tensor.scatter",
-    "torch.scatter",
-    "torch.Tensor.view",
-    "torch.sum",
-    "torch.nansum",
-    "torch.linalg.matrix_rank",
-    # *split kwargs is processed through KWARGS_CHANGE_CHANGE_DICT,
-    # but overload `args_list` is not supported, so ignore it.
-    # (int sections) or (tuple of ints indices)
-    "torch.Tensor.dsplit",
-    "torch.Tensor.hsplit",
-    "torch.Tensor.tensor_split",
-    "torch.dsplit",
-    "torch.hsplit",
-    "torch.tensor_split",
-    "torch.vsplit",
-    "torch.nn.Module.to",
-}
-
-cornercase_api_aux_dict = {
-    "torch.Tensor.type": "torch.Tensor.type with TensorTypeMatcher need support torch.nn.Module.type and torch.nn.Module.type.",
-    "torch.Tensor.triangular_solve": "torch.Tensor.triangular_solve with TriangularSolveMatcher is too complex.",
-    "torch.cuda.nvtx.range_push": "paddle api only support position args, so kwargs_change not works.",
-    "torch.utils.cpp_extension.CUDAExtension": "torch.utils.cpp_extension.CUDAExtension with CUDAExtensionMatcher list some kwargs.",
-    "torch.utils.cpp_extension.CppExtension": "torch.utils.cpp_extension.CppExtension with CUDAExtensionMatcher list some kwargs.",
-    "torch.utils.cpp_extension.BuildExtension": "torch.utils.cpp_extension.BuildExtension only list some kwargs.",
-    "torch.nn.Sequential": "var_arg `arg` is processed by SequentialMatcher.",
-    # bad case, need fix
-    "torch.cuda.stream": "`paddle.device.cuda.stream_guard` args is not as same as `paddle.device.stream_guard`",
-    "torch.nn.Module.named_buffers": "remove_duplicate arg is not supported in paddle.",
-    "torch.nn.Module.named_modules": "remove_duplicate arg is not supported in paddle.",
-    "torch.nn.Module.named_parameters": "remove_duplicate arg is not supported in paddle.",
-}
 
 
 def check_mapping_args(paconvert_item, doc_item):
@@ -428,17 +453,23 @@ if __name__ == "__main__":
                 api_alias_backward_mapping[v] = [k]
             else:
                 api_alias_backward_mapping[v].append(k)
+
+            if k not in api_alias_backward_mapping:
+                api_alias_backward_mapping[k] = [v]
+            else:
+                api_alias_backward_mapping[k].append(v)
         for k in api_alias_backward_mapping:
             api_alias_backward_mapping[k] = sorted(
                 api_alias_backward_mapping[k], key=lambda x: len(x)
             )
-        # 允许有多个原 api，但只有一个目标 api
+        # 列出每个api可能的所有别名api
 
     with open(args.docs_mappings, "r", encoding="utf-8") as f:
         docs_mapping_data = json.load(f)
         docs_mapping = dict([(i["src_api"], i) for i in docs_mapping_data])
 
     missing_docs = []
+    missing_matchers = []
     validated_apis = []
 
     for api in api_mapping:
@@ -475,8 +506,35 @@ if __name__ == "__main__":
         )
         with open(os.path.join(tool_dir, "missing_docs_list.log"), "w") as f:
             for md in missing_docs:
-                print(md, file=f)
-                verbose_print(f"INFO: api `{md}` has no mapping doc.", v_level=3)
+                if md not in missing_docs_whitelist:
+                    print(md, file=f)
+                    verbose_print(f"INFO: api `{md}` has no mapping doc.", v_level=3)
+
+    for docs_api in docs_mapping:
+        whitelist_skip = False
+        for wl in validate_whitelist:
+            if re.match(wl, docs_api):
+                whitelist_skip = True
+                break
+        if whitelist_skip:
+            continue
+
+        if docs_api not in api_mapping and docs_api not in attribute_mapping:
+            for n in api_alias_backward_mapping.get(docs_api, []):
+                if n in api_mapping:
+                    break
+            else:
+                missing_matchers.append(docs_api)
+
+    if len(missing_matchers) > 0:
+        verbose_print(
+            f"WARNING: {len(missing_matchers)} api do not have Matcher in `api_mapping.json`."
+        )
+        with open(os.path.join(tool_dir, "missing_matchers_list.log"), "w") as f:
+            for md in missing_matchers:
+                if md not in missing_matchers_whitelist:
+                    print(md, file=f)
+                    verbose_print(f"INFO: api `{md}` has no Matcher.", v_level=3)
 
     if len(validated_apis) > 0:
         verbose_print(f"INFO: {len(validated_apis)} api will be validate by docs data.")
@@ -529,19 +587,6 @@ if __name__ == "__main__":
                             print("INFO: NO-UNITTEST", ve, file=f)
                             verbose_print(f"INFO: NO-UNITTEST {ve}", v_level=3)
                             continue
-                    if api in overloadable_api_aux_set:
-                        print("INFO: OVERLOADABLE", ve, file=f)
-                        verbose_print(f"INFO: OVERLOADABLE {ve}", v_level=3)
-                        continue
-                    if api in cornercase_api_aux_dict:
-                        print(
-                            f"INFO: CORNERCASE {ve}, REASON {cornercase_api_aux_dict[api]}",
-                            ve,
-                            file=f,
-                        )
-                        verbose_print(f"INFO: CORNERCASE {ve}", v_level=3)
-                        continue
-
                     api_count_to_check += 1
                     print(f"WARNING: {ve}", file=f)
                     verbose_print(f"WARNING: {ve}", v_level=3)
