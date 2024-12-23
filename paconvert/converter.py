@@ -91,7 +91,9 @@ class Converter:
             )
             utils_file_helper = UtilsFileHelper(out_file, is_dir_mode=False)
         elif os.path.isdir(in_dir):
-            utils_file_helper = UtilsFileHelper(out_dir + "/utils.py", is_dir_mode=True)
+            utils_file_helper = UtilsFileHelper(
+                out_dir + "/paddle_utils.py", is_dir_mode=True
+            )
 
         self.transfer_dir(in_dir, out_dir, exclude_dir_list)
         utils_file_helper.write_code()

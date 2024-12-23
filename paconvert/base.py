@@ -489,7 +489,7 @@ class BaseMatcher(object):
                     """
                     import sys
                     sys.path.append(r'{}')
-                    from utils import *
+                    from paddle_utils import *
                     """
                 )
                 code = CODE_TEMPLATE.format(self.get_utils_dir())
