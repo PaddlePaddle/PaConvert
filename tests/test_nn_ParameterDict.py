@@ -16,29 +16,30 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributed.rpc.rpc_async")
+obj = APIBase("torch.nn.ParameterDict")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
-        import os
+        import torch.nn as nn
         import torch
-        from torch.distributed import rpc
-        os.environ['MASTER_ADDR'] = 'localhost'
-        os.environ['MASTER_PORT'] = '29500'
-        os.environ['PADDLE_MASTER_ENDPOINT'] = 'localhost:29501'
-        rpc.init_rpc(
-            "worker1",
-            rank=0,
-            world_size=1
-        )
-        r = rpc.rpc_async(
-            "worker1",
-            torch.add,
-            args=(torch.tensor(2), torch.tensor(3))
-        )
-        result = r.wait()
+        choices = nn.ParameterDict({
+            f"param_{i}": nn.Parameter(torch.ones(i + 1, i + 1)) for i in range(10)
+        })
+        result = list(choices)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        choices = nn.ParameterDict()
+        result = list(choices)
         """
     )
     obj.run(pytorch_code, ["result"])

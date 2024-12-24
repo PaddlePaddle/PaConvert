@@ -5916,3 +5916,62 @@ class ChangeKwargsMatcher(UnchangeMatcher):
             )
             return ast.parse(code).body
         return None
+
+
+class StftMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["x"] = self.paddleClass
+        if kwargs.pop("return_complex") == "(False)":
+            code = "paddle.as_real({}({}))".format(
+                self.get_paddle_api(), self.kwargs_to_str(kwargs)
+            )
+            return code
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class Fractional_Max_pool2dMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        new_kwargs = {}
+        if "output_ratio" in kwargs:
+            kwargs[
+                "output_size"
+            ] = "[int(paddle.shape({})[-2] * {}[0]),int(paddle.shape({})[-1] * {}[1])]".format(
+                kwargs["input"],
+                kwargs["output_ratio"],
+                kwargs["input"],
+                kwargs["output_ratio"],
+            )
+            kwargs.pop("output_ratio")
+        for k in list(kwargs.keys()):
+            if k == "input":
+                new_kwargs["x"] = kwargs.pop(k)
+            elif k == "return_indices":
+                new_kwargs["return_mask"] = kwargs.pop(k)
+            else:
+                new_kwargs[k] = kwargs.pop(k)
+        return GenericMatcher.generate_code(self, new_kwargs)
+
+
+class Fractional_Max_pool3dMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        new_kwargs = {}
+        if "output_ratio" in kwargs:
+            kwargs[
+                "output_size"
+            ] = "[int(paddle.shape({})[-3] * {}[0]), int(paddle.shape({})[-2] * {}[1]),int(paddle.shape({})[-1] * {}[2])]".format(
+                kwargs["input"],
+                kwargs["output_ratio"],
+                kwargs["input"],
+                kwargs["output_ratio"],
+                kwargs["input"],
+                kwargs["output_ratio"],
+            )
+            kwargs.pop("output_ratio")
+        for k in list(kwargs.keys()):
+            if k == "input":
+                new_kwargs["x"] = kwargs.pop(k)
+            elif k == "return_indices":
+                new_kwargs["return_mask"] = kwargs.pop(k)
+            else:
+                new_kwargs[k] = kwargs.pop(k)
+        return GenericMatcher.generate_code(self, new_kwargs)

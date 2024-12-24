@@ -16,37 +16,42 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.itemsize")
+obj = APIBase("torch.cuda.comm.broadcast")
 
 
-def test_case_1():
+# paddle should initialized the global group first
+def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([-1])
-        result = a.itemsize
+        import torch.cuda.comm
+        source_tensor = torch.tensor([1.0, 2.0, 3.0])
+        result = torch.cuda.comm.broadcast(source_tensor, devices=[0])
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_2():
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([-1, -2, 3])
-        result = a.itemsize
+        import torch.cuda.comm
+        source_tensor = torch.tensor([1.0, 2.0, 3.0])
+        result = torch.cuda.comm.broadcast(devices=[0], source_tensor)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_3():
+def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([-1., 2., -3.4, -4.1, 0, -0.])
-        result = a.itemsize
+        import torch.cuda.comm
+        source_tensor = torch.tensor([1.0, 2.0, 3.0])
+        out = torch.tensor([1.0, 2.0, 3.0])
+        result = torch.cuda.comm.broadcast(source_tensor, devices=[0], out=out)
         """
     )
     obj.run(pytorch_code, ["result"])
