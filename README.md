@@ -33,19 +33,23 @@
 
 ### 1. IDE交互式用法（推荐）
 
-当前PaConvert支持在IDE中交互式使用，需要在PyCharm或VS Code中安装Baidu Comate（文心快码）插件后即可使用。以VS Code上使用为例：
+在IDE中交互式编程使用，界面友好，使用门槛低。
+
+需要在`PyCharm`或`VS Code`等主流IDE中安装 **文心快码插件(Baidu Comate)** 即可使用。以`VS Code`上使用为例：
 
 ![img](./images/comate_paconvert.jpeg)
 
 
 ### 2. 命令行用法
 
+通过终端命令行的方式使用，有一定的使用门槛：
+
 ```bash
 pip install -U paconvert
 paconvert --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "INFO"] [--run_check] [--no-format]
 ```
 
-**命令行参数介绍**
+- 命令行参数介绍
 
 ```
 --in_dir        输入 torch 项目文件，可以为单个文件或文件夹
