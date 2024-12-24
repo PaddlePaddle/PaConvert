@@ -27,26 +27,25 @@
 - requirements.txt： 替换其中的安装依赖为 `paddlepaddle-gpu`
 - 其他文件：原样拷贝
 
-## 安装与使用
+## 使用方式
 
 由于使用了一些较新的 Python 功能特性，你需要使用 `>=python3.8` 的解释器。
 
-1. IDE交互式用法（推荐）
+### 1. IDE交互式用法（推荐）
 
-当前PaConvert支持在IDE中交互式使用，需要在PyCharm或VS Code中安装Baidu Comate（文心快码）插件后即可使用。以VS Code为例：
+当前PaConvert支持在IDE中交互式使用，需要在PyCharm或VS Code中安装Baidu Comate（文心快码）插件后即可使用。以VS Code上使用为例：
 
 ![img](./images/comate_paconvert.jpeg)
 
 
-2. 命令行用法
+### 2. 命令行用法
 
 ```bash
 pip install -U paconvert
 paconvert --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "INFO"] [--run_check] [--no-format]
 ```
 
-
-**参数介绍**
+**命令行参数介绍**
 
 ```
 --in_dir        输入 torch 项目文件，可以为单个文件或文件夹
