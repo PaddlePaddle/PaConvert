@@ -9,7 +9,7 @@
 ##  🤗 公告 🤗
 - 本工具由 Paddle 官方团队维护与建设，所有转换代码均已经过测试，欢迎使用，高效迁移 Pytorch 代码到 PaddlePaddle
 
-- 当前共支持约 1300+个 Pytorch API 的一键转换，我们通过 300+个 Pytorch 模型测试，代码行数平均转换率约为 **90+%**
+- 当前共支持约 1500+个 Pytorch API 的一键转换，我们通过 300+个 Pytorch 模型测试，代码行数平均转换率约为 **95+%**
 
 - 本工具基于 [PyTorch 最新 release 与 Paddle develop API 映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html) 实现，表中 API 均经过详细对比分析，欢迎查阅
 
@@ -31,19 +31,20 @@
 
 由于使用了一些较新的 Python 功能特性，你需要使用 `>=python3.8` 的解释器。
 
-1. 使用 pip 安装
+1. IDE交互式用法（推荐）
+
+当前PaConvert支持在IDE中交互式使用，需要在PyCharm或VS Code中安装Baidu Comate（文心快码）插件后即可使用。以VS Code为例：
+
+![img](./images/comate_paconvert.jpeg)
+
+
+2. 命令行用法
 
 ```bash
 pip install -U paconvert
 paconvert --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "INFO"] [--run_check] [--no-format]
 ```
 
-2. 使用源码安装
-
-```bash
-git clone https://github.com/PaddlePaddle/PaConvert.git
-python paconvert/main.py --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "INFO"] [--run_check] [--no-format]
-```
 
 **参数介绍**
 
