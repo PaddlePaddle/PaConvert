@@ -7,7 +7,7 @@
 ##  🤗 公告 🤗
 - 本工具由 Paddle 官方团队维护与建设，所有转换代码均已经过测试，欢迎使用，高效迁移 Pytorch 代码到 PaddlePaddle
 
-- 支持 1500+个 Pytorch API 的一键转换，我们通过 300+个 Pytorch 模型测试，代码行数的自动转换率约为 **95+%**（剩余5%工作需要您手动修改）
+- 支持 1500+个 Pytorch API 的一键转换，我们通过 300+个 Pytorch 模型测试，代码行数的自动转换率约为 **95+%**（剩余 5%工作需要您手动修改）
 
 - 本工具基于 [PyTorch 最新 release 与 Paddle develop API 映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html) 实现，表中 API 均经过详细验证分析，欢迎查阅
 
@@ -23,13 +23,13 @@
 
 ## 使用方式
 
-### 1. IDE交互式用法（推荐）
+### 1. IDE 交互式用法（推荐）
 
-在IDE中交互式编程使用，界面友好，使用门槛低。
+在 IDE 中交互式编程使用，界面友好，使用门槛低。
 
 需要在`PyCharm`或`VS Code`等主流 IDE 中安装 **文心快码插件(Baidu Comate)** 后即可使用。以`VS Code`上使用为例：
 
-![img](./images/comate_paconvert.jpeg)
+![img](../images/comate_paconvert.jpeg)
 
 
 ### 2. 命令行用法
@@ -75,7 +75,7 @@ class MyNet(nn.Module):
         self._conv = mmcv.cnn.ConvModule(4, 6, (3, 3))
         self._pool = nn.MaxPool2d(kernel_size=2, stride=1)
 
-        self._fc1 = torch.nn.Linear(6 * 25 * 25, 120)  # 假设输入图像为28x28，通过卷积和池化后尺寸变为25x25
+        self._fc1 = torch.nn.Linear(6 * 25 * 25, 120)  # 假设输入图像为 28x28，通过卷积和池化后尺寸变为 25x25
         self._fc2 = nn.Linear(120, out_features=84)
         self._fc3 = Linear(in_features=84, out_features=num_classes)
 
@@ -156,12 +156,12 @@ for i in range(10):
 PyTorch to Paddle Convert Start ------>:
 ===========================================
 Start convert file: /workspace/PaConvert/test.py --> /workspace/PaConvert/paddle_project/test.py
-[test.py:1] remove 'import torch' 
-[test.py:2] remove 'import torch.nn as nn' 
-[test.py:3] remove 'import torch.optim as optim' 
-[test.py:4] remove 'import torch.nn.functional as F' 
-[test.py:5] remove 'from torch.nn import Linear' 
-[test.py:6] remove 'import mmcv' 
+[test.py:1] remove 'import torch'
+[test.py:2] remove 'import torch.nn as nn'
+[test.py:3] remove 'import torch.optim as optim'
+[test.py:4] remove 'import torch.nn.functional as F'
+[test.py:5] remove 'from torch.nn import Linear'
+[test.py:6] remove 'import mmcv'
 [test.py] add 'import paddle' in line 1
 [test.py:1] [Success] Convert torch.nn.Module to Paddle
 [test.py:13] [Not Support] convert mmcv.cnn.ConvModule to Paddle is not supported currently
@@ -190,25 +190,25 @@ There are 16 Pytorch APIs in this Project:
  1  Pytorch APIs are not supported to convert to Paddle currently!
  Convert Rate is: 93.75%
 
-For these 1 Pytorch APIs that currently do not support to convert, which have been marked by >>> before the line, 
-please refer to [https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html] 
+For these 1 Pytorch APIs that currently do not support to convert, which have been marked by >>> before the line,
+please refer to [https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html]
 and convert it by yourself manually. In addition, these APIs will be supported in future.
 
-Thank you to use Paddle Code Convert Tool. You can make any suggestions 
+Thank you to use Paddle Code Convert Tool. You can make any suggestions
 to us by submitting issues to [https://github.com/PaddlePaddle/PaConvert].
 
 ****************************************************************
-______      _____                          _   
-| ___ \    / ____|                        | |  
-| |_/ /_ _| |     ___  _ ____   _____ _ __| |_ 
+______      _____                          _
+| ___ \    / ____|                        | |
+| |_/ /_ _| |     ___  _ ____   _____ _ __| |_
 |  __/ _  | |    / _ \| \_ \ \ / / _ \ \__| __|
-| | | (_| | |___| (_) | | | \ V /  __/ |  | |_ 
+| | | (_| | |___| (_) | | | \ V /  __/ |  | |_
 \_|  \__,_|\_____\___/|_| |_|\_/ \___|_|   \__|
 
 ***************************************************************
 ```
 
-转换完成后，会打印 **转换总结** ，包含 **总 API 数、成功转换 API 数、不支持转换 API 数、转换率** 。例如，上述代码里一共有 16 个 Pytorch API（含基于Pytorch的第三方库API例如mmcv），其中 15 个被成功转换，仅 1 个不支持转换，因此转换率为 `93.75%` 。
+转换完成后，会打印 **转换总结** ，包含 **总 API 数、成功转换 API 数、不支持转换 API 数、转换率** 。例如，上述代码里一共有 16 个 Pytorch API（含基于 Pytorch 的第三方库 API 例如 mmcv），其中 15 个被成功转换，仅 1 个不支持转换，因此转换率为 `93.75%` 。
 
 - **对于成功转换的 API**：代码风格会略有变化，会 **补全 API 全名、补全参数关键字、移除注释** 。因为代码在扫描识别的过程中，**注释** 无法识别，会被移除。
 
@@ -217,9 +217,9 @@ ______      _____                          _
 
 ## 案例实践
 
-以下大语言模型代码库已经支持一键100%转换率，欢迎学习与交流：
+以下大语言模型代码库已经支持一键 100%转换率，欢迎学习与交流：
 
-| 模型名                                                     | Pytorch代码库地址                 | 支持类型   |
+| 模型名                                                     | Pytorch 代码库地址                 | 支持类型   |
 | ----------------------------------------------------------| ------------------------------ | -------- |
 | [Llama](https://github.com/PaddlePaddle/PaConvert/blob/master/docs/TypicalCase_Llama.md)   | https://github.com/meta-llama/llama.git  | 推理 |
 | [Qwen](https://github.com/PaddlePaddle/PaConvert/blob/master/docs/TypicalCase_Qwen.md)     | https://huggingface.co/Qwen/Qwen-7B-Chat  | 推理 |
