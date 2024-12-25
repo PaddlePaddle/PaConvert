@@ -14,8 +14,11 @@
 
 import collections
 import os
-import re
 import textwrap
+
+import autoflake
+import black
+import isort
 
 
 class UniqueNameGenerator:
@@ -37,8 +40,10 @@ def get_unique_name(key):
 
 class UtilsFileHelper(object):
     _instance = None
-    INIT_CONTENT = """
+    START_CONTENT = """
     ############################## 相关utils函数，如下 ##############################
+    """
+    INIT_CONTENT = """
     ####################### PaConvert 自动生成的代码，请勿手动修改! ##################
     import paddle
     """
@@ -79,7 +84,7 @@ class UtilsFileHelper(object):
         self.ids[code_hash] += 1
         return code_hash
 
-    def write_code(self):
+    def write_code(self, no_format=False):
         """
         Write all the code in the code map to destination file
         """
@@ -89,29 +94,18 @@ class UtilsFileHelper(object):
         if not self.code_map:
             return
 
-        all_code = textwrap.dedent(self.INIT_CONTENT) + "\n"
+        all_code = textwrap.dedent(self.START_CONTENT)
+        if self.is_dir_mode:
+            all_code += textwrap.dedent(self.INIT_CONTENT) + "\n"
         all_code += "".join(self.code_map.values())
         all_code += textwrap.dedent(self.END_CONTENT) + "\n"
 
         # insert the new code into the existing file
-        if os.path.exists(self.fileName):
+        if not self.is_dir_mode:
             with open(self.fileName, "r") as f:
                 existing_content = f.read()
 
-            # only rewrite the content between the INIT_CONTENT and END_CONTENT
-            start_marker = "############################## 相关utils函数，如下 ##############################"
-            end_marker = "############################## 相关utils函数，如上 ##############################"
-            start_index = existing_content.find(start_marker)
-            end_index = existing_content.find(end_marker)
-            if start_index != -1 and end_index != -1:
-                existing_content = (
-                    existing_content[:start_index]
-                    + existing_content[end_index + len(end_marker) :].lstrip()
-                )
-
             # find a position to insert the new code
-            if re.search(r"^import\s+paddle\s*$", existing_content, re.MULTILINE):
-                all_code = all_code.replace("import paddle\n", "")
             lines = existing_content.splitlines()
             insert_line = 0
             for i, line in enumerate(lines):
@@ -130,12 +124,44 @@ class UtilsFileHelper(object):
                     "\n".join(lines[insert_line:]),
                 ]
             )
-            with open(self.fileName, "w") as f:
-                f.write(new_content)
         else:
             os.makedirs(os.path.dirname(self.fileName), exist_ok=True)
-            with open(self.fileName, "w") as f:
-                f.write(all_code)
+            new_content = all_code
+
+        # format code
+        if not no_format:
+            try:
+                new_content = black.format_str(new_content, mode=black.Mode())
+            except Exception as e:
+                log_warning(
+                    self.logger,
+                    "Skip black format due to error: {}".format(str(e)),
+                )
+
+            try:
+                new_content = isort.code(new_content)
+            except Exception as e:
+                log_warning(
+                    self.logger,
+                    "Skip isort format due to error: {}".format(str(e)),
+                )
+
+            try:
+                new_content = autoflake.fix_code(
+                    new_content,
+                    remove_all_unused_imports=True,
+                    remove_unused_variables=True,
+                    ignore_pass_statements=True,
+                )
+            except Exception as e:
+                log_warning(
+                    self.logger,
+                    "Skip autoflake format due to error: {}".format(str(e)),
+                )
+
+        # write to file
+        with open(self.fileName, "w") as f:
+            f.write(new_content)
 
 
 def log_warning(logger, msg, file=None, line=None):

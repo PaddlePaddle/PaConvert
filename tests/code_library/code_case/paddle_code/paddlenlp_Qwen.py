@@ -1,6 +1,121 @@
+from typing import Optional
+
 import paddle
 import paddlenlp
-print('#########################case1#########################')
+
+############################## 相关utils函数，如下 ##############################
+
+
+
+def _convert_head_mask_to_5d(head_mask, num_hidden_layers):
+    if head_mask.dim() == 1:
+
+        head_mask = head_mask.unsqueeze(0).unsqueeze(0).unsqueeze(-1).unsqueeze(-1)
+        head_mask = head_mask.expand(num_hidden_layers, -1, -1, -1, -1)
+    elif head_mask.dim() == 2:
+        head_mask = (
+            head_mask.unsqueeze(1).unsqueeze(-1).unsqueeze(-1)
+        )  # We can specify head_mask for each layer
+    assert head_mask.dim() == 5, f"head_mask.dim != 5, instead {head_mask.dim()}"
+    head_mask = head_mask.to(
+        dtype=paddle.get_default_dtype()
+    )  # switch to float if need + fp16 compatibility
+    return head_mask
+
+
+def get_head_mask(
+    self,
+    head_mask: Optional[paddle.Tensor],
+    num_hidden_layers: int,
+    is_attention_chunked: bool = False,
+):
+    if head_mask is not None:
+        head_mask = _convert_head_mask_to_5d(head_mask, num_hidden_layers)
+        if is_attention_chunked is True:
+            head_mask = head_mask.unsqueeze(-1)
+    else:
+        head_mask = [None] * num_hidden_layers
+
+    return head_mask
+
+
+setattr(
+    paddlenlp.transformers.model_utils.PretrainedModel, "get_head_mask", get_head_mask
+)
+
+original_generate = paddlenlp.generation.utils.GenerationMixin.generate
+
+
+def generate(self, input_ids, *args, **kwargs):
+    return paddle.concat(
+        (input_ids, original_generate(self, input_ids, *args, **kwargs)[0]), axis=-1
+    )
+
+
+setattr(paddlenlp.generation.utils.GenerationMixin, "generate", generate)
+
+setattr(paddlenlp.transformers.model_utils.PretrainedModel, "device", None)
+
+
+def post_init(self):
+    if hasattr(self, "init_weights"):
+        self.init_weights()
+    elif hasattr(self, "_init_weights"):
+        self._init_weights()
+
+
+setattr(paddlenlp.transformers.model_utils.PretrainedModel, "post_init", post_init)
+
+
+import paddlenlp
+
+original_encode = (
+    paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase.encode
+)
+
+
+def encode(self, *args, **kwargs):
+    return original_encode(self, *args, **kwargs)["input_ids"]
+
+
+setattr(
+    paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase,
+    "encode",
+    encode,
+)
+
+
+def apply_rotary_position_embeddings(x, cos, sin):
+    if not isinstance(cos, paddle.Tensor):
+        cos = paddle.to_tensor(cos)
+    if not isinstance(sin, paddle.Tensor):
+        sin = paddle.to_tensor(sin)
+
+    def _rotate_half(x):
+        from einops import rearrange
+
+        x = rearrange(x, "... (j d) -> ... j d", j=2)
+        x1, x2 = x.unbind(axis=-2)
+        return paddle.concat((-x2, x1), axis=-1)
+
+    # [seq_len,rotary_dim/2] ==>[seq_len, rotary_dim]
+    cos = paddle.concat([cos, cos], axis=-1)
+    # [seq_len, rotary_dim] ==>[1,seq_len, 1,rotary_dim]
+    cos = cos.unsqueeze(axis=1).unsqueeze(axis=0)
+    # [seq_len,rotary_dim/2] ==>[seq_len, rotary_dim]
+    sin = paddle.concat([sin, sin], axis=-1)
+    # [seq_len, rotary_dim] ==>[1,seq_len, 1,rotary_dim]
+    sin = sin.unsqueeze(axis=1).unsqueeze(axis=0)
+    t_rot, t_pass = x[..., : cos.shape[-1]], x[..., cos.shape[-1] :]
+    t_rot = (t_rot * cos) + (_rotate_half(t_rot) * sin)
+
+    return paddle.concat(x=(t_rot, t_pass), axis=-1)
+
+
+############################## 相关utils函数，如上 ##############################
+
+
+print("#########################case1#########################")
 
 
 def _add_tokens(
@@ -111,8 +226,9 @@ class QWenTokenizer(paddlenlp.transformers.PretrainedTokenizer):
     pass
 
 
-print('#########################case16#########################')
-utils.apply_rotary_position_embeddings(x=x, cos=cos, sin=sin)
-print('#########################case17#########################')
-paddle.incubate.nn.functional.fused_rms_norm(x, weight, paddle.zeros_like(
-    weight), eps, len(x.shape) - 1)[0]
+print("#########################case16#########################")
+apply_rotary_position_embeddings(x=x, cos=cos, sin=sin)
+print("#########################case17#########################")
+paddle.incubate.nn.functional.fused_rms_norm(
+    x, weight, paddle.zeros_like(weight), eps, len(x.shape) - 1
+)[0]
