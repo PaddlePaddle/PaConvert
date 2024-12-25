@@ -51,7 +51,7 @@ class UtilsFileHelper(object):
     ############################## 相关utils函数，如上 ##############################
     """
 
-    def __init__(self, fileName=None, is_dir_mode=False):
+    def __init__(self, fileName=None, is_dir_mode=False, logger=None):
         if not hasattr(self, "initialized"):
             super().__init__()
             self.fileName = fileName
@@ -59,8 +59,9 @@ class UtilsFileHelper(object):
             self.ids = collections.defaultdict(int)
             self.code_map = {}
             self.initialized = True
+            self.logger = logger
 
-    def __new__(cls, fileName=None, is_dir_mode=False):
+    def __new__(cls, fileName=None, is_dir_mode=False, logger=None):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
