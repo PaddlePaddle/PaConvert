@@ -29,7 +29,7 @@
 
 需要在`PyCharm`或`VS Code`等主流 IDE 中安装 **文心快码插件(Baidu Comate)** 后即可使用。以`VS Code`上使用为例：
 
-![img](../images/comate_paconvert.jpeg)
+![img](./images/comate_paconvert.jpeg)
 
 
 ### 2. 命令行用法
