@@ -40,4 +40,9 @@ def test_case_1():
         )
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support tensor in rpc_sync",
+    )
