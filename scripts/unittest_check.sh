@@ -28,12 +28,8 @@ python -m pip install -r requirements.txt
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
 echo "Checking code unit test by pytest ..."
-python -m pip install pytest-timeout pytest-xdist pytest-rerunfailures
-python -m pytest -n 1 --reruns=3 /workspace/$1/PaConvert/tests;check_error=$?
-if [ ${check_error} != 0 ];then
-    echo "Rerun unit test check." 
-    python -m pytest --lf  -n 1 /workspace/$1/PaConvert/tests;check_error=$?
-fi
+python -m pip install pytest-timeout
+python -m pytest /workspace/$1/PaConvert/tests;check_error=$?
 
 echo '************************************************************************************'
 echo "______      _____                          _   "
