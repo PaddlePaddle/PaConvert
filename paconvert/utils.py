@@ -80,10 +80,6 @@ class UtilsFileHelper(object):
         if not self.fileName:
             return None
 
-        # Ensure code_map is clean before adding new code
-        if not self.is_dir_mode:
-            self.code_map.clear()
-
         code_hash = self._get_code_hash(code)
         if code_hash not in self.code_map:
             self.code_map[code_hash] = code
