@@ -5920,9 +5920,9 @@ class ChangeKwargsMatcher(UnchangeMatcher):
 
 class StftMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if self.torch_api == "torch.Tensor.stft":
+        if "input" not in kwargs:
             kwargs["x"] = self.paddleClass
-        elif self.torch_api == "torch.stft":
+        else:
             kwargs["x"] = kwargs.pop("input")
 
         if "return_complex" in kwargs and kwargs.pop("return_complex") == "(False)":

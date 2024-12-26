@@ -41,9 +41,31 @@ def test_case_1():
         result = r.wait()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support tensor in rpc_async",
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import os
+        import torch
+        from torch.distributed import rpc
+        def add(a, b):
+             return a + b
+        os.environ['MASTER_ADDR'] = 'localhost'
+        os.environ['MASTER_PORT'] = '29500'
+        os.environ['PADDLE_MASTER_ENDPOINT'] = 'localhost:29501'
+        rpc.init_rpc(
+            "worker1",
+            rank=0,
+            world_size=1
+        )
+        r = rpc.rpc_async(
+            "worker1",
+            add,
+            args=(2, 3)
+        )
+        result = r.wait()
+        """
     )
+    obj.run(pytorch_code, ["result"])

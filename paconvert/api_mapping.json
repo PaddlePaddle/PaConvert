@@ -6618,6 +6618,7 @@
     }
   },
   "torch.distributed.rpc.rpc_async": {
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.rpc.rpc_async",
     "min_input_args": 2,
     "args_list": [
@@ -6632,6 +6633,7 @@
     }
   },
   "torch.distributed.rpc.rpc_sync": {
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.rpc.rpc_sync",
     "min_input_args": 2,
     "args_list": [
