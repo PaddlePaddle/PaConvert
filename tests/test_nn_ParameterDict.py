@@ -43,3 +43,52 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        param_dict = nn.ParameterDict({
+            'param1': nn.Parameter(torch.randn(3, 3)),
+            'param2': nn.Parameter(torch.ones(2, 2)),
+        })
+        result = list(param_dict)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        choices = nn.ParameterDict({
+            f"param_{i}": nn.Parameter(torch.ones(i + 1, i + 1)) for i in range(3)
+        })
+        choices.update({
+            f"new_param_{i}": nn.Parameter(torch.zeros(i + 2, i + 2)) for i in range(3, 5)
+        })
+        result = list(choices)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        choices = nn.ParameterDict({
+            f"param_{i}": nn.Parameter(torch.ones(i + 1, i + 1)) for i in range(3)
+        })
+        choices.update({
+            f"new_param_{i}": nn.Parameter(torch.zeros(i + 2, i + 2)) for i in range(3, 5)
+        })
+        result = list(choices)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

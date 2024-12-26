@@ -20,7 +20,7 @@ obj = APIBase("torch.cuda.comm.broadcast")
 
 
 # paddle should initialized the global group first
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch

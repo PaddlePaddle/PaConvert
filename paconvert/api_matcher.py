@@ -5920,8 +5920,12 @@ class ChangeKwargsMatcher(UnchangeMatcher):
 
 class StftMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs["x"] = self.paddleClass
-        if kwargs.pop("return_complex") == "(False)":
+        if self.torch_api == "torch.Tensor.stft":
+            kwargs["x"] = self.paddleClass
+        elif self.torch_api == "torch.stft":
+            kwargs["x"] = kwargs.pop("input")
+
+        if "return_complex" in kwargs and kwargs.pop("return_complex") == "(False)":
             code = "paddle.as_real({}({}))".format(
                 self.get_paddle_api(), self.kwargs_to_str(kwargs)
             )

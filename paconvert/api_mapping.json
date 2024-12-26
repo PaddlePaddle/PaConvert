@@ -2269,11 +2269,6 @@
     "Matcher": "UnchangeMatcher",
     "min_input_args": 0
   },
-  "torch.Tensor.itemsize": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.element_size",
-    "min_input_args": 0
-  },
   "torch.Tensor.kthvalue": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.kthvalue",
@@ -10450,19 +10445,6 @@
       "inplace"
     ]
   },
-  "torch.nn.CTCLoss": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.CTCLoss",
-    "min_input_args": 0,
-    "args_list": [
-      "blank",
-      "reduction",
-      "zero_infinity"
-    ],
-    "unsupport_args": [
-      "zero_infinity"
-    ]
-  },
   "torch.nn.ChannelShuffle": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.ChannelShuffle",
@@ -12844,27 +12826,6 @@
       "target": "label"
     },
     "min_input_args": 2
-  },
-  "torch.nn.functional.ctc_loss": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.ctc_loss",
-    "min_input_args": 4,
-    "args_list": [
-      "log_probs",
-      "targets",
-      "input_lengths",
-      "target_lengths",
-      "blank",
-      "reduction",
-      "zero_infinity"
-    ],
-    "kwargs_change": {
-      "targets": "labels",
-      "target_lengths": "label_lengths"
-    },
-    "unsupport_args": [
-      "zero_infinity"
-    ]
   },
   "torch.nn.functional.dropout": {
     "Matcher": "GenericMatcher",
@@ -16922,7 +16883,7 @@
     }
   },
   "torch.stft": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "StftMatcher",
     "paddle_api": "paddle.signal.stft",
     "min_input_args": 2,
     "args_list": [
@@ -16938,12 +16899,8 @@
       "return_complex"
     ],
     "kwargs_change": {
-      "input": "x",
-      "return_complex": ""
-    },
-    "unsupport_args": [
-      "return_complex"
-    ]
+      "input": "x"
+    }
   },
   "torch.subtract": {
     "Matcher": "Num2TensorBinaryWithAlphaMatcher",
