@@ -14,6 +14,7 @@
 
 import collections
 import os
+import threading
 
 import isort
 
@@ -37,6 +38,8 @@ def get_unique_name(key):
 
 class UtilsFileHelper(object):
     _instance = None
+    _lock = threading.Lock()
+
     START_CONTENT = (
         "############################## 相关utils函数，如下 ##############################\n"
     )
@@ -59,7 +62,9 @@ class UtilsFileHelper(object):
 
     def __new__(cls, fileName=None, is_dir_mode=False, logger=None):
         if cls._instance is None:
-            cls._instance = super().__new__(cls)
+            with cls._lock:
+                if cls._instance is None:
+                    cls._instance = super().__new__(cls)
         return cls._instance
 
     def _get_code_hash(self, code: str) -> int:
@@ -74,6 +79,10 @@ class UtilsFileHelper(object):
         """
         if not self.fileName:
             return None
+
+        # Ensure code_map is clean before adding new code
+        if not self.is_dir_mode:
+            self.code_map.clear()
 
         code_hash = self._get_code_hash(code)
         if code_hash not in self.code_map:
@@ -136,6 +145,7 @@ class UtilsFileHelper(object):
         # write to file
         with open(self.fileName, "w") as f:
             f.write(new_content)
+        self.code_map.clear()
 
 
 def log_warning(logger, msg, file=None, line=None):
