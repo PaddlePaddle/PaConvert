@@ -17,8 +17,8 @@ import textwrap
 from apibase import APIBase
 from torchvision_tests.image_apibase import ImageAPIBase
 
-obj = APIBase("torchvision.transforms.rotate")
-img_obj = ImageAPIBase("torchvision.transforms.rotate")
+obj = APIBase("torchvision.transforms.functional.rotate")
+img_obj = ImageAPIBase("torchvision.transforms.functional.rotate")
 
 
 def test_case_1():
