@@ -489,9 +489,12 @@ class TRFMPreTrainedTokenizerMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             import paddlenlp
+
             original_encode = paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase.encode
+
             def encode(self, *args, **kwargs):
                 return original_encode(self, *args, **kwargs)["input_ids"]
+
             setattr(paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase, "encode", encode)
             """
         )
@@ -508,9 +511,9 @@ class TRFMPreTrainedModelMatcher(BaseMatcher):
             """
             from typing import Optional
             import paddlenlp
+
             def _convert_head_mask_to_5d(head_mask, num_hidden_layers):
                 if head_mask.dim() == 1:
-
                     head_mask = head_mask.unsqueeze(0).unsqueeze(0).unsqueeze(-1).unsqueeze(-1)
                     head_mask = head_mask.expand(num_hidden_layers, -1, -1, -1, -1)
                 elif head_mask.dim() == 2:
@@ -518,6 +521,7 @@ class TRFMPreTrainedModelMatcher(BaseMatcher):
                 assert head_mask.dim() == 5, f"head_mask.dim != 5, instead {head_mask.dim()}"
                 head_mask = head_mask.to(dtype=paddle.get_default_dtype())  # switch to float if need + fp16 compatibility
                 return head_mask
+
             def get_head_mask(
                 self,
                 head_mask: Optional[paddle.Tensor],
@@ -532,11 +536,14 @@ class TRFMPreTrainedModelMatcher(BaseMatcher):
                     head_mask = [None] * num_hidden_layers
 
                 return head_mask
+
             setattr(paddlenlp.transformers.model_utils.PretrainedModel, "get_head_mask", get_head_mask)
 
             original_generate = paddlenlp.generation.utils.GenerationMixin.generate
+
             def generate(self, input_ids, *args, **kwargs):
                 return paddle.concat((input_ids,original_generate(self,input_ids, *args, **kwargs)[0]),axis=-1)
+
             setattr(paddlenlp.generation.utils.GenerationMixin, "generate", generate)
 
             setattr(paddlenlp.transformers.model_utils.PretrainedModel, "device", None)
@@ -546,8 +553,8 @@ class TRFMPreTrainedModelMatcher(BaseMatcher):
                     self.init_weights()
                 elif hasattr(self, "_init_weights"):
                     self._init_weights()
-            setattr(paddlenlp.transformers.model_utils.PretrainedModel, "post_init", post_init)
 
+            setattr(paddlenlp.transformers.model_utils.PretrainedModel, "post_init", post_init)
             """
         )
         return CODE_TEMPLATE
@@ -634,7 +641,6 @@ class TensorAddMatcher(BaseMatcher):
                     y = kwargs["y"]
                 else:
                     y = args[0]
-
                 if "alpha" in kwargs:
                     alpha = kwargs["alpha"]
                     if alpha != 1:
@@ -645,7 +651,6 @@ class TensorAddMatcher(BaseMatcher):
                 else:
                     if not isinstance(y, paddle.Tensor):
                         y = paddle.to_tensor(y)
-
                 return paddle.add(self, y)
 
             setattr(paddle.Tensor, "add", add)
@@ -669,7 +674,6 @@ class TensorSubtractMatcher(BaseMatcher):
                     y = kwargs["y"]
                 else:
                     y = args[0]
-
                 if "alpha" in kwargs:
                     alpha = kwargs["alpha"]
                     if alpha != 1:
@@ -680,7 +684,6 @@ class TensorSubtractMatcher(BaseMatcher):
                 else:
                     if not isinstance(y, paddle.Tensor):
                         y = paddle.to_tensor(y)
-
                 return paddle.subtract(self, y)
 
             setattr(paddle.Tensor, "sub", sub)
@@ -1941,7 +1944,6 @@ class SplitMatcher(BaseMatcher):
                     return paddle.split(x, x.shape[axis]//num_or_sections, axis)
                 else:
                     return paddle.split(x, num_or_sections, axis)
-
             """
         )
         return CODE_TEMPLATE
@@ -4024,6 +4026,7 @@ class TensorRoundMatcher(BaseMatcher):
                     x = paddle.abs(self)//(10**-decimals)*(10**-decimals)
                     return paddle.where(self<0, -x, x)
                 return paddle.round(self)
+
             setattr(paddle.Tensor, "round", round)
             """
         )
@@ -4186,6 +4189,7 @@ class NTupleMatcher(BaseMatcher):
             """
             import collections
             from itertools import repeat
+
             def create_tuple_converter(n, name="parse"):
                 def convert_to_tuple(x):
                     if isinstance(x, collections.abc.Iterable):
@@ -5175,6 +5179,7 @@ class EmbeddingMatcher(BaseMatcher):
                 def __init__(self, *args, **kwargs):
                     super().__init__(*args, **kwargs)
                     self.padding_idx = self._padding_idx
+
             setattr(paddle.nn, 'Embedding', Embedding)
             """
         )
@@ -5532,6 +5537,7 @@ class SetNumInteropThreadsMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             import os
+
             def _set_num_interop_threads(int):
                 os.environ['OMP_NUM_THREADS'] = str(int)
             """
@@ -5555,6 +5561,7 @@ class SetNumThreadsMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             import os
+
             def _set_num_threads(int):
                 os.environ['CPU_NUM'] = str(int)
             """

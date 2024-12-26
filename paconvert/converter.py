@@ -107,7 +107,7 @@ class Converter:
             )
 
         self.transfer_dir(in_dir, out_dir, exclude_dir_list)
-        utils_file_helper.write_code(no_format=self.no_format)
+        utils_file_helper.write_code()
         if self.show_unsupport:
             unsupport_map = sorted(
                 self.unsupport_map.items(), key=lambda x: x[1], reverse=True
