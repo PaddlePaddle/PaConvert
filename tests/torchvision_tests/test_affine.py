@@ -18,7 +18,7 @@ from apibase import APIBase
 from torchvision_tests.image_apibase import ImageAPIBase
 
 obj = APIBase("torchvision.transforms.functional.affine")
-img_obj = ImageAPIBase("torchvision.transforms.affine")
+img_obj = ImageAPIBase("torchvision.transforms.functional.affine")
 
 
 def test_case_1():
