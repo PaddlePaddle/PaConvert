@@ -53,6 +53,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import os
+        import time
         import torch
         from torch.distributed import rpc
         os.environ['MASTER_ADDR'] = 'localhost'
@@ -65,7 +66,7 @@ def test_case_2():
         )
         result = rpc.rpc_sync(
             "worker1",
-            torch.distributed.get_rank
+            time.time
         )
         rpc.shutdown()
         """
