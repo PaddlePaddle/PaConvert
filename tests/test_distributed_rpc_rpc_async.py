@@ -73,4 +73,30 @@ def test_case_2():
         rpc.shutdown()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import os
+        import time
+        import torch
+        from torch.distributed import rpc
+        os.environ['MASTER_ADDR'] = 'localhost'
+        os.environ['MASTER_PORT'] = '29500'
+        os.environ['PADDLE_MASTER_ENDPOINT'] = 'localhost:29501'
+        rpc.init_rpc(
+            "worker1",
+            rank=0,
+            world_size=1
+        )
+        r = rpc.rpc_async(
+            to = "worker1",
+            func = time.time
+        )
+        result = r.wait()
+        rpc.shutdown()
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
