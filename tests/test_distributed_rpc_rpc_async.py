@@ -66,7 +66,7 @@ def test_case_2():
         )
         r = rpc.rpc_async(
             "worker1",
-            torch.get_num_threads
+            torch.distributed.get_rank
         )
         result = r.wait()
         rpc.shutdown()
