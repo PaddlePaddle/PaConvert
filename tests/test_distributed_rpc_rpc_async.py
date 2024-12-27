@@ -19,7 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.distributed.rpc.rpc_async")
 
 
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import os
@@ -48,3 +48,28 @@ def _test_case_1():
         unsupport=True,
         reason="paddle does not support tensor in rpc_async",
     )
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import os
+        import torch
+        from torch.distributed import rpc
+        os.environ['MASTER_ADDR'] = 'localhost'
+        os.environ['MASTER_PORT'] = '29500'
+        os.environ['PADDLE_MASTER_ENDPOINT'] = 'localhost:29501'
+        rpc.init_rpc(
+            "worker1",
+            rank=0,
+            world_size=1
+        )
+        r = rpc.rpc_async(
+            "worker1",
+            torch.get_num_threads
+        )
+        result = r.wait()
+        rpc.shutdown()
+        """
+    )
+    obj.run(pytorch_code, ["result"])

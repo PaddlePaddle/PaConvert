@@ -6630,7 +6630,10 @@
     ],
     "kwargs_change": {
       "func": "fn"
-    }
+    },
+    "unsupport_args": [
+      "args"
+    ]
   },
   "torch.distributed.rpc.rpc_sync": {
     "Matcher": "GenericMatcher",
@@ -6645,7 +6648,10 @@
     ],
     "kwargs_change": {
       "func": "fn"
-    }
+    },
+    "unsupport_args": [
+      "args"
+    ]
   },
   "torch.distributed.rpc.shutdown": {
     "Matcher": "GenericMatcher",
