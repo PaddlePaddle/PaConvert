@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.float_power", is_aux_api=True)
+obj = APIBase("torch.float_power")
 
 
 def test_case_1():

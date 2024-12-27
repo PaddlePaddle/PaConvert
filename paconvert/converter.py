@@ -36,7 +36,7 @@ from paconvert.transformer.custom_op_transformer import (
     PreCustomOpTransformer,
     CustomOpTransformer,
 )
-from paconvert.utils import AuxFileHelper, get_unique_name, log_info, log_warning
+from paconvert.utils import UtilsFileHelper, get_unique_name, log_info, log_warning
 
 
 def listdir_nohidden(path):
@@ -92,12 +92,22 @@ class Converter:
             for item in exclude_dirs:
                 exclude_dir_list.append(os.path.abspath(item))
 
-        if out_dir.endswith(".py"):
-            AuxFileHelper(os.path.dirname(out_dir) + "/utils.py", is_dir_mode=False)
-        else:
-            AuxFileHelper(out_dir + "/utils.py", is_dir_mode=True)
+        if os.path.isfile(in_dir):
+            out_file = (
+                os.path.join(out_dir, os.path.basename(in_dir))
+                if os.path.isdir(out_dir)
+                else out_dir
+            )
+            utils_file_helper = UtilsFileHelper(
+                out_file, is_dir_mode=False, logger=self.logger
+            )
+        elif os.path.isdir(in_dir):
+            utils_file_helper = UtilsFileHelper(
+                out_dir + "/paddle_utils.py", is_dir_mode=True, logger=self.logger
+            )
 
         self.transfer_dir(in_dir, out_dir, exclude_dir_list)
+        utils_file_helper.write_code()
         if self.show_unsupport:
             unsupport_map = sorted(
                 self.unsupport_map.items(), key=lambda x: x[1], reverse=True
@@ -265,7 +275,7 @@ class Converter:
                 try:
                     code = autoflake.fix_code(
                         code,
-                        remove_all_unused_imports=True,
+                        remove_all_unused_imports=False,
                         remove_unused_variables=True,
                         ignore_pass_statements=True,
                     )
@@ -310,7 +320,11 @@ class Converter:
         ]
         for transformer in transformers:
             trans = transformer(
-                root, file, self.imports_map, self.logger, self.unsupport_map
+                root,
+                file,
+                self.imports_map,
+                self.logger,
+                self.unsupport_map,
             )
             trans.transform()
             self.torch_api_count += trans.torch_api_count

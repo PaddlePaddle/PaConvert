@@ -34,7 +34,7 @@ class CudaDeviceAPIBase(APIBase):
         assert pytorch_result.idx == paddle_result.get_device_id()
 
 
-obj = CudaDeviceAPIBase("torch.cuda.device", is_aux_api=True)
+obj = CudaDeviceAPIBase("torch.cuda.device")
 
 
 @pytest.mark.skipif(

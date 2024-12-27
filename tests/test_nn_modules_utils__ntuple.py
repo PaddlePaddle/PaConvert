@@ -19,7 +19,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.modules.utils._ntuple", is_aux_api=True)
+obj = APIBase("torch.nn.modules.utils._ntuple")
 
 
 def test_case_1():

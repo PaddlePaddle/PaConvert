@@ -17,7 +17,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.functional._Reduction.get_enum", is_aux_api=True)
+obj = APIBase("torch.nn.functional._Reduction.get_enum")
 
 
 def test_case_1():
