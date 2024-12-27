@@ -17,8 +17,8 @@ import textwrap
 from apibase import APIBase
 from torchvision_tests.image_apibase import ImageAPIBase
 
-obj = APIBase("torchvision.transforms.Resize")
-img_obj = ImageAPIBase("torchvision.transforms.Resize")
+obj = APIBase("torchvision.transforms.functional.resize")
+img_obj = ImageAPIBase("torchvision.transforms.functional.resize")
 
 
 def test_case_1():
