@@ -275,7 +275,7 @@ class Converter:
                 try:
                     code = autoflake.fix_code(
                         code,
-                        remove_all_unused_imports=True,
+                        remove_all_unused_imports=False,
                         remove_unused_variables=True,
                         ignore_pass_statements=True,
                     )

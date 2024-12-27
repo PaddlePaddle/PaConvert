@@ -117,7 +117,7 @@ def create_test_case(pytorch_enum, paddle_value):
         )
         paddle_code = textwrap.dedent(
             f"""
-            pass
+            import paddle
 
             mode = "{paddle_value}"
         """
