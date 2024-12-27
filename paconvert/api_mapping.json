@@ -12980,8 +12980,7 @@
     ],
     "kwargs_change": {
       "input": "x",
-      "return_indices": "return_mask",
-      "_random_samples": "random_u"
+      "return_indices": "return_mask"
     },
     "unsupport_args": [
       "_random_samples"
@@ -13001,8 +13000,7 @@
     ],
     "kwargs_change": {
       "input": "x",
-      "return_indices": "return_mask",
-      "_random_samples": "random_u"
+      "return_indices": "return_mask"
     },
     "unsupport_args": [
       "_random_samples"
