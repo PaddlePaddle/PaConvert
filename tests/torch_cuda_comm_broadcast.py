@@ -54,3 +54,29 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.cuda.comm
+        source_tensor = torch.tensor([1.0, 2.0, 3.0])
+        out = torch.tensor([1.0, 2.0, 3.0])
+        result = torch.cuda.comm.broadcast(source_tensor, [0], out)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.cuda.comm
+        source_tensor = torch.tensor([1.0, 2.0, 3.0])
+        out = torch.tensor([1.0, 2.0, 3.0])
+        result = torch.cuda.comm.broadcast(tensor=source_tensor, [0], out)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

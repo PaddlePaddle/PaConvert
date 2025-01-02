@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.functional.fractional_max_pool2d")
+obj = APIBase("torch.nn.functional.fractional_max_pool3d")
 
 
 def test_case_1():
@@ -81,6 +81,17 @@ def test_case_5():
         import torch
         input = torch.rand(5, 16, 15, 20, 30)
         result = torch.nn.functional.fractional_max_pool3d(input, 1, (5,5,5))
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.rand(1, 1, 6, 6, 6)
+        result = torch.nn.functional.fractional_max_pool3d(input, 1, None, (0.7,0.7,0.7), False)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
