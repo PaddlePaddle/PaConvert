@@ -76,7 +76,20 @@ def test_case_5():
         import torch.cuda.comm
         source_tensor = torch.tensor([1.0, 2.0, 3.0])
         out = torch.tensor([1.0, 2.0, 3.0])
-        result = torch.cuda.comm.broadcast(tensor=source_tensor, [0], out)
+        result = torch.cuda.comm.broadcast(tensor=source_tensor, devices=[0], out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.cuda.comm
+        source_tensor = torch.tensor([1.0, 2.0, 3.0])
+        out = torch.tensor([1.0, 2.0, 3.0])
+        result = torch.cuda.comm.broadcast(source_tensor)
         """
     )
     obj.run(pytorch_code, ["result"])
