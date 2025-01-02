@@ -58,7 +58,7 @@ def test_case_2():
         import torch
         from torch.distributed import rpc
         os.environ['MASTER_ADDR'] = 'localhost'
-        os.environ['MASTER_PORT'] = '29500'
+        os.environ['MASTER_PORT'] = '29502'
         os.environ['PADDLE_MASTER_ENDPOINT'] = 'localhost:29501'
         rpc.init_rpc(
             "worker1",
@@ -84,7 +84,7 @@ def test_case_3():
         import torch
         from torch.distributed import rpc
         os.environ['MASTER_ADDR'] = 'localhost'
-        os.environ['MASTER_PORT'] = '29500'
+        os.environ['MASTER_PORT'] = '29502'
         os.environ['PADDLE_MASTER_ENDPOINT'] = 'localhost:29501'
         rpc.init_rpc(
             "worker1",
