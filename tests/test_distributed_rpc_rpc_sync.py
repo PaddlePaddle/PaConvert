@@ -38,6 +38,7 @@ def test_case_1():
             torch.add,
             args=(torch.tensor(2), torch.tensor(3))
         )
+        rpc.shutdown()
         """
     )
     obj.run(
@@ -46,3 +47,53 @@ def test_case_1():
         unsupport=True,
         reason="paddle does not support tensor in rpc_sync",
     )
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import os
+        import time
+        import torch
+        from torch.distributed import rpc
+        os.environ['MASTER_ADDR'] = 'localhost'
+        os.environ['MASTER_PORT'] = '29502'
+        os.environ['PADDLE_MASTER_ENDPOINT'] = 'localhost:29501'
+        rpc.init_rpc(
+            "worker1",
+            rank=0,
+            world_size=1
+        )
+        result = rpc.rpc_sync(
+            to = "worker1",
+            func = time.time
+        )
+        rpc.shutdown()
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import os
+        import time
+        import torch
+        from torch.distributed import rpc
+        os.environ['MASTER_ADDR'] = 'localhost'
+        os.environ['MASTER_PORT'] = '29502'
+        os.environ['PADDLE_MASTER_ENDPOINT'] = 'localhost:29501'
+        rpc.init_rpc(
+            "worker1",
+            rank=0,
+            world_size=1
+        )
+        result = rpc.rpc_sync(
+            "worker1",
+            time.time
+        )
+        rpc.shutdown()
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

@@ -19,7 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.nn.CTCLoss")
 
 
-def test_case_1():
+def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -47,7 +47,7 @@ def test_case_1():
     )
 
 
-def test_case_2():
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch

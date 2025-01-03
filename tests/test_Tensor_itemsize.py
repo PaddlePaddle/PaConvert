@@ -23,18 +23,19 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 3, 2]).itemsize
+        a = torch.tensor([-1])
+        result = a.itemsize
         """
     )
-    obj.run(pytorch_code, ["x"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 3, 2], dtype=torch.int64)
-        result = x.itemsize
+        a = torch.tensor([-1, -2, 3])
+        result = a.itemsize
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +45,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 3., 2.], dtype=torch.float64)
-        result = x.itemsize
+        a = torch.tensor([-1., 2., -3.4, -4.1, 0, -0.])
+        result = a.itemsize
         """
     )
     obj.run(pytorch_code, ["result"])

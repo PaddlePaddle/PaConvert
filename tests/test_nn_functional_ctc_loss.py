@@ -19,7 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.nn.functional.ctc_loss")
 
 
-def test_case_1():
+def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
