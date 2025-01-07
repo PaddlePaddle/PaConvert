@@ -1184,50 +1184,47 @@ class _MaxMinMatcherBase(BaseMatcher):
 
         paddle_api = self.get_paddle_api()
 
+        # the case of two tensors
         if call_maximinimum:
-            return self._handle_maximinimum_case(args, kwargs, paddle_api)
+            self.api_mapping["args_list"] = ["input", "other", "*", "out"]
+            new_kwargs = self.parse_args_and_kwargs(args, kwargs)
+            new_kwargs["x"] = new_kwargs.pop("input")
+            new_kwargs["y"] = new_kwargs.pop("other")
+
+            paddle_api = "paddle.minimum" if "min" in paddle_api else "paddle.maximum"
+
+            if "out" in new_kwargs:
+                out_v = new_kwargs.pop("out")
+                code = f"paddle.assign({paddle_api}({self.kwargs_to_str(new_kwargs)}), {out_v})"
+            else:
+                code = f"{paddle_api}({self.kwargs_to_str(new_kwargs)})"
+
+            self.api_mapping["args_list"] = ["input", "dim", "keepdim", "*", "out"]
+            return ast.parse(code).body
+
+        # the case of one tensor
         if call_maxmin:
-            return self._handle_maxmin_case(args, kwargs, paddle_api)
+            new_kwargs = self.parse_args_and_kwargs(args, kwargs)
+            new_kwargs["x"] = new_kwargs.pop("input")
+            if "dim" in new_kwargs:
+                new_kwargs["axis"] = new_kwargs.pop("dim")
+
+            paddle_arg_api = "paddle.argmin" if "min" in paddle_api else "paddle.argmax"
+
+            if "axis" in new_kwargs:
+                if "out" in new_kwargs:
+                    out_v = new_kwargs.pop("out")
+                    code = f"paddle.assign({paddle_api}({self.kwargs_to_str(new_kwargs)}), {out_v}[0]), paddle.assign({paddle_arg_api}({self.kwargs_to_str(new_kwargs)}), {out_v}[1])"
+                else:
+                    code = f"{paddle_api}({self.kwargs_to_str(new_kwargs)}), {paddle_arg_api}({self.kwargs_to_str(new_kwargs)})"
+            else:
+                code = f"{paddle_api}({self.kwargs_to_str(new_kwargs)})"
+
+            return ast.parse(code).body
 
         self.enable_utils_code()
         self.set_paddle_api(paddle_api.replace("paddle.", ""))
         return UnchangeMatcher.get_paddle_nodes(self, args, kwargs)
-
-    def _handle_maximinimum_case(self, args, kwargs, paddle_api):
-        self.api_mapping["args_list"] = ["input", "other", "*", "out"]
-        new_kwargs = self.parse_args_and_kwargs(args, kwargs)
-        new_kwargs["x"] = new_kwargs.pop("input")
-        new_kwargs["y"] = new_kwargs.pop("other")
-
-        paddle_api = "paddle.minimum" if "min" in paddle_api else "paddle.maximum"
-
-        if "out" in new_kwargs:
-            out_v = new_kwargs.pop("out")
-            code = f"paddle.assign({paddle_api}({self.kwargs_to_str(new_kwargs)}), {out_v})"
-        else:
-            code = f"{paddle_api}({self.kwargs_to_str(new_kwargs)})"
-
-        self.api_mapping["args_list"] = ["input", "dim", "keepdim", "*", "out"]
-        return ast.parse(code).body
-
-    def _handle_maxmin_case(self, args, kwargs, paddle_api):
-        new_kwargs = self.parse_args_and_kwargs(args, kwargs)
-        new_kwargs["x"] = new_kwargs.pop("input")
-        if "dim" in new_kwargs:
-            new_kwargs["axis"] = new_kwargs.pop("dim")
-
-        paddle_arg_api = "paddle.argmin" if "min" in paddle_api else "paddle.argmax"
-
-        if "axis" in new_kwargs:
-            if "out" in new_kwargs:
-                out_v = new_kwargs.pop("out")
-                code = f"paddle.assign({paddle_api}({self.kwargs_to_str(new_kwargs)}), {out_v}[0]), paddle.assign({paddle_arg_api}({self.kwargs_to_str(new_kwargs)}), {out_v}[1])"
-            else:
-                code = f"{paddle_api}({self.kwargs_to_str(new_kwargs)}), {paddle_arg_api}({self.kwargs_to_str(new_kwargs)})"
-        else:
-            code = f"{paddle_api}({self.kwargs_to_str(new_kwargs)})"
-
-        return ast.parse(code).body
 
 
 class MaxMatcher(_MaxMinMatcherBase):
