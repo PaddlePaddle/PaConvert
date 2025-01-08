@@ -41,14 +41,13 @@ class UtilsFileHelper(object):
     _lock = threading.Lock()
 
     START_CONTENT = (
-        "############################## 相关utils函数，如下 ##############################\n"
+        "\n\n############################## 相关utils函数，如下 ##############################"
     )
     INIT_CONTENT = (
-        "####################### PaConvert 自动生成的代码，请勿手动修改! ##################\n"
-        "import paddle\n"
+        "####################### PaConvert 自动生成的代码，请勿手动修改! ##################"
     )
     END_CONTENT = (
-        "############################## 相关utils函数，如上 ##############################\n"
+        "############################## 相关utils函数，如上 ##############################\n\n"
     )
 
     def __init__(self, fileName=None, is_dir_mode=False, logger=None):
@@ -80,6 +79,7 @@ class UtilsFileHelper(object):
         if not self.fileName:
             return None
 
+        code = code.rstrip("\n")
         code_hash = self._get_code_hash(code)
         if code_hash not in self.code_map:
             self.code_map[code_hash] = code
@@ -95,11 +95,12 @@ class UtilsFileHelper(object):
         if not self.code_map:
             return
 
-        all_code = "\n" + self.START_CONTENT
+        code_lines = [self.START_CONTENT]
         if self.is_dir_mode:
-            all_code += self.INIT_CONTENT + "\n"
-        all_code += "\n".join(self.code_map.values())
-        all_code += "\n" + self.END_CONTENT
+            code_lines.append(self.INIT_CONTENT)
+        code_lines += self.code_map.values()
+        code_lines.append(self.END_CONTENT)
+        insert_code = "\n".join(code_lines)
 
         # insert the new code into the existing file
         if not self.is_dir_mode:
@@ -108,26 +109,26 @@ class UtilsFileHelper(object):
 
             # find a position to insert the new code
             lines = existing_content.splitlines()
-            insert_line = 0
+            insert_idx = 0
             for i, line in enumerate(lines):
                 line = line.strip()
                 if not line or line.startswith("#"):
                     continue
-                if not lines[i].startswith(" ") and not lines[i].startswith("\t"):
+                if not (line.startswith(" ") and line.startswith("\t")):
                     if line.startswith("import ") or line.startswith("from "):
-                        insert_line = i + 1
+                        insert_idx = i + 1
 
             # insert the new code after all imports
-            new_content = "\n".join(
+            new_content = "".join(
                 [
-                    "\n".join(lines[:insert_line]),
-                    all_code,
-                    "\n".join(lines[insert_line:]),
+                    "\n".join(lines[:insert_idx]),
+                    insert_code,
+                    "\n".join(lines[insert_idx:]),
                 ]
             )
         else:
             os.makedirs(os.path.dirname(self.fileName), exist_ok=True)
-            new_content = all_code
+            new_content = insert_code
 
         # remove redundant import
         try:

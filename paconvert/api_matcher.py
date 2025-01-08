@@ -489,12 +489,9 @@ class TRFMPreTrainedTokenizerMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             import paddlenlp
-
             original_encode = paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase.encode
-
             def encode(self, *args, **kwargs):
                 return original_encode(self, *args, **kwargs)["input_ids"]
-
             setattr(paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase, "encode", encode)
             """
         )
@@ -511,7 +508,6 @@ class TRFMPreTrainedModelMatcher(BaseMatcher):
             """
             from typing import Optional
             import paddlenlp
-
             def _convert_head_mask_to_5d(head_mask, num_hidden_layers):
                 if head_mask.dim() == 1:
                     head_mask = head_mask.unsqueeze(0).unsqueeze(0).unsqueeze(-1).unsqueeze(-1)
@@ -534,7 +530,6 @@ class TRFMPreTrainedModelMatcher(BaseMatcher):
                         head_mask = head_mask.unsqueeze(-1)
                 else:
                     head_mask = [None] * num_hidden_layers
-
                 return head_mask
             setattr(paddlenlp.transformers.model_utils.PretrainedModel, "get_head_mask", get_head_mask)
 
@@ -4187,7 +4182,6 @@ class NTupleMatcher(BaseMatcher):
             """
             import collections
             from itertools import repeat
-
             def create_tuple_converter(n, name="parse"):
                 def convert_to_tuple(x):
                     if isinstance(x, collections.abc.Iterable):
@@ -4899,11 +4893,11 @@ class PositiveMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-        def positive(x):
-            if x.dtype != paddle.bool:
-                return x
-            else:
-                raise RuntimeError("boolean tensors is not supported.")
+            def positive(x):
+                if x.dtype != paddle.bool:
+                    return x
+                else:
+                    raise RuntimeError("boolean tensors is not supported.")
         """
         )
         return CODE_TEMPLATE
@@ -5555,7 +5549,6 @@ class SetNumInteropThreadsMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             import os
-
             def _set_num_interop_threads(int):
                 os.environ['OMP_NUM_THREADS'] = str(int)
             """
@@ -5579,7 +5572,6 @@ class SetNumThreadsMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             import os
-
             def _set_num_threads(int):
                 os.environ['CPU_NUM'] = str(int)
             """
@@ -5718,7 +5710,6 @@ class VOCDetectionMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             import os
-
             def VOCDetection(*args, **kwargs):
                 root = kwargs.pop("root")
                 year = kwargs.pop("year", "2012")
