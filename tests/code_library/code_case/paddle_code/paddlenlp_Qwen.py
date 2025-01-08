@@ -30,14 +30,11 @@ def get_head_mask(
         head_mask = [None] * num_hidden_layers
 
     return head_mask
-
 setattr(paddlenlp.transformers.model_utils.PretrainedModel, "get_head_mask", get_head_mask)
 
 original_generate = paddlenlp.generation.utils.GenerationMixin.generate
-
 def generate(self, input_ids, *args, **kwargs):
     return paddle.concat((input_ids,original_generate(self,input_ids, *args, **kwargs)[0]),axis=-1)
-
 setattr(paddlenlp.generation.utils.GenerationMixin, "generate", generate)
 
 setattr(paddlenlp.transformers.model_utils.PretrainedModel, "device", None)
@@ -47,7 +44,6 @@ def post_init(self):
         self.init_weights()
     elif hasattr(self, "_init_weights"):
         self._init_weights()
-
 setattr(paddlenlp.transformers.model_utils.PretrainedModel, "post_init", post_init)
 
 

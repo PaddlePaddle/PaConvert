@@ -4269,6 +4269,26 @@ class SoftmaxMatcher(BaseMatcher):
                     return paddle.nn.functional.softmax(x, _get_softmax_dim(x.ndim))
                 return paddle.nn.functional.softmax(x, self._axis)
             setattr(paddle.nn.Softmax, "forward", forward)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        if "dim" not in kwargs or kwargs["dim"] == "None":
+            self.enable_utils_code()
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class LogSoftmaxMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def _get_softmax_dim(axis: int) -> int:
+                if axis == 0 or axis == 1 or axis == 3:
+                    ret = 0
+                else:
+                    ret = 1
+                return ret
 
             def forward(self, x):
                 if self._axis is None:

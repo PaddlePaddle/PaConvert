@@ -11236,7 +11236,7 @@
     "min_input_args": 0
   },
   "torch.nn.LogSoftmax": {
-    "Matcher": "SoftmaxMatcher",
+    "Matcher": "LogSoftmaxMatcher",
     "paddle_api": "paddle.nn.LogSoftmax",
     "min_input_args": 0,
     "args_list": [
