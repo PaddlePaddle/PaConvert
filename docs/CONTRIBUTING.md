@@ -336,7 +336,7 @@ class TransposeMatcher(BaseMatcher):
 |参数不一致|未使用不一致的用法|使用了不一致的用法|
 |其他分类||全部需要辅助代码|
 
-以 `torch.Tensor.reshape` 为例，其映射关系分类属于 **参数不一致**，是由于torch的shape即可为可变参数，也可为list/tuple，而Paddle仅支持list/tuple，因此我们只需对**可变参数**的用法 `enable_utils_code` 。
+以 `torch.Tensor.reshape` 为例，其映射关系分类属于 **参数不一致**，是由于torch的shape既可为可变参数，也可为list/tuple，而Paddle仅支持list/tuple，因此我们只需对**可变参数**的用法 `enable_utils_code` 。
 
 ```python
 class TensorReshapeMatcher(BaseMatcher):

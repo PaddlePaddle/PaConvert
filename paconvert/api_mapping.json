@@ -2657,7 +2657,7 @@
     ]
   },
   "torch.Tensor.max": {
-    "Matcher": "TensorMaxMinMatcher",
+    "Matcher": "TensorMaxMatcher",
     "paddle_api": "paddle.Tensor.max",
     "min_input_args": 0,
     "args_list": [
@@ -2710,7 +2710,7 @@
     ]
   },
   "torch.Tensor.min": {
-    "Matcher": "TensorMaxMinMatcher",
+    "Matcher": "TensorMinMatcher",
     "paddle_api": "paddle.Tensor.min",
     "min_input_args": 0,
     "args_list": [
@@ -9732,7 +9732,7 @@
     "min_input_args": 1
   },
   "torch.max": {
-    "Matcher": "MaxMinMatcher",
+    "Matcher": "MaxMatcher",
     "paddle_api": "paddle.max",
     "args_list": [
       "input",
@@ -9862,7 +9862,7 @@
     ]
   },
   "torch.min": {
-    "Matcher": "MaxMinMatcher",
+    "Matcher": "MinMatcher",
     "paddle_api": "paddle.min",
     "args_list": [
       "input",
@@ -11236,7 +11236,7 @@
     "min_input_args": 0
   },
   "torch.nn.LogSoftmax": {
-    "Matcher": "SoftmaxMatcher",
+    "Matcher": "LogSoftmaxMatcher",
     "paddle_api": "paddle.nn.LogSoftmax",
     "min_input_args": 0,
     "args_list": [
