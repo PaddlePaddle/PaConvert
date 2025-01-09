@@ -5,7 +5,6 @@ import paddlenlp
 
 ############################## 相关utils函数，如下 ##############################
 
-
 def _convert_head_mask_to_5d(head_mask, num_hidden_layers):
     if head_mask.dim() == 1:
         head_mask = head_mask.unsqueeze(0).unsqueeze(0).unsqueeze(-1).unsqueeze(-1)
@@ -28,7 +27,6 @@ def get_head_mask(
             head_mask = head_mask.unsqueeze(-1)
     else:
         head_mask = [None] * num_hidden_layers
-
     return head_mask
 setattr(paddlenlp.transformers.model_utils.PretrainedModel, "get_head_mask", get_head_mask)
 
@@ -46,16 +44,12 @@ def post_init(self):
         self._init_weights()
 setattr(paddlenlp.transformers.model_utils.PretrainedModel, "post_init", post_init)
 
-
 import paddlenlp
 
 original_encode = paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase.encode
-
 def encode(self, *args, **kwargs):
     return original_encode(self, *args, **kwargs)["input_ids"]
-
 setattr(paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase, "encode", encode)
-
 
 def apply_rotary_position_embeddings(x, cos, sin):
     if not isinstance(cos, paddle.Tensor):
@@ -81,7 +75,6 @@ def apply_rotary_position_embeddings(x, cos, sin):
     t_rot = (t_rot * cos) + (_rotate_half(t_rot) * sin)
 
     return paddle.concat(x=(t_rot, t_pass), axis=-1)
-
 ############################## 相关utils函数，如上 ##############################
 
 

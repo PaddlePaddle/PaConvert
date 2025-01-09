@@ -22,10 +22,8 @@ import os
 import re
 import shutil
 import black
-import autoflake
-import isort
-
 import astor
+import isort
 
 from paconvert.transformer.basic_transformer import BasicTransformer
 from paconvert.transformer.import_transformer import ImportTransformer
@@ -272,6 +270,7 @@ class Converter:
                         "Skip isort format due to error: {}".format(str(e)),
                     )
 
+                """
                 try:
                     code = autoflake.fix_code(
                         code,
@@ -284,6 +283,7 @@ class Converter:
                         self.logger,
                         "Skip autoflake format due to error: {}".format(str(e)),
                     )
+                """
 
             code = self.mark_unsupport(code, old_path)
             with open(new_path, "w", encoding="UTF-8") as file:
