@@ -154,6 +154,7 @@
       "softmax_scale",
       "causal",
       "window_size",
+      "softcap",
       "alibi_slopes",
       "deterministic",
       "return_attn_probs",
@@ -161,6 +162,7 @@
     ],
     "unsupport_args": [
       "window_size",
+      "softcap",
       "alibi_slopes",
       "deterministic",
       "block_table"
@@ -2657,7 +2659,7 @@
     ]
   },
   "torch.Tensor.max": {
-    "Matcher": "TensorMaxMatcher",
+    "Matcher": "TensorMaxMinMatcher",
     "paddle_api": "paddle.Tensor.max",
     "min_input_args": 0,
     "args_list": [
@@ -2710,7 +2712,7 @@
     ]
   },
   "torch.Tensor.min": {
-    "Matcher": "TensorMinMatcher",
+    "Matcher": "TensorMaxMinMatcher",
     "paddle_api": "paddle.Tensor.min",
     "min_input_args": 0,
     "args_list": [
@@ -5885,6 +5887,7 @@
     "args_list": [
       "tensor",
       "devices",
+      "*",
       "out"
     ],
     "kwargs_change": {
@@ -6048,6 +6051,17 @@
     "args_list": [
       "msg"
     ]
+  },
+  "torch.cuda.reset_max_memory_allocated": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.device.cuda.reset_max_memory_allocated",
+    "min_input_args": 0,
+    "args_list": [
+      "device"
+    ],
+    "kwargs_change": {
+      "device": "device"
+    }
   },
   "torch.cuda.set_device": {
     "Matcher": "SetDeviceMatcher",
@@ -6530,6 +6544,9 @@
       "*args",
       "**kwargs"
     ],
+    "kwargs_change": {
+      "optimizer_class": "optimizer"
+    },
     "unsupport_args": [
       "params_rref"
     ]
@@ -8790,6 +8807,9 @@
       "map_location",
       "_extra_files"
     ],
+    "kwargs_change": {
+      "f": "path"
+    },
     "unsupport_args": [
       "map_location",
       "_extra_files"
@@ -9732,7 +9752,7 @@
     "min_input_args": 1
   },
   "torch.max": {
-    "Matcher": "MaxMatcher",
+    "Matcher": "MaxMinMatcher",
     "paddle_api": "paddle.max",
     "args_list": [
       "input",
@@ -9862,7 +9882,7 @@
     ]
   },
   "torch.min": {
-    "Matcher": "MinMatcher",
+    "Matcher": "MaxMinMatcher",
     "paddle_api": "paddle.min",
     "args_list": [
       "input",
@@ -11236,7 +11256,7 @@
     "min_input_args": 0
   },
   "torch.nn.LogSoftmax": {
-    "Matcher": "LogSoftmaxMatcher",
+    "Matcher": "SoftmaxMatcher",
     "paddle_api": "paddle.nn.LogSoftmax",
     "min_input_args": 0,
     "args_list": [
@@ -14567,6 +14587,46 @@
       "input": "x",
       "dtype": "dtype"
     }
+  },
+  "torch.onnx.export": {
+    "Matcher": "OnnxExportMatcher",
+    "paddle_api": "paddle.onnx.export",
+    "min_input_args": 1,
+    "args_list": [
+      "model",
+      "args",
+      "f",
+      "export_params",
+      "verbose",
+      "training",
+      "input_names",
+      "output_names",
+      "operator_export_type",
+      "opset_version",
+      "do_constant_folding",
+      "dynamic_axes",
+      "keep_initializers_as_inputs",
+      "custom_opsets",
+      "export_modules_as_functions"
+    ],
+    "kwargs_change": {
+      "model": "layer",
+      "f": "path"
+    },
+    "unsupport_args": [
+      "args",
+      "export_params",
+      "verbose",
+      "training",
+      "input_names",
+      "output_names",
+      "operator_export_type",
+      "do_constant_folding",
+      "dynamic_axes",
+      "keep_initializers_as_inputs",
+      "custom_opsets",
+      "export_modules_as_functions"
+    ]
   },
   "torch.optim.ASGD": {
     "Matcher": "GenericMatcher",
@@ -19450,7 +19510,12 @@
   },
   "transformers.StoppingCriteriaList": {
     "Matcher": "UnchangeMatcher",
-    "paddle_api": "paddlenlp.generation.StoppingCriteriaList"
+    "paddle_api": "paddlenlp.generation.StoppingCriteriaList",
+    "args_list": [
+      "input_ids",
+      "scores",
+      "**kwargs"
+    ]
   },
   "transformers.generation.LogitsProcessor": {
     "Matcher": "GenericMatcher",

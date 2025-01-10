@@ -45,7 +45,7 @@ class nn_DataParallelAPIBase(APIBase):
             ), "API ({}): paddle result has diff with pytorch result".format(name)
 
 
-obj = nn_DataParallelAPIBase("torch.nn.DaraParallel")
+obj = nn_DataParallelAPIBase("torch.nn.DataParallel")
 
 
 def test_case_1():
