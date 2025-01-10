@@ -5700,7 +5700,6 @@ class VOCDetectionMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             import os
-
             def VOCDetection(*args, **kwargs):
                 root = kwargs.pop("root")
                 year = kwargs.pop("year", "2012")
