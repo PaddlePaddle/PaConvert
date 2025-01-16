@@ -149,6 +149,8 @@ missing_matchers_whitelist = {
     r"torch\.nn\.Lazy*": "Lazy APIs can only be converted manually, because it Related to the previous and following code.",
     "torch.nn.CTCLoss": "torch log_softmax + ctc_loss is equivalent to paddle ctc_loss",
     "torch.nn.functional.ctc_loss": "torch log_softmax + ctc_loss is equivalent to paddle ctc_loss",
+    "transformers.PreTrainedModel.get_head_mask": "transformers.PreTrainedModel.get_head_mask is completed in TRFMPreTrainedModelMatcher",
+    "transformers.PreTrainedModel.post_init": "transformers.PreTrainedModel.post_init is completed in TRFMPreTrainedModelMatcher",
 }
 
 validate_whitelist = [

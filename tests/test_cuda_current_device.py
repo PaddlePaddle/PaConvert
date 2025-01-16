@@ -37,7 +37,7 @@ class cuda_current_deviceAPIBase(APIBase):
         ), "paddle rusult should be class 'paddle.base.libpaddle.CUDAPlace'"
 
 
-obj = cuda_current_deviceAPIBase("torch.cuda.current.device")
+obj = cuda_current_deviceAPIBase("torch.cuda.current_device")
 
 
 @pytest.mark.skipif(

@@ -5989,3 +5989,32 @@ class Fractional_Max_pool3dMatcher(BaseMatcher):
             else:
                 new_kwargs[k] = kwargs.pop(k)
         return GenericMatcher.generate_code(self, new_kwargs)
+
+
+class OnnxExportMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def onnx_export(model,f):
+                model = Logic()
+                paddle.jit.to_static(model)
+                last_dot_index = filename.rfind('.')
+                if last_dot_index == -1:
+                    path = f
+                else:
+                    path = f[:last_dot_index]
+                return paddle.onnx.export(model, path)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            onnx_export({},{})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["model"], kwargs["f"])
+
+        return code

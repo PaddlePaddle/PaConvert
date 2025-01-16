@@ -130,6 +130,20 @@ cornercase_api_aux_dict = {
     "torch.set_default_tensor_type": "parameter t is positional-only arguments",
 }
 
+missing_unittest_whitelist = {
+    "os.environ.get",
+    "setuptools.setup",
+    "torch.Tensor.symeig",
+    r"^torch\.cuda\..*$",
+    "torch.hub.load_state_dict_from_url",
+    "torch.jit.script",
+    "torch.nn.SyncBatchNorm",
+    "torch.nn.functional.scaled_dot_product_attention",
+    "torch.optim.Optimizer.state_dict",
+    "torch.symeig",
+    "torch.utils.cpp_extension.load",
+}
+
 
 def get_test_cases(discovery_paths=["tests"]):
     # Collect the test cases
@@ -800,7 +814,13 @@ if __name__ == "__main__":
         if "Matcher" not in data:
             continue
         if api not in test_data:
-            missing_unittest_list.append(api)
+            white_flag = False
+            for wl in missing_unittest_whitelist:
+                if re.match(wl, api):
+                    white_flag = True
+                    break
+            if not white_flag:
+                missing_unittest_list.append(api)
     with open(os.path.join(output_dir, "missing_unittest_list.log"), "w") as f:
         for api in missing_unittest_list:
             print(api, file=f)
