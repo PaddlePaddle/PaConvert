@@ -6063,6 +6063,17 @@
       "device": "device"
     }
   },
+  "torch.cuda.reset_max_memory_cached": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.device.cuda.reset_max_memory_reserved",
+    "min_input_args": 0,
+    "args_list": [
+      "device"
+    ],
+    "kwargs_change": {
+      "device": "device"
+    }
+  },
   "torch.cuda.set_device": {
     "Matcher": "SetDeviceMatcher",
     "paddle_api": "paddle.device.set_device",

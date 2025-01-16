@@ -19,7 +19,7 @@ import pytest
 from apibase import APIBase
 
 
-class cudaResetMaxMemoryAllocatedAPI(APIBase):
+class cudaResetMaxMemoryCachedAPI(APIBase):
     def compare(
         self,
         name,
@@ -34,7 +34,7 @@ class cudaResetMaxMemoryAllocatedAPI(APIBase):
         assert type(pytorch_result) == type(paddle_result)
 
 
-obj = cudaResetMaxMemoryAllocatedAPI("torch.cuda.reset_max_memory_allocated")
+obj = cudaResetMaxMemoryCachedAPI("torch.cuda.reset_max_memory_allocated")
 
 
 @pytest.mark.skipif(
@@ -45,7 +45,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.cuda.reset_max_memory_allocated()
+        result = torch.cuda.reset_max_memory_cached()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -60,7 +60,7 @@ def test_case_2():
         """
         import torch
         t = torch.tensor([1,2,3]).cuda()
-        result = torch.cuda.reset_max_memory_allocated(0)
+        result = torch.cuda.reset_max_memory_cached(0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -75,7 +75,7 @@ def test_case_3():
         """
         import torch
         t = torch.tensor([1,2,3]).cuda()
-        result = torch.cuda.reset_max_memory_allocated(device=0)
+        result = torch.cuda.reset_max_memory_cached(device=0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -90,7 +90,7 @@ def test_case_4():
         """
         import torch
         t = torch.tensor([1,2,3]).cuda()
-        result = torch.cuda.reset_max_memory_allocated(torch.device("cuda:0"))
+        result = torch.cuda.reset_max_memory_cached(torch.device("cuda:0"))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -105,7 +105,7 @@ def test_case_5():
         """
         import torch
         t = torch.tensor([1,2,3]).cuda()
-        result = torch.cuda.reset_max_memory_allocated(device=torch.device("cuda:0"))
+        result = torch.cuda.reset_max_memory_cached(device=torch.device("cuda:0"))
         """
     )
     obj.run(pytorch_code, ["result"])

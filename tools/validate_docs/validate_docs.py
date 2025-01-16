@@ -150,8 +150,7 @@ missing_matchers_whitelist = {
     "torch.nn.CTCLoss": "torch log_softmax + ctc_loss is equivalent to paddle ctc_loss",
     "torch.nn.functional.ctc_loss": "torch log_softmax + ctc_loss is equivalent to paddle ctc_loss",
     "transformers.PreTrainedModel.get_head_mask": "transformers.PreTrainedModel.get_head_mask is completed in TRFMPreTrainedModelMatcher",
-    "transformers.PreTrainedModel.post_init": "transformers.PreTrainedModel.get_head_mask is completed in TRFMPreTrainedModelMatcher",
-    "torch.cuda.reset_max_memory_reserved": "Pytorch has deprecated this function",
+    "transformers.PreTrainedModel.post_init": "transformers.PreTrainedModel.post_init is completed in TRFMPreTrainedModelMatcher",
 }
 
 validate_whitelist = [

@@ -6012,7 +6012,7 @@ class OnnxExportMatcher(BaseMatcher):
         self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            onnx_export({})
+            onnx_export({},{})
             """
         )
         code = API_TEMPLATE.format(kwargs["model"], kwargs["f"])
