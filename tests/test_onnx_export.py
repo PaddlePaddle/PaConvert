@@ -58,7 +58,7 @@ def test_case_1():
         pytorch_code,
         ["result"],
         unsupport=True,
-        reason="paddle does not support this function temporarily",
+        reason="paddle does not support args temporarily",
     )
 
 
