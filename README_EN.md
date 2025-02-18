@@ -46,14 +46,14 @@ Due to the use of some newer Python syntax tree features, an interpreter with >=
 
 ```bash
 python3.8 -m pip install -U paconvert
-paconvert --in_dir torch_project --out_dir paddle_project [--log_dir log_dir] [--log_level level] [--run_check] [--no-format]
+paconvert --in_dir torch_project --out_dir paddle_project [--log_dir log_dir] [--log_level level] [--run_check] [--no_format]
 ```
 
 2. Installation with source code
 
 ```bash
 git clone https://github.com/PaddlePaddle/PaConvert.git
-python3.8 paconvert/main.py --in_dir torch_project --out_dir paddle_project [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level level] [--run_check] [--no-format]
+python3.8 paconvert/main.py --in_dir torch_project --out_dir paddle_project [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level level] [--run_check] [--no_format]
 ```
 
 **Parameters**
@@ -66,7 +66,7 @@ Parameters:
 --log_dir Optional, the path to the output log, by default convert.log will be created in the current directory
 --log_level Optional "INFO" "DEBUG", print log level, default "INFO"
 --run_check Optional, tool self-test
---no-format Optional, disable format the converted code, default is False
+--no_format Optional, disable format the converted code, default is False
 ```
 
 

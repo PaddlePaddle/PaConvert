@@ -363,19 +363,22 @@ class Converter:
             # """
             # torch.*
             # """
-            pre_in_str = in_str
+            last_in_str = in_str
             if rm_str_line.count('"""') % 2 != 0:
                 in_str = not in_str
-            if pre_in_str or in_str:
+            if last_in_str or in_str:
                 continue
 
             # paddle.add(paddlenlp.
-            #   transformers.BertTokenizer
-            pre_bracket_num = bracket_num
+            #   transformers.BertTokenizer)
+            """
+            # may be removed in future
+            last_bracket_num = bracket_num
             bracket_num += rm_str_line.count("(")
             bracket_num -= rm_str_line.count(")")
-            if pre_bracket_num > 0:
+            if last_bracket_num > 0:
                 continue
+            """
 
             for torch_package in self.imports_map[file]["torch_packages"]:
                 if rm_str_line.startswith("%s." % torch_package):

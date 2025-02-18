@@ -64,6 +64,7 @@ TORCH_PACKAGE_MAPPING = {
 MAY_TORCH_PACKAGE_LIST = [
     "setuptools",
     "os",
+    "einops",
 ]
 
 
@@ -320,9 +321,6 @@ class BaseMatcher(object):
         self.api_mapping = api_mapping
         self.logger = logger
 
-    def get_utils_dir(self):
-        return os.path.dirname(UtilsFileHelper().fileName)
-
     def parse_args_and_kwargs(self, args, kwargs):
         args_list = self.api_mapping.get("args_list") or []
         # torch.dsplit has overload args
@@ -492,10 +490,11 @@ class BaseMatcher(object):
                     from paddle_utils import *
                     """
                 )
-                code = CODE_TEMPLATE.format(self.get_utils_dir())
+                # TODO: change sys.path.append to relative import
+                code = CODE_TEMPLATE.format(os.path.dirname(utils_file_helper.fileName))
                 self.transformer.insert_multi_node(ast.parse(code).body)
 
-            utils_file_helper.add_code(utils_code, self.torch_api)
+            utils_file_helper.add_code(utils_code)
             log_debug(self.logger, "add 'import utils'", self.transformer.file_name)
 
     def set_paddle_api(self, paddle_api):

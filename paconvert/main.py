@@ -76,7 +76,7 @@ def main():
         help="Convert Pytorch project each element Separately",
     )
     parser.add_argument(
-        "--no-format",
+        "--no_format",
         action="store_true",
         help="Disable format the converted code",
     )

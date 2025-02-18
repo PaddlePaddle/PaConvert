@@ -41,7 +41,7 @@ class UtilsFileHelper(object):
     _lock = threading.Lock()
 
     START_CONTENT = (
-        "\n\n############################## 相关utils函数，如下 ##############################"
+        "\n############################## 相关utils函数，如下 ##############################"
     )
     INIT_CONTENT = (
         "####################### PaConvert 自动生成的代码，请勿手动修改! ##################"
@@ -72,7 +72,7 @@ class UtilsFileHelper(object):
             base_hash = hash(f"{code}_{len(self.code_map)}")
         return base_hash
 
-    def add_code(self, code: str, torch_api: str) -> int:
+    def add_code(self, code: str) -> int:
         """
         Add the code to the code map and return the code hash
         """
@@ -95,9 +95,11 @@ class UtilsFileHelper(object):
         if not self.code_map:
             return
 
-        code_lines = [self.START_CONTENT]
+        code_lines = []
         if self.is_dir_mode:
-            code_lines.append(self.INIT_CONTENT)
+            code_lines += ["\nimport paddle\n", self.START_CONTENT, self.INIT_CONTENT]
+        else:
+            code_lines += [self.START_CONTENT]
         code_lines += self.code_map.values()
         code_lines.append(self.END_CONTENT)
         insert_code = "\n".join(code_lines)
