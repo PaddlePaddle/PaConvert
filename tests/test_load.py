@@ -61,7 +61,7 @@ def test_case_4():
         import torch
         result = torch.tensor([0., 1., 2., 3., 4.])
         torch.save(result, 'tensor.pt', pickle_protocol=4)
-        result = torch.load('tensor.pt', map_location=torch.device('cpu'))
+        result = torch.load('tensor.pt', map_location=torch.device('cpu'), weights_only=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -117,7 +117,7 @@ def test_case_8():
 
         result = torch.tensor([0., 1., 2., 3., 4.])
         torch.save(result, 'tensor.pt', pickle_protocol=4)
-        result = torch.load('tensor.pt')
+        result = torch.load('tensor.pt', weights_only=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -132,7 +132,7 @@ def test_case_9():
         result = torch.tensor([0., 1., 2., 3., 4.])
         torch.save(result, 'tensor.pt', pickle_protocol=4)
         new_path = PosixPath('tensor.pt')
-        result = torch.load(new_path)
+        result = torch.load(new_path, weights_only=False)
         """
     )
     obj.run(pytorch_code, ["result"])

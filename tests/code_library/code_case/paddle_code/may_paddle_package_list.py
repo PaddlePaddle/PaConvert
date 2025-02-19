@@ -1,5 +1,6 @@
 import os
 
+import einops
 import paddle
 import setuptools
 from numpy.random import randint
@@ -18,3 +19,5 @@ print("#########################case6#########################")
 setuptools.setup()
 print("#########################case7#########################")
 paddle.to_tensor(data=[1])
+print("#########################case7#########################")
+einops.layers.paddle.Rearrange("b (h w) -> b h w", h=16, w=16)

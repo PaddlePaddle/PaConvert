@@ -61,7 +61,7 @@ def test_case_4():
         import torch
         result = torch.tensor([0., 1., 2., 3., 4.])
         torch.save(result, 'tensor.pt', pickle_protocol=4)
-        result = torch.load('tensor.pt', map_location=torch.device('cpu'))
+        result = torch.load('tensor.pt', map_location=torch.device('cpu'), weights_only=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -74,7 +74,7 @@ def test_case_5():
         import pickle
         result = torch.tensor([0., 1., 2., 3., 4.])
         torch.save(result, 'tensor.pt', pickle_module=pickle, pickle_protocol=4, _use_new_zipfile_serialization=False)
-        result = torch.load('tensor.pt', map_location=torch.device('cpu'))
+        result = torch.load('tensor.pt', map_location=torch.device('cpu'), weights_only=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -88,7 +88,7 @@ def test_case_6():
         import pickle
         result = torch.tensor([0., 1., 2., 3., 4.])
         torch.save(result, 'tensor.pt', pickle, 4, False)
-        result = torch.load('tensor.pt', map_location=torch.device('cpu'))
+        result = torch.load('tensor.pt', map_location=torch.device('cpu'), weights_only=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -102,7 +102,7 @@ def test_case_7():
         import pickle
         result = torch.tensor([0., 1., 2., 3., 4.])
         torch.save(obj=result, f='tensor.pt', pickle_module=pickle, pickle_protocol=4, _use_new_zipfile_serialization=False)
-        result = torch.load('tensor.pt', map_location=torch.device('cpu'))
+        result = torch.load('tensor.pt', map_location=torch.device('cpu'), weights_only=False)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -116,7 +116,7 @@ def test_case_8():
         import pickle
         result = torch.tensor([0., 1., 2., 3., 4.])
         torch.save(_use_new_zipfile_serialization=False, pickle_protocol=4, pickle_module=pickle, f='tensor.pt', obj=result)
-        result = torch.load('tensor.pt', map_location=torch.device('cpu'))
+        result = torch.load('tensor.pt', map_location=torch.device('cpu'), weights_only=False)
         """
     )
     obj.run(pytorch_code, ["result"])
