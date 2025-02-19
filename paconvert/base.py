@@ -47,6 +47,8 @@ TORCH_PACKAGE_MAPPING = {
     "detectron": "paddle",
     "timm": "paddle",
     "torchvision": "paddle",
+    "torchaudio": "paddlespeech",
+    "audiotools": "paddlespeech",
     "kornia": "paddle",
     "fasttext": "paddle",
     "pytorch_lightning": "paddle",
