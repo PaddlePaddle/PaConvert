@@ -1,8 +1,9 @@
 import os
 
-import einops
+import einops.layers.paddle as einops_torch
 import paddle
 import setuptools
+from einops.layers.paddle import Rearrange
 from numpy.random import randint
 
 print("#########################case1#########################")
@@ -20,4 +21,6 @@ setuptools.setup()
 print("#########################case7#########################")
 paddle.to_tensor(data=[1])
 print("#########################case7#########################")
-einops.layers.paddle.Rearrange("b (h w) -> b h w", h=16, w=16)
+Rearrange("b (h w) -> b h w", h=16, w=16)
+einops.layers.torch.Rearrange("b (h w) -> b h w", h=16, w=16)
+einops_torch.Rearrange("b (h w) -> b h w", h=16, w=16)
