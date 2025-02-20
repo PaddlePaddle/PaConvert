@@ -36,6 +36,13 @@ json_file = os.path.dirname(__file__) + "/api_alias_mapping.json"
 with open(json_file, "r") as file:
     ALIAS_MAPPING = json.load(file)
 
+# used for import replace (api replace by all)
+IMPORT_PACKAGE_MAPPING = {
+    "audiotools": "paddlespeech.audiotools",
+    "einops.layers.torch": "einops.layers.paddle",
+}
+
+# used for api replace one by one
 # Abbreviation after annotation as the prefix for corresponding matcher
 TORCH_PACKAGE_MAPPING = {
     "torch": "paddle",
@@ -48,7 +55,6 @@ TORCH_PACKAGE_MAPPING = {
     "timm": "paddle",
     "torchvision": "paddle",
     "torchaudio": "paddlespeech",
-    "audiotools": "paddlespeech",
     "kornia": "paddle",
     "fasttext": "paddle",
     "pytorch_lightning": "paddle",
@@ -66,7 +72,6 @@ TORCH_PACKAGE_MAPPING = {
 MAY_TORCH_PACKAGE_LIST = [
     "setuptools",
     "os",
-    "einops",
 ]
 
 

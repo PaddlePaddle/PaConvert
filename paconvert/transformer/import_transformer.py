@@ -18,7 +18,8 @@ import os
 from paconvert.base import ALIAS_MAPPING, BaseTransformer
 from paconvert.utils import log_info
 
-from ..base import MAY_TORCH_PACKAGE_LIST, TORCH_PACKAGE_MAPPING
+from ..base import (IMPORT_PACKAGE_MAPPING, MAY_TORCH_PACKAGE_LIST,
+                    TORCH_PACKAGE_MAPPING)
 
 
 class ImportTransformer(BaseTransformer):
@@ -32,7 +33,7 @@ class ImportTransformer(BaseTransformer):
         )
         self.imports_map[self.file]["other_packages"] = []
         self.imports_map[self.file]["torch_packages"] = []
-        self.imports_map[self.file]["simplified_name_map"] = {}
+        self.imports_map[self.file]["api_alias_name_map"] = {}
         self.import_PACKAGE_LIST = []
         self.ast_if_List = []
 
@@ -41,12 +42,16 @@ class ImportTransformer(BaseTransformer):
         1. remove import torch.nn
         2. remove import torch.nn as nn
         3. record whether to import paddle
+        4: 'import audiotools' -> 'import paddlespeech.audiotools as audiotools'
+        5: 'import audiotools.ml' -> 'import paddlespeech.audiotools as audiotools'
+        6: 'import audiotools as tools' -> 'import paddlespeech.audiotools as tools'
+        7: 'import audiotools.ml as ml' -> 'import paddlespeech.audiotools.ml as ml'
         """
         new_node_names = []
         for alias_node in node.names:
             has_done = False
 
-            # import from current project
+            # 1. import from current project
             dir_name = os.path.dirname(self.file)
             """
             while (
@@ -66,13 +71,9 @@ class ImportTransformer(BaseTransformer):
             if os.path.exists(import_path) or os.path.exists(import_path + ".py"):
                 self.insert_other_packages(self.imports_map, alias_node)
                 new_node_names.append(alias_node)
-                has_done = True
                 break
 
-            if has_done:
-                continue
-
-            # import from torch
+            # 2. import from TORCH_PACKAGE_MAPPING (which means replace api one by one)
             for pkg_name in list(TORCH_PACKAGE_MAPPING.keys()) + MAY_TORCH_PACKAGE_LIST:
                 if f"{pkg_name}." in alias_node.name or pkg_name == alias_node.name:
                     if pkg_name in MAY_TORCH_PACKAGE_LIST:
@@ -107,11 +108,62 @@ class ImportTransformer(BaseTransformer):
                         self.imports_map[self.file][alias_node.name] = alias_node.name
                     has_done = True
                     break
-
             if has_done:
                 continue
 
-            # other_packages
+            # 3. import form IMPORT_PACKAGE_MAPPING (which means replace api by all)
+            for pkg_name in list(IMPORT_PACKAGE_MAPPING.keys()):
+                if f"{pkg_name}." in alias_node.name or pkg_name == alias_node.name:
+                    replace_pkg_name = IMPORT_PACKAGE_MAPPING[pkg_name]
+                    if alias_node.asname:
+                        # case 1: 'import audiotools as tools' -> 'import paddlespeech.audiotools as tools'
+                        # case 2: 'import audiotools.ml as ml' -> 'import paddlespeech.audiotools.ml as ml'
+                        replace_pkg_name = alias_node.name.replace(
+                            pkg_name, replace_pkg_name
+                        )
+                        log_info(
+                            self.logger,
+                            "replace 'import {} as {}' to 'import {} as {}' ".format(
+                                alias_node.name,
+                                alias_node.asname,
+                                replace_pkg_name,
+                                alias_node.asname,
+                            ),
+                            self.file_name,
+                            node.lineno,
+                        )
+                        new_alias_node = ast.alias(replace_pkg_name, alias_node.asname)
+                        new_node_names.append(new_alias_node)
+                    else:
+                        if "." not in pkg_name:
+                            # case 1: 'import audiotools' -> 'import paddlespeech.audiotools as audiotools'
+                            # case 2: 'import audiotools.ml' -> 'import paddlespeech.audiotools as audiotools'
+                            log_info(
+                                self.logger,
+                                "replace 'import {}' to 'import {} as {}' ".format(
+                                    alias_node.name, replace_pkg_name, pkg_name
+                                ),
+                                self.file_name,
+                                node.lineno,
+                            )
+                            new_alias_node = ast.alias(replace_pkg_name, pkg_name)
+                            new_node_names.append(new_alias_node)
+                        else:
+                            # case 1: 'import einops.layers.torch'
+                            # case 2: 'import einops.layers.torch.Rearrange'
+                            # TODO: cannot convert by replace import, must convert by replace api
+                            log_info(
+                                self.logger,
+                                "remove 'import {}' ".format(alias_node.name),
+                                self.file_name,
+                                node.lineno,
+                            )
+                    has_done = True
+                    break
+            if has_done:
+                continue
+
+            # 4. import from other_packages
             self.insert_other_packages(self.imports_map, alias_node)
             new_node_names.append(alias_node)
 
@@ -143,8 +195,11 @@ class ImportTransformer(BaseTransformer):
         """
         1. remove from torch import nn
         2. remove from torch import nn.functional as F
+        3. 'from audiotools import AudioSignal' -> 'from paddlespeech.audiotools import AudioSignal'
+        4. 'from audiotools.ml import BaseModel' -> 'from paddlespeech.audiotools.ml import BaseModel'
+        5. 'from audiotools.ml import BaseModel as Model' -> 'from paddlespeech.audiotools.ml import BaseModel as Model'
         """
-        # import from current project
+        # 1. import from current project
         if node.level > 0:
             # from ..datasets import xxx
             # from ... import xxx (node.module is None)
@@ -179,7 +234,7 @@ class ImportTransformer(BaseTransformer):
                 self.insert_other_packages(self.imports_map, node)
                 return node
 
-        # import from TORCH_PACKAGE_MAPPING
+        # 2. import from TORCH_PACKAGE_MAPPING (which means replace api one by one)
         for pkg_name in list(TORCH_PACKAGE_MAPPING.keys()) + MAY_TORCH_PACKAGE_LIST:
             if f"{pkg_name}." in node.module or pkg_name == node.module:
                 if pkg_name in MAY_TORCH_PACKAGE_LIST:
@@ -235,7 +290,27 @@ class ImportTransformer(BaseTransformer):
                 else:
                     return None
 
-        # other_packages
+        # 3. import form IMPORT_PACKAGE_MAPPING (which means replace api by all)
+        for pkg_name in list(IMPORT_PACKAGE_MAPPING.keys()):
+            if f"{pkg_name}." in node.module or pkg_name == node.module:
+                # case 1: 'from audiotools import AudioSignal' -> 'from paddlespeech.audiotools import AudioSignal'
+                # case 2: 'from audiotools.ml import BaseModel' -> 'from paddlespeech.audiotools.ml import BaseModel'
+                # case 3: 'from audiotools.ml import BaseModel as Model' -> 'from paddlespeech.audiotools.ml import BaseModel as Model'
+                origin_module = node.module
+                node.module = origin_module.replace(
+                    pkg_name, IMPORT_PACKAGE_MAPPING[pkg_name]
+                )
+                log_info(
+                    self.logger,
+                    "replace 'from {} import xx' to 'from {} import xx' ".format(
+                        origin_module, node.module
+                    ),
+                    self.file_name,
+                    node.lineno,
+                )
+                return node
+
+        # 4. other_packages
         self.insert_other_packages(self.imports_map, node)
         return node
 
@@ -321,9 +396,9 @@ class ImportTransformer(BaseTransformer):
                 maybe_torch = True
             # modify the simplified name to the original api name
             if (
-                node.id in self.imports_map[self.file]["simplified_name_map"]
+                node.id in self.imports_map[self.file]["api_alias_name_map"]
             ):  # 12. myadd(tensor_1,tensor_2)
-                torch_api = self.imports_map[self.file]["simplified_name_map"][node.id]
+                torch_api = self.imports_map[self.file]["api_alias_name_map"][node.id]
                 return ast.parse(torch_api).body[0].value
 
             elif self.parent_node.func.id in [
@@ -364,7 +439,7 @@ class ImportTransformer(BaseTransformer):
                     if len(self.parent_node.targets) == 1 and isinstance(
                         self.parent_node.targets[0], ast.Name
                     ):
-                        self.imports_map[self.file]["simplified_name_map"][
+                        self.imports_map[self.file]["api_alias_name_map"][
                             self.parent_node.targets[0].id
                         ] = torch_api
                 return ast.parse(torch_api).body[0].value
