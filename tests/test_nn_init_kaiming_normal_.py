@@ -118,3 +118,15 @@ def test_case_8():
         unsupport=True,
         reason="mode='fan_out' is not supported",
     )
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        conv = torch.nn.Conv2d(3, 6, (3, 3))
+        torch.nn.init.kaiming_normal_(mode='fan_in', nonlinearity='leaky_relu', tensor=conv.weight, a=1., generator=None)
+        result = conv.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

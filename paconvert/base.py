@@ -28,6 +28,10 @@ json_file = os.path.dirname(__file__) + "/api_mapping.json"
 with open(json_file, "r") as file:
     API_MAPPING = json.load(file)
 
+json_file = os.path.dirname(__file__) + "/api_wildcard_mapping.json"
+with open(json_file, "r") as file:
+    API_WILDCARD_MAPPING = json.load(file)
+
 json_file = os.path.dirname(__file__) + "/attribute_mapping.json"
 with open(json_file, "r") as file:
     ATTRIBUTE_MAPPING = json.load(file)
@@ -36,13 +40,11 @@ json_file = os.path.dirname(__file__) + "/api_alias_mapping.json"
 with open(json_file, "r") as file:
     ALIAS_MAPPING = json.load(file)
 
-# used for import replace (api replace by all)
+# used to replace import (means replace api by all)
 IMPORT_PACKAGE_MAPPING = {
     "audiotools": "paddlespeech.audiotools",
-    "einops.layers.torch": "einops.layers.paddle",
 }
-
-# used for api replace one by one
+# used to replace api one by one
 # Abbreviation after annotation as the prefix for corresponding matcher
 TORCH_PACKAGE_MAPPING = {
     "torch": "paddle",
@@ -72,6 +74,7 @@ TORCH_PACKAGE_MAPPING = {
 MAY_TORCH_PACKAGE_LIST = [
     "setuptools",
     "os",
+    "einops",
 ]
 
 
@@ -321,19 +324,19 @@ class BaseTransformer(ast.NodeTransformer):
 
 
 class BaseMatcher(object):
-    def __init__(self, transformer, torch_api, api_mapping, logger):
+    def __init__(self, transformer, torch_api, api_mapping_dict, logger):
         self.transformer = transformer
         self.torch_api = torch_api
         self.paddle_api = None
-        self.api_mapping = api_mapping
+        self.api_mapping_dict = api_mapping_dict
         self.logger = logger
 
     def parse_args_and_kwargs(self, args, kwargs):
-        args_list = self.api_mapping.get("args_list") or []
+        args_list = self.api_mapping_dict.get("args_list") or []
         # torch.dsplit has overload args
-        overload_args_list = self.api_mapping.get("overload_args_list") or []
-        min_input_args_num = self.api_mapping.get("min_input_args") or 0
-        unsupport_args = self.api_mapping.get("unsupport_args") or []
+        overload_args_list = self.api_mapping_dict.get("overload_args_list") or []
+        min_input_args_num = self.api_mapping_dict.get("min_input_args") or 0
+        unsupport_args = self.api_mapping_dict.get("unsupport_args") or []
 
         group_list = [
             list(v) for k, v in groupby(args_list, lambda x: x == "*") if not k
@@ -400,7 +403,7 @@ class BaseMatcher(object):
         return new_args
 
     def parse_kwargs(self, kwargs):
-        unsupport_args = self.api_mapping.get("unsupport_args") or []
+        unsupport_args = self.api_mapping_dict.get("unsupport_args") or []
 
         new_kwargs = {}
         for node in kwargs:
@@ -468,8 +471,8 @@ class BaseMatcher(object):
         process the redundant parameters of Paddle and set the default values
         and return the new parameter list in the form of a dictionary.
         """
-        if "paddle_default_kwargs" in self.api_mapping:
-            paddle_default_kwargs = self.api_mapping["paddle_default_kwargs"]
+        if "paddle_default_kwargs" in self.api_mapping_dict:
+            paddle_default_kwargs = self.api_mapping_dict["paddle_default_kwargs"]
             for k in paddle_default_kwargs:
                 if k not in kwargs:
                     kwargs[k] = paddle_default_kwargs[k]
@@ -511,11 +514,11 @@ class BaseMatcher(object):
         paddle_api = None
         if self.paddle_api:
             paddle_api = self.paddle_api
-        elif "paddle_api" in self.api_mapping:
-            paddle_api = self.api_mapping["paddle_api"]
+        elif "paddle_api" in self.api_mapping_dict:
+            paddle_api = self.api_mapping_dict["paddle_api"]
         if (
             paddle_api
-            and self.api_mapping.get("abstract")
+            and self.api_mapping_dict.get("abstract")
             and self.generate_utils_code() is not None
         ):
             self.enable_utils_code()

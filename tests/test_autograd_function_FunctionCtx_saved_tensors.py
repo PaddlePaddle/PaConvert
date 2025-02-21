@@ -17,10 +17,42 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.autograd.function.FunctionCtx.save_for_backward")
+obj = APIBase("torch.autograd.function.FunctionCtx.saved_tensors")
 
 
 def test_case_1():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        from torch.autograd import Function
+
+        # Inherit from Function
+        class cus_tanh(Function):
+            @staticmethod
+            def forward(ctx, x):
+                # ctx is a context object that store some objects for backward.
+                y = torch.tanh(x)
+                # Pass tensors to backward.
+                ctx.save_for_backward(x, y)
+                return y
+
+            @staticmethod
+            def backward(ctx, dy):
+                x, y = ctx.saved_tensors
+                grad = y + dy + 1
+                return grad
+
+        data = torch.ones([2, 3], dtype=torch.float64, requires_grad=True)
+        z = cus_tanh.apply(data)
+        z.sum().backward()
+
+        result = data.grad
+        """
+    )
+    obj.run(pytorch_code, ["z", "result"])
+
+
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -38,7 +70,8 @@ def test_case_1():
 
             @staticmethod
             def backward(ctx, dy):
-                grad = dy + 1
+                y = ctx.saved_tensors[0]
+                grad = y + dy + 1
                 return grad
 
         data = torch.ones([2, 3], dtype=torch.float64, requires_grad=True)

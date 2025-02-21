@@ -1,13 +1,4 @@
 {
-  "einops.layers.torch.Rearrange": {
-    "Matcher": "UnchangeMatcher",
-    "paddle_api": "einops.layers.paddle.Rearrange",
-    "min_input_args": 0,
-    "args_list": [
-      "*args",
-      "**kwargs"
-    ]
-  },
   "fairscale.nn.model_parallel.initialize.get_model_parallel_rank": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.fleet.base.topology._HYBRID_PARALLEL_GROUP.get_model_parallel_rank"
@@ -6356,7 +6347,7 @@
     "paddle_api": "paddle.distributed.ReduceOp"
   },
   "torch.distributed.all_gather": {
-    "Matcher": "ScatterMatcher",
+    "Matcher": "ReverseAsyncOpMatcher",
     "paddle_api": "paddle.distributed.all_gather",
     "min_input_args": 2,
     "args_list": [
@@ -6377,7 +6368,7 @@
     "min_input_args": 2
   },
   "torch.distributed.all_reduce": {
-    "Matcher": "ScatterMatcher",
+    "Matcher": "ReverseAsyncOpMatcher",
     "paddle_api": "paddle.distributed.all_reduce",
     "min_input_args": 1,
     "args_list": [
@@ -6412,21 +6403,20 @@
       "async_op",
       "device_ids"
     ],
+    "kwargs_change": {
+      "async_op": ""
+    },
     "unsupport_args": [
-      "async_op",
       "device_ids"
     ]
   },
   "torch.distributed.broadcast": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ReverseAsyncOpMatcher",
     "paddle_api": "paddle.distributed.broadcast",
     "args_list": [
       "tensor",
       "src",
       "group",
-      "async_op"
-    ],
-    "unsupport_args": [
       "async_op"
     ],
     "min_input_args": 2
@@ -6446,7 +6436,7 @@
     "min_input_args": 1
   },
   "torch.distributed.gather": {
-    "Matcher": "ScatterMatcher",
+    "Matcher": "ReverseAsyncOpMatcher",
     "paddle_api": "paddle.distributed.gather",
     "args_list": [
       "tensor",
@@ -6586,7 +6576,7 @@
     "min_input_args": 1
   },
   "torch.distributed.reduce": {
-    "Matcher": "ScatterMatcher",
+    "Matcher": "ReverseAsyncOpMatcher",
     "paddle_api": "paddle.distributed.reduce",
     "args_list": [
       "tensor",
@@ -6598,7 +6588,7 @@
     "min_input_args": 2
   },
   "torch.distributed.reduce_scatter": {
-    "Matcher": "ScatterMatcher",
+    "Matcher": "ReverseAsyncOpMatcher",
     "paddle_api": "paddle.distributed.reduce_scatter",
     "args_list": [
       "output",
@@ -6704,7 +6694,7 @@
     }
   },
   "torch.distributed.scatter": {
-    "Matcher": "ScatterMatcher",
+    "Matcher": "ReverseAsyncOpMatcher",
     "paddle_api": "paddle.distributed.scatter",
     "args_list": [
       "tensor",
@@ -10395,7 +10385,7 @@
     ]
   },
   "torch.nn.BatchNorm1d": {
-    "Matcher": "ReverseMatcher",
+    "Matcher": "ReverseMomentumMatcher",
     "paddle_api": "paddle.nn.BatchNorm1D",
     "min_input_args": 1,
     "args_list": [
@@ -10419,7 +10409,7 @@
     }
   },
   "torch.nn.BatchNorm2d": {
-    "Matcher": "ReverseMatcher",
+    "Matcher": "ReverseMomentumMatcher",
     "paddle_api": "paddle.nn.BatchNorm2D",
     "min_input_args": 1,
     "args_list": [
@@ -10443,7 +10433,7 @@
     }
   },
   "torch.nn.BatchNorm3d": {
-    "Matcher": "ReverseMatcher",
+    "Matcher": "ReverseMomentumMatcher",
     "paddle_api": "paddle.nn.BatchNorm3D",
     "min_input_args": 1,
     "args_list": [
@@ -11053,7 +11043,7 @@
     ]
   },
   "torch.nn.InstanceNorm1d": {
-    "Matcher": "ReverseMatcher",
+    "Matcher": "ReverseMomentumMatcher",
     "paddle_api": "paddle.nn.InstanceNorm1D",
     "min_input_args": 1,
     "args_list": [
@@ -11077,7 +11067,7 @@
     }
   },
   "torch.nn.InstanceNorm2d": {
-    "Matcher": "ReverseMatcher",
+    "Matcher": "ReverseMomentumMatcher",
     "paddle_api": "paddle.nn.InstanceNorm2D",
     "min_input_args": 1,
     "args_list": [
@@ -11101,7 +11091,7 @@
     }
   },
   "torch.nn.InstanceNorm3d": {
-    "Matcher": "ReverseMatcher",
+    "Matcher": "ReverseMomentumMatcher",
     "paddle_api": "paddle.nn.InstanceNorm3D",
     "min_input_args": 1,
     "args_list": [
@@ -12187,7 +12177,7 @@
     "min_input_args": 0
   },
   "torch.nn.SyncBatchNorm": {
-    "Matcher": "ReverseMatcher",
+    "Matcher": "ReverseMomentumMatcher",
     "paddle_api": "paddle.nn.SyncBatchNorm",
     "args_list": [
       "num_features",
@@ -12621,7 +12611,7 @@
     ]
   },
   "torch.nn.functional.batch_norm": {
-    "Matcher": "ReverseMatcher",
+    "Matcher": "ReverseMomentumMatcher",
     "paddle_api": "paddle.nn.functional.batch_norm",
     "args_list": [
       "input",
@@ -13235,7 +13225,7 @@
     "min_input_args": 2
   },
   "torch.nn.functional.instance_norm": {
-    "Matcher": "ReverseMatcher",
+    "Matcher": "ReverseMomentumMatcher",
     "paddle_api": "paddle.nn.functional.instance_norm",
     "args_list": [
       "input",
@@ -14185,7 +14175,8 @@
       "tensor",
       "a",
       "mode",
-      "nonlinearity"
+      "nonlinearity",
+      "generator"
     ],
     "kwargs_change": {
       "a": "negative_slope"
@@ -14202,7 +14193,8 @@
       "tensor",
       "a",
       "mode",
-      "nonlinearity"
+      "nonlinearity",
+      "generator"
     ],
     "kwargs_change": {
       "a": "negative_slope"
@@ -14218,7 +14210,8 @@
     "args_list": [
       "tensor",
       "mean",
-      "std"
+      "std",
+      "generator"
     ]
   },
   "torch.nn.init.ones_": {
@@ -14238,7 +14231,8 @@
     "min_input_args": 1,
     "args_list": [
       "tensor",
-      "gain"
+      "gain",
+      "generator"
     ]
   },
   "torch.nn.init.trunc_normal_": {
@@ -14250,7 +14244,8 @@
       "mean",
       "std",
       "a",
-      "b"
+      "b",
+      "generator"
     ]
   },
   "torch.nn.init.uniform_": {
@@ -14260,7 +14255,8 @@
     "args_list": [
       "tensor",
       "a",
-      "b"
+      "b",
+      "generator"
     ],
     "kwargs_change": {
       "a": "low",
@@ -14276,7 +14272,8 @@
     "min_input_args": 1,
     "args_list": [
       "tensor",
-      "gain"
+      "gain",
+      "generator"
     ]
   },
   "torch.nn.init.xavier_uniform_": {
@@ -14285,7 +14282,8 @@
     "min_input_args": 1,
     "args_list": [
       "tensor",
-      "gain"
+      "gain",
+      "generator"
     ]
   },
   "torch.nn.init.zeros_": {
@@ -14300,7 +14298,7 @@
     }
   },
   "torch.nn.modules.batchnorm._BatchNorm": {
-    "Matcher": "ReverseMatcher",
+    "Matcher": "ReverseMomentumMatcher",
     "paddle_api": "paddle.nn.layer.norm._BatchNormBase",
     "args_list": [
       "num_features",

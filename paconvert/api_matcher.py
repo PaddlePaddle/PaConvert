@@ -54,15 +54,15 @@ TypePromoteFunc = textwrap.dedent(
 
 class GenericMatcher(BaseMatcher):
     def get_paddle_api(self):
-        assert "paddle_api" in self.api_mapping
+        assert "paddle_api" in self.api_mapping_dict
         if self.paddle_api:
             return self.paddle_api
-        return self.api_mapping["paddle_api"]
+        return self.api_mapping_dict["paddle_api"]
 
     def generate_code(self, kwargs):
         kwargs_change = {}
-        if "kwargs_change" in self.api_mapping:
-            kwargs_change = self.api_mapping["kwargs_change"]
+        if "kwargs_change" in self.api_mapping_dict:
+            kwargs_change = self.api_mapping_dict["kwargs_change"]
         new_kwargs = {}
         for k in list(kwargs.keys()):
             if k in kwargs_change:
@@ -215,8 +215,8 @@ class SliceScatterMatcher(BaseMatcher):
 class TensorFunc2PaddleFunc(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs_change = {}
-        if "kwargs_change" in self.api_mapping:
-            kwargs_change = self.api_mapping["kwargs_change"]
+        if "kwargs_change" in self.api_mapping_dict:
+            kwargs_change = self.api_mapping_dict["kwargs_change"]
 
         for k in list(kwargs.keys()):
             if k in kwargs_change:
@@ -380,6 +380,14 @@ class UnchangeMatcher(BaseMatcher):
         return "unchange"
 
 
+class EinopsTorchMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        self.set_paddle_api(
+            self.torch_api.replace("einops.layers.torch", "einops.layers.paddle")
+        )
+        return UnchangeMatcher.get_paddle_nodes(self, args, kwargs)
+
+
 class SetTrueMatcher(BaseMatcher):
     def get_paddle_api(self):
         return "True"
@@ -398,12 +406,14 @@ class SetFalseMatcher(BaseMatcher):
 
 class InitMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs_change = self.api_mapping.get("kwargs_change", {})
+        if "generator" in kwargs:
+            kwargs.pop("generator")
+        kwargs_change = self.api_mapping_dict.get("kwargs_change", {})
         for k in kwargs_change:
             if k in kwargs:
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
 
-        default_kwargs = self.api_mapping.get("paddle_default_kwargs", {})
+        default_kwargs = self.api_mapping_dict.get("paddle_default_kwargs", {})
         for k in default_kwargs:
             if k not in kwargs:
                 kwargs[k] = default_kwargs[k]
@@ -597,7 +607,7 @@ class SignalWindowsWatcher(BaseMatcher):
 
 class Num2TensorBinaryWithAlphaMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs_change = self.api_mapping.get("kwargs_change", {})
+        kwargs_change = self.api_mapping_dict.get("kwargs_change", {})
         for k in kwargs_change:
             if k in kwargs:
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
@@ -1177,7 +1187,7 @@ class _MaxMinMatcherBase(BaseMatcher):
 
         # the case of two tensors
         if call_maximinimum:
-            self.api_mapping["args_list"] = ["input", "other", "*", "out"]
+            self.api_mapping_dict["args_list"] = ["input", "other", "*", "out"]
             new_kwargs = self.parse_args_and_kwargs(args, kwargs)
             new_kwargs["x"] = new_kwargs.pop("input")
             new_kwargs["y"] = new_kwargs.pop("other")
@@ -1190,7 +1200,7 @@ class _MaxMinMatcherBase(BaseMatcher):
             else:
                 code = f"{paddle_api}({self.kwargs_to_str(new_kwargs)})"
 
-            self.api_mapping["args_list"] = ["input", "dim", "keepdim", "*", "out"]
+            self.api_mapping_dict["args_list"] = ["input", "dim", "keepdim", "*", "out"]
             return ast.parse(code).body
 
         # the case of one tensor
@@ -1375,8 +1385,8 @@ class TensorMinMatcher(BaseMatcher):
 class EqualMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs_change = {}
-        if "kwargs_change" in self.api_mapping:
-            kwargs_change = self.api_mapping["kwargs_change"]
+        if "kwargs_change" in self.api_mapping_dict:
+            kwargs_change = self.api_mapping_dict["kwargs_change"]
         new_kwargs = {}
 
         for k in list(kwargs.keys()):
@@ -1400,8 +1410,8 @@ class FAFlashAttnFuncMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         new_kwargs = {}
         for k in kwargs:
-            if k in self.api_mapping["kwargs_change"]:
-                new_kwargs[self.api_mapping["kwargs_change"][k]] = kwargs[k]
+            if k in self.api_mapping_dict["kwargs_change"]:
+                new_kwargs[self.api_mapping_dict["kwargs_change"][k]] = kwargs[k]
             else:
                 new_kwargs[k] = kwargs[k]
 
@@ -1433,8 +1443,8 @@ class FAFlashAttnUnpaddedFuncMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         new_kwargs = {}
         for k in kwargs:
-            if k in self.api_mapping["kwargs_change"]:
-                new_kwargs[self.api_mapping["kwargs_change"][k]] = kwargs[k]
+            if k in self.api_mapping_dict["kwargs_change"]:
+                new_kwargs[self.api_mapping_dict["kwargs_change"][k]] = kwargs[k]
             else:
                 new_kwargs[k] = kwargs[k]
 
@@ -1616,13 +1626,6 @@ class RandintMatcher(BaseMatcher):
         code = GenericMatcher.generate_code(self, kwargs)
 
         return code
-
-
-class ScatterMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "async_op" in kwargs:
-            kwargs["sync_op"] = f"not {kwargs.pop('async_op')}"
-        return GenericMatcher.generate_code(self, kwargs)
 
 
 class ScatterReduceMatcher(BaseMatcher):
@@ -2535,10 +2538,17 @@ class IndexCopyMatcher(BaseMatcher):
         return code
 
 
-class ReverseMatcher(BaseMatcher):
+class ReverseMomentumMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "momentum" in kwargs:
             kwargs["momentum"] = f"1 - {kwargs.pop('momentum')}"
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class ReverseAsyncOpMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        if "async_op" in kwargs:
+            kwargs["sync_op"] = f"not {kwargs.pop('async_op')}"
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -3826,7 +3836,7 @@ class FunctionalSmoothL1LossMatcher(BaseMatcher):
 class DoubleAssignMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs = self.set_paddle_default_kwargs(kwargs)
-        kwargs_change = self.api_mapping.get("kwargs_change", {})
+        kwargs_change = self.api_mapping_dict.get("kwargs_change", {})
         for k in kwargs_change:
             if k in kwargs:
                 if kwargs[k]:
@@ -3853,7 +3863,7 @@ class DoubleAssignMatcher(BaseMatcher):
 class TripleAssignMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs = self.set_paddle_default_kwargs(kwargs)
-        kwargs_change = self.api_mapping.get("kwargs_change", {})
+        kwargs_change = self.api_mapping_dict.get("kwargs_change", {})
 
         for k in kwargs_change:
             if k in kwargs:
@@ -4140,7 +4150,7 @@ class SortMatcher(BaseMatcher):
         if "input" not in kwargs:
             kwargs["x"] = self.paddleClass
 
-        change_kwargs = self.api_mapping["kwargs_change"]
+        change_kwargs = self.api_mapping_dict["kwargs_change"]
         for key in change_kwargs:
             if key in kwargs:
                 if change_kwargs[key]:
@@ -4367,12 +4377,12 @@ class LRSchedulerMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         optimizer = kwargs.pop("optimizer")
 
-        kwargs_change = self.api_mapping.get("kwargs_change", {})
+        kwargs_change = self.api_mapping_dict.get("kwargs_change", {})
         for k in kwargs_change:
             if k in kwargs:
                 kwargs[kwargs_change[k]] = kwargs.pop(k)
 
-        default_kwargs = self.api_mapping.get("paddle_default_kwargs", {})
+        default_kwargs = self.api_mapping_dict.get("paddle_default_kwargs", {})
         for k in default_kwargs:
             if k not in kwargs:
                 kwargs[k] = default_kwargs[k]
@@ -5008,7 +5018,7 @@ class TensorInplaceReserveTypeMatcher(BaseMatcher):
             """
         )
 
-        convert_tensor = self.api_mapping.get("convert_tensor", {})
+        convert_tensor = self.api_mapping_dict.get("convert_tensor", {})
 
         if "other" in kwargs:
             other_v = kwargs.pop("other")
@@ -5243,7 +5253,7 @@ class SetDefaultTensorTypeMatcher(BaseMatcher):
 
 class SimpleScalableVarMatcher(BaseMatcher):
     def get_scalable_var(self):
-        args_list = self.api_mapping.get("args_list", [])
+        args_list = self.api_mapping_dict.get("args_list", [])
         if len(args_list) != 1:
             return None
         arg_name = args_list[0]
@@ -5253,7 +5263,7 @@ class SimpleScalableVarMatcher(BaseMatcher):
 
     def get_paddle_nodes(self, args, kwargs):
         var_arg_name = self.get_scalable_var()
-        dest_var_arg_name = self.api_mapping.get("kwargs_change", {}).get(
+        dest_var_arg_name = self.api_mapping_dict.get("kwargs_change", {}).get(
             var_arg_name, var_arg_name
         )
         if len(args) > 1:
@@ -5270,7 +5280,7 @@ class SimpleScalableVarMatcher(BaseMatcher):
 
 class ScalableVarMatcher(BaseMatcher):
     def get_scalable_var(self):
-        args_list = self.api_mapping.get("args_list", [])
+        args_list = self.api_mapping_dict.get("args_list", [])
         if len(args_list) != 1:
             return None
         arg_name = args_list[0]
@@ -5283,7 +5293,7 @@ class ScalableVarMatcher(BaseMatcher):
         if var_arg_name is None:
             return None
 
-        dest_var_arg_name = self.api_mapping.get("kwargs_change", {}).get(
+        dest_var_arg_name = self.api_mapping_dict.get("kwargs_change", {}).get(
             var_arg_name, var_arg_name
         )
 
@@ -5312,7 +5322,7 @@ class ScalableVarMatcher(BaseMatcher):
         if var_arg_name is None:
             return None
 
-        dest_var_arg_name = self.api_mapping.get("kwargs_change", {}).get(
+        dest_var_arg_name = self.api_mapping_dict.get("kwargs_change", {}).get(
             var_arg_name, var_arg_name
         )
 
@@ -5335,7 +5345,7 @@ class ScalableVarMatcher(BaseMatcher):
 class Lu_unpackMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs = self.set_paddle_default_kwargs(kwargs)
-        kwargs_change = self.api_mapping.get("kwargs_change", {})
+        kwargs_change = self.api_mapping_dict.get("kwargs_change", {})
 
         for k in kwargs_change:
             if k in kwargs:
@@ -5379,7 +5389,7 @@ class Lu_unpackMatcher(BaseMatcher):
 class Linalg_qrMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs = self.set_paddle_default_kwargs(kwargs)
-        kwargs_change = self.api_mapping.get("kwargs_change", {})
+        kwargs_change = self.api_mapping_dict.get("kwargs_change", {})
         for k in kwargs_change:
             if k in kwargs:
                 if kwargs[k]:
@@ -5423,7 +5433,7 @@ class Linalg_qrMatcher(BaseMatcher):
 
 class HistogramMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs_change = self.api_mapping.get("kwargs_change", {})
+        kwargs_change = self.api_mapping_dict.get("kwargs_change", {})
 
         for k in kwargs_change:
             if k == "range" and k in kwargs:
@@ -5905,7 +5915,7 @@ class ChangeKwargsMatcher(UnchangeMatcher):
         new_args = self.parse_args(args)
         old_kwargs = self.parse_kwargs(kwargs)
         new_kwargs = {}
-        kwargs_change = self.api_mapping["kwargs_change"]
+        kwargs_change = self.api_mapping_dict["kwargs_change"]
         for k in list(old_kwargs.keys()):
             if k in kwargs_change:
                 if kwargs_change[k]:

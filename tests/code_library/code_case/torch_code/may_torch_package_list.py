@@ -3,8 +3,9 @@ from os import environ
 from numpy.random import randint
 from setuptools import setup
 import setuptools
-from einops.layers.torch import Rearrange
+import einops
 import einops.layers.torch
+from einops.layers.torch import Rearrange
 import einops.layers.torch as einops_torch
 
 print("#########################case1#########################")

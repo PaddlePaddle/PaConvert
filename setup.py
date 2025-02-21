@@ -37,6 +37,7 @@ packages = [
 package_data = {
     "paconvert": [
         "api_mapping.json",
+        "api_wildcard_mapping.json",
         "attribute_mapping.json",
         "api_alias_mapping.json",
     ]
