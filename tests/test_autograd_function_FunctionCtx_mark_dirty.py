@@ -27,7 +27,7 @@ def test_case_1():
         from torch.autograd import Function
 
         # Inherit from Function
-        class cus_tanh(Function):
+        class cus_func(Function):
             @staticmethod
             def forward(ctx, x):
                 a = x + x
@@ -37,12 +37,11 @@ def test_case_1():
 
             @staticmethod
             def backward(ctx, grad_a, grad_b):
-                return grad_b
+                grad_x = 3*grad_b
+                return grad_x
 
-        mark_dirty = torch.autograd.function.FunctionCtx.mark_dirty
-        data = torch.ones([2, 3], dtype=torch.float64)
-        data.requires_grad = True
-        a, b = cus_tanh.apply(data)
+        data = torch.ones([2, 3], dtype=torch.float64, requires_grad=True)
+        a, b = cus_func.apply(data)
         b.sum().backward()
 
         result = data.grad
@@ -50,7 +49,7 @@ def test_case_1():
     )
     obj.run(
         pytorch_code,
-        ["result"],
+        ["a", "b", "result"],
         check_stop_gradient=False,
         unsupport=True,
         reason="paddle does not support this function temporarily",

@@ -90,3 +90,15 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        conv = torch.nn.Conv2d(3, 6, (3, 3))
+        torch.nn.init.orthogonal_(tensor=conv.weight, gain=2, generator=None)
+        result = conv.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

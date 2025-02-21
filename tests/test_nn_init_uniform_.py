@@ -113,3 +113,15 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        conv = torch.nn.Conv2d(3, 6, (3, 3))
+        torch.nn.init.uniform_(conv.weight, a=-2, b=2, generator=None)
+        result = conv.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

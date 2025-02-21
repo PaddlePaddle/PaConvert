@@ -3,7 +3,8 @@
     "Matcher": "TensorHMatcher"
   },
   "torch.Tensor.T": {
-    "Matcher": "UnchangeMatcher"
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.Tensor.T"
   },
   "torch.Tensor.data": {
     "Matcher": "GenericMatcher",
@@ -14,10 +15,12 @@
     "paddle_api": "paddle.Tensor.place"
   },
   "torch.Tensor.dtype": {
-    "Matcher": "UnchangeMatcher"
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.Tensor.dtype"
   },
   "torch.Tensor.grad": {
-    "Matcher": "UnchangeMatcher"
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.Tensor.grad"
   },
   "torch.Tensor.imag": {
     "Matcher": "Attribute2Func",
@@ -27,7 +30,8 @@
     "Matcher": "TensorIsCudaMatcher"
   },
   "torch.Tensor.is_leaf": {
-    "Matcher": "UnchangeMatcher"
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.Tensor.is_leaf"
   },
   "torch.Tensor.is_meta": {},
   "torch.Tensor.is_quantized": {},
@@ -54,7 +58,8 @@
     "Matcher": "TensorNbytesMatcher"
   },
   "torch.Tensor.ndim": {
-    "Matcher": "UnchangeMatcher"
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.Tensor.ndim"
   },
   "torch.Tensor.real": {
     "Matcher": "Attribute2Func",
@@ -71,7 +76,10 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.__version__"
   },
-  "torch.autograd.function.FunctionCtx.saved_tensors": {},
+  "torch.autograd.function.FunctionCtx.saved_tensors": {
+    "Matcher": "Attribute2Func",
+    "paddle_api": "paddle.autograd.PyLayerContext.saved_tensor"
+  },
   "torch.autograd.profiler.profile.self_cpu_time_total": {},
   "torch.backends.cudnn.allow_tf32": {
     "Matcher": "SetTrueMatcher"
@@ -186,9 +194,6 @@
   "torch.nn": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn"
-  },
-  "torch.optim.Optimizer.state_dict": {
-    "Matcher": "UnchangeMatcher"
   },
   "torch.pi": {
     "Matcher": "GenericMatcher",

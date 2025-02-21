@@ -31,10 +31,10 @@ class ImportTransformer(BaseTransformer):
         super(ImportTransformer, self).__init__(
             root, file, imports_map, logger, unsupport_map
         )
-        self.imports_map[self.file]["other_packages"] = []
-        self.imports_map[self.file]["torch_packages"] = []
+        self.imports_map[self.file]["other_packages"] = set()
+        self.imports_map[self.file]["torch_packages"] = set()
+        self.imports_map[self.file]["may_torch_packages"] = set()
         self.imports_map[self.file]["api_alias_name_map"] = {}
-        self.import_PACKAGE_LIST = []
         self.ast_if_List = []
 
     def visit_Import(self, node):
@@ -77,18 +77,11 @@ class ImportTransformer(BaseTransformer):
             for pkg_name in list(TORCH_PACKAGE_MAPPING.keys()) + MAY_TORCH_PACKAGE_LIST:
                 if f"{pkg_name}." in alias_node.name or pkg_name == alias_node.name:
                     if pkg_name in MAY_TORCH_PACKAGE_LIST:
-                        if pkg_name not in self.import_PACKAGE_LIST:
-                            self.import_PACKAGE_LIST.append(pkg_name)
+                        self.imports_map[self.file]["may_torch_packages"].add(pkg_name)
                     else:
-                        self.imports_map[self.file]["torch_packages"].append(pkg_name)
-                        if (
-                            TORCH_PACKAGE_MAPPING[pkg_name]
-                            not in self.import_PACKAGE_LIST
-                        ):
-                            self.import_PACKAGE_LIST.append(
-                                TORCH_PACKAGE_MAPPING[pkg_name]
-                            )
+                        self.imports_map[self.file]["torch_packages"].add(pkg_name)
                     if alias_node.asname:
+                        self.imports_map[self.file][alias_node.asname] = alias_node.name
                         log_info(
                             self.logger,
                             "remove 'import {} as {}' ".format(
@@ -97,15 +90,14 @@ class ImportTransformer(BaseTransformer):
                             self.file_name,
                             node.lineno,
                         )
-                        self.imports_map[self.file][alias_node.asname] = alias_node.name
                     else:
+                        self.imports_map[self.file][alias_node.name] = alias_node.name
                         log_info(
                             self.logger,
                             "remove 'import {}' ".format(alias_node.name),
                             self.file_name,
                             node.lineno,
                         )
-                        self.imports_map[self.file][alias_node.name] = alias_node.name
                     has_done = True
                     break
             if has_done:
@@ -135,29 +127,18 @@ class ImportTransformer(BaseTransformer):
                         new_alias_node = ast.alias(replace_pkg_name, alias_node.asname)
                         new_node_names.append(new_alias_node)
                     else:
-                        if "." not in pkg_name:
-                            # case 1: 'import audiotools' -> 'import paddlespeech.audiotools as audiotools'
-                            # case 2: 'import audiotools.ml' -> 'import paddlespeech.audiotools as audiotools'
-                            log_info(
-                                self.logger,
-                                "replace 'import {}' to 'import {} as {}' ".format(
-                                    alias_node.name, replace_pkg_name, pkg_name
-                                ),
-                                self.file_name,
-                                node.lineno,
-                            )
-                            new_alias_node = ast.alias(replace_pkg_name, pkg_name)
-                            new_node_names.append(new_alias_node)
-                        else:
-                            # case 1: 'import einops.layers.torch'
-                            # case 2: 'import einops.layers.torch.Rearrange'
-                            # TODO: cannot convert by replace import, must convert by replace api
-                            log_info(
-                                self.logger,
-                                "remove 'import {}' ".format(alias_node.name),
-                                self.file_name,
-                                node.lineno,
-                            )
+                        # case 1: 'import audiotools' -> 'import paddlespeech.audiotools as audiotools'
+                        # case 2: 'import audiotools.ml' -> 'import paddlespeech.audiotools as audiotools'
+                        log_info(
+                            self.logger,
+                            "replace 'import {}' to 'import {} as {}' ".format(
+                                alias_node.name, replace_pkg_name, pkg_name
+                            ),
+                            self.file_name,
+                            node.lineno,
+                        )
+                        new_alias_node = ast.alias(replace_pkg_name, pkg_name)
+                        new_node_names.append(new_alias_node)
                     has_done = True
                     break
             if has_done:
@@ -238,14 +219,14 @@ class ImportTransformer(BaseTransformer):
         for pkg_name in list(TORCH_PACKAGE_MAPPING.keys()) + MAY_TORCH_PACKAGE_LIST:
             if f"{pkg_name}." in node.module or pkg_name == node.module:
                 if pkg_name in MAY_TORCH_PACKAGE_LIST:
-                    if pkg_name not in self.import_PACKAGE_LIST:
-                        self.import_PACKAGE_LIST.append(pkg_name)
+                    self.imports_map[self.file]["may_torch_packages"].add(pkg_name)
                 else:
-                    self.imports_map[self.file]["torch_packages"].append(pkg_name)
-                    if TORCH_PACKAGE_MAPPING[pkg_name] not in self.import_PACKAGE_LIST:
-                        self.import_PACKAGE_LIST.append(TORCH_PACKAGE_MAPPING[pkg_name])
+                    self.imports_map[self.file]["torch_packages"].add(pkg_name)
                 for alias_node in node.names:
                     if alias_node.asname:
+                        self.imports_map[self.file][alias_node.asname] = ".".join(
+                            [node.module, alias_node.name]
+                        )
                         log_info(
                             self.logger,
                             "remove 'from {} import {} as {}' ".format(
@@ -254,10 +235,10 @@ class ImportTransformer(BaseTransformer):
                             self.file_name,
                             node.lineno,
                         )
-                        self.imports_map[self.file][alias_node.asname] = ".".join(
+                    else:
+                        self.imports_map[self.file][alias_node.name] = ".".join(
                             [node.module, alias_node.name]
                         )
-                    else:
                         log_info(
                             self.logger,
                             "remove 'from {} import {}' ".format(
@@ -265,9 +246,6 @@ class ImportTransformer(BaseTransformer):
                             ),
                             self.file_name,
                             node.lineno,
-                        )
-                        self.imports_map[self.file][alias_node.name] = ".".join(
-                            [node.module, alias_node.name]
                         )
                 if (
                     isinstance(self.parent_node, ast.If)
@@ -318,20 +296,18 @@ class ImportTransformer(BaseTransformer):
         if isinstance(node, ast.ImportFrom):
             for alias_node in node.names:
                 if alias_node.asname:
-                    self.imports_map[self.file]["other_packages"].append(
-                        alias_node.asname
-                    )
+                    self.imports_map[self.file]["other_packages"].add(alias_node.asname)
                 else:
                     # from data_loader.modules import *
                     if alias_node.name != "*":
-                        self.imports_map[self.file]["other_packages"].append(
+                        self.imports_map[self.file]["other_packages"].add(
                             alias_node.name
                         )
         elif isinstance(node, ast.alias):
             if node.asname:
-                self.imports_map[self.file]["other_packages"].append(node.asname)
+                self.imports_map[self.file]["other_packages"].add(node.asname)
             else:
-                self.imports_map[self.file]["other_packages"].append(node.name)
+                self.imports_map[self.file]["other_packages"].add(node.name)
 
     def visit_Attribute(self, node):
         """
@@ -447,18 +423,24 @@ class ImportTransformer(BaseTransformer):
 
     def visit_Module(self, node):
         """
-        add import paddle
+        'import torch_package' has been removed already, add 'import paddle_package'
         """
         super(ImportTransformer, self).generic_visit(node)
         line_NO = 1
+        paddle_package_list = []
+        for torch_package in self.imports_map[self.file]["torch_packages"]:
+            paddle_package_list.append(TORCH_PACKAGE_MAPPING[torch_package])
 
-        for package in self.import_PACKAGE_LIST:
+        for may_torch_package in self.imports_map[self.file]["may_torch_packages"]:
+            paddle_package_list.append(may_torch_package)
+
+        for paddle_package in paddle_package_list:
             log_info(
                 self.logger,
-                f"add 'import {package}' in line {line_NO}",
+                f"add 'import {paddle_package}' in line {line_NO}",
                 self.file_name,
             )
             self.record_scope(
-                (self.root, "body", 0), ast.parse(f"import {package}").body
+                (self.root, "body", 0), ast.parse(f"import {paddle_package}").body
             )
             line_NO += 1
