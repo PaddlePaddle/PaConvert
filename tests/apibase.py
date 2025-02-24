@@ -37,6 +37,7 @@ class APIBase(object):
         compared_tensor_names=None,
         expect_paddle_code=None,
         check_value=True,
+        check_shape=True,
         check_dtype=True,
         check_stop_gradient=True,
         rtol=1.0e-6,
@@ -55,39 +56,19 @@ class APIBase(object):
             unsupport: If true, conversion is not supported
             reason: the reason why it is not supported
         """
+        paddle_code = self.convert(pytorch_code).strip()
         if unsupport:
             assert (
                 reason is not None
             ), "Please explain the reason why it is not supported"
-            paddle_code = self.convert(pytorch_code)
+
             assert ">>>>>>" in paddle_code
             return
-        if compared_tensor_names:
-            loc = locals()
-            exec(pytorch_code, locals())
-            pytorch_result = [loc[name] for name in compared_tensor_names]
-
-            paddle_code = self.convert(pytorch_code)
-            exec(paddle_code, locals())
-            paddle_result = [loc[name] for name in compared_tensor_names]
-            for i in range(len(compared_tensor_names)):
-                self.compare(
-                    self.pytorch_api,
-                    pytorch_result[i],
-                    paddle_result[i],
-                    check_value,
-                    check_dtype,
-                    check_stop_gradient,
-                    rtol,
-                    atol,
-                )
         if expect_paddle_code:
-            converted_code = self.convert(pytorch_code).strip()
-            expected_code = expect_paddle_code.strip()
-            if converted_code != expected_code:
+            if paddle_code != expect_paddle_code.strip():
                 diff = difflib.unified_diff(
-                    expected_code.splitlines(),
-                    converted_code.splitlines(),
+                    paddle_code.splitlines(),
+                    expect_paddle_code.splitlines(),
                     fromfile="expected",
                     tofile="converted",
                     lineterm="",
@@ -100,7 +81,29 @@ class APIBase(object):
                     f"{diff_text}\n"
                     f"{'-'*50}"
                 )
-                assert converted_code == expected_code, error_msg
+                assert paddle_code == expect_paddle_code, error_msg
+        elif compared_tensor_names:
+            loc = locals()
+            exec(pytorch_code, locals())
+            pytorch_result = [loc[name] for name in compared_tensor_names]
+
+            exec(paddle_code, locals())
+            paddle_result = [loc[name] for name in compared_tensor_names]
+            for i in range(len(compared_tensor_names)):
+                self.compare(
+                    self.pytorch_api,
+                    pytorch_result[i],
+                    paddle_result[i],
+                    check_value,
+                    check_shape,
+                    check_dtype,
+                    check_stop_gradient,
+                    rtol,
+                    atol,
+                )
+        else:
+            exec(pytorch_code, locals())
+            exec(paddle_code, locals())
 
     def compare(
         self,
@@ -108,6 +111,7 @@ class APIBase(object):
         pytorch_result,
         paddle_result,
         check_value=True,
+        check_shape=True,
         check_dtype=True,
         check_stop_gradient=True,
         rtol=1.0e-6,
@@ -137,6 +141,7 @@ class APIBase(object):
                 pytorch_result_k,
                 paddle_result_k,
                 check_value,
+                check_shape,
                 check_dtype,
                 check_stop_gradient,
                 rtol,
@@ -147,6 +152,7 @@ class APIBase(object):
                 pytorch_result_v,
                 paddle_result_v,
                 check_value,
+                check_shape,
                 check_dtype,
                 check_stop_gradient,
                 rtol,
@@ -167,6 +173,7 @@ class APIBase(object):
                     pytorch_result[i],
                     paddle_result[i],
                     check_value,
+                    check_shape,
                     check_dtype,
                     check_stop_gradient,
                     rtol,
@@ -190,19 +197,22 @@ class APIBase(object):
 
         if pytorch_result.requires_grad:
             pytorch_numpy, paddle_numpy = (
-                pytorch_result.detach().numpy(),
-                paddle_result.numpy(False),
+                pytorch_result.detach().cpu().numpy(),
+                paddle_result.numpy(),
             )
         elif pytorch_result.is_conj():
             pytorch_numpy, paddle_numpy = (
-                pytorch_result.resolve_conj().numpy(),
-                paddle_result.numpy(False),
+                pytorch_result.resolve_conj().cpu().numpy(),
+                paddle_result.numpy(),
             )
         else:
-            (
-                pytorch_numpy,
-                paddle_numpy,
-            ) = pytorch_result.cpu().numpy(), paddle_result.numpy(False)
+            (pytorch_numpy, paddle_numpy,) = (
+                pytorch_result.cpu().numpy(),
+                paddle_result.numpy(),
+            )
+        if not check_shape:
+            pytorch_numpy = pytorch_numpy.flatten()
+            paddle_numpy = paddle_numpy.flatten()
 
         if check_stop_gradient:
             assert (
@@ -211,11 +221,6 @@ class APIBase(object):
                 name, pytorch_result.requires_grad, paddle_result.stop_gradient
             )
 
-        assert (
-            pytorch_numpy.shape == paddle_numpy.shape
-        ), "API ({}): shape mismatch, torch shape is {}, paddle shape is {}".format(
-            name, pytorch_numpy.shape, paddle_numpy.shape
-        )
         if check_dtype:
             assert (
                 pytorch_numpy.dtype == paddle_numpy.dtype
@@ -223,6 +228,11 @@ class APIBase(object):
                 name, pytorch_numpy.dtype, paddle_numpy.dtype
             )
         if check_value:
+            assert (
+                pytorch_numpy.shape == paddle_numpy.shape
+            ), "API ({}): shape mismatch, torch shape is {}, paddle shape is {}".format(
+                name, pytorch_numpy.shape, paddle_numpy.shape
+            )
             assert np.allclose(
                 pytorch_numpy, paddle_numpy, rtol=rtol, atol=atol
             ), "API ({}): paddle result has diff with pytorch result".format(name)

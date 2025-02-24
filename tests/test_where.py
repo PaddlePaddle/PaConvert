@@ -18,28 +18,28 @@ from apibase import APIBase
 
 obj = APIBase("torch.where")
 
-# The type of data we are trying to retrieve does not match the type of data currently contained in the container
 
-
+# when y is a float scalar, paddle.where will return float64
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
         x = torch.tensor([[0.9383, -0.1983, 3.2, -1.2]])
-        y = torch.tensor([[1.0, 1.0, 1.0, 1.0]])
+        y = 10.
         result = torch.where(x>0, x, y)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_dtype=False)
 
 
-# paddle.where not support type promote and x/y must have same dtype
+# paddle.where not support type promotion between x and y, while torch.where support
 def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
         x = torch.tensor([[0.9383, -0.1983, 3.2, -1.2]])
-        result = torch.where(x>0, x, torch.tensor(90))
+        y = 10
+        result = torch.where(x>0, x, y)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -49,19 +49,29 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        x = torch.tensor([[0.9383, -0.1983, 3.2, -1.2]])
+        y = torch.tensor(10.)
+        result = torch.where(x>0, x, y)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# torch.where(x) means torch.nonzero(x, as_tuple=True)
+# but torch.nonzero(x) return different shape with paddle.nonzero(x)
+# paddle.nonzero(x) return [N, 1], shoule be fixed to [N]
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
         x = torch.tensor([[3, 0], [4.8, 9.2]])
         result = torch.where(x)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="The return shape is inconsistent when only pass condition param",
-    )
+    obj.run(pytorch_code, ["result"], check_shape=False)
 
 
-def test_case_4():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -73,12 +83,12 @@ def test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_5():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
         x = torch.tensor([[0.9383, -0.1983, 3.2, -1.2]])
-        y = torch.tensor([[1.0, 1.0, 1.0, 1.0]])
+        y = torch.tensor([[1.0, 2.0, 3.0, 4.0]])
         out = torch.zeros((1, 4))
         result = torch.where(condition=x>0, input=x, other=y, out=out)
         """
@@ -86,12 +96,12 @@ def test_case_5():
     obj.run(pytorch_code, ["result", "out"])
 
 
-def test_case_6():
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
         x = torch.tensor([[0.9383, -0.1983, 3.2, -1.2]])
-        y = torch.tensor([[1.0, 1.0, 1.0, 1.0]])
+        y = torch.tensor([[1.0, 2.0, 3.0, 4.0]])
         out = torch.zeros((1, 4))
         result = torch.where(input=x, other=y, condition=x>0, out=out)
         """

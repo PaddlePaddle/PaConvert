@@ -14,6 +14,8 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.nn.Module.to")
@@ -59,3 +61,67 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        linear = torch.nn.Linear(10, 10)
+        linear.to("cuda", non_blocking=False)
+        result = linear.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        linear = torch.nn.Linear(10, 10)
+        linear.to(device="cuda:0", non_blocking=False)
+        result = linear.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        linear = torch.nn.Linear(10, 10)
+        linear.to(torch.device('cuda'), non_blocking=False)
+        result = linear.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        linear = torch.nn.Linear(10, 10)
+        linear.to(device=torch.device('cuda:0'), non_blocking=False)
+        result = linear.bias
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

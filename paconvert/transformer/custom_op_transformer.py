@@ -215,7 +215,7 @@ class CustomOpTransformer(BaseTransformer):
                     node.lineno,
                 )
                 annotate_node = ast.parse(
-                    "'C++ Custom OP, only convert Python part, C++ part not support to convert, you must write C++/CUDA file manually'"
+                    "'C++ Custom OP: only convert Python Code, Not Support auto convert C++ Code, please convert it by yourself'"
                 ).body[0]
                 self.record_scope(self.scope_body_index(), annotate_node)
                 return new_node

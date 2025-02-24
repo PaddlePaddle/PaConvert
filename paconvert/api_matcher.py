@@ -388,6 +388,21 @@ class EinopsTorchMatcher(BaseMatcher):
         return UnchangeMatcher.get_paddle_nodes(self, args, kwargs)
 
 
+class PaddleFlagMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            class PaddleFlag:
+                cudnn_enabled = True
+                cudnn_benchmark = False
+                matmul_allow_tf32 = False
+                cudnn_allow_tf32 = True
+                cudnn_deterministic = False
+            """
+        )
+        return CODE_TEMPLATE
+
+
 class SetTrueMatcher(BaseMatcher):
     def get_paddle_api(self):
         return "True"
@@ -1018,26 +1033,15 @@ class ModuleToMatcher(BaseMatcher):
             kwargs.pop("memory_format")
         if "non_blocking" in kwargs:
             kwargs.pop("non_blocking")
-        # handle kwargs["device"]
-        if """cuda""" == kwargs["device"]:
-            # case1: device = "cuda"
-            kwargs["device"] = "paddle.CUDAPlace()"
-        elif "cuda:" in kwargs["device"] and "if" not in kwargs["device"]:
-            # case2: device = "cuda:0"
-            kwargs["device"] = "paddle.CUDAPlace({})".format(
-                f'int({kwargs["device"]}.replace("cuda:",""))'
-            )
-        elif "cpu" in kwargs["device"] and "if" not in kwargs["device"]:
-            # paddle.CPUPlace() does not accept input.
-            # case3: device = "cpu"
-            # case4: device = "cpu:0"
-            kwargs["device"] = "paddle.CPUPlace()"
-        else:
-            # case5: device = "cpu:0" if condition else "cuda:0"
-            # case6: dev = xx, device = dev
-            kwargs[
-                "device"
-            ] = f'str({kwargs["device"]}).replace("cuda", "gpu") if isinstance({kwargs["device"]},str) else device'
+        if "device" in kwargs:
+            if "cuda" in kwargs["device"]:
+                # case1: device = "cuda"
+                # case2: device = "cuda:0"
+                # case3: device = "cpu"
+                # case4: device = "cpu:0"
+                # case5: device = "cpu:0" if condition else "cuda:0"
+                # case6: dev = xx, device = dev
+                kwargs["device"] = kwargs["device"].replace("cuda", "gpu")
 
         code = "{}.to({})".format(self.paddleClass, self.kwargs_to_str(kwargs))
         return code
@@ -1335,17 +1339,44 @@ class TensorMaxMatcher(BaseMatcher):
 
                 return ret
 
-            setattr(paddle.Tensor, "max", max_class_func)
+            setattr(paddle.Tensor, "max_func", max_class_func)
             """
         )
         return CODE_TEMPLATE
 
-    def generate_code(self, kwargs):
-        if len(kwargs) > 2:
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        new_args = self.parse_args(args)
+        new_kwargs = self.parse_kwargs(kwargs)
+        if len(new_args) + len(new_kwargs) > 2:
             return "misidentify"
 
+        if "other" in new_kwargs:
+            new_kwargs["y"] = new_kwargs.pop("other")
+            code = "{}.maximum({})".format(
+                self.paddleClass, self.args_and_kwargs_to_str(new_args, new_kwargs)
+            )
+            return ast.parse(code).body
+
+        if "dim" in new_kwargs:
+            new_kwargs["axis"] = new_kwargs.pop("dim")
+            kwargs_str = self.args_and_kwargs_to_str(new_args, new_kwargs)
+            code = "({}.max({}), {}.argmax({}))".format(
+                self.paddleClass, kwargs_str, self.paddleClass, kwargs_str
+            )
+            return ast.parse(code).body
+
+        if len(new_args) > 1:
+            kwargs_str = self.args_and_kwargs_to_str(new_args, new_kwargs)
+            code = "({}.max({}), {}.argmax({}))".format(
+                self.paddleClass, kwargs_str, self.paddleClass, kwargs_str
+            )
+            return ast.parse(code).body
+
         self.enable_utils_code()
-        return "unchange"
+        kwargs_str = self.args_and_kwargs_to_str(new_args, new_kwargs)
+        code = "{}.max_func({})".format(self.paddleClass, kwargs_str)
+        return ast.parse(code).body
 
 
 class TensorMinMatcher(BaseMatcher):
@@ -1369,17 +1400,44 @@ class TensorMinMatcher(BaseMatcher):
 
                 return ret
 
-            setattr(paddle.Tensor, "min", min_class_func)
+            setattr(paddle.Tensor, "min_func", min_class_func)
             """
         )
         return CODE_TEMPLATE
 
-    def generate_code(self, kwargs):
-        if len(kwargs) > 2:
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        new_args = self.parse_args(args)
+        new_kwargs = self.parse_kwargs(kwargs)
+        if len(new_args) + len(new_kwargs) > 2:
             return "misidentify"
 
+        if "other" in new_kwargs:
+            new_kwargs["y"] = new_kwargs.pop("other")
+            code = "{}.minimum({})".format(
+                self.paddleClass, self.args_and_kwargs_to_str(new_args, new_kwargs)
+            )
+            return ast.parse(code).body
+
+        if "dim" in new_kwargs:
+            new_kwargs["axis"] = new_kwargs.pop("dim")
+            kwargs_str = self.args_and_kwargs_to_str(new_args, new_kwargs)
+            code = "({}.min({}), {}.argmin({}))".format(
+                self.paddleClass, kwargs_str, self.paddleClass, kwargs_str
+            )
+            return ast.parse(code).body
+
+        if len(new_args) > 1:
+            kwargs_str = self.args_and_kwargs_to_str(new_args, new_kwargs)
+            code = "({}.min({}), {}.argmin({}))".format(
+                self.paddleClass, kwargs_str, self.paddleClass, kwargs_str
+            )
+            return ast.parse(code).body
+
         self.enable_utils_code()
-        return "unchange"
+        kwargs_str = self.args_and_kwargs_to_str(new_args, new_kwargs)
+        code = "{}.min_func({})".format(self.paddleClass, kwargs_str)
+        return ast.parse(code).body
 
 
 class EqualMatcher(BaseMatcher):
@@ -2588,6 +2646,10 @@ class SizeMatcher(BaseMatcher):
 class TensorToMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         new_args = self.parse_args(args)
+        for i, arg in enumerate(new_args):
+            if "cuda" in arg:
+                new_args[i] = arg.replace("cuda", "gpu")
+
         new_kwargs = self.parse_kwargs(kwargs)
         if new_kwargs is None:
             return None
@@ -2597,6 +2659,10 @@ class TensorToMatcher(BaseMatcher):
             new_kwargs.pop("memory_format")
         if "non_blocking" in new_kwargs:
             new_kwargs["blocking"] = "not " + new_kwargs.pop("non_blocking").strip("()")
+        if "device" in new_kwargs:
+            if "cuda" in new_kwargs["device"]:
+                new_kwargs["device"] = new_kwargs["device"].replace("cuda", "gpu")
+
         code = "{}.to({})".format(
             self.paddleClass, self.args_and_kwargs_to_str(new_args, new_kwargs)
         )
@@ -3457,13 +3523,11 @@ class AllcloseMatcher(BaseMatcher):
 
 class Assert_AllcloseMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs["x"], kwargs["y"] = kwargs.pop("actual"), kwargs.pop("expected")
         msg = "''"
         if "msg" in kwargs:
             msg = kwargs.pop("msg")
-        code = "assert paddle.allclose({}).item(), {}".format(
-            self.kwargs_to_str(kwargs), msg
-        )
+        code = GenericMatcher.generate_code(self, kwargs)
+        code = "assert {}.item(), {}".format(code, msg)
         return code
 
 
@@ -4176,14 +4240,17 @@ class SortMatcher(BaseMatcher):
         return code
 
 
-class WhereMatcher(BaseMatcher):
+class TensorWhereMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if len(kwargs) == 1:
-            return None
-        else:
-            if "self" in kwargs:
-                kwargs["input"] = kwargs.pop("self")
-            return GenericMatcher.generate_code(self, kwargs)
+        API_TEMPLATE = textwrap.dedent(
+            """
+            paddle.where({}, {}, {})
+            """
+        )
+        code = API_TEMPLATE.format(
+            kwargs["condition"], self.paddleClass, kwargs["other"]
+        )
+        return code
 
 
 class NTupleMatcher(BaseMatcher):
@@ -5218,7 +5285,7 @@ class OsEnvironGetMatcher(BaseMatcher):
             if kwargs["key"] == '"""WORLD_SIZE"""':
                 code = "paddle.distributed.get_world_size()"
             elif kwargs["key"] == '"""LOCAL_RANK"""':
-                code = "padlde.distributed.get_rank()"
+                code = "paddle.distributed.get_rank()"
             else:
                 code = "misidentify"
         else:

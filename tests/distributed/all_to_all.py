@@ -12,11 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import common
+import os
+
 import torch
 import torch.distributed as dist
 
-common.init_env()
+dist.init_process_group(backend="nccl")
+torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
 
 out_tensor_list = [
     torch.empty([2, 3], dtype=torch.int64).cuda(),
@@ -35,5 +37,6 @@ dist.all_to_all(
     async_op=False,
 )
 
-print(out_tensor_list)
-common.dump_output(out_tensor_list)
+if dist.get_rank() == 0:
+    print(out_tensor_list)
+    torch.save(out_tensor_list, os.environ["DUMP_FILE"])

@@ -19,37 +19,42 @@ from apibase import APIBase
 obj = APIBase("torch.Tensor.where")
 
 
+# when y is a float scalar, paddle.where will return float64
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.where(a>0, 0)
+        a = torch.Tensor([[-1., 2.], [-3., 4.]])
+        b = 0.
+        result = a.where(a > 0, b)
         """
     )
-    obj.run(pytorch_code, [], reason="torch and paddle where api diff")
+    obj.run(pytorch_code, ["result"], check_dtype=False)
 
 
-def test_case_2():
+# paddle.where not support type promotion between x and y, while torch.where support
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.where(a>0==0, y=0)
+        a = torch.Tensor([[-1., 2.], [-3., 4.]])
+        b = 0
+        result = a.where(a > 0, 0)
         """
     )
-    obj.run(pytorch_code, [], reason="torch and paddle where api diff")
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.where(condition = a>0, y = 0)
+        a = torch.Tensor([[-1., 2.], [-3., 4.]])
+        b = torch.tensor(0.)
+        result = a.where(a > 0, b)
         """
     )
-    obj.run(pytorch_code, [], reason="torch and paddle where api diff")
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -57,7 +62,32 @@ def test_case_4():
         """
         import torch
         a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.where(y=0, condition=a>0)
+        b = torch.tensor([[0., 0.], [0., 0.]])
+        result = a.where(a>0, other=b)
         """
     )
-    obj.run(pytorch_code, [], reason="torch and paddle where api diff")
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.Tensor([[1., 2.], [3., 4.]])
+        b = torch.tensor([[0., 0.], [0., 0.]])
+        result = a.where(condition = a>0, other = b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.Tensor([[1.,2.], [3.,4.]])
+        b = torch.tensor([[0., 0.], [0., 0.]])
+        result = a.where(other=b, condition=a>0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

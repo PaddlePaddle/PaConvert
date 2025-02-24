@@ -34,8 +34,7 @@ def test_case_2():
         """
         import torch
         x = torch.tensor([1., 2., 3.])
-        y = x + 1
-        torch.testing.assert_allclose(actual=x, expected=y)
+        torch.testing.assert_allclose(actual=x, expected=x)
         """
     )
     obj.run(pytorch_code)
@@ -46,8 +45,7 @@ def test_case_3():
         """
         import torch
         x = torch.tensor([1., 2., float('nan')])
-        y = x
-        torch.testing.assert_allclose(x, y, equal_nan=True)
+        torch.testing.assert_allclose(x, x, equal_nan=True)
         """
     )
     obj.run(pytorch_code)
@@ -58,7 +56,7 @@ def test_case_4():
         """
         import torch
         x = torch.tensor([1., 2., float('nan')])
-        y = x
+        y = x.detach()
         torch.testing.assert_allclose(x, y, equal_nan=True)
         """
     )
@@ -70,7 +68,7 @@ def test_case_5():
         """
         import torch
         x = torch.tensor([1., 2., float('nan')])
-        y = x
+        y = x.cpu()
         torch.testing.assert_allclose(actual=x, expected=y, rtol=1e-5, atol=1e-8, equal_nan=True, msg="assert_allclose testing message.")
         """
     )

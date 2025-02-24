@@ -14,8 +14,6 @@
 
 set +x
 
-export LD_LIBRARY_PATH=/root/anaconda3/lib:$LD_LIBRARY_PATH
-
 echo "Insalling cpu version torch"
 python -c "import torch; print('torch version information:' ,torch.__version__)"
 
@@ -24,8 +22,10 @@ python -m pip uninstall -y paddlepaddle
 python -m pip uninstall -y paddlepaddle-gpu
 rm -rf /root/anaconda3/lib/python*/site-packages/paddlepaddle-0.0.0.dist-info/
 python -m pip install --pre paddlepaddle-gpu -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/
-python -m pip install -r requirements.txt
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
+
+echo "Insalling paconvert requirements"
+python -m pip install -r requirements.txt
 
 echo "Checking code unit test by pytest ..."
 python -m pip install pytest-timeout pytest-xdist pytest-rerunfailures

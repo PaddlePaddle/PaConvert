@@ -336,11 +336,7 @@ class Converter:
         in_str = False
         bracket_num = 0
         for i, line in enumerate(lines):
-            if (
-                "Class Method:" in line
-                or "Class Attribute:" in line
-                or "C++ Custom OP" in line
-            ):
+            if "Not Support auto convert" in line:
                 mark_next_line = True
                 continue
             else:

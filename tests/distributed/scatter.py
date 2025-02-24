@@ -12,11 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import common
+import os
+
 import torch
 import torch.distributed as dist
 
-common.init_env()
+dist.init_process_group(backend="nccl")
+torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
 
 tensor_size = 2
 t_ones = torch.ones(tensor_size).cuda()
@@ -28,6 +30,6 @@ else:
     scatter_list = None
 dist.scatter(output_tensor, scatter_list, src=0, group=None, async_op=False)
 
-print("out:")
-print(output_tensor)
-common.dump_output(output_tensor)
+if dist.get_rank() == 0:
+    print(output_tensor)
+    torch.save(output_tensor, os.environ["DUMP_FILE"])

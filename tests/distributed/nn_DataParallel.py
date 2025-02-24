@@ -11,12 +11,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import common
-import torch
 
-common.init_env()
+import os
+
+import torch
+import torch.distributed as dist
+
+dist.init_process_group(backend="nccl")
+torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
 
 model = torch.nn.Linear(10, 10, bias=False)
 model = torch.nn.DataParallel(model)
 print(model)
-common.dump_output("finish")

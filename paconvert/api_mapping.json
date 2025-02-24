@@ -2668,7 +2668,8 @@
       "other"
     ],
     "kwargs_change": {
-      "dim": "axis"
+      "dim": "axis",
+      "other": "y"
     }
   },
   "torch.Tensor.maximum": {
@@ -2721,7 +2722,8 @@
       "other"
     ],
     "kwargs_change": {
-      "dim": "axis"
+      "dim": "axis",
+      "other": "y"
     }
   },
   "torch.Tensor.minimum": {
@@ -4348,12 +4350,11 @@
   },
   "torch.Tensor.vsplit": {},
   "torch.Tensor.where": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.where",
+    "Matcher": "TensorWhereMatcher",
     "min_input_args": 2,
     "args_list": [
       "condition",
-      "y"
+      "other"
     ]
   },
   "torch.Tensor.xlogy": {
@@ -17197,8 +17198,8 @@
       "msg"
     ],
     "kwargs_change": {
-      "expected": "y",
-      "acltual": "x"
+      "actual": "x",
+      "expected": "y"
     }
   },
   "torch.testing.assert_close": {
@@ -17921,9 +17922,9 @@
     }
   },
   "torch.where": {
-    "Matcher": "WhereMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.where",
-    "min_input_args": 3,
+    "min_input_args": 1,
     "args_list": [
       "condition",
       "input",

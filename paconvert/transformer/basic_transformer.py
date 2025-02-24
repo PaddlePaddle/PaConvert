@@ -322,7 +322,7 @@ class BasicTransformer(BaseTransformer):
                         return new_node
 
         annotate_node = ast.parse(
-            "'Class Attribute: {}, can not convert, please check whether it is torch.Tensor.*/torch.autograd.function.FunctionCtx.*/torch.distributions.Distribution.* and convert manually'".format(
+            "'Not Support auto convert {}, please judge whether it is Pytorch API and convert by yourself'".format(
                 torch_api
             )
         ).body[0]
@@ -658,7 +658,7 @@ class BasicTransformer(BaseTransformer):
 
         torch_api = "*" + torch_api[torch_api.rfind(".") :]
         annotate_node = ast.parse(
-            "'Class Method: {}, can not convert, please check whether it is torch.Tensor.*/Optimizer.*/nn.Module.*/torch.distributions.Distribution.*/torch.autograd.function.FunctionCtx.*/torch.profiler.profile.*/torch.autograd.profiler.profile.*, and convert manually'".format(
+            "'Not Support auto convert {}, please judge whether it is Pytorch API and convert by yourself'".format(
                 torch_api
             )
         ).body[0]

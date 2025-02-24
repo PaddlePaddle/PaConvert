@@ -23,10 +23,10 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.backends.cudnn.benchmark = True
+        result = torch.backends.cudnn.benchmark
         """
     )
-    obj.run(pytorch_code)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -34,26 +34,30 @@ def test_case_2():
         """
         import torch
         torch.backends.cudnn.benchmark = False
+        result = torch.backends.cudnn.benchmark
         """
     )
-    obj.run(pytorch_code)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        print(torch.backends.cudnn.benchmark)
+        torch.backends.cudnn.benchmark = True
+        result = torch.backends.cudnn.benchmark
         """
     )
-    obj.run(pytorch_code)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.backends.cudnn.benchmark
+        if torch.backends.cudnn.benchmark:
+            print(torch.backends.cudnn.benchmark)
+            result = torch.backends.cudnn.benchmark
         """
     )
-    obj.run(pytorch_code)
+    obj.run(pytorch_code, ["result"])
