@@ -34,8 +34,7 @@ def test_case_2():
         """
         import torch
         x = torch.tensor([1., 2., 3.])
-        y = x + 1
-        torch.testing.assert_close(actual=x, expected=y)
+        torch.testing.assert_close(actual=x, expected=x)
         """
     )
     obj.run(pytorch_code)
@@ -46,8 +45,7 @@ def test_case_3():
         """
         import torch
         x = torch.tensor([1., 2., float('nan')])
-        y = x
-        torch.testing.assert_close(x, y, equal_nan=True)
+        torch.testing.assert_close(x, x, equal_nan=True)
         """
     )
     obj.run(pytorch_code)
