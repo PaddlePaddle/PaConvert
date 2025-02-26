@@ -25,6 +25,7 @@ class SyncBatchnormAPIBase(APIBase):
         pytorch_result,
         paddle_result,
         check_value=True,
+        check_shape=True,
         check_dtype=True,
         check_stop_gradient=True,
         rtol=1.0e-6,

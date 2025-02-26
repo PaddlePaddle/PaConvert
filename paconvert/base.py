@@ -522,6 +522,8 @@ class BaseMatcher(object):
             and self.generate_utils_code() is not None
         ):
             self.enable_utils_code()
+        if self.api_mapping_dict.get("enable_utils_code"):
+            self.enable_utils_code()
         return paddle_api
 
     def get_paddle_class_attribute_nodes(self, node):
@@ -531,6 +533,8 @@ class BaseMatcher(object):
 
     @staticmethod
     def generate_code(self, kwargs):
+        if self.api_mapping_dict.get("enable_utils_code"):
+            self.enable_utils_code()
         return None
 
     def get_paddle_nodes(self, args, kwargs):

@@ -12,10 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import common
+
 import torch.distributed as dist
 
-common.init_env()
+dist.init_process_group(backend="nccl")
 
 print(dist.ReduceOp)
-common.dump_output("finish")
