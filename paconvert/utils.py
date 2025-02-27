@@ -62,8 +62,7 @@ class UtilsFileHelper(object):
     def __new__(cls, fileName=None, is_dir_mode=False, logger=None):
         if cls._instance is None:
             with cls._lock:
-                if cls._instance is None:
-                    cls._instance = super().__new__(cls)
+                cls._instance = super().__new__(cls)
         return cls._instance
 
     def _get_code_hash(self, code: str) -> int:

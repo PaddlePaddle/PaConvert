@@ -12,17 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import common
+import os
+
 import torch
 import torch.distributed as dist
 
-common.init_env()
+dist.init_process_group(backend="nccl")
+torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
 
 if dist.get_rank() == 0:
     data = torch.tensor([7, 8, 9]).cuda()
-    task = dist.send(data, dst=1)
+    dist.send(data, dst=1)
 else:
     data = torch.tensor([1, 2, 3]).cuda()
-    task = dist.recv(data, src=0)
-print(data)
-common.dump_output(data)
+    dist.recv(data, src=0)
+
+if dist.get_rank() == 0:
+    print(data)
+    torch.save(data, os.environ["DUMP_FILE"])

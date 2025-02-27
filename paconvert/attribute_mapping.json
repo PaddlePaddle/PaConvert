@@ -81,17 +81,30 @@
     "paddle_api": "paddle.autograd.PyLayerContext.saved_tensor"
   },
   "torch.autograd.profiler.profile.self_cpu_time_total": {},
+  "torch.backends.cuda.matmul.allow_tf32": {
+    "Matcher": "PaddleFlagMatcher",
+    "enable_utils_code": true,
+    "paddle_api": "PaddleFlag.matmul_allow_tf32"
+  },
   "torch.backends.cudnn.allow_tf32": {
-    "Matcher": "SetTrueMatcher"
+    "Matcher": "PaddleFlagMatcher",
+    "enable_utils_code": true,
+    "paddle_api": "PaddleFlag.cudnn_allow_tf32"
   },
   "torch.backends.cudnn.benchmark": {
-    "Matcher": "SetFalseMatcher"
+    "Matcher": "PaddleFlagMatcher",
+    "enable_utils_code": true,
+    "paddle_api": "PaddleFlag.cudnn_benchmark"
   },
   "torch.backends.cudnn.deterministic": {
-    "Matcher": "SetFalseMatcher"
+    "Matcher": "PaddleFlagMatcher",
+    "enable_utils_code": true,
+    "paddle_api": "PaddleFlag.cudnn_deterministic"
   },
   "torch.backends.cudnn.enabled": {
-    "Matcher": "SetTrueMatcher"
+    "Matcher": "PaddleFlagMatcher",
+    "enable_utils_code": true,
+    "paddle_api": "PaddleFlag.cudnn_enabled"
   },
   "torch.bfloat16": {
     "Matcher": "GenericMatcher",

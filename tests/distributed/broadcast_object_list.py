@@ -12,10 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import common
+import os
+
+import torch
 import torch.distributed as dist
 
-common.init_env()
+dist.init_process_group(backend="nccl")
+torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
 
 if dist.get_rank() == 0:
     object_list = [{"foo": [1, 2, 3]}]
@@ -24,5 +27,7 @@ else:
 dist.broadcast_object_list(object_list, src=1)
 
 assert object_list == [{"bar": [4, 5, 6]}]
-print(object_list)
-common.dump_output(object_list)
+
+if dist.get_rank() == 0:
+    print(object_list)
+    torch.save(object_list, os.environ["DUMP_FILE"])

@@ -12,18 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import common
+import os
+
 import torch
 import torch.distributed as dist
 
-common.init_env()
+dist.init_process_group(backend="nccl")
+torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
 
 if dist.get_rank() == 0:
     data = torch.tensor([[4, 5, 6], [4, 5, 6]]).cuda()
 else:
     data = torch.tensor([[1, 2, 3], [1, 2, 3]]).cuda()
 dist.reduce(data, dst=0)
-print(data)
+
 # [[5, 7, 9], [5, 7, 9]] (2 GPUs, out for rank 0)
 # [[1, 2, 3], [1, 2, 3]] (2 GPUs, out for rank 1)
-common.dump_output(data)
+
+if dist.get_rank() == 0:
+    print(data)
+    torch.save(data, os.environ["DUMP_FILE"])

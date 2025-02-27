@@ -23,10 +23,10 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.backends.cudnn.deterministic = True
+        result = torch.backends.cudnn.deterministic
         """
     )
-    obj.run(pytorch_code)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -34,26 +34,30 @@ def test_case_2():
         """
         import torch
         torch.backends.cudnn.deterministic = False
+        result = torch.backends.cudnn.deterministic
         """
     )
-    obj.run(pytorch_code)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        print(torch.backends.cudnn.deterministic)
+        torch.backends.cudnn.deterministic = True
+        result = torch.backends.cudnn.deterministic
         """
     )
-    obj.run(pytorch_code)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.backends.cudnn.deterministic
+        if torch.backends.cudnn.deterministic:
+            print(torch.backends.cudnn.deterministic)
+            result = torch.backends.cudnn.deterministic
         """
     )
-    obj.run(pytorch_code)
+    obj.run(pytorch_code, ["result"])

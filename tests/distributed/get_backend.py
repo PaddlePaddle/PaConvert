@@ -12,11 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import common
+import os
+
+import torch
 import torch.distributed as dist
 
-common.init_env()
+dist.init_process_group(backend="nccl")
+torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
 
 g = dist.new_group([0, 1])
 result = dist.get_backend(g)
-common.dump_output(result.upper())
+
+if dist.get_rank() == 0:
+    print(result)
+    torch.save(result.upper(), os.environ["DUMP_FILE"])

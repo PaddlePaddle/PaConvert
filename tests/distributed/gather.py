@@ -12,11 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import common
+import os
+
 import torch
 import torch.distributed as dist
 
-common.init_env()
+dist.init_process_group(backend="nccl")
+torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
 
 gather_list = [torch.zeros(3, dtype=torch.int64).cuda() for _ in range(2)]
 if dist.get_rank() == 0:
@@ -26,7 +28,9 @@ else:
     gather_list = []
     data = torch.tensor([4, 5, 6]).cuda()
     dist.gather(data, gather_list, dst=0)
-print(gather_list)
+
 # [[1, 2, 3], [4, 5, 6]] (2 GPUs, out for rank 0)
 # [] (2 GPUs, out for rank 1)
-common.dump_output(gather_list)
+if dist.get_rank() == 0:
+    print(gather_list)
+    torch.save(gather_list, os.environ["DUMP_FILE"])

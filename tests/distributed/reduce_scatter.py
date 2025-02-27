@@ -12,11 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import common
+import os
+
 import torch
 import torch.distributed as dist
 
-common.init_env()
+dist.init_process_group(backend="nccl")
+torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
 
 if dist.get_rank() == 0:
     data1 = torch.tensor([0, 1]).cuda()
@@ -28,4 +30,6 @@ dist.reduce_scatter(
     data1, [data1, data2], op=dist.ReduceOp.SUM, group=None, async_op=False
 )
 
-common.dump_output(data1)
+if dist.get_rank() == 0:
+    print(data1)
+    torch.save(data1, os.environ["DUMP_FILE"])
