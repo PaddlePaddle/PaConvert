@@ -1,5 +1,8 @@
 {
   "einops.layers.torch.*": {
     "Matcher": "EinopsTorchMatcher"
+  },
+  "transformers.*": {
+    "Matcher": "TransformersGenericMatcher"
   }
 }

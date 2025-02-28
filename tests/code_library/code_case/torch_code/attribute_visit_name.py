@@ -4,6 +4,7 @@ from torch import float32
 from torch import nn
 
 from transformers.generation.utils import GenerateOutput
+from transformers.activations import ACT2FN
 
 import torch.utils.data as data # noqa: F401
 
@@ -41,3 +42,5 @@ Optional[Tensor] = None
 my_add = TorchAdd
 
 setattr(nn, 'functional', my_functional_module)
+
+ACT2FN['tanh']

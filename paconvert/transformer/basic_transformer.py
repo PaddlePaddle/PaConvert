@@ -697,9 +697,10 @@ class BasicTransformer(BaseTransformer):
             torch_api = ALIAS_MAPPING[torch_api]
         if torch_api in API_MAPPING:
             api_mapping_dict = API_MAPPING[torch_api]
-        for wildcard_name in list(API_WILDCARD_MAPPING.keys()):
-            if re.match(wildcard_name, torch_api):
-                api_mapping_dict = API_WILDCARD_MAPPING[wildcard_name]
+        else:
+            for wildcard_name in list(API_WILDCARD_MAPPING.keys()):
+                if re.match(wildcard_name, torch_api):
+                    api_mapping_dict = API_WILDCARD_MAPPING[wildcard_name]
 
         if api_mapping_dict:
             if "disable" in api_mapping_dict and eval(api_mapping_dict["disable"]):
@@ -717,11 +718,17 @@ class BasicTransformer(BaseTransformer):
         return False
 
     def get_attribute_mather(self, torch_api):
+        attr_mapping_dict = {}
         if torch_api in ALIAS_MAPPING:
             torch_api = ALIAS_MAPPING[torch_api]
         if torch_api in ATTRIBUTE_MAPPING:
             attr_mapping_dict = ATTRIBUTE_MAPPING[torch_api]
+        else:
+            for wildcard_name in list(API_WILDCARD_MAPPING.keys()):
+                if re.match(wildcard_name, torch_api):
+                    attr_mapping_dict = API_WILDCARD_MAPPING[wildcard_name]
 
+        if attr_mapping_dict:
             if "disable" in attr_mapping_dict and eval(attr_mapping_dict["disable"]):
                 return None
             if "Matcher" in attr_mapping_dict:
