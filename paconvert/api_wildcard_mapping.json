@@ -3,6 +3,7 @@
     "Matcher": "EinopsTorchMatcher"
   },
   "transformers.*": {
-    "Matcher": "TransformersGenericMatcher"
+    "Matcher": "TransformersGenericMatcher",
+    "disable": true
   }
 }

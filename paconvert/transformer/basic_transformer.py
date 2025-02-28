@@ -703,7 +703,7 @@ class BasicTransformer(BaseTransformer):
                     api_mapping_dict = API_WILDCARD_MAPPING[wildcard_name]
 
         if api_mapping_dict:
-            if "disable" in api_mapping_dict and eval(api_mapping_dict["disable"]):
+            if "disable" in api_mapping_dict:
                 return None
             if "Matcher" in api_mapping_dict:
                 matcher = api_mapping_dict["Matcher"]
@@ -729,7 +729,7 @@ class BasicTransformer(BaseTransformer):
                     attr_mapping_dict = API_WILDCARD_MAPPING[wildcard_name]
 
         if attr_mapping_dict:
-            if "disable" in attr_mapping_dict and eval(attr_mapping_dict["disable"]):
+            if "disable" in attr_mapping_dict:
                 return None
             if "Matcher" in attr_mapping_dict:
                 matcher = attr_mapping_dict["Matcher"]
