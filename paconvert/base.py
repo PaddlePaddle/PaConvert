@@ -497,7 +497,7 @@ class BaseMatcher(object):
                     """
                     import sys
                     sys.path.append(r'{}')
-                    from paddle_utils import *
+                    from paddle_utils import * # noqa: F403
                     """
                 )
                 # TODO: change sys.path.append to relative import

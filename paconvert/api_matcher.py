@@ -388,6 +388,14 @@ class EinopsTorchMatcher(BaseMatcher):
         return UnchangeMatcher.get_paddle_nodes(self, args, kwargs)
 
 
+class TransformersGenericMatcher(BaseMatcher):
+    def get_paddle_api(self):
+        return self.torch_api.replace("transformers.", "paddlenlp.transformers.")
+
+    def get_paddle_nodes(self, args, kwargs):
+        return UnchangeMatcher.get_paddle_nodes(self, args, kwargs)
+
+
 class PaddleFlagMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(

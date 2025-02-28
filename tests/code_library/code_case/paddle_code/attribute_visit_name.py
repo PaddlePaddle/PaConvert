@@ -31,3 +31,4 @@ Union[paddlenlp.transformers.model_outputs.BaseModelOutput, paddle.Tensor]
 Optional[paddle.Tensor] = None
 my_add = paddle.add
 setattr(paddle.nn, "functional", my_functional_module)
+paddlenlp.transformers.activations.ACT2FN["tanh"]
