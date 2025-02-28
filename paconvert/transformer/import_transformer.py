@@ -336,6 +336,7 @@ class ImportTransformer(BaseTransformer):
             from torch import float32
             import torch.add as TorchAdd
             from torch.utils.cpp_extension import BuildExtension
+            from transformers.activations import ACT2FN
 
             1. class A(Module):
             2. def func() -> Tensor:
@@ -348,12 +349,13 @@ class ImportTransformer(BaseTransformer):
             9. inputs: Optional[Tensor] = None
             10. Union[GenerateOutput, torch.LongTensor]
             11. my_add = TorchAdd
-            12. myadd(tensor_1,tensor_2)
+            12. my_add(tensor_1,tensor_2)
             13. Union[List[str], List[AddedToken]],
             14. hasattr(Tensor, add)
+            15. ACT2FN['tanh']
         """
         maybe_torch = False
-        maybe_simplified_name = False
+        maybe_alias_name = False
         if isinstance(
             self.parent_node,
             (
@@ -370,10 +372,9 @@ class ImportTransformer(BaseTransformer):
         ):
             if self.parent_node.func == node:  # 6. Tensor(2, 3)
                 maybe_torch = True
-            # modify the simplified name to the original api name
             if (
                 node.id in self.imports_map[self.file]["api_alias_name_map"]
-            ):  # 12. myadd(tensor_1,tensor_2)
+            ):  # 12. my_add(tensor_1,tensor_2)
                 torch_api = self.imports_map[self.file]["api_alias_name_map"][node.id]
                 return ast.parse(torch_api).body[0].value
 
@@ -389,6 +390,11 @@ class ImportTransformer(BaseTransformer):
         ):
             maybe_torch = True  # 9. Optional[Tensor] = None
         elif (
+            isinstance(self.parent_node, ast.Subscript)
+            and self.parent_node.value == node
+        ):
+            maybe_torch = True  # 15. ACT2FN['tanh']
+        elif (
             isinstance(self.parent_node, ast.Tuple)
             and len(self.node_stack) >= 3
             and isinstance(self.node_stack[-3], ast.Subscript)
@@ -398,9 +404,7 @@ class ImportTransformer(BaseTransformer):
             isinstance(self.parent_node, ast.Assign) and node == self.parent_node.value
         ):
             maybe_torch = True  # 11. my_add = TorchAdd
-            maybe_simplified_name = (
-                True  # my_add is anoher simplified name of torch.add
-            )
+            maybe_alias_name = True
         elif isinstance(self.parent_node, ast.Index) and self.parent_node.value == node:
             maybe_torch = True  # 13. Union[List[str], List[AddedToken]]
 
@@ -409,9 +413,7 @@ class ImportTransformer(BaseTransformer):
             if torch_api:
                 if torch_api in ALIAS_MAPPING:
                     torch_api = ALIAS_MAPPING[torch_api]
-                if maybe_simplified_name:
-                    # the length of node.targets should be 1,
-                    # and parent_node.targets[0] should be a ast.Name
+                if maybe_alias_name:
                     if len(self.parent_node.targets) == 1 and isinstance(
                         self.parent_node.targets[0], ast.Name
                     ):
