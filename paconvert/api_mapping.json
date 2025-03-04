@@ -18183,7 +18183,25 @@
     "min_input_args": 0
   },
   "torchvision.models.Inception3": {
-    "paddle_api": "paddle.vision.models.InceptionV3"
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.models.InceptionV3",
+    "args_list": [
+      "num_classes",
+      "aux_logits",
+      "transform_input",
+      "inception_blocks",
+      "init_weights",
+      "dropout"
+    ],
+    "kwargs_change": {
+      "aux_logits": "",
+      "init_weights": ""
+    },
+    "unsupport_args": [
+      "transform_input",
+      "inception_blocks",
+      "dropout"
+    ]
   },
   "torchvision.models.Inception_V3_Weights.DEFAULT": {
     "Matcher": "GenericMatcher",
@@ -18660,11 +18678,24 @@
     "args_list": [
       "weights",
       "progress",
+      "num_classes",
+      "aux_logits",
+      "transform_input",
+      "inception_blocks",
+      "init_weights",
+      "dropout",
       "pretrained"
     ],
     "kwargs_change": {
-      "progress": ""
-    }
+      "progress": "",
+      "aux_logits": "",
+      "init_weights": ""
+    },
+    "unsupport_args": [
+      "transform_input",
+      "inception_blocks",
+      "dropout"
+    ]
   },
   "torchvision.models.mobilenet_v2": {
     "Matcher": "WeightsMatcher",

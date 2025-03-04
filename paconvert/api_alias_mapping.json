@@ -162,6 +162,7 @@
   "torch.nn.parameter.UninitializedParameter": "torch.nn.UninitializedParameter",
   "torch.nn.utils.clip_grad_norm": "torch.nn.utils.clip_grad_norm_",
   "torch.nn.utils.parametrizations.spectral_norm": "torch.nn.utils.spectral_norm",
+  "torch.nn.utils.spectral_norm.SpectralNorm.apply": "torch.nn.utils.spectral_norm",
   "torch.optim.sgd.SGD": "torch.optim.SGD",
   "torch.orgqr": "torch.linalg.householder_product",
   "torch.pairwise_distance": "torch.nn.functional.pairwise_distance",
