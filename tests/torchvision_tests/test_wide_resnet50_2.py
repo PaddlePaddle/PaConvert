@@ -67,3 +67,13 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["wide_resnet50_2"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torchvision
+        wide_resnet50_2 = torchvision.models.wide_resnet50_2(pretrained=False)
+        """
+    )
+    obj.run(pytorch_code, ["wide_resnet50_2"])

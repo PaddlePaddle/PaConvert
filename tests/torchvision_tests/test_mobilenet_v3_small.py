@@ -67,3 +67,13 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["mobilenet_v3_small"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torchvision
+        mobilenet_v3_small = torchvision.models.mobilenet_v3_small(pretrained=False)
+        """
+    )
+    obj.run(pytorch_code, ["mobilenet_v3_small"])

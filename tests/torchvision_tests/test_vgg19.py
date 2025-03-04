@@ -67,3 +67,13 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["vgg19"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torchvision
+        vgg19 = torchvision.models.vgg19(pretrained=False)
+        """
+    )
+    obj.run(pytorch_code, ["vgg19"])

@@ -67,3 +67,13 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["densenet161"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torchvision
+        densenet161 = torchvision.models.densenet161(pretrained=False)
+        """
+    )
+    obj.run(pytorch_code, ["densenet161"])

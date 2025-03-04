@@ -16,64 +16,49 @@ import textwrap
 
 from torchvision_tests.model_apibase import ModelAPIBase
 
-obj = ModelAPIBase("torchvision.models.mobilenet_v2")
+obj = ModelAPIBase("torchvision.models.inception.InceptionC")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        mobilenet_v2 = torchvision.models.mobilenet_v2()
+        inception_c = torchvision.models.inception.InceptionC(3, 8)
         """
     )
-    obj.run(pytorch_code, ["mobilenet_v2"])
+    obj.run(pytorch_code, ["inception_c"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        mobilenet_v2 = torchvision.models.mobilenet_v2(weights=None, progress=False)
+        inception_c = torchvision.models.inception.InceptionC(in_channels=3, channels_7x7=8)
         """
     )
-    obj.run(pytorch_code, ["mobilenet_v2"])
+    obj.run(pytorch_code, ["inception_c"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        mobilenet_v2 = torchvision.models.mobilenet_v2(progress=True, weights=None)
+        inception_c = torchvision.models.inception.InceptionC(channels_7x7=8, in_channels=3)
         """
     )
-    obj.run(pytorch_code, ["mobilenet_v2"])
+    obj.run(pytorch_code, ["inception_c"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        mobilenet_v2 = torchvision.models.mobilenet_v2(weights=None)
+        inception_c = torchvision.models.inception.InceptionC(in_channels=3, channels_7x7=8, conv_block=torch.nn.Conv2d)
         """
     )
-    obj.run(pytorch_code, ["mobilenet_v2"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torchvision
-        mobilenet_v2 = torchvision.models.mobilenet_v2(progress=True)
-        """
+    obj.run(
+        pytorch_code,
+        ["inception_c"],
+        unsupport=True,
+        reason="paddle not support callable",
     )
-    obj.run(pytorch_code, ["mobilenet_v2"])
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torchvision
-        mobilenet_v2 = torchvision.models.mobilenet_v2(pretrained=False)
-        """
-    )
-    obj.run(pytorch_code, ["mobilenet_v2"])

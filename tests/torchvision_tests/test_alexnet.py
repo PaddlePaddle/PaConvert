@@ -67,3 +67,13 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["alexnet"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torchvision
+        alexnet = torchvision.models.alexnet(pretrained=False)
+        """
+    )
+    obj.run(pytorch_code, ["alexnet"])

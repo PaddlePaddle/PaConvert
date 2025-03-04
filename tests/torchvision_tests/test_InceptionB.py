@@ -16,64 +16,39 @@ import textwrap
 
 from torchvision_tests.model_apibase import ModelAPIBase
 
-obj = ModelAPIBase("torchvision.models.vgg19_bn")
+obj = ModelAPIBase("torchvision.models.inception.InceptionB")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        vgg19_bn = torchvision.models.vgg19_bn()
+        inception_b = torchvision.models.inception.InceptionB(3)
         """
     )
-    obj.run(pytorch_code, ["vgg19_bn"])
+    obj.run(pytorch_code, ["inception_b"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        vgg19_bn = torchvision.models.vgg19_bn(weights=None, progress=False)
+        inception_b = torchvision.models.inception.InceptionB(in_channels=3)
         """
     )
-    obj.run(pytorch_code, ["vgg19_bn"])
+    obj.run(pytorch_code, ["inception_b"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
-        vgg19_bn = torchvision.models.vgg19_bn(progress=True, weights=None)
+        inception_b = torchvision.models.inception.InceptionB(in_channels=3, conv_block=torch.nn.Conv2d)
         """
     )
-    obj.run(pytorch_code, ["vgg19_bn"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torchvision
-        vgg19_bn = torchvision.models.vgg19_bn(weights=None)
-        """
+    obj.run(
+        pytorch_code,
+        ["inception_b"],
+        unsupport=True,
+        reason="paddle not support callable",
     )
-    obj.run(pytorch_code, ["vgg19_bn"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torchvision
-        vgg19_bn = torchvision.models.vgg19_bn(progress=True)
-        """
-    )
-    obj.run(pytorch_code, ["vgg19_bn"])
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torchvision
-        vgg19_bn = torchvision.models.vgg19_bn(pretrained=False)
-        """
-    )
-    obj.run(pytorch_code, ["vgg19_bn"])

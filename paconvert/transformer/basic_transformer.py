@@ -63,9 +63,18 @@ class BasicTransformer(BaseTransformer):
         # 3. (x + y).transpose(1, 0)
         # 4. (-x).transpose(1, 0)
         # 5. x[0].transpose(1, 0)
+        # 6. (x if flag else y).transpose(1, 0)
         if isinstance(
             node.value,
-            (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript, ast.Assert),
+            (
+                ast.Call,
+                ast.Compare,
+                ast.BinOp,
+                ast.UnaryOp,
+                ast.Subscript,
+                ast.Assert,
+                ast.IfExp,
+            ),
         ):
             super(BasicTransformer, self).generic_visit(node)
 
