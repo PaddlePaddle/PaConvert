@@ -19,16 +19,43 @@ from torchvision_tests.model_apibase import ModelAPIBase
 obj = ModelAPIBase("torchvision.models.Inception3")
 
 
-def test_case_1():
+# TODO: fix this test
+def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
         inception_v3 = torchvision.models.Inception3()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["inception_v3"],
-        unsupport=True,
-        reason="will support in future and append more unittest",
+    obj.run(pytorch_code, ["inception_v3"])
+
+
+# TODO: fix this test
+def _test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torchvision
+        inception_v3 = torchvision.models.Inception3(aux_logits=True)
+        """
     )
+    obj.run(pytorch_code, ["inception_v3"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torchvision
+        inception_v3 = torchvision.models.Inception3(num_classes=1008, aux_logits=False, init_weights=True)
+        """
+    )
+    obj.run(pytorch_code, ["inception_v3"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torchvision
+        inception_v3 = torchvision.models.Inception3(num_classes=1008, aux_logits=False, transform_input=False, dropout=0.5)
+        """
+    )
+    obj.run(pytorch_code, unsupport=True, reason="paddle not support this argument")

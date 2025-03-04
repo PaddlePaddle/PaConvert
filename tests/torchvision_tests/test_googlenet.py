@@ -77,3 +77,20 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["googlenet"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torchvision
+        googlenet = torchvision.models.googlenet(pretrained=False)
+        """
+    )
+    paddle_code = textwrap.dedent(
+        """
+        import paddle
+
+        googlenet = paddle.vision.models.googlenet(pretrained=False)
+        """
+    )
+    obj.run(pytorch_code, expect_paddle_code=paddle_code)
