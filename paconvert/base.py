@@ -60,6 +60,7 @@ TORCH_PACKAGE_MAPPING = {
     "kornia": "paddle",
     "fasttext": "paddle",
     "pytorch_lightning": "paddle",
+    "lightning": "paddle",
     "jieba": "paddle",
     "NLTK": "paddle",
     "scikit-learn": "paddle",

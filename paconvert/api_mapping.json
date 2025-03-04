@@ -5425,6 +5425,7 @@
       "tensors",
       "dim",
       "*",
+      "axis",
       "out"
     ],
     "kwargs_change": {
@@ -18181,6 +18182,9 @@
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
+  "torchvision.models.Inception3": {
+    "paddle_api": "paddle.vision.models.InceptionV3"
+  },
   "torchvision.models.Inception_V3_Weights.DEFAULT": {
     "Matcher": "GenericMatcher",
     "paddle_api": "'DEFAULT'",
@@ -18506,7 +18510,8 @@
     "paddle_api": "paddle.vision.models.alexnet",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18517,7 +18522,8 @@
     "paddle_api": "paddle.vision.models.densenet121",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18528,7 +18534,8 @@
     "paddle_api": "paddle.vision.models.densenet161",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18539,7 +18546,8 @@
     "paddle_api": "paddle.vision.models.densenet169",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18550,7 +18558,8 @@
     "paddle_api": "paddle.vision.models.densenet201",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18561,18 +18570,97 @@
     "paddle_api": "paddle.vision.models.googlenet",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
     }
+  },
+  "torchvision.models.inception.InceptionA": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.models.inceptionv3.InceptionA",
+    "min_input_args": 2,
+    "args_list": [
+      "in_channels",
+      "pool_features",
+      "conv_block"
+    ],
+    "kwargs_change": {
+      "in_channels": "num_channels"
+    },
+    "unsupport_args": [
+      "conv_block"
+    ]
+  },
+  "torchvision.models.inception.InceptionB": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.models.inceptionv3.InceptionB",
+    "min_input_args": 1,
+    "args_list": [
+      "in_channels",
+      "conv_block"
+    ],
+    "kwargs_change": {
+      "in_channels": "num_channels"
+    },
+    "unsupport_args": [
+      "conv_block"
+    ]
+  },
+  "torchvision.models.inception.InceptionC": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.models.inceptionv3.InceptionC",
+    "min_input_args": 2,
+    "args_list": [
+      "in_channels",
+      "channels_7x7",
+      "conv_block"
+    ],
+    "kwargs_change": {
+      "in_channels": "num_channels"
+    },
+    "unsupport_args": [
+      "conv_block"
+    ]
+  },
+  "torchvision.models.inception.InceptionD": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.models.inceptionv3.InceptionD",
+    "min_input_args": 1,
+    "args_list": [
+      "in_channels",
+      "conv_block"
+    ],
+    "kwargs_change": {
+      "in_channels": "num_channels"
+    },
+    "unsupport_args": [
+      "conv_block"
+    ]
+  },
+  "torchvision.models.inception.InceptionE": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.vision.models.inceptionv3.InceptionE",
+    "min_input_args": 1,
+    "args_list": [
+      "in_channels",
+      "conv_block"
+    ],
+    "kwargs_change": {
+      "in_channels": "num_channels"
+    },
+    "unsupport_args": [
+      "conv_block"
+    ]
   },
   "torchvision.models.inception_v3": {
     "Matcher": "WeightsMatcher",
     "paddle_api": "paddle.vision.models.inception_v3",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18583,7 +18671,8 @@
     "paddle_api": "paddle.vision.models.mobilenet_v2",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18594,7 +18683,8 @@
     "paddle_api": "paddle.vision.models.mobilenet_v3_large",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18605,7 +18695,8 @@
     "paddle_api": "paddle.vision.models.mobilenet_v3_small",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18616,7 +18707,8 @@
     "paddle_api": "paddle.vision.models.resnet101",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18627,7 +18719,8 @@
     "paddle_api": "paddle.vision.models.resnet152",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18638,7 +18731,8 @@
     "paddle_api": "paddle.vision.models.resnet18",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18649,7 +18743,8 @@
     "paddle_api": "paddle.vision.models.resnet34",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18660,7 +18755,8 @@
     "paddle_api": "paddle.vision.models.resnet50",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18671,7 +18767,8 @@
     "paddle_api": "paddle.vision.models.resnext101_64x4d",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18682,7 +18779,8 @@
     "paddle_api": "paddle.vision.models.resnext50_32x4d",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18693,7 +18791,8 @@
     "paddle_api": "paddle.vision.models.shufflenet_v2_x0_5",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18704,7 +18803,8 @@
     "paddle_api": "paddle.vision.models.shufflenet_v2_x1_0",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18715,7 +18815,8 @@
     "paddle_api": "paddle.vision.models.shufflenet_v2_x1_5",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18726,7 +18827,8 @@
     "paddle_api": "paddle.vision.models.shufflenet_v2_x2_0",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18737,7 +18839,8 @@
     "paddle_api": "paddle.vision.models.squeezenet1_0",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18748,7 +18851,8 @@
     "paddle_api": "paddle.vision.models.squeezenet1_1",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18759,7 +18863,8 @@
     "paddle_api": "paddle.vision.models.vgg11",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18770,7 +18875,8 @@
     "paddle_api": "paddle.vision.models.vgg11",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18781,7 +18887,8 @@
     "paddle_api": "paddle.vision.models.vgg13",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18792,7 +18899,8 @@
     "paddle_api": "paddle.vision.models.vgg13",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18803,7 +18911,8 @@
     "paddle_api": "paddle.vision.models.vgg16",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18814,7 +18923,8 @@
     "paddle_api": "paddle.vision.models.vgg16",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18825,7 +18935,8 @@
     "paddle_api": "paddle.vision.models.vgg19",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18836,7 +18947,8 @@
     "paddle_api": "paddle.vision.models.vgg19",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18847,7 +18959,8 @@
     "paddle_api": "paddle.vision.models.wide_resnet101_2",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""
@@ -18858,7 +18971,8 @@
     "paddle_api": "paddle.vision.models.wide_resnet50_2",
     "args_list": [
       "weights",
-      "progress"
+      "progress",
+      "pretrained"
     ],
     "kwargs_change": {
       "progress": ""

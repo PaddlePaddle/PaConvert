@@ -67,3 +67,13 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["squeezenet1_1"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torchvision
+        squeezenet1_1 = torchvision.models.squeezenet1_1(pretrained=False)
+        """
+    )
+    obj.run(pytorch_code, ["squeezenet1_1"])

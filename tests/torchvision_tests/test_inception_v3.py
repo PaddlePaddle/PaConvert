@@ -67,3 +67,13 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["inception_v3"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torchvision
+        inception_v3 = torchvision.models.inception_v3(pretrained=False)
+        """
+    )
+    obj.run(pytorch_code, ["inception_v3"])

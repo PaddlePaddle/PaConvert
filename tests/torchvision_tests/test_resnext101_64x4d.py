@@ -67,3 +67,13 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["resnext101_64x4d"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torchvision
+        resnext101_64x4d = torchvision.models.resnext101_64x4d(pretrained=False)
+        """
+    )
+    obj.run(pytorch_code, ["resnext101_64x4d"])

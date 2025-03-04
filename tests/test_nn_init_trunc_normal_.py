@@ -103,3 +103,29 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_alias_case_1():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import timm
+        conv = torch.nn.Conv2d(3, 6, (3, 3))
+        timm.models.layers.trunc_normal_(tensor=conv.weight, mean=1., std=2., a=-1., b=1., generator=None)
+        result = conv.weight
+        """
+    )
+    paddle_code = textwrap.dedent(
+        """
+        import paddle
+
+        conv = paddle.nn.Conv2D(in_channels=3, out_channels=6, kernel_size=(3, 3))
+        init_TruncatedNormal = paddle.nn.initializer.TruncatedNormal(
+            mean=1.0, std=2.0, a=-1.0, b=1.0
+        )
+        init_TruncatedNormal(conv.weight)
+        result = conv.weight
+
+        """
+    )
+    obj.run(pytorch_code, ["result"], expect_paddle_code=paddle_code)

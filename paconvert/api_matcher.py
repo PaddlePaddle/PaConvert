@@ -5885,9 +5885,10 @@ class BoxesConvertMatcher(BaseMatcher):
 
 class WeightsMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs["pretrained"] = bool("weights" in kwargs and kwargs["weights"] != "None")
-        kwargs.pop("weights", None)
         kwargs.pop("progress", None)
+        weights = kwargs.pop("weights", None)
+        if weights and weights != "None":
+            kwargs["pretrained"] = True
         API_TEMPLATE = textwrap.dedent(
             """
             {}({})
@@ -5898,10 +5899,11 @@ class WeightsMatcher(BaseMatcher):
 
 class VGGMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs["pretrained"] = bool("weights" in kwargs and kwargs["weights"] != "None")
-        kwargs["batch_norm"] = bool("bn" in self.torch_api)
         kwargs.pop("progress", None)
-        kwargs.pop("weights", None)
+        weights = kwargs.pop("weights", None)
+        if weights and weights != "None":
+            kwargs["pretrained"] = True
+        kwargs["batch_norm"] = bool("bn" in self.torch_api)
         API_TEMPLATE = textwrap.dedent(
             """
             {}({})
