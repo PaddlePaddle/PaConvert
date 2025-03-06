@@ -6103,3 +6103,26 @@ class OnnxExportMatcher(BaseMatcher):
         code = API_TEMPLATE.format(kwargs["model"], kwargs["f"])
 
         return code
+
+
+class SetPerProcessMemoryFractionMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            def _set_per_process_memory_fraction(fraction):
+                os.environ['FLAGS_fraction_of_gpu_memory_to_use'] = str(fraction)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            _set_per_process_memory_fraction({})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["fraction"])
+
+        return code
