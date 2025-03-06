@@ -27,12 +27,7 @@ def test_case_1():
         result=True
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -47,5 +42,5 @@ def test_case_2():
         pytorch_code,
         ["result"],
         unsupport=True,
-        reason="paddle does not support this function temporarily",
+        reason="paddle does not support args 'timeout', 'wait_all_ranks",
     )
