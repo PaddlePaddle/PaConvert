@@ -6126,3 +6126,29 @@ class SetPerProcessMemoryFractionMatcher(BaseMatcher):
         code = API_TEMPLATE.format(kwargs["fraction"])
 
         return code
+
+
+class CudaDeviceOfMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            def cuda_device_of(obj):
+                if isinstance(obj, paddle.Tensor) and obj.place.is_gpu_place():
+                    device_id = obj.place.gpu_device_id()
+                    paddle.set_device(f"gpu:{device_id}")
+                    return paddle.device.get_device()
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            cuda_device_of({})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["obj"])
+
+        return code
