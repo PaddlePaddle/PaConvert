@@ -23,7 +23,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.distributed.init_process_group(backend='nccl', init_method='tcp://127.0.0.1:12345', rank=0, world_size=1)
+        torch.distributed.init_process_group(backend='nccl')
         torch.distributed.monitored_barrier()
         result=True
         """
