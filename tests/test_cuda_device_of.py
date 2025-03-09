@@ -41,6 +41,7 @@ obj = cudaDeviceOfAPI("torch.set_default_device")
 
 # paddle does not support this api temporarily
 
+
 @pytest.mark.skipif(
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
@@ -54,7 +55,3 @@ def _test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-
-
