@@ -6127,6 +6127,7 @@ class SetPerProcessMemoryFractionMatcher(BaseMatcher):
 
         return code
 
+
 class CudaGetRngStateMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -6142,7 +6143,7 @@ class CudaGetRngStateMatcher(BaseMatcher):
                     return paddle.get_cuda_rng_state()[0]
                 elif isinstance(device, paddle.CUDAPlace):
                     return paddle.get_cuda_rng_state()[device.get_device_id()]
-                    
+
             """
         )
         return CODE_TEMPLATE
