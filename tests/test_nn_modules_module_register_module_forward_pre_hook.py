@@ -30,8 +30,8 @@ def test_case_1():
 
         model = torch.nn.Linear(2, 2)
         with torch.no_grad():
-            model.weight.data = torch.ones_like(model.weight) * 0.1
-            model.bias.data = torch.zeros_like(model.bias)
+            torch.nn.init.constant_(model.weight, 0.1)
+            torch.nn.init.constant_(model.bias, 0.0)
 
         hook_handle = model.register_forward_pre_hook(deterministic_pre_hook)
         input = torch.tensor([[1.0, 2.0]], requires_grad=True)
@@ -52,8 +52,8 @@ def test_case_2():
 
         model = torch.nn.Linear(2, 2)
         with torch.no_grad():
-            model.weight.data = torch.ones_like(model.weight) * 0.1
-            model.bias.data = torch.zeros_like(model.bias)
+            torch.nn.init.constant_(model.weight, 0.1)
+            torch.nn.init.constant_(model.bias, 0.0)
 
         hook_handle = model.register_forward_pre_hook(hook=deterministic_pre_hook)
         input = torch.tensor([[1.0, 2.0]], requires_grad=True)

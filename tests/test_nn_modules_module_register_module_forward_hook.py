@@ -27,22 +27,22 @@ def test_case_1():
         def deterministic_post_hook(module, input, output):
             modified_output = output + 0.5
             return modified_output
-
+        
+        
         model = torch.nn.Linear(2, 2)
         with torch.no_grad():
-            model.weight.data = torch.ones_like(model.weight) * 0.1
-            model.bias.data = torch.zeros_like(model.bias)
-
-
+            torch.nn.init.constant_(model.weight, 0.1)
+            torch.nn.init.constant_(model.bias, 0.0)
+        
         hook_handle = model.register_forward_hook(deterministic_post_hook)
         input_tensor = torch.tensor([[1.0, 2.0]], requires_grad=True)
-        output = model(input_tensor)
-
+        output1 = model(input_tensor)
+        
         hook_handle.remove()
-        output = model(input_tensor)
+        output2 = model(input_tensor)
         """
     )
-    obj.run(pytorch_code, ["output"])
+    obj.run(pytorch_code, ["output1","output2"])
 
 
 def test_case_2():
@@ -54,21 +54,21 @@ def test_case_2():
             modified_output = output + 0.5
             return modified_output
 
+
         model = torch.nn.Linear(2, 2)
         with torch.no_grad():
-            model.weight.data = torch.ones_like(model.weight) * 0.1
-            model.bias.data = torch.zeros_like(model.bias)
-
+            torch.nn.init.constant_(model.weight, 0.1)
+            torch.nn.init.constant_(model.bias, 0.0)
 
         hook_handle = model.register_forward_hook(hook = deterministic_post_hook)
         input_tensor = torch.tensor([[1.0, 2.0]], requires_grad=True)
-        output = model(input_tensor)
+        output1 = model(input_tensor)
 
         hook_handle.remove()
-        output = model(input_tensor)
+        output2 = model(input_tensor)
         """
     )
-    obj.run(pytorch_code, ["output"])
+    obj.run(pytorch_code, ["output1","output2"])
 
 
 def test_case_3():
@@ -82,21 +82,21 @@ def test_case_3():
 
         model = torch.nn.Linear(2, 2)
         with torch.no_grad():
-            model.weight.data = torch.ones_like(model.weight) * 0.1
-            model.bias.data = torch.zeros_like(model.bias)
+            torch.nn.init.constant_(model.weight, 0.1)
+            torch.nn.init.constant_(model.bias, 0.0)
 
 
         hook_handle = model.register_forward_hook(hook = deterministic_post_hook, prepend=True, with_kwargs=True, always_call=True)
         input_tensor = torch.tensor([[1.0, 2.0]], requires_grad=True)
-        output = model(input_tensor)
+        output1 = model(input_tensor)
 
         hook_handle.remove()
-        output = model(input_tensor)
+        output2 = model(input_tensor)
         """
     )
     obj.run(
         pytorch_code,
-        ["output"],
+        ["output1","output2"],
         unsupport=True,
         reason='paddle do not support arg "prepend"',
     )
@@ -113,21 +113,21 @@ def test_case_4():
 
         model = torch.nn.Linear(2, 2)
         with torch.no_grad():
-            model.weight.data = torch.ones_like(model.weight) * 0.1
-            model.bias.data = torch.zeros_like(model.bias)
+            torch.nn.init.constant_(model.weight, 0.1)
+            torch.nn.init.constant_(model.bias, 0.0)
 
 
         hook_handle = model.register_forward_hook(hook = deterministic_post_hook, with_kwargs=True, prepend=True, always_call=True)
         input_tensor = torch.tensor([[1.0, 2.0]], requires_grad=True)
-        output = model(input_tensor)
+        output1 = model(input_tensor)
 
         hook_handle.remove()
-        output = model(input_tensor)
+        output2 = model(input_tensor)
         """
     )
     obj.run(
         pytorch_code,
-        ["output"],
+        ["output1","output2"],
         unsupport=True,
         reason='paddle do not support arg "prepend"',
     )

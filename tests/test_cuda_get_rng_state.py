@@ -46,9 +46,13 @@ def test_case_2():
         torch.cuda.get_rng_state(device="cuda")
         """
     )
-    obj.run(pytorch_code, unsupport=True, reason="not support arg device.")
+    obj.run(pytorch_code)
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
@@ -56,4 +60,46 @@ def test_case_3():
         torch.cuda.get_rng_state("cuda")
         """
     )
-    obj.run(pytorch_code, unsupport=True, reason="not support arg device.")
+    obj.run(pytorch_code)
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.cuda.get_rng_state("cuda:0")
+        """
+    )
+    obj.run(pytorch_code)
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.cuda.get_rng_state(0)
+        """
+    )
+    obj.run(pytorch_code)
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.cuda.get_rng_state(device = torch.device("cuda:0"))
+        """
+    )
+    obj.run(pytorch_code)
