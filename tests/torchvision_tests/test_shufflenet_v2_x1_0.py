@@ -67,3 +67,13 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["shufflenet_v2_x1_0"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torchvision
+        shufflenet_v2_x1_0 = torchvision.models.shufflenet_v2_x1_0(pretrained=False)
+        """
+    )
+    obj.run(pytorch_code, ["shufflenet_v2_x1_0"])

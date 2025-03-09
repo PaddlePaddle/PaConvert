@@ -1,5 +1,6 @@
 {
   "flash_attn.flash_attn_interface.flash_attn_varlen_func": "flash_attn.flash_attn_interface.flash_attn_unpadded_func",
+  "timm.models.layers.trunc_normal_": "torch.nn.init.trunc_normal_",
   "torch.Tensor.absolute": "torch.Tensor.abs",
   "torch.Tensor.absolute_": "torch.Tensor.abs_",
   "torch.Tensor.acos": "torch.Tensor.arccos",
@@ -160,6 +161,8 @@
   "torch.nn.parameter.Parameter": "torch.nn.Parameter",
   "torch.nn.parameter.UninitializedParameter": "torch.nn.UninitializedParameter",
   "torch.nn.utils.clip_grad_norm": "torch.nn.utils.clip_grad_norm_",
+  "torch.nn.utils.parametrizations.spectral_norm": "torch.nn.utils.spectral_norm",
+  "torch.nn.utils.spectral_norm.SpectralNorm.apply": "torch.nn.utils.spectral_norm",
   "torch.optim.sgd.SGD": "torch.optim.SGD",
   "torch.orgqr": "torch.linalg.householder_product",
   "torch.pairwise_distance": "torch.nn.functional.pairwise_distance",
@@ -200,6 +203,7 @@
   "torch.utils.data.sampler.WeightedRandomSampler": "torch.utils.data.WeightedRandomSampler",
   "torch.utils.model_zoo.load_url": "torch.hub.load_state_dict_from_url",
   "torch.xlogy": "torch.special.xlogy",
+  "torchvision.models.inception.Inception3": "torchvision.models.Inception3",
   "transformers.generation.logits_process.LogitsProcessorList": "transformers.generation.LogitsProcessorList",
   "transformers.modeling_utils.PreTrainedModel": "transformers.PreTrainedModel",
   "transformers.utils.logging.get_logger": "transformers.logging.get_logger"

@@ -101,3 +101,41 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.zeros(2, 3)
+        y = torch.zeros(2, 3)
+        result = torch.cat((x, y), axis=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones(2, 3)
+        y = torch.ones(2, 3)
+        out = torch.zeros(4, 3)
+        result = torch.cat([x, y], axis=0, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones(2, 3)
+        y = torch.ones(2, 3)
+        out = torch.zeros(4, 3)
+        result = torch.cat(axis=0, tensors=[x, y], out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

@@ -227,5 +227,13 @@
   "torch.utils.cpp_extension.CUDA_HOME": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.utils.cpp_extension.cpp_extension.CUDA_HOME"
+  },
+  "torch.utils.data._utils.collate.default_collate_err_msg_format": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'default_collate: batch must contain tensors, numpy arrays, numbers, dicts or lists; found {}'"
+  },
+  "torch.utils.data._utils.collate.np_str_obj_array_pattern": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "re.compile(r'[SaUO]')"
   }
 }

@@ -122,3 +122,27 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_alias_case_1():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        model = nn.Linear(10, 20)
+        result = torch.nn.utils.spectral_norm(dim=0, eps=1e-5, n_power_iterations=1, name="weight", module=model)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_alias_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        model = nn.Linear(10, 20)
+        result = torch.nn.utils.spectral_norm(dim=0, eps=1e-5, n_power_iterations=1, name="weight", module=model)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

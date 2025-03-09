@@ -48,10 +48,10 @@ class ModelAPIBase(APIBase):
             paddle_output = paddle_result(paddle.to_tensor(simple_input))
 
             if isinstance(pytorch_output, torch.Tensor):
-                pytorch_numpy = pytorch_output.detach().numpy()
+                pytorch_numpy = pytorch_output.detach().cpu().numpy()
             elif isinstance(pytorch_output, tuple):
                 pytorch_numpy = np.array(
-                    [item.detach().numpy() for item in pytorch_output]
+                    [item.detach().cpu().numpy() for item in pytorch_output]
                 )
             else:
                 raise ValueError("Unsupported type for pytorch_output")
