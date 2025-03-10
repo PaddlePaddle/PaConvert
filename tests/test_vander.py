@@ -23,7 +23,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3, 5])
+        x = torch.tensor([1, 2, 3, 5],device='cpu')
         result = torch.vander(x)
         """
     )

@@ -18,39 +18,51 @@ import paddle
 import pytest
 from apibase import APIBase
 
-
-class cudaDeviceOfAPI(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_shape=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        assert pytorch_result.idx == -1 or pytorch_result.idx == int(
-            paddle_result.split(":")[1]
-        )
-
-
-obj = cudaDeviceOfAPI("torch.set_default_device")
-
-# paddle does not support this api temporarily
+obj = APIBase("torch.cuda.device_of")
 
 
 @pytest.mark.skipif(
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
 )
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        with torch.cuda.device_of(x):
+        input_tensor = torch.tensor([1, 2, 3], device='cuda')
+        with torch.cuda.device_of(obj=input_tensor):
+            result = torch.tensor([4, 5, 6])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input_tensor = torch.tensor([1, 2, 3], device='cuda')
+        with torch.cuda.device_of(input_tensor):
+            result = torch.tensor([4, 5, 6])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input_tensor = torch.tensor([1, 2, 3], device=torch.device("cuda"))
+        with torch.cuda.device_of(input_tensor):
             result = torch.tensor([4, 5, 6])
         """
     )
