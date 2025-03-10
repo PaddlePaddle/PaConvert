@@ -5928,17 +5928,6 @@
     "paddle_api": "paddle.device.cuda.device_count",
     "min_input_args": 0
   },
-  "torch.cuda.device_of": {
-    "Matcher": "CudaDeviceOfMatcher",
-    "paddle_api": "paddle.static.device_guard",
-    "min_input_args": 1,
-    "args_list": [
-      "obj"
-    ],
-    "kwargs_change": {
-      "obj": "device"
-    }
-  },
   "torch.cuda.empty_cache": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.empty_cache",

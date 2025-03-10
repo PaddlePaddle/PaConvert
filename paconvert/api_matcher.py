@@ -6140,7 +6140,7 @@ class CudaGetRngStateMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         if "device" not in kwargs:
-            return "paddle.get_cuda_rng_state()[0]"
+            return "paddle.get_cuda_rng_state()[paddle.framework._current_expected_place().get_device_id()]"
         self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
@@ -6148,18 +6148,5 @@ class CudaGetRngStateMatcher(BaseMatcher):
             """
         )
         code = API_TEMPLATE.format(kwargs["device"])
-
-        return code
-
-
-class CudaDeviceOfMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            paddle.static.device_guard("gpu:{{}}".format({}.place.gpu_device_id()))
-            """
-        )
-        code = API_TEMPLATE.format(kwargs["obj"])
 
         return code
