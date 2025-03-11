@@ -76,6 +76,7 @@ def test_case_3():
         import torch
         torch.set_default_device("cpu")
         result = torch.get_default_device()
+        torch.set_default_device(None)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -88,6 +89,7 @@ def test_case_4():
         device = "cpu"
         torch.set_default_device(device)
         result = torch.get_default_device()
+        torch.set_default_device(None)
         """
     )
     obj.run(pytorch_code, ["result"])

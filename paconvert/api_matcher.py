@@ -5225,7 +5225,7 @@ class SetDeviceMatcher(BaseMatcher):
             # case 5: torch.cuda.set_device(device=0 if cond else 1)
             kwargs[
                 "device"
-            ] = f'"gpu:"+str({kwargs["device"]}) if isinstance({kwargs["device"]}, int) else ( "cpu" if {kwargs["device"]} == "cpu" else str({kwargs["device"]}).replace("cuda", "gpu"))'
+            ] = f'"gpu:"+str({kwargs["device"]}) if isinstance({kwargs["device"]}, int) else ( "cpu" if {kwargs["device"]} == "cpu" or {kwargs["device"]} == None else str({kwargs["device"]}).replace("cuda", "gpu"))'
         return """{}(device={})""".format(self.get_paddle_api(), kwargs["device"])
 
 
