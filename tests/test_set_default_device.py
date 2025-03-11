@@ -79,3 +79,15 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        device = "cpu"
+        torch.set_default_device(device)
+        result = torch.get_default_device()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
