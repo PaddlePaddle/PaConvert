@@ -19,7 +19,6 @@ import pytest
 from apibase import APIBase
 
 
-
 class cudaSetDeviceAPI(APIBase):
     def compare(
         self,
