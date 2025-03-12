@@ -5215,7 +5215,7 @@ class SetDeviceMatcher(BaseMatcher):
             import os
             def set_device(device):
                 if isinstance(device, int):
-                    return "gpu"+str(device)
+                    return "gpu:"+str(device)
                 elif device == "cpu" or device == None:
                     return "cpu"
                 else:
