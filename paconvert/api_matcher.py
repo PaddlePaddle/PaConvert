@@ -5209,6 +5209,22 @@ class TensorCudaMatcher(BaseMatcher):
 
 
 class SetDeviceMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            def set_device(device):
+                if isinstance(device, int):
+                    return "gpu"+str(device)
+                elif device == "cpu" or device == None:
+                    return "cpu"
+                else:
+                    return str(device).replace("cuda", "gpu")
+
+            """
+        )
+        return CODE_TEMPLATE
+
     def generate_code(self, kwargs):
         # NOTE :paddle.device.set_device only recevice str type
         if kwargs["device"].replace("(", "").replace(")", "").isdigit():
@@ -5223,9 +5239,10 @@ class SetDeviceMatcher(BaseMatcher):
             # case 3: num=2 torch.cuda.set_device(num) => paddle.device.set_device("gpu:2")
             # case 4: torch.cuda.set_device(device="cuda:0" if cond else "cuda;1")
             # case 5: torch.cuda.set_device(device=0 if cond else 1)
-            kwargs[
-                "device"
-            ] = f'"gpu:"+str({kwargs["device"]}) if isinstance({kwargs["device"]}, int) else ( "cpu" if {kwargs["device"]} == "cpu" or {kwargs["device"]} == None else str({kwargs["device"]}).replace("cuda", "gpu"))'
+            self.enable_utils_code()
+            return """{}(device=set_device({}))""".format(
+                self.get_paddle_api(), kwargs["device"]
+            )
         return """{}(device={})""".format(self.get_paddle_api(), kwargs["device"])
 
 
