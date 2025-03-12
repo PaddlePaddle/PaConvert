@@ -1,4 +1,4 @@
-# Copyright (c) 2022  PaddlePaddle Authors. All Rights Reserved.
+# Copyright (c) 2025 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,15 +11,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import ast
 import os
 
-from paconvert.base import ALIAS_MAPPING, BaseTransformer
+from paconvert.base import (ALIAS_MAPPING, IMPORT_PACKAGE_MAPPING,
+                            MAY_TORCH_PACKAGE_LIST, TORCH_PACKAGE_MAPPING,
+                            BaseTransformer)
 from paconvert.utils import log_info
-
-from ..base import (IMPORT_PACKAGE_MAPPING, MAY_TORCH_PACKAGE_LIST,
-                    TORCH_PACKAGE_MAPPING)
 
 
 class ImportTransformer(BaseTransformer):
@@ -75,7 +75,10 @@ class ImportTransformer(BaseTransformer):
 
             # 2. import from TORCH_PACKAGE_MAPPING (which means replace api one by one)
             for pkg_name in list(TORCH_PACKAGE_MAPPING.keys()) + MAY_TORCH_PACKAGE_LIST:
-                if f"{pkg_name}." in alias_node.name or pkg_name == alias_node.name:
+                if (
+                    alias_node.name.startswith(f"{pkg_name}.")
+                    or pkg_name == alias_node.name
+                ):
                     if pkg_name in MAY_TORCH_PACKAGE_LIST:
                         self.imports_map[self.file]["may_torch_packages"].add(pkg_name)
                     else:
@@ -217,7 +220,7 @@ class ImportTransformer(BaseTransformer):
 
         # 2. import from TORCH_PACKAGE_MAPPING (which means replace api one by one)
         for pkg_name in list(TORCH_PACKAGE_MAPPING.keys()) + MAY_TORCH_PACKAGE_LIST:
-            if f"{pkg_name}." in node.module or pkg_name == node.module:
+            if node.module.startswith(f"{pkg_name}.") or pkg_name == node.module:
                 if pkg_name in MAY_TORCH_PACKAGE_LIST:
                     self.imports_map[self.file]["may_torch_packages"].add(pkg_name)
                 else:
