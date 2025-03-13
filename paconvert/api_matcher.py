@@ -5209,6 +5209,22 @@ class TensorCudaMatcher(BaseMatcher):
 
 
 class SetDeviceMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            def set_device(device):
+                if isinstance(device, int):
+                    return "gpu:"+str(device)
+                elif device == "cpu" or device == None:
+                    return "cpu"
+                else:
+                    return str(device).replace("cuda", "gpu")
+
+            """
+        )
+        return CODE_TEMPLATE
+
     def generate_code(self, kwargs):
         # NOTE :paddle.device.set_device only recevice str type
         if kwargs["device"].replace("(", "").replace(")", "").isdigit():
@@ -5223,9 +5239,10 @@ class SetDeviceMatcher(BaseMatcher):
             # case 3: num=2 torch.cuda.set_device(num) => paddle.device.set_device("gpu:2")
             # case 4: torch.cuda.set_device(device="cuda:0" if cond else "cuda;1")
             # case 5: torch.cuda.set_device(device=0 if cond else 1)
-            kwargs[
-                "device"
-            ] = f'"gpu:"+str({kwargs["device"]}) if isinstance({kwargs["device"]}, int) else str({kwargs["device"]}).replace("cuda", "gpu")'
+            self.enable_utils_code()
+            return """{}(device=set_device({}))""".format(
+                self.get_paddle_api(), kwargs["device"]
+            )
         return """{}(device={})""".format(self.get_paddle_api(), kwargs["device"])
 
 
@@ -6091,5 +6108,62 @@ class OnnxExportMatcher(BaseMatcher):
             """
         )
         code = API_TEMPLATE.format(kwargs["model"], kwargs["f"])
+
+        return code
+
+
+class SetPerProcessMemoryFractionMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            def _set_per_process_memory_fraction(fraction):
+                os.environ['FLAGS_fraction_of_gpu_memory_to_use'] = str(fraction)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            _set_per_process_memory_fraction({})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["fraction"])
+
+        return code
+
+
+class CudaGetRngStateMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            def cuda_get_rng_state(device):
+                if isinstance(device, int):
+                    return paddle.get_cuda_rng_state()[device]
+                elif isinstance(device, str):
+                    parts = device.split(":")
+                    if len(parts) == 2 and parts[1].strip().isdigit():
+                        return paddle.get_cuda_rng_state()[int(parts[1].strip())]
+                    return paddle.get_cuda_rng_state()[0]
+                elif isinstance(device, paddle.CUDAPlace):
+                    return paddle.get_cuda_rng_state()[device.get_device_id()]
+
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        if "device" not in kwargs:
+            return "paddle.get_cuda_rng_state()[paddle.framework._current_expected_place().get_device_id()]"
+        self.enable_utils_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            cuda_get_rng_state({})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["device"])
 
         return code

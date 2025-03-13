@@ -5963,6 +5963,14 @@
       "device"
     ]
   },
+  "torch.cuda.get_rng_state": {
+    "Matcher": "CudaGetRngStateMatcher",
+    "paddle_api": "paddle.get_cuda_rng_state",
+    "min_input_args": 0,
+    "args_list": [
+      "device"
+    ]
+  },
   "torch.cuda.get_rng_state_all": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.get_rng_state",
@@ -6081,6 +6089,17 @@
     "paddle_api": "paddle.device.set_device",
     "min_input_args": 1,
     "args_list": [
+      "device"
+    ]
+  },
+  "torch.cuda.set_per_process_memory_fraction": {
+    "Matcher": "SetPerProcessMemoryFractionMatcher",
+    "min_input_args": 1,
+    "args_list": [
+      "fraction",
+      "device"
+    ],
+    "unsupport_args": [
       "device"
     ]
   },
@@ -6512,9 +6531,19 @@
     ],
     "min_input_args": 1
   },
+  "torch.distributed.is_available": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.is_available",
+    "min_input_args": 0
+  },
   "torch.distributed.is_initialized": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.is_initialized",
+    "min_input_args": 0
+  },
+  "torch.distributed.is_nccl_available": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.core.is_compiled_with_nccl",
     "min_input_args": 0
   },
   "torch.distributed.isend": {
@@ -6530,6 +6559,20 @@
       "tag"
     ],
     "min_input_args": 2
+  },
+  "torch.distributed.monitored_barrier": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.barrier",
+    "min_input_args": 0,
+    "args_list": [
+      "group",
+      "timeout",
+      "wait_all_ranks"
+    ],
+    "kwargs_change": {
+      "timeout": "",
+      "wait_all_ranks": ""
+    }
   },
   "torch.distributed.new_group": {
     "Matcher": "GenericMatcher",
@@ -8218,6 +8261,11 @@
       "input": "x",
       "vec2": "y"
     }
+  },
+  "torch.get_default_device": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.get_device",
+    "min_input_args": 0
   },
   "torch.get_default_dtype": {
     "Matcher": "GenericMatcher",
@@ -14323,6 +14371,31 @@
     },
     "min_input_args": 1
   },
+  "torch.nn.modules.module.register_module_forward_hook": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Layer.register_forward_post_hook",
+    "min_input_args": 1,
+    "args_list": [
+      "hook",
+      "*",
+      "prepend",
+      "with_kwargs",
+      "always_call"
+    ],
+    "unsupport_args": [
+      "prepend",
+      "with_kwargs",
+      "always_call"
+    ]
+  },
+  "torch.nn.modules.module.register_module_forward_pre_hook": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.Layer.register_forward_pre_hook",
+    "min_input_args": 1,
+    "args_list": [
+      "hook"
+    ]
+  },
   "torch.nn.modules.utils._ntuple": {
     "Matcher": "NTupleMatcher",
     "args_list": [
@@ -14927,7 +15000,15 @@
     ]
   },
   "torch.optim.Optimizer.zero_grad": {
-    "min_input_args": 0
+    "Matcher": "ZeroGradMatcher",
+    "paddle_api": "paddle.optimizer.Optimizer.clear_gradients",
+    "min_input_args": 0,
+    "args_list": [
+      "set_to_none"
+    ],
+    "paddle_default_kwargs": {
+      "set_to_zero": "False"
+    }
   },
   "torch.optim.RAdam": {
     "Matcher": "OptimAdamMatcher",
@@ -15953,6 +16034,14 @@
     "kwargs_change": {
       "input": "x"
     }
+  },
+  "torch.set_default_device": {
+    "Matcher": "SetDeviceMatcher",
+    "paddle_api": "paddle.set_device",
+    "min_input_args": 0,
+    "args_list": [
+      "device"
+    ]
   },
   "torch.set_default_dtype": {
     "Matcher": "GenericMatcher",
