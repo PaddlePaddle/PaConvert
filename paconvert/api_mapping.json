@@ -6086,7 +6086,7 @@
   },
   "torch.cuda.set_device": {
     "Matcher": "SetDeviceMatcher",
-    "paddle_api": "paddle.device.set_device",
+    "paddle_api": "paddle.set_device",
     "min_input_args": 1,
     "args_list": [
       "device"
