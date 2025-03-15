@@ -4505,6 +4505,14 @@
       "self"
     ]
   },
+  "torch._foreach_erf_": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.erf_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
   "torch.abs": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.abs",
