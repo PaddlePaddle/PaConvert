@@ -4393,6 +4393,126 @@
       "message"
     ]
   },
+  "torch._foreach_abs": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.abs",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_abs_": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.abs_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_acos": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.acos",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_acos_": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.acos_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_asin": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.asin",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_asin_": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.asin_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_atan": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.atan",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_atan_": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.atan_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_ceil": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.ceil",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_cos": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.cos",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_cos_": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.cos_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_cosh": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.cosh",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_cosh_": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.cosh_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_erf": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.erf",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_erf_": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.erf_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
   "torch.abs": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.abs",
@@ -14370,31 +14490,6 @@
       "dtype": ""
     },
     "min_input_args": 1
-  },
-  "torch.nn.modules.module.register_module_forward_hook": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.Layer.register_forward_post_hook",
-    "min_input_args": 1,
-    "args_list": [
-      "hook",
-      "*",
-      "prepend",
-      "with_kwargs",
-      "always_call"
-    ],
-    "unsupport_args": [
-      "prepend",
-      "with_kwargs",
-      "always_call"
-    ]
-  },
-  "torch.nn.modules.module.register_module_forward_pre_hook": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.Layer.register_forward_pre_hook",
-    "min_input_args": 1,
-    "args_list": [
-      "hook"
-    ]
   },
   "torch.nn.modules.utils._ntuple": {
     "Matcher": "NTupleMatcher",
