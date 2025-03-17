@@ -6167,3 +6167,27 @@ class CudaGetRngStateMatcher(BaseMatcher):
         code = API_TEMPLATE.format(kwargs["device"])
 
         return code
+
+
+class ForeachMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            import os
+            def foreach_operator(func, tensors):
+                return [func(x) for x in tensors]
+
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            foreach_operator({},{})
+            """
+        )
+        code = API_TEMPLATE.format(self.get_paddle_api(), kwargs["self"])
+
+        return code
