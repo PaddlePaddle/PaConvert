@@ -102,12 +102,7 @@ def test_case_3():
         result = list(des.keys())
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle api destination parameter is not consistent with torch",
-    )
+    obj.run(pytorch_code)
 
 
 def test_case_4():
@@ -156,6 +151,60 @@ def test_case_5():
         model = Net()
 
         state_dict = model.state_dict(prefix="wfs", keep_vars=False)
+        result = []
+        for key, value in state_dict.items():
+            result.append(key)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        class Net(nn.Module):
+            def __init__(self):
+                super(Net, self).__init__()
+                self.fc1 = nn.Linear(2, 2)
+                self.fc2 = nn.Linear(2, 2)
+
+            def forward(self, x):
+                x = torch.relu(self.fc1(x))
+                x = self.fc2(x)
+                return x
+
+        model = Net()
+
+        state_dict = model.state_dict({}, "wfs", False)
+        result = []
+        for key, value in state_dict.items():
+            result.append(key)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        class Net(nn.Module):
+            def __init__(self):
+                super(Net, self).__init__()
+                self.fc1 = nn.Linear(2, 2)
+                self.fc2 = nn.Linear(2, 2)
+
+            def forward(self, x):
+                x = torch.relu(self.fc1(x))
+                x = self.fc2(x)
+                return x
+
+        model = Net()
+
+        state_dict = model.state_dict(keep_vars=True, destination={}, prefix="wfs")
         result = []
         for key, value in state_dict.items():
             result.append(key)

@@ -1684,14 +1684,32 @@ class TensorMatcher(BaseMatcher):
 
 class RandintMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "high" in kwargs and "," in kwargs["high"]:
-            kwargs["shape"] = kwargs["high"]
-            kwargs["high"] = kwargs["low"]
-            kwargs["low"] = "0"
+        new_kwargs = {}
+        if "size" not in kwargs:
+            new_kwargs["low"] = 0
+            new_kwargs["high"] = kwargs.pop("low")
+            new_kwargs["size"] = kwargs.pop("high")
+        elif "high" not in kwargs:
+            new_kwargs["low"] = 0
+            new_kwargs["high"] = kwargs.pop("low")
+        elif "low" not in kwargs:
+            new_kwargs["low"] = 0
 
-        code = GenericMatcher.generate_code(self, kwargs)
+        new_kwargs.update(kwargs)
+        return GenericMatcher.generate_code(self, new_kwargs)
 
-        return code
+
+class RandintLikeMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        new_kwargs = {}
+        if "high" not in kwargs:
+            new_kwargs["low"] = 0
+            new_kwargs["high"] = kwargs.pop("low")
+        elif "low" not in kwargs:
+            new_kwargs["low"] = 0
+
+        new_kwargs.update(kwargs)
+        return GenericMatcher.generate_code(self, new_kwargs)
 
 
 class ScatterReduceMatcher(BaseMatcher):
