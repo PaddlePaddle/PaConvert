@@ -2501,39 +2501,34 @@ class IsNonzeroMatcher(BaseMatcher):
         return code
 
 
-# will implenment by aux_code
 class TensorIndexCopyMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            import numpy as np
+            def index_copy_class_func(self, dim, index, source):
+                if dim == 0:
+                    return self.scatter_(index, source)
+
+                shape = self.shape
+
+                new_index = []
+                for i in range(0, np.prod(shape[:dim])):
+                    new_index.append(index + i * len(index))
+                new_index = paddle.concat(new_index)
+                new_self = self.reshape_([-1] + shape[dim+1:])
+                new_source = source.reshape([-1] + shape[dim+1:])
+
+                return new_self.scatter_(new_index, new_source).reshape_(shape)
+
+            setattr(paddle.Tensor, "index_copy_", index_copy_class_func)
+            """
+        )
+        return CODE_TEMPLATE
+
     def generate_code(self, kwargs):
-        if kwargs["dim"][1:-1].isdigit() and int(kwargs["dim"][1:-1]) == 0:
-            code = "{}.scatter_({}, {})".format(
-                self.paddleClass, kwargs["index"], kwargs["source"]
-            )
-            return code
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            times, temp_shape, temp_index = paddle.prod(paddle.to_tensor({}.shape[:{}])), {}.shape, {}
-            {}, new_t = {}.reshape([-1] + temp_shape[{}+1:]), {}.reshape([-1] + temp_shape[{}+1:])
-            for i in range(1, times):
-                temp_index= paddle.concat([temp_index, index+len(index)*i])
-            {}.scatter_(temp_index, new_t).reshape(temp_shape)
-            """
-        )
-
-        code = API_TEMPLATE.format(
-            self.paddleClass,
-            kwargs["dim"],
-            self.paddleClass,
-            kwargs["index"],
-            self.paddleClass,
-            self.paddleClass,
-            kwargs["dim"],
-            kwargs["source"],
-            kwargs["dim"],
-            self.paddleClass,
-        )
-
-        return code
+        self.enable_utils_code()
+        return "unchange"
 
 
 class IndexCopyMatcher(BaseMatcher):

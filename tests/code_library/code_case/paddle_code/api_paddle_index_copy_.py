@@ -1,10 +1,32 @@
+import numpy as np
 import paddle
+
+############################## 相关utils函数，如下 ##############################
+
+def index_copy_class_func(self, dim, index, source):
+    if dim == 0:
+        return self.scatter_(index, source)
+
+    shape = self.shape
+
+    new_index = []
+    for i in range(0, np.prod(shape[:dim])):
+        new_index.append(index + i * len(index))
+    new_index = paddle.concat(new_index)
+    new_self = self.reshape_([-1] + shape[dim+1:])
+    new_source = source.reshape([-1] + shape[dim+1:])
+
+    return new_self.scatter_(new_index, new_source).reshape_(shape)
+
+setattr(paddle.Tensor, "index_copy_", index_copy_class_func)
+############################## 相关utils函数，如上 ##############################
+
 
 print("#########################case1#########################")
 x = paddle.zeros(shape=[5, 3])
 t = paddle.to_tensor(data=[[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype="float32")
 index = paddle.to_tensor(data=[0, 4, 2])
-x.scatter_(index, t)
+x.index_copy_(0, index, t)
 print("#########################case2#########################")
 x = paddle.zeros(shape=[2, 1, 3, 3])
 t = paddle.to_tensor(
@@ -12,20 +34,12 @@ t = paddle.to_tensor(
     dtype="float32",
 )
 index = paddle.to_tensor(data=[0, 1, 2])
-times, temp_shape, temp_index = (
-    paddle.prod(paddle.to_tensor(x.shape[:2])),
-    x.shape,
-    index,
-)
-x, new_t = x.reshape([-1] + temp_shape[2 + 1 :]), t.reshape([-1] + temp_shape[2 + 1 :])
-for i in range(1, times):
-    temp_index = paddle.concat([temp_index, index + len(index) * i])
-x.scatter_(temp_index, new_t).reshape(temp_shape)
+x.index_copy_(2, index, t)
 print("#########################case3#########################")
 x = paddle.zeros(shape=[5, 3])
 t = paddle.to_tensor(data=[[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype="float32")
 index = paddle.to_tensor(data=[0, 4, 2])
-y = x.scatter_(index, t)
+y = x.index_copy_(0, index, t)
 print("#########################case4#########################")
 x = paddle.zeros(shape=[2, 1, 3, 3])
 t = paddle.to_tensor(
@@ -33,17 +47,9 @@ t = paddle.to_tensor(
     dtype="float32",
 )
 index = paddle.to_tensor(data=[0, 1, 2])
-times, temp_shape, temp_index = (
-    paddle.prod(paddle.to_tensor(x.shape[:2])),
-    x.shape,
-    index,
-)
-x, new_t = x.reshape([-1] + temp_shape[2 + 1 :]), t.reshape([-1] + temp_shape[2 + 1 :])
-for i in range(1, times):
-    temp_index = paddle.concat([temp_index, index + len(index) * i])
-y = x.scatter_(temp_index, new_t).reshape(temp_shape)
+y = x.index_copy_(2, index, t)
 print("#########################case5#########################")
 x = paddle.zeros(shape=[20])
 t = paddle.to_tensor(data=[1, 3, 4, 5], dtype="float32")
 index = paddle.to_tensor(data=[0, 12, 2, 1])
-y = x.scatter_(index, t)
+y = x.index_copy_(0, index, t)
