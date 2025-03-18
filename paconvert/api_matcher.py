@@ -1055,6 +1055,7 @@ class ModuleToMatcher(BaseMatcher):
         return code
 
 
+# TODO: 参考SetDeviceMatcher通过辅助函数来优化逻辑
 class DeviceMatcher(BaseMatcher):
     # NOTE: There is no completely equivalent API in Paddle. Matcher may need to be rewritten in the future.
     def generate_code(self, kwargs):
@@ -5213,37 +5214,44 @@ class SetDeviceMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             import os
-            def set_device(device):
+            def _get_device(device):
                 if isinstance(device, int):
-                    return "gpu:"+str(device)
-                elif device == "cpu" or device == None:
+                    return f"gpu:{device}"
+                elif isinstance(device, str):
+                    if "cuda" in device:
+                        return device.replace("cuda", "gpu")
+                    return device
+                elif isinstance(device, paddle.CPUPlace) or (device is None):
                     return "cpu"
-                else:
-                    return str(device).replace("cuda", "gpu")
-
+                elif isinstance(device, paddle.CUDAPlace):
+                    return f"gpu:{device.get_device_id()}"
             """
         )
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        # NOTE :paddle.device.set_device only recevice str type
-        if kwargs["device"].replace("(", "").replace(")", "").isdigit():
-            # case 1: torch.cuda.set_device(0) => paddle.device.set_device("gpu:0")
-            kwargs["device"] = '"gpu:{}"'.format(
-                kwargs["device"].replace("(", "").replace(")", "")
-            )
-        elif "cuda:" in kwargs["device"] and "if" not in kwargs["device"]:
-            # case 2: torch.cuda.set_device("cuda:0") => paddle.device.set_device("gpu:0")
-            kwargs["device"] = kwargs["device"].replace("cuda", "gpu")
-        else:
-            # case 3: num=2 torch.cuda.set_device(num) => paddle.device.set_device("gpu:2")
-            # case 4: torch.cuda.set_device(device="cuda:0" if cond else "cuda;1")
-            # case 5: torch.cuda.set_device(device=0 if cond else 1)
-            self.enable_utils_code()
-            return """{}(device=set_device({}))""".format(
-                self.get_paddle_api(), kwargs["device"]
-            )
-        return """{}(device={})""".format(self.get_paddle_api(), kwargs["device"])
+        # NOTE :paddle.set_device only recevice str type
+        device = kwargs.pop("device")
+        if len(device) <= 12:
+            if device.strip("()").isdigit():
+                # case 1: torch.cuda.set_device(0) => paddle.device.set_device("gpu:0")
+                device = "'gpu:{}'".format(device.strip("()"))
+                return "{}(device={})".format(self.get_paddle_api(), device)
+            elif "cuda" in device:
+                # case 2: torch.cuda.set_device("cuda:0") => paddle.device.set_device("gpu:0")
+                # case 3: torch.cuda.set_device(device="cuda:0" if cond else "cuda:1")
+                device = device.replace("cuda", "gpu")
+                return "{}(device={})".format(self.get_paddle_api(), device)
+            # may append more, which is easy to identify and remain same with origin
+            elif "cpu" in device:
+                return "{}(device={})".format(self.get_paddle_api(), device)
+
+        # case 4: num=2 torch.cuda.set_device(num) => paddle.device.set_device("gpu:2")
+        # case 5: torch.cuda.set_device(device=0 if cond else 1)
+        # case 6: device='cpu' torch.cuda.set_device(device) => paddle.device.set_device("cpu")
+        # case 7: device='cuda:0' torch.cuda.set_device(device) => paddle.device.set_device("cuda:0")
+        self.enable_utils_code()
+        return "{}(device=_get_device({}))".format(self.get_paddle_api(), device)
 
 
 class TensorViewMatcher(BaseMatcher):
