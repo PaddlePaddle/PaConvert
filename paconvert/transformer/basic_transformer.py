@@ -590,6 +590,7 @@ class BasicTransformer(BaseTransformer):
             )
             if node_list == "delete":
                 if isinstance(self.parent_node, ast.Expr):
+                    # todo: need to check if it is a class method
                     self.success_api_count += 1
                     log_info(
                         self.logger,
