@@ -85,7 +85,7 @@ def test_case_6():
         import torch
         x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
         y = torch.tensor([[8., 3., 3.], [2., 3., 4.]])
-        result = torch.cosine_similarity(x1=x, x2=y, dim=1, eps=1e-5)
+        result = torch.cosine_similarity(x1=x, x2=y, axis=1, eps=1e-5)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -111,7 +111,7 @@ def test_case_8():
         import torch
         x = torch.tensor([[1., 2., 3.], [2., 3., 4.]])
         y = torch.tensor([[8., 3., 3.], [2., 3., 4.]])
-        result = torch.cosine_similarity(eps=1e-5, dim=1, x2=y, x1=x)
+        result = torch.cosine_similarity(eps=1e-5, axis=1, x2=y, x1=x)
         """
     )
     obj.run(pytorch_code, ["result"])
