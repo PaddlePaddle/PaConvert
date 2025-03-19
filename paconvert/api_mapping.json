@@ -11825,17 +11825,13 @@
     "paddle_api": "paddle.nn.Layer.state_dict",
     "min_input_args": 0,
     "args_list": [
-      "*",
       "destination",
       "prefix",
       "keep_vars"
     ],
     "kwargs_change": {
       "prefix": "structured_name_prefix"
-    },
-    "unsupport_args": [
-      "destination"
-    ]
+    }
   },
   "torch.nn.Module.to": {
     "Matcher": "ModuleToMatcher",
@@ -15695,19 +15691,20 @@
     }
   },
   "torch.randint_like": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "RandintLikeMatcher",
     "paddle_api": "paddle.randint_like",
-    "min_input_args": 3,
+    "min_input_args": 2,
     "args_list": [
       "input",
       "low",
       "high",
       "*",
+      "memory_format",
       "dtype",
       "layout",
       "device",
-      "requires_grad",
-      "memory_format"
+      "pin_memory",
+      "requires_grad"
     ],
     "kwargs_change": {
       "input": "x",

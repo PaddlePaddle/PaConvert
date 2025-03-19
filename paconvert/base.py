@@ -345,8 +345,7 @@ class BaseMatcher(object):
         posion_args_list = group_list[0] if len(group_list) > 0 else []
         force_kwargs_list = group_list[1] if len(group_list) > 1 else []
         force_kwargs_num = 0
-        tmp_kwargs = kwargs
-        for node in tmp_kwargs:
+        for node in kwargs:
             k = node.arg
             # not support 'torch.rot90(tensor, **config)'
             if k is None:
@@ -362,6 +361,10 @@ class BaseMatcher(object):
                 return "misidentify"
             if k in force_kwargs_list:
                 force_kwargs_num += 1
+        for i, node in enumerate(args):
+            # not support 'torch.rot90(tensor, *config)'
+            if isinstance(node, ast.Starred):
+                return None
 
         posion_args_num = len(args) + len(kwargs) - force_kwargs_num
         if posion_args_num < min_input_args_num:
@@ -371,15 +374,11 @@ class BaseMatcher(object):
 
         new_kwargs = {}
         for i, node in enumerate(args):
-            # not support 'torch.rot90(tensor, *config)'
-            if isinstance(node, ast.Starred):
-                return None
-            k = args_list[i]
+            k = posion_args_list[i]
             # not support some API args
             if k in unsupport_args:
                 return None
             v = astor.to_source(node).replace("\n", "")
-            # have comma indicates a tuple
             new_kwargs[k] = v
 
         for node in kwargs:

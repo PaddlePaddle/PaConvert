@@ -14,6 +14,8 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.randint")
@@ -85,8 +87,7 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        out = torch.empty(2, 2, dtype=torch.int32)
-        result = torch.randint(3, 10, (2, 2), generator=None, out=out, dtype=torch.int32, layout=torch.strided, device=torch.device('cpu'), pin_memory=False, requires_grad=False)
+        result = torch.randint(3, 10, (2, 2), generator=None, dtype=torch.int64, layout=torch.strided, device=torch.device('cpu'), pin_memory=False, requires_grad=False)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -98,7 +99,7 @@ def test_case_8():
         """
         import torch
         out = torch.empty(2, 2, dtype=torch.int32)
-        result = torch.randint(low=3, high=10, size=(2, 2), generator=None, out=out, dtype=torch.int32, layout=torch.strided, device=torch.device('cpu'), pin_memory=False, requires_grad=False)
+        result = torch.randint(low=3, high=10, size=(2, 2), generator=None, out=out, dtype=torch.int32, layout=torch.strided, device=torch.device('cpu'), pin_memory=False)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -111,6 +112,46 @@ def test_case_9():
         import torch
         out = torch.empty(2, 2, dtype=torch.int32)
         result = torch.randint(requires_grad=False, pin_memory=False, device=torch.device('cpu'), layout=torch.strided, dtype=torch.int32, out=out, generator=None, size=(2, 2), high=10, low=3)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        high = 10
+        size = (2, 2)
+        result = torch.randint(high, size)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        high = 10
+        size = (2, 2)
+        result = torch.randint(high, size=size)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        high = 10
+        size = (2, 2)
+        result = torch.randint(high=high, size=size, generator=None, dtype=torch.int64, layout=torch.strided, device=torch.device('cpu'), pin_memory=True)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
