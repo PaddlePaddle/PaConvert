@@ -4532,14 +4532,6 @@
       "self"
     ]
   },
-  "torch._foreach_exp_": {
-    "Matcher": "ForeachMatcher",
-    "paddle_api": "paddle.exp_",
-    "min_input_args": 1,
-    "args_list": [
-      "self"
-    ]
-  },
   "torch._foreach_expm1": {
     "Matcher": "ForeachMatcher",
     "paddle_api": "paddle.expm1",
