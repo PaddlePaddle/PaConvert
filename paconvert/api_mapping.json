@@ -9076,7 +9076,7 @@
   "torch.jit.script": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.jit.to_static",
-    "min_input_args": 1,
+    "min_input_args": 0,
     "args_list": [
       "obj",
       "optimize",
