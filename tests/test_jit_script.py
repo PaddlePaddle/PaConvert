@@ -19,10 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.jit.script")
 
 
-# TODO(to fix):
-# TorchScript requires source access in order to carry out compilation, make sure original .py files are available.
-# So we can't run this test case by using exec(obj.code).
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -33,4 +30,86 @@ def _test_case_1():
         result = foo(x,x,x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    paddle_code = textwrap.dedent(
+        """
+        import paddle
+
+
+        @paddle.jit.to_static
+        def foo(x, scale, shift):
+            return shift + scale * x
+
+
+        x = paddle.to_tensor(data=[-1, -2, 3.0])
+        result = foo(x, x, x)
+        """
+    )
+    obj.run(pytorch_code, expect_paddle_code=paddle_code)
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        def add(x, y):
+            return x + y
+
+
+        scripted_add = torch.jit.script(add)
+
+        x = torch.tensor(1)
+        y = torch.tensor(2)
+        result = scripted_add(x, y)
+        """
+    )
+    paddle_code = textwrap.dedent(
+        """
+        import paddle
+
+
+        def add(x, y):
+            return x + y
+
+
+        scripted_add = paddle.jit.to_static(function=add)
+        x = paddle.to_tensor(data=1)
+        y = paddle.to_tensor(data=2)
+        result = scripted_add(x, y)
+        """
+    )
+    obj.run(pytorch_code, expect_paddle_code=paddle_code)
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        def add(x, y):
+            return x + y
+
+
+        scripted_add = torch.jit.script(obj=add, optimize=True, example_inputs=[torch.tensor([0]), torch.tensor([2])])
+
+        x = torch.tensor(1)
+        y = torch.tensor(2)
+        result = scripted_add(x, y)
+        """
+    )
+    paddle_code = textwrap.dedent(
+        """
+        import paddle
+
+
+        def add(x, y):
+            return x + y
+
+
+        scripted_add = paddle.jit.to_static(
+            function=add, input_spec=[paddle.to_tensor(data=[0]), paddle.to_tensor(data=[2])]
+        )
+        x = paddle.to_tensor(data=1)
+        y = paddle.to_tensor(data=2)
+        result = scripted_add(x, y)
+        """
+    )
+    obj.run(pytorch_code, expect_paddle_code=paddle_code)
