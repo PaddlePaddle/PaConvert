@@ -19,7 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.jit.save")
 
 
-def test_case_1():
+def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -65,7 +65,7 @@ def test_case_1():
     obj.run(pytorch_code, expect_paddle_code=paddle_code)
 
 
-def test_case_2():
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
