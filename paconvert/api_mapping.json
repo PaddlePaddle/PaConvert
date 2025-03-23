@@ -9057,7 +9057,7 @@
     ]
   },
   "torch.jit.save": {
-    "Matcher": "DeleteMatcher",
+    "Matcher": "JitSaveMatcher",
     "paddle_api": "paddle.jit.save",
     "min_input_args": 1,
     "args_list": [

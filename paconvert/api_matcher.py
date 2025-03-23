@@ -6195,7 +6195,10 @@ class ForeachMatcher(BaseMatcher):
 
 class DistributedBackendMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        return "{}.lower()".format(kwargs["name"])
+        if "name" in kwargs:
+            return "{}.lower()".format(kwargs["name"])
+        else:
+            return None
 
 
 class JitSaveMatcher(BaseMatcher):
