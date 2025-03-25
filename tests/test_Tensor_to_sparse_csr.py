@@ -31,9 +31,7 @@ class TensorToSpareCsrAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        pytorch_result = pytorch_result.cpu().to_dense()
-
-        pytorch_numpy = pytorch_result.numpy()
+        pytorch_numpy = pytorch_result.cpu().to_dense().numpy()
         paddle_numpy = paddle_result.to_dense().numpy()
         assert (
             pytorch_numpy.dtype == paddle_numpy.dtype

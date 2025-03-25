@@ -58,3 +58,34 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = "UCC"
+        result = torch.distributed.Backend(name=input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.distributed.Backend("MPI")
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.distributed.Backend("XCCL")
+        """
+    )
+    obj.run(pytorch_code, ["result"])

@@ -30,7 +30,7 @@ def test_case_1():
             def forward(self, x):
                 return x * 2
 
-            @torch.jit.ignore()
+            @torch.jit.ignore
             def helper_function(self, x):
                 return x + 10
 
@@ -48,7 +48,7 @@ def test_case_1():
             def forward(self, x):
                 return x * 2
 
-            @paddle.jit.not_to_static()
+            @paddle.jit.not_to_static
             def helper_function(self, x):
                 return x + 10
 
