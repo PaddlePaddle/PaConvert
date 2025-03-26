@@ -6200,6 +6200,5 @@ class DistributedBackendMatcher(BaseMatcher):
 
 class JitSaveMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs["path"] = kwargs.pop("f")
-        kwargs["path"] = kwargs["path"] + ".rsplit('.', 1)[0]"
+        kwargs["path"] = f"{kwargs.pop('f')}.rsplit('.', 1)[0]"
         return GenericMatcher.generate_code(self, kwargs)
