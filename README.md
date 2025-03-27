@@ -219,8 +219,8 @@ ______      _____                          _
 
 以下大语言模型代码库已经支持一键 100%转换率，欢迎学习与交流：
 
-| 模型名                                                     | Pytorch 代码库地址                 | 支持类型   | 详细文档 |
-| ----------------------------------------------------------| ------------------------------ | ----------- | --------- |
+| 模型名                                                     | Pytorch 代码库地址                 | 支持类型   | 详细文档介绍 |
+| ----------------------------------------------------------| ------------------------------ | ----------- | ---------- |
 | Llama| https://github.com/meta-llama/llama.git  | 推理 | [Llama](https://github.com/PaddlePaddle/PaConvert/blob/master/docs/TypicalCase_Llama.md)|
 | Qwn | https://huggingface.co/Qwen/Qwen-7B-Chat  | 推理 | [Qwen](https://github.com/PaddlePaddle/PaConvert/blob/master/docs/TypicalCase_Qwen.md)  |
 
