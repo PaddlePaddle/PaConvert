@@ -4066,6 +4066,17 @@
     "Matcher": "TensorToSparseCooMatcher",
     "paddle_api": "paddle.Tensor.to_sparse_coo"
   },
+  "torch.Tensor.to_sparse_csr": {
+    "Matcher": "GenericMatcher",
+    "min_input_args": 0,
+    "paddle_api": "paddle.Tensor.to_sparse_csr",
+    "args_list": [
+      "dense_dim"
+    ],
+    "unsupport_args": [
+      "dense_dim"
+    ]
+  },
   "torch.Tensor.tolist": {
     "Matcher": "UnchangeMatcher",
     "min_input_args": 0
@@ -4508,6 +4519,38 @@
   "torch._foreach_erf_": {
     "Matcher": "ForeachMatcher",
     "paddle_api": "paddle.erf_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_exp": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.exp",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_expm1": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.expm1",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_expm1_": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.expm1_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_floor": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.floor",
     "min_input_args": 1,
     "args_list": [
       "self"
@@ -6482,6 +6525,14 @@
       "input": "x",
       "other": "y"
     }
+  },
+  "torch.distributed.Backend": {
+    "Matcher": "DistributedBackendMatcher",
+    "paddle_api": "torch.distributed.Backend",
+    "min_input_args": 1,
+    "args_list": [
+      "name"
+    ]
   },
   "torch.distributed.ReduceOp": {
     "Matcher": "Func2Attribute",
@@ -8978,6 +9029,17 @@
       "input": "x"
     }
   },
+  "torch.jit.ignore": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.jit.not_to_static",
+    "min_input_args": 0,
+    "args_list": [
+      "dropout"
+    ],
+    "unsupport_args": [
+      "dropout"
+    ]
+  },
   "torch.jit.load": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.jit.load",
@@ -8995,8 +9057,41 @@
       "_extra_files"
     ]
   },
+  "torch.jit.save": {
+    "Matcher": "JitSaveMatcher",
+    "paddle_api": "paddle.jit.save",
+    "min_input_args": 1,
+    "args_list": [
+      "m",
+      "f",
+      "_extra_files"
+    ],
+    "kwargs_change": {
+      "m": "layer",
+      "f": "path"
+    },
+    "unsupport_args": [
+      "_extra_files"
+    ]
+  },
   "torch.jit.script": {
-    "Matcher": "DeleteMatcher"
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.jit.to_static",
+    "min_input_args": 0,
+    "args_list": [
+      "obj",
+      "optimize",
+      "_frames_up",
+      "_rcb",
+      "example_inputs"
+    ],
+    "kwargs_change": {
+      "obj": "function",
+      "optimize": "",
+      "_frames_up": "",
+      "_rcb": "",
+      "example_inputs": "input_spec"
+    }
   },
   "torch.kl_div": {},
   "torch.kron": {

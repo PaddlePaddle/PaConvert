@@ -6212,3 +6212,14 @@ class ForeachMatcher(BaseMatcher):
         code = API_TEMPLATE.format(self.get_paddle_api(), kwargs["self"])
 
         return code
+
+
+class DistributedBackendMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        return "{}.lower()".format(kwargs["name"])
+
+
+class JitSaveMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["path"] = f"{kwargs.pop('f')}.rsplit('.', 1)[0]"
+        return GenericMatcher.generate_code(self, kwargs)
