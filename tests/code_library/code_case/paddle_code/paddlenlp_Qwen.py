@@ -153,7 +153,7 @@ output = paddle.nn.functional.flash_attention.flash_attn_unpadded(
     max_seqlen_q=seqlen_q,
     max_seqlen_k=seqlen_k,
     dropout=dropout_p,
-    scale=paddle.utils.try_import("math").sqrt(q.shape[-1]),
+    scale=self.softmax_scale,
     causal=is_causal,
 )[0]
 print("#########################case11#########################")

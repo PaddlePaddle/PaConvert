@@ -60,57 +60,38 @@ class GenericMatcher(BaseMatcher):
         return self.api_mapping_dict["paddle_api"]
 
     def generate_code(self, kwargs):
-        kwargs_change = {}
-        if "kwargs_change" in self.api_mapping_dict:
-            kwargs_change = self.api_mapping_dict["kwargs_change"]
-        new_kwargs = {}
-        for k in list(kwargs.keys()):
-            if k in kwargs_change:
-                if kwargs_change[k]:
-                    # rename/copy in new_kwargs
-                    if isinstance(kwargs_change[k], list):
-                        for v in kwargs_change[k]:
-                            new_kwargs[v] = kwargs[k]
-                    else:
-                        new_kwargs[kwargs_change[k]] = kwargs[k]
-                else:
-                    # remove in new_kwargs
-                    kwargs.pop(k)
-            else:
-                # copy to new_kwargs
-                new_kwargs[k] = kwargs.pop(k)
-
-                # common process for some args
-                if k in [
-                    "layout",
-                    "device",
-                    "memory_format",
-                    "inplace",
-                    "generator",
-                    "non_blocking",
-                    "async",
-                ]:
-                    new_kwargs.pop(k)
-
-        new_kwargs = self.set_paddle_default_kwargs(new_kwargs)
+        kwargs_change_value = self.api_mapping_dict.get("kwargs_change", {}).values()
+        kwargs = self.change_kwargs(
+            kwargs,
+            [
+                "layout",
+                "device",
+                "memory_format",
+                "inplace",
+                "generator",
+                "non_blocking",
+                "async",
+            ],
+        )
+        kwargs = self.set_paddle_default_kwargs(kwargs)
 
         dtype_v = "None"
-        if "dtype" in new_kwargs and "dtype" not in kwargs:
-            dtype_v = new_kwargs.pop("dtype")
+        if "dtype" in kwargs and "dtype" not in kwargs_change_value:
+            dtype_v = kwargs.pop("dtype")
 
         pin_memory_v = "(False)"
-        if "pin_memory" in new_kwargs and "pin_memory" not in kwargs:
-            pin_memory_v = new_kwargs.pop("pin_memory")
+        if "pin_memory" in kwargs and "pin_memory" not in kwargs_change_value:
+            pin_memory_v = kwargs.pop("pin_memory")
 
         stop_gradient_v = "None"
-        if "requires_grad" in new_kwargs and "requires_grad" not in kwargs:
-            stop_gradient_v = "not " + new_kwargs.pop("requires_grad").strip("()")
+        if "requires_grad" in kwargs and "requires_grad" not in kwargs_change_value:
+            stop_gradient_v = "not " + kwargs.pop("requires_grad").strip("()")
 
         out_v = "None"
-        if "out" in new_kwargs and "out" not in kwargs:
-            out_v = new_kwargs.pop("out")
+        if "out" in kwargs and "out" not in kwargs_change_value:
+            out_v = kwargs.pop("out")
 
-        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
+        code = "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
         if dtype_v != "None":
             code += ".astype({})".format(dtype_v)
@@ -214,30 +195,19 @@ class SliceScatterMatcher(BaseMatcher):
 
 class TensorFunc2PaddleFunc(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs_change = {}
-        if "kwargs_change" in self.api_mapping_dict:
-            kwargs_change = self.api_mapping_dict["kwargs_change"]
-
-        for k in list(kwargs.keys()):
-            if k in kwargs_change:
-                if kwargs_change[k]:
-                    kwargs[kwargs_change[k]] = kwargs.pop(k)
-                else:
-                    kwargs.pop(k)
-            else:
-                if k in [
-                    "layout",
-                    "device",
-                    "memory_format",
-                    "inplace",
-                    "generator",
-                    "non_blocking",
-                    "async",
-                ]:
-                    kwargs.pop(k)
-
+        kwargs = self.change_kwargs(
+            kwargs,
+            [
+                "layout",
+                "device",
+                "memory_format",
+                "inplace",
+                "generator",
+                "non_blocking",
+                "async",
+            ],
+        )
         kwargs = self.set_paddle_default_kwargs(kwargs)
-
         code = "{}({}, {})".format(
             self.get_paddle_api(), self.paddleClass, self.kwargs_to_str(kwargs)
         )
@@ -348,6 +318,7 @@ class InferenceModeMatcher(BaseMatcher):
         return code
 
 
+# TODO: fix hard code
 class AtleastMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         new_args = self.parse_args(args)
@@ -367,14 +338,16 @@ class UnchangeMatcher(BaseMatcher):
         return "unchange"
 
     def get_paddle_nodes(self, args, kwargs):
-        new_args = self.parse_args(args)
-        new_kwargs = self.parse_kwargs(kwargs)
-        if new_kwargs is not None:
-            code = "{}({})".format(
-                self.get_paddle_api(), self.args_and_kwargs_to_str(new_args, new_kwargs)
-            )
-            return ast.parse(code).body
-        return None
+        args = self.parse_args(args)
+        kwargs = self.parse_kwargs(kwargs, allow_none=True)
+        if kwargs is None:
+            return None
+        kwargs = self.change_kwargs(kwargs)
+        kwargs = self.set_paddle_default_kwargs(kwargs)
+        code = "{}({})".format(
+            self.get_paddle_api(), self.args_and_kwargs_to_str(args, kwargs)
+        )
+        return ast.parse(code).body
 
     def get_paddle_class_nodes(self, func, args, kwargs):
         return "unchange"
@@ -429,17 +402,8 @@ class SetFalseMatcher(BaseMatcher):
 
 class InitMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "generator" in kwargs:
-            kwargs.pop("generator")
-        kwargs_change = self.api_mapping_dict.get("kwargs_change", {})
-        for k in kwargs_change:
-            if k in kwargs:
-                kwargs[kwargs_change[k]] = kwargs.pop(k)
-
-        default_kwargs = self.api_mapping_dict.get("paddle_default_kwargs", {})
-        for k in default_kwargs:
-            if k not in kwargs:
-                kwargs[k] = default_kwargs[k]
+        kwargs = self.change_kwargs(kwargs, ["generator"])
+        kwargs = self.set_paddle_default_kwargs(kwargs)
 
         init_tensor = kwargs.pop("tensor")
         API_TEMPLATE = textwrap.dedent(
@@ -630,11 +594,7 @@ class SignalWindowsWatcher(BaseMatcher):
 
 class Num2TensorBinaryWithAlphaMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs_change = self.api_mapping_dict.get("kwargs_change", {})
-        for k in kwargs_change:
-            if k in kwargs:
-                kwargs[kwargs_change[k]] = kwargs.pop(k)
-
+        kwargs = self.change_kwargs(kwargs)
         if "y" in kwargs:
             if "alpha" in kwargs:
                 kwargs["y"] = "paddle.to_tensor({}*{})".format(
@@ -895,22 +855,6 @@ class Is_InferenceMatcher(BaseMatcher):
 class IInfoMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         return "{}(dtype={})".format(self.get_paddle_api(), kwargs["type"])
-
-
-class SmoothL1LossMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        kwargs = self.parse_kwargs(kwargs)
-        beta = kwargs.get("beta", None)
-        if beta is not None:
-            beta = beta.replace("(", "").replace(")", "")
-            try:
-                beta = float(beta)
-                if float(beta) != 1.0:
-                    return None
-            except:
-                return None
-        code = SizeAverageMatcher.generate_code(self, kwargs)
-        return ast.parse(code).body
 
 
 class SwapAxesMatcher(BaseMatcher):
@@ -1451,36 +1395,18 @@ class TensorMinMatcher(BaseMatcher):
 
 class EqualMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs_change = {}
-        if "kwargs_change" in self.api_mapping_dict:
-            kwargs_change = self.api_mapping_dict["kwargs_change"]
-        new_kwargs = {}
-
-        for k in list(kwargs.keys()):
-            if k in kwargs_change:
-                if kwargs_change[k]:
-                    new_kwargs[kwargs_change[k]] = kwargs.pop(k)
-
+        kwargs = self.change_kwargs(kwargs)
         API_TEMPLATE = textwrap.dedent(
             """
             {}({}).item()
             """
         )
-
-        code = API_TEMPLATE.format(
-            self.get_paddle_api(), self.kwargs_to_str(new_kwargs)
-        )
-        return code.strip("\n")
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
 
 class FAFlashAttnFuncMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        new_kwargs = {}
-        for k in kwargs:
-            if k in self.api_mapping_dict["kwargs_change"]:
-                new_kwargs[self.api_mapping_dict["kwargs_change"][k]] = kwargs[k]
-            else:
-                new_kwargs[k] = kwargs[k]
+        kwargs = self.change_kwargs(kwargs)
 
         API_TEMPLATE = textwrap.dedent(
             """
@@ -1495,26 +1421,16 @@ class FAFlashAttnFuncMatcher(BaseMatcher):
             """
             )
             return Assert_TEMPLATE.format(
-                new_kwargs["softmax_scale"],
-                new_kwargs.pop("softmax_scale"),
-                new_kwargs["query"],
-            ) + API_TEMPLATE.format(
-                self.get_paddle_api(), self.kwargs_to_str(new_kwargs)
-            )
-        return API_TEMPLATE.format(
-            self.get_paddle_api(), self.kwargs_to_str(new_kwargs)
-        )
+                kwargs["softmax_scale"],
+                kwargs.pop("softmax_scale"),
+                kwargs["query"],
+            ) + API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
 
 class FAFlashAttnUnpaddedFuncMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        new_kwargs = {}
-        for k in kwargs:
-            if k in self.api_mapping_dict["kwargs_change"]:
-                new_kwargs[self.api_mapping_dict["kwargs_change"][k]] = kwargs[k]
-            else:
-                new_kwargs[k] = kwargs[k]
-
+        kwargs = self.change_kwargs(kwargs)
         API_TEMPLATE = textwrap.dedent(
             """
             assert paddle.device.cuda.get_device_capability()[0] >= 8, "Fault: Your device computational capabilities less 8"
@@ -1522,15 +1438,13 @@ class FAFlashAttnUnpaddedFuncMatcher(BaseMatcher):
             """
         )
         if "scale" not in kwargs:
-            new_kwargs[
+            kwargs[
                 "scale"
             ] = 'paddle.utils.try_import("math").sqrt({}.shape[-1])'.format(
-                new_kwargs["query"]
+                kwargs["query"]
             )
 
-        return API_TEMPLATE.format(
-            self.get_paddle_api(), self.kwargs_to_str(new_kwargs)
-        )
+        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
 
 class TRFMGetLoggerMatcher(BaseMatcher):
@@ -3921,15 +3835,8 @@ class FunctionalSmoothL1LossMatcher(BaseMatcher):
 
 class DoubleAssignMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        kwargs = self.change_kwargs(kwargs)
         kwargs = self.set_paddle_default_kwargs(kwargs)
-        kwargs_change = self.api_mapping_dict.get("kwargs_change", {})
-        for k in kwargs_change:
-            if k in kwargs:
-                if kwargs[k]:
-                    kwargs[kwargs_change[k]] = kwargs.pop(k)
-                else:
-                    kwargs.pop(k)
-
         if "out" in kwargs:
             out_v = kwargs.pop("out")
             API_TEMPLATE = textwrap.dedent(
@@ -3948,16 +3855,8 @@ class DoubleAssignMatcher(BaseMatcher):
 
 class TripleAssignMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        kwargs = self.change_kwargs(kwargs)
         kwargs = self.set_paddle_default_kwargs(kwargs)
-        kwargs_change = self.api_mapping_dict.get("kwargs_change", {})
-
-        for k in kwargs_change:
-            if k in kwargs:
-                if kwargs_change[k]:
-                    kwargs[kwargs_change[k]] = kwargs.pop(k)
-                else:
-                    kwargs.pop(k)
-
         if "out" in kwargs:
             out_v = kwargs.pop("out")
             API_TEMPLATE = textwrap.dedent(
@@ -4236,14 +4135,7 @@ class SortMatcher(BaseMatcher):
         if "input" not in kwargs:
             kwargs["x"] = self.paddleClass
 
-        change_kwargs = self.api_mapping_dict["kwargs_change"]
-        for key in change_kwargs:
-            if key in kwargs:
-                if change_kwargs[key]:
-                    kwargs[change_kwargs[key]] = kwargs.pop(key)
-                else:
-                    kwargs.pop(key)
-
+        kwargs = self.change_kwargs(kwargs)
         if "out" not in kwargs:
             code = "paddle.sort({}), paddle.argsort({})".format(
                 self.kwargs_to_str(kwargs), self.kwargs_to_str(kwargs)
@@ -4464,18 +4356,10 @@ class OptimAdamMatcher(BaseMatcher):
 
 class LRSchedulerMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        kwargs = self.change_kwargs(kwargs)
+        kwargs = self.set_paddle_default_kwargs(kwargs)
+
         optimizer = kwargs.pop("optimizer")
-
-        kwargs_change = self.api_mapping_dict.get("kwargs_change", {})
-        for k in kwargs_change:
-            if k in kwargs:
-                kwargs[kwargs_change[k]] = kwargs.pop(k)
-
-        default_kwargs = self.api_mapping_dict.get("paddle_default_kwargs", {})
-        for k in default_kwargs:
-            if k not in kwargs:
-                kwargs[k] = default_kwargs[k]
-
         API_TEMPLATE = textwrap.dedent(
             """
             tmp_lr = {}({})
@@ -5457,15 +5341,8 @@ class ScalableVarMatcher(BaseMatcher):
 
 class Lu_unpackMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        kwargs = self.change_kwargs(kwargs)
         kwargs = self.set_paddle_default_kwargs(kwargs)
-        kwargs_change = self.api_mapping_dict.get("kwargs_change", {})
-
-        for k in kwargs_change:
-            if k in kwargs:
-                if kwargs_change[k]:
-                    kwargs[kwargs_change[k]] = kwargs.pop(k)
-                else:
-                    kwargs.pop(k)
 
         out_v = kwargs.pop("out", "None")
         if out_v != "None":
@@ -5501,14 +5378,9 @@ class Lu_unpackMatcher(BaseMatcher):
 
 class Linalg_qrMatcher(BaseMatcher):
     def generate_code(self, kwargs):
+        kwargs = self.change_kwargs(kwargs)
         kwargs = self.set_paddle_default_kwargs(kwargs)
-        kwargs_change = self.api_mapping_dict.get("kwargs_change", {})
-        for k in kwargs_change:
-            if k in kwargs:
-                if kwargs[k]:
-                    kwargs[kwargs_change[k]] = kwargs.pop(k)
-                else:
-                    kwargs.pop(k)
+
         if "mode" in kwargs and kwargs["mode"] == '"""r"""':
             if "out" in kwargs:
                 out_v = kwargs.pop("out")
@@ -6011,34 +5883,6 @@ class RNNCellMatcher(BaseMatcher):
         self.enable_utils_code()
         self.set_paddle_api("SimpleRNNCell")
         return GenericMatcher.generate_code(self, kwargs)
-
-
-class ChangeKwargsMatcher(UnchangeMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        new_args = self.parse_args(args)
-        old_kwargs = self.parse_kwargs(kwargs)
-        new_kwargs = {}
-        kwargs_change = self.api_mapping_dict["kwargs_change"]
-        for k in list(old_kwargs.keys()):
-            if k in kwargs_change:
-                if kwargs_change[k]:
-                    if isinstance(kwargs_change[k], list):
-                        for v in kwargs_change[k]:
-                            new_kwargs[v] = old_kwargs[k]
-                    else:
-                        new_kwargs[kwargs_change[k]] = old_kwargs[k]
-                else:
-                    # remove in new_kwargs
-                    old_kwargs.pop(k)
-            else:
-                # copy to new_kwargs
-                new_kwargs[k] = old_kwargs.pop(k)
-        if new_kwargs is not None:
-            code = "{}({})".format(
-                self.get_paddle_api(), self.args_and_kwargs_to_str(new_args, new_kwargs)
-            )
-            return ast.parse(code).body
-        return None
 
 
 class StftMatcher(BaseMatcher):

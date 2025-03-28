@@ -332,7 +332,9 @@ class BaseMatcher(object):
         self.api_mapping_dict = api_mapping_dict
         self.logger = logger
 
-    def parse_args_and_kwargs(self, args, kwargs):
+    def parse_args_and_kwargs(
+        self, args, kwargs, allow_starred=False, allow_none=False
+    ):
         args_list = self.api_mapping_dict.get("args_list") or []
         # torch.dsplit has overload args
         overload_args_list = self.api_mapping_dict.get("overload_args_list") or []
@@ -345,10 +347,14 @@ class BaseMatcher(object):
         posion_args_list = group_list[0] if len(group_list) > 0 else []
         force_kwargs_list = group_list[1] if len(group_list) > 1 else []
         force_kwargs_num = 0
+        for node in args:
+            # not support 'torch.rot90(tensor, *config)'
+            if isinstance(node, ast.Starred) and not allow_starred:
+                return None
         for node in kwargs:
             k = node.arg
             # not support 'torch.rot90(tensor, **config)'
-            if k is None:
+            if k is None and not allow_none:
                 return None
             # not support some API args
             if k in unsupport_args:
@@ -361,10 +367,6 @@ class BaseMatcher(object):
                 return "misidentify"
             if k in force_kwargs_list:
                 force_kwargs_num += 1
-        for i, node in enumerate(args):
-            # not support 'torch.rot90(tensor, *config)'
-            if isinstance(node, ast.Starred):
-                return None
 
         posion_args_num = len(args) + len(kwargs) - force_kwargs_num
         if posion_args_num < min_input_args_num:
@@ -378,7 +380,7 @@ class BaseMatcher(object):
             # not support some API args
             if k in unsupport_args:
                 return None
-            v = astor.to_source(node).replace("\n", "")
+            v = astor.to_source(node).strip("\n")
             new_kwargs[k] = v
 
         for node in kwargs:
@@ -389,7 +391,7 @@ class BaseMatcher(object):
                     f"Parameter '{k}' specified multiple times - cannot be both positional and keyword argument",
                     self.transformer.file_name,
                 )
-            v = astor.to_source(node.value).replace("\n", "")
+            v = astor.to_source(node.value).strip("\n")
             new_kwargs[k] = v
 
         return new_kwargs
@@ -397,30 +399,32 @@ class BaseMatcher(object):
     def parse_args(self, args):
         new_args = []
         for node in args:
-            ele = astor.to_source(node).replace("\n", "")
+            # if isinstance(node, ast.Starred) and not allow_starred:
+            #    return None
+            ele = astor.to_source(node).strip("\n")
             new_args.append(ele)
 
         return new_args
 
-    def parse_kwargs(self, kwargs):
+    def parse_kwargs(self, kwargs, allow_none=False):
         unsupport_args = self.api_mapping_dict.get("unsupport_args") or []
 
         new_kwargs = {}
         for node in kwargs:
             k = node.arg
             # not support 'torch.rot90(tensor, **config)'
-            if k is None:
+            if k is None and not allow_none:
                 return None
             # not support some API args
             if k in unsupport_args:
                 return None
-            v = astor.to_source(node.value).replace("\n", "")
+            v = astor.to_source(node.value).strip("\n")
             new_kwargs[k] = v
 
         return new_kwargs
 
     def parse_func(self, func):
-        new_func = astor.to_source(func).replace("\n", "")
+        new_func = astor.to_source(func).strip("\n")
         self.paddleClass = new_func[0 : new_func.rfind(".")]
         if self.get_paddle_api():
             new_paddle_api = re.sub(
@@ -454,9 +458,30 @@ class BaseMatcher(object):
             str_list.append("{}".format(ele))
 
         for k, v in kwargs.items():
-            str_list.append("{}={}".format(k, v))
+            if k is None:
+                # 'torch.rot90(tensor, **config)'
+                str_list.append("**{}".format(v))
+            else:
+                str_list.append("{}={}".format(k, v))
 
         return ", ".join(str_list)
+
+    def change_kwargs(self, kwargs, unuse_args=[]):
+        new_kwargs = {}
+        kwargs_change = self.api_mapping_dict.get("kwargs_change", {})
+        for k in kwargs.keys():
+            if k in kwargs_change:
+                if kwargs_change[k]:
+                    if isinstance(kwargs_change[k], list):
+                        for v in kwargs_change[k]:
+                            new_kwargs[v] = kwargs[k]
+                    else:
+                        new_kwargs[kwargs_change[k]] = kwargs[k]
+            else:
+                new_kwargs[k] = kwargs[k]
+                if k in unuse_args:
+                    new_kwargs.pop(k)
+        return new_kwargs
 
     def get_full_attr(self, node):
         if isinstance(node, ast.Attribute):
