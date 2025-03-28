@@ -111,3 +111,30 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import functools
+        from torch.utils.checkpoint import checkpoint, create_selective_checkpoint_contexts
+
+        def f(x, y, z, transform):
+            intermediate1 = x * x if transform else x + x
+            intermediate2 = y * y + z
+            return intermediate1 * intermediate2
+
+        x = torch.randn(10, 10, requires_grad=True)
+        y = torch.randn(10, 10, requires_grad=True)
+        z = torch.randn(10, 10, requires_grad=True)
+        transform = True
+
+        def policy_fn(ctx, op, *args, **kwargs):
+           print(ctx.is_recompute)
+
+        context_fn = functools.partial(create_selective_checkpoint_contexts, policy_fn)
+        result = checkpoint(f, x, y, z, transform, use_reentrant=False, context_fn=context_fn, determinism_check="none", debug=False, preserve_rng_state=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
