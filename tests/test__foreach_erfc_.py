@@ -30,7 +30,6 @@ def test_case_1():
     obj.run(pytorch_code, ["result", "tensors"])
 
 
-
     pytorch_code = textwrap.dedent(
         """
         import torch
