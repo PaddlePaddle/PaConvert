@@ -80,6 +80,11 @@ def main():
         action="store_true",
         help="Disable format the converted code",
     )
+    parser.add_argument(
+        "--calculate_speed",
+        action="store_true",
+        help="Whether calculate speed",
+    )
 
     args = parser.parse_args()
 
@@ -140,6 +145,7 @@ def main():
         log_markdown=args.log_markdown,
         show_unsupport=args.show_unsupport,
         no_format=args.no_format,
+        calculate_speed=args.calculate_speed,
     )
     converter.run(args.in_dir, args.out_dir, args.exclude_dirs)
 

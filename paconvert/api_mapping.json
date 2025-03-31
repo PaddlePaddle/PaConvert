@@ -8704,7 +8704,8 @@
       "trust_repo": "",
       "verbose": "",
       "skip_validation": ""
-    }
+    },
+    "disable": true
   },
   "torch.hub.load_state_dict_from_url": {
     "Matcher": "LoadStateDictFromUrlMatcher",
@@ -17788,7 +17789,8 @@
     ],
     "kwargs_change": {
       "determinism_check": ""
-    }
+    },
+    "disable": true
   },
   "torch.utils.cpp_extension.BuildExtension": {
     "Matcher": "GenericMatcher",
