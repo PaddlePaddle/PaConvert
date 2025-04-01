@@ -12685,9 +12685,7 @@
       "size",
       "scale_factor",
       "mode",
-      "align_corners"
-    ],
-    "unsupport_args": [
+      "align_corners",
       "recompute_scale_factor"
     ],
     "min_input_args": 0
@@ -13521,7 +13519,6 @@
       "input": "x"
     },
     "unsupport_args": [
-      "recompute_scale_factor",
       "antialias"
     ],
     "min_input_args": 1
