@@ -12685,7 +12685,8 @@
       "size",
       "scale_factor",
       "mode",
-      "align_corners"
+      "align_corners",
+      "recompute_scale_factor"
     ],
     "unsupport_args": [
       "recompute_scale_factor"

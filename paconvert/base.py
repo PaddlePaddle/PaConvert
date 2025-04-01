@@ -382,7 +382,7 @@ class BaseMatcher(object):
             # not support some API args
             if k in unsupport_args:
                 return None
-            v = astor.to_source(node).replace("\n", "")
+            v = ast.unparse(node)
             new_kwargs[k] = v
 
         for node in kwargs:
@@ -393,7 +393,7 @@ class BaseMatcher(object):
                     f"Parameter '{k}' specified multiple times - cannot be both positional and keyword argument",
                     self.transformer.file_name,
                 )
-            v = astor.to_source(node.value).replace("\n", "")
+            v = ast.unparse(node.value)
             new_kwargs[k] = v
 
         return new_kwargs
@@ -403,7 +403,7 @@ class BaseMatcher(object):
         for node in args:
             # if isinstance(node, ast.Starred) and not allow_starred:
             #    return None
-            ele = astor.to_source(node).replace("\n", "")
+            ele = ast.unparse(node)
             new_args.append(ele)
 
         return new_args
@@ -420,7 +420,7 @@ class BaseMatcher(object):
             # not support some API args
             if k in unsupport_args:
                 return None
-            v = astor.to_source(node.value).replace("\n", "")
+            v = ast.unparse(node.value)
             new_kwargs[k] = v
 
         return new_kwargs
