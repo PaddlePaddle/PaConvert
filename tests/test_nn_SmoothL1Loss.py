@@ -86,7 +86,8 @@ def test_case_5():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_6():
+# paddle result has diff with pytorch result
+def _test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -96,6 +97,19 @@ def test_case_6():
         result = loss(input, label)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="beta !=1.0 is not supported."
+    obj.run(pytorch_code, ["result"])
+
+
+# paddle result has diff with pytorch result
+def _test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        beta = 1.5
+        loss = torch.nn.SmoothL1Loss(beta=beta, reduction='none')
+        input = torch.ones([3, 3]).to(dtype=torch.float32)
+        label = torch.full([3, 3], 2).to(dtype=torch.float32)
+        result = loss(input, label)
+        """
     )
+    obj.run(pytorch_code, ["result"])

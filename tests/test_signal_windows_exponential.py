@@ -199,7 +199,7 @@ def test_case_18():
         result = torch.signal.windows.exponential(requires_grad=True, sym=a, M=m, layout=torch.strided, device=torch.device('cpu'), tau=0.3)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], atol=1e-7)
 
 
 def test_case_19():

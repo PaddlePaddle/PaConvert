@@ -151,8 +151,8 @@ missing_matchers_whitelist = {
     "torch.nn.functional.ctc_loss": "torch log_softmax + ctc_loss is equivalent to paddle ctc_loss",
     "transformers.PreTrainedModel.get_head_mask": "transformers.PreTrainedModel.get_head_mask is completed in TRFMPreTrainedModelMatcher",
     "transformers.PreTrainedModel.post_init": "transformers.PreTrainedModel.post_init is completed in TRFMPreTrainedModelMatcher",
-    "torch.nn.modules.module.register_module_forward_hook": "Paconvert does not realize this api",
-    "torch.nn.modules.module.register_module_forward_pre_hook": "Paconvert does not realize this api",
+    "torch.nn.modules.module.register_module_forward_hook": "Paddle don't support global register hook",
+    "torch.nn.modules.module.register_module_forward_pre_hook": "Paddle don't support global register hook",
 }
 
 validate_whitelist = [

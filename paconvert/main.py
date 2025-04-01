@@ -80,12 +80,25 @@ def main():
         action="store_true",
         help="Disable format the converted code",
     )
+    parser.add_argument(
+        "--calculate_speed",
+        action="store_true",
+        help="Whether calculate speed",
+    )
 
     args = parser.parse_args()
 
+    converter = Converter(
+        log_dir=args.log_dir,
+        log_level=args.log_level,
+        log_markdown=args.log_markdown,
+        show_unsupport=args.show_unsupport,
+        no_format=args.no_format,
+        calculate_speed=args.calculate_speed,
+    )
+
     if args.run_check:
         cwd = os.path.dirname(__file__)
-        converter = Converter()
         converter.run(cwd + "/example_code.py", cwd + "/temp_out/example_code.py")
         sys.exit(0)
 
@@ -98,7 +111,6 @@ def main():
         in_dir = os.path.abspath(args.in_dir)
         for project_name in os.listdir(in_dir):
             project_dir = os.path.join(in_dir, project_name)
-            converter = Converter(show_unsupport=args.show_unsupport)
             converter.run(project_dir, args.out_dir, args.exclude_dirs)
             if converter.convert_rate == 1.0:
                 project_num_100 += 1
@@ -134,13 +146,6 @@ def main():
         sys.exit(0)
 
     assert args.in_dir is not None, "User must specify --in_dir "
-    converter = Converter(
-        log_dir=args.log_dir,
-        log_level=args.log_level,
-        log_markdown=args.log_markdown,
-        show_unsupport=args.show_unsupport,
-        no_format=args.no_format,
-    )
     converter.run(args.in_dir, args.out_dir, args.exclude_dirs)
 
     print(r"****************************************************************")

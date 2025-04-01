@@ -22,8 +22,8 @@ import os
 import re
 import shutil
 import black
-import astor
 import isort
+import astor
 
 from paconvert.transformer.basic_transformer import BasicTransformer
 from paconvert.transformer.import_transformer import ImportTransformer
@@ -51,6 +51,7 @@ class Converter:
         log_markdown=False,
         show_unsupport=False,
         no_format=False,
+        calculate_speed=False,
     ):
         self.imports_map = collections.defaultdict(dict)
         self.torch_api_count = 0
@@ -68,12 +69,19 @@ class Converter:
         self.unsupport_map = collections.defaultdict(int)
         self.convert_rate = 0.0
         self.no_format = no_format
+        self.calculate_speed = calculate_speed
+        self.line_count = 0
 
         log_info(self.logger, "===========================================")
         log_info(self.logger, "PyTorch to Paddle Convert Start ------>:")
         log_info(self.logger, "===========================================")
 
     def run(self, in_dir, out_dir=None, exclude_dirs=None):
+        if self.calculate_speed:
+            import time
+
+            start_time = time.time()
+
         in_dir = os.path.abspath(in_dir)
         if out_dir is None:
             out_dir = os.getcwd() + "/paddle_project"
@@ -190,6 +198,18 @@ class Converter:
                     "(https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html)来手工转换。"
                     "未来飞桨完善此部分功能后，这些API将被支持自动转换。\n".format(faild_api_count),
                 )
+
+        if self.calculate_speed:
+            end_time = time.time()
+            cost_time = end_time - start_time
+            speed = self.line_count / cost_time
+            log_info(
+                self.logger,
+                "\nThe total lines of code is {}, The total conversion time is {:.4f} s, Convert Speed is {:.4f} lines per second.\n".format(
+                    self.line_count, cost_time, speed
+                ),
+            )
+
         return self.success_api_count, faild_api_count
 
     def transfer_dir(self, in_dir, out_dir, exclude_dir_list):
@@ -247,6 +267,8 @@ class Converter:
             )
             with open(old_path, "r", encoding="UTF-8") as f:
                 code = f.read()
+                if self.calculate_speed:
+                    self.line_count += len(code.splitlines())
                 root = ast.parse(code)
 
             self.transfer_node(root, old_path)
