@@ -22,8 +22,8 @@ import os
 import re
 import shutil
 import black
-import astor
 import isort
+import astor
 
 from paconvert.transformer.basic_transformer import BasicTransformer
 from paconvert.transformer.import_transformer import ImportTransformer

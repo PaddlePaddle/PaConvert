@@ -8685,7 +8685,7 @@
     }
   },
   "torch.hub.load": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "UnchangeMatcher",
     "paddle_api": "paddle.hub.load",
     "min_input_args": 2,
     "args_list": [
@@ -8704,8 +8704,7 @@
       "trust_repo": "",
       "verbose": "",
       "skip_validation": ""
-    },
-    "disable": true
+    }
   },
   "torch.hub.load_state_dict_from_url": {
     "Matcher": "LoadStateDictFromUrlMatcher",
@@ -12354,7 +12353,7 @@
     "min_input_args": 0
   },
   "torch.nn.SmoothL1Loss": {
-    "Matcher": "SmoothL1LossMatcher",
+    "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.SmoothL1Loss",
     "min_input_args": 0,
     "args_list": [
@@ -17776,21 +17775,24 @@
     }
   },
   "torch.utils.checkpoint.checkpoint": {
-    "Matcher": "ChangeKwargsMatcher",
+    "Matcher": "UnchangeMatcher",
     "paddle_api": "paddle.distributed.fleet.utils.recompute",
     "min_input_args": 1,
     "args_list": [
       "function",
       "*args",
-      "preserve_rng_state",
       "use_reentrant",
+      "context_fn",
       "determinism_check",
+      "debug",
+      "preserve_rng_state",
       "**kwargs"
     ],
     "kwargs_change": {
-      "determinism_check": ""
-    },
-    "disable": true
+      "context_fn": "",
+      "determinism_check": "",
+      "debug": ""
+    }
   },
   "torch.utils.cpp_extension.BuildExtension": {
     "Matcher": "GenericMatcher",
@@ -20006,6 +20008,13 @@
       "past_key_values",
       "hidden_states",
       "attentions"
+    ]
+  },
+  "transformers.utils.add_start_docstrings_to_model_forward": {
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddlenlp.trainer.utils.add_start_docstrings_to_model_forward",
+    "args_list": [
+      "*docstr"
     ]
   }
 }
