@@ -6218,10 +6218,7 @@ class Foreach_Matcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def foreach_operator_(func, tensors):
-                result = []
-                for x in tensors:
-                    result.append(paddle.assign(func(x), x))
-                return result
+                return [paddle.assign(func(x), x) for x in tensors]
             """
         )
         return CODE_TEMPLATE
