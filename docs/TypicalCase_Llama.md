@@ -40,7 +40,7 @@ tar -xvf LLama-7B-Weights.tar.gz
 # LLama-7B-Weights/tokenizer.model
 ```
 
-如需手动转换原始 Pytorch 权重可参考[模型格式转换](https://github.com/PaddlePaddle/PaddleNLP/blob/develop/docs/en/community/contribute_models/convert_pytorch_to_paddle.rst)。
+如需手动转换原始 Pytorch 权重可参考[模型格式转换](https://github.com/PaddlePaddle/PaddleNLP/blob/develop/docs/zh/community/contribute_models/convert_pytorch_to_paddle.rst)。
 
 
 ## 步骤4：运行转换后代码
