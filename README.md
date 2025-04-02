@@ -21,9 +21,9 @@
 
 转换过程中不会改动原文件，会将原项目中的文件一一转换到 `out_dir` 文件夹中（如不指定`out_dir`，则默认在当前目录下新建`paddle_project/`）。
 
-## 安装
+## 安装使用
 
-### 1. IDE 交互式用法
+#### 1. IDE交互式用法
 
 在 IDE 中交互式编程使用，界面友好，使用门槛低。
 
@@ -32,7 +32,7 @@
 ![img](./images/comate_paconvert.jpeg)
 
 
-### 2. 命令行用法
+#### 2. 命令行用法
 
 通过终端命令行的方式使用，有一定使用门槛：
 
@@ -54,7 +54,7 @@ paconvert --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs excl
 ```
 
 
-## 示例
+## 转换示例
 
 以下面一个简单的 Pytorch Demo 代码为例：
 
