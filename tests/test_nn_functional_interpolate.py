@@ -87,15 +87,10 @@ def test_case_6():
 
         x = torch.tensor([[[1., 2., 3.], [2., 3., 4.]]])
         result = F.interpolate(input=x, size=None, scale_factor=3, mode='linear', align_corners=False,
-                                recompute_scale_factor=False, antialias=False)
+                                recompute_scale_factor=True, antialias=False)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle unsupport parameter recompute_scale_factor",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_7():
@@ -105,16 +100,11 @@ def test_case_7():
         import torch.nn.functional as F
 
         x = torch.tensor([[[1., 2., 3.], [2., 3., 4.]]])
-        result = F.interpolate(input=x, scale_factor=3, size=None, recompute_scale_factor=False, mode='linear', align_corners=False,
+        result = F.interpolate(input=x, scale_factor=3, size=None, recompute_scale_factor=True, mode='linear', align_corners=False,
                                 antialias=False)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle unsupport parameter recompute_scale_factor",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_8():
@@ -124,12 +114,7 @@ def test_case_8():
         import torch.nn.functional as F
 
         x = torch.tensor([[[1., 2., 3.], [2., 3., 4.]]])
-        result = F.interpolate(x, None, 3, 'linear', False, False, False)
+        result = F.interpolate(x, None, 3, 'linear', False, True, False)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle unsupport parameter recompute_scale_factor",
-    )
+    obj.run(pytorch_code, ["result"])
