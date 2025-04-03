@@ -163,8 +163,8 @@ if [[ "$DOWNLOAD_DATASET_IF" == "ON" ]]; then
     git clone https://github.com/allenai/primer $TORCH_PROJECT_PATH/primer
 fi
 
-# Check the grammar mechanism of the test set and other issues
-echo '**************************start converting test case********************************'
+echo '************************************************************************************'
+echo '**************************start converting code set*********************************'
 failed_projects=()
 for project in "$TORCH_PROJECT_PATH"/*; do
     if [ -d "$project" ]; then
@@ -177,14 +177,11 @@ for project in "$TORCH_PROJECT_PATH"/*; do
     fi
 done
 
-# Check if there are failed projects
 check_error1=$(( ${#failed_projects[@]} > 0 ? 1 : 0 ))
+
 echo '************************************************************************************'
-#check whether common API transfer is successful
-
-echo '**************************start converting common API case********************************'
+echo '**************************start converting common API case**************************'
 python tools/consistency/consistency_check.py;check_error2=$?
-
 
 echo '************************************************************************************'
 echo "______      _____                          _   "
@@ -200,7 +197,7 @@ if [ ${check_error1} != 0  ]; then
     echo "The following projects failed to convert:"
     printf '%s\n' "${failed_projects[@]}"
 else
-    echo "Your PR code-test-set (more than 15W+ lines) convert check passed."
+    echo "Your PR code-test-set (more than 20W+ lines) convert check passed."
 fi
 
 if [ ${check_error2} != 0  ]; then  

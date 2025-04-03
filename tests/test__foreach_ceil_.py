@@ -14,17 +14,38 @@
 
 import textwrap
 
-from test_device import DeviceAPIBase
+from apibase import APIBase
 
-obj = DeviceAPIBase("torch.get_default_device")
+obj = APIBase("torch._foreach_ceil_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.set_default_device('cpu')
-        result = torch.get_default_device()
+        tensors = [torch.tensor([0.34, -0.56, 0.73]), torch.tensor([0.5, -1.0])]
+        result = torch._foreach_ceil_(tensors)
+        """
+    )
+    obj.run(pytorch_code, ["result", "tensors"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        tensors = [torch.tensor([0.34, -0.56, 0.73]), torch.tensor([0.5, -1.0])]
+        result = torch._foreach_ceil_(self=tensors)
+        """
+    )
+    obj.run(pytorch_code, ["result", "tensors"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch._foreach_ceil_(self = [torch.tensor([0.34, -0.56, 0.73]), torch.tensor([0.5, -1.0])])
         """
     )
     obj.run(pytorch_code, ["result"])
