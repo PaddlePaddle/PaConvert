@@ -4270,11 +4270,9 @@
       "dim"
     ],
     "kwargs_change": {
+      "sorted": "",
       "dim": "axis"
-    },
-    "unsupport_args": [
-      "sorted"
-    ]
+    }
   },
   "torch.Tensor.unique_consecutive": {
     "Matcher": "GenericMatcher",
