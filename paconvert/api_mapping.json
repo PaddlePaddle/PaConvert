@@ -5095,7 +5095,7 @@
   "torch.atleast_1d": {
     "Matcher": "AtleastMatcher",
     "paddle_api": "paddle.atleast_1d",
-    "min_input_args": 1,
+    "min_input_args": 0,
     "args_list": [
       "*tensors"
     ]
@@ -12754,7 +12754,8 @@
       "size",
       "scale_factor",
       "mode",
-      "align_corners"
+      "align_corners",
+      "recompute_scale_factor"
     ],
     "unsupport_args": [
       "recompute_scale_factor"

@@ -33,7 +33,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        y = torch.tensor([1.23], dtype=torch.float32)
+        y = torch.tensor([-1, -2, 3])
         result = torch.atleast_2d((torch.tensor(123, dtype=torch.int32), y))
         """
     )
@@ -45,6 +45,124 @@ def test_case_3():
         """
         import torch
         result = torch.atleast_2d([torch.tensor([-1, -2, 3]), torch.tensor([-1, -2, 3])])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor(1)
+        result = torch.atleast_2d(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor(1)
+        y = torch.tensor(2)
+        z = torch.tensor(3)
+        result = torch.atleast_2d((x, y, z))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor(1)
+        y = torch.tensor(2)
+        z = torch.tensor(3)
+        result = torch.atleast_2d([x, y, z])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# TODO: fix torch.atleast bug, which not support input list/tuple
+def _test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor(1)
+        y = torch.tensor(2)
+        z = torch.tensor(3)
+        tensors = [x, y, z]
+        result = torch.atleast_2d(tensors)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# TODO: fix torch.atleast bug, which not support input list/tuple
+def _test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor(1)
+        y = torch.tensor(2)
+        z = torch.tensor(3)
+        tensors = (x, y, z)
+        result = torch.atleast_2d(tensors)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor(1)
+        y = torch.tensor(2)
+        z = torch.tensor(3)
+        result = torch.atleast_2d(x, y, z)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor(1)
+        y = torch.tensor(2)
+        z = torch.tensor(3)
+        tensors = (x, y, z)
+        result = torch.atleast_2d(*tensors)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor(1)
+        y = torch.tensor(2)
+        z = torch.tensor(3)
+        tensors = [x, y, z]
+        result = torch.atleast_2d(*tensors)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.atleast_2d()
         """
     )
     obj.run(pytorch_code, ["result"])

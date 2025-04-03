@@ -192,8 +192,6 @@ class BaseTransformer(ast.NodeTransformer):
         for node in node_list:
             if isinstance(node, (ast.Import, ast.ImportFrom)):
                 import_nodes.append(node)
-            # python3.9: ast.unparse, now use ast.unparse
-            # python3.8: astor.to_source
             elif "sys.path" in astor.to_source(node):
                 import_nodes.append(node)
             else:
