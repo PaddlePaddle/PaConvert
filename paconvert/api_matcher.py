@@ -318,18 +318,14 @@ class InferenceModeMatcher(BaseMatcher):
         return code
 
 
-# TODO: fix hard code
+# TODO: fix torch.atleast bug, which not support input list/tuple
 class AtleastMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         new_args = self.parse_args(args)
-        if new_args[0][0] == "(" and new_args[0][-1] == ")":
-            new_args[0] = new_args[0][1:-1]
-        if new_args[0][0] == "[" and new_args[0][-1] == "]":
-            new_args[0] = new_args[0][1:-1]
-        new_kwargs = self.parse_kwargs(kwargs)
-        code = "{}({})".format(
-            self.get_paddle_api(), self.args_and_kwargs_to_str(new_args, new_kwargs)
-        )
+        if len(args) > 0 and isinstance(args[0], (ast.List, ast.Tuple)):
+            code = "{}(*{})".format(self.get_paddle_api(), self.args_to_str(new_args))
+        else:
+            code = "{}({})".format(self.get_paddle_api(), self.args_to_str(new_args))
         return ast.parse(code).body
 
 
@@ -6048,7 +6044,7 @@ class ForeachMatcher(BaseMatcher):
         self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            foreach_operator({},{})
+            foreach_operator({}, {})
             """
         )
         code = API_TEMPLATE.format(self.get_paddle_api(), kwargs["self"])
@@ -6070,11 +6066,10 @@ class Foreach_Matcher(BaseMatcher):
         self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            foreach_operator_({},{})
+            foreach_operator_({}, {})
             """
         )
         code = API_TEMPLATE.format(self.get_paddle_api(), kwargs["self"])
-
         return code
 
 
@@ -6090,14 +6085,24 @@ class JitSaveMatcher(BaseMatcher):
 
 
 class ForeachErfcMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def foreach_erfc(tensors):
+                return [(1-paddle.erf(x)) for x in tensors]
+
+            """
+        )
+        return CODE_TEMPLATE
+
     def generate_code(self, kwargs):
+        self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            tuple([(1-paddle.erf(x)) for x in {}])
+            foreach_erfc({})
             """
         )
         code = API_TEMPLATE.format(kwargs["self"])
-
         return code
 
 
@@ -6106,10 +6111,7 @@ class ForeachErfc_Matcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def foreach_erfc_(tensors):
-                result = []
-                for x in tensors:
-                    result.append(paddle.assign(1-paddle.erf(x), x))
-                return result
+                return [paddle.assign(1-paddle.erf(x), x) for x in tensors]
             """
         )
         return CODE_TEMPLATE
@@ -6122,5 +6124,4 @@ class ForeachErfc_Matcher(BaseMatcher):
             """
         )
         code = API_TEMPLATE.format(kwargs["self"])
-
         return code
