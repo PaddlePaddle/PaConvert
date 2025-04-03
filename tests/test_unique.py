@@ -66,9 +66,7 @@ def test_case_4():
         result = torch.unique(input=a, sorted=False, return_inverse=True, return_counts=False, dim=dim)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="Paddle not support 'sorted' "
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -94,9 +92,7 @@ def test_case_6():
         result = torch.unique(a, False, True, False, dim)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="Paddle not support 'sorted' "
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_7():
@@ -109,6 +105,4 @@ def test_case_7():
         result = torch.unique(return_inverse=True, input=a, return_counts=False, dim=dim, sorted=False)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="Paddle not support 'sorted' "
-    )
+    obj.run(pytorch_code, ["result"])
