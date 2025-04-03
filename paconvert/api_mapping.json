@@ -17740,11 +17740,9 @@
     ],
     "kwargs_change": {
       "input": "x",
+      "sorted": "",
       "dim": "axis"
-    },
-    "unsupport_args": [
-      "sorted"
-    ]
+    }
   },
   "torch.unique_consecutive": {
     "Matcher": "GenericMatcher",
