@@ -16,27 +16,9 @@ import textwrap
 
 import paddle
 import pytest
-from apibase import APIBase
+from test_cuda_current_device import CudaGetDeviceAPIBase
 
-
-class cudaSetDeviceAPI(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_shape=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-
-        assert pytorch_result == paddle_result.get_device_id()
-
-
-obj = cudaSetDeviceAPI("torch.cuda.set_device")
+obj = CudaGetDeviceAPIBase("torch.cuda.set_device")
 
 
 @pytest.mark.skipif(
@@ -69,8 +51,6 @@ def test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
-# NOTE: why not run?
-# paddle.device.set_device should support CUDAPlace/CPUPlace, but not supported currently.
 @pytest.mark.skipif(
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",

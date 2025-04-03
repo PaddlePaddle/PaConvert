@@ -14,12 +14,10 @@
 
 import textwrap
 
-import paddle
-import pytest
 from apibase import APIBase
 
 
-class CudaGetDeviceAPIBase(APIBase):
+class CpuCurrentDeviceAPIBase(APIBase):
     def compare(
         self,
         name,
@@ -32,22 +30,18 @@ class CudaGetDeviceAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        assert pytorch_result == int(paddle_result.replace("gpu:", ""))
+        assert pytorch_result == "cpu"
+        assert paddle_result in ["cpu", "gpu", "gpu:0"]
 
 
-obj = CudaGetDeviceAPIBase("torch.cuda.current_device")
+obj = CpuCurrentDeviceAPIBase("torch.cpu.current_device")
 
 
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="can only run on paddle with CUDA",
-)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.cuda.set_device(0)
-        result = torch.cuda.current_device()
+        result = torch.cpu.current_device()
         """
     )
     obj.run(pytorch_code, ["result"])

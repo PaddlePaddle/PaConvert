@@ -19,3 +19,4 @@ temp.txt
 test_set
 torch_project
 tensor.pt
+__pycache__
