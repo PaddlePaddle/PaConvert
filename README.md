@@ -221,10 +221,10 @@ ______      _____                          _
 
 | 模型名                                                     | Pytorch 代码库地址                 | 支持类型   | 详细介绍文档 |
 | ----------------------------------------------------------| ------------------------------ | ----------- | ---------- |
-| Llama| https://github.com/meta-llama/llama.git  | 推理 | [Llama](https://github.com/PaddlePaddle/PaConvert/blob/master/docs/TypicalCase_Llama.md)|
-| Qwn | https://huggingface.co/Qwen/Qwen-7B-Chat  | 推理 | [Qwen](https://github.com/PaddlePaddle/PaConvert/blob/master/docs/TypicalCase_Qwen.md)  |
+| Llama| https://github.com/meta-llama/llama.git  | 推理 | [Llama](./docs/TypicalCase_Llama.md)|
+| Qwn | https://huggingface.co/Qwen/Qwen-7B-Chat  | 推理 | [Qwen](./docs/TypicalCase_Qwen.md)  |
 
 
 ## 贡献代码
 
-代码自动转换工具（[PaConvert](https://github.com/PaddlePaddle/PaConvert)）为开源贡献形式，欢迎向我们贡献代码，详细开发步骤请参考 [贡献代码教程](docs/CONTRIBUTING.md)
+代码自动转换工具（[PaConvert](https://github.com/PaddlePaddle/PaConvert)）为开源贡献形式，欢迎向我们贡献代码，详细开发步骤请参考 [贡献代码教程](./docs/CONTRIBUTING.md)

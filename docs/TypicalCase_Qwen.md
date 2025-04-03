@@ -36,11 +36,11 @@ git clone http://git.aistudio.baidu.com/aistudio/qwen-7b-chat.git
 # 使用 model.safetensors.index.json, model-0000x-of-00004.safetensors 替换 ./convert_model/Qwen-7B-Chat 目录下的 model.safetensors.index.json, model-0000x-of-00008.safetensors。
 ```
 
-如需手动转换原始 Pytorch 权重可参考[模型格式转换](https://github.com/PaddlePaddle/PaddleNLP/blob/develop/docs/community/contribute_models/convert_pytorch_to_paddle.rst)。
+如需手动转换原始 Pytorch 权重可参考[模型格式转换](https://github.com/PaddlePaddle/PaddleNLP/blob/develop/docs/en/community/contribute_models/convert_pytorch_to_paddle.rst)。
 
 ## 步骤4：手动转换部分配置文件
 
-当前，部分LLM(Large Lanuange Model)的config配置文件可能需要手动修改以适配PaddlePaddle。
+当前，部分LLM(Large Language Model)的config配置文件可能需要手动修改以适配PaddlePaddle。
 
 ### 1. 修改config文件
 
