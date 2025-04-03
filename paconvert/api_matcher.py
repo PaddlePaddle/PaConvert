@@ -995,52 +995,54 @@ class ModuleToMatcher(BaseMatcher):
         return code
 
 
-# TODO: 参考SetDeviceMatcher来优化hard code
-class DeviceMatcher(BaseMatcher):
-    # NOTE: There is no completely equivalent API in Paddle. Matcher may need to be rewritten in the future.
-    def generate_code(self, kwargs):
-        if len(kwargs) == 1:
-            # NOTE: kwargs["type"] is """cuda:0""" , not cuda:0
-            if """cuda""" == kwargs["type"]:
-                # case1: torch.device("cuda")
-                code = "paddle.CUDAPlace()"
-            elif "cuda:" in kwargs["type"] and "if" not in kwargs["type"]:
-                # case2: torch.device("cuda:0")
-                code = "paddle.CUDAPlace({})".format(
-                    f'int({kwargs["type"]}.replace("cuda:", ""))'
-                )
-            elif "cpu" in kwargs["type"] and "if" not in kwargs["type"]:
-                # paddle.CPUPlace() does not accept input.
-                # case3: torch.device("cpu")
-                # case4: torch.device("cpu:0")
-                code = "paddle.CPUPlace()"
-            else:
-                # case5: torch.device("cpu:0" if condition else "cuda:0")
-                # case6: dev = xx, torch.device(dev)
-                code = f'str({kwargs["type"]}).replace("cuda", "gpu")'
-        if len(kwargs) == 2:
-            if "cuda" in kwargs["type"]:
-                # case7: torch.device("cuda",0)
-                code = "paddle.CUDAPlace({})".format(kwargs["index"])
-            elif "cpu" in kwargs["type"]:
-                # case8: torch.device("cpu",0)
-                code = "paddle.CPUPlace()"
-            else:
-                # case9: torch.device("xpu",0)
-                code = f'":".join([{kwargs["type"]}, str({kwargs["index"]})])'
-        return code
-
-
-class GetDevicePropertiesMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        API_TEMPLATE = textwrap.dedent(
+class Device2StrBaseMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
             """
-            {}(device={})
+            def device2str(type=None, index=None, *, device=None):
+                type = device if device else type
+                if isinstance(type, int):
+                    type = f'gpu:{type}'
+                elif isinstance(type, str):
+                    if 'cuda' in type:
+                        type = type.replace('cuda', 'gpu')
+                    if 'cpu' in type:
+                        type = 'cpu'
+                    elif index is not None:
+                        type = f'{type}:{index}'
+                elif isinstance(type, paddle.CPUPlace) or (type is None):
+                    type = 'cpu'
+                elif isinstance(type, paddle.CUDAPlace):
+                    type = f'gpu:{type.get_device_id()}'
+
+                return type
             """
         )
-        return API_TEMPLATE.format(
-            self.get_paddle_api(), kwargs["device"].replace("cuda", "gpu")
-        )
+        return CODE_TEMPLATE
+
+
+class TorchDevice2StrMatcher(Device2StrBaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        # case1: torch.device(1)
+        # case2: torch.device("cuda:1")
+        # case3: torch.device("cuda", 1)
+
+        # case4: torch.device(1 if cond else 0)
+        # case5: torch.device("cuda:1" if cond else "cpu")
+        # case6: torch.device("cuda" if cond else "cpu", 1 if cond else 0)
+
+        # case7: a=1; torch.device(a)
+        # case8: type="cuda:1"; torch.device(type)
+        # case9: type="cuda"; index=1; torch.device(type, index)
+
+        # case10: a=1 if cond else 0; torch.device(a)
+        # case11: type="cuda:1" if cond else "cpu"; torch.device(type)
+        # case12: type="cuda" if cond else "cpu"; index=1 if cond else 0; torch.device(type, index)
+        self.enable_utils_code()
+        args = self.parse_args(args)
+        kwargs = self.parse_kwargs(kwargs)
+        code = "device2str({})".format(self.args_and_kwargs_to_str(args, kwargs))
+        return ast.parse(code).body
 
 
 class GeluMatcher(BaseMatcher):
@@ -4459,36 +4461,6 @@ class SizeAverageMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-# TODO: 参考SetDeviceMatcher来优化hard code
-class CudaStreamMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-
-        if "priority" in kwargs:
-            kwargs["priority"] = "{}+2".format(kwargs["priority"])
-        if "device" in kwargs:
-            if kwargs["device"].strip("()").isdigit():
-                # case 1: device = 0
-                kwargs["device"] = '"gpu:{}"'.format(kwargs["device"].strip("()"))
-            elif "cuda:" in kwargs["device"] and "if" not in kwargs["device"]:
-                # case 2: device = "cuda:0"
-                kwargs["device"] = kwargs["device"].replace("cuda", "gpu")
-            else:
-                # case 3: num=2 torch.cuda.Stream(device=num)
-                # case 4: device = "cuda:0" if cond else "cuda:1"
-                # case 5: device = 0 if cond else 1
-                kwargs[
-                    "device"
-                ] = f'"gpu:"+str({kwargs["device"]}) if isinstance({kwargs["device"]}, int) else str({kwargs["device"]}).replace("cuda", "gpu")'
-        return GenericMatcher.generate_code(self, kwargs)
-
-
-class SetStreamMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "stream" not in kwargs or "None" in kwargs["stream"]:
-            kwargs["stream"] = "paddle.device.Stream()"
-        return GenericMatcher.generate_code(self, kwargs)
-
-
 class CudaNvtxRangePushMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         code = "{}({})".format(self.get_paddle_api(), kwargs["msg"])
@@ -5073,77 +5045,59 @@ class Is_PinnedMatcher(BaseMatcher):
         return code
 
 
-# TODO: 参考SetDeviceMatcher通过辅助函数来优化hard code
-class TensorCudaMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        new_kwargs = {}
-        if "non_blocking" in kwargs:
-            new_kwargs["blocking"] = f"not {kwargs.pop('non_blocking')}"
-        else:
-            new_kwargs["blocking"] = "True"
-        if "device" in kwargs:
-            if "cuda:" in kwargs["device"] and "if" not in kwargs["device"]:
-                # case1: tensor.cuda(device="cuda:0")
-                new_kwargs["device"] = int(
-                    kwargs["device"].replace("cuda:", "").replace('"""', "")
-                )
-            elif isinstance({kwargs["device"]}, int) or "if" not in kwargs["device"]:
-                # case2: tensor.cuda(device=0)
-                # case3: var = 2   tensor.cuda(device=var)
-                pass
-            else:
-                # case4: tensor.cuda(device=0 if cond else 2)
-                # case5: tensor.cuda(device="cuda:0" if cond else "cuda;1")
-                new_kwargs[
-                    "device"
-                ] = f'{kwargs["device"]} if isinstance({kwargs["device"]}, int) else int(str({kwargs["device"]}).split(":")[1])'
-        kwargs.update(new_kwargs)
-        return GenericMatcher.generate_code(self, kwargs)
-
-
-class SetDeviceMatcher(BaseMatcher):
+class Device2IntMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            import os
-            def _get_device(device):
-                if isinstance(device, int):
-                    return f"gpu:{device}"
-                elif isinstance(device, str):
-                    if "cuda" in device:
-                        return device.replace("cuda", "gpu")
-                    return device
-                elif isinstance(device, paddle.CPUPlace) or (device is None):
-                    return "cpu"
-                elif isinstance(device, paddle.CUDAPlace):
-                    return f"gpu:{device.get_device_id()}"
+            def device2int(device):
+                if isinstance(device, str):
+                    device = device.replace('cuda', 'gpu')
+                    device = device.replace('gpu:', '')
+                return int(device)
             """
         )
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        # NOTE :paddle.set_device only recevice str type
-        device = kwargs.pop("device")
-        if len(device) <= 12:
-            if device.strip("()").isdigit():
-                # case 1: torch.cuda.set_device(0) => paddle.device.set_device("gpu:0")
-                device = "'gpu:{}'".format(device.strip("()"))
-                return "{}(device={})".format(self.get_paddle_api(), device)
-            elif "cuda" in device:
-                # case 2: torch.cuda.set_device("cuda:0") => paddle.device.set_device("gpu:0")
-                # case 3: torch.cuda.set_device(device="cuda:0" if cond else "cuda:1")
-                device = device.replace("cuda", "gpu")
-                return "{}(device={})".format(self.get_paddle_api(), device)
-            # may append more, which is easy to identify and remain same with origin
-            elif "cpu" in device:
-                return "{}(device={})".format(self.get_paddle_api(), device)
-
-        # case 4: num=2 torch.cuda.set_device(num) => paddle.device.set_device("gpu:2")
-        # case 5: torch.cuda.set_device(device=0 if cond else 1)
-        # case 6: device='cpu' torch.cuda.set_device(device) => paddle.device.set_device("cpu")
-        # case 7: device='cuda:0' torch.cuda.set_device(device) => paddle.device.set_device("cuda:0")
         self.enable_utils_code()
-        return "{}(device=_get_device({}))".format(self.get_paddle_api(), device)
+        if "device" in kwargs:
+            kwargs["device_id"] = "device2int({})".format(kwargs.pop("device"))
+        if "non_blocking" in kwargs:
+            kwargs["blocking"] = f"not {kwargs.pop('non_blocking')}"
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class Device2StrMatcher(Device2StrBaseMatcher):
+    def generate_code(self, kwargs):
+        # paddle.set_device only recevice str type
+        if "device" in kwargs:
+            device = kwargs.pop("device")
+            if device.strip("()").isdigit():
+                # case 1: torch.set_default_device(0) => paddle.device.set_device("gpu:0")
+                device = "'gpu:{}'".format(device.strip("()"))
+            elif "cuda" in device:
+                # case 2: torch.set_default_device("cuda:0") => paddle.device.set_device("gpu:0")
+                # case 5: torch.set_default_device(device="cuda:0" if cond else "cpu:0")
+                device = device.replace("cuda", "gpu")
+            else:
+                # case 3: torch.set_default_device("cpu") => paddle.device.set_device("cpu")
+                # case 4: torch.set_default_device(device=0 if cond else 1)
+                # case 6: num=2; torch.set_default_device(num)
+                # case 7: device='cpu'; torch.set_default_device(device)
+                # case 8: device='cuda:0'; torch.set_default_device(device)
+                # case 9: device=torch.device('cpu'); torch.set_default_device(device)
+                # case 10: device=torch.device('cuda:0'); torch.set_default_device(device)
+                self.enable_utils_code()
+                device = "device2str({})".format(device)
+            kwargs["device"] = device
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class CudaStreamMatcher(Device2StrMatcher):
+    def generate_code(self, kwargs):
+        if "priority" in kwargs:
+            kwargs["priority"] = "{}+2".format(kwargs.pop("priority"))
+        return super().generate_code(kwargs)
 
 
 class TensorViewMatcher(BaseMatcher):
@@ -5227,6 +5181,7 @@ class ZeroGradMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+# fix hard code
 class SetDefaultTensorTypeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if kwargs["t"] in ['"""torch.DoubleTensor"""', '"""torch.cuda.DoubleTensor"""']:
@@ -5803,30 +5758,6 @@ class VGGMatcher(BaseMatcher):
             kwargs["pretrained"] = True
         kwargs["batch_norm"] = bool("bn" in self.torch_api)
         return GenericMatcher.generate_code(self, kwargs)
-
-
-class CudaDeviceMatcher(BaseMatcher):
-    def generate_utils_code(self):
-        CODE_TEMPLATE = textwrap.dedent(
-            """
-            def cuda_device(device):
-                if isinstance(device, paddle.CUDAPlace):
-                    return paddle.CUDAPlace(device.get_device_id())
-                return paddle.CUDAPlace(device)
-            """
-        )
-        return CODE_TEMPLATE
-
-    def generate_code(self, kwargs):
-        self.enable_utils_code()
-        API_TEMPLATE = textwrap.dedent(
-            """
-            cuda_device({})
-            """
-        )
-        code = API_TEMPLATE.format(kwargs["device"])
-
-        return code
 
 
 class GRUCellMatcher(BaseMatcher):

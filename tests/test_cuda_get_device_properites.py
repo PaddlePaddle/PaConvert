@@ -149,3 +149,120 @@ def test_case_5():
         pytorch_code,
         ["name", "major", "minor", "total_memory", "multi_processor_count"],
     )
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        idx = 0
+        result = torch.cuda.get_device_properties(idx)
+        name = result.name
+        major = result.major
+        minor = result.minor
+        total_memory = result.total_memory
+        multi_processor_count = result.multi_processor_count
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["name", "major", "minor", "total_memory", "multi_processor_count"],
+    )
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        device = "cuda:1"
+        result = torch.cuda.get_device_properties(device)
+        name = result.name
+        major = result.major
+        minor = result.minor
+        total_memory = result.total_memory
+        multi_processor_count = result.multi_processor_count
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["name", "major", "minor", "total_memory", "multi_processor_count"],
+    )
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        device=torch.device("cuda:0")
+        result = torch.cuda.get_device_properties(device)
+        name = result.name
+        major = result.major
+        minor = result.minor
+        total_memory = result.total_memory
+        multi_processor_count = result.multi_processor_count
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["name", "major", "minor", "total_memory", "multi_processor_count"],
+    )
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        cond = True
+        device= "cuda:1" if cond else "cuda:0"
+        result = torch.cuda.get_device_properties(device=device)
+        name = result.name
+        major = result.major
+        minor = result.minor
+        total_memory = result.total_memory
+        multi_processor_count = result.multi_processor_count
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["name", "major", "minor", "total_memory", "multi_processor_count"],
+    )
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        cond = True
+        device= "cuda:1" if cond else "cuda:0"
+        result = torch.cuda.get_device_properties(device=torch.device(device))
+        name = result.name
+        major = result.major
+        minor = result.minor
+        total_memory = result.total_memory
+        multi_processor_count = result.multi_processor_count
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["name", "major", "minor", "total_memory", "multi_processor_count"],
+    )

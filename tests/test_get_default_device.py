@@ -14,35 +14,16 @@
 
 import textwrap
 
-import torch
-from apibase import APIBase
+from test_device import DeviceAPIBase
 
-
-class getDefaultDeviceAPI(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_shape=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-
-        assert isinstance(pytorch_result, torch.device)
-        assert isinstance(paddle_result, str)
-
-
-obj = getDefaultDeviceAPI("torch.get_default_device")
+obj = DeviceAPIBase("torch.get_default_device")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        torch.set_default_device('cpu')
         result = torch.get_default_device()
         """
     )

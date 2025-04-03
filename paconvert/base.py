@@ -381,6 +381,7 @@ class BaseMatcher(object):
             if k in unsupport_args:
                 return None
             v = astor.to_source(node).replace("\n", "")
+            # v = ast.unparse(node)
             new_kwargs[k] = v
 
         for node in kwargs:
@@ -392,6 +393,7 @@ class BaseMatcher(object):
                     self.transformer.file_name,
                 )
             v = astor.to_source(node.value).replace("\n", "")
+            # v = ast.unparse(node.value)
             new_kwargs[k] = v
 
         return new_kwargs

@@ -47,7 +47,8 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.cuda.set_stream(None)
+        stream = torch.cuda.Stream(0)
+        result = torch.cuda.set_stream(stream)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -61,7 +62,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        stream = torch.cuda.Stream(0)
+        stream = torch.cuda.Stream(torch.device("cuda:0"))
         result = torch.cuda.set_stream(stream=stream)
         """
     )
@@ -76,8 +77,21 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        stream = torch.cuda.Stream(torch.device("cuda:0"))
-        result = torch.cuda.set_stream(stream)
+        result = torch.cuda.set_stream(torch.cuda.Stream(0))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.cuda.set_stream(torch.cuda.Stream(torch.device("cuda:0")))
         """
     )
     obj.run(pytorch_code, ["result"])

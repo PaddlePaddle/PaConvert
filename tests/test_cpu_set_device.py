@@ -14,40 +14,41 @@
 
 import textwrap
 
-import paddle
-import pytest
-from apibase import APIBase
+from test_device import DeviceAPIBase
+
+obj = DeviceAPIBase("torch.cpu.set_device")
 
 
-class CudaGetDeviceAPIBase(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_shape=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        assert pytorch_result == int(paddle_result.replace("gpu:", ""))
-
-
-obj = CudaGetDeviceAPIBase("torch.cuda.current_device")
-
-
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="can only run on paddle with CUDA",
-)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.cuda.set_device(0)
-        result = torch.cuda.current_device()
+        torch.cpu.set_device(device='cpu:0')
+        result = torch.cpu.current_device()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        device = 'cpu'
+        torch.cpu.set_device(device=device)
+        result = torch.cpu.current_device()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        device = 'cpu:1'
+        torch.cpu.set_device(device=device)
+        result = torch.cpu.current_device()
         """
     )
     obj.run(pytorch_code, ["result"])
