@@ -6037,7 +6037,6 @@ class ForeachMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            import os
             def foreach_operator(func, tensors):
                 return [func(x) for x in tensors]
 
@@ -6057,6 +6056,28 @@ class ForeachMatcher(BaseMatcher):
         return code
 
 
+class Foreach_Matcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def foreach_operator_(func, tensors):
+                return [paddle.assign(func(x), x) for x in tensors]
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            foreach_operator_({},{})
+            """
+        )
+        code = API_TEMPLATE.format(self.get_paddle_api(), kwargs["self"])
+
+        return code
+
+
 class DistributedBackendMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         return "{}.lower()".format(kwargs["name"])
@@ -6066,3 +6087,40 @@ class JitSaveMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs["path"] = f"{kwargs.pop('f')}.rsplit('.', 1)[0]"
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class ForeachErfcMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        API_TEMPLATE = textwrap.dedent(
+            """
+            tuple([(1-paddle.erf(x)) for x in {}])
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["self"])
+
+        return code
+
+
+class ForeachErfc_Matcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def foreach_erfc_(tensors):
+                result = []
+                for x in tensors:
+                    result.append(paddle.assign(1-paddle.erf(x), x))
+                return result
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            foreach_erfc_({})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["self"])
+
+        return code
