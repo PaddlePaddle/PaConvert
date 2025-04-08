@@ -4270,11 +4270,9 @@
       "dim"
     ],
     "kwargs_change": {
+      "sorted": "",
       "dim": "axis"
-    },
-    "unsupport_args": [
-      "sorted"
-    ]
+    }
   },
   "torch.Tensor.unique_consecutive": {
     "Matcher": "GenericMatcher",
@@ -17839,11 +17837,9 @@
     ],
     "kwargs_change": {
       "input": "x",
+      "sorted": "",
       "dim": "axis"
-    },
-    "unsupport_args": [
-      "sorted"
-    ]
+    }
   },
   "torch.unique_consecutive": {
     "Matcher": "GenericMatcher",
