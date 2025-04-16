@@ -109,7 +109,7 @@ torch.permute
 
 > 注意：当前已有一部分存量映射关系文档，但可能存在错误或考虑不全面之处，在开发自动转换规则时，如发现文档问题，需要对这些文档进行校正修改。
 
-如果没有该API映射关系，则需要自行分析API，并根据统一模板来编写映射关系文档，提交PR到 https://github.com/PaddlePaddle/docs/tree/develop/docs/guides/model_convert/convert_from_pytorch/api_difference 目录下。统一模板详见：[API映射关系模板](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/pytorch_api_mapping_format_cn.md)。
+如果没有该API映射关系，则需要自行分析API，并根据统一模板来编写映射关系文档，提交PR到 https://github.com/PaddlePaddle/docs/tree/develop/docs/guides/model_convert/convert_from_pytorch/api_difference 目录下。统一模板详见：[API映射关系模板](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_format_cn.md)。
 
 ## 步骤3：配置JSON
 
@@ -156,7 +156,7 @@ paddle_default_kwargs :可选，当 `paddle 参数更多` 或者 `参数默认�
 
 除了以上字段以及必选字段 `Matcher` 和 `args_list` 外，`GenericMatcher` 还需配置 `paddle_api` 。
 
-以 `torch.permute` 为例，首先参照 [torch.permute映射关系](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/ops/torch.permute.md)，其属于 **仅参数名不一致** 的情况，符合上述类型。因此可通过`GenericMatcher`来实现，在json中配置必选的 `Matcher` 和 `args_list` 字段，还需配置 `paddle_api` 和 `kwargs_change`。
+以 `torch.permute` 为例，首先参照 [torch.permute映射关系](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/torch/torch.permute.md)，其属于 **仅参数名不一致** 的情况，符合上述类型。因此可通过`GenericMatcher`来实现，在json中配置必选的 `Matcher` 和 `args_list` 字段，还需配置 `paddle_api` 和 `kwargs_change`。
 
 ```json
 "torch.permute" : {
@@ -223,7 +223,7 @@ class Chain_MatmulMatcher(BaseMatcher):
 
 * `generate_code(self, kwargs)`: 传入的kwargs是 `字符串字典` 形式的关键字参数，根据kwargs组装字符串形式的代码并返回。其相比 `get_paddle_nodes` 更为high_level一些，无需自行处理AST节点与字符串的各种解析、转换，直接处理纯字符串组装代码即可，相对容易些。
 
-以 `torch.transpose` 为例，首先参照 [torch.transpose映射关系](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/ops/torch.transpose.md)，其属于 **参数不一致** 的情况，不符合 `GenericMatcher` 的适用范围。因此需要编写自定义Matcher：`TransposeMatcher` 。
+以 `torch.transpose` 为例，首先参照 [torch.transpose映射关系](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/torch/torch.transpose.md)，其属于 **参数不一致** 的情况，不符合 `GenericMatcher` 的适用范围。因此需要编写自定义Matcher：`TransposeMatcher` 。
 
 由于 `torch.transpose` 不支持可变参数，因此重新 `generate_code` 函数，具体代码如下：
 
@@ -276,7 +276,7 @@ class TransposeMatcher(BaseMatcher):
 
 * `generate_code(self, kwargs)`: 传入的是字符串字典形式的关键字参数，即kwargs，根据该字典，组装字符串形式的代码并返回。其相比 `get_paddle_class_nodes` 更为high_level一些，已经进行了 `self.paddleClass`的设置，也无需自行处理AST节点与字符串的各种解析、转换，直接处理纯字符串组装代码即可，相对容易些。
 
-以 `torch.Tensor.repeat_interleave` 为例，由于该API名称很长，不容易出现误识别；numpy等其他库也没有 `ndarray.repeat_interleave` API，因此符合此标准。参照 [torch.transpose映射关系](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/ops/torch.transpose.md)，其属于 **仅参数名不一致** 的情况，符合 `GenericMatcher` 的适用范围。因此只需配置json字段即可，其中已编写了通用的 `generate_code` 函数。
+以 `torch.Tensor.repeat_interleave` 为例，由于该API名称很长，不容易出现误识别；numpy等其他库也没有 `ndarray.repeat_interleave` API，因此符合此标准。参照 [torch.transpose映射关系](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/torch/torch.transpose.md)，其属于 **仅参数名不一致** 的情况，符合 `GenericMatcher` 的适用范围。因此只需配置json字段即可，其中已编写了通用的 `generate_code` 函数。
 
 
 ```json
@@ -500,7 +500,7 @@ if x:
 
 单测本质为模仿用户Pytorch代码的用法，因此需要考虑该torch api所有可能的用法case，不可自行增加判断来刻意绕过测试，否则将引入转换工具Bug或隐患。
 
-单测覆盖范围要求为：涉及到多个API形参的，应包含各种参数用法（ `全部指定关键字、全部不指定关键字、改变关键字顺序、默认参数均不指定` 四种情况必须考虑），不能只考虑最简单常见的用法，要求至少列举5种不同的使用case（越多越好）。
+单测覆盖范围要求为：涉及到多个API形参的，应包含各种参数用法（ `全部指定关键字、全部不指定关键字、改变关键字顺序、默认参数均不指定、参数取值以变量形式传入` 五种情况必须考虑），不能只考虑最简单常见的用法，要求至少列举5种不同的使用case（越多越好）。
 
 对任意torch API的用法case只允许有两种结果：**a)支持转换且计算结果一致；b)不支持转换并用>>>标记**。不能出现其他的错误情况，包括但不限于 **触发Python语法问题导致异常退出、支持转换但计算结果对不上** 等各种问题。
 

@@ -192,8 +192,6 @@ class BaseTransformer(ast.NodeTransformer):
         for node in node_list:
             if isinstance(node, (ast.Import, ast.ImportFrom)):
                 import_nodes.append(node)
-            # python3.9: ast.unparse, now use ast.unparse
-            # python3.8: astor.to_source
             elif "sys.path" in astor.to_source(node):
                 import_nodes.append(node)
             else:
@@ -383,6 +381,7 @@ class BaseMatcher(object):
             if k in unsupport_args:
                 return None
             v = astor.to_source(node).replace("\n", "")
+            # v = ast.unparse(node)
             new_kwargs[k] = v
 
         for node in kwargs:
@@ -394,6 +393,7 @@ class BaseMatcher(object):
                     self.transformer.file_name,
                 )
             v = astor.to_source(node.value).replace("\n", "")
+            # v = ast.unparse(node.value)
             new_kwargs[k] = v
 
         return new_kwargs

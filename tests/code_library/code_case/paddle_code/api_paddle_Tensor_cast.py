@@ -1,7 +1,29 @@
 import paddle
 
+############################## 相关utils函数，如下 ##############################
+
+def device2str(type=None, index=None, *, device=None):
+    type = device if device else type
+    if isinstance(type, int):
+        type = f'gpu:{type}'
+    elif isinstance(type, str):
+        if 'cuda' in type:
+            type = type.replace('cuda', 'gpu')
+        if 'cpu' in type:
+            type = 'cpu'
+        elif index is not None:
+            type = f'{type}:{index}'
+    elif isinstance(type, paddle.CPUPlace) or (type is None):
+        type = 'cpu'
+    elif isinstance(type, paddle.CUDAPlace):
+        type = f'gpu:{type.get_device_id()}'
+
+    return type
+############################## 相关utils函数，如上 ##############################
+
+
 print("#########################case1#########################")
-cpu = paddle.CPUPlace()
+cpu = device2str("cpu")
 a = paddle.randn(shape=[2, 3])
 c = paddle.randn(shape=[2, 3], dtype="float64")
 b = a.to(cpu, blocking=not False)
@@ -23,10 +45,10 @@ b = a.to(table.place)
 print("#########################case9#########################")
 b = a.to("float32")
 print("#########################case10#########################")
-device = paddle.CPUPlace()
+device = device2str("cpu")
 b = paddle.to_tensor(data=[-1]).to("bool")
 print("#########################case11#########################")
 dtype = "float32"
 b = a.to(dtype=dtype)
 print("#########################case12#########################")
-b = a.to(paddle.CPUPlace())
+b = a.to(device2str("cpu"))

@@ -66,7 +66,7 @@ def test_case_3():
         [[ 0.1024, -0.4482,  0.4137],
          [ 0.9385,  0.4565,  0.7702],
          [ 0.4135, -0.2587,  0.0482]]]])
-        m = torch.nn.Upsample(scale_factor=2, mode='bilinear',align_corners=True)
+        m = torch.nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
         result = m(input)
         """
     )
@@ -102,7 +102,7 @@ def test_case_5():
         [[ 0.1024, -0.4482,  0.4137],
          [ 0.9385,  0.4565,  0.7702],
          [ 0.4135, -0.2587,  0.0482]]]])
-        m = torch.nn.Upsample(scale_factor=2, mode='bilinear',align_corners=False)
+        m = torch.nn.Upsample(scale_factor=2, mode='bilinear', align_corners=False)
         result = m(input)
         """
     )
@@ -120,7 +120,7 @@ def test_case_6():
         [[ 0.1024, -0.4482,  0.4137],
          [ 0.9385,  0.4565,  0.7702],
          [ 0.4135, -0.2587,  0.0482]]]])
-        m = torch.nn.Upsample(scale_factor=2, mode='bilinear',recompute_scale_factor=True)
+        m = torch.nn.Upsample(scale_factor=2, mode='bilinear', recompute_scale_factor=True)
         result = m(input)
         """
     )
