@@ -23,16 +23,7 @@
 
 ## 安装使用
 
-#### 1. IDE交互式用法
-
-在 IDE 中交互式编程使用，界面友好，使用门槛低。
-
-需要在`PyCharm`或`VS Code`等主流 IDE 中安装 **文心快码插件(Baidu Comate)** 后即可使用。以`VS Code`上使用为例：
-
-![img](./images/comate_paconvert.jpeg)
-
-
-#### 2. 命令行用法
+#### 1. 命令行用法
 
 通过终端命令行的方式使用，有一定使用门槛：
 
@@ -52,6 +43,14 @@ paconvert --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs excl
 --run_check     可选，工具自检
 --no_format     可选，不格式化转换后的代码。使用此选项时，转换后的 Paddle 代码不进行代码格式化处理
 ```
+
+#### 2. IDE交互式用法
+
+在 IDE 中交互式编程使用，界面友好，使用门槛低。
+
+需要在`PyCharm`或`VS Code`等主流 IDE 中安装 **文心快码插件(Baidu Comate)** 后即可使用。以`VS Code`上使用为例：
+
+![img](./images/comate_paconvert.jpeg)
 
 
 ## 转换示例

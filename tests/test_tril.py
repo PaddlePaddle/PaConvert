@@ -98,3 +98,30 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_alias_case_1():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[-1.0813, -0.8619,  0.7105],
+                        [ 0.0935,  0.1380,  2.2112],
+                        [-0.3409, -0.9828,  0.0289]])
+        result = torch.torch.tril(x, 1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_alias_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[-1.0813, -0.8619,  0.7105],
+                        [ 0.0935,  0.1380,  2.2112],
+                        [-0.3409, -0.9828,  0.0289]])
+        out = torch.tensor([2.])
+        result = torch.torch.tril(input=x, diagonal=1, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
