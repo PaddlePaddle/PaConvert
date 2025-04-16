@@ -13605,8 +13605,7 @@
       "scale_factor",
       "mode",
       "align_corners",
-      "recompute_scale_factor",
-      "antialias"
+      "recompute_scale_factor"
     ],
     "kwargs_change": {
       "input": "x"
