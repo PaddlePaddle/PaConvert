@@ -87,7 +87,7 @@ def test_case_6():
 
         x = torch.tensor([[[1., 2., 3.], [2., 3., 4.]]])
         result = F.interpolate(input=x, size=None, scale_factor=3, mode='linear', align_corners=False,
-                                recompute_scale_factor=True, antialias=False)
+                                recompute_scale_factor=False, antialias=False)
         """
     )
     obj.run(
@@ -105,7 +105,7 @@ def test_case_7():
         import torch.nn.functional as F
 
         x = torch.tensor([[[1., 2., 3.], [2., 3., 4.]]])
-        result = F.interpolate(input=x, scale_factor=3, size=None, recompute_scale_factor=True, mode='linear', align_corners=False,
+        result = F.interpolate(input=x, scale_factor=3, size=None, recompute_scale_factor=False, mode='linear', align_corners=False,
                                 antialias=False)
         """
     )
