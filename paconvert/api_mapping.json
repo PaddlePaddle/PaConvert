@@ -4600,9 +4600,89 @@
       "self"
     ]
   },
+  "torch._foreach_log10": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.log10",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_log10_": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.log10_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_log1p": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.log1p",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_log1p_": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.log1p_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_log2": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.log2",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_log2_": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.log2_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
   "torch._foreach_log_": {
     "Matcher": "ForeachMatcher",
     "paddle_api": "paddle.log_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_neg": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.neg",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_neg_": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.neg_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_tan": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.tan",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_tan_": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.tan_",
     "min_input_args": 1,
     "args_list": [
       "self"
@@ -5985,7 +6065,7 @@
   },
   "torch.cpu.current_device": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.device.get_device",
+    "paddle_api": "paddle.get_device",
     "min_input_args": 0
   },
   "torch.cpu.set_device": {
@@ -6693,6 +6773,14 @@
     },
     "unsupport_args": [
       "device_ids"
+    ]
+  },
+  "torch.distributed.batch_isend_irecv": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.distributed.batch_isend_irecv",
+    "min_input_args": 1,
+    "args_list": [
+      "p2p_op_list"
     ]
   },
   "torch.distributed.broadcast": {
