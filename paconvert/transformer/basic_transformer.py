@@ -49,6 +49,8 @@ class BasicTransformer(BaseTransformer):
         )
         # use to identify tensor method/attribute
         self.black_list = list(self.imports_map[self.file]["other_packages"]) + [
+            "paddle",
+            "np",
             "ndarray",
             "args",
             "arg",
@@ -104,6 +106,7 @@ class BasicTransformer(BaseTransformer):
         #   1. x.device...
         #   2. torch.Tensor/torch.nn.Module/torch.add...
         full_attr = self.get_full_attr_for_apiname(node)
+        print("full attr: ", full_attr)
 
         # 1) Torch Package Attribute, include torch third_party
         #   such as torch.Tensor/torch.nn.Module/torch.add...

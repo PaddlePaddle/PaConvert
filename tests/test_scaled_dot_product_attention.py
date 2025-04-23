@@ -29,14 +29,15 @@ obj = APIBase("torch.nn.functional.scaled_dot_product_attention")
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
+        import numpy as np
         import torch
-        query = torch.ones(32, 8, 128, 64, dtype=torch.float16, device="cuda")
-        key = torch.ones(32, 8, 128, 64, dtype=torch.float16, device="cuda")
-        value = torch.ones(32, 8, 128, 64, dtype=torch.float16, device="cuda")
-        result = torch.nn.functional.scaled_dot_product_attention(query,key,value)
+        np.random.seed(100)
+        x = np.random.rand(32, 8, 128, 64)
+        query = torch.tensor(x, dtype=torch.float16, device="cuda")
+        result = torch.nn.functional.scaled_dot_product_attention(query, query, query)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], atol=1e-3)
 
 
 @pytest.mark.skipif(
@@ -47,14 +48,15 @@ def test_case_1():
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
+        import numpy as np
         import torch
-        query = torch.rand(32, 8, 128, 64, dtype=torch.float16, device="cuda")
-        key = torch.rand(32, 8, 128, 64, dtype=torch.float16, device="cuda")
-        value = torch.rand(32, 8, 128, 64, dtype=torch.float16, device="cuda")
-        result = torch.nn.functional.scaled_dot_product_attention(query,key,value)
+        np.random.seed(100)
+        x = np.random.rand(32, 8, 128, 64)
+        query = torch.tensor(x, dtype=torch.float16, device="cuda")
+        result = torch.nn.functional.scaled_dot_product_attention(query, query, query, dropout_p=0., is_causal=True)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"], atol=1e-3)
 
 
 @pytest.mark.skipif(
@@ -65,12 +67,35 @@ def test_case_2():
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
+        import numpy as np
         import torch
-        import math
-        query = torch.ones(32, 8, 128, 64, dtype=torch.float16, device="cuda")
-        key = torch.ones(32, 8, 128, 64, dtype=torch.float16, device="cuda")
-        value = torch.ones(32, 8, 128, 64, dtype=torch.float16, device="cuda")
-        result = torch.nn.functional.scaled_dot_product_attention(query,key,value,scale=8)
+        np.random.seed(100)
+        x = np.random.rand(32, 8, 128, 64)
+        query = torch.tensor(x, dtype=torch.bfloat16, device="cuda")
+        result = torch.nn.functional.scaled_dot_product_attention(query, query, query).float()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], atol=1e-2)
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda()
+    or not paddle.device.cuda.get_device_properties(0).major >= 8,
+    reason="computational capabilities less 8",
+)
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import numpy as np
+        import torch
+        np.random.seed(100)
+        x = np.random.rand(32, 8, 128, 64)
+        query = torch.tensor(x, dtype=torch.bfloat16, device="cuda")
+        result = torch.nn.functional.scaled_dot_product_attention(query, query, query, scale=0.2, enable_gqa=False).float()
+        """
+    )
+    obj.run(
+        pytorch_code,
+        unsupport=True,
+        reason="paddle not support 'scale' and 'enable_gqa' ",
+    )

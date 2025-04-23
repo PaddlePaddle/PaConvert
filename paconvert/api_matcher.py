@@ -483,9 +483,9 @@ class TRFMPreTrainedTokenizerMatcher(BaseMatcher):
             """
             import paddlenlp
             original_encode = paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase.encode
-            def encode(self, *args, **kwargs):
+            def _encode(self, *args, **kwargs):
                 return original_encode(self, *args, **kwargs)["input_ids"]
-            setattr(paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase, "encode", encode)
+            setattr(paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase, "encode", _encode)
             """
         )
         return CODE_TEMPLATE
@@ -511,7 +511,7 @@ class TRFMPreTrainedModelMatcher(BaseMatcher):
                 head_mask = head_mask.to(dtype=paddle.get_default_dtype())  # switch to float if need + fp16 compatibility
                 return head_mask
 
-            def get_head_mask(
+            def _get_head_mask(
                 self,
                 head_mask: Optional[paddle.Tensor],
                 num_hidden_layers: int,
@@ -524,21 +524,21 @@ class TRFMPreTrainedModelMatcher(BaseMatcher):
                 else:
                     head_mask = [None] * num_hidden_layers
                 return head_mask
-            setattr(paddlenlp.transformers.model_utils.PretrainedModel, "get_head_mask", get_head_mask)
+            setattr(paddlenlp.transformers.model_utils.PretrainedModel, "get_head_mask", _get_head_mask)
 
             original_generate = paddlenlp.generation.utils.GenerationMixin.generate
-            def generate(self, input_ids, *args, **kwargs):
-                return paddle.concat((input_ids,original_generate(self,input_ids, *args, **kwargs)[0]),axis=-1)
-            setattr(paddlenlp.generation.utils.GenerationMixin, "generate", generate)
+            def _generate(self, input_ids, *args, **kwargs):
+                return paddle.concat((input_ids, original_generate(self,input_ids, *args, **kwargs)[0]), axis=-1)
+            setattr(paddlenlp.generation.utils.GenerationMixin, "generate", _generate)
 
             setattr(paddlenlp.transformers.model_utils.PretrainedModel, "device", None)
 
-            def post_init(self):
+            def _post_init(self):
                 if hasattr(self, "init_weights"):
                     self.init_weights()
                 elif hasattr(self, "_init_weights"):
                     self._init_weights()
-            setattr(paddlenlp.transformers.model_utils.PretrainedModel, "post_init", post_init)
+            setattr(paddlenlp.transformers.model_utils.PretrainedModel, "post_init", _post_init)
             """
         )
         return CODE_TEMPLATE
@@ -614,7 +614,7 @@ class TensorAddMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def add(self, *args, **kwargs):
+            def _Tensor_add(self, *args, **kwargs):
                 if "other" in kwargs:
                     y = kwargs["other"]
                 elif "y" in kwargs:
@@ -633,7 +633,7 @@ class TensorAddMatcher(BaseMatcher):
                         y = paddle.to_tensor(y)
                 return paddle.add(self, y)
 
-            setattr(paddle.Tensor, "add", add)
+            setattr(paddle.Tensor, "add", _Tensor_add)
             """
         )
         return CODE_TEMPLATE
@@ -647,7 +647,7 @@ class TensorSubtractMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def sub(self, *args, **kwargs):
+            def _Tensor_sub(self, *args, **kwargs):
                 if "other" in kwargs:
                     y = kwargs["other"]
                 elif "y" in kwargs:
@@ -666,8 +666,8 @@ class TensorSubtractMatcher(BaseMatcher):
                         y = paddle.to_tensor(y)
                 return paddle.subtract(self, y)
 
-            setattr(paddle.Tensor, "sub", sub)
-            setattr(paddle.Tensor, "subtract", sub)
+            setattr(paddle.Tensor, "sub", _Tensor_sub)
+            setattr(paddle.Tensor, "subtract", _Tensor_sub)
             """
         )
         return CODE_TEMPLATE
@@ -681,7 +681,7 @@ class TensorMultiplyMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def mul(self, *args, **kwargs):
+            def _Tensor_mul(self, *args, **kwargs):
                 if "other" in kwargs:
                     y = kwargs["other"]
                 elif "y" in kwargs:
@@ -694,8 +694,8 @@ class TensorMultiplyMatcher(BaseMatcher):
 
                 return paddle.multiply(self, y)
 
-            setattr(paddle.Tensor, "mul", mul)
-            setattr(paddle.Tensor, "multiply", mul)
+            setattr(paddle.Tensor, "mul", _Tensor_mul)
+            setattr(paddle.Tensor, "multiply", _Tensor_mul)
             """
         )
         return CODE_TEMPLATE
@@ -709,7 +709,7 @@ class TensorDivideMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def div(self, *args, **kwargs):
+            def _Tensor_div(self, *args, **kwargs):
                 if "other" in kwargs:
                     y = kwargs["other"]
                 elif "y" in kwargs:
@@ -731,8 +731,8 @@ class TensorDivideMatcher(BaseMatcher):
 
                 return res
 
-            setattr(paddle.Tensor, "div", div)
-            setattr(paddle.Tensor, "divide", div)
+            setattr(paddle.Tensor, "div", _Tensor_div)
+            setattr(paddle.Tensor, "divide", _Tensor_div)
             """
         )
         return CODE_TEMPLATE
@@ -757,18 +757,19 @@ class TransposeMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.enable_utils_code()
+        dim0 = kwargs["dim0"] if "dim0" in kwargs else kwargs["axis0"]
+        dim1 = kwargs["dim1"] if "dim1" in kwargs else kwargs["axis1"]
         API_TEMPLATE = textwrap.dedent(
             """
-            {}(x={}, perm=dim2perm({}.ndim,{}, {}))
+            {}(x={}, perm=dim2perm({}.ndim, {}, {}))
             """
         )
-        perm = get_unique_name("perm")
         code = API_TEMPLATE.format(
             self.get_paddle_api(),
             kwargs["input"],
             kwargs["input"],
-            kwargs["dim0"],
-            kwargs["dim1"],
+            dim0,
+            dim1,
         )
         return code
 
@@ -788,16 +789,18 @@ class TensorTransposeMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.enable_utils_code()
+        dim0 = kwargs["dim0"] if "dim0" in kwargs else kwargs["axis0"]
+        dim1 = kwargs["dim1"] if "dim1" in kwargs else kwargs["axis1"]
         API_TEMPLATE = textwrap.dedent(
             """
-            {}(perm=dim2perm({}.ndim,{}, {}))
+            {}(perm=dim2perm({}.ndim, {}, {}))
             """
         )
         code = API_TEMPLATE.format(
             self.get_paddle_api(),
             self.paddleClass,
-            kwargs["dim0"],
-            kwargs["dim1"],
+            dim0,
+            dim1,
         )
         return code
 
@@ -851,39 +854,6 @@ class Is_InferenceMatcher(BaseMatcher):
 class IInfoMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         return "{}(dtype={})".format(self.get_paddle_api(), kwargs["type"])
-
-
-class SwapAxesMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "input" not in kwargs:
-            kwargs["input"] = self.paddleClass
-
-        if "dim0" in kwargs:
-            kwargs["axis0"] = kwargs.pop("dim0")
-            kwargs["axis1"] = kwargs.pop("dim1")
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            x = {}
-            {} = list(range(x.ndim))
-            {}[{}] = {}
-            {}[{}] = {}
-            paddle.transpose(x=x, perm={})
-            """
-        )
-        perm = get_unique_name("perm")
-        code = API_TEMPLATE.format(
-            kwargs["input"],
-            perm,
-            perm,
-            kwargs["axis0"],
-            kwargs["axis1"],
-            perm,
-            kwargs["axis1"],
-            kwargs["axis0"],
-            perm,
-        )
-        return code
 
 
 class AssertMatcher(BaseMatcher):
@@ -1147,7 +1117,10 @@ class _MaxMinMatcherBase(BaseMatcher):
             new_kwargs["x"] = new_kwargs.pop("input")
             new_kwargs["y"] = new_kwargs.pop("other")
 
-            paddle_api = "paddle.minimum" if "min" in paddle_api else "paddle.maximum"
+            if paddle_api == "paddle.min":
+                paddle_api = "paddle.minimum"
+            elif paddle_api == "paddle.max":
+                paddle_api = "paddle.maximum"
 
             if "out" in new_kwargs:
                 out_v = new_kwargs.pop("out")
@@ -1179,7 +1152,11 @@ class _MaxMinMatcherBase(BaseMatcher):
             return ast.parse(code).body
 
         self.enable_utils_code()
-        self.set_paddle_api(paddle_api.replace("paddle.", ""))
+        if paddle_api == "paddle.min":
+            self.set_paddle_api("paddle_min")
+        elif paddle_api == "paddle.max":
+            self.set_paddle_api("paddle_max")
+
         return UnchangeMatcher.get_paddle_nodes(self, args, kwargs)
 
 
@@ -1187,7 +1164,7 @@ class MaxMatcher(_MaxMinMatcherBase):
     def generate_utils_code(self):
         return textwrap.dedent(
             """
-            def max(*args, **kwargs):
+            def paddle_max(*args, **kwargs):
                 if "input" in kwargs:
                     kwargs["x"] = kwargs.pop("input")
 
@@ -1230,7 +1207,7 @@ class MinMatcher(_MaxMinMatcherBase):
     def generate_utils_code(self):
         return textwrap.dedent(
             """
-            def min(*args, **kwargs):
+            def paddle_min(*args, **kwargs):
                 if "input" in kwargs:
                     kwargs["x"] = kwargs.pop("input")
 
@@ -1273,7 +1250,7 @@ class TensorMaxMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def max_class_func(self, *args, **kwargs):
+            def _Tensor_max(self, *args, **kwargs):
                 if "other" in kwargs:
                     kwargs["y"] = kwargs.pop("other")
                     ret = paddle.maximum(self, *args, **kwargs)
@@ -1290,7 +1267,7 @@ class TensorMaxMatcher(BaseMatcher):
 
                 return ret
 
-            setattr(paddle.Tensor, "max_func", max_class_func)
+            setattr(paddle.Tensor, "max", _Tensor_max)
             """
         )
         return CODE_TEMPLATE
@@ -1325,16 +1302,17 @@ class TensorMaxMatcher(BaseMatcher):
             return ast.parse(code).body
 
         self.enable_utils_code()
-        kwargs_str = self.args_and_kwargs_to_str(new_args, new_kwargs)
-        code = "{}.max_func({})".format(self.paddleClass, kwargs_str)
-        return ast.parse(code).body
+        # kwargs_str = self.args_and_kwargs_to_str(new_args, new_kwargs)
+        # code = "{}.max_func({})".format(self.paddleClass, kwargs_str)
+        # return ast.parse(code).body
+        return "unchange"
 
 
 class TensorMinMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def min_class_func(self, *args, **kwargs):
+            def _Tensor_min(self, *args, **kwargs):
                 if "other" in kwargs:
                     kwargs["y"] = kwargs.pop("other")
                     ret = paddle.minimum(self, *args, **kwargs)
@@ -1351,7 +1329,7 @@ class TensorMinMatcher(BaseMatcher):
 
                 return ret
 
-            setattr(paddle.Tensor, "min_func", min_class_func)
+            setattr(paddle.Tensor, "min", _Tensor_min)
             """
         )
         return CODE_TEMPLATE
@@ -1386,9 +1364,10 @@ class TensorMinMatcher(BaseMatcher):
             return ast.parse(code).body
 
         self.enable_utils_code()
-        kwargs_str = self.args_and_kwargs_to_str(new_args, new_kwargs)
-        code = "{}.min_func({})".format(self.paddleClass, kwargs_str)
-        return ast.parse(code).body
+        # kwargs_str = self.args_and_kwargs_to_str(new_args, new_kwargs)
+        # code = "{}.min_func({})".format(self.paddleClass, kwargs_str)
+        # return ast.parse(code).body
+        return "unchange"
 
 
 class EqualMatcher(BaseMatcher):
@@ -1404,52 +1383,37 @@ class EqualMatcher(BaseMatcher):
 
 class FAFlashAttnFuncMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        kwargs = self.change_kwargs(kwargs)
-
-        API_TEMPLATE = textwrap.dedent(
-            """
-            assert paddle.device.cuda.get_device_capability()[0] >= 8, "Fault: Your device computational capabilities less 8"
-            {}({})[0]
-            """
-        )
-        if "softmax_scale" in kwargs:
-            Assert_TEMPLATE = textwrap.dedent(
-                """
-            assert {} == None or {} == paddle.utils.try_import("math").sqrt({}.shape[-1]),"Fault: The softmax_scale parameter defaults to the square root of the last dimension of query, not allowed manually set"
-            """
-            )
-            return Assert_TEMPLATE.format(
-                kwargs["softmax_scale"],
-                kwargs.pop("softmax_scale"),
-                kwargs["query"],
-            ) + API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
-        return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        return GenericMatcher.generate_code(kwargs) + "[0]"
 
 
 class FAFlashAttnUnpaddedFuncMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs = self.change_kwargs(kwargs)
-        API_TEMPLATE = textwrap.dedent(
-            """
-            assert paddle.device.cuda.get_device_capability()[0] >= 8, "Fault: Your device computational capabilities less 8"
-            {}({})[0]
-            """
-        )
         if "scale" not in kwargs:
-            kwargs[
-                "scale"
-            ] = 'paddle.utils.try_import("math").sqrt({}.shape[-1])'.format(
-                kwargs["query"]
+            API_TEMPLATE = textwrap.dedent(
+                """
+                import math
+                assert paddle.device.cuda.get_device_capability()[0] >= 8, "Device capabilities should be at least 8"
+                {}({})[0]
+                """
             )
-
+            kwargs["scale"] = "math.sqrt({}.shape[-1])".format(kwargs["query"])
+        else:
+            API_TEMPLATE = textwrap.dedent(
+                """
+                assert paddle.device.cuda.get_device_capability()[0] >= 8, "Device capabilities should be at least 8"
+                {}({})[0]
+                """
+            )
         return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
 
-class TRFMGetLoggerMatcher(BaseMatcher):
+class GetLoggerMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle.utils.try_import("logging").getLogger({})
+            import logging
+            logging.getLogger({})
             """
         )
         return API_TEMPLATE.format(self.kwargs_to_str(kwargs))
@@ -1903,8 +1867,8 @@ class TorchTensorMatcher(BaseMatcher):
 
         if "device" in kwargs:
             kwargs["place"] = kwargs.pop("device")
-            if kwargs["place"] == '"""cuda"""':
-                kwargs["place"] = '"""gpu"""'
+            if "cuda" in kwargs["place"]:
+                kwargs["place"] = kwargs["place"].replace("cuda", "gpu")
         if "requires_grad" in kwargs:
             kwargs["stop_gradient"] = "not " + kwargs.pop("requires_grad").strip("()")
 
@@ -1932,7 +1896,7 @@ class SplitMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def split(x, num_or_sections, axis=0):
+            def paddle_split(x, num_or_sections, axis=0):
                 if isinstance(num_or_sections, int):
                     return paddle.split(x, x.shape[axis]//num_or_sections, axis)
                 else:
@@ -1943,7 +1907,8 @@ class SplitMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.enable_utils_code()
-        return GenericMatcher.generate_code(self, kwargs).replace("paddle.", "")
+        self.set_paddle_api("paddle_split")
+        return GenericMatcher.generate_code(self, kwargs)
 
 
 class RangeMatcher(BaseMatcher):
@@ -2079,18 +2044,6 @@ class TensorRequiresGrad_Matcher(BaseMatcher):
         out = get_unique_name("out")
         code = API_TEMPLATE.format(out, self.paddleClass, out, requires_grad_v, out)
         return code
-
-
-class LoadMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "mmap" in kwargs:
-            return None
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {}(path=str({}))
-            """
-        )
-        return API_TEMPLATE.format(self.get_paddle_api(), kwargs["f"])
 
 
 class TensorTypeMatcher(BaseMatcher):
@@ -2436,7 +2389,7 @@ class TensorIndexCopyMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             import numpy as np
-            def index_copy_class_func(self, dim, index, source):
+            def _Tensor_index_copy_(self, dim, index, source):
                 if dim == 0:
                     return self.scatter_(index, source)
 
@@ -2451,7 +2404,7 @@ class TensorIndexCopyMatcher(BaseMatcher):
 
                 return new_self.scatter_(new_index, new_source).reshape_(shape)
 
-            setattr(paddle.Tensor, "index_copy_", index_copy_class_func)
+            setattr(paddle.Tensor, "index_copy_", _Tensor_index_copy_)
             """
         )
         return CODE_TEMPLATE
@@ -3512,7 +3465,7 @@ class TensorReshapeMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def reshape(self, *args, **kwargs):
+            def _Tensor_reshape(self, *args, **kwargs):
                 if args:
                     if len(args) == 1 and isinstance(args[0], (tuple, list)):
                         return paddle.reshape(self, args[0])
@@ -3522,7 +3475,7 @@ class TensorReshapeMatcher(BaseMatcher):
                     assert "shape" in kwargs
                     return paddle.reshape(self, shape=kwargs["shape"])
 
-            setattr(paddle.Tensor, "reshape", reshape)
+            setattr(paddle.Tensor, "reshape", _Tensor_reshape)
             """
         )
         return CODE_TEMPLATE
@@ -3963,13 +3916,13 @@ class TensorTakeMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def take(self, *args, **kwargs):
+            def _Tensor_take(self, *args, **kwargs):
                 if args:
                     return paddle.take(self, *args)
                 elif kwargs:
                     return paddle.take(self, **kwargs)
 
-            setattr(paddle.Tensor, "take", take)
+            setattr(paddle.Tensor, "take", _Tensor_take)
             """
         )
         return CODE_TEMPLATE
@@ -3983,13 +3936,13 @@ class TensorSplitMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def split_tensor_func(self, split_size, dim=0):
+            def _Tensor_split(self, split_size, dim=0):
                 if isinstance(split_size, int):
                     return paddle.split(self, self.shape[dim] // split_size, dim)
                 else:
                     return paddle.split(self, split_size, dim)
 
-            setattr(paddle.Tensor, "split", split_tensor_func)
+            setattr(paddle.Tensor, "split", _Tensor_split)
             """
         )
         return CODE_TEMPLATE
@@ -4007,13 +3960,13 @@ class TensorRoundMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def round(self, decimals=None):
+            def _Tensor_round(self, decimals=None):
                 if decimals:
                     x = paddle.abs(self)//(10**-decimals)*(10**-decimals)
                     return paddle.where(self<0, -x, x)
                 return paddle.round(self)
 
-            setattr(paddle.Tensor, "round", round)
+            setattr(paddle.Tensor, "round", _Tensor_round)
             """
         )
         return CODE_TEMPLATE
@@ -4247,11 +4200,11 @@ class SoftmaxMatcher(BaseMatcher):
                     ret = 1
                 return ret
 
-            def forward(self, x):
+            def _forward(self, x):
                 if self._axis is None:
                     return paddle.nn.functional.softmax(x, _get_softmax_dim(x.ndim))
                 return paddle.nn.functional.softmax(x, self._axis)
-            setattr(paddle.nn.Softmax, "forward", forward)
+            setattr(paddle.nn.Softmax, "forward", _forward)
             """
         )
         return CODE_TEMPLATE
@@ -4273,11 +4226,11 @@ class LogSoftmaxMatcher(BaseMatcher):
                     ret = 1
                 return ret
 
-            def forward(self, x):
+            def _forward(self, x):
                 if self._axis is None:
                     return paddle.nn.functional.log_softmax(x, _get_softmax_dim(x.ndim))
                 return paddle.nn.functional.log_softmax(x, self._axis)
-            setattr(paddle.nn.LogSoftmax, "forward", forward)
+            setattr(paddle.nn.LogSoftmax, "forward", _forward)
             """
         )
         return CODE_TEMPLATE
@@ -5019,22 +4972,19 @@ class SetUpMatcher(BaseMatcher):
 
 class SDPAttnMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        code = ""
+        if "scale" in kwargs or "enable_gqa" in kwargs:
+            return None
+        query = kwargs.pop("query")
+        key = kwargs.pop("key")
+        value = kwargs.pop("value")
         API_TEMPLATE = textwrap.dedent(
             """
-            {}({})
+            {}({}.transpose([0, 2, 1, 3]), {}.transpose([0, 2, 1, 3]), {}.transpose([0, 2, 1, 3]), {}).transpose([0, 2, 1, 3])
             """
         )
-        if "scale" in kwargs:
-            Assert_TEMPLATE = textwrap.dedent(
-                """
-            assert {} == None or {} == paddle.utils.try_import("math").sqrt({}.shape[-1]),"Fault: The scale parameter defaults to the square root of the last dimension of query, not allowed manually set"
-            """
-            )
-            code = Assert_TEMPLATE.format(
-                kwargs["scale"], kwargs.pop("scale"), kwargs["query"]
-            )
-        code += API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
+        code = API_TEMPLATE.format(
+            self.get_paddle_api(), query, key, value, self.kwargs_to_str(kwargs)
+        )
         return code
 
 
@@ -5104,7 +5054,7 @@ class TensorViewMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def view(self, *args, **kwargs):
+            def _Tensor_view(self, *args, **kwargs):
                 if args:
                     if len(args)==1 and isinstance(args[0], (tuple, list, str)):
                         return paddle.view(self, args[0])
@@ -5113,7 +5063,7 @@ class TensorViewMatcher(BaseMatcher):
                 elif kwargs:
                     return paddle.view(self, shape_or_dtype = list(kwargs.values())[0])
 
-            setattr(paddle.Tensor, 'view', view)
+            setattr(paddle.Tensor, 'view', _Tensor_view)
             """
         )
         return CODE_TEMPLATE
@@ -5147,14 +5097,13 @@ class EmbeddingMatcher(BaseMatcher):
                 def __init__(self, *args, **kwargs):
                     super().__init__(*args, **kwargs)
                     self.padding_idx = self._padding_idx
-
-            setattr(paddle.nn, 'Embedding', Embedding)
             """
         )
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
         self.enable_utils_code()
+        self.set_paddle_api("Embedding")
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -5908,7 +5857,7 @@ class SetPerProcessMemoryFractionMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             import os
-            def _set_per_process_memory_fraction(fraction):
+            def set_per_process_memory_fraction(fraction):
                 os.environ['FLAGS_fraction_of_gpu_memory_to_use'] = str(fraction)
             """
         )
@@ -5918,7 +5867,7 @@ class SetPerProcessMemoryFractionMatcher(BaseMatcher):
         self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            _set_per_process_memory_fraction({})
+            set_per_process_memory_fraction({})
             """
         )
         code = API_TEMPLATE.format(kwargs["fraction"])
