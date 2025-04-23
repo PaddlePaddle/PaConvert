@@ -188,6 +188,7 @@
   "torch.torch.Tensor": "torch.Tensor",
   "torch.torch.finfo": "torch.finfo",
   "torch.torch.int32": "torch.int32",
+  "torch.torch.tril": "torch.tril",
   "torch.trapz": "torch.trapezoid",
   "torch.utils.data._utils.collate.default_collate": "torch.utils.data.default_collate",
   "torch.utils.data.dataloader.DataLoader": "torch.utils.data.DataLoader",
