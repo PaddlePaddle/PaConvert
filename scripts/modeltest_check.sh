@@ -21,8 +21,8 @@ python -m pip install -U torch --index-url https://download.pytorch.org/whl/cpu
 python -c "import torch; print('torch version information:' ,torch.__version__)"
 
 echo "Insalling develop cpu version paddle"
-#python -m pip uninstall -y paddlepaddle
-#python -m pip uninstall -y paddlepaddle-gpu
+python -m pip uninstall -y paddlepaddle
+python -m pip uninstall -y paddlepaddle-gpu
 python -m pip install --pre paddlepaddle -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
