@@ -516,6 +516,8 @@ x.device
 
 args.device
 
+self.args.device
+
 # some bad case
 x = x + self.pos_embed.expand(B, -1, -1).detach()
 
