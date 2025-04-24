@@ -3,7 +3,7 @@ import paddle
 
 ############################## 相关utils函数，如下 ##############################
 
-def index_copy_class_func(self, dim, index, source):
+def _Tensor_index_copy_(self, dim, index, source):
     if dim == 0:
         return self.scatter_(index, source)
 
@@ -18,7 +18,7 @@ def index_copy_class_func(self, dim, index, source):
 
     return new_self.scatter_(new_index, new_source).reshape_(shape)
 
-setattr(paddle.Tensor, "index_copy_", index_copy_class_func)
+setattr(paddle.Tensor, "index_copy_", _Tensor_index_copy_)
 ############################## 相关utils函数，如上 ##############################
 
 

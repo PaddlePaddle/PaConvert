@@ -3931,7 +3931,7 @@
   },
   "torch.Tensor.swapaxes": {
     "Matcher": "TensorTransposeMatcher",
-    "paddle_api": "paddle.transpose",
+    "paddle_api": "paddle.Tensor.transpose",
     "min_input_args": 2,
     "args_list": [
       "axis0",
@@ -3940,7 +3940,7 @@
   },
   "torch.Tensor.swapdims": {
     "Matcher": "TensorTransposeMatcher",
-    "paddle_api": "paddle.transpose",
+    "paddle_api": "paddle.Tensor.transpose",
     "min_input_args": 2,
     "args_list": [
       "dim0",
@@ -9924,7 +9924,7 @@
     }
   },
   "torch.load": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "LoadMatcher",
     "paddle_api": "paddle.load",
     "min_input_args": 1,
     "args_list": [

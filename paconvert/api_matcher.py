@@ -774,6 +774,12 @@ class TransposeMatcher(BaseMatcher):
         return code
 
 
+class LoadMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs["path"] = f'str({kwargs.pop("f")})'
+        return GenericMatcher.generate_code(self, kwargs)
+
+
 class TensorTransposeMatcher(BaseMatcher):
     def generate_utils_code(self):
         API_TEMPLATE = textwrap.dedent(
@@ -1267,7 +1273,7 @@ class TensorMaxMatcher(BaseMatcher):
 
                 return ret
 
-            setattr(paddle.Tensor, "max", _Tensor_max)
+            setattr(paddle.Tensor, "_max", _Tensor_max)
             """
         )
         return CODE_TEMPLATE
@@ -1302,10 +1308,10 @@ class TensorMaxMatcher(BaseMatcher):
             return ast.parse(code).body
 
         self.enable_utils_code()
-        # kwargs_str = self.args_and_kwargs_to_str(new_args, new_kwargs)
-        # code = "{}.max_func({})".format(self.paddleClass, kwargs_str)
-        # return ast.parse(code).body
-        return "unchange"
+        kwargs_str = self.args_and_kwargs_to_str(new_args, new_kwargs)
+        code = "{}._max({})".format(self.paddleClass, kwargs_str)
+        return ast.parse(code).body
+        # return "unchange"
 
 
 class TensorMinMatcher(BaseMatcher):
@@ -1329,7 +1335,7 @@ class TensorMinMatcher(BaseMatcher):
 
                 return ret
 
-            setattr(paddle.Tensor, "min", _Tensor_min)
+            setattr(paddle.Tensor, "_min", _Tensor_min)
             """
         )
         return CODE_TEMPLATE
@@ -1364,10 +1370,10 @@ class TensorMinMatcher(BaseMatcher):
             return ast.parse(code).body
 
         self.enable_utils_code()
-        # kwargs_str = self.args_and_kwargs_to_str(new_args, new_kwargs)
-        # code = "{}.min_func({})".format(self.paddleClass, kwargs_str)
-        # return ast.parse(code).body
-        return "unchange"
+        kwargs_str = self.args_and_kwargs_to_str(new_args, new_kwargs)
+        code = "{}._min({})".format(self.paddleClass, kwargs_str)
+        return ast.parse(code).body
+        # return "unchange"
 
 
 class EqualMatcher(BaseMatcher):
@@ -1383,7 +1389,7 @@ class EqualMatcher(BaseMatcher):
 
 class FAFlashAttnFuncMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        return GenericMatcher.generate_code(kwargs) + "[0]"
+        return GenericMatcher.generate_code(self, kwargs) + "[0]"
 
 
 class FAFlashAttnUnpaddedFuncMatcher(BaseMatcher):
@@ -4200,11 +4206,11 @@ class SoftmaxMatcher(BaseMatcher):
                     ret = 1
                 return ret
 
-            def _forward(self, x):
+            def _softmax_forward(self, x):
                 if self._axis is None:
                     return paddle.nn.functional.softmax(x, _get_softmax_dim(x.ndim))
                 return paddle.nn.functional.softmax(x, self._axis)
-            setattr(paddle.nn.Softmax, "forward", _forward)
+            setattr(paddle.nn.Softmax, "forward", _softmax_forward)
             """
         )
         return CODE_TEMPLATE
@@ -4226,11 +4232,11 @@ class LogSoftmaxMatcher(BaseMatcher):
                     ret = 1
                 return ret
 
-            def _forward(self, x):
+            def _log_softmax_forward(self, x):
                 if self._axis is None:
                     return paddle.nn.functional.log_softmax(x, _get_softmax_dim(x.ndim))
                 return paddle.nn.functional.log_softmax(x, self._axis)
-            setattr(paddle.nn.LogSoftmax, "forward", _forward)
+            setattr(paddle.nn.LogSoftmax, "forward", _log_softmax_forward)
             """
         )
         return CODE_TEMPLATE
