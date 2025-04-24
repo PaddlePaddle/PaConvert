@@ -20,11 +20,10 @@ from lr_scheduler_helper import generate_lr_scheduler_test_code
 obj = APIBase("torch.optim.lr_scheduler.ConstantLR")
 
 
+# verbose has been deprecated and removed in torch 2.7.0
 def test_case_1():
     pytorch_code = textwrap.dedent(
-        generate_lr_scheduler_test_code(
-            "torch.optim.lr_scheduler.ConstantLR(sgd, verbose=True)"
-        )
+        generate_lr_scheduler_test_code("torch.optim.lr_scheduler.ConstantLR(sgd)")
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
 
@@ -77,7 +76,7 @@ def test_case_6():
 def test_case_7():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
-            "torch.optim.lr_scheduler.ConstantLR(sgd, 0.05, 3, -1, False)"
+            "torch.optim.lr_scheduler.ConstantLR(sgd, 0.05, 3, -1)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
@@ -86,7 +85,7 @@ def test_case_7():
 def test_case_8():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
-            "torch.optim.lr_scheduler.ConstantLR(optimizer=sgd, factor=0.05, total_iters=3, last_epoch=-1, verbose=False)"
+            "torch.optim.lr_scheduler.ConstantLR(optimizer=sgd, factor=0.05, total_iters=3, last_epoch=-1)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
@@ -96,8 +95,8 @@ def test_case_9():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
             [
-                "torch.optim.lr_scheduler.ConstantLR(optimizer=sgd, factor=0.05, total_iters=3, last_epoch=-1, verbose=False)",
-                "torch.optim.lr_scheduler.ConstantLR(optimizer=sgd, factor=0.05, total_iters=3, last_epoch=scheduler_1.last_epoch, verbose=False)",
+                "torch.optim.lr_scheduler.ConstantLR(optimizer=sgd, factor=0.05, total_iters=3, last_epoch=-1)",
+                "torch.optim.lr_scheduler.ConstantLR(optimizer=sgd, factor=0.05, total_iters=3, last_epoch=scheduler_1.last_epoch)",
             ]
         )
     )
@@ -114,7 +113,7 @@ def test_case_10():
 def test_case_11():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
-            "torch.optim.lr_scheduler.ConstantLR(optimizer=sgd, factor=0.05, total_iters=3, last_epoch=-1, verbose=False)"
+            "torch.optim.lr_scheduler.ConstantLR(optimizer=sgd, factor=0.05, total_iters=3, last_epoch=-1)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
@@ -123,7 +122,7 @@ def test_case_11():
 def test_case_12():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
-            "torch.optim.lr_scheduler.ConstantLR(optimizer=sgd, factor=0.05, total_iters=3, last_epoch=-1, verbose=False)"
+            "torch.optim.lr_scheduler.ConstantLR(optimizer=sgd, factor=0.05, total_iters=3, last_epoch=-1)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)

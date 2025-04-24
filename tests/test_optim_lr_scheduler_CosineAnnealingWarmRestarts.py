@@ -20,6 +20,7 @@ from lr_scheduler_helper import generate_lr_scheduler_test_code
 obj = APIBase("torch.optim.lr_scheduler.CosineAnnealingWarmRestarts")
 
 
+# verbose has been deprecated and removed in torch 2.7.0
 def test_case_1():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
@@ -50,7 +51,7 @@ def test_case_3():
 def test_case_4():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
-            "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer=sgd, T_0=10, T_mult=1, eta_min=0.0, last_epoch=-1, verbose=True)"
+            "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer=sgd, T_0=10, T_mult=1, eta_min=0.0, last_epoch=-1)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
@@ -59,7 +60,7 @@ def test_case_4():
 def test_case_5():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
-            "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer=sgd, T_0=10, T_mult=1, eta_min=0.05, verbose=True)"
+            "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer=sgd, T_0=10, T_mult=1, eta_min=0.05)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
@@ -68,7 +69,7 @@ def test_case_5():
 def test_case_6():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
-            "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(sgd, 10, 1, 1.0, -1, False)"
+            "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(sgd, 10, 1, 1.0, -1)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
@@ -78,8 +79,8 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
             [
-                "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer=sgd, T_0=10, T_mult=1, eta_min=0.0, last_epoch=-1, verbose=False)",
-                "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer=sgd, T_0=10, T_mult=2, eta_min=0.0, last_epoch=scheduler_1.last_epoch, verbose=False)",
+                "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer=sgd, T_0=10, T_mult=1, eta_min=0.0, last_epoch=-1)",
+                "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer=sgd, T_0=10, T_mult=2, eta_min=0.0, last_epoch=scheduler_1.last_epoch)",
             ]
         )
     )

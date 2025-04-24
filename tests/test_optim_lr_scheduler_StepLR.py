@@ -20,10 +20,11 @@ from lr_scheduler_helper import generate_lr_scheduler_test_code
 obj = APIBase("torch.optim.lr_scheduler.StepLR")
 
 
+# verbose has been deprecated and removed in torch 2.7.0
 def test_case_1():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
-            "torch.optim.lr_scheduler.StepLR(sgd, step_size=2, verbose=True)"
+            "torch.optim.lr_scheduler.StepLR(sgd, step_size=2)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
@@ -57,7 +58,7 @@ def test_case_4():
 def test_case_5():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
-            "torch.optim.lr_scheduler.StepLR(sgd, 10, 0.2, -1, False)"
+            "torch.optim.lr_scheduler.StepLR(sgd, 10, 0.2, -1)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
@@ -75,7 +76,7 @@ def test_case_6():
 def test_case_7():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
-            "torch.optim.lr_scheduler.StepLR(optimizer=sgd, step_size=3, gamma=0.2, last_epoch=-1, verbose=False)"
+            "torch.optim.lr_scheduler.StepLR(optimizer=sgd, step_size=3, gamma=0.2, last_epoch=-1)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
@@ -96,8 +97,8 @@ def test_case_9():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
             [
-                "torch.optim.lr_scheduler.StepLR(optimizer=sgd, step_size=3, gamma=0.2, last_epoch=-1, verbose=False)",
-                "torch.optim.lr_scheduler.StepLR(optimizer=sgd, step_size=3, gamma=0.2, last_epoch=scheduler_1.last_epoch, verbose=False)",
+                "torch.optim.lr_scheduler.StepLR(optimizer=sgd, step_size=3, gamma=0.2, last_epoch=-1)",
+                "torch.optim.lr_scheduler.StepLR(optimizer=sgd, step_size=3, gamma=0.2, last_epoch=scheduler_1.last_epoch)",
             ]
         )
     )
