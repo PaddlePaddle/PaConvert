@@ -20,6 +20,7 @@ from lr_scheduler_helper import generate_lr_scheduler_test_code
 obj = APIBase("torch.optim.lr_scheduler.CyclicLR")
 
 
+# verbose has been deprecated and removed in torch 2.7.0
 def test_case_1():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
@@ -50,7 +51,7 @@ def test_case_3():
 def test_case_4():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
-            "torch.optim.lr_scheduler.CyclicLR(optimizer=sgd, base_lr=0.01, max_lr=0.1, step_size_up=1000, step_size_down=1000, mode='triangular', gamma=1.0, scale_fn=None, scale_mode='cycle', cycle_momentum=True, base_momentum=0.8, max_momentum=0.9, last_epoch=-1, verbose=False)"
+            "torch.optim.lr_scheduler.CyclicLR(optimizer=sgd, base_lr=0.01, max_lr=0.1, step_size_up=1000, step_size_down=1000, mode='triangular', gamma=1.0, scale_fn=None, scale_mode='cycle', cycle_momentum=True, base_momentum=0.8, max_momentum=0.9, last_epoch=-1)"
         )
     )
     obj.run(
@@ -65,7 +66,7 @@ def test_case_4():
 def test_case_5():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
-            "torch.optim.lr_scheduler.CyclicLR(optimizer=sgd, base_lr=0.01, max_lr=0.1, step_size_up=1000, step_size_down=1000, mode='triangular', gamma=1.0, scale_fn=None, scale_mode='cycle', last_epoch=-1, verbose=False)"
+            "torch.optim.lr_scheduler.CyclicLR(optimizer=sgd, base_lr=0.01, max_lr=0.1, step_size_up=1000, step_size_down=1000, mode='triangular', gamma=1.0, scale_fn=None, scale_mode='cycle', last_epoch=-1)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5, check_value=False)
@@ -74,7 +75,7 @@ def test_case_5():
 def test_case_6():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
-            "torch.optim.lr_scheduler.CyclicLR(scale_fn=None, scale_mode='cycle', last_epoch=-1, verbose=False, base_lr=0.01, max_lr=0.1, step_size_up=1000, optimizer=sgd, mode='triangular', gamma=1.0)"
+            "torch.optim.lr_scheduler.CyclicLR(scale_fn=None, scale_mode='cycle', last_epoch=-1, base_lr=0.01, max_lr=0.1, step_size_up=1000, optimizer=sgd, mode='triangular', gamma=1.0)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5, check_value=False)
@@ -83,7 +84,7 @@ def test_case_6():
 def test_case_7():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
-            "torch.optim.lr_scheduler.CyclicLR(sgd, 0.01, 0.1, 1000, 1000, 'triangular', 1.0, None, 'cycle', last_epoch=-1, verbose=False)"
+            "torch.optim.lr_scheduler.CyclicLR(sgd, 0.01, 0.1, 1000, 1000, 'triangular', 1.0, None, 'cycle', last_epoch=-1)"
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5, check_value=False)
@@ -102,8 +103,8 @@ def test_case_9():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
             [
-                "torch.optim.lr_scheduler.CyclicLR(optimizer=sgd, base_lr=0.01, max_lr=0.1, step_size_up=1000, step_size_down=1000, mode='triangular', gamma=1.0, scale_fn=None, scale_mode='cycle', last_epoch=-1, verbose=False)",
-                "torch.optim.lr_scheduler.CyclicLR(optimizer=sgd, base_lr=0.01, max_lr=0.1, step_size_up=1000, step_size_down=1000, mode='triangular', gamma=1.0, scale_fn=None, scale_mode='cycle', last_epoch=scheduler_1.last_epoch, verbose=False)",
+                "torch.optim.lr_scheduler.CyclicLR(optimizer=sgd, base_lr=0.01, max_lr=0.1, step_size_up=1000, step_size_down=1000, mode='triangular', gamma=1.0, scale_fn=None, scale_mode='cycle', last_epoch=-1)",
+                "torch.optim.lr_scheduler.CyclicLR(optimizer=sgd, base_lr=0.01, max_lr=0.1, step_size_up=1000, step_size_down=1000, mode='triangular', gamma=1.0, scale_fn=None, scale_mode='cycle', last_epoch=scheduler_1.last_epoch)",
             ]
         )
     )
@@ -113,7 +114,7 @@ def test_case_9():
 def test_case_10():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
-            "torch.optim.lr_scheduler.CyclicLR(sgd, 0.01, 0.1, 1000, 1000, 'triangular', 1.0, None, 'cycle', True, 0.8, 0.9, -1, False)"
+            "torch.optim.lr_scheduler.CyclicLR(sgd, 0.01, 0.1, 1000, 1000, 'triangular', 1.0, None, 'cycle', True, 0.8, 0.9, -1)"
         )
     )
     obj.run(
@@ -128,7 +129,7 @@ def test_case_10():
 def test_case_11():
     pytorch_code = textwrap.dedent(
         generate_lr_scheduler_test_code(
-            "torch.optim.lr_scheduler.CyclicLR(optimizer=sgd, max_lr=0.1, mode='triangular', step_size_up=1000, base_lr=0.01, step_size_down=1000, gamma=1.0, cycle_momentum=True, scale_fn=None, scale_mode='cycle', base_momentum=0.8, max_momentum=0.9, last_epoch=-1, verbose=False)"
+            "torch.optim.lr_scheduler.CyclicLR(optimizer=sgd, max_lr=0.1, mode='triangular', step_size_up=1000, base_lr=0.01, step_size_down=1000, gamma=1.0, cycle_momentum=True, scale_fn=None, scale_mode='cycle', base_momentum=0.8, max_momentum=0.9, last_epoch=-1)"
         )
     )
     obj.run(
