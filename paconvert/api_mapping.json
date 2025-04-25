@@ -126,6 +126,7 @@
       "return_attn_probs"
     ],
     "unsupport_args": [
+      "softmax_scale",
       "window_size",
       "softcap",
       "alibi_slopes",
@@ -3929,8 +3930,8 @@
     ]
   },
   "torch.Tensor.swapaxes": {
-    "Matcher": "SwapAxesMatcher",
-    "paddle_api": "paddle.transpose",
+    "Matcher": "TensorTransposeMatcher",
+    "paddle_api": "paddle.Tensor.transpose",
     "min_input_args": 2,
     "args_list": [
       "axis0",
@@ -3938,8 +3939,8 @@
     ]
   },
   "torch.Tensor.swapdims": {
-    "Matcher": "SwapAxesMatcher",
-    "paddle_api": "paddle.transpose",
+    "Matcher": "TensorTransposeMatcher",
+    "paddle_api": "paddle.Tensor.transpose",
     "min_input_args": 2,
     "args_list": [
       "dim0",
@@ -14274,7 +14275,12 @@
       "attn_mask",
       "dropout_p",
       "is_causal",
-      "scale"
+      "scale",
+      "enable_gqa"
+    ],
+    "unsupport_args": [
+      "scale",
+      "enable_gqa"
     ]
   },
   "torch.nn.functional.selu": {
@@ -17503,7 +17509,7 @@
     }
   },
   "torch.swapaxes": {
-    "Matcher": "SwapAxesMatcher",
+    "Matcher": "TransposeMatcher",
     "paddle_api": "paddle.transpose",
     "min_input_args": 3,
     "args_list": [
@@ -20162,7 +20168,7 @@
     "abstract": true
   },
   "transformers.logging.get_logger": {
-    "Matcher": "TRFMGetLoggerMatcher",
+    "Matcher": "GetLoggerMatcher",
     "args_list": [
       "name"
     ]

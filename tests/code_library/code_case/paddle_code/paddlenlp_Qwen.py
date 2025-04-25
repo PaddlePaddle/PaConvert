@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 
 import paddle
@@ -15,7 +16,7 @@ def _convert_head_mask_to_5d(head_mask, num_hidden_layers):
     head_mask = head_mask.to(dtype=paddle.get_default_dtype())  # switch to float if need + fp16 compatibility
     return head_mask
 
-def get_head_mask(
+def _get_head_mask(
     self,
     head_mask: Optional[paddle.Tensor],
     num_hidden_layers: int,
@@ -28,28 +29,28 @@ def get_head_mask(
     else:
         head_mask = [None] * num_hidden_layers
     return head_mask
-setattr(paddlenlp.transformers.model_utils.PretrainedModel, "get_head_mask", get_head_mask)
+setattr(paddlenlp.transformers.model_utils.PretrainedModel, "get_head_mask", _get_head_mask)
 
 original_generate = paddlenlp.generation.utils.GenerationMixin.generate
-def generate(self, input_ids, *args, **kwargs):
-    return paddle.concat((input_ids,original_generate(self,input_ids, *args, **kwargs)[0]),axis=-1)
-setattr(paddlenlp.generation.utils.GenerationMixin, "generate", generate)
+def _generate(self, input_ids, *args, **kwargs):
+    return paddle.concat((input_ids, original_generate(self,input_ids, *args, **kwargs)[0]), axis=-1)
+setattr(paddlenlp.generation.utils.GenerationMixin, "generate", _generate)
 
 setattr(paddlenlp.transformers.model_utils.PretrainedModel, "device", None)
 
-def post_init(self):
+def _post_init(self):
     if hasattr(self, "init_weights"):
         self.init_weights()
     elif hasattr(self, "_init_weights"):
         self._init_weights()
-setattr(paddlenlp.transformers.model_utils.PretrainedModel, "post_init", post_init)
+setattr(paddlenlp.transformers.model_utils.PretrainedModel, "post_init", _post_init)
 
 import paddlenlp
 
 original_encode = paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase.encode
-def encode(self, *args, **kwargs):
+def _encode(self, *args, **kwargs):
     return original_encode(self, *args, **kwargs)["input_ids"]
-setattr(paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase, "encode", encode)
+setattr(paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase, "encode", _encode)
 
 def apply_rotary_position_embeddings(x, cos, sin):
     if not isinstance(cos, paddle.Tensor):
@@ -101,7 +102,7 @@ def chat(
 
 
 print("#########################case3#########################")
-logger = paddle.utils.try_import("logging").getLogger(name=__name__)
+logger = logging.getLogger(name=__name__)
 print("#########################case4#########################")
 paddlenlp.transformers.model_outputs.BaseModelOutputWithPast(
     last_hidden_state=hidden_states,
@@ -119,20 +120,11 @@ paddlenlp.transformers.model_outputs.CausalLMOutputWithPast(
 )
 print("#########################case6#########################")
 if attention_mask is None:
-    assert None == None or None == paddle.utils.try_import("math").sqrt(
-        q.shape[-1]
-    ), "Fault: The softmax_scale parameter defaults to the square root of the last dimension of query, not allowed manually set"
-    assert (
-        paddle.device.cuda.get_device_capability()[0] >= 8
-    ), "Fault: Your device computational capabilities less 8"
     output = paddle.nn.functional.flash_attention.flash_attention(
         query=q, key=k, value=v, dropout=0.0, causal=True
     )[0]
 print("#########################case7#########################")
 if attention_mask is None:
-    assert (
-        paddle.device.cuda.get_device_capability()[0] >= 8
-    ), "Fault: Your device computational capabilities less 8"
     output = paddle.nn.functional.flash_attention.flash_attention(
         query=q, key=k, value=v, dropout=0.0, causal=True
     )[0]
@@ -143,7 +135,7 @@ paddle.__version__.split(sep=".")
 print("#########################case10########################")
 assert (
     paddle.device.cuda.get_device_capability()[0] >= 8
-), "Fault: Your device computational capabilities less 8"
+), "Device capabilities should be at least 8"
 output = paddle.nn.functional.flash_attention.flash_attn_unpadded(
     query=q,
     key=k,

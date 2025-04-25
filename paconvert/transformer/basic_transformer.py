@@ -401,7 +401,6 @@ class BasicTransformer(BaseTransformer):
         super(BasicTransformer, self).generic_visit(node)
 
         full_attr = self.get_full_attr_for_apiname(node.func)
-
         # 1) Torch Package Call, include torch third_party
         #   such as : torch.add(x, y) / torch.add(torch.abs(x), y)
         #   for may_torch_package_list, will in_api_mapping
