@@ -218,17 +218,19 @@ class BaseTransformer(ast.NodeTransformer):
     def get_full_attr_for_apiname(self, node):
         if len(self.imports_map[self.file]["torch_packages"]) == 0:
             return "NonTorchClass"
+        # x.abs() -> 'abs'
         if isinstance(node, ast.Attribute):
+            for item in self.black_list:
+                if item == node.attr:
+                    return "NonTorchClass"
             return self.get_full_attr_for_apiname(node.value) + "." + node.attr
         # x.abs() -> 'x'
         elif isinstance(node, ast.Name):
-            # np.array(1.) -> 'np'
-            node_str = astor.to_source(node).replace("\n", "")
             for item in self.black_list:
-                if item == node_str:
+                if item == node.id:
                     return "NonTorchClass"
-            # misidentify paddle.rand as x.rand
-            if node_str == "paddle":
+            # avoid to convert paddle itself, eg: paddle.max
+            if "paddle" == node.id:
                 return "NonTorchClass"
             return node.id
         # 1. torch.abs(x).transpose(1, 0) -> 'TorchClass'
