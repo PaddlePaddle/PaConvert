@@ -25,7 +25,7 @@
 
 #### 1. 命令行用法
 
-通过终端命令行的方式使用，有一定使用门槛：
+通过终端命令行的方式使用：
 
 ```bash
 pip install -U paconvert
@@ -46,7 +46,7 @@ paconvert --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs excl
 
 #### 2. IDE交互式用法
 
-在 IDE 中交互式编程使用，界面友好，使用门槛低。
+在 IDE 中使用，交互式界面更友好。
 
 需要在`PyCharm`或`VS Code`等主流 IDE 中安装 **文心快码插件(Baidu Comate)** 后即可使用。以`VS Code`上使用为例：
 
