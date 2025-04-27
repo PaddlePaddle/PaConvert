@@ -18,9 +18,10 @@ import torch
 import torch.distributed as dist
 
 dist.init_process_group(backend="nccl")
-torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
+rank = dist.get_rank()
+torch.cuda.set_device(rank)
 
-if dist.get_rank() == 0:
+if rank == 0:
     data1 = torch.tensor([0, 1]).cuda()
     data2 = torch.tensor([2, 3]).cuda()
 else:
@@ -30,6 +31,6 @@ dist.reduce_scatter(
     data1, [data1, data2], op=dist.ReduceOp.MAX, group=None, async_op=False
 )
 
-if dist.get_rank() == 0:
+if rank == 0:
     print(data1)
     torch.save(data1, os.environ["DUMP_FILE"])

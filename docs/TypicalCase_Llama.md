@@ -23,7 +23,7 @@ Llama源码下载命令
 模型代码转换使用如下命令：
 
 ```python
-paconvert --in_dir ./Llama --out_dir ./convert_model/Llama
+paconvert -i ./Llama -o ./convert_model/Llama
 ```
 Llama模型已实现一键转换，故无需手动编写转换规则，只需指定输入路径和输出路径即可。但对于其他待转模型可能存在未转换情形，欢迎参考[贡献手册](https://github.com/PaddlePaddle/PaConvert/blob/master/docs/CONTRIBUTING.md)向本项目贡献代码。
 

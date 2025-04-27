@@ -12,20 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import os
 
 import torch
 import torch.distributed as dist
 from torch.distributed import P2POp
 
 dist.init_process_group(backend="nccl")
-torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
+rank = dist.get_rank()
+torch.cuda.set_device(rank)
 
-if dist.get_rank() == 0:
-    send_tensor = torch.ones(3, 3)
+if rank == 0:
+    send_tensor = torch.ones(3, 3).cuda()
     p2p_op = P2POp(dist.isend, send_tensor, peer=1)
 else:
-    recv_tensor = torch.empty(3, 3)
+    recv_tensor = torch.empty(3, 3).cuda()
     p2p_op = P2POp(dist.irecv, recv_tensor, peer=0)
 
 
@@ -34,6 +34,5 @@ reqs = dist.batch_isend_irecv([p2p_op])
 for req in reqs:
     req.wait()
 
-
-if dist.get_rank() != 0:
+if rank != 0:
     print(recv_tensor)

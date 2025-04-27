@@ -34,7 +34,7 @@ def convert_pytorch_code_to_paddle():
     for pytorch_dir in MODEL_LIST:
         convert_paddle_dir = pytorch_dir.replace("torch_code", "convert_paddle_code")
         exit_code = os.system(
-            f"python paconvert/main.py --in_dir {pytorch_dir} --out_dir {convert_paddle_dir}"
+            f"python paconvert/main.py -i {pytorch_dir} -o {convert_paddle_dir} -e exclude_convert.py"
         )
         if exit_code != 0:
             print(f"The {pytorch_dir} convert fail!")
@@ -47,12 +47,15 @@ def run_model():
     run_fail_list = []
     for pytorch_dir in MODEL_LIST:
         convert_paddle_dir = pytorch_dir.replace("torch_code", "convert_paddle_code")
-        exit_code = os.system(f"python {convert_paddle_dir}")
-        if exit_code != 0:
-            print(f"{pytorch_dir} -> {convert_paddle_dir} run fail!")
-            run_fail_list.append(pytorch_dir)
+        if os.path.exists(convert_paddle_dir):
+            exit_code = os.system(f"python {convert_paddle_dir}")
+            if exit_code != 0:
+                print(f"{pytorch_dir} -> {convert_paddle_dir} run fail!")
+                run_fail_list.append(pytorch_dir)
+            else:
+                print(f"{pytorch_dir} -> {convert_paddle_dir} run success!")
         else:
-            print(f"{pytorch_dir} -> {convert_paddle_dir} run success!")
+            print(f"{pytorch_dir} -> {convert_paddle_dir} not convert!")
     return run_fail_list
 
 

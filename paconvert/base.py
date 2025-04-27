@@ -151,11 +151,14 @@ class BaseTransformer(ast.NodeTransformer):
                 for index, lines in insert_lines:
                     log_debug(
                         self.logger,
-                        "insert extra {} lines on finally".format(len(lines)),
+                        "insert extra {} lines finally".format(len(lines)),
                         self.file_name,
                     )
                     for line in lines[::-1]:
-                        getattr(scope_node, body).insert(index, line)
+                        try:
+                            getattr(scope_node, body).insert(index, line)
+                        except:
+                            getattr(scope_node, body).insert(0, line)
 
     def record_scope(self, scope_body_index, node_list):
         if not isinstance(node_list, list):

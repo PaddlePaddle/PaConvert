@@ -18,15 +18,16 @@ import torch
 import torch.distributed as dist
 
 dist.init_process_group(backend="nccl")
-torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
+rank = dist.get_rank()
+torch.cuda.set_device(rank)
 
 out_object_list = [None]
-if dist.get_rank() == 0:
+if rank == 0:
     in_object_list = [{"foo": [1, 2, 3]}, {"foo": [4, 5, 6]}]
 else:
     in_object_list = [{"bar": [1, 2, 3]}, {"bar": [4, 5, 6]}]
 dist.scatter_object_list(out_object_list, in_object_list, src=1, group=None)
 
-if dist.get_rank() == 0:
+if rank == 0:
     print(out_object_list)
     torch.save(out_object_list, os.environ["DUMP_FILE"])

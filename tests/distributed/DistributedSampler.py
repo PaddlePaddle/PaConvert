@@ -21,7 +21,8 @@ import torch.distributed as dist
 from torch.utils.data import Dataset, DistributedSampler
 
 dist.init_process_group(backend="nccl")
-torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
+rank = dist.get_rank()
+torch.cuda.set_device(rank)
 
 
 class RandomDataset(Dataset):
@@ -49,6 +50,6 @@ sampler = DistributedSampler(
 
 data = [i for i in sampler]
 data = torch.tensor(data).squeeze()
-if dist.get_rank() == 0:
+if rank == 0:
     print(data)
     torch.save(data, os.environ["DUMP_FILE"])

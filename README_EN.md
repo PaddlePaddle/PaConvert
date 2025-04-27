@@ -45,30 +45,28 @@ Due to the use of some newer Python syntax tree features, an interpreter with >=
 1. Installation with pip
 
 ```bash
-python3.8 -m pip install -U paconvert
-paconvert --in_dir torch_project --out_dir paddle_project [--log_dir log_dir] [--log_level level] [--run_check] [--no_format]
+pip install -U paconvert
+paconvert -i torch_code_dir [-o paddle_code_dir] [-e exclude.py] [--log_dir log_dir] [--log_level "INFO"] [--show_unsupport] [--run_check] [--no_format]
 ```
 
 2. Installation with source code
 
 ```bash
 git clone https://github.com/PaddlePaddle/PaConvert.git
-python3.8 paconvert/main.py --in_dir torch_project --out_dir paddle_project [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level level] [--run_check] [--no_format]
+python paconvert/main.py -i torch_code_dir [-o paddle_code_dir] [-e exclude.py] [--log_dir log_dir] [--log_level "INFO"] [--show_unsupport] [--run_check] [--no_format]
 ```
 
-**Parameters**
-
+**Args**
 ```
-Parameters:
---in_dir Enter the torch project file, either as a single file or as a folder
---out_dir Output paddle project file, same type as input, same as file or folder
---exclude_dirs  Optional, exclude converted files or folders, separate multiple items with a comma `,`
---log_dir Optional, the path to the output log, by default convert.log will be created in the current directory
---log_level Optional "INFO" "DEBUG", print log level, default "INFO"
---run_check Optional, tool self-test
---no_format Optional, disable format the converted code, default is False
+-i, --in_dir         Enter the torch code, which can be a file or directory.
+-o, --out_dir        Optional, outputting paddle code, which can be a file or directory. The default is the paddlesproject directory under the current directory.
+-e, --exc_patterns   Optional, Regular expressions will not be converted when matching files or directories. Multiple expressions should be separated by commas. Default not excluded.
+--log_dir            Optional, and the path to print the log will be directly printed on the terminal by default.
+--log_level          Optional, printing log level, supports "Warning", "INFO", "DEBUG", default is "INFO".
+--show_unsupport     Optional, displaying APIs that currently do not support conversion automatically. default not displayed.
+--run_check          Optional, and the tool is used for installation and self checking during operation.
+--no_format          Optional, and does not format the converted code. When using this option, the converted Paddle code will not undergo code style optimization.
 ```
-
 
 # Example
 
@@ -255,5 +253,5 @@ Then `torch.transpose` will be transformed by the above one-to-many line method.
 In local development, for quick debugging, you can run the code directly through the following way without repeated installation：
 
 ```
-python3.8 paconvert/main.py  --in_dir tests/test_model.py  --out_dir tests/out
+python3.8 paconvert/main.py  -i tests/test_model.py  -o tests/out
 ```

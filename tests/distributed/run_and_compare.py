@@ -45,6 +45,9 @@ if __name__ == "__main__":
     local_out, local_err = local_proc.communicate()
     sys.stdout.write("torch local_out: %s\n" % local_out.decode())
     sys.stderr.write("torch local_err: %s\n" % local_err.decode())
+    exit_code = local_proc.returncode
+    if exit_code != 0:
+        exit(exit_code)
 
     paddle_ret_file = f"{temp_dir.name}/out_paddle_{os.getpid()}.dat"
     local_proc = subprocess.Popen(
@@ -56,6 +59,9 @@ if __name__ == "__main__":
     local_out, local_err = local_proc.communicate()
     sys.stdout.write("paddle local_out: %s\n" % local_out.decode())
     sys.stderr.write("paddle local_err: %s\n" % local_err.decode())
+    exit_code = local_proc.returncode
+    if exit_code != 0:
+        exit(exit_code)
 
     if os.path.exists(torch_ret_file) and os.path.exists(paddle_ret_file):
         pytorch_ret = torch.load(torch_ret_file)

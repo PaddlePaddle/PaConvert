@@ -18,11 +18,12 @@ import torch
 import torch.distributed as dist
 
 dist.init_process_group(backend="nccl")
-torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
+rank = dist.get_rank()
+torch.cuda.set_device(rank)
 
 g = dist.new_group([0, 1])
 result = dist.get_backend(g)
 
-if dist.get_rank() == 0:
+if rank == 0:
     print(result)
     torch.save(result.upper(), os.environ["DUMP_FILE"])

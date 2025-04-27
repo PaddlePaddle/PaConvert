@@ -18,12 +18,13 @@ import torch
 import torch.distributed as dist
 
 dist.init_process_group(backend="nccl")
-torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
+rank = dist.get_rank()
+torch.cuda.set_device(rank)
 
 gather_objects = ["foo", 12]
 output = [None for _ in gather_objects]
 dist.all_gather_object(output, gather_objects[dist.get_rank()])
 
-if dist.get_rank() == 0:
+if rank == 0:
     print(output)
     torch.save(output, os.environ["DUMP_FILE"])

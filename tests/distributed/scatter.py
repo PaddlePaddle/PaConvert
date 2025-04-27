@@ -18,18 +18,19 @@ import torch
 import torch.distributed as dist
 
 dist.init_process_group(backend="nccl")
-torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
+rank = dist.get_rank()
+torch.cuda.set_device(rank)
 
 tensor_size = 2
 t_ones = torch.ones(tensor_size).cuda()
 t_fives = torch.ones(tensor_size).cuda() * 5
 output_tensor = torch.zeros(tensor_size).cuda()
-if dist.get_rank() == 0:
+if rank == 0:
     scatter_list = [t_ones, t_fives]
 else:
     scatter_list = None
 dist.scatter(output_tensor, scatter_list, src=0, group=None, async_op=False)
 
-if dist.get_rank() == 0:
+if rank == 0:
     print(output_tensor)
     torch.save(output_tensor, os.environ["DUMP_FILE"])

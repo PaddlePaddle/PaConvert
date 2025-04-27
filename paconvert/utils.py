@@ -113,12 +113,8 @@ class UtilsFileHelper(object):
             lines = existing_content.splitlines()
             insert_idx = 0
             for i, line in enumerate(lines):
-                line = line.strip()
-                if not line or line.startswith("#"):
-                    continue
-                if not (line.startswith(" ") and line.startswith("\t")):
-                    if line.startswith("import ") or line.startswith("from "):
-                        insert_idx = i + 1
+                if line.startswith("import ") or line.startswith("from "):
+                    insert_idx = i + 1
 
             # insert the new code after all imports
             new_content = "".join(
