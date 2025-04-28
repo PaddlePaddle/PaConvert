@@ -35,7 +35,7 @@ class ImportTransformer(BaseTransformer):
         self.imports_map[self.file]["torch_packages"] = set()
         self.imports_map[self.file]["may_torch_packages"] = set()
         self.imports_map[self.file]["api_alias_name_map"] = {}
-        self.ast_if_List = []
+        self.insert_pass_node = set()
 
     def visit_Import(self, node):
         """
@@ -154,26 +154,32 @@ class ImportTransformer(BaseTransformer):
         if len(new_node_names) > 0:
             node.names = new_node_names
             return node
-        elif (
-            isinstance(self.parent_node, ast.If)
-            and self.parent_node not in self.ast_if_List
-        ):
-            # case 1:
-            # if cond:               ==> if cond:
-            #   import numpy,torch   ==>    import numpy
-            # case 2:
-            # if cond:               ==> if cond:
-            #   import torch         ==>    pass
-            #   import transformers  ==>
-            # case 3:
-            # if cond:               ==> if cond:
-            #   import torch         ==>    pass
-            #   import numpy         ==>    import numpy
-
-            self.ast_if_List.append(self.parent_node)
-            return ast.parse("pass").body[0]
         else:
-            return None
+            if (
+                isinstance(self.parent_node, (ast.If, ast.Try))
+                and self.parent_node not in self.insert_pass_node
+            ):
+                # case 1:
+                # if cond:               ==> if cond:
+                #   import numpy         ==>    import numpy
+                #   import torch         ==>    pass
+                # case 2:
+                # if cond:               ==> if cond:
+                #   import torch         ==>    pass
+                #   import transformers  ==>
+                # case 3:
+                # if cond:               ==> if cond:
+                #   import torch         ==>    pass
+                #   import numpy         ==>    import numpy
+                # case 4:
+                # try:                   ==> try:
+                #   import torch         ==>    pass
+                # except:                ==> except:
+                #   import numpy         ==>    import numpy
+                self.insert_pass_node.add(self.parent_node)
+                return ast.parse("pass").body[0]
+            else:
+                return None
 
     def visit_ImportFrom(self, node):
         """
@@ -251,22 +257,27 @@ class ImportTransformer(BaseTransformer):
                             node.lineno,
                         )
                 if (
-                    isinstance(self.parent_node, ast.If)
-                    and self.parent_node not in self.ast_if_List
+                    isinstance(self.parent_node, (ast.If, ast.Try))
+                    and self.parent_node not in self.insert_pass_node
                 ):
                     # case 1:
                     # if cond:                    ==> if cond:
                     #   from torch import randn   ==>    pass
+                    #   import numpy              ==>    import numpy
                     # case 2:
                     # if cond:                    ==> if cond:
                     #   from torch import randn   ==>    pass
                     #   from torch import matmul  ==>
                     # case 3:
                     # if cond:                    ==> if cond:
-                    #   from torch import randn   ==>    pass
                     #   import numpy              ==>    import numpy
-
-                    self.ast_if_List.append(self.parent_node)
+                    #   from torch import randn   ==>    pass
+                    # case 4:
+                    # try:                        ==> try:
+                    #   from torch import randn   ==>    pass
+                    # except:                     ==> except:
+                    #   from numpy import randn   ==>    import numpy
+                    self.insert_pass_node.add(self.parent_node)
                     return ast.parse("pass").body[0]
                 else:
                     return None

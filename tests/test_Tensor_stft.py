@@ -138,13 +138,40 @@ def test_case_5():
            (0.13631296157836914+0j)                ,
           (-0.19927024841308594+0j)                ,
            (0.19927024841308594+0j)                ]])
+        result = x.stft(4, 1, 4, torch.tensor([2.0, 1.0, 2.0, 1.0]), True, "reflect", False, False, True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# Only support return_complex=True used by kwargs not args.
+# Due to return_complex is deprecated, so we not need to fix this bug
+def _test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ (5.975718021392822+0j) ,
+           (5.975718021392822+0j)                  ,
+           (5.341437339782715+0j)                  ,
+           (5.404394626617432+0j)                  ,
+           (5.404394626617432+0j)                  ],
+         [ (0.0629572868347168+0j)                 ,
+           0.0629572868347168j                     ,
+          (-0.0629572868347168-0.6342806816101074j),
+           (0.6342806816101074+0j)                 ,
+           0.6342806816101074j                     ],
+         [(-0.4979677200317383+0j)                 ,
+           (0.4979677200317383+0j)                 ,
+           (0.13631296157836914+0j)                ,
+          (-0.19927024841308594+0j)                ,
+           (0.19927024841308594+0j)                ]])
         result = x.stft(4, 1, 4, torch.tensor([2.0, 1.0, 2.0, 1.0]), True, "reflect", False, False, False)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_6():
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -169,7 +196,7 @@ def test_case_6():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_7():
+def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch

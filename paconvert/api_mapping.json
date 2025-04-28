@@ -3845,9 +3845,9 @@
     }
   },
   "torch.Tensor.stft": {
-    "Matcher": "StftMatcher",
-    "paddle_api": "paddle.signal.stft",
-    "min_input_args": 2,
+    "Matcher": "TensorStftMatcher",
+    "paddle_api": "paddle.Tensor.stft",
+    "min_input_args": 1,
     "args_list": [
       "n_fft",
       "hop_length",

@@ -6,8 +6,19 @@ if TYPE_CHECKING:
     import warnings
 
 if TYPE_CHECKING:
-    import torch,numpy
+    import torch, numpy
     
+try:
+    from flash_attn import flash_attn_qkvpacked_func
+except:
+    flash_attn_qkvpacked_func = None
+
+
+if True:
+    from flash_attn import flash_attn_qkvpacked_func
+else:
+    flash_attn_qkvpacked_func = None
+
 
 if TYPE_CHECKING:
     a=randn(10, 20)
