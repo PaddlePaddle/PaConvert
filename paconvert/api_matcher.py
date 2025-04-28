@@ -5766,19 +5766,32 @@ class RNNCellMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class TensorStftMatcher(BaseMatcher):
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        self.parse_func(func)
+        args = self.parse_args(args)
+        kwargs = self.parse_kwargs(kwargs, allow_none=True)
+
+        return_complex = kwargs.pop("return_complex", None)
+        code = "{}({})".format(
+            self.get_paddle_api(), self.args_and_kwargs_to_str(args, kwargs)
+        )
+        if return_complex and return_complex == "(False)":
+            code += ".as_real()"
+        return ast.parse(code).body
+
+    def get_paddle_class_attribute_nodes(self, node):
+        return "unchange"
+
+
 class StftMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "input" not in kwargs:
-            kwargs["x"] = self.paddleClass
+        return_complex = kwargs.pop("return_complex", None)
+        code = GenericMatcher.generate_code(self, kwargs)
+        if return_complex and return_complex == "(False)":
+            return code + ".as_real()"
         else:
-            kwargs["x"] = kwargs.pop("input")
-
-        if "return_complex" in kwargs and kwargs.pop("return_complex") == "(False)":
-            code = "paddle.as_real({}({}))".format(
-                self.get_paddle_api(), self.kwargs_to_str(kwargs)
-            )
             return code
-        return GenericMatcher.generate_code(self, kwargs)
 
 
 class Fractional_Max_pool2dMatcher(BaseMatcher):

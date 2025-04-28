@@ -7,6 +7,14 @@ if TYPE_CHECKING:
     import warnings
 if TYPE_CHECKING:
     import numpy
+try:
+    pass
+except:
+    flash_attn_qkvpacked_func = None
+if True:
+    pass
+else:
+    flash_attn_qkvpacked_func = None
 if TYPE_CHECKING:
     a = paddle.randn(shape=[10, 20])
     b = paddle.randn(shape=[10, 20])
