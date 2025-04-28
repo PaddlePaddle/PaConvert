@@ -1,6 +1,7 @@
 convert.log
 build/
 dist/
+torch_project
 paddle_project/
 paconvert.egg-info/
 paconvert/__pycache__/
@@ -17,6 +18,5 @@ coverage.xml
 tools/coverage/__pycache__
 temp.txt
 test_set
-torch_project
 tensor.pt
 __pycache__

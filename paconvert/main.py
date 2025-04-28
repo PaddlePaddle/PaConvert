@@ -20,6 +20,11 @@ sys.path.append(os.path.dirname(__file__) + "/..")
 
 from paconvert.converter import Converter
 
+try:
+    from paconvert.version import __version__
+except:
+    __version__ = "0.0.0"
+
 
 def main():
     if sys.version_info < (3, 8):
@@ -30,62 +35,70 @@ def main():
     parser = argparse.ArgumentParser(
         prog="paconvert", description="PaConverter tool entry point"
     )
+    parser.add_argument("-V", "--version", action="version", version=f"{__version__}")
     parser.add_argument(
+        "-i",
         "--in_dir",
+        type=str,
+        help="The input PyTorch file or directory.",
+    )
+    parser.add_argument(
+        "-o",
+        "--out_dir",
         default=None,
         type=str,
-        help="the input PyTorch file or directory.",
+        help="Optional. The output Paddle file or directory. Default: './paddle_project'.",
     )
     parser.add_argument(
-        "--out_dir", default=None, type=str, help="the output Paddle directory."
-    )
-    parser.add_argument(
-        "--exclude_dirs",
+        "-e",
+        "--exc_patterns",
         default=None,
         type=str,
-        help="the exclude Pytorch file or directory, which will not be converted.",
+        help="Optional. Regular Pattern. PyTorch file or directory matched will not be converted, multiple patterns should be splited by ',' . Default: None.",
     )
     parser.add_argument(
-        "--log_dir", default=None, type=str, help="the input PyTorch file or directory."
+        "--log_dir",
+        default=None,
+        type=str,
+        help="Optional. The log directory. Default: None.",
     )
     parser.add_argument(
         "--log_level",
         default="INFO",
         type=str,
         choices=["WARNING", "INFO", "DEBUG"],
-        help="set log level, default is INFO",
-    )
-    parser.add_argument(
-        "--log_markdown",
-        action="store_true",
-        help="whether show log with markdown format",
-    )
-    parser.add_argument(
-        "--run_check",
-        action="store_true",
-        help="run check the paddle convert tool",
+        help="Optional. The log level, default is INFO",
     )
     parser.add_argument(
         "--show_unsupport",
         action="store_true",
-        help="show these APIs which are not supported to convert now",
+        help="Optional. Show those APIs which are not supported to convert",
     )
     parser.add_argument(
-        "--separate_convert",
+        "--run_check",
         action="store_true",
-        help="Convert Pytorch project each element Separately",
+        help="Optional. Run check the paddle convert tool.",
     )
     parser.add_argument(
         "--no_format",
         action="store_true",
-        help="Disable format the converted code",
+        help="Optional. Disable format the converted code automatically.",
+    )
+    parser.add_argument(
+        "--log_markdown",
+        action="store_true",
+        help="Inner Usage. Show log with markdown format, user do not need to pay attention.",
+    )
+    parser.add_argument(
+        "--separate_convert",
+        action="store_true",
+        help="Inner Usage. Convert Pytorch project each element separately, user do not need to pay attention.",
     )
     parser.add_argument(
         "--calculate_speed",
         action="store_true",
-        help="Whether calculate speed",
+        help="Inner Usage. Calculate convert speed. user do not need to pay attention.",
     )
-
     args = parser.parse_args()
 
     converter = Converter(
@@ -111,7 +124,7 @@ def main():
         in_dir = os.path.abspath(args.in_dir)
         for project_name in os.listdir(in_dir):
             project_dir = os.path.join(in_dir, project_name)
-            converter.run(project_dir, args.out_dir, args.exclude_dirs)
+            converter.run(project_dir, args.out_dir, args.exc_patterns)
             if converter.convert_rate == 1.0:
                 project_num_100 += 1
             if converter.convert_rate >= 0.95:
@@ -146,7 +159,7 @@ def main():
         sys.exit(0)
 
     assert args.in_dir is not None, "User must specify --in_dir "
-    converter.run(args.in_dir, args.out_dir, args.exclude_dirs)
+    converter.run(args.in_dir, args.out_dir, args.exc_patterns)
 
     print(r"****************************************************************")
     print(r"______      _____                          _   ")

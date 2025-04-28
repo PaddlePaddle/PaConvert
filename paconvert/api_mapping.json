@@ -5925,21 +5925,6 @@
       "out"
     ]
   },
-  "torch.concat": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.concat",
-    "min_input_args": 1,
-    "args_list": [
-      "tensors",
-      "dim",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "tensors": "x",
-      "dim": "axis"
-    }
-  },
   "torch.conj": {
     "Matcher": "GenericMatcher",
     "min_input_args": 1,

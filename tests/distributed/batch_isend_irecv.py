@@ -12,21 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import os
 
 import torch
 import torch.distributed as dist
 from torch.distributed import P2POp, batch_isend_irecv
 
 dist.init_process_group(backend="nccl")
-torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
+rank = dist.get_rank()
+torch.cuda.set_device(rank)
 
+tensor = torch.zeros(10).cuda()
 
-tensor = torch.zeros(10)
-
-if dist.get_rank() == 0:
+if rank == 0:
     op_list = [P2POp(dist.isend, tensor, 1)]
-elif dist.get_rank() == 1:
+elif rank == 1:
     op_list = [P2POp(dist.irecv, tensor, 0)]
 
 work_list = batch_isend_irecv(op_list)

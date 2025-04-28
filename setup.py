@@ -22,7 +22,7 @@ if sys.version_info < (3, 8):
         "PaConvert use new AST syntax and only supports Python version >= 3.8 now."
     )
 
-with open("requirements.txt") as f:
+with open("requirements.txt", "r") as f:
     REQUIREMENTS = f.read().splitlines()
 
 with open("README.md", "r") as f:
@@ -59,6 +59,12 @@ def get_tag():
 
     return git_tag
 
+
+with open("paconvert/version.py", "w") as f:
+    content = f"""# THIS FILE IS GENERATED FROM PACONVERT SETUP.PY
+__version__     = '{get_tag()}'
+"""
+    f.write(content)
 
 setup(
     name="paconvert",

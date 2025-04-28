@@ -29,19 +29,19 @@
 
 ```bash
 pip install -U paconvert
-paconvert --in_dir torch_project [--out_dir paddle_project] [--exclude_dirs exclude_dirs] [--log_dir log_dir] [--log_level "INFO"] [--run_check] [--no_format]
+paconvert -i torch_code_dir [-o paddle_code_dir] [-e exclude.py] [--log_dir log_dir] [--log_level "INFO"] [--show_unsupport] [--run_check] [--no_format]
 ```
 
 - 命令行参数介绍
-
 ```
---in_dir        输入 torch 项目文件，可以为单个文件或文件夹
---out_dir       可选，输出 paddle 项目文件，可以为单个文件或文件夹，默认在当前目录下创建./paddle_project/
---exclude_dirs  可选，排除转换的文件或文件夹，排除多项时请用逗号分隔，默认不排除
---log_dir       可选，输出日志的路径，默认会在终端上打印日志
---log_level     可选，打印 log 等级，支持"WARNING"、"INFO"、"DEBUG"，默认"INFO"
---run_check     可选，工具自检
---no_format     可选，不格式化转换后的代码。使用此选项时，转换后的 Paddle 代码不进行代码格式化处理
+-i, --in_dir         输入 torch 代码，可以为文件或目录。
+-o, --out_dir        可选，输出 paddle 代码，可以为文件或目录。默认在当前路径下创建paddle_project目录来保存代码。
+-e, --exc_patterns   可选，正则表达式，匹配到的文件或目录将不会被转换，多个表达式请使用逗号分隔。默认不会排除。
+--log_dir            可选，打印日志的路径，默认会直接在终端上打印日志。
+--log_level          可选，打印 log 等级，支持"WARNING"、"INFO"、"DEBUG"。默认等级"INFO"。
+--show_unsupport     可选，展示当前不支持转换的API，这些API需要您自行转换。默认不展示。
+--run_check          可选，工具进行安装与运行自检。
+--no_format          可选，转换后的代码不进行代码风格优化。默认会优化代码风格。
 ```
 
 #### 2. IDE交互式用法

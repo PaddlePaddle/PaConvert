@@ -18,13 +18,14 @@ import torch
 import torch.distributed as dist
 
 dist.init_process_group(backend="nccl")
-torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
+rank = dist.get_rank()
+torch.cuda.set_device(rank)
 
 out_tensor_list = [
     torch.empty([2, 3], dtype=torch.int64).cuda(),
     torch.empty([2, 3], dtype=torch.int64).cuda(),
 ]
-if dist.get_rank() == 0:
+if rank == 0:
     data1 = torch.tensor([[1, 2, 3], [4, 5, 6]]).cuda()
     data2 = torch.tensor([[7, 8, 9], [10, 11, 12]]).cuda()
 else:
@@ -37,6 +38,6 @@ dist.all_to_all(
     async_op=False,
 )
 
-if dist.get_rank() == 0:
+if rank == 0:
     print(out_tensor_list)
     torch.save(out_tensor_list, os.environ["DUMP_FILE"])

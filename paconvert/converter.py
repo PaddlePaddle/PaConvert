@@ -76,7 +76,7 @@ class Converter:
         log_info(self.logger, "PyTorch to Paddle Convert Start ------>:")
         log_info(self.logger, "===========================================")
 
-    def run(self, in_dir, out_dir=None, exclude_dirs=None):
+    def run(self, in_dir, out_dir=None, exc_patterns=None):
         if self.calculate_speed:
             import time
 
@@ -92,11 +92,11 @@ class Converter:
 
         assert out_dir != in_dir, "--out_dir must be different from --in_dir"
 
-        exclude_dir_list = []
-        if exclude_dirs:
-            exclude_dirs = exclude_dirs.split(",")
-            for item in exclude_dirs:
-                exclude_dir_list.append(os.path.abspath(item))
+        if exc_patterns:
+            exc_patterns = exc_patterns.split(",")
+        else:
+            exc_patterns = []
+        exc_patterns.append("__pycache__")
 
         if os.path.isfile(in_dir):
             out_file = (
@@ -112,7 +112,7 @@ class Converter:
                 out_dir + "/paddle_utils.py", is_dir_mode=True, logger=self.logger
             )
 
-        self.transfer_dir(in_dir, out_dir, exclude_dir_list)
+        self.transfer_dir(in_dir, out_dir, exc_patterns)
         utils_file_helper.write_code()
         if self.show_unsupport:
             unsupport_map = sorted(
@@ -212,14 +212,12 @@ class Converter:
 
         return self.success_api_count, faild_api_count
 
-    def transfer_dir(self, in_dir, out_dir, exclude_dir_list):
+    def transfer_dir(self, in_dir, out_dir, exc_patterns):
         if os.path.isfile(in_dir):
             old_path = in_dir
-            if exclude_dir_list:
-                for exclude_dir in exclude_dir_list:
-                    if old_path == exclude_dir or old_path.startswith(
-                        exclude_dir + "/"
-                    ):
+            if exc_patterns:
+                for pattern in exc_patterns:
+                    if re.search(pattern, old_path):
                         return
 
             if os.path.isdir(out_dir):
@@ -239,13 +237,10 @@ class Converter:
                 new_path = os.path.join(out_dir, item)
 
                 is_exclude = False
-                if exclude_dir_list:
-                    for exclude_dir in exclude_dir_list:
-                        if old_path == exclude_dir or old_path.startswith(
-                            exclude_dir + "/"
-                        ):
+                if exc_patterns:
+                    for pattern in exc_patterns:
+                        if re.search(pattern, old_path):
                             is_exclude = True
-
                 if is_exclude:
                     continue
 
@@ -253,10 +248,10 @@ class Converter:
                     if not os.path.exists(new_path):
                         os.makedirs(new_path)
 
-                self.transfer_dir(old_path, new_path, exclude_dir_list)
+                self.transfer_dir(old_path, new_path, exc_patterns)
         elif os.path.islink(in_dir):
-            pass
             # may need to create link
+            pass
         else:
             raise ValueError(" the input 'in_dir' must be a exist file or directory! ")
 

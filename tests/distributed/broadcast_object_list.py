@@ -18,9 +18,10 @@ import torch
 import torch.distributed as dist
 
 dist.init_process_group(backend="nccl")
-torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
+rank = dist.get_rank()
+torch.cuda.set_device(rank)
 
-if dist.get_rank() == 0:
+if rank == 0:
     object_list = [{"foo": [1, 2, 3]}]
 else:
     object_list = [{"bar": [4, 5, 6]}]
@@ -28,6 +29,6 @@ dist.broadcast_object_list(object_list, src=1)
 
 assert object_list == [{"bar": [4, 5, 6]}]
 
-if dist.get_rank() == 0:
+if rank == 0:
     print(object_list)
     torch.save(object_list, os.environ["DUMP_FILE"])

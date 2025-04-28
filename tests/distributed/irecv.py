@@ -18,9 +18,10 @@ import torch
 import torch.distributed as dist
 
 dist.init_process_group(backend="nccl")
-torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
+rank = dist.get_rank()
+torch.cuda.set_device(rank)
 
-if dist.get_rank() == 0:
+if rank == 0:
     data = torch.tensor([7, 8, 9]).cuda()
     task = dist.isend(data, dst=1)
 else:
@@ -28,6 +29,6 @@ else:
     task = dist.irecv(data, src=0)
 task.wait()
 
-if dist.get_rank() == 0:
+if rank == 0:
     print(data)
     torch.save(data, os.environ["DUMP_FILE"])

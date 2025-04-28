@@ -25,6 +25,7 @@ def add_model(torch_file):
 
 
 # this part is about model file list
+add_model("exclude_convert.py")
 # add_model("model_torch_mobilenet.py")
 add_model("model_torch_resnet.py")
 # add_model("model_torch_vggnet.py")

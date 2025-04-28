@@ -18,10 +18,11 @@ import torch
 import torch.distributed as dist
 
 dist.init_process_group(backend="nccl")
-torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
+rank = dist.get_rank()
+torch.cuda.set_device(rank)
 
 gather_list = [torch.zeros(3, dtype=torch.int64).cuda() for _ in range(2)]
-if dist.get_rank() == 0:
+if rank == 0:
     data = torch.tensor([1, 2, 3]).cuda()
     dist.gather(data, gather_list, dst=0)
 else:
@@ -31,6 +32,6 @@ else:
 
 # [[1, 2, 3], [4, 5, 6]] (2 GPUs, out for rank 0)
 # [] (2 GPUs, out for rank 1)
-if dist.get_rank() == 0:
+if rank == 0:
     print(gather_list)
     torch.save(gather_list, os.environ["DUMP_FILE"])

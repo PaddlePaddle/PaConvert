@@ -13,12 +13,12 @@
 # limitations under the License.
 #
 
-import os
 
 import torch
 import torch.distributed as dist
 
-dist.init_process_group(backend="nccl")
-torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
+dist.init_process_group(backend="gloo")
+rank = dist.get_rank()
+torch.cuda.set_device(rank)
 
 dist.monitored_barrier()

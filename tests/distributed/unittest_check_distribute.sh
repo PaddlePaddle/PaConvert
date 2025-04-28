@@ -15,13 +15,12 @@
 
 set +x
 
-echo "Insalling cpu version torch"
+echo "Insalling gpu version torch, which has been installed in Dockerfile"
 python -c "import torch; print('torch version information:' ,torch.__version__)"
 
 echo "Insalling develop gpu version paddle"
 python -m pip uninstall -y paddlepaddle
 python -m pip uninstall -y paddlepaddle-gpu
-rm -rf /root/anaconda3/lib/python*/site-packages/paddlepaddle-0.0.0.dist-info/
 python -m pip install --pre paddlepaddle-gpu -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
@@ -29,23 +28,22 @@ echo "Insalling paconvert requirements"
 python -m pip install -r ../../requirements.txt
 
 echo "Converting torch code to paddle"
-python ../../paconvert/main.py --in_dir . --out_dir /tmp/paddle_dist --log_level "DEBUG"
+python ../../paconvert/main.py -i . -o /tmp/paddle_dist --log_level "DEBUG"
 
 export CUDA_VISIBLE_DEVICES=0,1
 netstat -tulnp | grep :29500 | awk '{print $7}' | cut -d/ -f1 | xargs kill -9 2> nul
 
+check_error=0
 if [ $# -gt 0 ] ; then
     item=$1
     cmd1="torchrun --nproc_per_node=2 ${item}"
     cmd2="python -m paddle.distributed.launch /tmp/paddle_dist/${item}"
-    python run_and_compare.py "$cmd1" "$cmd2"
-    exit
+    python run_and_compare.py "$cmd1" "$cmd2"; check_error=$?
+    echo "Exit code:" $check_error
+    exit $check_error
 fi
 
-check_error=0
-
 failed_tests=()
-
 test_list=`ls *.py | grep -v run_and_compare.py`
 for item in $test_list; do
     cmd1="torchrun --nproc_per_node=2 ${item}"
@@ -58,7 +56,7 @@ for item in $test_list; do
 done
 
 echo "Failed tests:"
-for item in $my_list; do
+for item in $failed_tests; do
     echo "$item"
 done
 echo "Exit code:" $check_error
