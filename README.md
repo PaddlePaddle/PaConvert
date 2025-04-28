@@ -5,13 +5,13 @@
 **Pa**ddlePaddle Code **Convert** Toolkits（**[PaConvert Github](https://github.com/PaddlePaddle/PaConvert)**）
 
 ##  🤗 公告 🤗
-- 本工具由 Paddle 官方团队维护与建设，支持高效自动迁移 Pytorch 代码到 PaddlePaddle，所有转换代码均已经过测试，欢迎使用
+- ✅ 本工具由 Paddle 官方团队维护与建设，高效自动化迁移 Pytorch 代码到 PaddlePaddle，所有转换代码均已经过测试，欢迎使用
 
-- 总计支持 1500+个 Pytorch API 的一键转换，我们通过 300+个 Pytorch 模型测试，代码行数的自动转换率约为 **95+%**（剩余 <5% 需要您手动修改）
+- ✅ 本工具基于 [PyTorch 最新 release 与 Paddle develop API 映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html) 实现，表中 API 均经过详细验证分析，欢迎查阅
 
-- 本工具基于 [PyTorch 最新 release 与 Paddle develop API 映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html) 实现，表中 API 均经过详细验证分析，欢迎查阅
+- ✅ 当前支持高达 **1600+个torch API、200个torchvision API** 的一键转换，基本实现Pytorch全覆盖
 
-- 有使用问题和建议欢迎在 [PaConvert GitHub Issues](https://github.com/PaddlePaddle/PaConvert/issues) 中提出
+- ✅ 通过**300+个Pytorch模型测试**，代码行数**平均转换率约为95+%**（剩余<5%需要您手动修改），转换速度高达1200+行/秒
 
 ## 概述
 
