@@ -16,9 +16,13 @@
 import ast
 import os
 
-from paconvert.base import (ALIAS_MAPPING, IMPORT_PACKAGE_MAPPING,
-                            MAY_TORCH_PACKAGE_LIST, TORCH_PACKAGE_MAPPING,
-                            BaseTransformer)
+from paconvert.base import (
+    ALIAS_MAPPING,
+    IMPORT_PACKAGE_MAPPING,
+    MAY_TORCH_PACKAGE_LIST,
+    TORCH_PACKAGE_MAPPING,
+    BaseTransformer,
+)
 from paconvert.utils import log_info
 
 
