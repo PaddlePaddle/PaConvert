@@ -9836,8 +9836,8 @@
     }
   },
   "torch.linalg.svdvals": {
-    "Matcher": "LinalgSvdvalsMatcher",
-    "paddle_api": "paddle.linalg.svd",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.svdvals",
     "min_input_args": 1,
     "args_list": [
       "A",
@@ -9868,7 +9868,21 @@
       "increasing": "True"
     }
   },
-  "torch.linalg.vecdot": {},
+  "torch.linalg.vecdot": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.vecdot",
+    "min_input_args": 1,
+    "args_list": [
+      "x",
+      "y",
+      "*",
+      "dim",
+      "out"
+    ],
+    "kwargs_change": {
+      "dim": "axis"
+    }
+  },
   "torch.linalg.vector_norm": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.linalg.vector_norm",

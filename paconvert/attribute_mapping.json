@@ -51,7 +51,8 @@
     "Matcher": "TensorMhMatcher"
   },
   "torch.Tensor.mT": {
-    "Matcher": "TensorMtMatcher"
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.mT"
   },
   "torch.Tensor.names": {},
   "torch.Tensor.nbytes": {
@@ -160,6 +161,10 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.dtype"
   },
+  "torch.e": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.e"
+  },
   "torch.float": {
     "Matcher": "GenericMatcher",
     "paddle_api": "'float32'"
@@ -179,6 +184,10 @@
   "torch.half": {
     "Matcher": "GenericMatcher",
     "paddle_api": "'float16'"
+  },
+  "torch.inf": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.inf"
   },
   "torch.int": {
     "Matcher": "GenericMatcher",
@@ -204,13 +213,21 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "'int64'"
   },
+  "torch.nan": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nan"
+  },
+  "torch.newaxis": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.newaxis"
+  },
   "torch.nn": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn"
   },
   "torch.pi": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "numpy.pi"
+    "paddle_api": "paddle.pi"
   },
   "torch.short": {
     "Matcher": "GenericMatcher",
