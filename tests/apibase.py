@@ -58,7 +58,6 @@ class APIBase(object):
             reason: the reason why it is not supported
         """
         paddle_code = self.convert(pytorch_code).strip()
-        print(paddle_code)
         if unsupport:
             assert (
                 reason is not None
