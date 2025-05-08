@@ -34,7 +34,12 @@ from paconvert.transformer.custom_op_transformer import (
     PreCustomOpTransformer,
     CustomOpTransformer,
 )
-from paconvert.utils import UtilsFileHelper, get_unique_name, log_info, log_warning
+from paconvert.utils import (
+    UtilsFileHelper,
+    get_unique_name,
+    log_info,
+    log_warning,
+)
 
 
 def listdir_nohidden(path):
@@ -115,13 +120,6 @@ class Converter:
         self.transfer_dir(in_dir, out_dir, exc_patterns)
         utils_file_helper.write_code()
         if self.show_unsupport:
-            unsupport_map = sorted(
-                self.unsupport_map.items(), key=lambda x: x[1], reverse=True
-            )
-            import pandas
-
-            df = pandas.DataFrame.from_dict(dict(unsupport_map), orient="index")
-            df.to_excel("unsupport_map.xlsx")
             log_info(self.logger, "\n===========================================")
             log_info(self.logger, "Not Support API List:")
             log_info(self.logger, "===========================================")
@@ -129,9 +127,17 @@ class Converter:
                 self.logger,
                 "These Pytorch APIs are not supported to convert to Paddle now, which will be supported in future!\n",
             )
+            unsupport_map = sorted(
+                self.unsupport_map.items(), key=lambda x: x[1], reverse=True
+            )
             for k, v in unsupport_map:
                 log_info(self.logger, "{}: {}".format(k, v))
 
+            """
+            import pandas
+            df = pandas.DataFrame.from_dict(dict(unsupport_map), orient="index")
+            df.to_excel("unsupport_map.xlsx")
+            """
         faild_api_count = self.torch_api_count - self.success_api_count
         if not self.log_markdown:
             log_warning(self.logger, "\n===========================================")
@@ -274,7 +280,7 @@ class Converter:
                 try:
                     code = black.format_str(code, mode=black.Mode())
                 except Exception as e:
-                    log_warning(
+                    log_info(
                         self.logger,
                         "Skip black format due to error: {}".format(str(e)),
                     )
@@ -282,7 +288,7 @@ class Converter:
                 try:
                     code = isort.code(code)
                 except Exception as e:
-                    log_warning(
+                    log_info(
                         self.logger,
                         "Skip isort format due to error: {}".format(str(e)),
                     )
@@ -296,7 +302,7 @@ class Converter:
                         ignore_pass_statements=True,
                     )
                 except Exception as e:
-                    log_warning(
+                    log_info(
                         self.logger,
                         "Skip autoflake format due to error: {}".format(str(e)),
                     )

@@ -132,7 +132,7 @@ class UtilsFileHelper(object):
         try:
             new_content = isort.code(new_content)
         except Exception as e:
-            log_warning(
+            log_info(
                 self.logger,
                 "Skip isort format due to error: {}".format(str(e)),
             )
@@ -141,6 +141,17 @@ class UtilsFileHelper(object):
         with open(self.fileName, "w") as f:
             f.write(new_content)
         self.code_map.clear()
+
+
+def log_error(logger, msg, file=None, line=None):
+    if file:
+        if line:
+            msg = "[{}:{}] {}".format(file, line, msg)
+        else:
+            msg = "[{}] {}".format(file, msg)
+    else:
+        msg = "{}".format(msg)
+    logger.error(msg)
 
 
 def log_warning(logger, msg, file=None, line=None):
