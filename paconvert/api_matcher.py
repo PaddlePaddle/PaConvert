@@ -20,7 +20,6 @@ import ast
 import astor
 import textwrap
 
-
 from paconvert.base import BaseMatcher
 from paconvert.transformer.custom_op_transformer import CPP_EXTENSION_LIST  # noqa: F401
 from paconvert.utils import get_unique_name, process_reduce_and_size_average
@@ -3894,28 +3893,6 @@ class RNNBaseMatcher(BaseMatcher):
         kwargs["direction"] = direction
 
         return GenericMatcher.generate_code(self, kwargs)
-
-
-class LinalgSvdvalsMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "out" in kwargs:
-            out_v = kwargs.pop("out")
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.assign({}[1], output={})
-                """
-            )
-            code = API_TEMPLATE.format(
-                GenericMatcher.generate_code(self, kwargs), out_v
-            )
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {}[1]
-                """
-            )
-            code = API_TEMPLATE.format(GenericMatcher.generate_code(self, kwargs))
-        return code
 
 
 class TensorTakeMatcher(BaseMatcher):
