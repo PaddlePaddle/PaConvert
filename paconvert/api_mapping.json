@@ -4673,6 +4673,54 @@
       "self"
     ]
   },
+  "torch._foreach_round": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.round",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_round_": {
+    "Matcher": "Foreach_Matcher",
+    "paddle_api": "paddle.round",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_sin": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.sin",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_sin_": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.sin_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_sinh": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.sinh",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_sinh_": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.sinh_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
   "torch._foreach_tan": {
     "Matcher": "ForeachMatcher",
     "paddle_api": "paddle.tan",
@@ -6708,6 +6756,21 @@
       "async_op"
     ]
   },
+  "torch.distributed.all_gather_into_tensor": {
+    "Matcher": "ReverseAsyncOpMatcher",
+    "paddle_api": "paddle.distributed.stream.all_gather",
+    "min_input_args": 2,
+    "args_list": [
+      "output_tensor",
+      "input_tensor",
+      "group",
+      "async_op"
+    ],
+    "kwargs_change": {
+      "output_tensor": "tensor_or_tensor_list",
+      "input_tensor": "tensor"
+    }
+  },
   "torch.distributed.all_gather_object": {
     "Matcher": "AllGatherObjectMatcher",
     "paddle_api": "paddle.distributed.all_gather_object",
@@ -6743,6 +6806,25 @@
       "output_tensor_list": "out_tensor_list",
       "input_tensor_list": "in_tensor_list",
       "async_op": ""
+    }
+  },
+  "torch.distributed.all_to_all_single": {
+    "Matcher": "ReverseAsyncOpMatcher",
+    "paddle_api": "paddle.distributed.alltoall_single",
+    "min_input_args": 2,
+    "args_list": [
+      "output",
+      "input",
+      "output_split_sizes",
+      "input_split_sizes",
+      "group",
+      "async_op"
+    ],
+    "kwargs_change": {
+      "output": "out_tensor",
+      "input": "in_tensor",
+      "output_split_sizes": "out_split_sizes",
+      "input_split_sizes": "in_split_sizes"
     }
   },
   "torch.distributed.barrier": {
@@ -6983,6 +7065,22 @@
     "kwargs_change": {
       "output": "tensor",
       "input_list": "tensor_list"
+    },
+    "min_input_args": 2
+  },
+  "torch.distributed.reduce_scatter_tensor": {
+    "Matcher": "ReduceScatterTensorMatcher",
+    "paddle_api": "paddle.distributed.reduce_scatter",
+    "args_list": [
+      "output",
+      "input",
+      "op",
+      "group",
+      "async_op"
+    ],
+    "kwargs_change": {
+      "output": "tensor",
+      "input": "tensor_list"
     },
     "min_input_args": 2
   },
@@ -18269,6 +18367,15 @@
     "kwargs_change": {
       "tensor": "x"
     }
+  },
+  "torch.utils.set_module": {
+    "Matcher": "UtilsSetModuleMatcher",
+    "paddle_api": "paddle.io.Sampler",
+    "args_list": [
+      "obj",
+      "mod"
+    ],
+    "min_input_args": 2
   },
   "torch.vander": {
     "Matcher": "GenericMatcher",
