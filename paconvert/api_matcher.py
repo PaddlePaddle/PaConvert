@@ -6003,7 +6003,7 @@ class ForeachErfc_Matcher(BaseMatcher):
         return code
 
 
-class ReduceScatterTensor(BaseMatcher):
+class ReduceScatterTensorMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """

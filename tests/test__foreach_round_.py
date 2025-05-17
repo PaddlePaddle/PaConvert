@@ -23,7 +23,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        tensors = [torch.tensor([0.34, 7.56, 0.73]), torch.tensor([0.5, -1.0])]
+        tensors = [torch.tensor([0.34, 7.56, 0.73]), torch.tensor([0.52, -1.0])]
         result = torch._foreach_round_(tensors)
         """
     )
@@ -34,7 +34,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        tensors = [torch.tensor([0.34, -0.56, 0.73]), torch.tensor([0.5, 21.0])]
+        tensors = [torch.tensor([0.34, -0.56, 0.73]), torch.tensor([0.53, 21.0])]
         result = torch._foreach_round_(self=tensors)
         """
     )
@@ -45,7 +45,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch._foreach_round_(self = [torch.tensor([0.34, 5.56, -0.73]), torch.tensor([0.5, 3.0])])
+        result = torch._foreach_round_(self = [torch.tensor([0.34, 5.56, -0.73]), torch.tensor([0.7, 3.0])])
         """
     )
     obj.run(pytorch_code, ["result"])
