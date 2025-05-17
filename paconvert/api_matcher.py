@@ -6018,15 +6018,15 @@ class ReduceScatterTensorMatcher(BaseMatcher):
         self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            reduce_scatter_tensor({})
+            reduce_scatter_tensor({},{},{},{},{})
             """
         )
         code = API_TEMPLATE.format(
             kwargs["output"],
             kwargs["input"],
-            kwargs["op"],
-            kwargs["group"],
-            kwargs["async_op"],
+            kwargs.get("op"),
+            kwargs.get("group"),
+            kwargs.get("async_op"),
         )
         return code
 
