@@ -6001,3 +6001,52 @@ class ForeachErfc_Matcher(BaseMatcher):
         )
         code = API_TEMPLATE.format(kwargs["self"])
         return code
+
+
+class ReduceScatterTensor(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def reduce_scatter_tensor(output, input, op, group, async_op):
+                input_list = [input[i] for i in range(input.shape[0])]
+                return paddle.distributed.reduce_scatter(output, input_list, op=op, group=group, sync_op = not async_op)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            reduce_scatter_tensor({})
+            """
+        )
+        code = API_TEMPLATE.format(
+            kwargs["output"],
+            kwargs["input"],
+            kwargs["op"],
+            kwargs["group"],
+            kwargs["async_op"],
+        )
+        return code
+
+
+class UtilsSetModuleMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def set_module(obj, mode):
+                obj.__module__ = mode
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            set_module({},{})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["obj"], kwargs["mod"])
+        return code

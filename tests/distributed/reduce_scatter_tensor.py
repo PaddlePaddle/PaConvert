@@ -21,19 +21,10 @@ dist.init_process_group(backend="nccl")
 rank = dist.get_rank()
 torch.cuda.set_device(rank)
 
-data = torch.arange(2, dtype=torch.int64).cuda() + 1 + 2 * rank
-
-world_size = dist.get_world_size()
-output_tensor = torch.empty(
-    (world_size * data.size(0),), dtype=data.dtype, device=data.device  # 确保维度为 (4,)
-)
-
-
-dist.all_gather_into_tensor(output_tensor, data)
-
-
-print(f"Rank {rank} output tensor: {output_tensor}")
-
+input = torch.tensor([[1, 2], [3, 4]], dtype=torch.float32)  # 输入维度 [2,2]
+output = torch.empty(1, 2, dtype=torch.float32)
+dist.reduce_scatter_tensor(output, input, op=dist.ReduceOp.SUM)
 
 if rank == 0:
-    torch.save(output_tensor, os.environ["DUMP_FILE"])
+    print(output)
+    torch.save(output, os.environ["DUMP_FILE"])
