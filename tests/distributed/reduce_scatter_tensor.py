@@ -21,8 +21,8 @@ dist.init_process_group(backend="nccl")
 rank = dist.get_rank()
 torch.cuda.set_device(rank)
 
-input = torch.tensor([[1, 2], [3, 4]], dtype=torch.float32)  # 输入维度 [2,2]
-output = torch.empty(1, 2, dtype=torch.float32)
+input = torch.tensor([[1, 2], [3, 4]], dtype=torch.float32).cuda()
+output = torch.empty(1, 2, dtype=torch.float32).cuda()
 dist.reduce_scatter_tensor(output, input, op=dist.ReduceOp.SUM)
 
 if rank == 0:
