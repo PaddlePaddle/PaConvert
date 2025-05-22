@@ -26,8 +26,8 @@ from apibase import APIBase
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        print("args: [pytorch file] [paddle file]")
-        sys.exit()
+        print("must input args: [pytorch file] [paddle file]")
+        exit()
 
     pytorch_cmd = sys.argv[1]
     paddle_cmd = sys.argv[2]
