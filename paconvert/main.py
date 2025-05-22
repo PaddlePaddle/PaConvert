@@ -101,20 +101,6 @@ def main():
     )
     args = parser.parse_args()
 
-    converter = Converter(
-        log_dir=args.log_dir,
-        log_level=args.log_level,
-        log_markdown=args.log_markdown,
-        show_unsupport=args.show_unsupport,
-        no_format=args.no_format,
-        calculate_speed=args.calculate_speed,
-    )
-
-    if args.run_check:
-        cwd = os.path.dirname(__file__)
-        converter.run(cwd + "/example_code.py", cwd + "/temp_out/example_code.py")
-        sys.exit(0)
-
     if args.separate_convert:
         project_num_100 = 0
         project_num_95 = 0
@@ -123,6 +109,15 @@ def main():
 
         in_dir = os.path.abspath(args.in_dir)
         for project_name in os.listdir(in_dir):
+            converter = Converter(
+                log_dir=args.log_dir,
+                log_level=args.log_level,
+                log_markdown=args.log_markdown,
+                show_unsupport=args.show_unsupport,
+                no_format=args.no_format,
+                calculate_speed=args.calculate_speed,
+            )
+
             project_dir = os.path.join(in_dir, project_name)
             converter.run(project_dir, args.out_dir, args.exc_patterns)
             if converter.convert_rate == 1.0:
@@ -156,7 +151,21 @@ def main():
 
         df = pandas.DataFrame.from_dict(dict(convert_rate_map), orient="index")
         df.to_excel("convert_rate_map.xlsx")
-        sys.exit(0)
+        return
+
+    converter = Converter(
+        log_dir=args.log_dir,
+        log_level=args.log_level,
+        log_markdown=args.log_markdown,
+        show_unsupport=args.show_unsupport,
+        no_format=args.no_format,
+        calculate_speed=args.calculate_speed,
+    )
+
+    if args.run_check:
+        cwd = os.path.dirname(__file__)
+        converter.run(cwd + "/example_code.py", cwd + "/temp_out/example_code.py")
+        return
 
     assert args.in_dir is not None, "User must specify --in_dir "
     converter.run(args.in_dir, args.out_dir, args.exc_patterns)
