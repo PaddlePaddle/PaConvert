@@ -6757,8 +6757,8 @@
     ]
   },
   "torch.distributed.all_gather_into_tensor": {
-    "Matcher": "ReverseAsyncOpMatcher",
-    "paddle_api": "paddle.distributed.stream.all_gather",
+    "Matcher": "AllGatherIntoTensorMatcher",
+    "paddle_api": "paddle.distributed.all_gather",
     "min_input_args": 2,
     "args_list": [
       "output_tensor",
@@ -6767,7 +6767,7 @@
       "async_op"
     ],
     "kwargs_change": {
-      "output_tensor": "tensor_or_tensor_list",
+      "output_tensor": "tensor_list",
       "input_tensor": "tensor"
     }
   },

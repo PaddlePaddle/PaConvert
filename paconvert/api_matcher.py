@@ -6050,3 +6050,33 @@ class UtilsSetModuleMatcher(BaseMatcher):
         )
         code = API_TEMPLATE.format(kwargs["obj"], kwargs["mod"])
         return code
+
+
+class AllGatherIntoTensorMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def all_gather_into_tensor(output_tensor, input_tensor, group, async_op):
+                if async_op is not None:
+                    async_op = not async_op
+                tensor_list = []
+                paddle.distributed.all_gather(tensor_list=tensor_list, tensor=input_tensor, group=group, async_op=async_op)
+                output_tensor = paddle.concat(tensor_list, axis=0)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            reduce_scatter_tensor({},{},{},{})
+            """
+        )
+        code = API_TEMPLATE.format(
+            kwargs["output_tensor"],
+            kwargs["input_tensor"],
+            kwargs.get("group"),
+            kwargs.get("async_op"),
+        )
+        return code
