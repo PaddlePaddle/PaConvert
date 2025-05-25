@@ -6070,7 +6070,7 @@ class AllGatherIntoTensorMatcher(BaseMatcher):
         self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            reduce_scatter_tensor({},{},{},{})
+            all_gather_into_tensor({},{},{},{})
             """
         )
         code = API_TEMPLATE.format(
