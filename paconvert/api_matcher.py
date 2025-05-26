@@ -6069,7 +6069,7 @@ class AllGatherIntoTensorMatcher(BaseMatcher):
                 if async_op is not None:
                     async_op = not async_op
                 tensor_list = []
-                paddle.distributed.all_gather(tensor_list=tensor_list, tensor=input_tensor, group=group, async_op=async_op)
+                paddle.distributed.all_gather(tensor_list=tensor_list, tensor=input_tensor, group=group, sync_op=async_op)
                 if paddle.distributed.get_world_size() * input_tensor.shape[0] == output_tensor.shape[0]:
                     output_tensor = paddle.concat(tensor_list, axis=0)
                 else:
