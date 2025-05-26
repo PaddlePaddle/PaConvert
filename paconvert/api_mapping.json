@@ -4682,7 +4682,7 @@
     ]
   },
   "torch._foreach_round_": {
-    "Matcher": "Foreach_Matcher",
+    "Matcher": "ForeachRound_Matcher",
     "paddle_api": "paddle.round",
     "min_input_args": 1,
     "args_list": [

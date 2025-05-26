@@ -6008,8 +6008,16 @@ class ReduceScatterTensorMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def reduce_scatter_tensor(output, input, op, group, async_op):
-                input_list = [input[i] for i in range(input.shape[0])]
-                return paddle.distributed.reduce_scatter(output, input_list, op=op, group=group, sync_op = not async_op)
+                if async_op is not None:
+                    async_op = not async_op
+                world_size = paddle.distributed.get_world_size()
+                input_list = []
+                if input.shape[0] == world_size:
+                    input_list = paddle.unstack(input, axis=0)
+                else:
+                    input_list = paddle.split(input, num_or_sections=world_size, axis=0)
+                paddle.distributed.reduce_scatter(output, input_list, op, group, async_op)
+                return output
             """
         )
         return CODE_TEMPLATE
@@ -6018,7 +6026,7 @@ class ReduceScatterTensorMatcher(BaseMatcher):
         self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            reduce_scatter_tensor({},{},{},{},{})
+            paddle.assign(reduce_scatter_tensor({},{},{},{},{}), output={})
             """
         )
         code = API_TEMPLATE.format(
@@ -6027,6 +6035,7 @@ class ReduceScatterTensorMatcher(BaseMatcher):
             kwargs.get("op"),
             kwargs.get("group"),
             kwargs.get("async_op"),
+            kwargs["output"],
         )
         return code
 
@@ -6061,7 +6070,11 @@ class AllGatherIntoTensorMatcher(BaseMatcher):
                     async_op = not async_op
                 tensor_list = []
                 paddle.distributed.all_gather(tensor_list=tensor_list, tensor=input_tensor, group=group, async_op=async_op)
-                output_tensor = paddle.concat(tensor_list, axis=0)
+                if paddle.distributed.get_world_size() * input_tensor.shape[0] == output_tensor.shape[0]:
+                    output_tensor = paddle.concat(tensor_list, axis=0)
+                else:
+                    output_tensor = paddle.stack(tensor_list, axis=0)
+                return output_tensor
             """
         )
         return CODE_TEMPLATE
@@ -6070,7 +6083,7 @@ class AllGatherIntoTensorMatcher(BaseMatcher):
         self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            all_gather_into_tensor({},{},{},{})
+            paddle.assign(all_gather_into_tensor({},{},{},{}), output={})
             """
         )
         code = API_TEMPLATE.format(
@@ -6078,5 +6091,28 @@ class AllGatherIntoTensorMatcher(BaseMatcher):
             kwargs["input_tensor"],
             kwargs.get("group"),
             kwargs.get("async_op"),
+            kwargs["output_tensor"],
         )
+        print(code)
+        return code
+
+
+class ForeachRound_Matcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def foreach_round_(tensors):
+                return [x.round_() for x in tensors]
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            foreach_round_({})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["self"])
         return code
