@@ -6017,7 +6017,6 @@ class ReduceScatterTensorMatcher(BaseMatcher):
                 else:
                     input_list = paddle.split(input, num_or_sections=world_size, axis=0)
                 paddle.distributed.reduce_scatter(output, input_list, op, group, async_op)
-                return output
             """
         )
         return CODE_TEMPLATE
@@ -6026,7 +6025,7 @@ class ReduceScatterTensorMatcher(BaseMatcher):
         self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle.assign(reduce_scatter_tensor({},{},{},{},{}), output={})
+            reduce_scatter_tensor({},{},{},{},{})
             """
         )
         code = API_TEMPLATE.format(
@@ -6035,7 +6034,6 @@ class ReduceScatterTensorMatcher(BaseMatcher):
             kwargs.get("op"),
             kwargs.get("group"),
             kwargs.get("async_op"),
-            kwargs["output"],
         )
         return code
 
@@ -6071,9 +6069,9 @@ class AllGatherIntoTensorMatcher(BaseMatcher):
                 tensor_list = []
                 paddle.distributed.all_gather(tensor_list=tensor_list, tensor=input_tensor, group=group, sync_op=async_op)
                 if paddle.distributed.get_world_size() * input_tensor.shape[0] == output_tensor.shape[0]:
-                    output_tensor = paddle.concat(tensor_list, axis=0)
+                    paddle.assign(paddle.concat(tensor_list, axis=0), output=output_tensor)
                 else:
-                    output_tensor = paddle.stack(tensor_list, axis=0)
+                    paddle.assign(paddle.stack(tensor_list, axis=0), output=output_tensor)
                 return output_tensor
             """
         )
@@ -6083,7 +6081,7 @@ class AllGatherIntoTensorMatcher(BaseMatcher):
         self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle.assign(all_gather_into_tensor({},{},{},{}), output={})
+            all_gather_into_tensor({},{},{},{})
             """
         )
         code = API_TEMPLATE.format(
@@ -6091,7 +6089,6 @@ class AllGatherIntoTensorMatcher(BaseMatcher):
             kwargs["input_tensor"],
             kwargs.get("group"),
             kwargs.get("async_op"),
-            kwargs["output_tensor"],
         )
         print(code)
         return code

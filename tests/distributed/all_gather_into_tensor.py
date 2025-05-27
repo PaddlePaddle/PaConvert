@@ -31,9 +31,14 @@ output_tensor = torch.empty(
 
 dist.all_gather_into_tensor(output_tensor, data)
 
-
 print(f"Rank {rank} output tensor: {output_tensor}")
 
+if rank == 0:
+    torch.save(output_tensor, os.environ["DUMP_FILE"])
+
+tensor_out2 = torch.zeros(world_size, 2, dtype=torch.int64, device=data.device)
+dist.all_gather_into_tensor(tensor_out2, data)
+print(f"Rank {rank} output tensor: {output_tensor}")
 
 if rank == 0:
     torch.save(output_tensor, os.environ["DUMP_FILE"])
