@@ -24,9 +24,7 @@ torch.cuda.set_device(rank)
 data = torch.arange(2, dtype=torch.int64).cuda() + 1 + 2 * rank
 
 world_size = dist.get_world_size()
-output_tensor = torch.empty(
-    (world_size * data.size(0),), dtype=data.dtype, device=data.device
-)
+output_tensor = torch.zeros(world_size, 2, dtype=torch.int64, device=data.device)
 
 
 dist.all_gather_into_tensor(output_tensor, data)

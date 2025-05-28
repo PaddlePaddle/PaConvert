@@ -28,14 +28,3 @@ dist.reduce_scatter_tensor(output, input, op=dist.ReduceOp.SUM)
 if rank == 0:
     print(output)
     torch.save(output, os.environ["DUMP_FILE"])
-
-
-tensor_out = torch.zeros(2, dtype=torch.int64).cuda()
-tensor_in = torch.arange(4, dtype=torch.int64).cuda()
-
-
-dist.reduce_scatter_tensor(tensor_out, tensor_in, op=dist.ReduceOp.SUM)
-
-if rank == 0:
-    print(tensor_out)
-    torch.save(output, os.environ["DUMP_FILE"])
