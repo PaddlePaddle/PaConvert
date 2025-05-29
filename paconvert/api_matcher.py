@@ -6001,3 +6001,115 @@ class ForeachErfc_Matcher(BaseMatcher):
         )
         code = API_TEMPLATE.format(kwargs["self"])
         return code
+
+
+class ReduceScatterTensorMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def reduce_scatter_tensor(output, input, op, group, async_op):
+                if async_op is not None:
+                    async_op = not async_op
+                world_size = paddle.distributed.get_world_size()
+                input_list = []
+                if input.shape[0] == world_size:
+                    input_list = paddle.unstack(input, axis=0)
+                else:
+                    input_list = paddle.split(input, num_or_sections=world_size, axis=0)
+                paddle.distributed.reduce_scatter(output, input_list, op, group, async_op)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            reduce_scatter_tensor({},{},{},{},{})
+            """
+        )
+        code = API_TEMPLATE.format(
+            kwargs["output"],
+            kwargs["input"],
+            kwargs.get("op"),
+            kwargs.get("group"),
+            kwargs.get("async_op"),
+        )
+        return code
+
+
+class UtilsSetModuleMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def set_module(obj, mode):
+                obj.__module__ = mode
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            set_module({},{})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["obj"], kwargs["mod"])
+        return code
+
+
+class AllGatherIntoTensorMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def all_gather_into_tensor(output_tensor, input_tensor, group, async_op):
+                if async_op is not None:
+                    async_op = not async_op
+                tensor_list = []
+                paddle.distributed.all_gather(tensor_list=tensor_list, tensor=input_tensor, group=group, sync_op=async_op)
+                if paddle.distributed.get_world_size() * input_tensor.shape[0] == output_tensor.shape[0]:
+                    paddle.assign(paddle.concat(tensor_list, axis=0), output=output_tensor)
+                else:
+                    paddle.assign(paddle.stack(tensor_list, axis=0), output=output_tensor)
+                return output_tensor
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            all_gather_into_tensor({},{},{},{})
+            """
+        )
+        code = API_TEMPLATE.format(
+            kwargs["output_tensor"],
+            kwargs["input_tensor"],
+            kwargs.get("group"),
+            kwargs.get("async_op"),
+        )
+        print(code)
+        return code
+
+
+class ForeachRound_Matcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def foreach_round_(tensors):
+                return [x.round_() for x in tensors]
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            foreach_round_({})
+            """
+        )
+        code = API_TEMPLATE.format(kwargs["self"])
+        return code
