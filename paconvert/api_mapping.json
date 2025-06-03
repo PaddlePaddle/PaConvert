@@ -9737,24 +9737,7 @@
       "get_infos": "True"
     }
   },
-  "torch.linalg.lu_solve": {
-    "Matcher": "LinalgLuSolveMatcher",
-    "paddle_api": "paddle.linalg.lu_solve",
-    "min_input_args": 3,
-    "args_list": [
-      "LU",
-      "pivots",
-      "B",
-      "*",
-      "left",
-      "adjoint",
-      "out"
-    ],
-    "kwargs_change": {
-      "LU": "lu",
-      "B": "b"
-    }
-  },
+  "torch.linalg.lu_solve": {},
   "torch.linalg.matmul": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.matmul",
