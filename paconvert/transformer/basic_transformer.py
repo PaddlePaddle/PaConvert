@@ -545,7 +545,9 @@ class BasicTransformer(BaseTransformer):
                 )
             if is_distribution_api:
                 torch_class_apis.append(
-                    ".".join(["torch.distributions.Distribution", attr_list[-1]])
+                    ".".join(
+                        ["torch.distributions.distribution.Distribution", attr_list[-1]]
+                    )
                 )
             if is_profile_api:
                 torch_class_apis.append(
