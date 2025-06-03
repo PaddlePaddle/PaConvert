@@ -2179,7 +2179,8 @@
   },
   "torch.Tensor.is_conj": {},
   "torch.Tensor.is_contiguous": {
-    "Matcher": "SetTrueMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.is_contiguous",
     "min_input_args": 0,
     "args_list": [
       "*",
@@ -6410,9 +6411,9 @@
       "msg"
     ]
   },
-  "torch.cuda.reset_max_memory_allocated": {
+  "torch.cuda.reset_max_memory_cached": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.device.cuda.reset_max_memory_allocated",
+    "paddle_api": "paddle.device.cuda.reset_max_memory_reserved",
     "min_input_args": 0,
     "args_list": [
       "device"
@@ -6421,9 +6422,9 @@
       "device": "device"
     }
   },
-  "torch.cuda.reset_max_memory_cached": {
+  "torch.cuda.reset_peak_memory_stats": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.device.cuda.reset_max_memory_reserved",
+    "paddle_api": "paddle.device.cuda.reset_max_memory_allocated",
     "min_input_args": 0,
     "args_list": [
       "device"
@@ -9736,7 +9737,24 @@
       "get_infos": "True"
     }
   },
-  "torch.linalg.lu_solve": {},
+  "torch.linalg.lu_solve": {
+    "Matcher": "LinalgLuSolveMatcher",
+    "paddle_api": "paddle.linalg.lu_solve",
+    "min_input_args": 3,
+    "args_list": [
+      "LU",
+      "pivots",
+      "B",
+      "*",
+      "left",
+      "adjoint",
+      "out"
+    ],
+    "kwargs_change": {
+      "LU": "lu",
+      "B": "b"
+    }
+  },
   "torch.linalg.matmul": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.matmul",
@@ -15887,7 +15905,8 @@
   },
   "torch.poisson_nll_loss": {},
   "torch.polar": {
-    "Matcher": "PolarMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.polar",
     "min_input_args": 2,
     "args_list": [
       "abs",

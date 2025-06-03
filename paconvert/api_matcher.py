@@ -6113,3 +6113,50 @@ class ForeachRound_Matcher(BaseMatcher):
         )
         code = API_TEMPLATE.format(kwargs["self"])
         return code
+
+
+class LinalgLuSolveMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def linalg_lu_solve(LU, pivots, B, left=True, adjoint=False, out=None):
+                trans = 'H' if adjoint else 'N'
+                if left:
+                    result = paddle.linalg.lu_solve(lu=LU, pivots=pivots, b=B, trans=trans)
+                else:
+                    P, L, U = paddle.linalg.lu_unpack(LU, pivots)
+                    A = P @ L @ U
+
+                    if adjoint:
+                        A_eff = A.conj().t()
+                    else:
+                        A_eff = A.t()
+
+                    lu_A_eff, pivots_A_eff = paddle.linalg.lu(A_eff)
+                    B_T = B.t()
+                    XT = paddle.linalg.lu_solve(lu=lu_A_eff, pivots=pivots_A_eff, b=B_T, trans=trans)
+                    result = XT.t()
+                if out is not None:
+                    return paddle.assign(result, output=out)
+                else:
+                    return result
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            linalg_lu_solve({},{},{},{},{},{})
+            """
+        )
+        code = API_TEMPLATE.format(
+            kwargs["LU"],
+            kwargs["pivots"],
+            kwargs["B"],
+            kwargs.get("left", True),
+            kwargs.get("adjoint", False),
+            kwargs.get("out"),
+        )
+        return code
