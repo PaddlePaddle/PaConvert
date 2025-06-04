@@ -86,3 +86,44 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        A = torch.tensor([[4.0, 3.0], [6.0, 3.0]])
+        B_left = torch.tensor([[1.0], [2.0]])
+        LU, pivots = torch.linalg.lu_factor(A)
+        result = torch.linalg.lu_solve(LU, pivots, B_left, left=True, adjoint=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        A = torch.tensor([[4.0, 3.0], [6.0, 3.0]])
+        B_left = torch.tensor([[1.0], [2.0]])
+        LU, pivots = torch.linalg.lu_factor(A)
+        output = torch.empty_like(B_left)
+        result = torch.linalg.lu_solve(LU=LU, pivots=pivots, B=B_left, adjoint=True, out=output)
+        """
+    )
+    obj.run(pytorch_code, ["result", "output"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        A = torch.tensor([[4.0, 3.0], [6.0, 3.0]])
+        B_right = torch.tensor([[1.0, 2.0]])
+        LU, pivots = torch.linalg.lu_factor(A)
+        output = torch.empty_like(B_right)
+        result = torch.linalg.lu_solve(LU=LU, pivots=pivots, B=B_right, out=output, left=False)
+        """
+    )
+    obj.run(pytorch_code, ["result", "output"])
