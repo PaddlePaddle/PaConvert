@@ -6411,9 +6411,9 @@
       "msg"
     ]
   },
-  "torch.cuda.reset_max_memory_cached": {
+  "torch.cuda.reset_max_memory_allocated": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.device.cuda.reset_max_memory_reserved",
+    "paddle_api": "paddle.device.cuda.reset_max_memory_allocated",
     "min_input_args": 0,
     "args_list": [
       "device"
@@ -6422,9 +6422,9 @@
       "device": "device"
     }
   },
-  "torch.cuda.reset_peak_memory_stats": {
+  "torch.cuda.reset_max_memory_cached": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.device.cuda.reset_max_memory_allocated",
+    "paddle_api": "paddle.device.cuda.reset_max_memory_reserved",
     "min_input_args": 0,
     "args_list": [
       "device"
