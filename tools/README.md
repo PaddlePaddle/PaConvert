@@ -1,6 +1,6 @@
 # PaConvert 单测验证与文档对齐工具
 
-代码自动转换工具的开发可以分为两部分，即[撰写映射文档](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/api_difference/pytorch_api_mapping_format_cn.md)和[**配置转换规则**](https://github.com/PaddlePaddle/PaConvert/blob/master/docs/CONTRIBUTING.md)。**配置转换规则**的产出主要包括 [api_mapping.json](https://github.com/PaddlePaddle/PaConvert/blob/master/paconvert/api_mapping.json)、[Matcher](https://github.com/PaddlePaddle/PaConvert/blob/master/paconvert/api_matcher.py) 和对应的 [单元测试](https://github.com/PaddlePaddle/PaConvert/tree/master/tests)。
+代码自动转换工具的开发可以分为两部分，即[撰写映射文档](https://github.com/PaddlePaddle/docs/blob/develop/docs/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_format_cn.md)和[**配置转换规则**](https://github.com/PaddlePaddle/PaConvert/blob/master/docs/CONTRIBUTING.md)。**配置转换规则**的产出主要包括 [api_mapping.json](https://github.com/PaddlePaddle/PaConvert/blob/master/paconvert/api_mapping.json)、[Matcher](https://github.com/PaddlePaddle/PaConvert/blob/master/paconvert/api_matcher.py) 和对应的 [单元测试](https://github.com/PaddlePaddle/PaConvert/tree/master/tests)。
 
 由于 PyTorch api 功能复杂多样，且 PyTorch 历史遗留因素导致 api 功能风格多变，致使 API 转换规则错综复杂，难以通过自动分析的方式进行转换规则的推理与维护，因而转换规则目前均为人工编写、检查与维护。但随着 API 转换规则规模增大，人工检查维护成本日益繁重，带来了大量非必要心智负担。考虑到 API 转换规则开发与维护过程存在公共部分，可以在映射文档数据与 `api_mapping.json` 的支持下，对这些公共部分进行检查与验证。
 
@@ -112,7 +112,7 @@ python tools/validate_unittest/validate_unittest.py --autofix -r tests/test_Tens
 
 ## 文档对齐工具 validate_docs
 
-根据[文档验证工具](https://github.com/PaddlePaddle/docs/tree/develop/docs/guides/model_convert/convert_from_pytorch/tools/README.html) 的结果 `docs_mappings.json` 与 `api_mapping.json` 数据，可以对文档与转换规则的匹配程度进行验证，从而避免低级错误。
+根据[文档验证工具](https://github.com/PaddlePaddle/docs/tree/develop/docs/guides/model_convert/convert_from_pytorch/tools/README.md) 的结果 `docs_mappings.json` 与 `api_mapping.json` 数据，可以对文档与转换规则的匹配程度进行验证，从而避免低级错误。
 
 对齐工具用法：
 
