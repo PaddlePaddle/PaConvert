@@ -6124,14 +6124,12 @@ class LinalgLuSolveMatcher(BaseMatcher):
                     trans = 'H' if adjoint else 'N'
                     result = paddle.linalg.lu_solve(lu=LU, pivots=pivots, b=B, trans=trans)
                 else:
-                    B_conj_trans = B.conj().t()  
+                    B_conj_trans = B.conj().t()
                     if adjoint:
-                        # X A^H = B → A X^H = B^H
                         XH = paddle.linalg.lu_solve(lu=LU, pivots=pivots, b=B_conj_trans, trans='N')
                     else:
-                        # X A = B → A^H X^H = B^H
                         XH = paddle.linalg.lu_solve(lu=LU, pivots=pivots, b=B_conj_trans, trans='H')
-                    result = XH.conj().t()  # X = (X^H)^H
+                    result = XH.conj().t()
                 if out is not None:
                     return paddle.assign(result, output=out)
                 else:
