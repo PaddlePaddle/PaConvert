@@ -6120,22 +6120,18 @@ class LinalgLuSolveMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def linalg_lu_solve(LU, pivots, B, left=True, adjoint=False, out=None):
-                trans = 'H' if adjoint else 'N'
                 if left:
+                    trans = 'H' if adjoint else 'N'
                     result = paddle.linalg.lu_solve(lu=LU, pivots=pivots, b=B, trans=trans)
                 else:
-                    P, L, U = paddle.linalg.lu_unpack(LU, pivots)
-                    A = P @ L @ U
-
+                    B_conj_trans = B.conj().t()  
                     if adjoint:
-                        A_eff = A.conj().t()
+                        # X A^H = B → A X^H = B^H
+                        XH = paddle.linalg.lu_solve(lu=LU, pivots=pivots, b=B_conj_trans, trans='N')
                     else:
-                        A_eff = A.t()
-
-                    lu_A_eff, pivots_A_eff = paddle.linalg.lu(A_eff)
-                    B_T = B.t()
-                    XT = paddle.linalg.lu_solve(lu=lu_A_eff, pivots=pivots_A_eff, b=B_T, trans=trans)
-                    result = XT.t()
+                        # X A = B → A^H X^H = B^H
+                        XH = paddle.linalg.lu_solve(lu=LU, pivots=pivots, b=B_conj_trans, trans='H')
+                    result = XH.conj().t()  # X = (X^H)^H
                 if out is not None:
                     return paddle.assign(result, output=out)
                 else:
