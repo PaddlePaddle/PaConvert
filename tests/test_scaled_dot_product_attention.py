@@ -22,9 +22,8 @@ obj = APIBase("torch.nn.functional.scaled_dot_product_attention")
 
 
 @pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda()
-    or not paddle.device.cuda.get_device_properties(0).major >= 8,
-    reason="computational capabilities less 8",
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="must be compiled with cuda",
 )
 def test_case_1():
     pytorch_code = textwrap.dedent(
@@ -41,9 +40,8 @@ def test_case_1():
 
 
 @pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda()
-    or not paddle.device.cuda.get_device_properties(0).major >= 8,
-    reason="computational capabilities less 8",
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="must be compiled with cuda",
 )
 def test_case_2():
     pytorch_code = textwrap.dedent(
@@ -60,9 +58,8 @@ def test_case_2():
 
 
 @pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda()
-    or not paddle.device.cuda.get_device_properties(0).major >= 8,
-    reason="computational capabilities less 8",
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="must be compiled with cuda",
 )
 def test_case_3():
     pytorch_code = textwrap.dedent(
@@ -79,9 +76,8 @@ def test_case_3():
 
 
 @pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda()
-    or not paddle.device.cuda.get_device_properties(0).major >= 8,
-    reason="computational capabilities less 8",
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="must be compiled with cuda",
 )
 def test_case_4():
     pytorch_code = textwrap.dedent(
@@ -102,9 +98,8 @@ def test_case_4():
 
 
 @pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda()
-    or not paddle.device.cuda.get_device_properties(0).major >= 8,
-    reason="computational capabilities less 8",
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="must be compiled with cuda",
 )
 def test_case_5():
     pytorch_code = textwrap.dedent(
@@ -123,9 +118,8 @@ def test_case_5():
 
 
 @pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda()
-    or not paddle.device.cuda.get_device_properties(0).major >= 8,
-    reason="computational capabilities less 8",
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="must be compiled with cuda",
 )
 def test_case_6():
     pytorch_code = textwrap.dedent(
