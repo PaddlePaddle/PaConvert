@@ -6113,3 +6113,44 @@ class ForeachRound_Matcher(BaseMatcher):
         )
         code = API_TEMPLATE.format(kwargs["self"])
         return code
+
+
+class LinalgLuSolveMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def linalg_lu_solve(LU, pivots, B, left=True, adjoint=False, out=None):
+                if left:
+                    trans = 'H' if adjoint else 'N'
+                    result = paddle.linalg.lu_solve(lu=LU, pivots=pivots, b=B, trans=trans)
+                else:
+                    B_conj_trans = B.conj().t()
+                    if adjoint:
+                        XH = paddle.linalg.lu_solve(lu=LU, pivots=pivots, b=B_conj_trans, trans='N')
+                    else:
+                        XH = paddle.linalg.lu_solve(lu=LU, pivots=pivots, b=B_conj_trans, trans='H')
+                    result = XH.conj().t()
+                if out is not None:
+                    return paddle.assign(result, output=out)
+                else:
+                    return result
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        API_TEMPLATE = textwrap.dedent(
+            """
+            linalg_lu_solve({},{},{},{},{},{})
+            """
+        )
+        code = API_TEMPLATE.format(
+            kwargs["LU"],
+            kwargs["pivots"],
+            kwargs["B"],
+            kwargs.get("left", True),
+            kwargs.get("adjoint", False),
+            kwargs.get("out"),
+        )
+        return code
