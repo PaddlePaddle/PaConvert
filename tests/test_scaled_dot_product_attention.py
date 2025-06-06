@@ -99,3 +99,45 @@ def test_case_4():
         unsupport=True,
         reason="paddle not support 'scale' and 'enable_gqa' ",
     )
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda()
+    or not paddle.device.cuda.get_device_properties(0).major >= 8,
+    reason="computational capabilities less 8",
+)
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import numpy as np
+        import torch
+        np.random.seed(100)
+        x = np.random.rand(32, 8, 128, 64)
+        mask = np.random.rand(32, 8, 128, 128)
+        query = torch.tensor(x, dtype=torch.float16, device="cuda")
+        attn_mask = torch.tensor(mask, dtype=torch.float16, device="cuda")
+        result = torch.nn.functional.scaled_dot_product_attention(query, query, query, attn_mask=attn_mask).float()
+        """
+    )
+    obj.run(pytorch_code, ["result"], atol=1e-2)
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda()
+    or not paddle.device.cuda.get_device_properties(0).major >= 8,
+    reason="computational capabilities less 8",
+)
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import numpy as np
+        import torch
+        np.random.seed(100)
+        x = np.random.rand(32, 8, 128, 64)
+        mask = np.random.rand(32, 8, 128, 128) > 0.5
+        query = torch.tensor(x, dtype=torch.float16, device="cuda")
+        attn_mask = torch.tensor(mask, dtype=torch.bool, device="cuda")
+        result = torch.nn.functional.scaled_dot_product_attention(query, query, query, attn_mask=attn_mask).float()
+        """
+    )
+    obj.run(pytorch_code, ["result"], atol=1e-2)
