@@ -9,7 +9,7 @@
 
 - ✅ 本工具基于 [PyTorch 最新 release 与 Paddle develop API 映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html) 实现，文档经过详细验证分析，欢迎查阅
 
-- ✅ 当前支持高达 **1600+个torch API、200个torchvision API** 的一键转换，基本实现Pytorch全覆盖
+- ✅ 具备强大的转换能力，当前支持高达 **1600+个torch API、200个torchvision API** 的一键转换，基本实现Pytorch全覆盖
 
 - ✅ 通过 **100+个Pytorch代码库（超25万行代码）测试**，代码行数**平均转换率约为95+%**（剩余<5%需要您手动修改），转换速度极快（不低于1200+行/秒）
 
