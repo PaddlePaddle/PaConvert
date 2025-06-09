@@ -56,3 +56,18 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        _, _, H, W = [1, 2, 3, 4]
+        img_size = [3, 4]
+        torch._assert(
+            H == img_size[0],
+            f"Input image height ({H}) doesn't match model ({img_size[0]}).",
+        )
+        """
+    )
+    obj.run(pytorch_code)
