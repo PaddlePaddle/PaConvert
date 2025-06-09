@@ -2733,52 +2733,6 @@ class Num2TensorBinaryConvertTypeMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-class LdExpMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "input" not in kwargs:
-            kwargs["input"] = self.paddleClass
-
-        if "out" in kwargs and kwargs["out"] != "None":
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.assign({} * (2. ** {}), output={})
-                """
-            )
-            code = API_TEMPLATE.format(kwargs["input"], kwargs["other"], kwargs["out"])
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {} * (2. ** {})
-                """
-            )
-            code = API_TEMPLATE.format(kwargs["input"], kwargs["other"])
-
-        return code
-
-
-class LogAddExpMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "input" not in kwargs:
-            kwargs["input"] = self.paddleClass
-
-        if "out" in kwargs and kwargs["out"] != "None":
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.assign(paddle.log(paddle.exp({}) + paddle.exp({})), output={})
-                """
-            )
-            code = API_TEMPLATE.format(kwargs["input"], kwargs["other"], kwargs["out"])
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.log(paddle.exp({}) + paddle.exp({}))
-                """
-            )
-            code = API_TEMPLATE.format(kwargs["input"], kwargs["other"])
-
-        return code
-
-
 class LogAddExp2Matcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" not in kwargs:
@@ -3069,83 +3023,6 @@ class AddBmm_Matcher(BaseMatcher):
             kwargs["batch1"],
             kwargs["batch2"],
         )
-
-        return code
-
-
-class CholeskyInverseMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "input" not in kwargs:
-            kwargs["input"] = self.paddleClass
-
-        if "upper" not in kwargs:
-            kwargs["upper"] = False
-
-        if "out" in kwargs and kwargs["out"] != "None":
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {} = list(range({}.ndim))
-                {}[-1], {}[-2] = {}[-2], {}[-1]
-                if {}:
-                    {} = paddle.linalg.inv(paddle.transpose({}, perm={}) @ {})
-                else:
-                    {} = paddle.linalg.inv({} @ paddle.transpose({}, perm={}))
-                paddle.assign({}, output={})
-                """
-            )
-            perm = get_unique_name("perm")
-            out = get_unique_name("out")
-            code = API_TEMPLATE.format(
-                perm,
-                kwargs["input"],
-                perm,
-                perm,
-                perm,
-                perm,
-                kwargs["upper"],
-                out,
-                kwargs["input"],
-                perm,
-                kwargs["input"],
-                out,
-                kwargs["input"],
-                kwargs["input"],
-                perm,
-                out,
-                kwargs["out"],
-            )
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                {} = list(range({}.ndim))
-                {}[-1], {}[-2] = {}[-2], {}[-1]
-                if {}:
-                    {} = paddle.linalg.inv(paddle.transpose({}, perm={}) @ {})
-                else:
-                    {} = paddle.linalg.inv({} @ paddle.transpose({}, perm={}))
-                {}
-                """
-            )
-            perm = get_unique_name("perm")
-            out = get_unique_name("out")
-            code = API_TEMPLATE.format(
-                perm,
-                kwargs["input"],
-                perm,
-                perm,
-                perm,
-                perm,
-                kwargs["upper"],
-                out,
-                kwargs["input"],
-                perm,
-                kwargs["input"],
-                out,
-                kwargs["input"],
-                kwargs["input"],
-                perm,
-                out,
-            )
 
         return code
 

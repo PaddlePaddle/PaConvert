@@ -24,15 +24,10 @@ def test_case_1():
         """
         import torch
         src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.bernoulli_(0.5)
+        result = src.bernoulli_(1.0)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle not support this API now",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
@@ -43,12 +38,7 @@ def test_case_2():
         result = src.bernoulli_(0.5, generator=None)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle not support this API now",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
@@ -59,9 +49,4 @@ def test_case_3():
         result = src.bernoulli_(p=0.5, generator=None)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle not support this API now",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
