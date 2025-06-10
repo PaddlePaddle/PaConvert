@@ -27,7 +27,12 @@ def test_case_1():
         result = src.bernoulli_(1.0)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        reason="paddle.Tensor.bernoulli_ parameter p is different from torch",
+    )
 
 
 def test_case_2():
