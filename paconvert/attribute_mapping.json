@@ -115,10 +115,6 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "'bool'"
   },
-  "torch.cdouble": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "'complex128'"
-  },
   "torch.cfloat": {
     "Matcher": "GenericMatcher",
     "paddle_api": "'complex64'"
@@ -165,10 +161,6 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.e"
   },
-  "torch.float": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "'float32'"
-  },
   "torch.float16": {
     "Matcher": "GenericMatcher",
     "paddle_api": "'float16'"
@@ -181,17 +173,9 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "'float64'"
   },
-  "torch.half": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "'float16'"
-  },
   "torch.inf": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.inf"
-  },
-  "torch.int": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "'int32'"
   },
   "torch.int16": {
     "Matcher": "GenericMatcher",
@@ -228,10 +212,6 @@
   "torch.pi": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.pi"
-  },
-  "torch.short": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "'int16'"
   },
   "torch.uint8": {
     "Matcher": "GenericMatcher",

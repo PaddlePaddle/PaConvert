@@ -726,7 +726,18 @@
       "input": "x"
     }
   },
-  "torch.Tensor.bernoulli_": {},
+  "torch.Tensor.bernoulli_": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.bernoulli_",
+    "args_list": [
+      "p",
+      "*",
+      "generator"
+    ],
+    "kwargs_change": {
+      "generator": ""
+    }
+  },
   "torch.Tensor.bfloat16": {
     "Matcher": "TensorBF16Matcher",
     "paddle_api": "paddle.Tensor.astype",
@@ -967,7 +978,8 @@
     ]
   },
   "torch.Tensor.cholesky_inverse": {
-    "Matcher": "CholeskyInverseMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.cholesky_inverse",
     "min_input_args": 0,
     "args_list": [
       "upper"
@@ -2309,7 +2321,8 @@
     }
   },
   "torch.Tensor.ldexp": {
-    "Matcher": "LdExpMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.ldexp",
     "min_input_args": 1,
     "args_list": [
       "other"
@@ -2428,11 +2441,15 @@
   },
   "torch.Tensor.log_normal_": {},
   "torch.Tensor.logaddexp": {
-    "Matcher": "LogAddExpMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.logaddexp",
     "min_input_args": 1,
     "args_list": [
       "other"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.logaddexp2": {
     "Matcher": "LogAddExp2Matcher",
@@ -5841,15 +5858,18 @@
     }
   },
   "torch.cholesky_inverse": {
-    "Matcher": "CholeskyInverseMatcher",
-    "paddle_api": "paddle.linalg.inv",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.linalg.cholesky_inverse",
     "min_input_args": 1,
     "args_list": [
       "input",
       "upper",
       "*",
       "out"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
   },
   "torch.cholesky_solve": {
     "Matcher": "GenericMatcher",
@@ -9386,14 +9406,19 @@
     }
   },
   "torch.ldexp": {
-    "Matcher": "LdExpMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.ldexp",
     "min_input_args": 2,
     "args_list": [
       "input",
       "other",
       "*",
       "out"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "other": "y"
+    }
   },
   "torch.le": {
     "Matcher": "Num2TensorBinaryMatcher",
@@ -10057,14 +10082,19 @@
   },
   "torch.log_softmax": {},
   "torch.logaddexp": {
-    "Matcher": "LogAddExpMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.logaddexp",
     "min_input_args": 2,
     "args_list": [
       "input",
       "other",
       "*",
       "out"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "other": "y"
+    }
   },
   "torch.logaddexp2": {
     "Matcher": "LogAddExp2Matcher",
