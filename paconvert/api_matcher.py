@@ -4651,28 +4651,6 @@ class CanCastMatcher(BaseMatcher):
         return "can_cast(from_={}, to={})".format(kwargs["from_"], kwargs["to"])
 
 
-class PositiveMatcher(BaseMatcher):
-    def generate_utils_code(self):
-        CODE_TEMPLATE = textwrap.dedent(
-            """
-            def positive(x):
-                if x.dtype != paddle.bool:
-                    return x
-                else:
-                    raise RuntimeError("boolean tensors is not supported.")
-        """
-        )
-        return CODE_TEMPLATE
-
-    def generate_code(self, kwargs):
-        self.enable_utils_code()
-        if "input" in kwargs:
-            code = "positive({})".format(kwargs["input"])
-        else:
-            code = "positive({})".format(self.paddleClass)
-        return code
-
-
 class FloatPowerMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
@@ -4732,22 +4710,6 @@ class TensorToBoolMatcher(BaseMatcher):
             self.kwargs_to_str(kwargs),
         )
         return code
-
-
-class LoadStateDictFromUrlMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        CODE_TEMPLATE = textwrap.dedent(
-            """
-            import warnings
-            warnings.warn(
-                "The parameter format of PyTorch model should be converted to paddle format, and used it as the parameter for paddle.load(). "
-                "More information infer from https://github.com/PaddlePaddle/PaddleNLP/blob/develop/docs/community/contribute_models/convert_pytorch_to_paddle.rst"
-            )
-            paddle.load(paddle.utils.download.get_weights_path_from_url({})
-            )
-            """
-        )
-        return CODE_TEMPLATE.format(kwargs["url"])
 
 
 class TensorDatasetMatcher(BaseMatcher):
