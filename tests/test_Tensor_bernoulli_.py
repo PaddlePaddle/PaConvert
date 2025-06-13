@@ -56,8 +56,7 @@ def test_case_3():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
-# paddle.Tensor.bernoulli_ parameter p is different from torch, which has bug
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -68,8 +67,7 @@ def _test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
-# paddle.Tensor.bernoulli_ parameter p is different from torch, which has bug
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch

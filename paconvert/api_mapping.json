@@ -15729,15 +15729,6 @@
       "verbose"
     ]
   },
-  "torch.optim.lr_scheduler.LRScheduler": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.optimizer.lr.LRScheduler",
-    "min_input_args": 0,
-    "args_list": [
-      "optimizer",
-      "last_epoch"
-    ]
-  },
   "torch.optim.lr_scheduler.LambdaLR": {
     "Matcher": "Optim2LrSchedulerMatcher",
     "paddle_api": "paddle.optimizer.lr.LambdaDecay",
