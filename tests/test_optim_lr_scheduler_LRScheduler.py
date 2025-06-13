@@ -19,7 +19,6 @@ from apibase import APIBase
 obj = APIBase("torch.optim.lr_scheduler.LRScheduler")
 
 
-
 # TODO: fix torch.atleast bug, which not support input list/tuple
 def _test_case_1():
     pytorch_code = textwrap.dedent(
