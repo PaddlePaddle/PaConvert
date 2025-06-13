@@ -50,6 +50,7 @@
   "torch.bilinear": "torch.nn.functional.bilinear",
   "torch.cdouble": "torch.complex128",
   "torch.celu_": "torch.nn.functional.celu_",
+  "torch.cfloat": "torch.complex64",
   "torch.channel_shuffle": "torch.nn.functional.channel_shuffle",
   "torch.clip": "torch.clamp",
   "torch.concat": "torch.cat",

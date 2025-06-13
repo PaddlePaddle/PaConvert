@@ -690,8 +690,8 @@
     ]
   },
   "torch.Tensor.baddbmm": {
-    "Matcher": "AddMRMatcher",
-    "paddle_api": "paddle.bmm",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.baddbmm",
     "min_input_args": 2,
     "args_list": [
       "batch1",
@@ -699,11 +699,15 @@
       "*",
       "beta",
       "alpha"
-    ]
+    ],
+    "kwargs_change": {
+      "batch1": "x",
+      "batch2": "y"
+    }
   },
   "torch.Tensor.baddbmm_": {
-    "Matcher": "AddMR_Matcher",
-    "paddle_api": "paddle.bmm",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.baddbmm_",
     "min_input_args": 2,
     "args_list": [
       "batch1",
@@ -711,7 +715,11 @@
       "*",
       "beta",
       "alpha"
-    ]
+    ],
+    "kwargs_change": {
+      "batch1": "x",
+      "batch2": "y"
+    }
   },
   "torch.Tensor.bernoulli": {
     "Matcher": "TensorFunc2PaddleFunc",
@@ -2623,7 +2631,18 @@
       "get_infos"
     ]
   },
-  "torch.Tensor.lu_solve": {},
+  "torch.Tensor.lu_solve": {
+    "Matcher": "TensorFunc2PaddleFunc",
+    "paddle_api": "paddle.linalg.lu_solve",
+    "args_list": [
+      "LU_data",
+      "LU_pivots"
+    ],
+    "kwargs_change": {
+      "LU_data": "lu",
+      "LU_pivots": "pivots"
+    }
+  },
   "torch.Tensor.map_": {},
   "torch.Tensor.masked_fill": {
     "Matcher": "GenericMatcher",
@@ -3234,7 +3253,8 @@
     ]
   },
   "torch.Tensor.positive": {
-    "Matcher": "PositiveMatcher"
+    "Matcher": "TensorFunc2PaddleFunc",
+    "paddle_api": "paddle.positive"
   },
   "torch.Tensor.pow": {
     "Matcher": "GenericMatcher",
@@ -4611,6 +4631,22 @@
       "self"
     ]
   },
+  "torch._foreach_lgamma": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.lgamma",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_lgamma_": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.lgamma_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
   "torch._foreach_log": {
     "Matcher": "ForeachMatcher",
     "paddle_api": "paddle.log",
@@ -4734,6 +4770,22 @@
   "torch._foreach_sinh_": {
     "Matcher": "ForeachMatcher",
     "paddle_api": "paddle.sinh_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_sqrt": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.sqrt",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_sqrt_": {
+    "Matcher": "Foreach_Matcher",
+    "paddle_api": "paddle.sqrt",
     "min_input_args": 1,
     "args_list": [
       "self"
@@ -8971,7 +9023,9 @@
     }
   },
   "torch.hub.load_state_dict_from_url": {
-    "Matcher": "LoadStateDictFromUrlMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.hub.load_state_dict_from_url",
+    "min_input_args": 1,
     "args_list": [
       "url",
       "model_dir",
@@ -8981,7 +9035,10 @@
       "file_name",
       "weights_only"
     ],
-    "min_input_args": 1
+    "kwargs_change": {
+      "progress": "",
+      "weights_only": ""
+    }
   },
   "torch.hypot": {
     "Matcher": "GenericMatcher",
@@ -15887,10 +15944,15 @@
     ]
   },
   "torch.positive": {
-    "Matcher": "PositiveMatcher",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.positive",
+    "min_input_args": 1,
     "args_list": [
       "input"
-    ]
+    ],
+    "kwargs_change": {
+      "input": "x"
+    }
   },
   "torch.pow": {
     "Matcher": "GenericMatcher",
@@ -17149,7 +17211,7 @@
   },
   "torch.special.gammaln": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.lgamma",
+    "paddle_api": "paddle.gammaln",
     "min_input_args": 1,
     "args_list": [
       "input",

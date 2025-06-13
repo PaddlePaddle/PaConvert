@@ -24,14 +24,13 @@ def test_case_1():
         """
         import torch
         src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.bernoulli_(1.0)
+        result = src.bernoulli_(0.5)
         """
     )
     obj.run(
         pytorch_code,
         ["result"],
         check_value=False,
-        reason="paddle.Tensor.bernoulli_ parameter p is different from torch",
     )
 
 
@@ -55,3 +54,25 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([1., 2., 3., 4., 5., 6.])
+        result = src.bernoulli_(p=0, generator=None)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([1., 2., 3., 4., 5., 6.])
+        result = src.bernoulli_(1.0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
