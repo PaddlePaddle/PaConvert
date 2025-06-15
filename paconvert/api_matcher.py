@@ -3658,9 +3658,9 @@ class FunctionalSmoothL1LossMatcher(BaseMatcher):
 
         if "beta" in kwargs:
             kwargs["delta"] = kwargs.pop("beta")
-            API_TEMPLATE = "paddle.nn.functional.smooth_l1_loss({})/" + kwargs["delta"]
-        else:
-            API_TEMPLATE = "paddle.nn.functional.smooth_l1_loss({})"
+            kwargs["is_huber"] = False
+
+        API_TEMPLATE = "paddle.nn.functional.smooth_l1_loss({})"
 
         code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
         return code
