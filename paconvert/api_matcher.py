@@ -4274,6 +4274,15 @@ class SizeAverageMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
+class SmoothL1LossMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        process_reduce_and_size_average(kwargs)
+        if "beta" in kwargs:
+            kwargs["delta"] = kwargs.pop("beta")
+            kwargs["is_huber"] = False
+        return GenericMatcher.generate_code(self, kwargs)
+
+
 class CudaNvtxRangePushMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         code = "{}({})".format(self.get_paddle_api(), kwargs["msg"])
