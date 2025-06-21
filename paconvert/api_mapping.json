@@ -4514,8 +4514,8 @@
     ]
   },
   "torch._foreach_ceil_": {
-    "Matcher": "Foreach_Matcher",
-    "paddle_api": "paddle.ceil",
+    "Matcher": "ForeachTensor_Matcher",
+    "paddle_api": "ceil_",
     "min_input_args": 1,
     "args_list": [
       "self"
@@ -4592,8 +4592,8 @@
     ]
   },
   "torch._foreach_exp_": {
-    "Matcher": "Foreach_Matcher",
-    "paddle_api": "paddle.exp",
+    "Matcher": "ForeachTensor_Matcher",
+    "paddle_api": "exp_",
     "min_input_args": 1,
     "args_list": [
       "self"
@@ -4624,8 +4624,8 @@
     ]
   },
   "torch._foreach_floor_": {
-    "Matcher": "Foreach_Matcher",
-    "paddle_api": "paddle.floor",
+    "Matcher": "ForeachTensor_Matcher",
+    "paddle_api": "floor_",
     "min_input_args": 1,
     "args_list": [
       "self"
@@ -4752,8 +4752,8 @@
     ]
   },
   "torch._foreach_reciprocal_": {
-    "Matcher": "Foreach_Matcher",
-    "paddle_api": "paddle.reciprocal",
+    "Matcher": "ForeachTensor_Matcher",
+    "paddle_api": "reciprocal_",
     "min_input_args": 1,
     "args_list": [
       "self"
@@ -4768,8 +4768,8 @@
     ]
   },
   "torch._foreach_round_": {
-    "Matcher": "ForeachRound_Matcher",
-    "paddle_api": "paddle.round",
+    "Matcher": "ForeachTensor_Matcher",
+    "paddle_api": "round_",
     "min_input_args": 1,
     "args_list": [
       "self"
@@ -4784,8 +4784,8 @@
     ]
   },
   "torch._foreach_sigmoid_": {
-    "Matcher": "Foreach_Matcher",
-    "paddle_api": "paddle.nn.functional.sigmoid",
+    "Matcher": "ForeachTensor_Matcher",
+    "paddle_api": "sigmoid_",
     "min_input_args": 1,
     "args_list": [
       "self"
@@ -4832,8 +4832,8 @@
     ]
   },
   "torch._foreach_sqrt_": {
-    "Matcher": "Foreach_Matcher",
-    "paddle_api": "paddle.sqrt",
+    "Matcher": "ForeachTensor_Matcher",
+    "paddle_api": "sqrt_",
     "min_input_args": 1,
     "args_list": [
       "self"
@@ -4872,8 +4872,8 @@
     ]
   },
   "torch._foreach_zero_": {
-    "Matcher": "Foreach_Matcher",
-    "paddle_api": "paddle.zeros_like",
+    "Matcher": "ForeachTensor_Matcher",
+    "paddle_api": "zero_",
     "min_input_args": 1,
     "args_list": [
       "self"
