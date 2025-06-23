@@ -12334,7 +12334,16 @@
     },
     "min_input_args": 0
   },
-  "torch.nn.MultiLabelMarginLoss": {},
+  "torch.nn.MultiLabelMarginLoss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.MultiLabelMarginLoss",
+    "min_input_args": 0,
+    "args_list": [
+      "size_average",
+      "reduce",
+      "reduction"
+    ]
+  },
   "torch.nn.MultiLabelSoftMarginLoss": {
     "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.MultiLabelSoftMarginLoss",
@@ -14170,6 +14179,21 @@
       "p",
       "margin",
       "weight",
+      "size_average",
+      "reduce",
+      "reduction"
+    ],
+    "kwargs_change": {
+      "target": "label"
+    },
+    "min_input_args": 2
+  },
+  "torch.nn.functional.multilabel_margin_loss": {
+    "Matcher": "SizeAverageMatcher",
+    "paddle_api": "paddle.nn.functional.multi_label_margin_loss",
+    "args_list": [
+      "input",
+      "target",
       "size_average",
       "reduce",
       "reduction"
