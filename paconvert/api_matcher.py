@@ -5917,6 +5917,7 @@ class ForeachTensor_Matcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def foreach_Tensor_(tensors,method_name):
+                method_name = method_name.rpartition('.')[-1]
                 return [getattr(x, method_name)() for x in tensors]
             """
         )
