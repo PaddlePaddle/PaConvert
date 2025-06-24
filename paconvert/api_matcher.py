@@ -5912,7 +5912,7 @@ class AllGatherIntoTensorMatcher(BaseMatcher):
         return code
 
 
-class ForeachTensor_Matcher(BaseMatcher):
+class ForeachTensorMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """

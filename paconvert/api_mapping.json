@@ -4514,7 +4514,7 @@
     ]
   },
   "torch._foreach_ceil_": {
-    "Matcher": "ForeachTensor_Matcher",
+    "Matcher": "ForeachTensorMatcher",
     "paddle_api": "paddle.Tensor.ceil_",
     "min_input_args": 1,
     "args_list": [
@@ -4592,7 +4592,7 @@
     ]
   },
   "torch._foreach_exp_": {
-    "Matcher": "ForeachTensor_Matcher",
+    "Matcher": "ForeachTensorMatcher",
     "paddle_api": "paddle.Tensor.exp_",
     "min_input_args": 1,
     "args_list": [
@@ -4624,7 +4624,7 @@
     ]
   },
   "torch._foreach_floor_": {
-    "Matcher": "ForeachTensor_Matcher",
+    "Matcher": "ForeachTensorMatcher",
     "paddle_api": "paddle.Tensor.floor_",
     "min_input_args": 1,
     "args_list": [
@@ -4752,7 +4752,7 @@
     ]
   },
   "torch._foreach_reciprocal_": {
-    "Matcher": "ForeachTensor_Matcher",
+    "Matcher": "ForeachTensorMatcher",
     "paddle_api": "paddle.Tensor.reciprocal_",
     "min_input_args": 1,
     "args_list": [
@@ -4768,7 +4768,7 @@
     ]
   },
   "torch._foreach_round_": {
-    "Matcher": "ForeachTensor_Matcher",
+    "Matcher": "ForeachTensorMatcher",
     "paddle_api": "paddle.Tensor.round_",
     "min_input_args": 1,
     "args_list": [
@@ -4776,15 +4776,15 @@
     ]
   },
   "torch._foreach_sigmoid": {
-    "Matcher": "ForeachMatcher",
-    "paddle_api": "paddle.nn.functional.sigmoid",
+    "Matcher": "ForeachTensorMatcher",
+    "paddle_api": "paddle.Tensor.sigmoid",
     "min_input_args": 1,
     "args_list": [
       "self"
     ]
   },
   "torch._foreach_sigmoid_": {
-    "Matcher": "ForeachTensor_Matcher",
+    "Matcher": "ForeachTensorMatcher",
     "paddle_api": "paddle.Tensor.sigmoid_",
     "min_input_args": 1,
     "args_list": [
@@ -4832,7 +4832,7 @@
     ]
   },
   "torch._foreach_sqrt_": {
-    "Matcher": "ForeachTensor_Matcher",
+    "Matcher": "ForeachTensorMatcher",
     "paddle_api": "paddle.Tensor.sqrt_",
     "min_input_args": 1,
     "args_list": [
@@ -4872,7 +4872,7 @@
     ]
   },
   "torch._foreach_zero_": {
-    "Matcher": "ForeachTensor_Matcher",
+    "Matcher": "ForeachTensorMatcher",
     "paddle_api": "paddle.Tensor.zero_",
     "min_input_args": 1,
     "args_list": [
