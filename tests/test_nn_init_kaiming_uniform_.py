@@ -112,12 +112,7 @@ def test_case_8():
         result = conv.weight
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="mode='fan_out' is not supported",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_9():
