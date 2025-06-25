@@ -71,7 +71,7 @@ def test_case_2():
 
 
 # paddle's `onesided` should be False when input or window is complex
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
