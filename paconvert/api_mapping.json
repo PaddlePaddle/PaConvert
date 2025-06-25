@@ -4514,8 +4514,8 @@
     ]
   },
   "torch._foreach_ceil_": {
-    "Matcher": "Foreach_Matcher",
-    "paddle_api": "paddle.ceil",
+    "Matcher": "ForeachTensorMatcher",
+    "paddle_api": "paddle.Tensor.ceil_",
     "min_input_args": 1,
     "args_list": [
       "self"
@@ -4592,8 +4592,8 @@
     ]
   },
   "torch._foreach_exp_": {
-    "Matcher": "Foreach_Matcher",
-    "paddle_api": "paddle.exp",
+    "Matcher": "ForeachTensorMatcher",
+    "paddle_api": "paddle.Tensor.exp_",
     "min_input_args": 1,
     "args_list": [
       "self"
@@ -4624,8 +4624,24 @@
     ]
   },
   "torch._foreach_floor_": {
-    "Matcher": "Foreach_Matcher",
-    "paddle_api": "paddle.floor",
+    "Matcher": "ForeachTensorMatcher",
+    "paddle_api": "paddle.Tensor.floor_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_frac": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.frac",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_frac_": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.frac_",
     "min_input_args": 1,
     "args_list": [
       "self"
@@ -4727,6 +4743,22 @@
       "self"
     ]
   },
+  "torch._foreach_reciprocal": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.reciprocal",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_reciprocal_": {
+    "Matcher": "ForeachTensorMatcher",
+    "paddle_api": "paddle.Tensor.reciprocal_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
   "torch._foreach_round": {
     "Matcher": "ForeachMatcher",
     "paddle_api": "paddle.round",
@@ -4736,8 +4768,24 @@
     ]
   },
   "torch._foreach_round_": {
-    "Matcher": "ForeachRound_Matcher",
-    "paddle_api": "paddle.round",
+    "Matcher": "ForeachTensorMatcher",
+    "paddle_api": "paddle.Tensor.round_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_sigmoid": {
+    "Matcher": "ForeachTensorMatcher",
+    "paddle_api": "paddle.Tensor.sigmoid",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_sigmoid_": {
+    "Matcher": "ForeachTensorMatcher",
+    "paddle_api": "paddle.Tensor.sigmoid_",
     "min_input_args": 1,
     "args_list": [
       "self"
@@ -4784,8 +4832,8 @@
     ]
   },
   "torch._foreach_sqrt_": {
-    "Matcher": "Foreach_Matcher",
-    "paddle_api": "paddle.sqrt",
+    "Matcher": "ForeachTensorMatcher",
+    "paddle_api": "paddle.Tensor.sqrt_",
     "min_input_args": 1,
     "args_list": [
       "self"
@@ -4802,6 +4850,30 @@
   "torch._foreach_tan_": {
     "Matcher": "ForeachMatcher",
     "paddle_api": "paddle.tan_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_trunc": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.trunc",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_trunc_": {
+    "Matcher": "ForeachMatcher",
+    "paddle_api": "paddle.trunc_",
+    "min_input_args": 1,
+    "args_list": [
+      "self"
+    ]
+  },
+  "torch._foreach_zero_": {
+    "Matcher": "ForeachTensorMatcher",
+    "paddle_api": "paddle.Tensor.zero_",
     "min_input_args": 1,
     "args_list": [
       "self"
@@ -6261,6 +6333,14 @@
       "device": "device"
     },
     "min_input_args": 0
+  },
+  "torch.cuda.StreamContext": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.device.stream_guard",
+    "min_input_args": 1,
+    "args_list": [
+      "stream"
+    ]
   },
   "torch.cuda.amp.GradScaler": {
     "Matcher": "GenericMatcher",

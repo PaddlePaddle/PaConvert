@@ -1,4 +1,4 @@
-# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
+# Copyright (c) 2025 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,44 +14,38 @@
 
 import textwrap
 
-import paddle
-import pytest
 from apibase import APIBase
 
-obj = APIBase("torch.cuda.StreamContext")
+obj = APIBase("torch._foreach_sigmoid")
 
 
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="can only run on paddle with CUDA",
-)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        s1 = torch.cuda.Stream(device=0)
-        a = torch.zeros(10, 10, device='cuda')
-        b = torch.zeros(10, 10, device='cuda')
-        with torch.cuda.StreamContext(stream=s1):
-            result = a + b
+        tensors = [torch.tensor([0.34, 5.76, 0.73]), torch.tensor([0.5, 1.0])]
+        result = torch._foreach_sigmoid(tensors)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="can only run on paddle with CUDA",
-)
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        s1 = torch.cuda.Stream(device=0)
-        a = torch.zeros(10, 10, device='cuda')
-        b = torch.zeros(10, 10, device='cuda')
-        with torch.cuda.StreamContext(s1):
-            result = a + b
+        tensors = [torch.tensor([0.34, 6.34, 0.73]), torch.tensor([0.5, 8.0])]
+        result = torch._foreach_sigmoid(self=tensors)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch._foreach_sigmoid(self = [torch.tensor([0.34, 2.46, 0.73]), torch.tensor([0.5, 3.0])])
         """
     )
     obj.run(pytorch_code, ["result"])

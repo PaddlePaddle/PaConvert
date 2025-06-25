@@ -5767,27 +5767,6 @@ class ForeachMatcher(BaseMatcher):
         return code
 
 
-class Foreach_Matcher(BaseMatcher):
-    def generate_utils_code(self):
-        CODE_TEMPLATE = textwrap.dedent(
-            """
-            def foreach_operator_(func, tensors):
-                return [paddle.assign(func(x), x) for x in tensors]
-            """
-        )
-        return CODE_TEMPLATE
-
-    def generate_code(self, kwargs):
-        self.enable_utils_code()
-        API_TEMPLATE = textwrap.dedent(
-            """
-            foreach_operator_({}, {})
-            """
-        )
-        code = API_TEMPLATE.format(self.get_paddle_api(), kwargs["self"])
-        return code
-
-
 class DistributedBackendMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         return "{}.lower()".format(kwargs["name"])
@@ -5933,12 +5912,13 @@ class AllGatherIntoTensorMatcher(BaseMatcher):
         return code
 
 
-class ForeachRound_Matcher(BaseMatcher):
+class ForeachTensorMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def foreach_round_(tensors):
-                return [x.round_() for x in tensors]
+            def foreach_Tensor_(tensors,method_name):
+                method_name = method_name.rpartition('.')[-1]
+                return [getattr(x, method_name)() for x in tensors]
             """
         )
         return CODE_TEMPLATE
@@ -5947,10 +5927,10 @@ class ForeachRound_Matcher(BaseMatcher):
         self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            foreach_round_({})
+            foreach_Tensor_({},"{}")
             """
         )
-        code = API_TEMPLATE.format(kwargs["self"])
+        code = API_TEMPLATE.format(kwargs["self"], self.get_paddle_api())
         return code
 
 
