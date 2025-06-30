@@ -4399,11 +4399,15 @@
   "torch.Tensor.vsplit": {},
   "torch.Tensor.where": {
     "Matcher": "TensorWhereMatcher",
+    "paddle_api": "paddle.where",
     "min_input_args": 2,
     "args_list": [
       "condition",
       "other"
-    ]
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.xlogy": {
     "Matcher": "XLogYMatcher",
@@ -5657,8 +5661,8 @@
     "min_input_args": 0
   },
   "torch.baddbmm": {
-    "Matcher": "AddMRMatcher",
-    "paddle_api": "paddle.bmm",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.baddbmm",
     "min_input_args": 3,
     "args_list": [
       "input",
@@ -5668,7 +5672,11 @@
       "beta",
       "alpha",
       "out"
-    ]
+    ],
+    "kwargs_change": {
+      "batch1": "x",
+      "batch2": "y"
+    }
   },
   "torch.batch_norm": {},
   "torch.bernoulli": {
@@ -6489,6 +6497,11 @@
   "torch.cuda.is_bf16_supported": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.amp.is_bfloat16_supported"
+  },
+  "torch.cuda.is_initialized": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.is_compiled_with_cuda",
+    "min_input_args": 0
   },
   "torch.cuda.manual_seed": {
     "Matcher": "GenericMatcher",
@@ -7527,6 +7540,7 @@
   },
   "torch.distributions.distribution.Distribution.log_prob": {
     "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.distribution.Distribution.log_prob",
     "args_list": [
       "value"
     ],
@@ -9435,10 +9449,11 @@
     "paddle_api": "paddle.jit.not_to_static",
     "min_input_args": 0,
     "args_list": [
-      "dropout"
+      "drop",
+      "**kwargs"
     ],
     "unsupport_args": [
-      "dropout"
+      "drop"
     ]
   },
   "torch.jit.load": {
@@ -13916,7 +13931,8 @@
       "scale_factor",
       "mode",
       "align_corners",
-      "recompute_scale_factor"
+      "recompute_scale_factor",
+      "antialias"
     ],
     "kwargs_change": {
       "input": "x"
