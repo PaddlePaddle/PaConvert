@@ -182,3 +182,17 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["result"], rtol=1e-5)
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import numpy as np
+        import torch
+        np.random.seed(100)
+        x = np.random.rand(8, 128, 64)
+        query = torch.tensor(x, dtype=torch.float32)
+        result = torch.nn.functional.scaled_dot_product_attention(query, query, query)
+        """
+    )
+    obj.run(pytorch_code, ["result"], rtol=1e-5)

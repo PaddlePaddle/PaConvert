@@ -4799,13 +4799,31 @@ class SDPAttnMatcher(BaseMatcher):
         query = kwargs.pop("query")
         key = kwargs.pop("key")
         value = kwargs.pop("value")
+
         API_TEMPLATE = textwrap.dedent(
             """
-            {}({}.transpose([0, 2, 1, 3]), {}.transpose([0, 2, 1, 3]), {}.transpose([0, 2, 1, 3]), {}).transpose([0, 2, 1, 3])
+            {} = list(range({}.ndim))
+            {}[-2], {}[-3] = {}[-3], {}[-2]
+            {}({}.transpose({}), {}.transpose({}), {}.transpose({}), {}).transpose({})
             """
         )
+        perm = get_unique_name("perm")
         code = API_TEMPLATE.format(
-            self.get_paddle_api(), query, key, value, self.kwargs_to_str(kwargs)
+            perm,
+            query,
+            perm,
+            perm,
+            perm,
+            perm,
+            self.get_paddle_api(),
+            query,
+            perm,
+            key,
+            perm,
+            value,
+            perm,
+            self.kwargs_to_str(kwargs),
+            perm,
         )
         return code
 
