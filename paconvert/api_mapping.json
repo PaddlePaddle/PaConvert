@@ -12772,7 +12772,7 @@
     "min_input_args": 0
   },
   "torch.nn.SmoothL1Loss": {
-    "Matcher": "SizeAverageMatcher",
+    "Matcher": "SmoothL1LossMatcher",
     "paddle_api": "paddle.nn.SmoothL1Loss",
     "min_input_args": 0,
     "args_list": [

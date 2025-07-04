@@ -3653,9 +3653,9 @@ class FunctionalSmoothL1LossMatcher(BaseMatcher):
 
         if "beta" in kwargs:
             kwargs["delta"] = kwargs.pop("beta")
-            API_TEMPLATE = "paddle.nn.functional.smooth_l1_loss({})/" + kwargs["delta"]
-        else:
-            API_TEMPLATE = "paddle.nn.functional.smooth_l1_loss({})"
+            kwargs["is_huber"] = False
+
+        API_TEMPLATE = "paddle.nn.functional.smooth_l1_loss({})"
 
         code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
         return code
@@ -4266,6 +4266,15 @@ class FunctionalOneHotMatcher(BaseMatcher):
 class SizeAverageMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         process_reduce_and_size_average(kwargs)
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class SmoothL1LossMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        process_reduce_and_size_average(kwargs)
+        if "beta" in kwargs:
+            kwargs["delta"] = kwargs.pop("beta")
+            kwargs["is_huber"] = False
         return GenericMatcher.generate_code(self, kwargs)
 
 
