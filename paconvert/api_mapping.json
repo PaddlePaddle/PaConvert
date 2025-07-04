@@ -12772,7 +12772,7 @@
     "min_input_args": 0
   },
   "torch.nn.SmoothL1Loss": {
-    "Matcher": "SmoothL1LossMatcher",
+    "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.SmoothL1Loss",
     "min_input_args": 0,
     "args_list": [
@@ -12783,6 +12783,9 @@
     ],
     "kwargs_change": {
       "beta": "delta"
+    },
+    "paddle_default_kwargs": {
+      "is_huber": "False"
     }
   },
   "torch.nn.SoftMarginLoss": {
@@ -13943,7 +13946,7 @@
     "min_input_args": 1
   },
   "torch.nn.functional.kl_div": {
-    "Matcher": "ProcessReduceMatcher",
+    "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.functional.kl_div",
     "args_list": [
       "input",
@@ -14557,7 +14560,7 @@
     }
   },
   "torch.nn.functional.smooth_l1_loss": {
-    "Matcher": "FunctionalSmoothL1LossMatcher",
+    "Matcher": "SizeAverageMatcher",
     "paddle_api": "paddle.nn.functional.smooth_l1_loss",
     "args_list": [
       "input",
@@ -14568,7 +14571,11 @@
       "beta"
     ],
     "kwargs_change": {
-      "target": "label"
+      "target": "label",
+      "beta": "delta"
+    },
+    "paddle_default_kwargs": {
+      "is_huber": "False"
     },
     "min_input_args": 2
   },
@@ -14852,7 +14859,7 @@
     ]
   },
   "torch.nn.init.kaiming_normal_": {
-    "Matcher": "InitKaimingMatcher",
+    "Matcher": "InitMatcher",
     "paddle_api": "paddle.nn.initializer.KaimingNormal",
     "min_input_args": 1,
     "args_list": [
@@ -14870,7 +14877,7 @@
     }
   },
   "torch.nn.init.kaiming_uniform_": {
-    "Matcher": "InitKaimingMatcher",
+    "Matcher": "InitMatcher",
     "paddle_api": "paddle.nn.initializer.KaimingUniform",
     "min_input_args": 1,
     "args_list": [

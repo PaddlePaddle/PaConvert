@@ -72,3 +72,14 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([1., 2., 3., 4., 5., 6.])
+        result = src.unique(False, False, dim=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

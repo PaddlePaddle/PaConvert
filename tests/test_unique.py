@@ -106,3 +106,16 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor(
+            [[2, 1, 3], [3, 0, 1], [2, 1, 3]])
+        dim = 1
+        result = torch.unique(return_inverse=True, input=a, return_counts=False, dim=dim, sorted=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
