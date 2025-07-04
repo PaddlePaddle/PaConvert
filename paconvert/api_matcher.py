@@ -22,7 +22,7 @@ import textwrap
 
 from paconvert.base import BaseMatcher
 from paconvert.transformer.custom_op_transformer import CPP_EXTENSION_LIST  # noqa: F401
-from paconvert.utils import get_unique_name, process_reduce_and_size_average
+from paconvert.utils import get_unique_name
 
 TypePromoteFunc = textwrap.dedent(
     """
@@ -49,6 +49,45 @@ TypePromoteFunc = textwrap.dedent(
         return x.astype(promote_type), y.astype(promote_type)
     """
 )
+
+
+def process_reduce_and_size_average(kwargs):
+    if "size_average" in kwargs:
+        size_average = kwargs.pop("size_average")
+        if "True" in size_average:
+            size_average = True
+        elif "False" in size_average:
+            size_average = False
+        else:
+            size_average = None
+    else:
+        size_average = None
+
+    if "reduce" in kwargs:
+        reduce = kwargs.pop("reduce")
+        if "True" in reduce:
+            reduce = True
+        elif "False" in reduce:
+            reduce = False
+        else:
+            reduce = None
+    else:
+        reduce = None
+
+    if size_average is not None or reduce is not None:
+        if size_average is None:
+            size_average = True
+        if reduce is None:
+            reduce = True
+
+        if size_average and reduce:
+            reduction = '"""mean"""'
+        elif reduce:
+            reduction = '"""sum"""'
+        else:
+            reduction = '"""none"""'
+
+        kwargs["reduction"] = reduction
 
 
 class GenericMatcher(BaseMatcher):
@@ -545,11 +584,6 @@ class TRFMPreTrainedModelMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         self.enable_utils_code()
         return UnchangeMatcher.get_paddle_nodes(self, args, kwargs)
-
-
-class InitKaimingMatcher(InitMatcher):
-    def generate_code(self, kwargs):
-        return super().generate_code(kwargs)
 
 
 class SignalWindowsWatcher(BaseMatcher):
@@ -3639,28 +3673,6 @@ class SpecialXLog1pYMatcher(BaseMatcher):
         return code
 
 
-class ProcessReduceMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        process_reduce_and_size_average(kwargs)
-        return GenericMatcher.generate_code(self, kwargs)
-
-
-class FunctionalSmoothL1LossMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        process_reduce_and_size_average(kwargs)
-        if "target" in kwargs:
-            kwargs["label"] = kwargs.pop("target")
-
-        if "beta" in kwargs:
-            kwargs["delta"] = kwargs.pop("beta")
-            kwargs["is_huber"] = False
-
-        API_TEMPLATE = "paddle.nn.functional.smooth_l1_loss({})"
-
-        code = API_TEMPLATE.format(self.kwargs_to_str(kwargs))
-        return code
-
-
 class DoubleAssignMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs = self.change_kwargs(kwargs)
@@ -4266,15 +4278,6 @@ class FunctionalOneHotMatcher(BaseMatcher):
 class SizeAverageMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         process_reduce_and_size_average(kwargs)
-        return GenericMatcher.generate_code(self, kwargs)
-
-
-class SmoothL1LossMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        process_reduce_and_size_average(kwargs)
-        if "beta" in kwargs:
-            kwargs["delta"] = kwargs.pop("beta")
-            kwargs["is_huber"] = False
         return GenericMatcher.generate_code(self, kwargs)
 
 
