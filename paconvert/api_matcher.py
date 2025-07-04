@@ -549,11 +549,6 @@ class TRFMPreTrainedModelMatcher(BaseMatcher):
 
 class InitKaimingMatcher(InitMatcher):
     def generate_code(self, kwargs):
-        if "mode" in kwargs:
-            if "fan_out" in kwargs["mode"]:
-                return None
-            kwargs.pop("mode")
-
         return super().generate_code(kwargs)
 
 
