@@ -54,7 +54,8 @@ class Converter:
         log_dir=None,
         log_level="INFO",
         log_markdown=False,
-        show_unsupport=False,
+        show_all_api=False,
+        show_unsupport_api=False,
         no_format=False,
         calculate_speed=False,
     ):
@@ -70,8 +71,10 @@ class Converter:
             self.logger.addHandler(logging.FileHandler(log_dir, mode="w"))
         self.logger.setLevel(log_level)
         self.log_markdown = log_markdown
-        self.show_unsupport = show_unsupport
-        self.unsupport_map = collections.defaultdict(int)
+        self.show_all_api = show_all_api
+        self.all_api_map = collections.defaultdict(dict)
+        self.show_unsupport_api = show_unsupport_api
+        self.unsupport_api_map = collections.defaultdict(int)
         self.convert_rate = 0.0
         self.no_format = no_format
         self.calculate_speed = calculate_speed
@@ -119,25 +122,60 @@ class Converter:
 
         self.transfer_dir(in_dir, out_dir, exc_patterns)
         utils_file_helper.write_code()
-        if self.show_unsupport:
+
+        if self.show_unsupport_api:
             log_info(self.logger, "\n===========================================")
             log_info(self.logger, "Not Support API List:")
             log_info(self.logger, "===========================================")
-            log_info(
-                self.logger,
-                "These Pytorch APIs are not supported to convert to Paddle now, which will be supported in future!\n",
-            )
-            unsupport_map = sorted(
-                self.unsupport_map.items(), key=lambda x: x[1], reverse=True
-            )
-            for k, v in unsupport_map:
-                log_info(self.logger, "{}: {}".format(k, v))
+            if len(self.unsupport_api_map) == 0:
+                log_info(
+                    self.logger,
+                    "Congratulations! All APIs have been successfully converted!",
+                )
+            else:
+                log_info(
+                    self.logger,
+                    "These Pytorch APIs are not supported to convert to Paddle now, which will be supported in future!\n",
+                )
+                unsupport_api_list = sorted(
+                    self.unsupport_api_map.items(), key=lambda x: x[1], reverse=True
+                )
+                for k, v in unsupport_api_list:
+                    log_info(self.logger, "{:<80}{:<8}".format(k, v))
 
-            """
-            import pandas
-            df = pandas.DataFrame.from_dict(dict(unsupport_map), orient="index")
-            df.to_excel("unsupport_map.xlsx")
-            """
+                """
+                import pandas
+                df = pandas.DataFrame(unsupport_api_list, columns=['PyTorch API', 'Count'])
+                df.to_excel("unsupport_api_map.xlsx", index=False)
+                """
+
+        if self.show_all_api:
+            log_info(self.logger, "\n===========================================")
+            log_info(self.logger, "ALL API List:")
+            log_info(self.logger, "===========================================")
+            if len(self.all_api_map) == 0:
+                log_info(self.logger, "There is no API need to convert.")
+            else:
+                log_info(
+                    self.logger,
+                    "All APIs to be converted are as follows.\n",
+                )
+                all_api_list = sorted(
+                    self.all_api_map.items(), key=lambda x: x[1]["count"], reverse=True
+                )
+                for k, v in all_api_list:
+                    log_info(
+                        self.logger,
+                        "{:<80}{:<80}{:<8}".format(k, str(v["paddle_api"]), v["count"]),
+                    )
+
+                """
+                import pandas
+                data = [(k, v['paddle_api'], v['count']) for k, v in all_api_list]
+                df = pandas.DataFrame(data, columns=['PyTorch API', 'Paddle API', 'Count'])
+                df.to_excel("all_api_map.xlsx", index=False)
+                """
+
         faild_api_count = self.torch_api_count - self.success_api_count
         if not self.log_markdown:
             log_warning(self.logger, "\n===========================================")
@@ -347,7 +385,8 @@ class Converter:
                 file,
                 self.imports_map,
                 self.logger,
-                self.unsupport_map,
+                self.all_api_map,
+                self.unsupport_api_map,
             )
             trans.transform()
             self.torch_api_count += trans.torch_api_count

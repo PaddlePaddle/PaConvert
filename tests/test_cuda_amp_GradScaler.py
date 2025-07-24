@@ -43,7 +43,7 @@ class cuda_amp_GradScalerAPIBase(APIBase):
             name, pytorch_numpy.dtype, paddle_numpy.dtype
         )
         if check_value:
-            assert np.allclose(
+            np.testing.assert_allclose(
                 pytorch_numpy, paddle_numpy, rtol=rtol, atol=atol
             ), "API ({}): paddle result has diff with pytorch result".format(name)
 

@@ -3,7 +3,7 @@
     "Matcher": "TensorHMatcher"
   },
   "torch.Tensor.T": {
-    "Matcher": "UnchangeMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.T"
   },
   "torch.Tensor.data": {
@@ -15,11 +15,11 @@
     "paddle_api": "paddle.Tensor.place"
   },
   "torch.Tensor.dtype": {
-    "Matcher": "UnchangeMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.dtype"
   },
   "torch.Tensor.grad": {
-    "Matcher": "UnchangeMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.grad"
   },
   "torch.Tensor.imag": {
@@ -30,7 +30,7 @@
     "Matcher": "TensorIsCudaMatcher"
   },
   "torch.Tensor.is_leaf": {
-    "Matcher": "UnchangeMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.is_leaf"
   },
   "torch.Tensor.is_meta": {},
@@ -59,7 +59,7 @@
     "Matcher": "TensorNbytesMatcher"
   },
   "torch.Tensor.ndim": {
-    "Matcher": "UnchangeMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.ndim"
   },
   "torch.Tensor.real": {
@@ -71,7 +71,8 @@
     "paddle_api": "paddle.Tensor.stop_gradient"
   },
   "torch.Tensor.shape": {
-    "Matcher": "TensorShapeMatcher"
+    "Matcher": "TensorShapeMatcher",
+    "paddle_api": "paddle.Tensor.shape"
   },
   "torch.__version__": {
     "Matcher": "GenericMatcher",

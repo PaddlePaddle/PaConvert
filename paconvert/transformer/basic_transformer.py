@@ -43,9 +43,11 @@ def iter_fields(node):
 
 
 class BasicTransformer(BaseTransformer):
-    def __init__(self, root, file, imports_map, logger, unsupport_map=None):
+    def __init__(
+        self, root, file, imports_map, logger, all_api_map=None, unsupport_api_map=None
+    ):
         super(BasicTransformer, self).__init__(
-            root, file, imports_map, logger, unsupport_map
+            root, file, imports_map, logger, all_api_map, unsupport_api_map
         )
         # use to identify tensor method/attribute
         self.black_list = list(self.imports_map[self.file]["other_packages"]) + [
@@ -111,6 +113,10 @@ class BasicTransformer(BaseTransformer):
             torch_api = full_attr
 
             self.torch_api_count += 1
+            if torch_api not in self.all_api_map:
+                self.all_api_map[torch_api]["paddle_api"] = ""
+                self.all_api_map[torch_api]["count"] = 0
+            self.all_api_map[torch_api]["count"] += 1
             log_debug(
                 self.logger,
                 "Start convert {} to Paddle --> ".format(torch_api),
@@ -151,6 +157,7 @@ class BasicTransformer(BaseTransformer):
                 elif paddle_api == "misidentify":
                     # This API usage indicate that is is not a Pytorch API
                     self.torch_api_count -= 1
+                    del self.all_api_map[torch_api]
                     log_debug(
                         self.logger,
                         " Misidentify {}".format(torch_api),
@@ -159,6 +166,9 @@ class BasicTransformer(BaseTransformer):
                     )
                     return node
                 elif paddle_api:
+                    self.all_api_map[torch_api]["paddle_api"] = (
+                        paddle_api if paddle_api else ""
+                    )
                     new_node = ast.parse(paddle_api).body[0].value
                     self.success_api_count += 1
                     log_info(
@@ -190,7 +200,7 @@ class BasicTransformer(BaseTransformer):
                     )
                     return new_node
 
-            self.unsupport_map[torch_api] += 1
+            self.unsupport_api_map[torch_api] += 1
             log_info(
                 self.logger,
                 "[Not Support] Convert {} to Paddle is not supported currently".format(
@@ -251,6 +261,10 @@ class BasicTransformer(BaseTransformer):
             for torch_class_api in torch_class_apis:
                 if self.in_attribute_mapping(torch_class_api):
                     self.torch_api_count += 1
+                    if torch_class_api not in self.all_api_map:
+                        self.all_api_map[torch_class_api]["paddle_api"] = ""
+                        self.all_api_map[torch_class_api]["count"] = 0
+                    self.all_api_map[torch_class_api]["count"] += 1
                     log_debug(
                         self.logger,
                         "Start convert Class Attribute: {} to Paddle --> ".format(
@@ -267,6 +281,9 @@ class BasicTransformer(BaseTransformer):
     def trans_class_attribute(self, node, torch_api):
         matcher = self.get_attribute_mather(torch_api)
         if matcher:
+            self.all_api_map[torch_api]["paddle_api"] = (
+                matcher.get_paddle_api() if matcher.get_paddle_api() else ""
+            )
             node_list = matcher.get_paddle_class_attribute_nodes(node)
             if node_list == "delete":
                 if isinstance(self.parent_node, ast.Expr):
@@ -292,6 +309,7 @@ class BasicTransformer(BaseTransformer):
             elif node_list == "misidentify":
                 # This API usage indicate that it is not this class attribute
                 self.torch_api_count -= 1
+                del self.all_api_map[torch_api]
                 log_debug(
                     self.logger,
                     " Misidentify Class Attribute: {}".format(torch_api),
@@ -336,7 +354,7 @@ class BasicTransformer(BaseTransformer):
             )
         ).body[0]
         self.record_scope(self.scope_body_index(), annotate_node)
-        self.unsupport_map[torch_api] += 1
+        self.unsupport_api_map[torch_api] += 1
         log_info(
             self.logger,
             "[Not Support] convert Class Attribute: {} to Paddle is not supported currently".format(
@@ -407,6 +425,10 @@ class BasicTransformer(BaseTransformer):
         if self.start_with_torch(full_attr) or self.in_api_mapping(full_attr):
             torch_api = full_attr
             self.torch_api_count += 1
+            if torch_api not in self.all_api_map:
+                self.all_api_map[torch_api]["paddle_api"] = ""
+                self.all_api_map[torch_api]["count"] = 0
+            self.all_api_map[torch_api]["count"] += 1
             log_debug(
                 self.logger,
                 "Start convert {} to Paddle --> ".format(torch_api),
@@ -416,6 +438,9 @@ class BasicTransformer(BaseTransformer):
 
             matcher = self.get_api_matcher(torch_api)
             if matcher:
+                self.all_api_map[torch_api]["paddle_api"] = (
+                    matcher.get_paddle_api() if matcher.get_paddle_api() else ""
+                )
                 node_list = matcher.get_paddle_nodes(node.args, node.keywords)
                 if node_list == "delete":
                     if isinstance(self.parent_node, ast.Expr):
@@ -430,6 +455,7 @@ class BasicTransformer(BaseTransformer):
                 elif node_list == "misidentify":
                     # This API usage indicate that is is not a Pytorch API
                     self.torch_api_count -= 1
+                    del self.all_api_map[torch_api]
                     log_debug(
                         self.logger,
                         " Misidentify {}".format(torch_api),
@@ -468,7 +494,7 @@ class BasicTransformer(BaseTransformer):
                             )
                             return new_node
 
-            self.unsupport_map[torch_api] += 1
+            self.unsupport_api_map[torch_api] += 1
 
             log_info(
                 self.logger,
@@ -561,6 +587,10 @@ class BasicTransformer(BaseTransformer):
             for torch_class_api in torch_class_apis:
                 if self.in_api_mapping(torch_class_api):
                     self.torch_api_count += 1
+                    if torch_class_api not in self.all_api_map:
+                        self.all_api_map[torch_class_api]["paddle_api"] = ""
+                        self.all_api_map[torch_class_api]["count"] = 0
+                    self.all_api_map[torch_class_api]["count"] += 1
                     log_debug(
                         self.logger,
                         "Start convert Class Method: {} to Paddle --> ".format(
@@ -586,6 +616,9 @@ class BasicTransformer(BaseTransformer):
                     self_in_args = True
                     node_args = node_args[1:]
 
+            self.all_api_map[torch_api]["paddle_api"] = (
+                matcher.get_paddle_api() if matcher.get_paddle_api() else ""
+            )
             node_list = matcher.get_paddle_class_nodes(
                 node.func, node_args, node.keywords
             )
@@ -612,6 +645,7 @@ class BasicTransformer(BaseTransformer):
                 return node
             elif node_list == "misidentify":
                 self.torch_api_count -= 1
+                del self.all_api_map[torch_api]
                 # This API usage indicate that it is not this class method
                 log_debug(
                     self.logger,
@@ -673,7 +707,7 @@ class BasicTransformer(BaseTransformer):
             )
         ).body[0]
         self.record_scope(self.scope_body_index(), annotate_node)
-        self.unsupport_map[torch_api] += 1
+        self.unsupport_api_map[torch_api] += 1
         log_info(
             self.logger,
             "[Not Support] convert Class Method: {} to Paddle is not supported currently".format(

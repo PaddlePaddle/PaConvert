@@ -19,7 +19,8 @@ from apibase import APIBase
 obj = APIBase("torch.Tensor.nanmedian")
 
 
-def test_case_1():
+# TODO: paddle has bug to fix
+def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch

@@ -19,7 +19,8 @@ from apibase import APIBase
 obj = APIBase("torch.nanmedian")
 
 
-def test_case_1():
+# TODO: paddle has bug to fix
+def _test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -30,7 +31,8 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_2():
+# TODO: paddle has bug to fix
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -52,7 +54,8 @@ def test_case_3():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_4():
+# TODO: paddle has bug to fix
+def _test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch

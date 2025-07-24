@@ -31,9 +31,11 @@ class ImportTransformer(BaseTransformer):
     Record import information
     """
 
-    def __init__(self, root, file, imports_map, logger, unsupport_map=None):
+    def __init__(
+        self, root, file, imports_map, logger, all_api_map=None, unsupport_api_map=None
+    ):
         super(ImportTransformer, self).__init__(
-            root, file, imports_map, logger, unsupport_map
+            root, file, imports_map, logger, all_api_map, unsupport_api_map
         )
         self.imports_map[self.file]["other_packages"] = set()
         self.imports_map[self.file]["torch_packages"] = set()
@@ -205,6 +207,20 @@ class ImportTransformer(BaseTransformer):
             if os.path.exists(import_path) or os.path.exists(import_path + ".py"):
                 return node
             """
+
+            """
+            # from ...configuration_utils import PretrainedConfig, layer_type_validation
+            if node.level == 3:
+                node.module = ".".join(["transformers", node.module])
+                node.level = 0
+            elif node.level == 2:
+                node.module = ".".join(["transformers.models", node.module])
+                node.level = 0
+            else:
+                self.insert_other_packages(self.imports_map, node)
+                return node
+            """
+
             self.insert_other_packages(self.imports_map, node)
             return node
         else:
@@ -260,6 +276,7 @@ class ImportTransformer(BaseTransformer):
                             self.file_name,
                             node.lineno,
                         )
+                print(self.imports_map)
                 if (
                     isinstance(self.parent_node, (ast.If, ast.Try))
                     and self.parent_node not in self.insert_pass_node
@@ -412,7 +429,9 @@ class ImportTransformer(BaseTransformer):
             and self.parent_node.value == node
         ):
             # supplement api which can be indexed
-            if node.id in ["ACT2FN"]:
+            # from torch.utils import data
+            # data[0]
+            if node.id not in ["data"]:
                 maybe_torch = True  # 15. ACT2FN['tanh']
         elif (
             isinstance(self.parent_node, ast.Tuple)
