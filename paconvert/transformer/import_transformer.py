@@ -276,7 +276,7 @@ class ImportTransformer(BaseTransformer):
                             self.file_name,
                             node.lineno,
                         )
-                print(self.imports_map)
+
                 if (
                     isinstance(self.parent_node, (ast.If, ast.Try))
                     and self.parent_node not in self.insert_pass_node
