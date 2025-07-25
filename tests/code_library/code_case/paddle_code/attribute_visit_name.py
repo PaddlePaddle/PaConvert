@@ -32,3 +32,5 @@ Optional[paddle.Tensor] = None
 my_add = paddle.add
 setattr(paddle.nn, "functional", my_functional_module)
 >>>>>>transformers.activations.ACT2FN["tanh"]
+>>>>>>transformers.modeling_utils.ALL_ATTENTION_FUNCTIONS["flash_attention_2"]
+>>>>>>transformers.modeling_rope_utils.ROPE_INIT_FUNCTIONS["linear"]

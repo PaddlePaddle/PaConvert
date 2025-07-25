@@ -22,9 +22,11 @@ AUTOGRAD_FUNC_NODES = {}
 
 
 class PreCustomOpTransformer(BaseTransformer):
-    def __init__(self, root, file, imports_map, logger, unsupport_map=None):
+    def __init__(
+        self, root, file, imports_map, logger, all_api_map=None, unsupport_api_map=None
+    ):
         super(PreCustomOpTransformer, self).__init__(
-            root, file, imports_map, logger, unsupport_map
+            root, file, imports_map, logger, all_api_map, unsupport_api_map
         )
         self.cpp_ext_import_names = {}
         self.cpp_ext_load_names = []
@@ -128,9 +130,11 @@ class PreCustomOpTransformer(BaseTransformer):
 
 
 class CustomOpTransformer(BaseTransformer):
-    def __init__(self, root, file, imports_map, logger, unsupport_map=None):
+    def __init__(
+        self, root, file, imports_map, logger, all_api_map=None, unsupport_api_map=None
+    ):
         super(CustomOpTransformer, self).__init__(
-            root, file, imports_map, logger, unsupport_map
+            root, file, imports_map, logger, all_api_map, unsupport_api_map
         )
         self.autograd_func_import_names = {}
 
@@ -207,7 +211,7 @@ class CustomOpTransformer(BaseTransformer):
                 else:
                     new_node = ast.parse(f"{cpp_ext}.custom_op_xxx").body[0]
 
-                self.unsupport_map[f"{autograd_func_asname}.apply"] += 1
+                self.unsupport_api_map[f"{autograd_func_asname}.apply"] += 1
                 log_debug(
                     self.logger,
                     f"[Not Support] C++ Custom OP '{autograd_func_asname}.apply', only convert Python part and C++ part not support to convert",

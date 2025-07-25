@@ -70,7 +70,12 @@ def main():
         help="Optional. The log level, default is INFO",
     )
     parser.add_argument(
-        "--show_unsupport",
+        "--show_all_api",
+        action="store_true",
+        help="Optional. Show all APIs which should be converted",
+    )
+    parser.add_argument(
+        "--show_unsupport_api",
         action="store_true",
         help="Optional. Show those APIs which are not supported to convert",
     )
@@ -113,7 +118,8 @@ def main():
                 log_dir=args.log_dir,
                 log_level=args.log_level,
                 log_markdown=args.log_markdown,
-                show_unsupport=args.show_unsupport,
+                show_all_api=args.show_all_api,
+                show_unsupport_api=args.show_unsupport_api,
                 no_format=args.no_format,
                 calculate_speed=args.calculate_speed,
             )
@@ -157,7 +163,8 @@ def main():
         log_dir=args.log_dir,
         log_level=args.log_level,
         log_markdown=args.log_markdown,
-        show_unsupport=args.show_unsupport,
+        show_all_api=args.show_all_api,
+        show_unsupport_api=args.show_unsupport_api,
         no_format=args.no_format,
         calculate_speed=args.calculate_speed,
     )

@@ -80,7 +80,9 @@ MAY_TORCH_PACKAGE_LIST = [
 
 
 class BaseTransformer(ast.NodeTransformer):
-    def __init__(self, root, file, imports_map, logger, unsupport_map=None):
+    def __init__(
+        self, root, file, imports_map, logger, all_api_map=None, unsupport_api_map=None
+    ):
         self.root = root
         self.file = file
         self.file_name = os.path.basename(file)
@@ -93,7 +95,8 @@ class BaseTransformer(ast.NodeTransformer):
         self.scope_insert_lines = collections.defaultdict(dict)
         self.logger = logger
         self.black_list = []
-        self.unsupport_map = unsupport_map
+        self.all_api_map = all_api_map
+        self.unsupport_api_map = unsupport_api_map
 
     def transform(self):
         self.visit(self.root)

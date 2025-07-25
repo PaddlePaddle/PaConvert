@@ -5,6 +5,8 @@ from torch import nn
 
 from transformers.generation.utils import GenerateOutput
 from transformers.activations import ACT2FN
+from transformers.modeling_utils import ALL_ATTENTION_FUNCTIONS
+from transformers.modeling_rope_utils import ROPE_INIT_FUNCTIONS
 
 import torch.utils.data as data # noqa: F401
 
@@ -44,3 +46,5 @@ my_add = TorchAdd
 setattr(nn, 'functional', my_functional_module)
 
 ACT2FN['tanh']
+ALL_ATTENTION_FUNCTIONS['flash_attention_2']
+ROPE_INIT_FUNCTIONS['linear']

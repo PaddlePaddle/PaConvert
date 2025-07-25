@@ -170,7 +170,7 @@ for project in "$TORCH_PROJECT_PATH"/*; do
     if [ -d "$project" ]; then
         project_name=$(basename "$project")
         echo "Converting project: $project_name"
-        python paconvert/main.py --in_dir "$project" --show_unsupport --calculate_speed
+        python paconvert/main.py --in_dir "$project" --show_unsupport_api --calculate_speed
         if [ $? -ne 0 ]; then
             failed_projects+=("$project_name")
         fi

@@ -46,14 +46,14 @@ Due to the use of some newer Python syntax tree features, an interpreter with >=
 
 ```bash
 pip install -U paconvert
-paconvert -i torch_code_dir [-o paddle_code_dir] [-e exclude.py] [--log_dir log_dir] [--log_level "INFO"] [--show_unsupport] [--run_check] [--no_format]
+paconvert -i torch_code_dir [-o paddle_code_dir] [-e exclude.py] [--log_dir log_dir] [--log_level "INFO"] [--show_all_api] [--show_unsupport_api] [--run_check] [--no_format]
 ```
 
 2. Installation with source code
 
 ```bash
 git clone https://github.com/PaddlePaddle/PaConvert.git
-python paconvert/main.py -i torch_code_dir [-o paddle_code_dir] [-e exclude.py] [--log_dir log_dir] [--log_level "INFO"] [--show_unsupport] [--run_check] [--no_format]
+python paconvert/main.py -i torch_code_dir [-o paddle_code_dir] [-e exclude.py] [--log_dir log_dir] [--log_level "INFO"] [--show_all_api] [--show_unsupport_api] [--run_check] [--no_format]
 ```
 
 **Args**
@@ -63,7 +63,8 @@ python paconvert/main.py -i torch_code_dir [-o paddle_code_dir] [-e exclude.py] 
 -e, --exc_patterns   Optional, Regular expressions will not be converted when matching files or directories. Multiple expressions should be separated by commas. Default not excluded.
 --log_dir            Optional, and the path to print the log will be directly printed on the terminal by default.
 --log_level          Optional, printing log level, supports "Warning", "INFO", "DEBUG", default is "INFO".
---show_unsupport     Optional, displaying APIs that currently do not support conversion automatically. default not displayed.
+--show_all_api       Optional, displaying all APIs that should be converted. default not displayed.
+--show_unsupport_api Optional, displaying APIs that currently do not support conversion automatically. default not displayed.
 --run_check          Optional, and the tool is used for installation and self checking during operation.
 --no_format          Optional, and does not format the converted code. When using this option, the converted Paddle code will not undergo code style optimization.
 ```

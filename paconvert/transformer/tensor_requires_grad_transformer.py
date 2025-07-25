@@ -26,9 +26,11 @@ class TensorRequiresGradTransformer(BaseTransformer):
                         *.stop_gradient = not temp
     """
 
-    def __init__(self, root, file, imports_map, logger, unsupport_map=None):
+    def __init__(
+        self, root, file, imports_map, logger, all_api_map=None, unsupport_api_map=None
+    ):
         super(TensorRequiresGradTransformer, self).__init__(
-            root, file, imports_map, logger, unsupport_map
+            root, file, imports_map, logger, all_api_map, unsupport_api_map
         )
         self.insert_nodes_list = []
 

@@ -46,7 +46,7 @@ class ImageAPIBase(APIBase):
             )
 
             if check_value:
-                assert np.allclose(
+                np.testing.assert_allclose(
                     pytorch_array, paddle_array, rtol=rtol, atol=atol
                 ), "API ({}): paddle result has diff with pytorch result".format(name)
             return

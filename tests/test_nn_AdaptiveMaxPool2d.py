@@ -47,8 +47,8 @@ class MaxPoolAPI(APIBase):
         ), "API ({}): shape mismatch, torch shape is {}, paddle shape is {}".format(
             name, pytorch_numpy.shape, paddle_numpy.shape
         )
-        assert np.allclose(
-            pytorch_numpy, paddle_numpy
+        np.testing.assert_allclose(
+            pytorch_numpy, paddle_numpy, rtol=rtol, atol=atol
         ), "API ({}): paddle result has diff with pytorch result".format(name)
 
 
