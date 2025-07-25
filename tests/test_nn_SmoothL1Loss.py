@@ -87,7 +87,7 @@ def test_case_5():
 
 
 # paddle result has diff with pytorch result
-def _test_case_6():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -101,7 +101,7 @@ def _test_case_6():
 
 
 # paddle result has diff with pytorch result
-def _test_case_7():
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch

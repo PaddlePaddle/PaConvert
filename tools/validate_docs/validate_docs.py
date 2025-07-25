@@ -34,6 +34,7 @@ IGNORE_KWARGS_CHANGE_PAIRS = {
     ("async_op", "sync_op"),
     ("time_major", "batch_first"),
     ("_random_samples", "random_u"),
+    ("self", "b"),
 }
 
 # 如果参数映射在这个里面，则进行参数映射的转换
@@ -74,6 +75,7 @@ PRESET_MATCHER_KWARGS_CHANGE_PAIRS = {
     "VOCDetectionMatcher": {"root": "data_file", "image_set": "mode"},
     "WeightsMatcher": {"weights": "pretrained"},
     "VGGMatcher": {"weights": "pretrained"},
+    "LinalgLuSolveMatcher": {"adjoint": "trans"},
 }
 
 overloadable_api_aux_set = {
@@ -114,6 +116,7 @@ overloadable_api_aux_set = {
     "torch.tensor_split",
     "torch.vsplit",
     "torch.nn.Module.to",
+    "torch.cat",
 }
 
 cornercase_api_aux_dict = {
@@ -153,6 +156,7 @@ missing_matchers_whitelist = {
     "transformers.PreTrainedModel.post_init": "transformers.PreTrainedModel.post_init is completed in TRFMPreTrainedModelMatcher",
     "torch.nn.modules.module.register_module_forward_hook": "Paddle don't support global register hook",
     "torch.nn.modules.module.register_module_forward_pre_hook": "Paddle don't support global register hook",
+    "torch.optim.lr_scheduler.LRScheduler": "PaConvert can not support this api temporary",
 }
 
 validate_whitelist = [

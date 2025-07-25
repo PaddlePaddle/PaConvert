@@ -29,16 +29,14 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        stream = torch.cuda.Stream(0)
-        result = torch.cuda.StreamContext(stream)
+        s1 = torch.cuda.Stream(device=0)
+        a = torch.zeros(10, 10, device='cuda')
+        b = torch.zeros(10, 10, device='cuda')
+        with torch.cuda.StreamContext(stream=s1):
+            result = a + b
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 @pytest.mark.skipif(
@@ -49,33 +47,11 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        stream = torch.cuda.Stream(0)
-        result = torch.cuda.StreamContext(stream=stream)
+        s1 = torch.cuda.Stream(device=0)
+        a = torch.zeros(10, 10, device='cuda')
+        b = torch.zeros(10, 10, device='cuda')
+        with torch.cuda.StreamContext(s1):
+            result = a + b
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
-
-
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="can only run on paddle with CUDA",
-)
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        stream = torch.cuda.Stream(torch.device("cuda:0"))
-        result = torch.cuda.StreamContext(stream)
-        """
-    )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])

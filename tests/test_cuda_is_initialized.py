@@ -14,41 +14,23 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Module.train")
+obj = APIBase("torch.cuda.is_initialized")
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
-        import torch
-        class TheModelClass(torch.nn.Module):
-            def forward(self, x):
-                return x
-        model = TheModelClass()
-        model.train()
-        result = model.training
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        import torch.nn as nn
-        import torch
-        class TheModelClass(torch.nn.Module):
-            def forward(self, x):
-                return x
-        model = TheModelClass()
-        state = model.state_dict()
-        model.train().load_state_dict(state)
-        result = model.training
+        torch.tensor([1], device='cuda:0')
+        result = torch.cuda.is_initialized()
         """
     )
     obj.run(pytorch_code, ["result"])

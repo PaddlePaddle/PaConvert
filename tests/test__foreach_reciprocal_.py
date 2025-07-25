@@ -1,4 +1,4 @@
-# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
+# Copyright (c) 2025 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,39 +16,36 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Module.train")
+obj = APIBase("torch._foreach_reciprocal_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
-        import torch
-        class TheModelClass(torch.nn.Module):
-            def forward(self, x):
-                return x
-        model = TheModelClass()
-        model.train()
-        result = model.training
+        tensors = [torch.tensor([0.34, -0.56, 0.73]), torch.tensor([0.5, -1.0])]
+        result = torch._foreach_reciprocal_(tensors)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "tensors"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
+        tensors = [torch.tensor([0.34, -0.56, 0.73]), torch.tensor([0.5, -1.0])]
+        result = torch._foreach_reciprocal_(self=tensors)
+        """
+    )
+    obj.run(pytorch_code, ["result", "tensors"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
         import torch
-        class TheModelClass(torch.nn.Module):
-            def forward(self, x):
-                return x
-        model = TheModelClass()
-        state = model.state_dict()
-        model.train().load_state_dict(state)
-        result = model.training
+        result = torch._foreach_reciprocal_(self = [torch.tensor([0.34, -0.56, 0.73]), torch.tensor([0.5, -1.0])])
         """
     )
     obj.run(pytorch_code, ["result"])
