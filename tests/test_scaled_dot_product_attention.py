@@ -191,7 +191,7 @@ def test_case_10():
         import torch
         np.random.seed(100)
         x = np.random.rand(8, 128, 64)
-        query = torch.tensor(x, dtype=torch.float32)
+        query = torch.tensor(x, dtype=torch.float16)
         result = torch.nn.functional.scaled_dot_product_attention(query, query, query)
         """
     )
