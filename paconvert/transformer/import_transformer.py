@@ -211,10 +211,16 @@ class ImportTransformer(BaseTransformer):
             """
             # from ...configuration_utils import PretrainedConfig, layer_type_validation
             if node.level == 3:
-                node.module = ".".join(["transformers", node.module])
+                if 'pipeline_' in self.file:
+                    node.module = ".".join(["diffusers", node.module])
+                else:
+                    node.module = ".".join(["transformers", node.module])
                 node.level = 0
             elif node.level == 2:
-                node.module = ".".join(["transformers.models", node.module])
+                if 'pipeline_' in self.file:
+                    node.module = ".".join(["diffusers.pipelines", node.module])
+                else:
+                    node.module = ".".join(["transformers.models", node.module])
                 node.level = 0
             else:
                 self.insert_other_packages(self.imports_map, node)
