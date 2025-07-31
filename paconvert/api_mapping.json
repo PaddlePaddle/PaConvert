@@ -18088,9 +18088,6 @@
       "optional",
       "py_limited_api"
     ],
-    "kwargs_change": {
-      "name": ""
-    },
     "min_input_args": 2
   },
   "torch.utils.cpp_extension.CppExtension": {
@@ -18116,9 +18113,6 @@
       "optional",
       "py_limited_api"
     ],
-    "kwargs_change": {
-      "name": ""
-    },
     "min_input_args": 2
   },
   "torch.utils.cpp_extension.load": {
