@@ -24,59 +24,61 @@ import astor
 
 from paconvert.utils import UtilsFileHelper, log_debug
 
-json_file = os.path.dirname(__file__) + "/api_mapping.json"
-with open(json_file, "r") as file:
-    API_MAPPING = json.load(file)
 
-json_file = os.path.dirname(__file__) + "/api_wildcard_mapping.json"
-with open(json_file, "r") as file:
-    API_WILDCARD_MAPPING = json.load(file)
+class GlobalManager:
+    json_file = os.path.dirname(__file__) + "/api_mapping.json"
+    with open(json_file, "r") as file:
+        API_MAPPING = json.load(file)
 
-json_file = os.path.dirname(__file__) + "/attribute_mapping.json"
-with open(json_file, "r") as file:
-    ATTRIBUTE_MAPPING = json.load(file)
+    json_file = os.path.dirname(__file__) + "/api_wildcard_mapping.json"
+    with open(json_file, "r") as file:
+        API_WILDCARD_MAPPING = json.load(file)
 
-json_file = os.path.dirname(__file__) + "/api_alias_mapping.json"
-with open(json_file, "r") as file:
-    ALIAS_MAPPING = json.load(file)
+    json_file = os.path.dirname(__file__) + "/attribute_mapping.json"
+    with open(json_file, "r") as file:
+        ATTRIBUTE_MAPPING = json.load(file)
 
-# used to replace import (means replace api by all)
-IMPORT_PACKAGE_MAPPING = {
-    "audiotools": "paddlespeech.audiotools",
-}
-# used to replace api one by one
-# Abbreviation after annotation as the prefix for corresponding matcher
-TORCH_PACKAGE_MAPPING = {
-    "torch": "paddle",
-    "mmseg": "paddle",
-    "mmcv": "paddle",
-    "mmdet": "paddle",
-    "mmdet3d": "paddle",
-    "mmengine": "paddle",
-    "detectron": "paddle",
-    "timm": "paddle",
-    "torchvision": "paddle",
-    "torchaudio": "paddlespeech",
-    "kornia": "paddle",
-    "fasttext": "paddle",
-    "pytorch_lightning": "paddle",
-    "lightning": "paddle",
-    "jieba": "paddle",
-    "NLTK": "paddle",
-    "scikit-learn": "paddle",
-    "fairscale": "paddle",  # FS
-    "transformers": "paddlenlp",  # TRFM
-    "datasets": "paddle",
-    "accelerate": "paddle",
-    "diffusers": "paddle",
-    "torch_xla": "paddle",
-    "flash_attn": "paddle",  # FA
-}
-MAY_TORCH_PACKAGE_LIST = [
-    "setuptools",
-    "os",
-    "einops",
-]
+    json_file = os.path.dirname(__file__) + "/api_alias_mapping.json"
+    with open(json_file, "r") as file:
+        ALIAS_MAPPING = json.load(file)
+
+    # used to replace import (means replace api by all)
+    IMPORT_PACKAGE_MAPPING = {
+        "audiotools": "paddlespeech.audiotools",
+    }
+    # used to replace api one by one
+    # Abbreviation after annotation as the prefix for corresponding matcher
+    TORCH_PACKAGE_MAPPING = {
+        "torch": "paddle",
+        "mmseg": "paddle",
+        "mmcv": "paddle",
+        "mmdet": "paddle",
+        "mmdet3d": "paddle",
+        "mmengine": "paddle",
+        "detectron": "paddle",
+        "timm": "paddle",
+        "torchvision": "paddle",
+        "torchaudio": "paddlespeech",
+        "kornia": "paddle",
+        "fasttext": "paddle",
+        "pytorch_lightning": "paddle",
+        "lightning": "paddle",
+        "jieba": "paddle",
+        "NLTK": "paddle",
+        "scikit-learn": "paddle",
+        "fairscale": "paddle",  # FS
+        "transformers": "paddlenlp",  # TRFM
+        "datasets": "paddle",
+        "accelerate": "paddle",
+        "diffusers": "paddle",
+        "torch_xla": "paddle",
+        "flash_attn": "paddle",  # FA
+    }
+    MAY_TORCH_PACKAGE_LIST = [
+        "setuptools",
+        "os",
+        "einops",
+    ]
 
 
 class BaseTransformer(ast.NodeTransformer):
