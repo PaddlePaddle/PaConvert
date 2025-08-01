@@ -84,7 +84,7 @@ class Converter:
         log_info(self.logger, "PyTorch to Paddle Convert Start ------>:")
         log_info(self.logger, "===========================================")
 
-    def run(self, in_dir, out_dir=None, exc_patterns=None):
+    def run(self, in_dir, out_dir=None, exclude=None):
         if self.calculate_speed:
             import time
 
@@ -100,11 +100,11 @@ class Converter:
 
         assert out_dir != in_dir, "--out_dir must be different from --in_dir"
 
-        if exc_patterns:
-            exc_patterns = exc_patterns.split(",")
+        if exclude:
+            exclude = exclude.split(",")
         else:
-            exc_patterns = []
-        exc_patterns.append("__pycache__")
+            exclude = []
+        exclude.append("__pycache__")
 
         if os.path.isfile(in_dir):
             out_file = (
@@ -120,7 +120,7 @@ class Converter:
                 out_dir + "/paddle_utils.py", is_dir_mode=True, logger=self.logger
             )
 
-        self.transfer_dir(in_dir, out_dir, exc_patterns)
+        self.transfer_dir(in_dir, out_dir, exclude)
         utils_file_helper.write_code()
 
         if self.show_unsupport_api:
@@ -169,12 +169,13 @@ class Converter:
                         "{:<80}{:<80}{:<8}".format(k, str(v["paddle_api"]), v["count"]),
                     )
 
-                """
                 import pandas
-                data = [(k, v['paddle_api'], v['count']) for k, v in all_api_list]
-                df = pandas.DataFrame(data, columns=['PyTorch API', 'Paddle API', 'Count'])
+
+                data = [(k, v["paddle_api"], v["count"]) for k, v in all_api_list]
+                df = pandas.DataFrame(
+                    data, columns=["PyTorch API", "Paddle API", "Count"]
+                )
                 df.to_excel("all_api_map.xlsx", index=False)
-                """
 
         faild_api_count = self.torch_api_count - self.success_api_count
         if not self.log_markdown:
@@ -256,11 +257,11 @@ class Converter:
 
         return self.success_api_count, faild_api_count
 
-    def transfer_dir(self, in_dir, out_dir, exc_patterns):
+    def transfer_dir(self, in_dir, out_dir, exclude):
         if os.path.isfile(in_dir):
             old_path = in_dir
-            if exc_patterns:
-                for pattern in exc_patterns:
+            if exclude:
+                for pattern in exclude:
                     if re.search(pattern, old_path):
                         return
 
@@ -281,8 +282,8 @@ class Converter:
                 new_path = os.path.join(out_dir, item)
 
                 is_exclude = False
-                if exc_patterns:
-                    for pattern in exc_patterns:
+                if exclude:
+                    for pattern in exclude:
                         if re.search(pattern, old_path):
                             is_exclude = True
                 if is_exclude:
@@ -292,7 +293,7 @@ class Converter:
                     if not os.path.exists(new_path):
                         os.makedirs(new_path)
 
-                self.transfer_dir(old_path, new_path, exc_patterns)
+                self.transfer_dir(old_path, new_path, exclude)
         elif os.path.islink(in_dir):
             # may need to create link
             pass

@@ -18,6 +18,7 @@ import sys
 
 sys.path.append(os.path.dirname(__file__) + "/..")
 
+from paconvert.base import GlobalManager
 from paconvert.converter import Converter
 
 try:
@@ -51,10 +52,16 @@ def main():
     )
     parser.add_argument(
         "-e",
-        "--exc_patterns",
+        "--exclude",
         default=None,
         type=str,
         help="Optional. Regular Pattern. PyTorch file or directory matched will not be converted, multiple patterns should be splited by ',' . Default: None.",
+    )
+    parser.add_argument(
+        "--exclude_packages",
+        default=None,
+        type=str,
+        help="Optional. Those PyTorch packages will not be recognized & converted, multiple packages should be split by ',' . Default is None.",
     )
     parser.add_argument(
         "--log_dir",
@@ -106,6 +113,11 @@ def main():
     )
     args = parser.parse_args()
 
+    if args.exclude_packages:
+        exclude_packages = args.exclude_packages.split(",")
+        for package in exclude_packages:
+            GlobalManager.TORCH_PACKAGE_MAPPING.pop(package)
+
     if args.separate_convert:
         project_num_100 = 0
         project_num_95 = 0
@@ -125,7 +137,7 @@ def main():
             )
 
             project_dir = os.path.join(in_dir, project_name)
-            converter.run(project_dir, args.out_dir, args.exc_patterns)
+            converter.run(project_dir, args.out_dir, args.exclude)
             if converter.convert_rate == 1.0:
                 project_num_100 += 1
             if converter.convert_rate >= 0.95:
@@ -175,7 +187,7 @@ def main():
         return
 
     assert args.in_dir is not None, "User must specify --in_dir "
-    converter.run(args.in_dir, args.out_dir, args.exc_patterns)
+    converter.run(args.in_dir, args.out_dir, args.exclude)
 
     print(r"****************************************************************")
     print(r"______      _____                          _   ")

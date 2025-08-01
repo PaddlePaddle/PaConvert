@@ -60,7 +60,7 @@ python paconvert/main.py -i torch_code_dir [-o paddle_code_dir] [-e exclude.py] 
 ```
 -i, --in_dir         Enter the torch code, which can be a file or directory.
 -o, --out_dir        Optional, outputting paddle code, which can be a file or directory. The default is the paddlesproject directory under the current directory.
--e, --exc_patterns   Optional, Regular expressions will not be converted when matching files or directories. Multiple expressions should be separated by commas. Default not excluded.
+-e, --exclude   Optional, Regular expressions will not be converted when matching files or directories. Multiple expressions should be separated by commas. Default not excluded.
 --log_dir            Optional, and the path to print the log will be directly printed on the terminal by default.
 --log_level          Optional, printing log level, supports "Warning", "INFO", "DEBUG", default is "INFO".
 --show_all_api       Optional, displaying all APIs that should be converted. default not displayed.

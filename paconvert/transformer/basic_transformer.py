@@ -19,14 +19,8 @@ import ast
 import re
 
 from paconvert.api_matcher import *
-from paconvert.base import (
-    API_MAPPING,
-    API_WILDCARD_MAPPING,
-    ATTRIBUTE_MAPPING,
-    ALIAS_MAPPING,
-    BaseTransformer,
-    TORCH_PACKAGE_MAPPING,
-)
+from paconvert.base import GlobalManager, BaseTransformer
+
 from paconvert.utils import log_debug, log_info
 
 
@@ -726,25 +720,25 @@ class BasicTransformer(BaseTransformer):
         return False
 
     def in_api_mapping(self, torch_api):
-        if torch_api in ALIAS_MAPPING:
-            torch_api = ALIAS_MAPPING[torch_api]
-        if torch_api in API_MAPPING:
+        if torch_api in GlobalManager.ALIAS_MAPPING:
+            torch_api = GlobalManager.ALIAS_MAPPING[torch_api]
+        if torch_api in GlobalManager.API_MAPPING:
             return True
-        for wildcard_name in list(API_WILDCARD_MAPPING.keys()):
+        for wildcard_name in list(GlobalManager.API_WILDCARD_MAPPING.keys()):
             if re.match(wildcard_name, torch_api):
                 return True
         return False
 
     def get_api_matcher(self, torch_api):
         api_mapping_dict = {}
-        if torch_api in ALIAS_MAPPING:
-            torch_api = ALIAS_MAPPING[torch_api]
-        if torch_api in API_MAPPING:
-            api_mapping_dict = API_MAPPING[torch_api]
+        if torch_api in GlobalManager.ALIAS_MAPPING:
+            torch_api = GlobalManager.ALIAS_MAPPING[torch_api]
+        if torch_api in GlobalManager.API_MAPPING:
+            api_mapping_dict = GlobalManager.API_MAPPING[torch_api]
         else:
-            for wildcard_name in list(API_WILDCARD_MAPPING.keys()):
+            for wildcard_name in list(GlobalManager.API_WILDCARD_MAPPING.keys()):
                 if re.match(wildcard_name, torch_api):
-                    api_mapping_dict = API_WILDCARD_MAPPING[wildcard_name]
+                    api_mapping_dict = GlobalManager.API_WILDCARD_MAPPING[wildcard_name]
 
         if api_mapping_dict:
             if "disable" in api_mapping_dict:
@@ -755,22 +749,24 @@ class BasicTransformer(BaseTransformer):
         return None
 
     def in_attribute_mapping(self, torch_api):
-        if torch_api in ALIAS_MAPPING:
-            torch_api = ALIAS_MAPPING[torch_api]
-        if torch_api in ATTRIBUTE_MAPPING:
+        if torch_api in GlobalManager.ALIAS_MAPPING:
+            torch_api = GlobalManager.ALIAS_MAPPING[torch_api]
+        if torch_api in GlobalManager.ATTRIBUTE_MAPPING:
             return True
         return False
 
     def get_attribute_mather(self, torch_api):
         attr_mapping_dict = {}
-        if torch_api in ALIAS_MAPPING:
-            torch_api = ALIAS_MAPPING[torch_api]
-        if torch_api in ATTRIBUTE_MAPPING:
-            attr_mapping_dict = ATTRIBUTE_MAPPING[torch_api]
+        if torch_api in GlobalManager.ALIAS_MAPPING:
+            torch_api = GlobalManager.ALIAS_MAPPING[torch_api]
+        if torch_api in GlobalManager.ATTRIBUTE_MAPPING:
+            attr_mapping_dict = GlobalManager.ATTRIBUTE_MAPPING[torch_api]
         else:
-            for wildcard_name in list(API_WILDCARD_MAPPING.keys()):
+            for wildcard_name in list(GlobalManager.API_WILDCARD_MAPPING.keys()):
                 if re.match(wildcard_name, torch_api):
-                    attr_mapping_dict = API_WILDCARD_MAPPING[wildcard_name]
+                    attr_mapping_dict = GlobalManager.API_WILDCARD_MAPPING[
+                        wildcard_name
+                    ]
 
         if attr_mapping_dict:
             if "disable" in attr_mapping_dict:
@@ -813,6 +809,10 @@ class BasicTransformer(BaseTransformer):
                 "hasattr",
             ]
         ):
-            if node.id in TORCH_PACKAGE_MAPPING:
-                return ast.parse(TORCH_PACKAGE_MAPPING[node.id]).body[0].value
+            if node.id in GlobalManager.TORCH_PACKAGE_MAPPING:
+                return (
+                    ast.parse(GlobalManager.TORCH_PACKAGE_MAPPING[node.id])
+                    .body[0]
+                    .value
+                )
         return node

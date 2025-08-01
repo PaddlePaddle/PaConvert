@@ -16,13 +16,7 @@
 import ast
 import os
 
-from paconvert.base import (
-    ALIAS_MAPPING,
-    IMPORT_PACKAGE_MAPPING,
-    MAY_TORCH_PACKAGE_LIST,
-    TORCH_PACKAGE_MAPPING,
-    BaseTransformer,
-)
+from paconvert.base import BaseTransformer, GlobalManager
 from paconvert.utils import log_info
 
 
@@ -80,12 +74,15 @@ class ImportTransformer(BaseTransformer):
                 break
 
             # 2. import from TORCH_PACKAGE_MAPPING (which means replace api one by one)
-            for pkg_name in list(TORCH_PACKAGE_MAPPING.keys()) + MAY_TORCH_PACKAGE_LIST:
+            for pkg_name in (
+                list(GlobalManager.TORCH_PACKAGE_MAPPING.keys())
+                + GlobalManager.MAY_TORCH_PACKAGE_LIST
+            ):
                 if (
                     alias_node.name.startswith(f"{pkg_name}.")
                     or pkg_name == alias_node.name
                 ):
-                    if pkg_name in MAY_TORCH_PACKAGE_LIST:
+                    if pkg_name in GlobalManager.MAY_TORCH_PACKAGE_LIST:
                         self.imports_map[self.file]["may_torch_packages"].add(pkg_name)
                     else:
                         self.imports_map[self.file]["torch_packages"].add(pkg_name)
@@ -113,9 +110,9 @@ class ImportTransformer(BaseTransformer):
                 continue
 
             # 3. import form IMPORT_PACKAGE_MAPPING (which means replace api by all)
-            for pkg_name in list(IMPORT_PACKAGE_MAPPING.keys()):
+            for pkg_name in list(GlobalManager.IMPORT_PACKAGE_MAPPING.keys()):
                 if f"{pkg_name}." in alias_node.name or pkg_name == alias_node.name:
-                    replace_pkg_name = IMPORT_PACKAGE_MAPPING[pkg_name]
+                    replace_pkg_name = GlobalManager.IMPORT_PACKAGE_MAPPING[pkg_name]
                     if alias_node.asname:
                         # case 1: 'import audiotools as tools' -> 'import paddlespeech.audiotools as tools'
                         # case 2: 'import audiotools.ml as ml' -> 'import paddlespeech.audiotools.ml as ml'
@@ -211,13 +208,13 @@ class ImportTransformer(BaseTransformer):
             """
             # from ...configuration_utils import PretrainedConfig, layer_type_validation
             if node.level == 3:
-                if 'pipeline_' in self.file:
+                if "pipeline_" in self.file:
                     node.module = ".".join(["diffusers", node.module])
                 else:
                     node.module = ".".join(["transformers", node.module])
                 node.level = 0
             elif node.level == 2:
-                if 'pipeline_' in self.file:
+                if "pipeline_" in self.file:
                     node.module = ".".join(["diffusers.pipelines", node.module])
                 else:
                     node.module = ".".join(["transformers.models", node.module])
@@ -251,9 +248,12 @@ class ImportTransformer(BaseTransformer):
                 return node
 
         # 2. import from TORCH_PACKAGE_MAPPING (which means replace api one by one)
-        for pkg_name in list(TORCH_PACKAGE_MAPPING.keys()) + MAY_TORCH_PACKAGE_LIST:
+        for pkg_name in (
+            list(GlobalManager.TORCH_PACKAGE_MAPPING.keys())
+            + GlobalManager.MAY_TORCH_PACKAGE_LIST
+        ):
             if node.module.startswith(f"{pkg_name}.") or pkg_name == node.module:
-                if pkg_name in MAY_TORCH_PACKAGE_LIST:
+                if pkg_name in GlobalManager.MAY_TORCH_PACKAGE_LIST:
                     self.imports_map[self.file]["may_torch_packages"].add(pkg_name)
                 else:
                     self.imports_map[self.file]["torch_packages"].add(pkg_name)
@@ -309,15 +309,15 @@ class ImportTransformer(BaseTransformer):
                 else:
                     return None
 
-        # 3. import form IMPORT_PACKAGE_MAPPING (which means replace api by all)
-        for pkg_name in list(IMPORT_PACKAGE_MAPPING.keys()):
+        # 3. import form GlobalManager.IMPORT_PACKAGE_MAPPING (which means replace api by all)
+        for pkg_name in list(GlobalManager.IMPORT_PACKAGE_MAPPING.keys()):
             if f"{pkg_name}." in node.module or pkg_name == node.module:
                 # case 1: 'from audiotools import AudioSignal' -> 'from paddlespeech.audiotools import AudioSignal'
                 # case 2: 'from audiotools.ml import BaseModel' -> 'from paddlespeech.audiotools.ml import BaseModel'
                 # case 3: 'from audiotools.ml import BaseModel as Model' -> 'from paddlespeech.audiotools.ml import BaseModel as Model'
                 origin_module = node.module
                 node.module = origin_module.replace(
-                    pkg_name, IMPORT_PACKAGE_MAPPING[pkg_name]
+                    pkg_name, GlobalManager.IMPORT_PACKAGE_MAPPING[pkg_name]
                 )
                 log_info(
                     self.logger,
@@ -363,8 +363,8 @@ class ImportTransformer(BaseTransformer):
 
         torch_api = self.get_full_api_from_node(node)
         if torch_api:
-            if torch_api in ALIAS_MAPPING:
-                torch_api = ALIAS_MAPPING[torch_api]
+            if torch_api in GlobalManager.ALIAS_MAPPING:
+                torch_api = GlobalManager.ALIAS_MAPPING[torch_api]
             return ast.parse(torch_api).body[0].value
         return node
 
@@ -456,8 +456,8 @@ class ImportTransformer(BaseTransformer):
         if maybe_torch:
             torch_api = self.get_full_api_from_node(node)
             if torch_api:
-                if torch_api in ALIAS_MAPPING:
-                    torch_api = ALIAS_MAPPING[torch_api]
+                if torch_api in GlobalManager.ALIAS_MAPPING:
+                    torch_api = GlobalManager.ALIAS_MAPPING[torch_api]
                 if maybe_alias_name:
                     if len(self.parent_node.targets) == 1 and isinstance(
                         self.parent_node.targets[0], ast.Name
@@ -476,7 +476,9 @@ class ImportTransformer(BaseTransformer):
         line_NO = 1
         paddle_package_list = []
         for torch_package in self.imports_map[self.file]["torch_packages"]:
-            paddle_package_list.append(TORCH_PACKAGE_MAPPING[torch_package])
+            paddle_package_list.append(
+                GlobalManager.TORCH_PACKAGE_MAPPING[torch_package]
+            )
 
         for may_torch_package in self.imports_map[self.file]["may_torch_packages"]:
             paddle_package_list.append(may_torch_package)
