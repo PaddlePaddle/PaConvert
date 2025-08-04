@@ -259,6 +259,6 @@ class APIBase(object):
         converter = Converter(log_dir="disable")
         converter.run(pytorch_code_path, paddle_code_path)
 
-        with open(paddle_code_path, "r", encoding="UTF-8") as f:
+        with open(paddle_code_path, "r", encoding="gbk") as f:
             code = f.read()
         return code
