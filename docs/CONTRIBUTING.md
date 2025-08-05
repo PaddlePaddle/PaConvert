@@ -494,11 +494,11 @@ if x:
 
 * **精度与输入要求**：
 
-单测的输入Tensor 必须规范，Tensor中元素个数需 > 100，且不能为全为0值等无效输入，默认会通过 `numpy.allclose(pytorch_result, paddle_result, rtol=1.0e-6, atol=0.0)` 来对比Pytorch、Paddle API的前向输出精度，由于该精度要求较高，如果达不到该精度要求，可以在 `obj.run` 时手动设置 `rtol` 、`atol` 适当降低阈值，来使单测运行通过。
+单测的输入Tensor 必须规范，不能为全为0值等无效输入，默认会通过 `numpy.testing.assert_allclose(pytorch_result, paddle_result, rtol=1.0e-6, atol=0.0)` 来对比Pytorch、Paddle API的前向输出精度，由于该精度要求较高，如果达不到该精度要求，可以在 `obj.run` 时手动设置 `rtol` 、`atol` 适当降低阈值，来使单测运行通过。
 
 * **单测覆盖范围要求**：
 
-单测本质为模仿用户Pytorch代码的用法，因此需要考虑该torch api所有可能的用法case，不可自行增加判断来刻意绕过测试，否则将引入转换工具Bug或隐患。
+单测本质为模仿用户Pytorch代码的用法，因此需要考虑该torch api所有可能的用法case，不可自行增加判断来刻意绕过测试，否则可能无法发现转换BUG。
 
 单测覆盖范围要求为：涉及到多个API形参的，应包含各种参数用法（ `全部指定关键字、全部不指定关键字、改变关键字顺序、默认参数均不指定、参数取值以变量形式传入` 五种情况必须考虑），不能只考虑最简单常见的用法，要求至少列举5种不同的使用case（越多越好）。
 
