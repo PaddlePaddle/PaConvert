@@ -93,9 +93,7 @@ def process_reduce_and_size_average(kwargs):
 class GenericMatcher(BaseMatcher):
     def get_paddle_api(self):
         assert "paddle_api" in self.api_mapping_dict
-        if self.paddle_api:
-            return self.paddle_api
-        return self.api_mapping_dict["paddle_api"]
+        return super().get_paddle_api()
 
     def generate_code(self, kwargs):
         kwargs_change_value = self.api_mapping_dict.get("kwargs_change", {}).values()
@@ -367,9 +365,11 @@ class AtleastMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
+# These APIs only change API name, but not change API args/kwargs
 class UnchangeMatcher(BaseMatcher):
-    def get_paddle_class_attribute_nodes(self, node):
-        return "unchange"
+    def get_paddle_api(self):
+        assert "paddle_api" in self.api_mapping_dict
+        return super().get_paddle_api()
 
     def get_paddle_nodes(self, args, kwargs):
         args = self.parse_args(args)
@@ -384,6 +384,35 @@ class UnchangeMatcher(BaseMatcher):
         return ast.parse(code).body
 
     def get_paddle_class_nodes(self, func, args, kwargs):
+        return "unchange"
+
+    def get_paddle_class_attribute_nodes(self, node):
+        return "unchange"
+
+
+# These APIs only change torch.* to paddle.*, not change any other thing
+class NoNeedConvertMatcher(BaseMatcher):
+    def get_paddle_api(self):
+        return self.torch_api.replace("torch.", "paddle.")
+
+    def get_paddle_nodes(self, args, kwargs):
+        args = self.parse_args(args)
+        kwargs = self.parse_kwargs(kwargs, allow_none=True)
+
+        # temporary delete these unsupport args
+        for k in ["layout", "generator", "memory_format", "out"]:
+            if k in kwargs:
+                kwargs.pop(k)
+
+        code = "{}({})".format(
+            self.get_paddle_api(), self.args_and_kwargs_to_str(args, kwargs)
+        )
+        return ast.parse(code).body
+
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        return "unchange"
+
+    def get_paddle_class_attribute_nodes(self, node):
         return "unchange"
 
 
@@ -5915,7 +5944,6 @@ class AllGatherIntoTensorMatcher(BaseMatcher):
             kwargs.get("group"),
             kwargs.get("async_op"),
         )
-        print(code)
         return code
 
 

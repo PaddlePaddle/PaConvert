@@ -18,8 +18,8 @@ import sys
 
 sys.path.append(os.path.dirname(__file__) + "/..")
 
-from paconvert.base import GlobalManager
 from paconvert.converter import Converter
+from paconvert.global_var import GlobalManager
 
 try:
     from paconvert.version import __version__
