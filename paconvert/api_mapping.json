@@ -5481,6 +5481,7 @@
   },
   "torch.autograd.function.FunctionCtx.mark_non_differentiable": {
     "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.autograd.PyLayerContext.mark_non_differentiable",
     "min_input_args": 1,
     "args_list": [
       "*args"
@@ -5494,6 +5495,7 @@
   },
   "torch.autograd.function.FunctionCtx.save_for_backward": {
     "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.autograd.PyLayerContext.save_for_backward",
     "min_input_args": 1,
     "args_list": [
       "*tensors"
@@ -5504,6 +5506,7 @@
   },
   "torch.autograd.function.FunctionCtx.set_materialize_grads": {
     "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.autograd.PyLayerContext.set_materialize_grads",
     "min_input_args": 1,
     "args_list": [
       "value"
@@ -12134,6 +12137,7 @@
   },
   "torch.nn.Module.apply": {
     "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.nn.Layer.apply",
     "min_input_args": 1,
     "args_list": [
       "fn"

@@ -16,7 +16,8 @@
 import ast
 import os
 
-from paconvert.base import BaseTransformer, GlobalManager
+from paconvert.base import BaseTransformer
+from paconvert.global_var import GlobalManager
 from paconvert.utils import log_info
 
 
