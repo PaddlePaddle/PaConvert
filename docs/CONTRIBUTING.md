@@ -482,11 +482,11 @@ if x:
 
 * **默认检查逻辑**：采用`pytest`作为单测框架。一般情况下，用户只需要在单测文件中调用 `APIBase` 类的 `run()` 方法，传入 `pytorch_code` 和需要判断的 `Tensor` 变量名列表即可，参考 [torch.permute测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_permute.py)。 `run()` 方法会调用`compare()`函数，该方法默认检查逻辑为：转换前后两个`Tensor`的 `计算数值、数据类型、stop_gradient属性、形状` 是否一致。
 
-* **关闭数值检查**：对于随机数API，允许 `计算数值` 不同，可通过设置 `run(check_value=False)` 来实现，默认下不允许关闭数值检查。
+* **关闭数值检查**：对于随机数API，允许 `计算数值` 不同，可通过设置 `run(check_value=False)` 来实现。其他API不允许关闭数值检查。
 
-* **不支持的检查**：对于目前不支持的转换，负责转换的`Matcher` 需要返回`None`，表示暂不支持转换。在单测端可设置`run(unsupport=True, reason="")`来检测转换`Matcher`的正确性，其中`reason`表示不支持的原因(必填)。参考 [torch.median测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_median.py)。对于不支持的转换且`Matcher`在转写层难以判断是否支持，例如不支持某种特定类型的输入，单测函数可以以`_`开头表示暂不运行该单测，同时需要注释不支持的原因(原则上要避免这种不运行单测的情况)。参考 [torch.addmm测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_addmm.py)。
+* **不支持的检查**：对于目前不支持的转换，负责转换的`Matcher` 需要返回`None`，表示暂不支持转换。在单测端可设置`run(unsupport=True, reason="")`来检测转换`Matcher`的正确性，其中`reason`表示不支持的原因(必填)。参考 [torch.median测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_median.py)。对于不支持的转换且`Matcher`在转写层难以判断是否支持，例如不支持某种特定类型的输入，单测函数可以以`_`开头表示暂不运行该单测，同时需要注释不支持的原因。参考 [torch.addmm测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_addmm.py)。
 
-* **自定义检查**：如果需要自定义检查逻辑，可以继承 `APIBase` 类并重写`compare()`函数，实现自定义的检查逻辑，但需要有充分理由，例如 `torch.Generator` 由于返回的不为Tensor，无法使用常规方法测试。 参考 [torch.Generator测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_Generator.py)。
+* **自定义检查**：如果需要自定义检查逻辑，可以继承 `APIBase` 类并重写`compare()`函数，实现自定义的检查逻辑，但需有充分理由，例如 `torch.Generator` 由于返回的不为Tensor，无法使用常规方法测试。 参考 [torch.Generator测试用例](https://github.com/PaddlePaddle/PaConvert/tree/master/tests/test_Generator.py)。
 
 * **运行单测**：可以在主目录下执行`pytest tests`命令运行所有单测；也可以执行`pytest tests/xxx.py`运行`tests`目录下的某一单测；如果希望遇到`error`则停止单测，可以加上参数`-x`，即`pytest tests/test_add.py -x`，单测运行过程中会将转换后的`paddle`代码写入`test_project/paddle_temp.py`，方便排查错误。
 
@@ -494,15 +494,13 @@ if x:
 
 * **精度与输入要求**：
 
-单测的输入Tensor 必须规范，不能为全为0值等无效输入，默认会通过 `numpy.testing.assert_allclose(pytorch_result, paddle_result, rtol=1.0e-6, atol=0.0)` 来对比Pytorch、Paddle API的前向输出精度，由于该精度要求较高，如果达不到该精度要求，可以在 `obj.run` 时手动设置 `rtol` 、`atol` 适当降低阈值，来使单测运行通过。
+单测的输入Tensor 必须规范，不能为全为0值等无效输入，默认会通过 `numpy.testing.assert_allclose(pytorch_result, paddle_result, rtol=1.0e-6, atol=0.0)` 来对比Pytorch、Paddle API的前向输出精度。
 
 * **单测覆盖范围要求**：
 
-单测本质为模仿用户Pytorch代码的用法，因此需要考虑该torch api所有可能的用法case，不可自行增加判断来刻意绕过测试，否则可能无法发现转换BUG。
+单测本质为模仿用户Pytorch代码的用法，因此需要考虑该torch api所有可能的用法case，不可自行增加判断来刻意绕过测试，否则可能无法起到验证的作用。
 
-单测覆盖范围要求为：涉及到多个API形参的，应包含各种参数用法（ `全部指定关键字、全部不指定关键字、改变关键字顺序、默认参数均不指定、参数取值以变量形式传入` 五种情况必须考虑），不能只考虑最简单常见的用法，要求至少列举5种不同的使用case（越多越好）。
-
-对任意torch API的用法case只允许有两种结果：**a)支持转换且计算结果一致；b)不支持转换并用>>>标记**。不能出现其他的错误情况，包括但不限于 **触发Python语法问题导致异常退出、支持转换但计算结果对不上** 等各种问题。
+单测覆盖范围要求为：涉及到多个API形参的，应包含各种用法（ `全部指定关键字、全部不指定关键字、改变关键字顺序、默认参数均不指定、参数取值以变量形式传入` 五种情况必须考虑），不能只考虑最简单常见的用法，首次增加1个单测文件至少列举5种不同的用法case（越多越好）。
 
 以 `torch.Tensor.new_zeros` 为例，其至少包含12种以上的torch用法case，如下：
 
@@ -541,4 +539,4 @@ case 12:
 x.new_zeros(x.size())
 ```
 
-总的来说，转换规则与单测的开发具有一定的挑战性，是一项非常细心以及考验思维广度的工作。
+总的来说，转换规则与单测的开发具有一定的挑战性，是一项需要非常细心的工作。
