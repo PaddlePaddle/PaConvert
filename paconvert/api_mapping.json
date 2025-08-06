@@ -17610,19 +17610,8 @@
   },
   "torch.special.zeta": {},
   "torch.split": {
-    "Matcher": "SplitMatcher",
-    "paddle_api": "paddle.split",
-    "min_input_args": 2,
-    "args_list": [
-      "tensor",
-      "split_size_or_sections",
-      "dim"
-    ],
-    "kwargs_change": {
-      "tensor": "x",
-      "split_size_or_sections": "num_or_sections",
-      "dim": "axis"
-    }
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.compat.split"
   },
   "torch.sqrt": {
     "Matcher": "GenericMatcher",
