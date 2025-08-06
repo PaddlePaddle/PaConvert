@@ -80,4 +80,5 @@ class GlobalManager:
     NO_NEED_CONVERT_LIST = [
         "torch.einsum",
         "torch.Tensor.cos",
+        "torch.ravel",
     ]
