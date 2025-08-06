@@ -19,23 +19,38 @@ from apibase import APIBase
 obj = APIBase("torch.Tensor.bfloat16")
 
 
-def test_case_1():
+def test_uint8_case():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
+        src = torch.tensor([0., 1., 2., 3.,], dtype=torch.uint8)
         result = src.bfloat16().float()
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
+def test_case():
+    text_code = """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.bfloat16(memory_format=torch.preserve_format).float()
+        src = torch.tensor([0., -1., 2.34, -3.45, -0.34, 0.23, 1., 2., 3.,], dtype=torch.bfloat16).cuda()
+        result = src.bfloat16().float()
         """
-    )
-    obj.run(pytorch_code, ["result"])
+    dtypes = [
+        "torch.float16",
+        "torch.float32",
+        "torch.float64",
+        "torch.bfloat16",
+        "torch.int8",
+        "torch.int16",
+        "torch.int32",
+        "torch.int64",
+        "torch.bool",
+        "torch.complex64",
+        "torch.complex128",
+    ]
+
+    for dtype in dtypes:
+        text_code_test = text_code.replace("torch.bfloat16", dtype)
+        pytorch_code = textwrap.dedent(text_code_test)
+        obj.run(pytorch_code, ["result"])
