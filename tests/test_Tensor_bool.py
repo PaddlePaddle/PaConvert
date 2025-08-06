@@ -19,23 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.Tensor.bool")
 
 
-def test_uint8_case():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        src = torch.tensor([0., 1., 2., 3.,], dtype=torch.uint8)
-        result = src.bool()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
 def test_case():
-    text_code = """
-        import torch
-        src = torch.tensor([0., -1., 2.34, -3.45, -0.34, 0.23, 1., 2., 3.,], dtype=torch.bfloat16).cuda()
-        result = src.bool()
-        """
     dtypes = [
         "torch.float16",
         "torch.float32",
@@ -51,6 +35,22 @@ def test_case():
     ]
 
     for dtype in dtypes:
-        text_code_test = text_code.replace("torch.bfloat16", dtype)
-        pytorch_code = textwrap.dedent(text_code_test)
+        pytorch_code = textwrap.dedent(
+            f"""
+            import torch
+            src = torch.tensor([0., -1., 2.34, -3.45, -0.34, 0.23, 1., 2., 3.,], dtype={dtype})
+            result = src.bool()
+            """
+        )
         obj.run(pytorch_code, ["result"])
+
+    # for uint8 --> bool, since torch.Tensor does not support converting negative
+    # numbers to uint8, we used the new test data
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([0, 1, 2, 3, 4, 5, 6], dtype=torch.uint8)
+        result = src.bool()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
