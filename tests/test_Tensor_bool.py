@@ -19,7 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.Tensor.bool")
 
 
-def test_case():
+def test_all_type_to_bool():
     dtypes = [
         "torch.float16",
         "torch.float32",
@@ -50,6 +50,30 @@ def test_case():
         """
         import torch
         src = torch.tensor([0, 1, 2, 3, 4, 5, 6], dtype=torch.uint8)
+        result = src.bool()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_complex64_to_bool():
+    # for complex --> bool, we used the new test data
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([0.+3.5j, -1+4.2j, 2.34-5.2j, -3.45+7.9j, -0.34-8.2j, 0.23+9.2j, 1.+1.j, 2.+0.5j, 3.-1.j,], dtype=torch.complex64)
+        result = src.bool()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_complex128_to_bool():
+    # for complex --> bool, we used the new test data
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([0.+3.5j, -1+4.2j, 2.34-5.2j, -3.45+7.9j, -0.34-8.2j, 0.23+9.2j, 1.+1.j, 2.+0.5j, 3.-1.j,], dtype=torch.complex128)
         result = src.bool()
         """
     )

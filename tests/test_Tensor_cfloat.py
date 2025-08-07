@@ -19,7 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.Tensor.cfloat")
 
 
-def test_case():
+def test_all_type_to_cfloat():
     dtypes = [
         "torch.float16",
         "torch.float32",
@@ -44,12 +44,36 @@ def test_case():
         )
         obj.run(pytorch_code, ["result"])
 
-    # for uint8 --> bool, since torch.Tensor does not support converting negative
+    # for uint8 --> cfloat, since torch.Tensor does not support converting negative
     # numbers to uint8, we used the new test data
     pytorch_code = textwrap.dedent(
         """
         import torch
         src = torch.tensor([0, 1, 2, 3, 4, 5, 6], dtype=torch.uint8)
+        result = src.cfloat()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_complex64_to_cfloat():
+    # for complex --> cfloat, we used the new test data
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([0.+3.5j, -1+4.2j, 2.34-5.2j, -3.45+7.9j, -0.34-8.2j, 0.23+9.2j, 1.+1.j, 2.+0.5j, 3.-1.j,], dtype=torch.complex64)
+        result = src.cfloat()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_complex128_to_cfloat():
+    # for complex --> cfloat, we used the new test data
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([0.+3.5j, -1+4.2j, 2.34-5.2j, -3.45+7.9j, -0.34-8.2j, 0.23+9.2j, 1.+1.j, 2.+0.5j, 3.-1.j,], dtype=torch.complex128)
         result = src.cfloat()
         """
     )
