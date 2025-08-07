@@ -80,5 +80,7 @@ class GlobalManager:
     NO_NEED_CONVERT_LIST = [
         "torch.einsum",
         "torch.Tensor.cos",
+        "torch.view_as_real",
+        "torch.view_as_complex",
         "torch.Tensor.masked_scatter",
     ]
