@@ -81,4 +81,6 @@ class GlobalManager:
         "torch.einsum",
         "torch.Tensor.cos",
         "torch.Tensor.masked_scatter",
+        "torch.permute",
+        "torch.Tensor.permute"
     ]
