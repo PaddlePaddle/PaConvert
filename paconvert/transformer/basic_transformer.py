@@ -19,7 +19,8 @@ import ast
 import re
 
 from paconvert.api_matcher import *
-from paconvert.base import GlobalManager, BaseTransformer
+from paconvert.global_var import GlobalManager
+from paconvert.base import BaseTransformer
 
 from paconvert.utils import log_debug, log_info
 
@@ -250,7 +251,8 @@ class BasicTransformer(BaseTransformer):
             if is_distribution_api:
                 # config.mode
                 if full_attr != "config.mode":
-                    torch_class_apis.append(".".join(["paddle.Tensor", attr_list[-1]]))
+                    pass
+                    # torch_class_apis.append(".".join(["paddle.Tensor", attr_list[-1]]))
 
             for torch_class_api in torch_class_apis:
                 if self.in_attribute_mapping(torch_class_api):
@@ -720,6 +722,8 @@ class BasicTransformer(BaseTransformer):
         return False
 
     def in_api_mapping(self, torch_api):
+        if torch_api in GlobalManager.NO_NEED_CONVERT_LIST:
+            return True
         if torch_api in GlobalManager.ALIAS_MAPPING:
             torch_api = GlobalManager.ALIAS_MAPPING[torch_api]
         if torch_api in GlobalManager.API_MAPPING:
@@ -731,6 +735,9 @@ class BasicTransformer(BaseTransformer):
 
     def get_api_matcher(self, torch_api):
         api_mapping_dict = {}
+        if torch_api in GlobalManager.NO_NEED_CONVERT_LIST:
+            return NoNeedConvertMatcher(self, torch_api, {}, self.logger)
+
         if torch_api in GlobalManager.ALIAS_MAPPING:
             torch_api = GlobalManager.ALIAS_MAPPING[torch_api]
         if torch_api in GlobalManager.API_MAPPING:
@@ -749,6 +756,8 @@ class BasicTransformer(BaseTransformer):
         return None
 
     def in_attribute_mapping(self, torch_api):
+        if torch_api in GlobalManager.NO_NEED_CONVERT_LIST:
+            return True
         if torch_api in GlobalManager.ALIAS_MAPPING:
             torch_api = GlobalManager.ALIAS_MAPPING[torch_api]
         if torch_api in GlobalManager.ATTRIBUTE_MAPPING:
@@ -757,6 +766,9 @@ class BasicTransformer(BaseTransformer):
 
     def get_attribute_mather(self, torch_api):
         attr_mapping_dict = {}
+        if torch_api in GlobalManager.NO_NEED_CONVERT_LIST:
+            return NoNeedConvertMatcher(self, torch_api, {}, self.logger)
+
         if torch_api in GlobalManager.ALIAS_MAPPING:
             torch_api = GlobalManager.ALIAS_MAPPING[torch_api]
         if torch_api in GlobalManager.ATTRIBUTE_MAPPING:
