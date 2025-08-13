@@ -138,7 +138,7 @@ class UtilsFileHelper(object):
             )
 
         # write to file
-        with open(self.fileName, "w") as f:
+        with open(self.fileName, "w", encoding="UTF-8") as f:
             f.write(new_content)
         self.code_map.clear()
 
