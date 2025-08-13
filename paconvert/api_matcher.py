@@ -4677,6 +4677,10 @@ class CanCastMatcher(BaseMatcher):
                         "bool": True,
                     }
                 }
+                if isinstance(from_, paddle.base.core.DataType):
+                    from_ = from_.name.lower()
+                if isinstance(to, paddle.base.core.DataType):
+                    to = to.name.lower()
                 return can_cast_dict[from_][to]
             """
         )
@@ -4914,7 +4918,7 @@ class TensorViewMatcher(BaseMatcher):
             """
             def _Tensor_view(self, *args, **kwargs):
                 if args:
-                    if len(args)==1 and isinstance(args[0], (tuple, list, str)):
+                    if len(args)==1 and isinstance(args[0], (tuple, list, str, paddle.base.core.DataType)):
                         return paddle.view(self, args[0])
                     else:
                         return paddle.view(self, list(args))
@@ -5238,7 +5242,11 @@ class FromBufferMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             import numpy as np
-            paddle.to_tensor(np.frombuffer(np.array({}), {}))
+            buffer = {0}
+            dtype = {1}
+            if isinstance(dtype, paddle.base.core.DataType):
+                dtype = dtype.name.lower()
+            paddle.to_tensor(np.frombuffer(np.array(buffer), dtype=dtype))
             """
         )
         code = API_TEMPLATE.format(kwargs["buffer"], kwargs["dtype"])
