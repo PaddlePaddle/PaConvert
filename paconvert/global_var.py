@@ -81,4 +81,7 @@ class GlobalManager:
         "torch.einsum",
         "torch.Tensor.cos",
         "torch.Tensor.masked_scatter",
+        "torch.add",
+        "torch.Tensor.add",
+        "torch.Tensor.add_",
     ]
