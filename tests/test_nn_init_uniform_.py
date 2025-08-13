@@ -125,3 +125,39 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        linear = torch.nn.Linear(128, 256)
+        torch.nn.init.uniform_(linear.weight, b=2.5)
+        result = linear.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        linear = torch.nn.Linear(128, 256)
+        torch.nn.init.uniform_(linear.weight, -2.5)
+        result = linear.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        linear = torch.nn.Linear(128, 256)
+        torch.nn.init.uniform_(linear.weight, a= -2.5)
+        result = linear.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
