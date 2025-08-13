@@ -81,4 +81,8 @@ class GlobalManager:
         "torch.einsum",
         "torch.Tensor.cos",
         "torch.Tensor.masked_scatter",
+        "torch.div",
+        "torch.divide",
+        "torch.Tensor.div_",
+        "torch.true_divide",
     ]
