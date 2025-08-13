@@ -125,3 +125,63 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        linear = torch.nn.Linear(128, 256)
+        torch.nn.init.normal_(mean=0.1, std=1.5, tensor=linear.weight)
+        result = linear.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        linear = torch.nn.Linear(128, 256)
+        torch.nn.init.normal_(linear.weight, mean=0.1, std=1.5)
+        result = linear.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        linear = torch.nn.Linear(128, 256)
+        torch.nn.init.normal_(linear.weight, 0.2, std=1.5)
+        result = linear.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        linear = torch.nn.Linear(128, 256)
+        torch.nn.init.normal_(linear.weight, 0.2,)
+        result = linear.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        linear = torch.nn.Linear(128, 256)
+        torch.nn.init.normal_(linear.weight, std = 1.2)
+        result = linear.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
