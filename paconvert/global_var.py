@@ -81,6 +81,8 @@ class GlobalManager:
         "torch.nn.functional.dropout1d",
         "torch.einsum",
         "torch.Tensor.cos",
+        "torch.view_as_real",
+        "torch.view_as_complex",
         "torch.Tensor.masked_scatter",
         "torch.Tensor.bfloat16",
         "torch.Tensor.bool",
