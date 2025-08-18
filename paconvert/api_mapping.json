@@ -3042,7 +3042,7 @@
     "min_input_args": 0
   },
   "torch.Tensor.new_empty": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "CreateMatcher",
     "paddle_api": "paddle.Tensor.new_empty",
     "min_input_args": 1,
     "args_list": [
@@ -3056,7 +3056,7 @@
     ]
   },
   "torch.Tensor.new_full": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "CreateMatcher",
     "paddle_api": "paddle.Tensor.new_full",
     "min_input_args": 2,
     "args_list": [
@@ -3071,7 +3071,7 @@
     ]
   },
   "torch.Tensor.new_ones": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "CreateMatcher",
     "paddle_api": "paddle.Tensor.new_ones",
     "min_input_args": 1,
     "args_list": [
@@ -3101,7 +3101,7 @@
     }
   },
   "torch.Tensor.new_zeros": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "CreateMatcher",
     "paddle_api": "paddle.Tensor.new_zeros",
     "min_input_args": 1,
     "args_list": [
