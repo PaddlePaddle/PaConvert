@@ -78,8 +78,21 @@ class GlobalManager:
 
     # 无需转换的Pytorch API名单
     NO_NEED_CONVERT_LIST = [
+        "torch.nn.parameter.Parameter",
+        "torch.nn.functional.dropout1d",
         "torch.einsum",
         "torch.Tensor.cos",
         "torch.Tensor.masked_scatter",
-        "torch.nn.parameter.Parameter"
+        "torch.Tensor.bfloat16",
+        "torch.Tensor.bool",
+        "torch.Tensor.byte",
+        "torch.Tensor.char",
+        "torch.Tensor.double",
+        "torch.Tensor.float",
+        "torch.Tensor.half",
+        "torch.Tensor.int",
+        "torch.Tensor.long",
+        "torch.Tensor.short",
+        "torch.Tensor.cfloat",
+        "torch.Tensor.cdouble",
     ]
