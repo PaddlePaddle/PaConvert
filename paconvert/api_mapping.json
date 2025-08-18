@@ -3042,21 +3042,25 @@
     "min_input_args": 0
   },
   "torch.Tensor.new_empty": {
-    "Matcher": "CreateMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.new_empty",
     "min_input_args": 1,
     "args_list": [
-      "*size",
+      "size",
       "*",
       "dtype",
       "device",
       "requires_grad",
       "layout",
       "pin_memory"
-    ]
+    ],
+    "kwargs_change": {
+      "dtype": "dtype",
+      "generator": ""
+    }
   },
   "torch.Tensor.new_full": {
-    "Matcher": "CreateMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.new_full",
     "min_input_args": 2,
     "args_list": [
@@ -3071,11 +3075,11 @@
     ]
   },
   "torch.Tensor.new_ones": {
-    "Matcher": "CreateMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.new_ones",
     "min_input_args": 1,
     "args_list": [
-      "*size",
+      "size",
       "*",
       "dtype",
       "device",
@@ -3101,11 +3105,11 @@
     }
   },
   "torch.Tensor.new_zeros": {
-    "Matcher": "CreateMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.new_zeros",
     "min_input_args": 1,
     "args_list": [
-      "*size",
+      "size",
       "*",
       "dtype",
       "device",
@@ -16333,8 +16337,8 @@
   },
   "torch.range": {
     "Matcher": "RangeMatcher",
-    "paddle_api": "paddle.arange",
-    "min_input_args": 2,
+    "paddle_api": "paddle.range",
+    "min_input_args": 1,
     "args_list": [
       "start",
       "end",
