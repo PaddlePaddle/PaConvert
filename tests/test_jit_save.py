@@ -198,3 +198,25 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, expect_paddle_code=paddle_code)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        class MyModule(nn.Module):
+            def __init__(self):
+                super(MyModule, self).__init__()
+                self.dummy_param = nn.Parameter(torch.tensor([1.0]))
+
+            def forward(self, x):
+                return x + 10
+
+        m = MyModule()
+        example_input = torch.tensor([1.0])
+        result = m(example_input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
