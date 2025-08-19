@@ -329,3 +329,36 @@ def test_case_26():
         """
     )
     obj.run(pytorch_code, ["result"])
+    
+# Test wholistic split
+def test_case_27():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(48).reshape(4, 3, 4)
+        result = torch.split(a, split_size_or_sections=3, dim=-2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+    
+# Test no kwargs
+def test_case_28():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(128).reshape(4, 8, 4)
+        result = torch.split(a, 3, -2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+    
+# Test out-of-order kwargs and evenly split
+def test_case_29():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(128).reshape(4, 8, 4)
+        result = torch.split(dim=-1, tensor=a, split_size_or_sections=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
