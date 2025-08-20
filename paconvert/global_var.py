@@ -94,4 +94,8 @@ class GlobalManager:
         "torch.Tensor.short",
         "torch.Tensor.cfloat",
         "torch.Tensor.cdouble",
+        "torch.view_as_real",
+        "torch.view_as_complex",
+        "torch.autograd.Function",
+        "torch.argwhere",
     ]
