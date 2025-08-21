@@ -197,29 +197,25 @@ class ImportTransformer(BaseTransformer):
         if node.level > 0:
             # from ..datasets import xxx
             # from ... import xxx (node.module is None)
-            """
-            import_path = os.path.dirname(self.file) + "../" * (node.level-1)
-            if node.module:
-                import_path = os.path.join(import_path, node.module.replace(".", "/"))
-
-            if os.path.exists(import_path) or os.path.exists(import_path + ".py"):
-                return node
-            """
 
             """
-            # from ...configuration_utils import PretrainedConfig, layer_type_validation
-            if node.level == 3:
-                if "pipeline_" in self.file:
-                    node.module = ".".join(["diffusers", node.module])
+            if "huggingface_internal" in self.file:
+                # from ...configuration_utils import PretrainedConfig, layer_type_validation
+                if node.level == 3:
+                    if "pipeline_" in self.file:
+                        node.module = ".".join(["diffusers", node.module])
+                    else:
+                        node.module = ".".join(["transformers", node.module])
+                    node.level = 0
+                elif node.level == 2:
+                    if "pipeline_" in self.file:
+                        node.module = ".".join(["diffusers.pipelines", node.module])
+                    else:
+                        node.module = ".".join(["transformers.models", node.module])
+                    node.level = 0
                 else:
-                    node.module = ".".join(["transformers", node.module])
-                node.level = 0
-            elif node.level == 2:
-                if "pipeline_" in self.file:
-                    node.module = ".".join(["diffusers.pipelines", node.module])
-                else:
-                    node.module = ".".join(["transformers.models", node.module])
-                node.level = 0
+                    self.insert_other_packages(self.imports_map, node)
+                    return node
             else:
                 self.insert_other_packages(self.imports_map, node)
                 return node
