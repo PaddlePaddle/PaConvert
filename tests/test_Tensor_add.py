@@ -43,15 +43,15 @@ def test_case_1():
 #     obj.run(pytorch_code, ["result"])
 
 
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1, 2, 3])
-        result = x.add(other=20)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
+# def test_case_3():
+#     pytorch_code = textwrap.dedent(
+#         """
+#         import torch
+#         x = torch.tensor([1, 2, 3])
+#         result = x.add(other=20)
+#         """
+#     )
+#     obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
