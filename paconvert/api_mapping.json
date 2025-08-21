@@ -13117,21 +13117,8 @@
     }
   },
   "torch.nn.Unfold": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.Unfold",
-    "args_list": [
-      "kernel_size",
-      "dilation",
-      "padding",
-      "stride"
-    ],
-    "kwargs_change": {
-      "kernel_size": "kernel_sizes",
-      "dilation": "dilations",
-      "padding": "paddings",
-      "stride": "strides"
-    },
-    "min_input_args": 1
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.compat.Unfold"
   },
   "torch.nn.Upsample": {
     "Matcher": "GenericMatcher",
