@@ -104,7 +104,6 @@ class GlobalManager:
         "torch.empty_like",
         "torch.full",
         "torch.nonzero",
-        "torch.ones",
         "torch.Tensor.pow",
         "torch.Tensor.prod",
         "torch.Tensor.reshape",
