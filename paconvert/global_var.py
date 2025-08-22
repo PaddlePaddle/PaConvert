@@ -80,6 +80,7 @@ class GlobalManager:
     NO_NEED_CONVERT_LIST = [
         "torch.nn.functional.dropout1d",
         "torch.einsum",
+        "torch.tensor",
         "torch.Tensor.cos",
         "torch.Tensor.masked_scatter",
         "torch.Tensor.bfloat16",
