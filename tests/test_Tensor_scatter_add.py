@@ -78,3 +78,55 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.ones((3, 5))
+        index = torch.tensor([[0, 1, 2, 0, 0], [0, 1, 2, 2, 2], [1, 2, 1, 2, 0]])
+        input = torch.zeros(3, 5, dtype=src.dtype)
+        result = input.scatter_add(0, index, src)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.ones((3, 5))
+        index = torch.tensor([[0, 1, 2, 0, 0], [0, 1, 2, 2, 2], [1, 2, 1, 2, 0]])
+        input = torch.zeros(3, 5, dtype=src.dtype)
+        result = input.scatter_add(dim=1, index=index, src=src)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.ones((3, 5))
+        index = torch.tensor([[0, 1, 2, 0, 0], [0, 1, 2, 2, 2], [1, 2, 1, 2, 0]])
+        input = torch.zeros(3, 5, dtype=src.dtype)
+        result = torch.Tensor.scatter_add(input, dim=0, index=index, src=src)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.ones((3, 5))
+        index = torch.tensor([[0, 1, 2, 0, 0], [0, 1, 2, 2, 2], [1, 2, 1, 2, 0]])
+        input = torch.zeros(3, 5, dtype=src.dtype)
+        result = torch.Tensor.scatter_add(input, 1, index, src)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

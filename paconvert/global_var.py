@@ -123,6 +123,11 @@ class GlobalManager:
         # shijie
 
 
+
+        "torch.Tensor.scatter_add",
+        "torch.scatter_add",
+        "torch.Tensor.scatter_add_",
+
         # yuyan
 
 
