@@ -95,7 +95,20 @@ class GlobalManager:
         "torch.Tensor.short",
         "torch.Tensor.cfloat",
         "torch.Tensor.cdouble",
-
+        "torch.nn.init.calculate_gain",
+        "torch.nn.init.constant_",
+        "torch.nn.init.dirac_",
+        "torch.nn.init.eye_",
+        "torch.nn.init.kaiming_normal_",
+        "torch.nn.init.kaiming_uniform_",
+        "torch.nn.init.normal_",
+        "torch.nn.init.ones",
+        "torch.nn.init.orthogonal_",
+        "torch.nn.init.trunc_normal_",
+        "torch.nn.init.uniform_",
+        "torch.nn.init.xavier_normal_",
+        "torch.nn.init.xavier_uniform_",
+        "torch.nn.init.zeros_",
 
         # zhouxin
         "torch.view_as_real",

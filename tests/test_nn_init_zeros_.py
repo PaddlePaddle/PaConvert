@@ -41,3 +41,27 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        tensor = torch.empty(128, 256)
+        torch.nn.init.zeros_(tensor=tensor)
+        result = tensor
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        tensor = torch.empty(128, 256)
+        torch.nn.init.zeros_(tensor)
+        result = tensor
+        """
+    )
+    obj.run(pytorch_code, ["result"])
