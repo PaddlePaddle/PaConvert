@@ -14398,6 +14398,9 @@
       "mode",
       "value"
     ],
+    "kwargs_change": {
+      "input": "x"
+    },
     "paddle_default_kwargs": {
       "pad_from_left_axis": "False"
     }
@@ -14648,6 +14651,12 @@
       "_stacklevel",
       "dtype"
     ],
+    "kwargs_change": {
+      "input": "x",
+      "dim": "axis",
+      "_stacklevel": "",
+      "dtype": "dtype"
+    },
     "min_input_args": 1
   },
   "torch.nn.functional.softmin": {
