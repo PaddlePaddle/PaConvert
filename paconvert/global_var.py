@@ -121,7 +121,8 @@ class GlobalManager:
 
 
         # shijie
-
+       "torch.Tensor.scatter_reduce",
+       "torch.scatter_reduce",
 
         # yuyan
 
