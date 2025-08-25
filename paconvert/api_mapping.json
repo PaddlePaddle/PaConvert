@@ -485,7 +485,7 @@
     "min_input_args": 0
   },
   "torch.Tensor.all": {
-    "Matcher": "TensorToBoolMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.all",
     "min_input_args": 0,
     "args_list": [
@@ -549,7 +549,7 @@
     "min_input_args": 0
   },
   "torch.Tensor.any": {
-    "Matcher": "TensorToBoolMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.any",
     "min_input_args": 0,
     "args_list": [
