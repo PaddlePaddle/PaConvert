@@ -121,7 +121,11 @@ class GlobalManager:
 
 
         # shijie
+        "torch.Tensor.tril",
+        "torch.tril",
 
+        "torch.Tensor.triu",
+        "torch.triu",
 
         # yuyan
 

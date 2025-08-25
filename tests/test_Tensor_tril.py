@@ -52,3 +52,87 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 3., 8., 11., 56.],
+                          [15., 30., 7., 14., 90.],
+                          [10., 313., 78., 110., 34.],
+                          [33., 23., 18., 9., 41.]])
+        result = a.tril()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 3., 8., 11., 56.],
+                          [15., 30., 7., 14., 90.],
+                          [10., 313., 78., 110., 34.],
+                          [33., 23., 18., 9., 41.]])
+        result = a.tril(2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 3., 8., 11., 56.],
+                          [15., 30., 7., 14., 90.],
+                          [10., 313., 78., 110., 34.],
+                          [33., 23., 18., 9., 41.]])
+        result = a.tril(diagonal=-1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 3., 8., 11., 56.],
+                          [15., 30., 7., 14., 90.],
+                          [10., 313., 78., 110., 34.],
+                          [33., 23., 18., 9., 41.]])
+        result = torch.Tensor.tril(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 3., 8., 11., 56.],
+                          [15., 30., 7., 14., 90.],
+                          [10., 313., 78., 110., 34.],
+                          [33., 23., 18., 9., 41.]])
+        result = torch.Tensor.tril(a, 1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 3., 8., 11., 56.],
+                          [15., 30., 7., 14., 90.],
+                          [10., 313., 78., 110., 34.],
+                          [33., 23., 18., 9., 41.]])
+        result = torch.Tensor.tril(a, diagonal=-2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
