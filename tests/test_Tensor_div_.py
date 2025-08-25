@@ -19,15 +19,15 @@ from apibase import APIBase
 obj = APIBase("torch.Tensor.div_")
 
 
-# def test_case_1():
-#     pytorch_code = textwrap.dedent(
-#         """
-#         import torch
-#         a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
-#         a.div_(torch.tensor([0.5]))
-#         """
-#     )
-#     obj.run(pytorch_code, ["a"])
+def test_case_1():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
+        a.div_(torch.tensor([0.5]))
+        """
+    )
+    obj.run(pytorch_code, ["a"])
 
 
 def test_case_2():
