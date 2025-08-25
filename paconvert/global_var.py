@@ -113,7 +113,11 @@ class GlobalManager:
         "torch.true_divide",
         "torch.Tensor.add",
         "torch.Tensor.add_",
+        "torch.Tensor.div",
         "torch.Tensor.div_",
+        "torch.Tensor.divide",
+        "torch.Tensor.divide_",
+        "torch.Tensor.true_divide",
 
 
         # sensen
