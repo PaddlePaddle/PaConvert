@@ -121,7 +121,7 @@ class GlobalManager:
 
 
         # shijie
-
+       "torch.nn.GELU",
 
         # yuyan
 
