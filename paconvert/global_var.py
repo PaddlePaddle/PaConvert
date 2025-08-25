@@ -122,7 +122,8 @@ class GlobalManager:
 
         # shijie
 
-
+        "torch.Tensor.ravel",
+        "torch.ravel",
         # yuyan
 
 
