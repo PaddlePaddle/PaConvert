@@ -19,6 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.divide")
 
 
+# paddle not support input python number, x/y must be Tensor
 # def test_case_1():
 #     pytorch_code = textwrap.dedent(
 #         """
@@ -128,8 +129,6 @@ def test_case_8():
 #     obj.run(pytorch_code, ["result"])
 
 
-# torch.divide(int, int) return float, but paddle return int, when can not divide exactly,
-# paddle result equal to trunc divide, result is wrong
 def _test_case_10():
     pytorch_code = textwrap.dedent(
         """

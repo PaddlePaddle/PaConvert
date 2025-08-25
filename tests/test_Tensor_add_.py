@@ -31,6 +31,7 @@ def test_case_1():
     obj.run(pytorch_code, ["x"])
 
 
+# paddle not support input python number, x/y must be Tensor
 # def test_case_2():
 #     pytorch_code = textwrap.dedent(
 #         """
