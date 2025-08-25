@@ -78,10 +78,11 @@ class GlobalManager:
 
     # 无需转换的Pytorch API名单
     NO_NEED_CONVERT_LIST = [
-        "torch.nn.functional.dropout1d",
         "torch.einsum",
         "torch.Tensor.cos",
         "torch.Tensor.masked_scatter",
+
+        # zhimin
         "torch.Tensor.bfloat16",
         "torch.Tensor.bool",
         "torch.Tensor.byte",
@@ -94,10 +95,47 @@ class GlobalManager:
         "torch.Tensor.short",
         "torch.Tensor.cfloat",
         "torch.Tensor.cdouble",
+
+
+        # zhouxin
         "torch.view_as_real",
         "torch.view_as_complex",
         "torch.autograd.Function",
         "torch.argwhere",
+
+
+        # honggeng
+        "torch.nn.functional.dropout1d",
+
+
+        # sensen
+
+
+        # hongyu
+
+
+        # linjun
+
+
+        # siyu
+
+
+        # shijie
+
+
+        # yuyan
+
+
+        # huoda
+
+
+        # sundong
+
+
+        # zhengsheng
+
+
+        # liuyi
         "torch.finfo",
         "torch.is_complex",
         "torch.concat",
@@ -114,4 +152,16 @@ class GlobalManager:
         "torch.chunk",
         "torch.Tensor.chunk",
         "torch.any",
+
+        # shenwei
+
+
+        # haoyang
+
+
+        # rongrui
+
+
+        # bingxin
+        
     ]
