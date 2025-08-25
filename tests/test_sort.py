@@ -96,3 +96,43 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([ 90, 124, 101,  20,  67,  88,  22,  82, 116, 121,  8,  69, 32,
+            100,  97,  25, 126, 114,  21,  90, 101,  34, 127, 105,  81,  72,
+            28, 127, 127, 122,  33,  86])
+        out = (torch.tensor(a), torch.tensor(a))
+        result = torch.sort(descending=True, out=out, dim=0, input=a, stable=True)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[ 80,  23,  57],
+            [ 69, 122,  39],
+            [ 15,  36,  50],
+            [121,   6,  65],
+            [ 36,  35,  72],
+            [ 18,  13,  15],
+            [ 79,  86,  98],
+            [107, 113,  30],
+            [ 41,  53,  59],
+            [ 23,  93, 116],
+            [ 28,  32,  87],
+            [ 89,  21,  20],
+            [ 83,  24,  99],
+            [  5,  15,  19],
+            [ 92,  28,  48],
+            [ 82, 117,  46]]).to(torch.int16)
+        vals, inds = torch.sort(dim=-1, stable=False, input=a)
+        """
+    )
+    obj.run(pytorch_code, ["vals", "inds"])
