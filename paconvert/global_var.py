@@ -138,4 +138,4 @@ class GlobalManager:
         "torch.int64",
         "torch.bool",
         "torch.uint8",
-        ]
+    ]
