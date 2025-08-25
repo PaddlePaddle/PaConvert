@@ -79,6 +79,7 @@ class GlobalManager:
     # 无需转换的Pytorch API名单
     NO_NEED_CONVERT_LIST = [
         "torch.einsum",
+        "torch.tensor",
         "torch.Tensor.cos",
         "torch.Tensor.masked_scatter",
 
