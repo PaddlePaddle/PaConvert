@@ -136,3 +136,44 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["vals", "inds"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([ 90, 124, 101,  20,  67,  88,  22,  82, 116, 121,  8,  69, 32,
+            100,  97,  25, 126, 114,  21,  90, 101,  34, 127, 105,  81,  72,
+            28, 127, 127, 122,  33,  86], dtype=torch.float32)
+        a.requires_grad = True
+        b = a * a + a
+        vals, inds = torch.sort(descending=True, dim=0, input=a, stable=True)
+        vals.backward(torch.ones_like(vals))
+        a.grad.requires_grad = False
+        a_grad = a.grad
+        """
+    )
+    obj.run(pytorch_code, ["a_grad"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[90, 124, 101,  20],
+            [67,  88,  22,  22],
+            [116, 121,  8,  69],
+            [32,  97,  97,  25],
+            [126, 114,  21, 90],
+            [101, 34, 127, 105],
+            [81,  72, 28,   72],
+            [127, 88,  22,  86]], dtype=torch.float64)
+        a.requires_grad = True
+        b = a * 2
+        vals, inds = torch.sort(a, descending=False, dim=1, stable=False)
+        vals.backward(torch.ones_like(vals))
+        a.grad.requires_grad = False
+        a_grad = a.grad
+        """
+    )
+    obj.run(pytorch_code, ["a_grad"])
