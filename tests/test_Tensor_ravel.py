@@ -56,8 +56,8 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[4., 9.], [23., 2.]])
-        result = torch.Tensor.ravel(a)
+        a = torch.tensor([[4., 9., 10., 2.], [23., 12., 17., 18.]])
+        result = a.ravel()
         """
     )
     obj.run(pytorch_code, ["result"])
