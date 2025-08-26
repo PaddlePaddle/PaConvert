@@ -78,11 +78,12 @@ class GlobalManager:
 
     # 无需转换的Pytorch API名单
     NO_NEED_CONVERT_LIST = [
-        "torch.nn.functional.dropout1d",
         "torch.einsum",
         "torch.tensor",
         "torch.Tensor.cos",
         "torch.Tensor.masked_scatter",
+
+        # zhimin
         "torch.Tensor.bfloat16",
         "torch.Tensor.bool",
         "torch.Tensor.byte",
@@ -95,8 +96,86 @@ class GlobalManager:
         "torch.Tensor.short",
         "torch.Tensor.cfloat",
         "torch.Tensor.cdouble",
+        "torch.nn.init.calculate_gain",
+        "torch.nn.init.constant_",
+        "torch.nn.init.dirac_",
+        "torch.nn.init.eye_",
+        "torch.nn.init.kaiming_normal_",
+        "torch.nn.init.kaiming_uniform_",
+        "torch.nn.init.normal_",
+        "torch.nn.init.ones",
+        "torch.nn.init.orthogonal_",
+        "torch.nn.init.trunc_normal_",
+        "torch.nn.init.uniform_",
+        "torch.nn.init.xavier_normal_",
+        "torch.nn.init.xavier_uniform_",
+        "torch.nn.init.zeros_",
+
+        # zhouxin
         "torch.view_as_real",
         "torch.view_as_complex",
         "torch.autograd.Function",
         "torch.argwhere",
+
+
+        # honggeng
+        "torch.nn.functional.dropout1d",
+
+
+        # sensen
+
+
+        # hongyu
+
+
+        # linjun
+
+
+        # siyu
+
+
+        # shijie
+
+
+        # yuyan
+
+
+        # huoda
+
+
+        # sundong
+
+
+        # zhengsheng
+
+
+        # liuyi
+        "torch.finfo",
+        "torch.is_complex",
+        "torch.concat",
+        "torch.empty_like",
+        "torch.full",
+        "torch.nonzero",
+        "torch.Tensor.pow",
+        "torch.Tensor.prod",
+        "torch.Tensor.reshape",
+        "torch.zeros_like",
+        "torch.argsort",
+        "torch.Tensor.argsort",
+        "torch.Tensor.squeeze",
+        "torch.chunk",
+        "torch.Tensor.chunk",
+        "torch.any",
+
+        # shenwei
+
+
+        # haoyang
+
+
+        # rongrui
+
+
+        # bingxin
+        
     ]

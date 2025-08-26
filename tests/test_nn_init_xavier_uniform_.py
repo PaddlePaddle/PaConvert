@@ -89,3 +89,39 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        linear = torch.nn.Linear(128, 256)
+        torch.nn.init.xavier_uniform_(tensor=linear.weight, gain=2.)
+        result = linear.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        linear = torch.nn.Linear(128, 256)
+        torch.nn.init.xavier_uniform_(linear.weight, gain=2.)
+        result = linear.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        linear = torch.nn.Linear(128, 256)
+        torch.nn.init.xavier_uniform_(linear.weight, 2.)
+        result = linear.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
