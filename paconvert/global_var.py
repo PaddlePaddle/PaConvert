@@ -149,7 +149,22 @@ class GlobalManager:
 
 
         # liuyi
-
+        "torch.finfo",
+        "torch.is_complex",
+        "torch.concat",
+        "torch.empty_like",
+        "torch.full",
+        "torch.nonzero",
+        "torch.Tensor.pow",
+        "torch.Tensor.prod",
+        "torch.Tensor.reshape",
+        "torch.zeros_like",
+        "torch.argsort",
+        "torch.Tensor.argsort",
+        "torch.Tensor.squeeze",
+        "torch.chunk",
+        "torch.Tensor.chunk",
+        "torch.any",
 
         # shenwei
 
