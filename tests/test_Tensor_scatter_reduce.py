@@ -211,7 +211,7 @@ def test_case_14():
 
 
 # current paddle.Tensor.scatter_reduce has some bug due to the implementation of put_along_axis api
-def test_case_15():
+def _test_case_15():
     pytorch_code = textwrap.dedent(
         """
         import torch
