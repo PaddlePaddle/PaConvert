@@ -89,3 +89,63 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        conv = torch.nn.Conv2d(20, 15, (3, 3))
+        torch.nn.init.dirac_(tensor=conv.weight, groups=5)
+        result = conv.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        conv = torch.nn.Conv2d(20, 15, (3, 3))
+        torch.nn.init.dirac_(conv.weight, 5)
+        result = conv.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        conv = torch.nn.Conv2d(20, 15, (3, 3))
+        torch.nn.init.dirac_(conv.weight, groups=5)
+        result = conv.weight
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        tensor = torch.empty(20, 15, 10)
+        torch.nn.init.dirac_(tensor, groups=5)
+        result = tensor
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        tensor = torch.empty(20, 15, 10)
+        torch.nn.init.dirac_(tensor, 5)
+        result = tensor
+        """
+    )
+    obj.run(pytorch_code, ["result"])

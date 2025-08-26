@@ -102,3 +102,39 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        tensor = torch.empty(10, 18, 27)
+        torch.nn.init.orthogonal_(tensor=tensor, gain=2, generator=None)
+        result = tensor
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        tensor = torch.empty(10, 18, 27, 12, 25)
+        torch.nn.init.orthogonal_(tensor, gain=2)
+        result = tensor
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        tensor = torch.empty(10, 18, 27, 12, 25)
+        torch.nn.init.orthogonal_(tensor, 2)
+        result = tensor
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
