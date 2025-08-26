@@ -31,14 +31,14 @@ def test_case_1():
 
 
 # paddle not support input python number, x/y must be Tensor
-# def test_case_2():
-#     pytorch_code = textwrap.dedent(
-#         """
-#         import torch
-#         result = torch.add(torch.tensor([1, 2, 3]), 20)
-#         """
-#     )
-#     obj.run(pytorch_code, ["result"])
+def _test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.add(torch.tensor([1, 2, 3]), 20)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():

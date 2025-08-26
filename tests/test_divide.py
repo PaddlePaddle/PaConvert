@@ -20,15 +20,15 @@ obj = APIBase("torch.divide")
 
 
 # paddle not support input python number, x/y must be Tensor
-# def test_case_1():
-#     pytorch_code = textwrap.dedent(
-#         """
-#         import torch
-#         a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
-#         result = torch.divide(a, 0.5)
-#         """
-#     )
-#     obj.run(pytorch_code, ["result"])
+def _test_case_1():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
+        result = torch.divide(a, 0.5)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -117,19 +117,19 @@ def test_case_8():
 
 
 # current type promotion only support calculations between floating-point numbers and between complex and real numbers
-# def _test_case_9():
-#     pytorch_code = textwrap.dedent(
-#         """
-#         import torch
-#         a = torch.tensor([[4., 9., 8.]])
-#         b = torch.tensor([2, 3, 4])
-#         result = torch.divide(input=a, other=b)
-#         """
-#     )
-#     obj.run(pytorch_code, ["result"])
+def _test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[4., 9., 8.]])
+        b = torch.tensor([2, 3, 4])
+        result = torch.divide(input=a, other=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
 
 
-def _test_case_10():
+def test_case_10():
     pytorch_code = textwrap.dedent(
         """
         import torch

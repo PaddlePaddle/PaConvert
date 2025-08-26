@@ -20,15 +20,15 @@ obj = APIBase("torch.div")
 
 
 # paddle not support input python number, x/y must be Tensor
-# def test_case_1():
-#     pytorch_code = textwrap.dedent(
-#         """
-#         import torch
-#         a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
-#         result = torch.div(a, 0.5)
-#         """
-#     )
-#     obj.run(pytorch_code, ["result"])
+def _test_case_1():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([ 0.5950,-0.0872, 2.3298, -0.2972])
+        result = torch.div(a, 0.5)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
