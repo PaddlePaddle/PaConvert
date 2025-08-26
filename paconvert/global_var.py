@@ -134,7 +134,8 @@ class GlobalManager:
 
 
         # shijie
-
+        "torch.bmm",
+        "torch.Tensor.bmm",
 
         # yuyan
 

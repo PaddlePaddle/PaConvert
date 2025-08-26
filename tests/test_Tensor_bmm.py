@@ -64,3 +64,27 @@ def _test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[[4., 5., 6.], [1., 2., 3.]]])
+        b = torch.tensor([[[1., 2., 3.], [4., 5., 6.], [7., 8., 9.]]])
+        result = torch.Tensor.bmm(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[[4., 5., 6.], [1., 2., 3.]]])
+        b = torch.tensor([[[1., 2., 3.], [4., 5., 6.], [7., 8., 9.]]])
+        result = torch.Tensor.bmm(a, mat2=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
