@@ -5,7 +5,7 @@ import paddle
 print("#########################case1#########################")
 Union[Tuple, paddle.Tensor]
 print("#########################case2#########################")
-paddle.to_tensor(data=[True, False], dtype="bool")
+paddle.tensor([True, False], dtype="bool")
 print("#########################case3#########################")
 
 

@@ -1,7 +1,7 @@
 import paddle
 
 print("#########################case1#########################")
-data = paddle.to_tensor(data=[23.0, 32.0, 43.0])
+data = paddle.tensor([23.0, 32.0, 43.0])
 if not not data.stop_gradient:
     print(1)
 print("#########################case2#########################")
