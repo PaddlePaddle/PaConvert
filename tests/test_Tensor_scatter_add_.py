@@ -101,7 +101,7 @@ def test_case_7():
         src = torch.ones((3, 5))
         index = torch.tensor([[0, 1, 2, 0, 0], [0, 1, 2, 2, 2], [1, 2, 1, 2, 0]])
         input = torch.zeros(3, 5, dtype=src.dtype)
-        result = torch.Tensor.scatter_add_(input, dim=0, index=index, src=src)
+        result = input.scatter_add_(dim=0, index=index, src=src)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -114,7 +114,7 @@ def test_case_8():
         src = torch.ones((3, 5))
         index = torch.tensor([[0, 1, 2, 0, 0], [0, 1, 2, 2, 2], [1, 2, 1, 2, 0]])
         input = torch.zeros(3, 5, dtype=src.dtype)
-        result = torch.Tensor.scatter_add_(input, 1, index, src)
+        result = input.scatter_add_(1, index, src)
         """
     )
     obj.run(pytorch_code, ["result"])
