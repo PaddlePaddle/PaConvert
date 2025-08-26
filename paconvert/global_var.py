@@ -109,7 +109,20 @@ class GlobalManager:
 
 
         # sensen
-
+        "torch.randn",
+        "torch.zeros",
+        "torch.ones",
+        "torch.full",
+        "torch.empty",
+        "torch.zeros_like",
+        "torch.ones_like",
+        "torch.full_like",
+        "torch.empty_like",
+        "torch.Tensor.new_zeros",
+        "torch.Tensor.new_ones",
+        "torch.Tensor.new_full",
+        "torch.Tensor.new_empty",
+        "torch.eye",
 
         # hongyu
 

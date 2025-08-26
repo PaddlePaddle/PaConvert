@@ -2,12 +2,8 @@ import paddle
 
 print("#########################case1#########################")
 a = paddle.to_tensor(data=[1, 2, 3], dtype="int64")
-out_0 = a.new_full(size=[3, 4], fill_value=2.43).astype("float64").pin_memory()
-out_0.stop_gradient = not True
-b = out_0
+b = a.new_full([3, 4], 2.43, dtype="float64", requires_grad=True, pin_memory=True)
 print("#########################case2#########################")
 flag = False
 a = paddle.to_tensor(data=[1, 2, 3], dtype="int64")
-out_1 = a.new_full(size=(2, 3), fill_value=4)
-out_1.stop_gradient = not flag
-b = out_1
+b = a.new_full((2, 3), 4, requires_grad=flag)
