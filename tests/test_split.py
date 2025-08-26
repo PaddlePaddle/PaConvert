@@ -295,3 +295,76 @@ def test_case_23():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+# Test unevenly split 1
+def test_case_24():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(54).reshape(3, 9, 2)
+        split_size = 2
+        result = torch.split(a, split_size, dim = 1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# Test unevenly split 2 with zero-shape
+def test_case_25():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(48).reshape(12, 1, 4)
+        result = torch.split(a, split_size_or_sections=[5, 0, 7])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# Test unevenly split 2 with negative-dim
+def test_case_26():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(48).reshape(4, 1, 12)
+        result = torch.split(a, split_size_or_sections=[2, 5, 5], dim=-1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# Test wholistic split
+def test_case_27():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(48).reshape(4, 3, 4)
+        result = torch.split(a, split_size_or_sections=3, dim=-2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# Test no kwargs
+def test_case_28():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(128).reshape(4, 8, 4)
+        result = torch.split(a, 3, -2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# Test out-of-order kwargs and evenly split
+def test_case_29():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(128).reshape(4, 8, 4)
+        result = torch.split(dim=-1, tensor=a, split_size_or_sections=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
