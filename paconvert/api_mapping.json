@@ -17058,8 +17058,8 @@
     ]
   },
   "torch.softmax": {
-    "Matcher": "UnchangeMatcher",
-    "paddle_api": "paddle.compat.softmax",
+    "Matcher": "RequireDimMatcher",
+    "paddle_api": "paddle.nn.functional.softmax",
     "min_input_args": 2,
     "args_list": [
       "input",
