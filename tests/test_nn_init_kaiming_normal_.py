@@ -125,3 +125,22 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_10():
+    for a in [0.0, 1.0, 0.3, 0.8]:
+        for mode in ["fan_in", "fan_out"]:
+            for nonlinearity in ["leaky_relu", "relu"]:
+                for layer in [
+                    "torch.nn.Linear(128, 256)",
+                    "torch.nn.Conv2d(3, 6, (3, 3))",
+                ]:
+                    pytorch_code = textwrap.dedent(
+                        f"""
+                        import torch
+                        linear = {layer}
+                        torch.nn.init.kaiming_normal_(mode='{mode}', nonlinearity='{nonlinearity}', tensor=linear.weight, a={a})
+                        result = linear.weight
+                        """
+                    )
+                    obj.run(pytorch_code, ["result"], check_value=False)
