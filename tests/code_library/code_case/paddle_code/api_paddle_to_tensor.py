@@ -23,16 +23,16 @@ def device2str(type=None, index=None, *, device=None):
 
 
 print("#########################case1#########################")
-a = paddle.to_tensor(
-    data=paddle.tensor([2, 3, 4]),
+a = paddle.tensor(
+    paddle.tensor([2, 3, 4]),
     dtype="float32",
     place=paddle.CUDAPinnedPlace(),
     stop_gradient=not True,
 )
 print("#########################case2#########################")
 flag = True
-a = paddle.to_tensor(
-    data=paddle.tensor([2, 3, 4]),
+a = paddle.tensor(
+    paddle.tensor([2, 3, 4]),
     dtype="float32",
     place=paddle.CUDAPinnedPlace(),
     stop_gradient=not flag,
