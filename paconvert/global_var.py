@@ -79,7 +79,6 @@ class GlobalManager:
     # 无需转换的Pytorch API名单
     NO_NEED_CONVERT_LIST = [
         "torch.einsum",
-        "torch.tensor",
         "torch.Tensor.cos",
         "torch.Tensor.masked_scatter",
 
@@ -129,6 +128,21 @@ class GlobalManager:
 
 
         # linjun
+        # "torch.as_tensor", # alis as_tensor -> tensor
+        "torch.tensor",
+        "torch.Tensor.copy_",
+        # "torch.Tensor.norm",
+        # "torch.Tensor",
+        # "torch.FloatTensor", # paddle.to_tensor -> paddle.tensor
+        # "torch.DoubleTensor",
+        # "torch.HalfTensor",
+        # "torch.BFloat16Tensor",
+        # "torch.ByteTensor",
+        # "torch.CharTensor",
+        # "torch.ShortTensor",
+        # "torch.IntTensor",
+        # "torch.LongTensor",
+        # "torch.BoolTensor",
 
 
         # siyu
