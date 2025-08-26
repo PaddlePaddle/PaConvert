@@ -187,7 +187,7 @@ def test_case_13():
         """
         import torch
         src = torch.tensor([[1., 2., 3.],[4., 5., 6.]])
-        index = torch.tensor([[0, 1, 1], [0, 0, 1])
+        index = torch.tensor([[0, 1, 1], [0, 0, 1]])
         input = torch.tensor([[10., 30., 20.], [60., 40., 50.]])
         re_type = "amax"
         result = input.scatter_reduce(dim=0, index=index, src=src, reduce=re_type)
