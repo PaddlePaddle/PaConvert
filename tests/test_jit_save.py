@@ -49,7 +49,7 @@ def test_case_1():
             def __init__(self):
                 super(MyModule, self).__init__()
                 self.dummy_param = paddle.base.framework.EagerParamBase.from_tensor(
-                    tensor=paddle.to_tensor(data=[1.0])
+                    tensor=paddle.tensor([1.0])
                 )
 
             def forward(self, x):
@@ -95,7 +95,7 @@ def test_case_2():
             def __init__(self):
                 super(MyModule, self).__init__()
                 self.dummy_param = paddle.base.framework.EagerParamBase.from_tensor(
-                    tensor=paddle.to_tensor(data=[1.0])
+                    tensor=paddle.tensor([1.0])
                 )
 
             def forward(self, x):
@@ -142,7 +142,7 @@ def test_case_3():
             def __init__(self):
                 super(MyModule, self).__init__()
                 self.dummy_param = paddle.base.framework.EagerParamBase.from_tensor(
-                    tensor=paddle.to_tensor(data=[1.0])
+                    tensor=paddle.tensor([1.0])
                 )
 
             def forward(self, x):
@@ -190,7 +190,7 @@ def test_case_4():
             def __init__(self):
                 super(MyModule, self).__init__()
                 self.dummy_param = paddle.base.framework.EagerParamBase.from_tensor(
-                    tensor=paddle.to_tensor(data=[1.0])
+                    tensor=paddle.tensor([1.0])
                 )
 
             def forward(self, x):
