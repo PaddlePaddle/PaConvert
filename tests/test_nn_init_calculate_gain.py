@@ -63,3 +63,29 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    for nonlinearity in [
+        "linear",
+        "conv1d",
+        "conv2d",
+        "conv3d",
+        "conv_transpose1d",
+        "conv_transpose2d",
+        "conv_transpose3d",
+        "sigmoid",
+        "tanh",
+        "relu",
+        "leaky_relu",
+        "selu",
+    ]:
+        for param in [0.0, 1.0, 3.0, 0.5, 0.3]:
+            pytorch_code = textwrap.dedent(
+                f"""
+                import torch
+                result = torch.nn.init.calculate_gain(nonlinearity='{nonlinearity}', param={param})
+                result = torch.tensor(result)
+                """
+            )
+            obj.run(pytorch_code, ["result"])
