@@ -126,6 +126,7 @@ class GlobalManager:
         # yuyan
         "torch.softmax",
         "torch.Tensor.softmax",
+        "torch.special.softmax",
 
         # huoda
 
