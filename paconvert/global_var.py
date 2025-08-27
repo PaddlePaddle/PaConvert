@@ -128,21 +128,21 @@ class GlobalManager:
 
 
         # linjun
-        # "torch.as_tensor", # alis as_tensor -> tensor
+        "torch.as_tensor", 
         "torch.tensor",
         "torch.Tensor.copy_",
-        # "torch.Tensor.norm",
+        "torch.Tensor.norm",
         # "torch.Tensor",
-        # "torch.FloatTensor", # paddle.to_tensor -> paddle.tensor
-        # "torch.DoubleTensor",
-        # "torch.HalfTensor",
-        # "torch.BFloat16Tensor",
-        # "torch.ByteTensor",
-        # "torch.CharTensor",
-        # "torch.ShortTensor",
-        # "torch.IntTensor",
-        # "torch.LongTensor",
-        # "torch.BoolTensor",
+        "torch.FloatTensor", 
+        "torch.DoubleTensor",
+        "torch.HalfTensor",
+        "torch.BFloat16Tensor",
+        "torch.ByteTensor",
+        "torch.CharTensor",
+        "torch.ShortTensor",
+        "torch.IntTensor",
+        "torch.LongTensor",
+        "torch.BoolTensor",
 
 
         # siyu
