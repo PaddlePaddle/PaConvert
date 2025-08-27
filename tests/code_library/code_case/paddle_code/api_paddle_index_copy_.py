@@ -23,12 +23,12 @@ setattr(paddle.Tensor, "index_copy_", _Tensor_index_copy_)
 
 
 print("#########################case1#########################")
-x = paddle.zeros(shape=[5, 3])
+x = paddle.zeros(5, 3)
 t = paddle.to_tensor(data=[[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype="float32")
 index = paddle.to_tensor(data=[0, 4, 2])
 x.index_copy_(0, index, t)
 print("#########################case2#########################")
-x = paddle.zeros(shape=[2, 1, 3, 3])
+x = paddle.zeros(2, 1, 3, 3)
 t = paddle.to_tensor(
     data=[[[[1, 2, 3], [4, 5, 6], [7, 8, 9]]], [[[1, 2, 3], [4, 5, 6], [7, 8, 9]]]],
     dtype="float32",
@@ -36,12 +36,12 @@ t = paddle.to_tensor(
 index = paddle.to_tensor(data=[0, 1, 2])
 x.index_copy_(2, index, t)
 print("#########################case3#########################")
-x = paddle.zeros(shape=[5, 3])
+x = paddle.zeros(5, 3)
 t = paddle.to_tensor(data=[[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype="float32")
 index = paddle.to_tensor(data=[0, 4, 2])
 y = x.index_copy_(0, index, t)
 print("#########################case4#########################")
-x = paddle.zeros(shape=[2, 1, 3, 3])
+x = paddle.zeros(2, 1, 3, 3)
 t = paddle.to_tensor(
     data=[[[[1, 2, 3], [4, 5, 6], [7, 8, 9]]], [[[1, 2, 3], [4, 5, 6], [7, 8, 9]]]],
     dtype="float32",
@@ -49,7 +49,7 @@ t = paddle.to_tensor(
 index = paddle.to_tensor(data=[0, 1, 2])
 y = x.index_copy_(2, index, t)
 print("#########################case5#########################")
-x = paddle.zeros(shape=[20])
+x = paddle.zeros(20)
 t = paddle.to_tensor(data=[1, 3, 4, 5], dtype="float32")
 index = paddle.to_tensor(data=[0, 12, 2, 1])
 y = x.index_copy_(0, index, t)
