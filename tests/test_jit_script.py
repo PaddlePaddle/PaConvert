@@ -40,7 +40,7 @@ def test_case_1():
             return shift + scale * x
 
 
-        x = paddle.to_tensor(data=[-1, -2, 3.0])
+        x = paddle.tensor([-1, -2, 3.0])
         result = foo(x, x, x)
         """
     )
@@ -72,8 +72,8 @@ def test_case_2():
 
 
         scripted_add = paddle.jit.to_static(function=add)
-        x = paddle.to_tensor(data=1)
-        y = paddle.to_tensor(data=2)
+        x = paddle.tensor(1)
+        y = paddle.tensor(2)
         result = scripted_add(x, y)
         """
     )
@@ -105,10 +105,10 @@ def test_case_3():
 
 
         scripted_add = paddle.jit.to_static(
-            function=add, input_spec=[paddle.to_tensor(data=[0]), paddle.to_tensor(data=[2])]
+            function=add, input_spec=[paddle.tensor([0]), paddle.tensor([2])]
         )
-        x = paddle.to_tensor(data=1)
-        y = paddle.to_tensor(data=2)
+        x = paddle.tensor(1)
+        y = paddle.tensor(2)
         result = scripted_add(x, y)
         """
     )

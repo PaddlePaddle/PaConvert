@@ -1,7 +1,7 @@
 import paddle
 
-a = paddle.to_tensor(data=[1])
-b = paddle.to_tensor(data=[2])
+a = paddle.tensor([1])
+b = paddle.tensor([2])
 print("#########################case1#########################")
 func = paddle.add
 paddle.add(a, b)

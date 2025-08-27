@@ -95,7 +95,20 @@ class GlobalManager:
         "torch.Tensor.short",
         "torch.Tensor.cfloat",
         "torch.Tensor.cdouble",
-
+        "torch.nn.init.calculate_gain",
+        "torch.nn.init.constant_",
+        "torch.nn.init.dirac_",
+        "torch.nn.init.eye_",
+        "torch.nn.init.kaiming_normal_",
+        "torch.nn.init.kaiming_uniform_",
+        "torch.nn.init.normal_",
+        "torch.nn.init.ones",
+        "torch.nn.init.orthogonal_",
+        "torch.nn.init.trunc_normal_",
+        "torch.nn.init.uniform_",
+        "torch.nn.init.xavier_normal_",
+        "torch.nn.init.xavier_uniform_",
+        "torch.nn.init.zeros_",
 
         # zhouxin
         "torch.view_as_real",
@@ -127,6 +140,21 @@ class GlobalManager:
 
 
         # linjun
+        # "torch.as_tensor", # alis as_tensor -> tensor
+        "torch.tensor",
+        "torch.Tensor.copy_",
+        # "torch.Tensor.norm",
+        # "torch.Tensor",
+        # "torch.FloatTensor", # paddle.to_tensor -> paddle.tensor
+        # "torch.DoubleTensor",
+        # "torch.HalfTensor",
+        # "torch.BFloat16Tensor",
+        # "torch.ByteTensor",
+        # "torch.CharTensor",
+        # "torch.ShortTensor",
+        # "torch.IntTensor",
+        # "torch.LongTensor",
+        # "torch.BoolTensor",
 
 
         # siyu
@@ -148,7 +176,22 @@ class GlobalManager:
 
 
         # liuyi
-
+        "torch.finfo",
+        "torch.is_complex",
+        "torch.concat",
+        "torch.empty_like",
+        "torch.full",
+        "torch.nonzero",
+        "torch.Tensor.pow",
+        "torch.Tensor.prod",
+        "torch.Tensor.reshape",
+        "torch.zeros_like",
+        "torch.argsort",
+        "torch.Tensor.argsort",
+        "torch.Tensor.squeeze",
+        "torch.chunk",
+        "torch.Tensor.chunk",
+        "torch.any",
 
         # shenwei
 
