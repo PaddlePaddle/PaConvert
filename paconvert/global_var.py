@@ -134,7 +134,18 @@ class GlobalManager:
 
 
         # shijie
+        
 
+
+
+
+
+
+
+
+
+        "torch.msort",
+        "torch.Tensor.msort",
 
         # yuyan
 
