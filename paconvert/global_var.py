@@ -143,6 +143,7 @@ class GlobalManager:
         "torch.IntTensor",
         "torch.LongTensor",
         "torch.BoolTensor",
+        "torch.norm",
 
 
         # siyu
