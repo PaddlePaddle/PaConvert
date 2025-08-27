@@ -109,6 +109,10 @@ class GlobalManager:
         "torch.nn.init.xavier_normal_",
         "torch.nn.init.xavier_uniform_",
         "torch.nn.init.zeros_",
+        "torch.nn.Conv1d",
+        "torch.nn.Conv2d",
+        "torch.nn.Conv3d",
+        "torch.nn.Embedding",
 
         # zhouxin
         "torch.view_as_real",
