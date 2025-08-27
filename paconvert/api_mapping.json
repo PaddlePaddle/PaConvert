@@ -3793,17 +3793,8 @@
   },
   "torch.Tensor.smm": {},
   "torch.Tensor.softmax": {
-    "Matcher": "TensorFunc2PaddleFunc",
-    "paddle_api": "paddle.nn.functional.softmax",
-    "min_input_args": 1,
-    "args_list": [
-      "dim",
-      "dtype"
-    ],
-    "kwargs_change": {
-      "dim": "axis",
-      "dtype": "dtype"
-    }
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.compat.softmax"
   },
   "torch.Tensor.sort": {
     "Matcher": "SortMatcher",
@@ -17546,20 +17537,8 @@
     }
   },
   "torch.special.softmax": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.softmax",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "dim",
-      "*",
-      "dtype"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis",
-      "dtype": "dtype"
-    }
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.compat.softmax"
   },
   "torch.special.spherical_bessel_j0": {},
   "torch.special.xlog1py": {
