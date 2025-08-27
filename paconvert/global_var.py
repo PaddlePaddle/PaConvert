@@ -136,6 +136,18 @@ class GlobalManager:
         # shijie
 
 
+
+
+
+
+
+
+
+
+    
+    
+        "torch.nn.functional.silu",
+
         # yuyan
 
 
