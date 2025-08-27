@@ -196,7 +196,7 @@
   },
   "torch.long": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "'int64'"
+    "paddle_api": "paddle.int64"
   },
   "torch.nan": {
     "Matcher": "GenericMatcher",
