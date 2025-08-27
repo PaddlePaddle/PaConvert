@@ -100,7 +100,7 @@ def test_case_7():
         """
         import paddle
 
-        a = paddle.to_tensor(data=[1, 2, 3])
+        a = paddle.tensor([1, 2, 3])
         str1 = "1,2,3"
         str1.split(",")
         """
