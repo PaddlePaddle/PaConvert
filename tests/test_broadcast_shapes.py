@@ -89,6 +89,4 @@ def test_case_6():
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="The parameter *shapes is currently not supported.",
     )
