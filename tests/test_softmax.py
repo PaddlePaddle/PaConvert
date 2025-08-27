@@ -142,7 +142,7 @@ def test_case_10():
         import torch
         input = torch.tensor([[-1.2837, -0.0297,  0.0355],
             [ 0.9112, -1.7526, -0.4061]])
-        out = torch.randn(2, 3)
+        out = torch.randn(2, 3, dtype=torch.float64)
         result = torch.softmax(input, 1, torch.float64, out=out)
         """
     )
