@@ -136,16 +136,21 @@ class GlobalManager:
         # shijie
         
 
-
-
-
-
-
-
-
-
         "torch.msort",
         "torch.Tensor.msort",
+        "torch.Tensor.ravel",
+        "torch.ravel",
+        "torch.Tensor.scatter_add",
+        "torch.scatter_add",
+        "torch.Tensor.scatter_add_",
+        "torch.Tensor.tril",
+        "torch.tril",
+        "torch.Tensor.triu",
+        "torch.triu",
+        "torch.bmm",
+        "torch.Tensor.bmm",
+        "torch.nn.GELU",
+        "torch.broadcast_shapes",
 
         # yuyan
 
