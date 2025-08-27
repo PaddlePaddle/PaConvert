@@ -174,3 +174,70 @@ def test_case_14():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_15():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2, 1], [3, 4, 6]], dtype=torch.float32)
+        x.requires_grad = True
+        y = x * x + x
+        values, indices = torch.min(keepdim=False, dim=1, input=y)
+        values.backward(torch.ones_like(values))
+        grad_tensor = x.grad
+        grad_tensor.requires_grad = False
+        """
+    )
+    obj.run(pytorch_code, ["indices", "grad_tensor"])
+
+
+def test_case_16():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2, 1], [3, 4, 6]], dtype=torch.float32)
+        x.requires_grad = True
+        y = x * 2
+        values = torch.min(input=y)
+        values.backward()
+        grad_tensor = x.grad
+        grad_tensor.requires_grad = False
+        """
+    )
+    obj.run(pytorch_code, ["values", "grad_tensor"])
+
+
+def test_case_17():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 1, 2, 2], [3, 3, 4, 4], [1, 3, 2, 4]], dtype=torch.float32)
+        x.requires_grad = True
+        y = x * 2 + 1
+        results = torch.min(input=y, dim = 0)
+        results.values.backward(torch.ones_like(results.values))
+        grad_tensor = x.grad
+        grad_tensor.requires_grad = False
+        """
+    )
+    obj.run(pytorch_code, ["results", "grad_tensor"])
+
+
+def test_case_18():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 1, 2, 2], [3, 3, 4, 4], [1, 3, 2, 4]], dtype=torch.float32)
+        y = torch.tensor([[2, 1, 1, 2], [4, 3, 4, 3], [3, 1, 4, 2]], dtype=torch.float32)
+        x.requires_grad = True
+        y.requires_grad = True
+        result = torch.min(x, y)
+        result.backward(torch.ones_like(result))
+        x.grad.requires_grad = False
+        y.grad.requires_grad = False
+        x_grad = x.grad
+        y_grad = y.grad
+        """
+    )
+    obj.run(pytorch_code, ["result", "x_grad", "y_grad"])

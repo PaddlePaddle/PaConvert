@@ -128,14 +128,27 @@ class GlobalManager:
 
 
         # linjun
+        # "torch.as_tensor", # alis as_tensor -> tensor
+        "torch.tensor",
+        "torch.Tensor.copy_",
+        # "torch.Tensor.norm",
+        # "torch.Tensor",
+        # "torch.FloatTensor", # paddle.to_tensor -> paddle.tensor
+        # "torch.DoubleTensor",
+        # "torch.HalfTensor",
+        # "torch.BFloat16Tensor",
+        # "torch.ByteTensor",
+        # "torch.CharTensor",
+        # "torch.ShortTensor",
+        # "torch.IntTensor",
+        # "torch.LongTensor",
+        # "torch.BoolTensor",
 
 
         # siyu
 
 
         # shijie
-        
-
         "torch.msort",
         "torch.Tensor.msort",
         "torch.Tensor.ravel",
@@ -151,6 +164,9 @@ class GlobalManager:
         "torch.Tensor.bmm",
         "torch.nn.GELU",
         "torch.broadcast_shapes",
+        "torch.Tensor.scatter_reduce",
+        "torch.scatter_reduce",
+
 
         # yuyan
 
