@@ -163,6 +163,9 @@ class GlobalManager:
         "torch.isfinite",
         "torch.isinf",
         "torch.isnan",
+        "torch.flatten",
+        "torch.Tensor.flatten",
+        "torch.roll",
 
 
         # liuyi
