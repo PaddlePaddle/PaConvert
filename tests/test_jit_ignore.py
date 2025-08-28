@@ -54,7 +54,7 @@ def test_case_1():
 
 
         model = paddle.jit.to_static(function=MyModule())
-        result = model(paddle.to_tensor(data=[5.0]))
+        result = model(paddle.tensor([5.0]))
         """
     )
     obj.run(pytorch_code, expect_paddle_code=paddle_code)
