@@ -132,7 +132,6 @@
   "torch.logsumexp": "torch.special.logsumexp",
   "torch.matrix_exp": "torch.linalg.matrix_exp",
   "torch.matrix_power": "torch.linalg.matrix_power",
-  "torch.multiply": "torch.mul",
   "torch.nn.NLLLoss2d": "torch.nn.NLLLoss",
   "torch.nn.Parameter": "torch.nn.parameter.Parameter",
   "torch.nn.UninitializedParameter": "torch.nn.parameter.UninitializedParameter",
