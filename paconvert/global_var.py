@@ -182,18 +182,6 @@ class GlobalManager:
         "torch.broadcast_shapes",
         "torch.Tensor.scatter_reduce",
         "torch.scatter_reduce",
-
-
-
-
-
-
-
-
-
-
-    
-    
         "torch.nn.functional.silu",
 
         # yuyan
