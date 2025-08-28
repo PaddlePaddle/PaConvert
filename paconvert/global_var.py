@@ -161,6 +161,12 @@ class GlobalManager:
         # sundong
 
 
+
+        "torch.matmul",
+        "torch.multiply",
+        "torch.Tensor.matmul",
+        "torch.Tensor.multiply",
+
         # zhengsheng
 
 
