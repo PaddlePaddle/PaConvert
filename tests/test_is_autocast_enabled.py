@@ -50,7 +50,6 @@ def test_case_2():
 
 
 def test_case_3():
-    # 对应 test_amp_autocast_false: 检查 GPU autocast(enabled=False) 的行为
     pytorch_code = textwrap.dedent(
         """
         import torch
