@@ -109,6 +109,10 @@ class GlobalManager:
         "torch.nn.init.xavier_normal_",
         "torch.nn.init.xavier_uniform_",
         "torch.nn.init.zeros_",
+        "torch.nn.Conv1d",
+        "torch.nn.Conv2d",
+        "torch.nn.Conv3d",
+        "torch.nn.Embedding",
 
         # zhouxin
         "torch.view_as_real",
@@ -119,6 +123,18 @@ class GlobalManager:
 
         # honggeng
         "torch.nn.functional.dropout1d",
+        "torch.nn.parameter.Parameter",
+        "torch.add",
+        "torch.div",
+        "torch.divide",
+        "torch.true_divide",
+        "torch.Tensor.add",
+        "torch.Tensor.add_",
+        "torch.Tensor.div",
+        "torch.Tensor.div_",
+        "torch.Tensor.divide",
+        "torch.Tensor.divide_",
+        "torch.Tensor.true_divide",
 
 
         # sensen
@@ -128,12 +144,44 @@ class GlobalManager:
 
 
         # linjun
+        "torch.as_tensor", 
+        "torch.tensor",
+        "torch.Tensor.copy_",
+        "torch.Tensor.norm",
+        # "torch.Tensor",
+        "torch.FloatTensor", 
+        "torch.DoubleTensor",
+        "torch.HalfTensor",
+        "torch.BFloat16Tensor",
+        "torch.ByteTensor",
+        "torch.CharTensor",
+        "torch.ShortTensor",
+        "torch.IntTensor",
+        "torch.LongTensor",
+        "torch.BoolTensor",
 
 
         # siyu
 
 
         # shijie
+        "torch.msort",
+        "torch.Tensor.msort",
+        "torch.Tensor.ravel",
+        "torch.ravel",
+        "torch.Tensor.scatter_add",
+        "torch.scatter_add",
+        "torch.Tensor.scatter_add_",
+        "torch.Tensor.tril",
+        "torch.tril",
+        "torch.Tensor.triu",
+        "torch.triu",
+        "torch.bmm",
+        "torch.Tensor.bmm",
+        "torch.nn.GELU",
+        "torch.broadcast_shapes",
+        "torch.Tensor.scatter_reduce",
+        "torch.scatter_reduce",
 
 
         # yuyan
@@ -143,8 +191,11 @@ class GlobalManager:
 
 
         # sundong
-
-
+        "torch.amax"
+        "torch.amin"
+        "torch.Tensor.amax"
+        "torch.Tensor.amin"
+        
         # zhengsheng
         "torch.broadcast_to",
         "torch.nn.functional.embedding",
@@ -187,7 +238,15 @@ class GlobalManager:
         "torch.any",
 
         # shenwei
-
+        "torch.Tensor.expand_as",
+        "torch.logsumexp",
+        "torch.Tensor.logsumexp",
+        "torch.argmax",
+        "torch.Tensor.argmax",
+        "torch.argmin",
+        "torch.Tensor.argmin",
+        "torch.all",
+        "torch.Tensor.all",
 
         # haoyang
 

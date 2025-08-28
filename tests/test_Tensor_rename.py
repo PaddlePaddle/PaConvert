@@ -29,7 +29,7 @@ def test_case_1():
     )
     obj.run(
         pytorch_code,
-        expect_paddle_code='import paddle\n\nx = paddle.to_tensor(data=[1, 2, 3])\nx.rename(columns={"iids": iids})\n',
+        expect_paddle_code='import paddle\n\nx = paddle.tensor([1, 2, 3])\nx.rename(columns={"iids": iids})\n',
     )
 
 
