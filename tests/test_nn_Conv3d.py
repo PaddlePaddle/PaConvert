@@ -14,6 +14,8 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.nn.Conv3d")
@@ -104,7 +106,7 @@ def test_case_7():
         import torch
         import torch.nn as nn
         x = torch.randn(5, 16, 50, 20, 20)
-        model = nn.Conv3d(16, 33, (3, 3, 5), (2, 2, 1), (4, 2, 2), (3, 1, 1), 1, True, 'zeros', None, None)
+        model = nn.Conv3d(16, 33, (3, 3, 5), (2, 2, 1), (4, 2, 2), (3, 1, 1), 1, bias=True, padding_mode='zeros', device=None, dtype=None)
         result = model(x)
         """
     )
@@ -148,6 +150,62 @@ def test_case_10():
         x = torch.randn(5, 16, 50, 20, 20)
         model = nn.Conv3d(16, 33, (3, 3, 5))
         result = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.randn(5, 16, 50, 20, 20).to(torch.device('cuda:0'))
+        model = nn.Conv3d(16, 33, (3, 3, 5), (2, 2, 1), (4, 2, 2), (3, 1, 1), 1, bias=True, padding_mode='zeros', device=torch.device('cuda:0'), dtype=None)
+        result = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.randn(5, 16, 50, 20, 20).to(torch.float64)
+        model = nn.Conv3d(16, 33, (3, 3, 5), (2, 2, 1), (4, 2, 2), (3, 1, 1), 1, bias=True, padding_mode='zeros', device='cpu', dtype=torch.float64)
+        result = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.randn(5, 16, 50, 20, 20)
+        model = nn.Conv3d(16, 33, (3, 3, 5), (2, 2, 1), (4, 2, 2), (3, 1, 1), 1, bias=False, padding_mode='zeros', device='cpu', dtype=torch.float32)
+        result = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.randn(5, 16, 50, 20, 20)
+        model = nn.Conv3d(16, 33, (3, 3, 5), (2, 2, 1), (4, 2, 2), (3, 1, 1), 1, bias=False, padding_mode='zeros', device='cpu', dtype=torch.float32)
+        result = model(input=x)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)

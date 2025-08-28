@@ -10484,19 +10484,8 @@
     "min_input_args": 1
   },
   "torch.max": {
-    "Matcher": "MaxMatcher",
-    "paddle_api": "paddle.max",
-    "args_list": [
-      "input",
-      "dim",
-      "keepdim",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis"
-    }
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.compat.max"
   },
   "torch.max_pool1d": {
     "Matcher": "GenericMatcher",
@@ -10614,19 +10603,8 @@
     ]
   },
   "torch.min": {
-    "Matcher": "MinMatcher",
-    "paddle_api": "paddle.min",
-    "args_list": [
-      "input",
-      "dim",
-      "keepdim",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis"
-    }
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.compat.min"
   },
   "torch.minimum": {
     "Matcher": "GenericMatcher",
@@ -17078,23 +17056,8 @@
     "min_input_args": 2
   },
   "torch.sort": {
-    "Matcher": "SortMatcher",
-    "paddle_api": "paddle.sort",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "dim",
-      "descending",
-      "*",
-      "stable",
-      "dim",
-      "descending",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis"
-    }
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.compat.sort"
   },
   "torch.sparse.FloatTensor": {
     "Matcher": "GenericMatcher",
