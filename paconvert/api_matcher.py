@@ -399,8 +399,8 @@ class NoNeedConvertMatcher(BaseMatcher):
         args = self.parse_args(args)
         kwargs = self.parse_kwargs(kwargs, allow_none=True)
 
-        # temporary delete these unsupport args
-        for k in ["layout", "generator", "memory_format", "out"]:
+        # temporary delete these unsupport args, which paddle does not support now
+        for k in ["layout", "generator", "memory_format"]:
             if k in kwargs:
                 kwargs.pop(k)
 

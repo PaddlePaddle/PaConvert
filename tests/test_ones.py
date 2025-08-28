@@ -157,3 +157,13 @@ def test_case_13():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.ones(size=[6, 6])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
