@@ -159,8 +159,11 @@ class GlobalManager:
 
 
         # sundong
-
-
+        "torch.amax"
+        "torch.amin"
+        "torch.Tensor.amax"
+        "torch.Tensor.amin"
+        
         # zhengsheng
 
 
