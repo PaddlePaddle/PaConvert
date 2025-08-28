@@ -109,6 +109,10 @@ class GlobalManager:
         "torch.nn.init.xavier_normal_",
         "torch.nn.init.xavier_uniform_",
         "torch.nn.init.zeros_",
+        "torch.nn.Conv1d",
+        "torch.nn.Conv2d",
+        "torch.nn.Conv3d",
+        "torch.nn.Embedding",
 
         # zhouxin
         "torch.view_as_real",
@@ -119,6 +123,18 @@ class GlobalManager:
 
         # honggeng
         "torch.nn.functional.dropout1d",
+        "torch.nn.parameter.Parameter",
+        "torch.add",
+        "torch.div",
+        "torch.divide",
+        "torch.true_divide",
+        "torch.Tensor.add",
+        "torch.Tensor.add_",
+        "torch.Tensor.div",
+        "torch.Tensor.div_",
+        "torch.Tensor.divide",
+        "torch.Tensor.divide_",
+        "torch.Tensor.true_divide",
 
 
         # sensen
@@ -149,8 +165,24 @@ class GlobalManager:
 
 
         # shijie
-       "torch.Tensor.scatter_reduce",
-       "torch.scatter_reduce",
+        "torch.msort",
+        "torch.Tensor.msort",
+        "torch.Tensor.ravel",
+        "torch.ravel",
+        "torch.Tensor.scatter_add",
+        "torch.scatter_add",
+        "torch.Tensor.scatter_add_",
+        "torch.Tensor.tril",
+        "torch.tril",
+        "torch.Tensor.triu",
+        "torch.triu",
+        "torch.bmm",
+        "torch.Tensor.bmm",
+        "torch.nn.GELU",
+        "torch.broadcast_shapes",
+        "torch.Tensor.scatter_reduce",
+        "torch.scatter_reduce",
+
 
         # yuyan
 
@@ -159,14 +191,14 @@ class GlobalManager:
 
 
         # sundong
-
-
-
         "torch.matmul",
         "torch.multiply",
         "torch.Tensor.matmul",
         "torch.Tensor.multiply",
-
+        "torch.amax"
+        "torch.amin"
+        "torch.Tensor.amax"
+        "torch.Tensor.amin"
         # zhengsheng
 
 

@@ -86,9 +86,4 @@ def test_case_6():
         result = torch.broadcast_shapes(*shapes)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="The parameter *shapes is currently not supported.",
-    )
+    obj.run(pytorch_code, ["result"])
