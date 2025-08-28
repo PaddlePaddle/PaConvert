@@ -86,7 +86,4 @@ def test_case_6():
         result = torch.broadcast_shapes(*shapes)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-    )
+    obj.run(pytorch_code, ["result"])
