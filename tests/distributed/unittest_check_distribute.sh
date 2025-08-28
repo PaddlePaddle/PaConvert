@@ -21,7 +21,7 @@ python -c "import torch; print('torch version information:' ,torch.__version__)"
 echo "Insalling develop gpu version paddle"
 python -m pip uninstall -y paddlepaddle
 python -m pip uninstall -y paddlepaddle-gpu
-python -m pip install -U --pre paddlepaddle-gpu -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/
+python -m pip install --force-reinstall --no-deps -U --pre paddlepaddle-gpu -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
 echo "Insalling paconvert requirements"

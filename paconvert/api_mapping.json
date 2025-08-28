@@ -10476,19 +10476,8 @@
     "min_input_args": 1
   },
   "torch.max": {
-    "Matcher": "MaxMatcher",
-    "paddle_api": "paddle.max",
-    "args_list": [
-      "input",
-      "dim",
-      "keepdim",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis"
-    }
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.compat.max"
   },
   "torch.max_pool1d": {
     "Matcher": "GenericMatcher",
@@ -10606,19 +10595,8 @@
     ]
   },
   "torch.min": {
-    "Matcher": "MinMatcher",
-    "paddle_api": "paddle.min",
-    "args_list": [
-      "input",
-      "dim",
-      "keepdim",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis"
-    }
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.compat.min"
   },
   "torch.minimum": {
     "Matcher": "GenericMatcher",
@@ -13109,21 +13087,8 @@
     }
   },
   "torch.nn.Unfold": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.Unfold",
-    "args_list": [
-      "kernel_size",
-      "dilation",
-      "padding",
-      "stride"
-    ],
-    "kwargs_change": {
-      "kernel_size": "kernel_sizes",
-      "dilation": "dilations",
-      "padding": "paddings",
-      "stride": "strides"
-    },
-    "min_input_args": 1
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.compat.Unfold"
   },
   "torch.nn.Upsample": {
     "Matcher": "GenericMatcher",
@@ -17083,23 +17048,8 @@
     "min_input_args": 2
   },
   "torch.sort": {
-    "Matcher": "SortMatcher",
-    "paddle_api": "paddle.sort",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "dim",
-      "descending",
-      "*",
-      "stable",
-      "dim",
-      "descending",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis"
-    }
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.compat.sort"
   },
   "torch.sparse.FloatTensor": {
     "Matcher": "GenericMatcher",
@@ -17602,19 +17552,8 @@
   },
   "torch.special.zeta": {},
   "torch.split": {
-    "Matcher": "SplitMatcher",
-    "paddle_api": "paddle.split",
-    "min_input_args": 2,
-    "args_list": [
-      "tensor",
-      "split_size_or_sections",
-      "dim"
-    ],
-    "kwargs_change": {
-      "tensor": "x",
-      "split_size_or_sections": "num_or_sections",
-      "dim": "axis"
-    }
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.compat.split"
   },
   "torch.sqrt": {
     "Matcher": "GenericMatcher",

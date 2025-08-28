@@ -95,7 +95,24 @@ class GlobalManager:
         "torch.Tensor.short",
         "torch.Tensor.cfloat",
         "torch.Tensor.cdouble",
-
+        "torch.nn.init.calculate_gain",
+        "torch.nn.init.constant_",
+        "torch.nn.init.dirac_",
+        "torch.nn.init.eye_",
+        "torch.nn.init.kaiming_normal_",
+        "torch.nn.init.kaiming_uniform_",
+        "torch.nn.init.normal_",
+        "torch.nn.init.ones",
+        "torch.nn.init.orthogonal_",
+        "torch.nn.init.trunc_normal_",
+        "torch.nn.init.uniform_",
+        "torch.nn.init.xavier_normal_",
+        "torch.nn.init.xavier_uniform_",
+        "torch.nn.init.zeros_",
+        "torch.nn.Conv1d",
+        "torch.nn.Conv2d",
+        "torch.nn.Conv3d",
+        "torch.nn.Embedding",
 
         # zhouxin
         "torch.view_as_real",
@@ -106,6 +123,18 @@ class GlobalManager:
 
         # honggeng
         "torch.nn.functional.dropout1d",
+        "torch.nn.parameter.Parameter",
+        "torch.add",
+        "torch.div",
+        "torch.divide",
+        "torch.true_divide",
+        "torch.Tensor.add",
+        "torch.Tensor.add_",
+        "torch.Tensor.div",
+        "torch.Tensor.div_",
+        "torch.Tensor.divide",
+        "torch.Tensor.divide_",
+        "torch.Tensor.true_divide",
 
 
         # sensen
@@ -128,12 +157,44 @@ class GlobalManager:
 
 
         # linjun
+        "torch.as_tensor", 
+        "torch.tensor",
+        "torch.Tensor.copy_",
+        "torch.Tensor.norm",
+        # "torch.Tensor",
+        "torch.FloatTensor", 
+        "torch.DoubleTensor",
+        "torch.HalfTensor",
+        "torch.BFloat16Tensor",
+        "torch.ByteTensor",
+        "torch.CharTensor",
+        "torch.ShortTensor",
+        "torch.IntTensor",
+        "torch.LongTensor",
+        "torch.BoolTensor",
 
 
         # siyu
 
 
         # shijie
+        "torch.msort",
+        "torch.Tensor.msort",
+        "torch.Tensor.ravel",
+        "torch.ravel",
+        "torch.Tensor.scatter_add",
+        "torch.scatter_add",
+        "torch.Tensor.scatter_add_",
+        "torch.Tensor.tril",
+        "torch.tril",
+        "torch.Tensor.triu",
+        "torch.triu",
+        "torch.bmm",
+        "torch.Tensor.bmm",
+        "torch.nn.GELU",
+        "torch.broadcast_shapes",
+        "torch.Tensor.scatter_reduce",
+        "torch.scatter_reduce",
 
 
         # yuyan
@@ -143,18 +204,54 @@ class GlobalManager:
 
 
         # sundong
-
-
+        "torch.amax"
+        "torch.amin"
+        "torch.Tensor.amax"
+        "torch.Tensor.amin"
+        
         # zhengsheng
 
 
         # liuyi
-
+        "torch.finfo",
+        "torch.is_complex",
+        "torch.concat",
+        "torch.empty_like",
+        "torch.full",
+        "torch.nonzero",
+        "torch.Tensor.pow",
+        "torch.Tensor.prod",
+        "torch.Tensor.reshape",
+        "torch.zeros_like",
+        "torch.argsort",
+        "torch.Tensor.argsort",
+        "torch.Tensor.squeeze",
+        "torch.chunk",
+        "torch.Tensor.chunk",
+        "torch.any",
 
         # shenwei
-
+        "torch.Tensor.expand_as",
+        "torch.logsumexp",
+        "torch.Tensor.logsumexp",
+        "torch.argmax",
+        "torch.Tensor.argmax",
+        "torch.argmin",
+        "torch.Tensor.argmin",
+        "torch.all",
+        "torch.Tensor.all",
 
         # haoyang
+        "torch.logical_not",
+        "torch.Tensor.logical_not",
+        "torch.logical_and",
+        "torch.Tensor.logical_and",
+        "torch.logical_or",
+        "torch.Tensor.logical_or",
+        "torch.logical_xor",
+        "torch.Tensor.logical_xor",
+        "torch.index_select",
+        "torch.Tensor.index_select",
 
 
         # rongrui

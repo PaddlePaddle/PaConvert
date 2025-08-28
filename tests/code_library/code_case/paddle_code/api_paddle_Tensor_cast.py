@@ -46,7 +46,7 @@ print("#########################case9#########################")
 b = a.to("float32")
 print("#########################case10#########################")
 device = device2str("cpu")
-b = paddle.to_tensor(data=[-1]).to("bool")
+b = paddle.tensor([-1]).to("bool")
 print("#########################case11#########################")
 dtype = "float32"
 b = a.to(dtype=dtype)
