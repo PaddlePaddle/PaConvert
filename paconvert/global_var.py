@@ -182,7 +182,12 @@ class GlobalManager:
         "torch.any",
 
         # shenwei
-
+        "torch.Tensor.expand_as",
+        "torch.logsumexp",
+        "torch.argmax",
+        "torch.argmin",
+        "torch.Tensor.argmax",
+        "torch.all",
 
         # haoyang
 
