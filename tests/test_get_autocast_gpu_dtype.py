@@ -12,9 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
+
+should_skip = not paddle.device.is_compiled_with_cuda()
+skip_reason = "AMP test can only run with CUDA."
 
 
 class GetAutocastGpuTypeAPIBase(APIBase):
@@ -37,6 +43,7 @@ class GetAutocastGpuTypeAPIBase(APIBase):
 obj = GetAutocastGpuTypeAPIBase("torch.get_autocast_gpu_dtype")
 
 
+@pytest.mark.skipif(condition=should_skip, reason=skip_reason)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
@@ -50,6 +57,7 @@ def test_case_1():
     obj.run(pytorch_code, ["result_gpu"])
 
 
+@pytest.mark.skipif(condition=should_skip, reason=skip_reason)
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -66,6 +74,7 @@ def test_case_2():
     obj.run(pytorch_code, ["result_before", "result_inside", "result_after"])
 
 
+@pytest.mark.skipif(condition=should_skip, reason=skip_reason)
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
