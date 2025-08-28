@@ -132,7 +132,7 @@ class GlobalManager:
         "torch.tensor",
         "torch.Tensor.copy_",
         "torch.Tensor.norm",
-        # "torch.Tensor",
+        "torch.Tensor",
         "torch.FloatTensor", 
         "torch.DoubleTensor",
         "torch.HalfTensor",
