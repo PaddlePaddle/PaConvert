@@ -144,7 +144,7 @@ def test_case_10():
         grad_tensor.requires_grad = False
         """
     )
-    obj.run(pytorch_code, ["indices", "grad_tensor"])
+    obj.run(pytorch_code, ["values", "indices", "grad_tensor"])
 
 
 def test_case_11():

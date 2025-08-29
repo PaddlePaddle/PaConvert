@@ -136,8 +136,6 @@ class GlobalManager:
         "torch.sqrt",
         "torch.amin",
         "torch.amax",
-        "torch.median",
-        "torch.nanmedian",
 
         # linjun
 

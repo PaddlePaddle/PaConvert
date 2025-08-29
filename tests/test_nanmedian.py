@@ -132,14 +132,12 @@ def test_case_10():
                         dtype=torch.float32, requires_grad=True)
         y = x * x + x
         values, indices = torch.nanmedian(y, dim=1)
-        valid_mask = ~torch.isnan(y)
-        valid_values = values[~torch.isnan(values)]
         values.backward(torch.ones_like(values))
         grad_tensor = x.grad
         grad_tensor.requires_grad = False
         """
     )
-    obj.run(pytorch_code, ["indices", "grad_tensor"])
+    obj.run(pytorch_code, ["values", "indices", "grad_tensor"])
 
 
 def test_case_11():
