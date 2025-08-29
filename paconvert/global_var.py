@@ -258,4 +258,10 @@ class GlobalManager:
         "torch.int32",
         "torch.int64",
         "torch.int8",
+        "torch.ravel",
+        "torch.Tensor.narrow",
+        "torch.narrow",
+        "torch.Tensor.type_as",
+        "torch.nn.Sequential",
+
     ]
