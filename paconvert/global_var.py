@@ -185,7 +185,9 @@ class GlobalManager:
         "torch.nn.functional.silu",
 
         # yuyan
-
+        "torch.Tensor.softmax",
+        "torch.special.softmax",
+        "torch.softmax",
 
         # huoda
 
