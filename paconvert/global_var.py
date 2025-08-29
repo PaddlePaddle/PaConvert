@@ -221,9 +221,27 @@ class GlobalManager:
         "torch.any",
 
         # shenwei
-
+        "torch.Tensor.expand_as",
+        "torch.logsumexp",
+        "torch.Tensor.logsumexp",
+        "torch.argmax",
+        "torch.Tensor.argmax",
+        "torch.argmin",
+        "torch.Tensor.argmin",
+        "torch.all",
+        "torch.Tensor.all",
 
         # haoyang
+        "torch.logical_not",
+        "torch.Tensor.logical_not",
+        "torch.logical_and",
+        "torch.Tensor.logical_and",
+        "torch.logical_or",
+        "torch.Tensor.logical_or",
+        "torch.logical_xor",
+        "torch.Tensor.logical_xor",
+        "torch.index_select",
+        "torch.Tensor.index_select",
 
 
         # rongrui
