@@ -25,7 +25,7 @@ def device2str(type=None, index=None, *, device=None):
 print("#########################case1#########################")
 a = paddle.tensor(
     paddle.tensor([2, 3, 4]),
-    dtype="float32",
+    dtype=paddle.float32,
     device=device2str("cuda"),
     requires_grad=True,
     pin_memory=True,
@@ -34,7 +34,7 @@ print("#########################case2#########################")
 flag = True
 a = paddle.tensor(
     paddle.tensor([2, 3, 4]),
-    dtype="float32",
+    dtype=paddle.float32,
     device=device2str("cuda"),
     requires_grad=flag,
     pin_memory=True,
