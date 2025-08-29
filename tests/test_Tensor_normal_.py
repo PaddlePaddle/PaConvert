@@ -62,6 +62,7 @@ def test_case_4():
     )
     obj.run(pytorch_code, ["result"], check_value=False)
 
+
 # PyTorch random number generator. Controls randomness for
 # reproducible results in tensor operations, dropout, etc.
 # Seedable and device-aware (CPU/GPU).
@@ -99,6 +100,7 @@ def test_case_4():
 #         """
 #     )
 #     obj.run(pytorch_code, ["result"], check_value=False)
+
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
