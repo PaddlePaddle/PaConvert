@@ -122,3 +122,75 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, float('nan'), 3.0], [4.0, 5.0, float('nan')]],
+                        dtype=torch.float32, requires_grad=True)
+        y = x * x + x
+        values, indices = torch.nanmedian(y, dim=1)
+        valid_mask = ~torch.isnan(y)
+        valid_values = values[~torch.isnan(values)]
+        values.backward(torch.ones_like(values))
+        grad_tensor = x.grad
+        grad_tensor.requires_grad = False
+        """
+    )
+    obj.run(pytorch_code, ["indices", "grad_tensor"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, float('nan'), 3.0], [4.0, 5.0, float('nan')]],
+                        dtype=torch.float32, requires_grad=True)
+        y = x * 2
+        values = torch.nanmedian(y)
+        values.backward()
+        grad_tensor = x.grad
+        grad_tensor.requires_grad = False
+        """
+    )
+    obj.run(pytorch_code, ["values", "grad_tensor"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, float('nan'), 3.0, 4.0],
+                         [float('nan'), 6.0, 7.0, 8.0]],
+                        dtype=torch.float32, requires_grad=True)
+        y = x * 2 + 1
+        results = torch.nanmedian(y, dim=0)
+        results.values.backward(torch.ones_like(results.values))
+        grad_tensor = x.grad
+        grad_tensor.requires_grad = False
+        """
+    )
+    obj.run(pytorch_code, ["results", "grad_tensor"])
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]],
+                        dtype=torch.float32, requires_grad=True)
+        y = torch.tensor([[float('nan'), 1.0, 3.0],
+                         [5.0, float('nan'), 6.0]],
+                        dtype=torch.float32, requires_grad=True)
+        combined = torch.cat((x, y), dim=1)
+        result = torch.nanmedian(combined, dim=1)
+        result.values.backward(torch.ones_like(result.values))
+        x_grad = x.grad
+        y_grad = y.grad
+        x_grad.requires_grad = False
+        y_grad.requires_grad = False
+        """
+    )
+    obj.run(pytorch_code, ["result", "x_grad", "y_grad"])
