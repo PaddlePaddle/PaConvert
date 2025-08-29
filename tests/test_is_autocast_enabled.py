@@ -30,10 +30,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if torch.cuda.is_available():
-            result = torch.is_autocast_enabled()
-        else:
-            result = False
+        result = torch.is_autocast_enabled()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,13 +41,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if torch.cuda.is_available():
-            result_before = torch.is_autocast_enabled()
-            with torch.autocast(device_type='cuda', enabled=True):
-                result_inside = torch.is_autocast_enabled()
-            result_after = torch.is_autocast_enabled()
-        else:
-            result_before = result_inside = result_after = False
+        result_before = torch.is_autocast_enabled()
+        with torch.autocast(device_type='cuda', enabled=True):
+            result_inside = torch.is_autocast_enabled()
+        result_after = torch.is_autocast_enabled()
         """
     )
     obj.run(pytorch_code, ["result_before", "result_inside", "result_after"])
@@ -61,13 +55,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if torch.cuda.is_available():
-            result_before = torch.is_autocast_enabled()
-            with torch.autocast(device_type='cuda', enabled=False):
-                result_inside = torch.is_autocast_enabled()
-            result_after = torch.is_autocast_enabled()
-        else:
-            result_before = result_inside = result_after = False
+        result_before = torch.is_autocast_enabled()
+        with torch.autocast(device_type='cuda', enabled=False):
+            result_inside = torch.is_autocast_enabled()
+        result_after = torch.is_autocast_enabled()
         """
     )
     obj.run(pytorch_code, ["result_before", "result_inside", "result_after"])
@@ -78,20 +69,13 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if torch.cuda.is_available():
-            result_L0 = torch.is_autocast_enabled()
-
-            with torch.autocast(device_type='cuda', enabled=True):
-                result_L1 = torch.is_autocast_enabled()
-
-                with torch.autocast(device_type='cuda', enabled=False):
-                    result_L2 = torch.is_autocast_enabled()
-
-                result_back_L1 = torch.is_autocast_enabled()
-
-            result_final = torch.is_autocast_enabled()
-        else:
-            result_L0 = result_L1 = result_L2 = result_back_L1 = result_final = False
+        result_L0 = torch.is_autocast_enabled()
+        with torch.autocast(device_type='cuda', enabled=True):
+            result_L1 = torch.is_autocast_enabled()
+            with torch.autocast(device_type='cuda', enabled=False):
+                result_L2 = torch.is_autocast_enabled()
+            result_back_L1 = torch.is_autocast_enabled()
+        result_final = torch.is_autocast_enabled()
         """
     )
     obj.run(

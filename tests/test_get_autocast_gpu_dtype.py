@@ -48,10 +48,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if torch.cuda.is_available():
-            result_gpu = torch.get_autocast_gpu_dtype()
-        else:
-            result_gpu = torch.float16
+        result_gpu = torch.get_autocast_gpu_dtype()
         """
     )
     obj.run(pytorch_code, ["result_gpu"])
@@ -62,13 +59,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if torch.cuda.is_available():
-            result_before = torch.get_autocast_gpu_dtype()
-            with torch.autocast("cuda",dtype=torch.bfloat16):
-                result_inside = torch.get_autocast_gpu_dtype()
-            result_after = torch.get_autocast_gpu_dtype()
-        else:
-            result_before = result_inside = result_after = torch.float16
+        result_before = torch.get_autocast_gpu_dtype()
+        with torch.autocast("cuda",dtype=torch.bfloat16):
+            result_inside = torch.get_autocast_gpu_dtype()
+        result_after = torch.get_autocast_gpu_dtype()
         """
     )
     obj.run(pytorch_code, ["result_before", "result_inside", "result_after"])
@@ -79,16 +73,13 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        if torch.cuda.is_available():
-            result_gpu_level0 = torch.get_autocast_gpu_dtype()
-            with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
-                result_gpu_level1 = torch.get_autocast_gpu_dtype()
-                with torch.autocast(device_type='cuda', dtype=torch.float16):
-                    result_gpu_level2 = torch.get_autocast_gpu_dtype()
-                result_gpu_back_to_level1 = torch.get_autocast_gpu_dtype()
-            result_gpu_final = torch.get_autocast_gpu_dtype()
-        else:
-            result_gpu_level0 = result_gpu_level1 = result_gpu_level2 = result_gpu_back_to_level1 = result_gpu_final = torch.float16
+        result_gpu_level0 = torch.get_autocast_gpu_dtype()
+        with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
+            result_gpu_level1 = torch.get_autocast_gpu_dtype()
+            with torch.autocast(device_type='cuda', dtype=torch.float16):
+                result_gpu_level2 = torch.get_autocast_gpu_dtype()
+            result_gpu_back_to_level1 = torch.get_autocast_gpu_dtype()
+        result_gpu_final = torch.get_autocast_gpu_dtype()
         """
     )
     obj.run(
