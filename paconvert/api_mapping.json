@@ -14600,21 +14600,8 @@
     "min_input_args": 2
   },
   "torch.nn.functional.softmax": {
-    "Matcher": "FSoftmaxMatcher",
-    "paddle_api": "paddle.nn.functional.softmax",
-    "args_list": [
-      "input",
-      "dim",
-      "_stacklevel",
-      "dtype"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis",
-      "_stacklevel": "",
-      "dtype": "dtype"
-    },
-    "min_input_args": 1
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.compat.softmax"
   },
   "torch.nn.functional.softmin": {
     "Matcher": "FSoftMinMatcher",

@@ -20,7 +20,7 @@ def func2(data) -> paddle.Tensor:
     pass
 
 
-def func3(dtype="float32"):
+def func3(dtype=paddle.float32):
     pass
 
 

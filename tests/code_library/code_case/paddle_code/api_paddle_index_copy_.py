@@ -31,7 +31,7 @@ print("#########################case2#########################")
 x = paddle.zeros(2, 1, 3, 3)
 t = paddle.tensor(
     [[[[1, 2, 3], [4, 5, 6], [7, 8, 9]]], [[[1, 2, 3], [4, 5, 6], [7, 8, 9]]]],
-    dtype="float32",
+    dtype=paddle.float32,
 )
 index = paddle.tensor([0, 1, 2])
 x.index_copy_(2, index, t)
@@ -44,7 +44,7 @@ print("#########################case4#########################")
 x = paddle.zeros(2, 1, 3, 3)
 t = paddle.tensor(
     [[[[1, 2, 3], [4, 5, 6], [7, 8, 9]]], [[[1, 2, 3], [4, 5, 6], [7, 8, 9]]]],
-    dtype="float32",
+    dtype=paddle.float32,
 )
 index = paddle.tensor([0, 1, 2])
 y = x.index_copy_(2, index, t)
