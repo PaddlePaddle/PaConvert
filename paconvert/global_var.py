@@ -138,6 +138,9 @@ class GlobalManager:
 
 
         # sensen
+        "torch.range",
+        "torch.arange",
+        "torch.range",
         "torch.randn",
         "torch.zeros",
         "torch.ones",
