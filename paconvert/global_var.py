@@ -144,7 +144,7 @@ class GlobalManager:
         "torch.autograd.Function",
         "torch.take_along_dim",
         "torch.Tensor.take_along_dim",
-        "torch.linalg.matmul",
+
         "torch.special.logsumexp",
         "torch.argwhere",
         "torch.concatenate",
@@ -228,10 +228,10 @@ class GlobalManager:
 
 
         # sundong
-        "torch.amax"
-        "torch.amin"
-        "torch.Tensor.amax"
-        "torch.Tensor.amin"
+        "torch.amax",
+        "torch.amin",
+        "torch.Tensor.amax",
+        "torch.Tensor.amin",
         
         # zhengsheng
         "torch.broadcast_to",
@@ -321,4 +321,58 @@ class GlobalManager:
         "torch.Tensor.type_as",
         "torch.nn.Sequential",
 
+        # zhouwei
+        "torch.transpose",
+        "torch.unsqueeze",
+        "torch.randn",
+        "torch.multiply",
+        "torch.sigmoid",
+        "torch.sqrt",
+
+        "torch.maximum",
+        "torch.minimum",
+        "torch.topk",
+        "torch.Tensor.topk",
+        "torch.outer",
+
+        "torch.nn.functional.sigmoid",
+        "torch.Tensor.requires_grad",
+        "torch.Tensor.any",
+        "torch.Tensor.permute",
+        "torch.Tensor.repeat",
+        "torch.Tensor.transpose",
+        "torch.Tensor.unsqueeze",
+        "torch.permute",
+        "torch.zeros",
+        "torch.zeros_like",
+        "torch.ones",
+        "torch.ones_like",
+        "torch.range",
+        "torch.empty",
+
+        #"torch.arange",
+        #"torch.Tensor.new_full",
+        #"torch.Tensor.new_empty",
+        #"torch.Tensor.new_ones",
+        #"torch.Tensor.new_zeros",
+        
+        #"torch.mean",
+        #"torch.Tensor.mean",
+        #"torch.repeat_interleave",
+        #"torch.Tensor.repeat_interleave",
+        #"torch.var",
+        #"torch.multinomial",
+        #"torch.rand_like",
+
+        #"torch.matmul",
+        #"torch.linalg.matmul",
+        #"torch.Tensor.scatter",
+        #"torch.Tensor.sum",
+        #"torch.Tensor.gather",
+        #"torch.nn.functional.one_hot",
+        #"torch.nn.functional.pad",
+        #"torch.prod",
+        #"torch.sum",
+        #"torch.gather",
+        #"torch.Tensor.scatter_",
     ]
