@@ -249,6 +249,16 @@ class GlobalManager:
         "torch.Tensor.all",
 
         # haoyang
+        "torch.logical_not",
+        "torch.Tensor.logical_not",
+        "torch.logical_and",
+        "torch.Tensor.logical_and",
+        "torch.logical_or",
+        "torch.Tensor.logical_or",
+        "torch.logical_xor",
+        "torch.Tensor.logical_xor",
+        "torch.index_select",
+        "torch.Tensor.index_select",
 
 
         # rongrui
