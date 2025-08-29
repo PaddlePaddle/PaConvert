@@ -119,7 +119,7 @@ def test_case_2():
 
 
         model = SimpleModel()
-        x = paddle.randn(shape=[1, 3])
+        x = paddle.randn(1, 3)
         a = onnx_export(model, "simple_model.onnx")
         """
     )

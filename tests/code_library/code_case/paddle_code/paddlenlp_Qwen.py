@@ -85,7 +85,7 @@ print("#########################case1#########################")
 def _add_tokens(
     self, new_tokens: Union[List[str], List[paddlenlp.transformers.AddedToken]]
 ) -> int:
-    return paddle.zeros(shape=[2, 4])
+    return paddle.zeros([2, 4])
 
 
 print("#########################case2#########################")
@@ -98,7 +98,7 @@ def chat(
     logits_processor: Optional[paddlenlp.generation.LogitsProcessorList] = None,
     stopping_criteria: Optional[paddlenlp.generation.StoppingCriteriaList] = None,
 ) -> Union[paddlenlp.transformers.model_outputs.BaseModelOutput, paddle.Tensor]:
-    return paddle.zeros(shape=[2, 4])
+    return paddle.zeros([2, 4])
 
 
 print("#########################case3#########################")

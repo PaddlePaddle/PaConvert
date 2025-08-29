@@ -16,8 +16,8 @@ if True:
 else:
     flash_attn_qkvpacked_func = None
 if TYPE_CHECKING:
-    a = paddle.randn(shape=[10, 20])
-    b = paddle.randn(shape=[10, 20])
+    a = paddle.randn(10, 20)
+    b = paddle.randn(10, 20)
     c = paddle.matmul(x=a, y=b)
     d = paddle.add(a, b)
     numpy.array([1, 2, 3])
