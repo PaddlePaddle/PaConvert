@@ -201,6 +201,26 @@ class GlobalManager:
         "torch.Tensor.amin"
         
         # zhengsheng
+        "torch.broadcast_to",
+        "torch.nn.functional.embedding",
+        "torch.no_grad",
+        "torch.ones_like",
+        "torch.reshape",
+        "torch.take_along_dim",
+        "torch.Tensor.bitwise_or_",
+        "torch.Tensor.view",
+        "torch.unique_consecutive",
+        "torch.eye",
+        "torch.full_like",
+        "torch.Tensor.cumsum",
+        "torch.Tensor.expand",
+        "torch.clip",
+        "torch.isfinite",
+        "torch.isinf",
+        "torch.isnan",
+        "torch.flatten",
+        "torch.Tensor.flatten",
+        "torch.roll",
 
 
         # liuyi
