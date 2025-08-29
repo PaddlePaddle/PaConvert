@@ -128,7 +128,7 @@ class GlobalManager:
         "torch.floor",
         "torch.log",
         "torch.mul",
-        "torch.multiply",
+        # "torch.multiply",
         "torch.pow",
         "torch.rsqrt",
         "torch.sign",
