@@ -148,7 +148,7 @@ class GlobalManager:
         "torch.tensor",
         "torch.Tensor.copy_",
         "torch.Tensor.norm",
-        # "torch.Tensor",
+        "torch.Tensor",
         "torch.FloatTensor", 
         "torch.DoubleTensor",
         "torch.HalfTensor",
@@ -159,6 +159,8 @@ class GlobalManager:
         "torch.IntTensor",
         "torch.LongTensor",
         "torch.BoolTensor",
+        "torch.norm",
+        "torch.linalg.norm",
 
 
         # siyu
