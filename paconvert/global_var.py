@@ -174,7 +174,17 @@ class GlobalManager:
 
 
         # hongyu
-
+        "torch.permute",
+        "torch.Tensor.permute",
+        "torch.repeat_interleave",
+        "torch.Tensor.repeat_interleave",
+        "torch.Tensor.repeat",
+        "torch.maximum",
+        "torch.minimum",
+        "torch.topk",
+        "torch.sqrt",
+        "torch.amin",
+        "torch.amax",
 
         # linjun
         "torch.as_tensor", 
