@@ -60,7 +60,7 @@ add_to_dict(
     "api_torch_nn_functional_interpolate.py", "api_paddle_nn_functional_interpolate.py"
 )
 add_to_dict("api_torch_new_empty.py", "api_paddle_new_empty.py")
-add_to_dict("api_torch_permute.py", "api_paddle_transpose.py")
+add_to_dict("api_torch_permute.py", "api_paddle_permute.py")
 add_to_dict("api_torch_tensor.py", "api_paddle_to_tensor.py")
 add_to_dict("api_torch_Size.py", "api_paddle_Size.py")
 add_to_dict("api_torch_nn_InstanceNorm3d.py", "api_paddle_nn_InstanceNorm3D.py")

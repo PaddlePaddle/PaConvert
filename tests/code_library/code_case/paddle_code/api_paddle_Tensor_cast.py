@@ -25,7 +25,7 @@ def device2str(type=None, index=None, *, device=None):
 print("#########################case1#########################")
 cpu = device2str("cpu")
 a = paddle.randn(2, 3)
-c = paddle.randn(2, 3, dtype="float64", device=cpu)
+c = paddle.randn(2, 3, dtype=paddle.float64, device=cpu)
 b = a.to(cpu, blocking=not False)
 print("#########################case2#########################")
 b = a.to("cpu")
