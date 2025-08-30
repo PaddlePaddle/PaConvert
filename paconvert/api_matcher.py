@@ -1976,49 +1976,9 @@ class SplitMatcher(BaseMatcher):
 
 class RangeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "dtype" in kwargs:
-            dtype = kwargs["dtype"]
-        else:
-            dtype = '"""float32"""'
-
-        if "requires_grad" in kwargs:
-            stop_gradient = kwargs["requires_grad"]
-        else:
-            stop_gradient = False
-
-        if "start" in kwargs:
-            start = kwargs["start"]
-        else:
-            start = 0
-
-        if "step" in kwargs:
-            step = kwargs["step"]
-        else:
-            step = 1
-
-        out = get_unique_name("out")
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {} = paddle.arange(start={}, end={}+{} if ({} - {}) % {} == 0 else {}, step={}, dtype={})
-            {}.stop_gradient = not {}
-            {}
-            """
-        )
-        code = API_TEMPLATE.format(
-            out,
-            start,
-            kwargs["end"],
-            step,
-            kwargs["end"],
-            start,
-            step,
-            kwargs["end"],
-            step,
-            dtype,
-            out,
-            stop_gradient,
-            out,
-        )
+        if "end" not in kwargs:
+            kwargs["end"] = kwargs.pop("start")
+        code = GenericMatcher.generate_code(self, kwargs)
         return code
 
 

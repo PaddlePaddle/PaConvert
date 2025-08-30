@@ -17,7 +17,7 @@ import torch
 
 print("#########################case1#########################")
 a = torch.tensor([1, 2, 3], dtype=torch.int64)
-b = a.new_zeros([3, 4], dtype=torch.float64, requires_grad=True)
+b = a.new_zeros([3, 4], dtype=torch.float64, requires_grad=True, pin_memory=True)
 print("#########################case2#########################")
 a = torch.tensor([1, 2, 3], dtype=torch.int64)
 b = a.new_zeros(3, 4, requires_grad=True)
