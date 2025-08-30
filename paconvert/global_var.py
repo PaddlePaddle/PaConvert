@@ -128,7 +128,6 @@ class GlobalManager:
         "torch.floor",
         "torch.log",
         "torch.mul",
-        # "torch.multiply",
         "torch.pow",
         "torch.rsqrt",
         "torch.sign",
@@ -366,6 +365,7 @@ class GlobalManager:
 
         #"torch.matmul",
         #"torch.linalg.matmul",
+        # "torch.multiply",
         #"torch.Tensor.scatter",
         #"torch.Tensor.sum",
         #"torch.Tensor.gather",
