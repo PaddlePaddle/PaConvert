@@ -128,6 +128,7 @@ class GlobalManager:
         "torch.floor",
         "torch.log",
         "torch.mul",
+        "torch.multiply",
         "torch.pow",
         "torch.rsqrt",
         "torch.sign",
@@ -324,10 +325,8 @@ class GlobalManager:
         "torch.transpose",
         "torch.unsqueeze",
         "torch.randn",
-        "torch.multiply",
         "torch.sigmoid",
         "torch.sqrt",
-
         "torch.maximum",
         "torch.minimum",
         "torch.topk",
@@ -365,7 +364,6 @@ class GlobalManager:
 
         #"torch.matmul",
         #"torch.linalg.matmul",
-        #"torch.multiply",
         #"torch.Tensor.scatter",
         #"torch.Tensor.sum",
         #"torch.Tensor.gather",
