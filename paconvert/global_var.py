@@ -365,7 +365,7 @@ class GlobalManager:
 
         #"torch.matmul",
         #"torch.linalg.matmul",
-        # "torch.multiply",
+        #"torch.multiply",
         #"torch.Tensor.scatter",
         #"torch.Tensor.sum",
         #"torch.Tensor.gather",
