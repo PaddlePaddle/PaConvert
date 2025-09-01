@@ -262,10 +262,6 @@ class GlobalManager:
         "torch.multiply",
         "torch.Tensor.matmul",
         "torch.Tensor.multiply",
-        "torch.amax"
-        "torch.amin"
-        "torch.Tensor.amax"
-        "torch.Tensor.amin"
         "torch.amax",
         "torch.amin",
         "torch.Tensor.amax",
