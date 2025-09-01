@@ -59,13 +59,13 @@ add_to_dict("api_torch_nn_BCEWithLogitsLoss.py", "api_paddle_nn_BCEWithLogitsLos
 add_to_dict(
     "api_torch_nn_functional_interpolate.py", "api_paddle_nn_functional_interpolate.py"
 )
-add_to_dict("api_torch_new_empty.py", "api_paddle_new_empty.py")
+add_to_dict("api_torch_Tensor_new_empty.py", "api_paddle_Tensor_new_empty.py")
 add_to_dict("api_torch_permute.py", "api_paddle_permute.py")
 add_to_dict("api_torch_tensor.py", "api_paddle_to_tensor.py")
 add_to_dict("api_torch_Size.py", "api_paddle_Size.py")
 add_to_dict("api_torch_nn_InstanceNorm3d.py", "api_paddle_nn_InstanceNorm3D.py")
 add_to_dict("api_torch_index_copy_.py", "api_paddle_index_copy_.py")
-add_to_dict("api_torch_Tensor_new_zeros.py", "api_paddle_new_zeros.py")
+add_to_dict("api_torch_Tensor_new_zeros.py", "api_paddle_Tensor_new_zeros.py")
 add_to_dict("api_torch_cuda_is_available.py", "api_paddle_cuda_is_available.py")
 add_to_dict("api_torch_nn_BatchNorm2d.py", "api_paddle_nn_BatchNorm2D.py")
 add_to_dict("api_torch_IntTensor.py", "api_paddle_Tensor2Int.py")
