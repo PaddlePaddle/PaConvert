@@ -173,7 +173,6 @@ class GlobalManager:
         # sensen
         "torch.range",
         "torch.arange",
-        "torch.range",
         "torch.randn",
         "torch.zeros",
         "torch.ones",
@@ -315,6 +314,7 @@ class GlobalManager:
         "torch.Tensor.argmin",
         "torch.all",
         "torch.Tensor.all",
+        "torch.Tensor.any",
 
         # haoyang
         "torch.logical_not",
@@ -354,44 +354,14 @@ class GlobalManager:
 
         # zhouwei
         "torch.transpose",
+        "torch.Tensor.transpose",
         "torch.unsqueeze",
-        "torch.randn",
+        "torch.Tensor.unsqueeze",
         "torch.sigmoid",
-        "torch.sqrt",
-        "torch.maximum",
-        "torch.minimum",
-        "torch.topk",
         "torch.Tensor.topk",
         "torch.outer",
-
         "torch.nn.functional.sigmoid",
         "torch.Tensor.requires_grad",
-        "torch.Tensor.any",
-        "torch.Tensor.permute",
-        "torch.Tensor.repeat",
-        "torch.Tensor.transpose",
-        "torch.Tensor.unsqueeze",
-        "torch.permute",
-        "torch.zeros",
-        "torch.zeros_like",
-        "torch.ones",
-        "torch.ones_like",
-        "torch.range",
-        "torch.empty",
-
-        #"torch.arange",
-        #"torch.Tensor.new_full",
-        #"torch.Tensor.new_empty",
-        #"torch.Tensor.new_ones",
-        #"torch.Tensor.new_zeros",
-        
-        #"torch.mean",
-        #"torch.Tensor.mean",
-        #"torch.repeat_interleave",
-        #"torch.Tensor.repeat_interleave",
-        #"torch.var",
-        #"torch.multinomial",
-        #"torch.rand_like",
 
         #"torch.matmul",
         #"torch.linalg.matmul",
