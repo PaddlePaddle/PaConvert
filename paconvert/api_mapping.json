@@ -3042,11 +3042,11 @@
     "min_input_args": 0
   },
   "torch.Tensor.new_empty": {
-    "Matcher": "TensorNew_Matcher",
-    "paddle_api": "paddle.empty",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.new_empty",
     "min_input_args": 1,
     "args_list": [
-      "*size",
+      "size",
       "*",
       "dtype",
       "device",
@@ -3055,12 +3055,13 @@
       "pin_memory"
     ],
     "kwargs_change": {
-      "size": "shape"
+      "dtype": "dtype",
+      "generator": ""
     }
   },
   "torch.Tensor.new_full": {
-    "Matcher": "TensorNewFullMatcher",
-    "paddle_api": "paddle.full",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.new_full",
     "min_input_args": 2,
     "args_list": [
       "size",
@@ -3071,27 +3072,21 @@
       "requires_grad",
       "layout",
       "pin_memory"
-    ],
-    "kwargs_change": {
-      "size": "shape"
-    }
+    ]
   },
   "torch.Tensor.new_ones": {
-    "Matcher": "TensorNew_Matcher",
-    "paddle_api": "paddle.ones",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.new_ones",
     "min_input_args": 1,
     "args_list": [
-      "*size",
+      "size",
       "*",
       "dtype",
       "device",
       "requires_grad",
       "layout",
       "pin_memory"
-    ],
-    "kwargs_change": {
-      "size": "shape"
-    }
+    ]
   },
   "torch.Tensor.new_tensor": {
     "Matcher": "TensorNewTensorMatcher",
@@ -3110,21 +3105,18 @@
     }
   },
   "torch.Tensor.new_zeros": {
-    "Matcher": "TensorNew_Matcher",
-    "paddle_api": "paddle.zeros",
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.new_zeros",
     "min_input_args": 1,
     "args_list": [
-      "*size",
+      "size",
       "*",
       "dtype",
       "device",
       "requires_grad",
       "layout",
       "pin_memory"
-    ],
-    "kwargs_change": {
-      "size": "shape"
-    }
+    ]
   },
   "torch.Tensor.nextafter": {
     "Matcher": "GenericMatcher",
@@ -16267,8 +16259,8 @@
   },
   "torch.range": {
     "Matcher": "RangeMatcher",
-    "paddle_api": "paddle.arange",
-    "min_input_args": 2,
+    "paddle_api": "paddle.range",
+    "min_input_args": 1,
     "args_list": [
       "start",
       "end",
