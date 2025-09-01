@@ -1528,47 +1528,47 @@ class TensorMatcher(BaseMatcher):
                     "torch.IntTensor" == self.torch_api
                     or "torch.cuda.IntTensor" == self.torch_api
                 ):
-                    code = 'paddle.to_tensor(data={}, dtype="int32")'.format(data)
+                    code = 'paddle.tensor({}, dtype="int32")'.format(data)
                 elif ("torch.ShortTensor" == self.torch_api) or (
                     "torch.cuda.ShortTensor" == self.torch_api
                 ):
-                    code = 'paddle.to_tensor(data={}, dtype="int16")'.format(data)
+                    code = 'paddle.tensor({}, dtype="int16")'.format(data)
                 elif (
                     "torch.LongTensor" == self.torch_api
                     or "torch.cuda.LongTensor" == self.torch_api
                 ):
-                    code = 'paddle.to_tensor(data={}, dtype="int64")'.format(data)
+                    code = 'paddle.tensor({}, dtype="int64")'.format(data)
                 elif ("torch.HalfTensor" == self.torch_api) or (
                     "torch.cuda.HalfTensor" == self.torch_api
                 ):
-                    code = 'paddle.to_tensor(data={}, dtype="float16")'.format(data)
+                    code = 'paddle.tensor({}, dtype="float16")'.format(data)
                 elif (
                     "torch.FloatTensor" == self.torch_api
                     or "torch.cuda.FloatTensor" == self.torch_api
                 ):
-                    code = 'paddle.to_tensor(data={}, dtype="float32")'.format(data)
+                    code = 'paddle.tensor({}, dtype="float32")'.format(data)
                 elif ("torch.DoubleTensor" == self.torch_api) or (
                     "torch.cuda.DoubleTensor" == self.torch_api
                 ):
-                    code = 'paddle.to_tensor(data={}, dtype="float64")'.format(data)
+                    code = 'paddle.tensor({}, dtype="float64")'.format(data)
                 elif (
                     "torch.ByteTensor" == self.torch_api
                     or "torch.cuda.ByteTensor" == self.torch_api
                 ):
-                    code = 'paddle.to_tensor(data={}, dtype="uint8")'.format(data)
+                    code = 'paddle.tensor({}, dtype="uint8")'.format(data)
                 elif ("torch.BoolTensor" == self.torch_api) or (
                     "torch.cuda.BoolTensor" == self.torch_api
                 ):
-                    code = 'paddle.to_tensor(data={}, dtype="bool")'.format(data)
+                    code = 'paddle.tensor({}, dtype="bool")'.format(data)
                 elif ("torch.BFloat16Tensor" == self.torch_api) or (
                     "torch.cuda.BFloat16Tensor" == self.torch_api
                 ):
-                    code = 'paddle.to_tensor(data={}, dtype="bfloat16")'.format(data)
+                    code = 'paddle.tensor({}, dtype="bfloat16")'.format(data)
                 else:
                     if len(args) > 0 and not isinstance(args[0], ast.Name):
-                        code = 'paddle.to_tensor(data={}, dtype="float32")'.format(data)
+                        code = 'paddle.tensor({}, dtype="float32")'.format(data)
                     else:
-                        code = "paddle.to_tensor(data={})".format(data)
+                        code = "paddle.tensor({})".format(data)
                 return ast.parse(code).body
 
             shape = str(shape).replace("'", "")
@@ -1976,49 +1976,9 @@ class SplitMatcher(BaseMatcher):
 
 class RangeMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "dtype" in kwargs:
-            dtype = kwargs["dtype"]
-        else:
-            dtype = '"""float32"""'
-
-        if "requires_grad" in kwargs:
-            stop_gradient = kwargs["requires_grad"]
-        else:
-            stop_gradient = False
-
-        if "start" in kwargs:
-            start = kwargs["start"]
-        else:
-            start = 0
-
-        if "step" in kwargs:
-            step = kwargs["step"]
-        else:
-            step = 1
-
-        out = get_unique_name("out")
-        API_TEMPLATE = textwrap.dedent(
-            """
-            {} = paddle.arange(start={}, end={}+{} if ({} - {}) % {} == 0 else {}, step={}, dtype={})
-            {}.stop_gradient = not {}
-            {}
-            """
-        )
-        code = API_TEMPLATE.format(
-            out,
-            start,
-            kwargs["end"],
-            step,
-            kwargs["end"],
-            start,
-            step,
-            kwargs["end"],
-            step,
-            dtype,
-            out,
-            stop_gradient,
-            out,
-        )
+        if "end" not in kwargs:
+            kwargs["end"] = kwargs.pop("start")
+        code = GenericMatcher.generate_code(self, kwargs)
         return code
 
 
@@ -4677,6 +4637,10 @@ class CanCastMatcher(BaseMatcher):
                         "bool": True,
                     }
                 }
+                if isinstance(from_, paddle.base.core.DataType):
+                    from_ = from_.name.lower()
+                if isinstance(to, paddle.base.core.DataType):
+                    to = to.name.lower()
                 return can_cast_dict[from_][to]
             """
         )
@@ -4914,7 +4878,7 @@ class TensorViewMatcher(BaseMatcher):
             """
             def _Tensor_view(self, *args, **kwargs):
                 if args:
-                    if len(args)==1 and isinstance(args[0], (tuple, list, str)):
+                    if len(args)==1 and isinstance(args[0], (tuple, list, str, paddle.base.core.DataType)):
                         return paddle.view(self, args[0])
                     else:
                         return paddle.view(self, list(args))
@@ -5238,7 +5202,11 @@ class FromBufferMatcher(BaseMatcher):
         API_TEMPLATE = textwrap.dedent(
             """
             import numpy as np
-            paddle.to_tensor(np.frombuffer(np.array({}), {}))
+            buffer = {0}
+            dtype = {1}
+            if isinstance(dtype, paddle.base.core.DataType):
+                dtype = dtype.name.lower()
+            paddle.to_tensor(np.frombuffer(np.array(buffer), dtype=dtype))
             """
         )
         code = API_TEMPLATE.format(kwargs["buffer"], kwargs["dtype"])

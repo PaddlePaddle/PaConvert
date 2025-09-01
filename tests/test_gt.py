@@ -78,7 +78,8 @@ def test_case_5():
     obj.run(pytorch_code, ["result", "out"])
 
 
-def test_case_6():
+# Paddle currently dees not support scalar input.
+def _test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch

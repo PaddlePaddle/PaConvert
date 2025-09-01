@@ -14,6 +14,8 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.nn.Embedding")
@@ -136,6 +138,130 @@ def test_case_7():
             embedding.weight[3]=w0[3]
         x = torch.LongTensor([[0],[1],[3]])
         result = embedding(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        padding_idx = 0
+        w0 = torch.Tensor([[0., 0., 0.],
+                    [1., 1., 1.],
+                    [2., 2., 2.],
+                    [3., 3., 3.]])
+        embedding = torch.nn.Embedding(4, 3,padding_idx=padding_idx,max_norm=2.0, _weight=w0)
+        x = torch.LongTensor([[0],[1],[3]])
+        result = embedding(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        padding_idx = 0
+        w0 = torch.Tensor([[0., 0., 0.],
+                    [1., 1., 1.],
+                    [2., 2., 2.],
+                    [3., 3., 3.]])
+        embedding = torch.nn.Embedding(4, 3,padding_idx=padding_idx,max_norm=2.0, _weight=w0, _freeze=True)
+        x = torch.LongTensor([[0],[1],[3]])
+        result = embedding.weight.requires_grad
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        padding_idx = 0
+        w0 = torch.Tensor([[0., 0., 0.],
+                    [1., 1., 1.],
+                    [2., 2., 2.],
+                    [3., 3., 3.]])
+        embedding = torch.nn.Embedding(4, 3,padding_idx=padding_idx,max_norm=2.0, _weight=w0, _freeze=True, device=None, dtype=None)
+        x = torch.LongTensor([[0],[1],[3]])
+        result = embedding(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        padding_idx = 0
+        w0 = torch.Tensor([[0., 0., 0.],
+                    [1., 1., 1.],
+                    [2., 2., 2.],
+                    [3., 3., 3.]])
+        embedding = torch.nn.Embedding(4, 3,padding_idx=padding_idx,max_norm=2.0, _weight=w0, _freeze=True, device=None, dtype=None)
+        x = torch.LongTensor([[0],[1],[3]])
+        result = embedding(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        padding_idx = 0
+        embedding = torch.nn.Embedding(4, 3,padding_idx=padding_idx,max_norm=2.0, device=torch.device('cuda:0'), dtype=None)
+        x = torch.LongTensor([[0],[1],[3]]).to(torch.device('cuda:0'))
+        result = embedding.padding_idx
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        padding_idx = 0
+        embedding = torch.nn.Embedding(4, 3,padding_idx=padding_idx,max_norm=2.0, device=torch.device('cpu'), dtype=torch.float64)
+        x = torch.LongTensor([[0],[1],[3]]).to(torch.device('cpu'))
+        result = embedding.padding_idx
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_15():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        padding_idx = 0
+        embedding = torch.nn.Embedding(4, 3, padding_idx, 2.0, device=torch.device('cpu'), dtype=torch.float64)
+        x = torch.LongTensor([[0],[1],[3]]).to(torch.device('cpu'))
+        result = embedding.padding_idx
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_16():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        padding_idx = 0
+        embedding = torch.nn.Embedding(4, 3, padding_idx, 2.0, sparse=True, device=torch.device('cpu'))
+        x = torch.LongTensor([[0],[1],[3]])
+        result = embedding.padding_idx
         """
     )
     obj.run(pytorch_code, ["result"])

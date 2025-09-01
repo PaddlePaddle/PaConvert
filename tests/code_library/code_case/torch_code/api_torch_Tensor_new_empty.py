@@ -1,4 +1,4 @@
-# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
+# Copyright (c) 2025 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,4 +17,8 @@ import torch
 
 print("#########################case1#########################")
 a = torch.tensor([1, 2, 3], dtype=torch.int64)
-b = a.new_empty((3, 4), dtype=torch.float64, requires_grad=True, pin_memory=True)
+b = a.new_empty([3, 4], dtype=torch.float64, requires_grad=True, pin_memory=True)
+print("#########################case2#########################")
+flag = False
+a = torch.tensor([1, 2, 3], dtype=torch.int64)
+b = a.new_empty((2, 3), requires_grad=flag)

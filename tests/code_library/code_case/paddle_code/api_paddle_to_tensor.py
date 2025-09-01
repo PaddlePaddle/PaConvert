@@ -23,19 +23,21 @@ def device2str(type=None, index=None, *, device=None):
 
 
 print("#########################case1#########################")
-a = paddle.to_tensor(
-    data=paddle.to_tensor(data=[2, 3, 4]),
-    dtype="float32",
-    place=paddle.CUDAPinnedPlace(),
-    stop_gradient=not True,
+a = paddle.tensor(
+    paddle.tensor([2, 3, 4]),
+    dtype=paddle.float32,
+    device=device2str("cuda"),
+    requires_grad=True,
+    pin_memory=True,
 )
 print("#########################case2#########################")
 flag = True
-a = paddle.to_tensor(
-    data=paddle.to_tensor(data=[2, 3, 4]),
-    dtype="float32",
-    place=paddle.CUDAPinnedPlace(),
-    stop_gradient=not flag,
+a = paddle.tensor(
+    paddle.tensor([2, 3, 4]),
+    dtype=paddle.float32,
+    device=device2str("cuda"),
+    requires_grad=flag,
+    pin_memory=True,
 )
 print("#########################case3#########################")
-a = paddle.to_tensor(data=[2, 3, 4], place="gpu")
+a = paddle.tensor([2, 3, 4], device="cuda")

@@ -3,9 +3,9 @@ import paddle
 print("#########################case1#########################")
 
 
-def a(x: paddle.Tensor):
+def a(x: paddle.IntTensor):
     pass
 
 
 print("#########################case2#########################")
-a = paddle.empty(shape=[2, 3, 6], dtype="int32")
+a = paddle.IntTensor(2, 3, 6)
