@@ -115,10 +115,43 @@ class GlobalManager:
         "torch.nn.Embedding",
 
         # zhouxin
+        "torch.complex",
+        "torch.polar",
+        "torch.cat",
+        "torch.stack",
+        "torch.swapaxes",
+        "torch.swapdims",
+        "torch.where",
+        "torch.clamp",
+        "torch.clip",
+        "torch.cos",
+        "torch.floor",
+        "torch.log",
+        "torch.mul",
+        "torch.multiply",
+        "torch.pow",
+        "torch.rsqrt",
+        "torch.sign",
+        "torch.sin",
+        "torch.eq",
+        "torch.gt",
         "torch.view_as_real",
         "torch.view_as_complex",
+        "torch.ger",
+        "torch.Tensor.mul_",
+        "torch.Tensor.swapaxes",
+        "torch.Tensor.swapdims",
         "torch.autograd.Function",
+        "torch.take_along_dim",
+        "torch.Tensor.take_along_dim",
+
+        "torch.special.logsumexp",
         "torch.argwhere",
+        "torch.concatenate",
+        "torch.is_autocast_enabled",
+        "torch.get_autocast_gpu_dtype",
+        "torch.cumsum",
+        "torch.diff",
 
 
         # honggeng
@@ -138,17 +171,42 @@ class GlobalManager:
 
 
         # sensen
-
+        "torch.range",
+        "torch.arange",
+        "torch.randn",
+        "torch.zeros",
+        "torch.ones",
+        "torch.full",
+        "torch.empty",
+        "torch.zeros_like",
+        "torch.ones_like",
+        "torch.full_like",
+        "torch.empty_like",
+        "torch.Tensor.new_zeros",
+        "torch.Tensor.new_ones",
+        "torch.Tensor.new_full",
+        "torch.Tensor.new_empty",
+        "torch.eye",
 
         # hongyu
-
+        "torch.permute",
+        "torch.Tensor.permute",
+        "torch.repeat_interleave",
+        "torch.Tensor.repeat_interleave",
+        "torch.Tensor.repeat",
+        "torch.maximum",
+        "torch.minimum",
+        "torch.topk",
+        "torch.sqrt",
+        "torch.amin",
+        "torch.amax",
 
         # linjun
         "torch.as_tensor", 
         "torch.tensor",
         "torch.Tensor.copy_",
         "torch.Tensor.norm",
-        # "torch.Tensor",
+        "torch.Tensor",
         "torch.FloatTensor", 
         "torch.DoubleTensor",
         "torch.HalfTensor",
@@ -159,9 +217,16 @@ class GlobalManager:
         "torch.IntTensor",
         "torch.LongTensor",
         "torch.BoolTensor",
+        "torch.norm",
+        "torch.linalg.norm",
 
 
         # siyu
+        "torch.multinomial",
+        "torch.var",
+        "torch.rand_like",
+        "torch.mean",
+        "torch.Tensor.mean",
 
 
         # shijie
@@ -182,10 +247,12 @@ class GlobalManager:
         "torch.broadcast_shapes",
         "torch.Tensor.scatter_reduce",
         "torch.scatter_reduce",
-
+        "torch.nn.functional.silu",
 
         # yuyan
-
+        "torch.Tensor.softmax",
+        "torch.special.softmax",
+        "torch.softmax",
 
         # huoda
 
@@ -199,7 +266,32 @@ class GlobalManager:
         "torch.amin"
         "torch.Tensor.amax"
         "torch.Tensor.amin"
+        "torch.amax",
+        "torch.amin",
+        "torch.Tensor.amax",
+        "torch.Tensor.amin",
+
         # zhengsheng
+        "torch.broadcast_to",
+        "torch.nn.functional.embedding",
+        "torch.no_grad",
+        "torch.ones_like",
+        "torch.reshape",
+        "torch.take_along_dim",
+        "torch.Tensor.bitwise_or_",
+        "torch.Tensor.view",
+        "torch.unique_consecutive",
+        "torch.eye",
+        "torch.full_like",
+        "torch.Tensor.cumsum",
+        "torch.Tensor.expand",
+        "torch.clip",
+        "torch.isfinite",
+        "torch.isinf",
+        "torch.isnan",
+        "torch.flatten",
+        "torch.Tensor.flatten",
+        "torch.roll",
 
 
         # liuyi
@@ -230,6 +322,7 @@ class GlobalManager:
         "torch.Tensor.argmin",
         "torch.all",
         "torch.Tensor.all",
+        "torch.Tensor.any",
 
         # haoyang
         "torch.logical_not",
@@ -249,4 +342,44 @@ class GlobalManager:
 
         # bingxin
         
+        # zhichao
+        "torch.bfloat16",
+        "torch.bool",
+        "torch.complex128",
+        "torch.complex64",
+        "torch.float64",
+        "torch.float16",
+        "torch.float32",
+        "torch.int16",
+        "torch.int32",
+        "torch.int64",
+        "torch.int8",
+        "torch.ravel",
+        "torch.Tensor.narrow",
+        "torch.narrow",
+        "torch.Tensor.type_as",
+        "torch.nn.Sequential",
+
+        # zhouwei
+        "torch.transpose",
+        "torch.Tensor.transpose",
+        "torch.unsqueeze",
+        "torch.Tensor.unsqueeze",
+        "torch.sigmoid",
+        "torch.Tensor.topk",
+        "torch.outer",
+        "torch.nn.functional.sigmoid",
+        "torch.Tensor.requires_grad",
+
+        #"torch.matmul",
+        #"torch.linalg.matmul",
+        #"torch.Tensor.scatter",
+        #"torch.Tensor.sum",
+        #"torch.Tensor.gather",
+        #"torch.nn.functional.one_hot",
+        #"torch.nn.functional.pad",
+        #"torch.prod",
+        #"torch.sum",
+        #"torch.gather",
+        #"torch.Tensor.scatter_",
     ]

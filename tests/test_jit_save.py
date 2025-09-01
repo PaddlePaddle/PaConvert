@@ -56,7 +56,7 @@ def test_case_1():
 
 
         m = paddle.jit.to_static(function=MyModule())
-        example_input = paddle.randn(shape=[4, 3])
+        example_input = paddle.randn(4, 3)
         m(example_input)
         paddle.jit.save(layer=m, path="scriptmodule.pt".rsplit(".", 1)[0])
         """
@@ -100,7 +100,7 @@ def test_case_2():
 
 
         m = paddle.jit.to_static(function=MyModule())
-        example_input = paddle.randn(shape=[4, 3])
+        example_input = paddle.randn(4, 3)
         m(example_input)
         paddle.jit.save(layer=m, path="scriptmodule.pt".rsplit(".", 1)[0])
         """
@@ -145,7 +145,7 @@ def test_case_3():
 
 
         m = paddle.jit.to_static(function=MyModule())
-        example_input = paddle.randn(shape=[4, 3])
+        example_input = paddle.randn(4, 3)
         m(example_input)
         file_path = "scriptmodule.pt"
         paddle.jit.save(layer=m, path=file_path.rsplit(".", 1)[0])
@@ -191,7 +191,7 @@ def test_case_4():
 
 
         m = paddle.jit.to_static(function=MyModule())
-        example_input = paddle.randn(shape=[4, 3])
+        example_input = paddle.randn(4, 3)
         m(example_input)
         file_path = "script.module.pt"
         paddle.jit.save(layer=m, path=file_path.rsplit(".", 1)[0])
