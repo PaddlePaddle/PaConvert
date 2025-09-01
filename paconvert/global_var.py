@@ -223,6 +223,11 @@ class GlobalManager:
 
 
         # siyu
+        "torch.multinomial",
+        "torch.var",
+        "torch.rand_like",
+        "torch.mean",
+        "torch.Tensor.mean",
 
 
         # shijie
