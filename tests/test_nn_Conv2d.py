@@ -14,6 +14,8 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.nn.Conv2d")
@@ -104,7 +106,7 @@ def test_case_6():
         import torch
         import torch.nn as nn
         x = torch.zeros(5, 16, 50, 100)
-        model = nn.Conv2d(16, 33, (3, 5), (2, 1), (4, 2), (3, 1), 1, True, 'zeros', None, None)
+        model = nn.Conv2d(16, 33, (3, 5), (2, 1), (4, 2), (3, 1), 1, bias=True, padding_mode='zeros',device= None,dtype= None)
         result = model(x) * 0
         """
     )
@@ -148,6 +150,62 @@ def test_case_9():
         x = torch.zeros(5, 16, 50, 100)
         model = nn.Conv2d(16, 33, (3, 5))
         result = model(x) * 0
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.zeros(5, 16, 50, 100)
+        model = nn.Conv2d(16, 33, (3, 5), (2, 1), (4, 2),(3, 1), 1, bias=True, padding_mode='zeros', device=None, dtype=None)
+        result = model(x) * 0
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.zeros(5, 16, 50, 100).to(torch.device("cuda:0"))
+        model = nn.Conv2d(16, 33, (3, 5), (2, 1), (4, 2),(3, 1), 1, bias=False, padding_mode='zeros', device=torch.device("cuda:0"), dtype=None)
+        result = model(x) * 0
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.zeros(5, 16, 50, 100).to(torch.float64)
+        model = nn.Conv2d(16, 33, (3, 5), (2, 1), (4, 2),(3, 1), 1, bias=False, padding_mode='zeros', device="cpu", dtype=torch.float64)
+        result = model(x) * 0
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.zeros(5, 16, 50, 100)
+        model = nn.Conv2d(16, 33, (3, 5), (2, 1), (4, 2),(3, 1), 1, bias=False, padding_mode='zeros', device="cpu", dtype=None)
+        result = model(input=x) * 0
         """
     )
     obj.run(pytorch_code, ["result"])

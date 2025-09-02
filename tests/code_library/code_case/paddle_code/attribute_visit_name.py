@@ -20,14 +20,14 @@ def func2(data) -> paddle.Tensor:
     pass
 
 
-def func3(dtype="float32"):
+def func3(dtype=paddle.float32):
     pass
 
 
 isinstance(x, paddle.Tensor)
 setattr(paddle.Tensor, "add", add_func)
 hasattr(paddle.Tensor, "add")
-Union[paddlenlp.transformers.model_outputs.BaseModelOutput, paddle.Tensor]
+Union[paddlenlp.transformers.model_outputs.BaseModelOutput, paddle.LongTensor]
 Optional[paddle.Tensor] = None
 my_add = paddle.add
 setattr(paddle.nn, "functional", my_functional_module)
