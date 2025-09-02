@@ -253,7 +253,8 @@ class GlobalManager:
         "torch.Tensor.softmax",
         "torch.special.softmax",
         "torch.softmax",
-
+        "torch.Tensor.clamp",
+        "torch.Tensor.itemsize",
         # huoda
 
 
