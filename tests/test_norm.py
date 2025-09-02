@@ -45,12 +45,7 @@ def test_case_2():
         result = torch.norm(input, p='nuc')
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="the param p of paddle only support fro, does not support nuc",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():

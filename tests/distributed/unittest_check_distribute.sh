@@ -16,6 +16,7 @@
 set +x
 
 echo "Insalling gpu version torch, which has been installed in Dockerfile"
+#python -m pip install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 python -c "import torch; print('torch version information:' ,torch.__version__)"
 
 echo "Insalling develop gpu version paddle"

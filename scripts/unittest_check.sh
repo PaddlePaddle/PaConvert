@@ -31,7 +31,7 @@ python -m pip install -r requirements.txt
 
 echo "Checking code unit test by pytest ..."
 python -m pip install pytest-timeout
-python -m pytest /workspace/$1/PaConvert/tests;check_error=$?
+python -m pytest ./tests;check_error=$?
 
 echo '************************************************************************************'
 echo "______      _____                          _   "
