@@ -19,6 +19,9 @@ import re
 import sys
 import traceback
 
+sys.path.insert(0, "../../")
+from paconvert.global_var import GlobalManager
+
 project_dir = os.path.join(os.path.dirname(__file__), "../..")
 tool_dir = os.path.dirname(__file__)
 
@@ -158,6 +161,8 @@ missing_matchers_whitelist = {
     "torch.nn.modules.module.register_module_forward_pre_hook": "Paddle don't support global register hook",
     "torch.optim.lr_scheduler.LRScheduler": "PaConvert can not support this api temporary",
 }
+
+no_need_convert_list = GlobalManager.NO_NEED_CONVERT_LIST
 
 validate_whitelist = [
     r"^torch\.(cuda\.)?(\w*)Tensor$",
