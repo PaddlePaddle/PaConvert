@@ -318,6 +318,13 @@ class GlobalManager:
         "torch.flatten",
         "torch.Tensor.flatten",
         "torch.roll",
+        "torch.Tensor.sum",
+        "torch.sum",
+        "torch.repeat_interleave",
+        "torch.Tensor.repeat_interleave",
+        "torch.var",
+        "torch.prod",
+
 
 
         # liuyi
