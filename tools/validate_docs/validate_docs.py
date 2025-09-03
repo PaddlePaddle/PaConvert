@@ -162,8 +162,6 @@ missing_matchers_whitelist = {
     "torch.optim.lr_scheduler.LRScheduler": "PaConvert can not support this api temporary",
 }
 
-no_need_convert_list = GlobalManager.NO_NEED_CONVERT_LIST
-
 validate_whitelist = [
     r"^torch\.(cuda\.)?(\w*)Tensor$",
 ]
@@ -171,6 +169,19 @@ validate_whitelist.extend(cornercase_api_aux_dict.keys())
 validate_whitelist.extend(overloadable_api_aux_set)
 validate_whitelist.extend(missing_docs_whitelist.keys())
 validate_whitelist.extend(missing_matchers_whitelist.keys())
+
+no_need_convert_list = GlobalManager.NO_NEED_CONVERT_LIST
+
+
+def get_no_need_convert_mapping_type_from_doc(docs_mapping):
+    no_need_convert_mapping_type = dict()
+    for api in no_need_convert_list:
+        if api in docs_mapping:
+            if docs_mapping[api]["mapping_type"] == "无参数":
+                no_need_convert_mapping_type[api] = "无参数"
+            else:
+                no_need_convert_mapping_type[api] = "参数完全一致"
+    return no_need_convert_mapping_type
 
 
 def verbose_print(*args, v_level=1, **kwargs):
@@ -498,7 +509,7 @@ if __name__ == "__main__":
             if re.match(wl, api):
                 whitelist_skip = True
                 break
-        if whitelist_skip:
+        if whitelist_skip and api not in no_need_convert_list:
             continue
 
         if api in docs_mapping:
@@ -531,7 +542,7 @@ if __name__ == "__main__":
             if re.match(wl, docs_api):
                 whitelist_skip = True
                 break
-        if whitelist_skip:
+        if whitelist_skip and docs_api not in no_need_convert_list:
             continue
 
         if docs_api not in api_mapping and docs_api not in attribute_mapping:
