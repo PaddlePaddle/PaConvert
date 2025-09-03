@@ -7,4 +7,4 @@ func = paddle.add
 paddle.add(a, b)
 print("#########################case2#########################")
 func = paddle.matmul
-paddle.matmul(x=a, y=b)
+paddle.matmul(a, b)
