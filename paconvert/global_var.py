@@ -259,7 +259,7 @@ class GlobalManager:
         "torch.repeat_interleave",
         "torch.Tensor.repeat_interleave",
         "torch.var",
-        # "torch.prod",
+        "torch.prod",
 
 
         # liuyi
