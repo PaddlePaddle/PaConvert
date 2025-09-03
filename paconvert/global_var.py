@@ -262,6 +262,7 @@ class GlobalManager:
         "torch.prod",
 
 
+
         # liuyi
         "torch.finfo",
         "torch.is_complex",
