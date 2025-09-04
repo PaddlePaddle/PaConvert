@@ -15,7 +15,6 @@
 
 import textwrap
 
-import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.Tensor.new_ones")
@@ -76,7 +75,6 @@ def test_case_5():
     obj.run(pytorch_code, ["result"])
 
 
-@pytest.mark.skip("skip util some attr transform fixed(e.g. layout)")
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """
@@ -122,7 +120,6 @@ def test_case_9():
     obj.run(pytorch_code, ["result"])
 
 
-@pytest.mark.skip("skip util some attr transform fixed(e.g. layout)")
 def test_case_10():
     pytorch_code = textwrap.dedent(
         """
@@ -134,7 +131,6 @@ def test_case_10():
     obj.run(pytorch_code, ["result"])
 
 
-@pytest.mark.skip("skip util some attr transform fixed(e.g. layout)")
 def test_case_11():
     pytorch_code = textwrap.dedent(
         """

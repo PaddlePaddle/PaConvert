@@ -78,10 +78,6 @@ class GlobalManager:
 
     # 无需转换的Pytorch API名单
     NO_NEED_CONVERT_LIST = [
-        "torch.einsum",
-        "torch.Tensor.cos",
-        "torch.Tensor.masked_scatter",
-
         # zhimin
         "torch.Tensor.bfloat16",
         "torch.Tensor.bool",
@@ -144,7 +140,6 @@ class GlobalManager:
         "torch.autograd.Function",
         "torch.take_along_dim",
         "torch.Tensor.take_along_dim",
-
         "torch.special.logsumexp",
         "torch.argwhere",
         "torch.concatenate",
@@ -293,6 +288,7 @@ class GlobalManager:
 
         # sundong
         "torch.matmul",
+        "torch.linalg.matmul",
         "torch.multiply",
         "torch.Tensor.matmul",
         "torch.Tensor.multiply",
@@ -407,37 +403,30 @@ class GlobalManager:
         "torch.outer",
         "torch.nn.functional.sigmoid",
         "torch.Tensor.requires_grad",
+        "torch.Tensor.data",
+        "torch.is_tensor",
+        "torch.Tensor.element_size",
+        "torch.Tensor.cuda",
+        "torch.Tensor.view_as",
 
-        #"torch.matmul",
-        #"torch.linalg.matmul",
+        #"torch.Tensor.device",
         #"torch.Tensor.scatter",
-        #"torch.Tensor.sum",
         #"torch.Tensor.gather",
         #"torch.nn.functional.one_hot",
         #"torch.nn.functional.pad",
-        #"torch.prod",
-        #"torch.sum",
         #"torch.gather",
         #"torch.Tensor.scatter_",
-
-        "torch.Tensor.shape",
         #"torch.Tensor.size",
         #"torch.Tensor.to",
         #"torch.Tensor.stride",
-        "torch.Tensor.data",
-        "torch.is_tensor",
         #"torch.Tensor.itemsize",
         #"torch.Size",
-        "torch.tensor",
         #"torch.Tensor.clamp",
         #"torch.Tensor.cpu",
-        "torch.Tensor.element_size",
         #"torch.log2",
         #"torch.ceil",
         #"torch.dot",
-        "torch.Tensor.cuda",
         #"torch.Tensor.is_cuda",
         #"torch.Tensor.unbind",
-        "torch.Tensor.view_as",
         #"torch.tensor_split",
     ]

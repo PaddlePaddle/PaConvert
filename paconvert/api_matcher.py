@@ -366,7 +366,7 @@ class AtleastMatcher(BaseMatcher):
 
 
 # These APIs only change API name, but not change API args/kwargs
-class UnchangeMatcher(BaseMatcher):
+class ChangeAPIMatcher(BaseMatcher):
     def get_paddle_api(self):
         assert "paddle_api" in self.api_mapping_dict
         return super().get_paddle_api()
@@ -383,17 +383,23 @@ class UnchangeMatcher(BaseMatcher):
         )
         return ast.parse(code).body
 
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        return "unchange"
 
-    def get_paddle_class_attribute_nodes(self, node):
-        return "unchange"
+class EinopsTorchMatcher(BaseMatcher):
+    def get_paddle_api(self):
+        return self.torch_api.replace("einops.layers.torch", "einops.layers.paddle")
+
+    def get_paddle_nodes(self, args, kwargs):
+        return ChangeAPIMatcher.get_paddle_nodes(self, args, kwargs)
 
 
 # These APIs only change torch.* to paddle.*, not change any other thing
 class NoNeedConvertMatcher(BaseMatcher):
     def get_paddle_api(self):
-        return self.torch_api.replace("torch.", "paddle.")
+        assert "paddle_api" not in self.api_mapping_dict
+        if self.paddle_api:
+            return self.paddle_api
+        else:
+            return self.torch_api.replace("torch.", "paddle.")
 
     def get_paddle_nodes(self, args, kwargs):
         args = self.parse_args(args)
@@ -409,19 +415,8 @@ class NoNeedConvertMatcher(BaseMatcher):
         )
         return ast.parse(code).body
 
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        return "unchange"
-
     def get_paddle_class_attribute_nodes(self, node):
         return "unchange"
-
-
-class EinopsTorchMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        self.set_paddle_api(
-            self.torch_api.replace("einops.layers.torch", "einops.layers.paddle")
-        )
-        return UnchangeMatcher.get_paddle_nodes(self, args, kwargs)
 
 
 class TransformersGenericMatcher(BaseMatcher):
@@ -429,7 +424,7 @@ class TransformersGenericMatcher(BaseMatcher):
         return self.torch_api.replace("transformers.", "paddlenlp.transformers.")
 
     def get_paddle_nodes(self, args, kwargs):
-        return UnchangeMatcher.get_paddle_nodes(self, args, kwargs)
+        return ChangeAPIMatcher.get_paddle_nodes(self, args, kwargs)
 
 
 class PaddleFlagMatcher(BaseMatcher):
@@ -612,7 +607,7 @@ class TRFMPreTrainedModelMatcher(BaseMatcher):
 
     def get_paddle_nodes(self, args, kwargs):
         self.enable_utils_code()
-        return UnchangeMatcher.get_paddle_nodes(self, args, kwargs)
+        return ChangeAPIMatcher.get_paddle_nodes(self, args, kwargs)
 
 
 class SignalWindowsWatcher(BaseMatcher):
@@ -1220,7 +1215,7 @@ class _MaxMinMatcherBase(BaseMatcher):
         elif paddle_api == "paddle.max":
             self.set_paddle_api("paddle_max")
 
-        return UnchangeMatcher.get_paddle_nodes(self, args, kwargs)
+        return ChangeAPIMatcher.get_paddle_nodes(self, args, kwargs)
 
 
 class MaxMatcher(_MaxMinMatcherBase):

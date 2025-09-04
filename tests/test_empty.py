@@ -79,8 +79,7 @@ def test_case_4():
     )
 
 
-# the only corner case, input a variable which is Constant, has no solution
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
