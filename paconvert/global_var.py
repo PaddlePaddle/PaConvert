@@ -440,4 +440,9 @@ class GlobalManager:
         #"torch.Tensor.unbind",
         "torch.Tensor.view_as",
         #"torch.tensor_split",
+
+        # qianyue
+        "torch.Tensor.scatter",
+        "torch.Tensor.scatter_",
+        "torch.scatter",
     ]
