@@ -18,7 +18,7 @@ else:
 if TYPE_CHECKING:
     a = paddle.randn(10, 20)
     b = paddle.randn(10, 20)
-    c = paddle.matmul(x=a, y=b)
+    c = paddle.matmul(a, b)
     d = paddle.add(a, b)
     numpy.array([1, 2, 3])
 else:

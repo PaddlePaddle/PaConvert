@@ -292,11 +292,15 @@ class GlobalManager:
 
 
         # sundong
+        "torch.matmul",
+        "torch.multiply",
+        "torch.Tensor.matmul",
+        "torch.Tensor.multiply",
         "torch.amax",
         "torch.amin",
         "torch.Tensor.amax",
         "torch.Tensor.amin",
-        
+
         # zhengsheng
         "torch.broadcast_to",
         "torch.nn.functional.embedding",
