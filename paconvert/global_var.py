@@ -300,6 +300,8 @@ class GlobalManager:
         "torch.amin",
         "torch.Tensor.amax",
         "torch.Tensor.amin",
+        "torch.Tensor.log2",
+        "torch.log2",
 
         # zhengsheng
         "torch.broadcast_to",
