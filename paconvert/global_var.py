@@ -250,6 +250,7 @@ class GlobalManager:
         "torch.softmax",
         "torch.Tensor.clamp",
         "torch.Tensor.itemsize",
+
         # huoda
         "torch.get_default_dtype",
         "torch.einsum",
@@ -439,7 +440,7 @@ class GlobalManager:
         "torch.nn.TransformerDecoder",
         "torch.nn.TripletMarginWithDistanceLoss",
         # "torch.nn.utils.clip_grad_norm_",
-        "torch.nn.utils.clip_grad_value_",
+        # "torch.nn.utils.clip_grad_value_",
         "torch.nn.utils.parameters_to_vector",
         "torch.nn.utils.vector_to_parameters",
         "torch.pi",
