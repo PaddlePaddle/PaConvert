@@ -487,6 +487,8 @@ class GlobalManager:
         "torch.amin",
         "torch.Tensor.amax",
         "torch.Tensor.amin",
+        "torch.Tensor.log2",
+        "torch.log2",
 
         # zhengsheng
         "torch.broadcast_to",
@@ -561,6 +563,8 @@ class GlobalManager:
         "torch.Tensor.logical_xor",
         "torch.index_select",
         "torch.Tensor.index_select",
+        "torch.dot",
+        "torch.Tensor.dot",
 
 
         # rongrui
