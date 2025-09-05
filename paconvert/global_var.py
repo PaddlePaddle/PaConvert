@@ -371,6 +371,8 @@ class GlobalManager:
         "torch.Tensor.logical_xor",
         "torch.index_select",
         "torch.Tensor.index_select",
+        "torch.dot",
+        "torch.Tensor.dot",
 
 
         # rongrui
