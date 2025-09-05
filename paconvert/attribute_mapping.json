@@ -129,19 +129,19 @@
     "paddle_api": "'complex64'"
   },
   "torch.distributed.ReduceOp.MAX": {
-    "Matcher": "UnchangeMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.ReduceOp.MAX"
   },
   "torch.distributed.ReduceOp.MIN": {
-    "Matcher": "UnchangeMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.ReduceOp.MIN"
   },
   "torch.distributed.ReduceOp.PRODUCT": {
-    "Matcher": "UnchangeMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.ReduceOp.PROD"
   },
   "torch.distributed.ReduceOp.SUM": {
-    "Matcher": "UnchangeMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.ReduceOp.SUM"
   },
   "torch.distributions.Distribution.batch_shape": {},
