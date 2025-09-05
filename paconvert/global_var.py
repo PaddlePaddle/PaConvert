@@ -349,6 +349,8 @@ class GlobalManager:
         "torch.chunk",
         "torch.Tensor.chunk",
         "torch.any",
+        "torch.unbind",
+        "torch.Tensor.unbind"
 
         # shenwei
         "torch.Tensor.expand_as",
