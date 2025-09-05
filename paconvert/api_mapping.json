@@ -271,7 +271,7 @@
   },
   "torch.Size": {
     "Matcher": "SizeMatcher",
-    "paddle_api": "list",
+    "paddle_api": "Paddle.Size",
     "min_input_args": 0
   },
   "torch.Tensor": {
