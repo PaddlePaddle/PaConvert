@@ -442,7 +442,7 @@ class GlobalManager:
         ### testing ###
         "torch.is_grad_enabled",
         "torch.nn.Conv2d",
-        "torch.nn.SiLU",
+        # "torch.nn.SiLU",
         "torch.nn.init.calculate_gain",
         "torch.nn.init.ones_",
         "torch.nn.init.uniform_",
@@ -450,7 +450,7 @@ class GlobalManager:
         "torch.Tensor.div",
         "torch.Tensor.element_size",
         "torch.Tensor.is_floating_point",
-        "torch.Tensor.mul",
+        # "torch.Tensor.mul",
         "torch.Tensor.neg",
         "torch.Tensor.pin_memory",
         "torch.Tensor.view_as",
