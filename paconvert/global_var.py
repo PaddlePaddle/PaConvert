@@ -360,6 +360,7 @@ class GlobalManager:
         "torch.Tensor.argmin",
         "torch.all",
         "torch.Tensor.all",
+        "torch.tensor_split",
         "torch.Tensor.any",
 
         # haoyang
