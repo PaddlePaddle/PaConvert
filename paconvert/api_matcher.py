@@ -400,7 +400,7 @@ class NoNeedConvertMatcher(BaseMatcher):
         kwargs = self.parse_kwargs(kwargs, allow_none=True)
 
         # temporary delete these unsupport args, which paddle does not support now
-        for k in ["layout", "generator", "memory_format"]:
+        for k in ["layout", "generator", "memory_format", "sparse_grad"]:
             if k in kwargs:
                 kwargs.pop(k)
 

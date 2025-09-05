@@ -253,16 +253,55 @@ class GlobalManager:
         "torch.Tensor.softmax",
         "torch.special.softmax",
         "torch.softmax",
-
+        "torch.Tensor.clamp",
+        "torch.Tensor.itemsize",
         # huoda
+        "torch.get_default_dtype",
+        "torch.einsum",
+        "torch.nn.Identity",
+        "torch.Tensor.ndim",
+        "torch.Tensor.T",
+        "torch.Tensor.abs",
+        "torch.Tensor.cos",
+        "torch.Tensor.detach",
+        "torch.Tensor.dim",
+        "torch.Tensor.fill_",
+        "torch.Tensor.isnan",
+        "torch.Tensor.item",
+        "torch.Tensor.log",
+        "torch.Tensor.masked_scatter",
+        "torch.Tensor.masked_fill_",
+        "torch.Tensor.masked_fill",
+        "torch.Tensor.nonzero",
+        "torch.Tensor.normal_",
+        "torch.Tensor.sigmoid",
+        "torch.Tensor.sin",
+        "torch.Tensor.square",
+        "torch.Tensor.tolist",
+        "torch.Tensor.zero_",
+        "torch.distributed.get_rank",
+        "torch.distributed.get_world_size",
+        "torch.special.softmax",
+        "torch.Tensor.shape",
+        "torch.float32",
+        "torch.long",
+        "torch.int32",
+        "torch.bfloat16",
+        "torch.int64",
+        "torch.bool",
+        "torch.uint8",
 
 
         # sundong
+        "torch.matmul",
+        "torch.multiply",
+        "torch.Tensor.matmul",
+        "torch.Tensor.multiply",
         "torch.amax",
         "torch.amin",
         "torch.Tensor.amax",
         "torch.Tensor.amin",
-        
+
         # zhengsheng
         "torch.broadcast_to",
         "torch.nn.functional.embedding",
@@ -284,6 +323,13 @@ class GlobalManager:
         "torch.flatten",
         "torch.Tensor.flatten",
         "torch.roll",
+        "torch.Tensor.sum",
+        "torch.sum",
+        "torch.repeat_interleave",
+        "torch.Tensor.repeat_interleave",
+        "torch.var",
+        "torch.prod",
+
 
 
         # liuyi
@@ -303,6 +349,8 @@ class GlobalManager:
         "torch.chunk",
         "torch.Tensor.chunk",
         "torch.any",
+        "torch.unbind",
+        "torch.Tensor.unbind"
 
         # shenwei
         "torch.Tensor.expand_as",
