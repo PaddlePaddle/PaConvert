@@ -448,7 +448,7 @@ class Converter:
                 # model_torch.npy
                 # modeltorch.npy
                 # 1torch.npy
-                # paddlenlp.transformers.*
+                # paddleformers.transformers.*
                 if re.match(r".*[^\w\.]{1}%s\." % torch_package, rm_str_line):
                     lines[i] = ">>>>>>" + line
 

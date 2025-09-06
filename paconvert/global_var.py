@@ -63,7 +63,7 @@ class GlobalManager:
         "NLTK": "paddle",
         "scikit-learn": "paddle",
         "fairscale": "paddle",  # FS
-        "transformers": "paddlenlp",  # TRFM
+        "transformers": "paddleformers",  # TRFM
         "datasets": "paddle",
         "accelerate": "paddle",
         "diffusers": "paddle",

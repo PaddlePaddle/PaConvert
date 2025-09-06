@@ -20108,7 +20108,7 @@
   },
   "transformers.AddedToken": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddlenlp.transformers.AddedToken",
+    "paddle_api": "paddleformers.transformers.AddedToken",
     "args_list": [
       "content",
       "single_word",
@@ -20123,7 +20123,7 @@
   },
   "transformers.GenerationConfig": {
     "Matcher": "TRFMGenerationConfigMatcher",
-    "paddle_api": "paddlenlp.generation.GenerationConfig",
+    "paddle_api": "paddleformers.generation.GenerationConfig",
     "args_list": [
       "*",
       "max_length",
@@ -20210,12 +20210,12 @@
   },
   "transformers.PreTrainedModel": {
     "Matcher": "TRFMPreTrainedModelMatcher",
-    "paddle_api": "paddlenlp.transformers.PretrainedModel",
+    "paddle_api": "paddleformers.transformers.PretrainedModel",
     "abstract": true
   },
   "transformers.PreTrainedModel.generate": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddlenlp.transformers.PreTrainedModel.generate",
+    "paddle_api": "paddleformers.transformers.PreTrainedModel.generate",
     "min_input_args": 1,
     "args_list": [
       "input"
@@ -20226,7 +20226,7 @@
   },
   "transformers.PreTrainedTokenizer": {
     "Matcher": "TRFMPreTrainedTokenizerMatcher",
-    "paddle_api": "paddlenlp.transformers.PretrainedTokenizer",
+    "paddle_api": "paddleformers.transformers.PretrainedTokenizer",
     "abstract": true,
     "args_list": [
       "*",
@@ -20249,7 +20249,7 @@
   },
   "transformers.PretrainedConfig": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddlenlp.transformers.PretrainedConfig",
+    "paddle_api": "paddleformers.transformers.PretrainedConfig",
     "abstract": true,
     "args_list": [
       "*",
@@ -20316,7 +20316,7 @@
   },
   "transformers.StoppingCriteriaList": {
     "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddlenlp.generation.StoppingCriteriaList",
+    "paddle_api": "paddleformers.generation.StoppingCriteriaList",
     "args_list": [
       "input_ids",
       "scores",
@@ -20325,7 +20325,7 @@
   },
   "transformers.generation.LogitsProcessor": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddlenlp.generation.LogitsProcessor",
+    "paddle_api": "paddleformers.generation.LogitsProcessor",
     "args_list": [
       "input_ids",
       "scores"
@@ -20336,11 +20336,11 @@
   },
   "transformers.generation.LogitsProcessorList": {
     "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddlenlp.generation.LogitsProcessorList"
+    "paddle_api": "paddleformers.generation.LogitsProcessorList"
   },
   "transformers.generation.utils.GenerateOutput": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddlenlp.transformers.model_outputs.BaseModelOutput",
+    "paddle_api": "paddleformers.transformers.model_outputs.BaseModelOutput",
     "abstract": true
   },
   "transformers.logging.get_logger": {
@@ -20351,7 +20351,7 @@
   },
   "transformers.modeling_outputs.BaseModelOutputWithPast": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddlenlp.transformers.model_outputs.BaseModelOutputWithPast",
+    "paddle_api": "paddleformers.transformers.model_outputs.BaseModelOutputWithPast",
     "args_list": [
       "last_hidden_state",
       "past_key_values",
@@ -20361,7 +20361,7 @@
   },
   "transformers.modeling_outputs.CausalLMOutputWithPast": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddlenlp.transformers.model_outputs.CausalLMOutputWithPast",
+    "paddle_api": "paddleformers.transformers.model_outputs.CausalLMOutputWithPast",
     "args_list": [
       "loss",
       "logits",
@@ -20372,7 +20372,7 @@
   },
   "transformers.utils.add_start_docstrings_to_model_forward": {
     "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddlenlp.trainer.utils.add_start_docstrings_to_model_forward",
+    "paddle_api": "paddleformers.trainer.utils.add_start_docstrings_to_model_forward",
     "args_list": [
       "*docstr"
     ]
