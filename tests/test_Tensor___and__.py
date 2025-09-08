@@ -47,8 +47,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-x = torch.tensor([True, False])
-result = x & True
+        x = torch.tensor([True, False])
+        result = x & True
         """
     )
     obj.run(pytorch_code, ["result"])

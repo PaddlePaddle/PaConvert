@@ -23,9 +23,9 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-import numpy as np
-x = torch.tensor([1.0, 2.0, 3.0])
-result = x.__array__()
+        import numpy as np
+        x = torch.tensor([1.0, 2.0, 3.0])
+        result = x.__array__()
         """
     )
     obj.run(pytorch_code, ["result"])

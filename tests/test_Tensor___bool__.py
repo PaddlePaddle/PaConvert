@@ -23,8 +23,8 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-x = torch.tensor([True])
-result = bool(x)
+        x = torch.tensor([True])
+        result = bool(x)
         """
     )
     obj.run(pytorch_code, ["result"])
