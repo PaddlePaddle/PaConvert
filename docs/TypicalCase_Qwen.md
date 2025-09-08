@@ -8,7 +8,7 @@
 - paconvert
 - Python 3.8+
 - paddlepaddle-gpu 2.6+ (建议: develop)
-- paddlenlp
+- paddleformers
 
 ### 源代码库下载
 
