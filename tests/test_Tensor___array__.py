@@ -23,7 +23,6 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import numpy as np
         x = torch.tensor([1.0, 2.0, 3.0])
         result = x.__array__()
         """
@@ -48,7 +47,7 @@ def test_case_3():
         import torch
         import numpy as np
         x = torch.tensor([1.0, 2.0, 3.0], dtype=torch.float32)
-        result = np.array(x)
+        result = np.asarray(x)
         """
     )
     obj.run(pytorch_code, ["result"])

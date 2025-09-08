@@ -34,7 +34,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor(3.0)
+        x = torch.tensor(3, dtype=torch.int64)
         result = x.__index__()
         """
     )
