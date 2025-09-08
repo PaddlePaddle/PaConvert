@@ -562,7 +562,7 @@ class TRFMPreTrainedModelMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             from typing import Optional
-            import paddlenlp
+            import paddleformers
             def _convert_head_mask_to_5d(head_mask, num_hidden_layers):
                 if head_mask.dim() == 1:
                     head_mask = head_mask.unsqueeze(0).unsqueeze(0).unsqueeze(-1).unsqueeze(-1)

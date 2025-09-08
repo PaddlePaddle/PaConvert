@@ -1,5 +1,5 @@
 import paddle
-import paddlenlp
+import paddleformers
 
 
 class A(paddle.nn.Layer):

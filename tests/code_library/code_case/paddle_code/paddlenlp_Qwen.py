@@ -2,7 +2,7 @@ import logging
 from typing import Optional
 
 import paddle
-import paddlenlp
+import paddleformers
 
 ############################## 相关utils函数，如下 ##############################
 
@@ -94,9 +94,9 @@ print("#########################case2#########################")
 def chat(
     self,
     system: str = "You are a helpful assistant.",
-    generation_config: Optional[paddlenlp.generation.GenerationConfig] = None,
-    logits_processor: Optional[paddlenlp.generation.LogitsProcessorList] = None,
-    stopping_criteria: Optional[paddlenlp.generation.StoppingCriteriaList] = None,
+    generation_config: Optional[paddleformers.generation.GenerationConfig] = None,
+    logits_processor: Optional[paddleformers.generation.LogitsProcessorList] = None,
+    stopping_criteria: Optional[paddleformers.generation.StoppingCriteriaList] = None,
 ) -> Union[paddleformers.transformers.model_outputs.BaseModelOutput, paddle.Tensor]:
     return paddle.zeros([2, 4])
 
@@ -160,7 +160,7 @@ class QWenConfig(PretrainedConfig):
 print("#########################case13#########################")
 
 
-class StopWordsLogitsProcessor(paddlenlp.generation.LogitsProcessor):
+class StopWordsLogitsProcessor(paddleformers.generation.LogitsProcessor):
     pass
 
 

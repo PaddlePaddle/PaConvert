@@ -429,7 +429,7 @@ class Converter:
             if last_in_str or in_str:
                 continue
 
-            # paddle.add(paddlenlp.
+            # paddle.add(paddleformers.
             #   transformers.BertTokenizer)
             """
             # may be removed in future
