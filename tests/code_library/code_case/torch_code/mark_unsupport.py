@@ -55,6 +55,7 @@ num_workers_per_machine) after calling torch.distributed.init_process_group().
 
 
 print("############################################################################")
+import paddleformers
 import torch
 torch.fake_api(paddleformers.transformers.BertTokenizer.from_pretrained('bert-base-chinese'), torch.rand(2, 3, 4), paddleformers.transformers.BertTokenizer.from_pretrained('bert-base-chinese'))
 paddleformers.transformers.BertTokenizer.from_pretrained('bert-base-chinese')
