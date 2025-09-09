@@ -40,8 +40,8 @@ class TensorFormatAPIBase(APIBase):
         ), f"API ({name}): The return value must be string type."
 
         def extract_last_bracket_content(s):
-            start = s.rfind("(")
-            end = s.rfind(")")
+            start = s.rfind("[")
+            end = s.rfind("]")
             if start != -1 and end != -1 and end > start:
                 return s[start + 1 : end].strip()
             return s
