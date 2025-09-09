@@ -43,12 +43,49 @@ def test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_3():
+# Paddle does not support scalar input.
+def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
         x = torch.tensor([True, False])
         result = x & True
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 2, 3], dtype=torch.int64)
+        y = torch.tensor([3, 2, 1], dtype=torch.int64)
+        result = x & y
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 2, 3], dtype=torch.float32)
+        y = torch.tensor([3, 2, 1], dtype=torch.float32)
+        result = x & y
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 2, 3], dtype=torch.long)
+        y = torch.tensor([3, 2, 1], dtype=torch.long)
+        result = x & y
         """
     )
     obj.run(pytorch_code, ["result"])

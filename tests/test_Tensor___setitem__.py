@@ -50,7 +50,6 @@ def test_case_3():
         x = torch.tensor([1, 2, 3, 4, 5])
         indices = torch.tensor([0, 2])
         x[indices] = torch.tensor([9, 8])
-        result = x
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x"])
