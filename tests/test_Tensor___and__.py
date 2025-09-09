@@ -71,8 +71,8 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3], dtype=torch.float32)
-        y = torch.tensor([3, 2, 1], dtype=torch.float32)
+        x = torch.tensor([1, 2, 3], dtype=torch.int8)
+        y = torch.tensor([3, 2, 1], dtype=torch.int8)
         result = x & y
         """
     )
