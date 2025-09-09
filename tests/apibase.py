@@ -182,6 +182,32 @@ class APIBase(object):
                 )
             return
 
+        if isinstance(pytorch_result, np.ndarray):
+            assert isinstance(
+                paddle_result, np.ndarray
+            ), f"API ({name}): paddle result should be numpy array, but got {type(paddle_result)}"
+
+            if not check_shape:
+                pytorch_result = pytorch_result.flatten()
+                paddle_result = paddle_result.flatten()
+
+            if check_dtype:
+                assert (
+                    pytorch_result.dtype == paddle_result.dtype
+                ), "API ({}): dtype mismatch, torch dtype is {}, paddle dtype is {}".format(
+                    name, pytorch_result.dtype, paddle_result.dtype
+                )
+            if check_value:
+                assert (
+                    pytorch_result.shape == paddle_result.shape
+                ), "API ({}): shape mismatch, torch shape is {}, paddle shape is {}".format(
+                    name, pytorch_result.shape, paddle_result.shape
+                )
+                np.testing.assert_allclose(
+                    pytorch_result, paddle_result, rtol=rtol, atol=atol
+                ), "API ({}): paddle result has diff with pytorch result".format(name)
+            return
+
         if isinstance(
             pytorch_result, (bool, np.number, int, float, str, re.Pattern, type(None))
         ):

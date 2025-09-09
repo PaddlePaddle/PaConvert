@@ -171,6 +171,8 @@ validate_whitelist.extend(missing_docs_whitelist.keys())
 validate_whitelist.extend(missing_matchers_whitelist.keys())
 
 no_need_convert_list = GlobalManager.NO_NEED_CONVERT_LIST
+for api in no_need_convert_list:
+    print(api)
 
 
 def get_no_need_convert_mapping_type_from_doc(docs_mapping):
