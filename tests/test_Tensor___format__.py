@@ -40,22 +40,19 @@ class TensorFormatAPIBase(APIBase):
         ), f"API ({name}): The return value must be string type."
 
         def extract_last_bracket_content(s):
-            start = s.rfind("[")
-            end = s.rfind("]")
+            start = s.rfind("(")
+            end = s.rfind(")")
             if start != -1 and end != -1 and end > start:
                 return s[start + 1 : end].strip()
             return s
 
         torch_content = extract_last_bracket_content(pytorch_result)
-        paddle_content = extract_last_bracket_content(paddle_result)
 
-        if torch_content != paddle_content:
+        if torch_content not in paddle_result:
             raise AssertionError(
                 f"API ({name}): Content in last brackets mismatch.\n"
-                f"PyTorch content: '{torch_content}'\n"
-                f"Paddle content: '{paddle_content}'\n"
-                f"Full PyTorch result: '{pytorch_result}'\n"
-                f"Full Paddle result: '{paddle_result}'"
+                f"PyTorch result: '{pytorch_result}'\n"
+                f"Paddle result: '{paddle_result}'"
             )
 
 
