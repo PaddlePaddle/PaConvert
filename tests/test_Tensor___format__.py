@@ -30,28 +30,32 @@ class TensorFormatAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        if not isinstance(paddle_result, str):
-            paddle_result = str(paddle_result)
-        if not isinstance(pytorch_result, str):
-            pytorch_result = str(pytorch_result)
 
-        start_idx = pytorch_result.find("(")
-        end_idx = pytorch_result.rfind(")")
+        assert isinstance(
+            pytorch_result, str
+        ), f"API ({name}): The return value must be string type."
 
-        if start_idx != -1 and end_idx != -1 and end_idx > start_idx:
-            torch_content = pytorch_result[start_idx + 1 : end_idx].strip()
-            if torch_content not in paddle_result:
-                raise AssertionError(
-                    f"API ({name}): Paddle result does not contain the core content from PyTorch result.\n"
-                    f"Core content from PyTorch: '{torch_content}'\n"
-                    f"Full Pytorch result: '{pytorch_result}'\n"
-                    f"Full Paddle result: '{paddle_result}'"
-                )
-        else:
-            assert pytorch_result == paddle_result, (
-                f"API ({name}): Paddle result does not contain PyTorch result.\n"
-                f"Pytorch result: '{pytorch_result}'\n"
-                f"Paddle result: '{paddle_result}'"
+        assert isinstance(
+            paddle_result, str
+        ), f"API ({name}): The return value must be string type."
+
+        def extract_last_bracket_content(s):
+            start = s.rfind("(")
+            end = s.rfind(")")
+            if start != -1 and end != -1 and end > start:
+                return s[start + 1 : end].strip()
+            return s
+
+        torch_content = extract_last_bracket_content(pytorch_result)
+        paddle_content = extract_last_bracket_content(paddle_result)
+
+        if torch_content != paddle_content:
+            raise AssertionError(
+                f"API ({name}): Content in last brackets mismatch.\n"
+                f"PyTorch content: '{torch_content}'\n"
+                f"Paddle content: '{paddle_content}'\n"
+                f"Full PyTorch result: '{pytorch_result}'\n"
+                f"Full Paddle result: '{paddle_result}'"
             )
 
 
