@@ -537,6 +537,7 @@ class GlobalManager:
         "torch.chunk",
         "torch.Tensor.chunk",
         "torch.any",
+        "torch.nn.functional.one_hot",
         "torch.unbind",
         "torch.Tensor.unbind"
 
