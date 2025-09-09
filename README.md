@@ -226,4 +226,4 @@ ______      _____                          _
 
 ## 贡献代码
 
-代码自动转换工具（[PaConvert](https://github.com/PaddlePaddle/PaConvert)）为开源贡献形式，欢迎向我们贡献代码，详细开发步骤请参考 [贡献代码教程](./docs/CONTRIBUTING.md)
+代码自动转换工具（[PaConvert](https://github.com/PaddlePaddle/PaConvert)）为开源贡献形式，欢迎向我们贡献代码，详细开发步骤请参考 [贡献代码教程](./docs/CONTRIBUTING.md)。
