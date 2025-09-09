@@ -276,7 +276,7 @@ def test_case_20_complex():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.arange(144).reshape([3, 4, 3, 4]).type(torch.float16)
+        input = torch.arange(144).reshape([3, 4, 3, 4]).type(torch.float32)
         input.requires_grad = True
         index = torch.tensor([[[[1], [0]]], [[[0], [1]]]], dtype=torch.int64)
         src = torch.zeros_like(index).to(input.dtype)
