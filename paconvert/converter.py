@@ -429,7 +429,7 @@ class Converter:
             if last_in_str or in_str:
                 continue
 
-            # paddle.add(paddlenlp.
+            # paddle.add(paddleformers.
             #   transformers.BertTokenizer)
             """
             # may be removed in future
@@ -448,7 +448,7 @@ class Converter:
                 # model_torch.npy
                 # modeltorch.npy
                 # 1torch.npy
-                # paddlenlp.transformers.*
+                # paddleformers.transformers.*
                 if re.match(r".*[^\w\.]{1}%s\." % torch_package, rm_str_line):
                     lines[i] = ">>>>>>" + line
 

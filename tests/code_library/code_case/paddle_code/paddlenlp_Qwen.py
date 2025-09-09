@@ -2,7 +2,7 @@ import logging
 from typing import Optional
 
 import paddle
-import paddlenlp
+import paddleformers
 
 ############################## 相关utils函数，如下 ##############################
 
@@ -29,28 +29,28 @@ def _get_head_mask(
     else:
         head_mask = [None] * num_hidden_layers
     return head_mask
-setattr(paddlenlp.transformers.model_utils.PretrainedModel, "get_head_mask", _get_head_mask)
+setattr(paddleformers.transformers.model_utils.PretrainedModel, "get_head_mask", _get_head_mask)
 
-original_generate = paddlenlp.generation.utils.GenerationMixin.generate
+original_generate = paddleformers.generation.utils.GenerationMixin.generate
 def _generate(self, input_ids, *args, **kwargs):
     return paddle.concat((input_ids, original_generate(self,input_ids, *args, **kwargs)[0]), axis=-1)
-setattr(paddlenlp.generation.utils.GenerationMixin, "generate", _generate)
+setattr(paddleformers.generation.utils.GenerationMixin, "generate", _generate)
 
-setattr(paddlenlp.transformers.model_utils.PretrainedModel, "device", None)
+setattr(paddleformers.transformers.model_utils.PretrainedModel, "device", None)
 
 def _post_init(self):
     if hasattr(self, "init_weights"):
         self.init_weights()
     elif hasattr(self, "_init_weights"):
         self._init_weights()
-setattr(paddlenlp.transformers.model_utils.PretrainedModel, "post_init", _post_init)
+setattr(paddleformers.transformers.model_utils.PretrainedModel, "post_init", _post_init)
 
-import paddlenlp
+import paddleformers
 
-original_encode = paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase.encode
+original_encode = paddleformers.transformers.tokenizer_utils_base.PretrainedTokenizerBase.encode
 def _encode(self, *args, **kwargs):
     return original_encode(self, *args, **kwargs)["input_ids"]
-setattr(paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase, "encode", _encode)
+setattr(paddleformers.transformers.tokenizer_utils_base.PretrainedTokenizerBase, "encode", _encode)
 
 def apply_rotary_position_embeddings(x, cos, sin):
     if not isinstance(cos, paddle.Tensor):
@@ -83,7 +83,7 @@ print("#########################case1#########################")
 
 
 def _add_tokens(
-    self, new_tokens: Union[List[str], List[paddlenlp.transformers.AddedToken]]
+    self, new_tokens: Union[List[str], List[paddleformers.transformers.AddedToken]]
 ) -> int:
     return paddle.zeros([2, 4])
 
@@ -94,24 +94,24 @@ print("#########################case2#########################")
 def chat(
     self,
     system: str = "You are a helpful assistant.",
-    generation_config: Optional[paddlenlp.generation.GenerationConfig] = None,
-    logits_processor: Optional[paddlenlp.generation.LogitsProcessorList] = None,
-    stopping_criteria: Optional[paddlenlp.generation.StoppingCriteriaList] = None,
-) -> Union[paddlenlp.transformers.model_outputs.BaseModelOutput, paddle.Tensor]:
+    generation_config: Optional[paddleformers.generation.GenerationConfig] = None,
+    logits_processor: Optional[paddleformers.generation.LogitsProcessorList] = None,
+    stopping_criteria: Optional[paddleformers.generation.StoppingCriteriaList] = None,
+) -> Union[paddleformers.transformers.model_outputs.BaseModelOutput, paddle.Tensor]:
     return paddle.zeros([2, 4])
 
 
 print("#########################case3#########################")
 logger = logging.getLogger(name=__name__)
 print("#########################case4#########################")
-paddlenlp.transformers.model_outputs.BaseModelOutputWithPast(
+paddleformers.transformers.model_outputs.BaseModelOutputWithPast(
     last_hidden_state=hidden_states,
     past_key_values=presents,
     hidden_states=all_hidden_states,
     attentions=all_self_attentions,
 )
 print("#########################case5#########################")
-paddlenlp.transformers.model_outputs.CausalLMOutputWithPast(
+paddleformers.transformers.model_outputs.CausalLMOutputWithPast(
     loss=loss,
     logits=lm_logits,
     past_key_values=transformer_outputs.past_key_values,
@@ -160,24 +160,24 @@ class QWenConfig(PretrainedConfig):
 print("#########################case13#########################")
 
 
-class StopWordsLogitsProcessor(paddlenlp.generation.LogitsProcessor):
+class StopWordsLogitsProcessor(paddleformers.generation.LogitsProcessor):
     pass
 
 
 print("#########################case14#########################")
 
 
-class QWenPreTrainedModel(paddlenlp.transformers.PretrainedModel):
+class QWenPreTrainedModel(paddleformers.transformers.PretrainedModel):
     pass
 
 
-paddlenlp.transformers.PretrainedModel(config)
-paddlenlp.transformers.PretrainedModel(config=config)
-paddlenlp.transformers.PretrainedModel(config, key1=value1, key2=value2)
+paddleformers.transformers.PretrainedModel(config)
+paddleformers.transformers.PretrainedModel(config=config)
+paddleformers.transformers.PretrainedModel(config, key1=value1, key2=value2)
 print("#########################case15#########################")
 
 
-class QWenTokenizer(paddlenlp.transformers.PretrainedTokenizer):
+class QWenTokenizer(paddleformers.transformers.PretrainedTokenizer):
     pass
 
 
