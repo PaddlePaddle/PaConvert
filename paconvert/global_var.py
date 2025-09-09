@@ -627,4 +627,9 @@ class GlobalManager:
         #"torch.Tensor.is_cuda",
         #"torch.Tensor.unbind",
         #"torch.tensor_split",
+
+        # qianyue
+        "torch.Tensor.scatter",
+        "torch.Tensor.scatter_",
+        "torch.scatter",
     ]
