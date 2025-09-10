@@ -63,7 +63,7 @@ class GlobalManager:
         "NLTK": "paddle",
         "scikit-learn": "paddle",
         "fairscale": "paddle",  # FS
-        "transformers": "paddlenlp",  # TRFM
+        "transformers": "paddleformers",  # TRFM
         "datasets": "paddle",
         "accelerate": "paddle",
         "diffusers": "paddle",
@@ -537,6 +537,7 @@ class GlobalManager:
         "torch.chunk",
         "torch.Tensor.chunk",
         "torch.any",
+        "torch.nn.functional.one_hot",
         "torch.unbind",
         "torch.Tensor.unbind"
 
@@ -607,12 +608,8 @@ class GlobalManager:
         "torch.Tensor.view_as",
 
         #"torch.Tensor.device",
-        #"torch.Tensor.scatter",
-        #"torch.Tensor.gather",
         #"torch.nn.functional.one_hot",
         #"torch.nn.functional.pad",
-        #"torch.gather",
-        #"torch.Tensor.scatter_",
         #"torch.Tensor.size",
         #"torch.Tensor.to",
         #"torch.Tensor.stride",
@@ -626,4 +623,11 @@ class GlobalManager:
         #"torch.Tensor.is_cuda",
         #"torch.Tensor.unbind",
         #"torch.tensor_split",
+
+        # qianyue
+        "torch.gather",
+        "torch.Tensor.gather",
+        "torch.Tensor.scatter",
+        "torch.Tensor.scatter_",
+        "torch.scatter",
     ]
