@@ -626,6 +626,7 @@ class GlobalManager:
 
         # qianyue
         "torch.gather",
+        "torch.Tensor.gather",
         "torch.Tensor.scatter",
         "torch.Tensor.scatter_",
         "torch.scatter",
