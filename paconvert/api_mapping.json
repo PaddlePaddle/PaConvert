@@ -14302,21 +14302,8 @@
     }
   },
   "torch.nn.functional.pad": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.pad",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "pad",
-      "mode",
-      "value"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    },
-    "paddle_default_kwargs": {
-      "pad_from_left_axis": "False"
-    }
+    "Matcher": "UnchangeMatcher",
+    "paddle_api": "paddle.compat.pad"
   },
   "torch.nn.functional.pairwise_distance": {
     "Matcher": "GenericMatcher",

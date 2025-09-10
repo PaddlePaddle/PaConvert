@@ -283,3 +283,115 @@ def test_case_20():
         """
     )
     obj.run(pytorch_code, ["result1", "result2", "result3"])
+
+
+def test_case_21():
+    "Test single dim with backward"
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x_shape = (3)
+        x = torch.arange(3, dtype=torch.float32) + 1
+        x.requires_grad = True
+        result = F.pad(x, (2, 0), mode='constant')
+        result.sum().backward()
+        x_grad = x.grad
+        x_grad.requires_grad = False
+        """
+    )
+    obj.run(pytorch_code, ["result", "x_grad"])
+
+
+def test_case_22():
+    "Test 3D & reflect with backward"
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x_shape = (3, 4, 2)
+        x = torch.arange(24, dtype=torch.float32).reshape(x_shape) + 1
+        x.requires_grad = True
+        y = x * x + x
+        result = F.pad(y, (1, 0, 1, 2), mode='reflect')
+        result.sum().backward()
+        x_grad = x.grad
+        x_grad.requires_grad = False
+        """
+    )
+    obj.run(pytorch_code, ["result", "x_grad"])
+
+
+def test_case_23():
+    "Test 2D with backward"
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x_shape = (3, 2)
+        x = torch.arange(6, dtype=torch.float64).reshape(x_shape) + 1
+        x.requires_grad = True
+        y = 2 * x
+        result = F.pad(y, (0, 1), mode='circular')
+        result.sum().backward()
+        x_grad = x.grad
+        x_grad.requires_grad = False
+        """
+    )
+    obj.run(pytorch_code, ["result", "x_grad"])
+
+
+def test_case_24():
+    "Test constant multi-dim case 1"
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x_shape = (1, 2, 3, 4, 5, 1)
+        x = torch.arange(120, dtype=torch.int32).reshape(x_shape) + 1
+        result = F.pad(x, (1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0), mode='constant', value=-99)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_25():
+    "Test constant multi-dim case 2"
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x_shape = (1, 2, 3, 4, 5, 1)
+        x = torch.arange(120, dtype=torch.int32).reshape(x_shape) + 1
+        result = F.pad(x, (1, 1, 0, 0, 1, 1, 0, 0, 1, 1), mode='constant', value=-99)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_26():
+    "Test constant multi-dim case 3"
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x_shape = (1, 2, 3, 4, 5, 1)
+        x = torch.arange(120, dtype=torch.int32).reshape(x_shape) + 1
+        result = F.pad(x, (1, 1), mode='constant', value=-99)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_27():
+    "Test replicate"
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x_shape = (1, 2, 3, 4, 5)
+        x = torch.arange(120, dtype=torch.int32).reshape(x_shape) + 1
+        result = F.pad(x, (1, 1, 0, 2, 4, 2), mode='replicate')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
