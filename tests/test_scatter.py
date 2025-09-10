@@ -365,7 +365,8 @@ def test_case_25_complex():
     obj.run(pytorch_code, ["result", "input_grad", "src_grad"])
 
 
-def test_case_26_complex():
+# RuntimeError: scatter(): Expected dtype int64 for index
+def _test_case_26_complex():
     # Test int32 reduce = add with shape mismatch
     pytorch_code = textwrap.dedent(
         """

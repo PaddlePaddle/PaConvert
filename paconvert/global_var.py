@@ -552,6 +552,7 @@ class GlobalManager:
         "torch.all",
         "torch.Tensor.all",
         "torch.Tensor.any",
+        "torch.tensor_split",
 
         # haoyang
         "torch.logical_not",
@@ -604,25 +605,16 @@ class GlobalManager:
         "torch.Tensor.data",
         "torch.is_tensor",
         "torch.Tensor.element_size",
-        "torch.Tensor.cuda",
         "torch.Tensor.view_as",
 
         #"torch.Tensor.device",
-        #"torch.nn.functional.one_hot",
-        #"torch.nn.functional.pad",
         #"torch.Tensor.size",
         #"torch.Tensor.to",
         #"torch.Tensor.stride",
-        #"torch.Tensor.itemsize",
         #"torch.Size",
-        #"torch.Tensor.clamp",
         #"torch.Tensor.cpu",
-        #"torch.log2",
         #"torch.ceil",
-        #"torch.dot",
         #"torch.Tensor.is_cuda",
-        #"torch.Tensor.unbind",
-        #"torch.tensor_split",
 
         # qianyue
         "torch.gather",
