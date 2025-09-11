@@ -219,9 +219,11 @@ class GlobalManager:
         "torch.norm",
         "torch.linalg.norm",
         "torch.Tensor.size",
-        #"torch.Tensor.to",
-        #"torch.nn.Module.to",
+        "torch.Tensor.to",
+        "torch.nn.Module.to",
         "torch.linalg.vector_norm",
+        "torch.functional.split",
+        "torch.functional.unique_consecutive",
 
         # siyu
         "torch.multinomial",
