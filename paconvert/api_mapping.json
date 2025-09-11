@@ -14302,7 +14302,7 @@
     }
   },
   "torch.nn.functional.pad": {
-    "Matcher": "UnchangeMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.compat.pad"
   },
   "torch.nn.functional.pairwise_distance": {
