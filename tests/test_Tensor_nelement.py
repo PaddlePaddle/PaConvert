@@ -14,9 +14,9 @@
 
 import textwrap
 
-from apibase import APIBase
+from test_numel import NumelAPIBase
 
-obj = APIBase("torch.Tensor.nelement")
+obj = NumelAPIBase("torch.Tensor.nelement")
 
 
 def test_case_1():
