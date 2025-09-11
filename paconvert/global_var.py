@@ -134,6 +134,7 @@ class GlobalManager:
         "torch.view_as_real",
         "torch.view_as_complex",
         "torch.ger",
+        "torch.Tensor.mul",
         "torch.Tensor.mul_",
         "torch.Tensor.swapaxes",
         "torch.Tensor.swapdims",
@@ -197,6 +198,7 @@ class GlobalManager:
         "torch.sqrt",
         "torch.amin",
         "torch.amax",
+        "torch.Tensor.stride",
 
         # linjun
         "torch.as_tensor", 
@@ -455,7 +457,6 @@ class GlobalManager:
         "torch.Tensor.div",
         "torch.Tensor.element_size",
         "torch.Tensor.is_floating_point",
-        # "torch.Tensor.mul",
         "torch.Tensor.neg",
         "torch.Tensor.pin_memory",
         "torch.Tensor.view_as",
@@ -479,15 +480,18 @@ class GlobalManager:
         "torch.Tensor.__rtruediv__",
         "torch.Tensor.__setitem__",
 
-
-
-
         # sundong
         "torch.matmul",
         "torch.linalg.matmul",
+        "torch.mul",
+        "torch.mul_",
         "torch.multiply",
-        "torch.Tensor.matmul",
+        "torch.multiply_",
+        "torch.Tensor.mul",
+        "torch.Tensor.mul_",
         "torch.Tensor.multiply",
+        "torch.Tensor.multiply_",
+        "torch.Tensor.matmul",
         "torch.amax",
         "torch.amin",
         "torch.Tensor.amax",
@@ -522,6 +526,7 @@ class GlobalManager:
         "torch.Tensor.repeat_interleave",
         "torch.var",
         "torch.prod",
+        "torch.ceil",
 
 
 
@@ -544,8 +549,7 @@ class GlobalManager:
         "torch.any",
         "torch.nn.functional.one_hot",
         "torch.unbind",
-        "torch.Tensor.unbind"
-        "torch.is_floating_point",
+        "torch.Tensor.unbind",
         "torch.is_tensor",
 
         # shenwei
@@ -613,14 +617,9 @@ class GlobalManager:
         "torch.Tensor.data",
         "torch.Tensor.element_size",
         "torch.Tensor.view_as",
+        "torch.Tensor.cpu",
 
         #"torch.Tensor.device",
-        #"torch.Tensor.to",
-        #"torch.Tensor.stride",
-        #"torch.Size",
-        #"torch.Tensor.cpu",
-        #"torch.ceil",
-        #"torch.Tensor.is_cuda",
 
         # qianyue
         "torch.gather",
