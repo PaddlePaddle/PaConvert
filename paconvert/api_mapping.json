@@ -1294,7 +1294,7 @@
   "torch.Tensor.dense_dim": {},
   "torch.Tensor.dequantize": {},
   "torch.Tensor.det": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.linalg.det",
     "min_input_args": 0
   },
@@ -1521,7 +1521,7 @@
     "min_input_args": 0
   },
   "torch.Tensor.erf_": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.erf_",
     "min_input_args": 0
   },
@@ -1581,7 +1581,7 @@
     "min_input_args": 0
   },
   "torch.Tensor.expm1_": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.expm1_",
     "min_input_args": 0
   },
@@ -2686,7 +2686,7 @@
     }
   },
   "torch.Tensor.matrix_exp": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.linalg.matrix_exp",
     "min_input_args": 0
   },
@@ -3238,7 +3238,7 @@
     ]
   },
   "torch.Tensor.positive": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.positive"
   },
   "torch.Tensor.pow": {
@@ -3831,7 +3831,7 @@
     "min_input_args": 0
   },
   "torch.Tensor.square_": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "TensorFunc2PaddleFunc",
     "paddle_api": "paddle.square_",
     "min_input_args": 0
   },
