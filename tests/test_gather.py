@@ -205,8 +205,7 @@ def test_case_16():
     obj.run(pytorch_code, ["result", "out"])
 
 
-#  RuntimeError: gather(): Expected dtype int64 for index
-def _test_case_17_complex():
+def test_case_17_complex():
     pytorch_code = textwrap.dedent(
         """
         import torch
