@@ -539,7 +539,10 @@ class GlobalManager:
         "torch.any",
         "torch.nn.functional.one_hot",
         "torch.unbind",
-        "torch.Tensor.unbind"
+        "torch.Tensor.unbind",
+        "torch.is_floating_point",
+        "torch.is_tensor",
+        "torch.isin",
 
         # shenwei
         "torch.Tensor.expand_as",
