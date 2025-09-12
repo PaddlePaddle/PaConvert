@@ -18215,9 +18215,15 @@
     ]
   },
   "torch.utils.data.WeightedRandomSampler": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.io.WeightedRandomSampler",
-    "min_input_args": 2
+    "min_input_args": 2,
+    "args_list": [
+      "weights",
+      "num_samples",
+      "replacement",
+      "generator"
+    ]
   },
   "torch.utils.data.default_collate": {
     "Matcher": "GenericMatcher",
