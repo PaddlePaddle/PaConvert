@@ -6395,6 +6395,16 @@
       "cache_enabled": ""
     }
   },
+  "torch.cuda.check_error": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.cuda.check_error",
+    "args_list": [
+      "res"
+    ],
+    "kwargs_change": {
+      "res": "res"
+    }
+  },
   "torch.cuda.comm.broadcast": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.broadcast",
@@ -6408,6 +6418,13 @@
     "kwargs_change": {
       "devices": "src"
     }
+  },
+  "torch.cuda.cudart": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.cuda.cudart",
+    "args_list": [],
+    "kwargs_change": {},
+    "min_input_args": 0
   },
   "torch.cuda.current_device": {
     "Matcher": "GenericMatcher",
@@ -6541,6 +6558,16 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.device.cuda.max_memory_reserved",
     "min_input_args": 0,
+    "args_list": [
+      "device"
+    ],
+    "kwargs_change": {
+      "device": "device"
+    }
+  },
+  "torch.cuda.mem_get_info": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.cuda.mem_get_info",
     "args_list": [
       "device"
     ],
