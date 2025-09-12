@@ -224,6 +224,12 @@ class GlobalManager:
         "torch.linalg.vector_norm",
         "torch.functional.split",
         "torch.functional.unique_consecutive",
+        "torch.functional.atleast_1d",
+        "torch.functional.atleast_2d",
+        "torch.functional.atleast_3d",
+        "torch.functional.broadcast_shapes",
+        "torch.functional.einsum",
+        "torch.functional.norm",
 
         # siyu
         "torch.multinomial",
