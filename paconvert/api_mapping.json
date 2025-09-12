@@ -8734,9 +8734,15 @@
     }
   },
   "torch.ge": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "Num2TensorBinaryMatcher",
     "paddle_api": "paddle.greater_equal",
-    "min_input_args": 2
+    "min_input_args": 2,
+    "args_list": [
+      "input",
+      "other",
+      "*",
+      "out"
+    ]
   },
   "torch.ger": {
     "Matcher": "GenericMatcher",
