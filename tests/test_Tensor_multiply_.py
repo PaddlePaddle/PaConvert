@@ -34,7 +34,8 @@ def test_case_1():
     )
 
 
-def test_case_2():
+# Paddle does not supprt scalar input.
+def _test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -85,9 +86,4 @@ def _test_case_5():
         result = input.multiply_(other = torch.tensor([0.2015, -0.4255, 2.6087]))
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="Paddle does not support inplace operation with different dtype",
-    )
+    obj.run(pytorch_code, ["result"])

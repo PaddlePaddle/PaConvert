@@ -37,7 +37,11 @@ class GetAutocastGpuTypeAPIBase(APIBase):
         atol=0.0,
     ):
         pytorch_dtype_str = str(pytorch_result).removeprefix("torch.")
-        assert pytorch_dtype_str == paddle_result
+        # bfloat16 is only supported when GPUComputeCapability >= 80
+        if paddle.amp.is_bfloat16_supported():
+            assert paddle_result == pytorch_dtype_str
+        else:
+            assert paddle_result == "float16"
 
 
 obj = GetAutocastGpuTypeAPIBase("torch.get_autocast_gpu_dtype")
@@ -56,7 +60,7 @@ def test_case_1():
 
 # pytorch return bfloat16, but paddle return float16
 @pytest.mark.skipif(condition=should_skip, reason=skip_reason)
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -71,7 +75,7 @@ def _test_case_2():
 
 # pytorch return bfloat16, but paddle return float16
 @pytest.mark.skipif(condition=should_skip, reason=skip_reason)
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch

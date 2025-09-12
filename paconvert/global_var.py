@@ -134,6 +134,7 @@ class GlobalManager:
         "torch.view_as_real",
         "torch.view_as_complex",
         "torch.ger",
+        "torch.Tensor.mul",
         "torch.Tensor.mul_",
         "torch.Tensor.swapaxes",
         "torch.Tensor.swapdims",
@@ -163,6 +164,8 @@ class GlobalManager:
         "torch.Tensor.divide",
         "torch.Tensor.divide_",
         "torch.Tensor.true_divide",
+        "torch.Size",
+        "torch.Tensor.is_cuda",
 
 
         # sensen
@@ -195,6 +198,7 @@ class GlobalManager:
         "torch.sqrt",
         "torch.amin",
         "torch.amax",
+        "torch.Tensor.stride",
 
         # linjun
         "torch.as_tensor", 
@@ -214,7 +218,10 @@ class GlobalManager:
         "torch.BoolTensor",
         "torch.norm",
         "torch.linalg.norm",
-
+        "torch.Tensor.size",
+        #"torch.Tensor.to",
+        #"torch.nn.Module.to",
+        "torch.linalg.vector_norm",
 
         # siyu
         "torch.multinomial",
@@ -450,7 +457,6 @@ class GlobalManager:
         "torch.Tensor.div",
         "torch.Tensor.element_size",
         "torch.Tensor.is_floating_point",
-        # "torch.Tensor.mul",
         "torch.Tensor.neg",
         "torch.Tensor.pin_memory",
         "torch.Tensor.view_as",
@@ -474,15 +480,18 @@ class GlobalManager:
         "torch.Tensor.__rtruediv__",
         "torch.Tensor.__setitem__",
 
-
-
-
         # sundong
         "torch.matmul",
         "torch.linalg.matmul",
+        "torch.mul",
+        "torch.mul_",
         "torch.multiply",
-        "torch.Tensor.matmul",
+        "torch.multiply_",
+        "torch.Tensor.mul",
+        "torch.Tensor.mul_",
         "torch.Tensor.multiply",
+        "torch.Tensor.multiply_",
+        "torch.Tensor.matmul",
         "torch.amax",
         "torch.amin",
         "torch.Tensor.amax",
@@ -517,6 +526,7 @@ class GlobalManager:
         "torch.Tensor.repeat_interleave",
         "torch.var",
         "torch.prod",
+        "torch.ceil",
 
 
 
@@ -539,7 +549,8 @@ class GlobalManager:
         "torch.any",
         "torch.nn.functional.one_hot",
         "torch.unbind",
-        "torch.Tensor.unbind"
+        "torch.Tensor.unbind",
+        "torch.is_tensor",
 
         # shenwei
         "torch.Tensor.expand_as",
@@ -593,6 +604,7 @@ class GlobalManager:
         "torch.nn.Sequential",
 
         # zhouwei
+        "torch.torch.int32",
         "torch.transpose",
         "torch.Tensor.transpose",
         "torch.unsqueeze",
@@ -603,18 +615,11 @@ class GlobalManager:
         "torch.nn.functional.sigmoid",
         "torch.Tensor.requires_grad",
         "torch.Tensor.data",
-        "torch.is_tensor",
         "torch.Tensor.element_size",
         "torch.Tensor.view_as",
+        "torch.Tensor.cpu",
 
         #"torch.Tensor.device",
-        #"torch.Tensor.size",
-        #"torch.Tensor.to",
-        #"torch.Tensor.stride",
-        #"torch.Size",
-        #"torch.Tensor.cpu",
-        #"torch.ceil",
-        #"torch.Tensor.is_cuda",
 
         # qianyue
         "torch.gather",
