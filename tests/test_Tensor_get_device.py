@@ -39,7 +39,7 @@ def test_case_1():
 
 
 # for CPU Tensor, paddle.Tensor.place.gpu_device_id return 0, while torch return -1
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
