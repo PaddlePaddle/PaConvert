@@ -38,7 +38,6 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-# for CPU Tensor, paddle.Tensor.place.gpu_device_id return 0, while torch return -1
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
