@@ -200,7 +200,7 @@ class GlobalManager:
         "torch.amax",
         "torch.Tensor.stride",
         "torch.Tensor.get_device",
-        "torch.initial_seed",
+        "torch.random.initial_seed",
 
         # linjun
         "torch.as_tensor", 
