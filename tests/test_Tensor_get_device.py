@@ -45,7 +45,7 @@ def test_case_2():
         result = None
         x = torch.tensor([[1.0, 1.0, 1.0],
                         [2.0, 2.0, 2.0],
-                        [3.0, 3.0, 3.0]])
+                        [3.0, 3.0, 3.0]]).cpu()
         result = x.get_device()
         """
     )
