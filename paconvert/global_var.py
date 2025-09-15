@@ -185,6 +185,9 @@ class GlobalManager:
         "torch.Tensor.new_full",
         "torch.Tensor.new_empty",
         "torch.eye",
+        "torch.cuda.cudart",
+        "torch.cuda.check_error",
+        "torch.cuda.mem_get_info",
 
         # hongyu
         "torch.permute",
