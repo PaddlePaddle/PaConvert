@@ -527,6 +527,8 @@ class GlobalManager:
         "torch.var",
         "torch.prod",
         "torch.ceil",
+        "torch.floor_divide",
+        "torch.masked_select",
 
 
 
