@@ -38,15 +38,14 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-# for CPU Tensor, paddle.Tensor.place.gpu_device_id return 0, while torch return -1
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
         result = None
         x = torch.tensor([[1.0, 1.0, 1.0],
                         [2.0, 2.0, 2.0],
-                        [3.0, 3.0, 3.0]])
+                        [3.0, 3.0, 3.0]]).cpu()
         result = x.get_device()
         """
     )
