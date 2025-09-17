@@ -199,6 +199,8 @@ class GlobalManager:
         "torch.amin",
         "torch.amax",
         "torch.Tensor.stride",
+        "torch.Tensor.get_device",
+        "torch.random.initial_seed",
 
         # linjun
         "torch.as_tensor", 
@@ -535,6 +537,8 @@ class GlobalManager:
         "torch.var",
         "torch.prod",
         "torch.ceil",
+        "torch.floor_divide",
+        "torch.masked_select",
 
 
 

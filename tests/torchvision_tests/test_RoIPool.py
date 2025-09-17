@@ -49,7 +49,7 @@ def test_case_2():
         """
         import paddle
 
-        roi_pool = paddle.vision.ops.RoIPool(output_size=(7, 7), spatial_scale=1.0)
+        roi_pool = paddle.vision.ops.RoIPool((7, 7), 1.0)
         """
     )
     obj.run(pytorch_code, expect_paddle_code=paddle_code, check_value=False)
