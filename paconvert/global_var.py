@@ -500,7 +500,8 @@ class GlobalManager:
         "torch.Tensor.amin",
         "torch.Tensor.log2",
         "torch.log2",
-
+        "torch.Tensor.remainder"
+        "torch.remainder"
         # zhengsheng
         "torch.broadcast_to",
         "torch.nn.functional.embedding",
