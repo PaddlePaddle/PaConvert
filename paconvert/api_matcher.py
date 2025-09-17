@@ -421,7 +421,7 @@ class NoNeedConvertMatcher(BaseMatcher):
 
 class TransformersGenericMatcher(BaseMatcher):
     def get_paddle_api(self):
-        return self.torch_api.replace("transformers.", "paddlenlp.transformers.")
+        return self.torch_api.replace("transformers.", "paddleformers.transformers.")
 
     def get_paddle_nodes(self, args, kwargs):
         return ChangeAPIMatcher.get_paddle_nodes(self, args, kwargs)
@@ -543,11 +543,11 @@ class TRFMPreTrainedTokenizerMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            import paddlenlp
-            original_encode = paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase.encode
+            import paddleformers
+            original_encode = paddleformers.transformers.tokenizer_utils_base.PretrainedTokenizerBase.encode
             def _encode(self, *args, **kwargs):
                 return original_encode(self, *args, **kwargs)["input_ids"]
-            setattr(paddlenlp.transformers.tokenizer_utils_base.PretrainedTokenizerBase, "encode", _encode)
+            setattr(paddleformers.transformers.tokenizer_utils_base.PretrainedTokenizerBase, "encode", _encode)
             """
         )
         return CODE_TEMPLATE
@@ -562,7 +562,7 @@ class TRFMPreTrainedModelMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             from typing import Optional
-            import paddlenlp
+            import paddleformers
             def _convert_head_mask_to_5d(head_mask, num_hidden_layers):
                 if head_mask.dim() == 1:
                     head_mask = head_mask.unsqueeze(0).unsqueeze(0).unsqueeze(-1).unsqueeze(-1)
@@ -586,21 +586,21 @@ class TRFMPreTrainedModelMatcher(BaseMatcher):
                 else:
                     head_mask = [None] * num_hidden_layers
                 return head_mask
-            setattr(paddlenlp.transformers.model_utils.PretrainedModel, "get_head_mask", _get_head_mask)
+            setattr(paddleformers.transformers.model_utils.PretrainedModel, "get_head_mask", _get_head_mask)
 
-            original_generate = paddlenlp.generation.utils.GenerationMixin.generate
+            original_generate = paddleformers.generation.utils.GenerationMixin.generate
             def _generate(self, input_ids, *args, **kwargs):
                 return paddle.concat((input_ids, original_generate(self,input_ids, *args, **kwargs)[0]), axis=-1)
-            setattr(paddlenlp.generation.utils.GenerationMixin, "generate", _generate)
+            setattr(paddleformers.generation.utils.GenerationMixin, "generate", _generate)
 
-            setattr(paddlenlp.transformers.model_utils.PretrainedModel, "device", None)
+            setattr(paddleformers.transformers.model_utils.PretrainedModel, "device", None)
 
             def _post_init(self):
                 if hasattr(self, "init_weights"):
                     self.init_weights()
                 elif hasattr(self, "_init_weights"):
                     self._init_weights()
-            setattr(paddlenlp.transformers.model_utils.PretrainedModel, "post_init", _post_init)
+            setattr(paddleformers.transformers.model_utils.PretrainedModel, "post_init", _post_init)
             """
         )
         return CODE_TEMPLATE

@@ -1,4 +1,4 @@
-# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
+# Copyright (c) 2025 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,25 +14,17 @@
 
 import textwrap
 
-import paddle
-import pytest
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.get_device")
+obj = APIBase("torch.Tensor.__invert__")
 
 
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="can only run on paddle with CUDA",
-)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1.0, 1.0, 1.0],
-                        [2.0, 2.0, 2.0],
-                        [3.0, 3.0, 3.0]]).cuda()
-        result = x.get_device()
+        x = torch.tensor([True, False])
+        result = ~x
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -42,11 +34,19 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = None
-        x = torch.tensor([[1.0, 1.0, 1.0],
-                        [2.0, 2.0, 2.0],
-                        [3.0, 3.0, 3.0]]).cpu()
-        result = x.get_device()
+        x = torch.tensor([1, 2], dtype=torch.int32)
+        result = ~x
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([0, -1], dtype=torch.int32)
+        result = ~x
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -203,3 +203,47 @@ def test_case_16():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+#  RuntimeError: gather(): Expected dtype int64 for index
+def _test_case_17_complex():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(360, dtype=torch.float32).reshape([3, 4, 5, 6])
+        a.requires_grad = True
+        result = torch.gather(index=torch.ones([3, 2, 3, 3], dtype=torch.int32), input=a, dim=1)
+        result.sum().backward()
+        a_grad = a.grad
+        a_grad.requires_grad = False
+        """
+    )
+    obj.run(pytorch_code, ["result", "a_grad"])
+
+
+def test_case_18_complex():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(240, dtype=torch.float32).reshape([2, 2, 5, 3, 2, 2])
+        a.requires_grad = True
+        indices = torch.concat([torch.ones([2, 2, 2, 1, 2, 2], dtype=torch.int64), torch.zeros([2, 2, 2, 1, 2, 2], dtype=torch.int64)], dim = 3)
+        result = torch.gather(a, index=indices, dim=2)
+        result.backward(torch.ones_like(result))
+        a_grad = a.grad
+        a_grad.requires_grad = False
+        """
+    )
+    obj.run(pytorch_code, ["result", "a_grad"])
+
+
+def test_case_19():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1, 2], [3, 4]])
+        out = a.clone().detach()
+        result = torch.gather(a, 1, torch.tensor([[0, 0], [1, 0]]), out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

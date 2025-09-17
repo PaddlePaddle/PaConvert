@@ -1,4 +1,4 @@
-# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
+# Copyright (c) 2025 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,83 +11,81 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.multiply")
+obj = APIBase("torch.Tensor.__and__")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([0.2015, -0.4255, 2.6087])
-        other = torch.tensor([0.2015, -0.4255, 2.6087])
-        result = input.multiply(other)
+        x = torch.tensor([True, False, True])
+        y = torch.tensor([True, True, False])
+        result = x & y
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support input type promote, and x/y must have the same dtype
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([0.2015, -0.4255,  2.6087])
-        other = torch.tensor([2, 6, 4])
-        result = input.multiply(other=other)
+        x = torch.tensor([1, 2, 3], dtype=torch.int32)
+        y = torch.tensor([3, 2, 1], dtype=torch.int32)
+        result = x & y
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_3():
+# Paddle does not support scalar input.
+def _test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([0.2015, -0.4255,  2.6087])
-        result = input.multiply(other=torch.tensor(5.))
+        x = torch.tensor([True, False])
+        result = x & True
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# Paddle does not supprt scalar input.
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([3, 6, 9])
-        result = input.multiply(5)
+        x = torch.tensor([1, 2, 3], dtype=torch.int64)
+        y = torch.tensor([3, 2, 1], dtype=torch.int64)
+        result = x & y
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# Paddle does not supprt scalar input.
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([3, 6, 9])
-        result = input.multiply(other=5)
+        x = torch.tensor([1, 2, 3], dtype=torch.int8)
+        y = torch.tensor([3, 2, 1], dtype=torch.int8)
+        result = x & y
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support type promote and x/y must have same dtype
-def _test_case_6():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([0.2015, -0.4255,  2.6087])
-        other = torch.tensor([2, 6, 4])
-        result = input.multiply(other)
+        x = torch.tensor([1, 2, 3], dtype=torch.long)
+        y = torch.tensor([3, 2, 1], dtype=torch.long)
+        result = x & y
         """
     )
     obj.run(pytorch_code, ["result"])
