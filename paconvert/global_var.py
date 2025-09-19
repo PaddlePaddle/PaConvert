@@ -579,6 +579,8 @@ class GlobalManager:
         "torch.Tensor.all",
         "torch.Tensor.any",
         "torch.tensor_split",
+        "torch.nn.functional.gelu",
+        "torch.layer_norm",
 
         # haoyang
         "torch.logical_not",
