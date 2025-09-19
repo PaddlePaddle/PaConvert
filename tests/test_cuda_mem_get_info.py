@@ -35,7 +35,6 @@ def test_case_1():
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
         reason="paddle does not support this function temporarily",
     )
 
@@ -54,8 +53,7 @@ def test_case_2():
     )
     obj.run(
         pytorch_code,
-        ["result"],
-        unsupport=True,
+        [],
         reason="paddle does not support this function temporarily",
     )
 
@@ -74,8 +72,7 @@ def test_case_3():
     )
     obj.run(
         pytorch_code,
-        ["result"],
-        unsupport=True,
+        [],
         reason="paddle does not support this function temporarily",
     )
 
@@ -94,8 +91,7 @@ def test_case_4():
     )
     obj.run(
         pytorch_code,
-        ["result"],
-        unsupport=True,
+        [],
         reason="paddle does not support this function temporarily",
     )
 
@@ -115,7 +111,6 @@ def test_case_5():
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
         reason="paddle does not support this function temporarily",
     )
 
@@ -135,6 +130,5 @@ def test_case_6():
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
         reason="paddle does not support this function temporarily",
     )
