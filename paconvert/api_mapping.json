@@ -1873,7 +1873,7 @@
   },
   "torch.Tensor.get_device": {
     "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.Tensor.place.gpu_device_id",
+    "paddle_api": "paddle.Tensor.get_device",
     "min_input_args": 0
   },
   "torch.Tensor.gt": {

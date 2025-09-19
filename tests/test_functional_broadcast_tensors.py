@@ -12,44 +12,44 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.sub")
+obj = APIBase("torch.functional.broadcast_tensors")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3])
-        result = x.sub(torch.tensor([1, 4, 6]))
+        x = torch.tensor([[0,1,2]])
+        y = torch.tensor([[0],[1]])
+        result = torch.functional.broadcast_tensors(x, y)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support input python number, x/y must be Tensor
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3])
-        result = x.sub(20)
+        y = torch.tensor([[0],[1]])
+        result = torch.functional.broadcast_tensors(torch.tensor([[0,1,2]]), y)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support input python number, x/y must be Tensor
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3])
-        result = x.sub(other=20)
+        x = torch.tensor([[0,1,2]])
+        y = torch.tensor([[0],[1],[2]])
+        z = torch.tensor([[20]])
+        result = torch.functional.broadcast_tensors(x, y, z)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -59,8 +59,9 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        result = x.sub(torch.tensor([1., 4, 6]), alpha=0.8)
+        x = torch.tensor([[0,1,2]])
+        y = torch.tensor([[0],[1]])
+        result = torch.functional.broadcast_tensors(x, y, torch.tensor([[20]]))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -70,30 +71,8 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        result = x.sub(other=torch.tensor([1., 4, 6]), alpha=0.8)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-# paddle not support type promote and x/y must have same dtype
-def _test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.tensor([1., 2, 3]).sub(torch.tensor([1, 4, 6]))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_7():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1., 2, 3])
-        result = x.sub(alpha=0.8, other=torch.tensor([1., 4, 6]))
+        tensors = torch.tensor([[0,1,2]]), torch.tensor([[0],[1]]), torch.tensor([[20]])
+        result = torch.functional.broadcast_tensors(*tensors)
         """
     )
     obj.run(pytorch_code, ["result"])

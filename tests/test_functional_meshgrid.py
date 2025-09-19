@@ -12,44 +12,49 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.sub")
+obj = APIBase("torch.functional.meshgrid")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
+
         x = torch.tensor([1, 2, 3])
-        result = x.sub(torch.tensor([1, 4, 6]))
+        y = torch.tensor([3, 4, 5])
+        grid_x, grid_y = torch.functional.meshgrid(x, y, indexing='ij')
+        result = grid_x
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support input python number, x/y must be Tensor
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
+
         x = torch.tensor([1, 2, 3])
-        result = x.sub(20)
+        y = torch.tensor([3, 4, 5])
+        grid_x, grid_y = torch.functional.meshgrid(x, y, indexing='ij')
+        result = grid_y
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support input python number, x/y must be Tensor
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
         x = torch.tensor([1, 2, 3])
-        result = x.sub(other=20)
+        y = torch.tensor([3, 4, 5])
+        grid_x, grid_y = torch.functional.meshgrid(x, y, indexing='xy')
+        result = grid_x
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -59,8 +64,10 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        result = x.sub(torch.tensor([1., 4, 6]), alpha=0.8)
+        x = torch.tensor([1, 2, 3])
+        y = torch.tensor([3, 4, 5])
+        grid_x, grid_y = torch.functional.meshgrid(x, y, indexing='xy')
+        result = grid_y
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -70,19 +77,25 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        result = x.sub(other=torch.tensor([1., 4, 6]), alpha=0.8)
+
+        x = torch.tensor([1, 2, 3])
+        y = torch.tensor([3, 4, 5])
+        grid_x, grid_y = torch.functional.meshgrid(x, y)
+        result = grid_x
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support type promote and x/y must have same dtype
-def _test_case_6():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1., 2, 3]).sub(torch.tensor([1, 4, 6]))
+
+        x = torch.tensor([1, 2, 3])
+        y = torch.tensor([3, 4, 5])
+        grid_x, grid_y = torch.functional.meshgrid(x, y)
+        result = grid_y
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -92,8 +105,26 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        result = x.sub(alpha=0.8, other=torch.tensor([1., 4, 6]))
+
+        x = torch.tensor([1, 2, 3])
+        y = torch.tensor([3, 4, 5])
+        grid_x, grid_y= torch.functional.meshgrid([x, y], indexing='ij')
+        result = grid_x
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        x = torch.tensor([1, 2, 3])
+        y = torch.tensor([3, 4, 5])
+        z = [x, y]
+        grid_x, grid_y= torch.functional.meshgrid(z, indexing='ij')
+        result = grid_x
         """
     )
     obj.run(pytorch_code, ["result"])

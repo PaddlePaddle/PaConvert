@@ -12,44 +12,43 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.sub")
+obj = APIBase("torch.functional.broadcast_shapes")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3])
-        result = x.sub(torch.tensor([1, 4, 6]))
+        x = (2,)
+        y = (3, 1)
+        result = torch.functional.broadcast_shapes(x, y)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support input python number, x/y must be Tensor
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3])
-        result = x.sub(20)
+        result = torch.functional.broadcast_shapes((2,), (3, 1))
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support input python number, x/y must be Tensor
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3])
-        result = x.sub(other=20)
+        x = (2,)
+        y = (3, 1)
+        z = (1, 1, 1)
+        result = torch.functional.broadcast_shapes(x, y, z)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -59,8 +58,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        result = x.sub(torch.tensor([1., 4, 6]), alpha=0.8)
+        result = torch.functional.broadcast_shapes((2,), (3, 1), (1, 1, 1))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -70,30 +68,22 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        result = x.sub(other=torch.tensor([1., 4, 6]), alpha=0.8)
+        x = (2,)
+        y = (3, 1)
+        result = torch.functional.broadcast_shapes(x, y, (1, 1, 2))
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support type promote and x/y must have same dtype
-def _test_case_6():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1., 2, 3]).sub(torch.tensor([1, 4, 6]))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_7():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1., 2, 3])
-        result = x.sub(alpha=0.8, other=torch.tensor([1., 4, 6]))
+        x = (2,)
+        y = (3, 1)
+        shapes = x, y, (1, 1, 2)
+        result = torch.functional.broadcast_shapes(*shapes)
         """
     )
     obj.run(pytorch_code, ["result"])

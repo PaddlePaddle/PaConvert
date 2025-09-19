@@ -12,88 +12,85 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.sub")
+obj = APIBase("torch.functional.unique_consecutive")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3])
-        result = x.sub(torch.tensor([1, 4, 6]))
+        x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
+        result = torch.functional.unique_consecutive(x)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support input python number, x/y must be Tensor
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3])
-        result = x.sub(20)
+        x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
+        result, inverse_indices = torch.functional.unique_consecutive(x, return_inverse=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "inverse_indices"])
 
 
-# paddle not support input python number, x/y must be Tensor
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1, 2, 3])
-        result = x.sub(other=20)
+        x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
+        result, counts = torch.functional.unique_consecutive(x, return_counts=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "counts"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        result = x.sub(torch.tensor([1., 4, 6]), alpha=0.8)
+        x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
+        result, inverse_indices, counts = torch.functional.unique_consecutive(x, return_counts=True, return_inverse=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "counts", "inverse_indices"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        result = x.sub(other=torch.tensor([1., 4, 6]), alpha=0.8)
+        x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
+        result = torch.functional.unique_consecutive(x, dim=0)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# paddle not support type promote and x/y must have same dtype
-def _test_case_6():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1., 2, 3]).sub(torch.tensor([1, 4, 6]))
+        x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
+        result, inverse_indices, counts = torch.functional.unique_consecutive(input=x, return_inverse=True, return_counts=True, dim=0)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "counts", "inverse_indices"])
 
 
 def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2, 3])
-        result = x.sub(alpha=0.8, other=torch.tensor([1., 4, 6]))
+        x = torch.tensor([1, 1, 2, 2, 3, 1, 1, 2])
+        result, inverse_indices, counts = torch.functional.unique_consecutive(x, True, True, 0)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "counts", "inverse_indices"])

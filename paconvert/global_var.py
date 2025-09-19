@@ -166,6 +166,10 @@ class GlobalManager:
         "torch.Tensor.true_divide",
         "torch.Size",
         "torch.Tensor.is_cuda",
+        "torch.sub",
+        "torch.Tensor.sub",
+        "torch.Tensor.sub_",
+        "torch.Tensor.random_",
 
 
         # sensen
@@ -202,6 +206,8 @@ class GlobalManager:
         "torch.amin",
         "torch.amax",
         "torch.Tensor.stride",
+        "torch.Tensor.get_device",
+        "torch.random.initial_seed",
 
         # linjun
         "torch.as_tensor", 
@@ -222,9 +228,17 @@ class GlobalManager:
         "torch.norm",
         "torch.linalg.norm",
         "torch.Tensor.size",
-        #"torch.Tensor.to",
-        #"torch.nn.Module.to",
+        "torch.Tensor.to",
+        "torch.nn.Module.to",
         "torch.linalg.vector_norm",
+        "torch.functional.split",
+        "torch.functional.unique_consecutive",
+        "torch.functional.atleast_1d",
+        "torch.functional.atleast_2d",
+        "torch.functional.atleast_3d",
+        "torch.functional.broadcast_shapes",
+        "torch.functional.einsum",
+        "torch.functional.norm",
 
         # siyu
         "torch.multinomial",
@@ -501,7 +515,8 @@ class GlobalManager:
         "torch.Tensor.amin",
         "torch.Tensor.log2",
         "torch.log2",
-
+        "torch.Tensor.remainder"
+        "torch.remainder"
         # zhengsheng
         "torch.broadcast_to",
         "torch.nn.functional.embedding",
@@ -530,6 +545,8 @@ class GlobalManager:
         "torch.var",
         "torch.prod",
         "torch.ceil",
+        "torch.floor_divide",
+        "torch.masked_select",
 
 
 
@@ -553,7 +570,9 @@ class GlobalManager:
         "torch.nn.functional.one_hot",
         "torch.unbind",
         "torch.Tensor.unbind",
+        "torch.is_floating_point",
         "torch.is_tensor",
+        "torch.isin",
 
         # shenwei
         "torch.Tensor.expand_as",
@@ -567,6 +586,8 @@ class GlobalManager:
         "torch.Tensor.all",
         "torch.Tensor.any",
         "torch.tensor_split",
+        "torch.nn.functional.gelu",
+        "torch.layer_norm",
 
         # haoyang
         "torch.logical_not",
@@ -581,6 +602,12 @@ class GlobalManager:
         "torch.Tensor.index_select",
         "torch.dot",
         "torch.Tensor.dot",
+        "torch.nn.functional.conv1d",
+        "torch.nn.functional.conv2d",
+        "torch.nn.functional.conv3d",
+        "torch.conv1d",
+        "torch.conv2d",
+        "torch.conv3d",
 
 
         # rongrui
