@@ -166,6 +166,10 @@ class GlobalManager:
         "torch.Tensor.true_divide",
         "torch.Size",
         "torch.Tensor.is_cuda",
+        "torch.sub",
+        "torch.Tensor.sub",
+        "torch.Tensor.sub_",
+        "torch.Tensor.random_",
 
 
         # sensen
