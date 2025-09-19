@@ -599,6 +599,12 @@ class GlobalManager:
         "torch.Tensor.index_select",
         "torch.dot",
         "torch.Tensor.dot",
+        "torch.nn.functional.conv1d",
+        "torch.nn.functional.conv2d",
+        "torch.nn.functional.conv3d",
+        "torch.conv1d",
+        "torch.conv2d",
+        "torch.conv3d",
 
 
         # rongrui
