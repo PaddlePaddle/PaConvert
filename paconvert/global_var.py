@@ -670,6 +670,16 @@ class GlobalManager:
         "torch.Tensor.ne",
         "torch.manual_seed",
         "torch.asarray",
+        # "torch.save",
+
+        # qianyue
+        "torch.gather",
+        "torch.Tensor.gather",
+        "torch.Tensor.scatter",
+        "torch.Tensor.scatter_",
+        "torch.scatter",
+
+        # xiangyu
         # "torch.cuda.cudart",
         # "torch.cuda.mem_get_info",
         # "torch.cuda.is_initialized",
@@ -687,12 +697,5 @@ class GlobalManager:
         # "torch.get_default_device",
         # "torch.get_device_module",
         # "torch.cuda.is_available",
-        # "torch.save",
-
-        # qianyue
-        "torch.gather",
-        "torch.Tensor.gather",
-        "torch.Tensor.scatter",
-        "torch.Tensor.scatter_",
-        "torch.scatter",
+        # "torch.device",
     ]
