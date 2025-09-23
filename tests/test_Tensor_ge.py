@@ -69,6 +69,17 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
+        result = torch.tensor([[1, 2], [3, 4]]).ge(other=torch.tensor(2))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# paddle not support input scalar, y must be Tensor
+def _test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
         result = torch.tensor([[1, 2], [3, 4]]).ge(2)
         """
     )

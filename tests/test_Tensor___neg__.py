@@ -1,4 +1,4 @@
-# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
+# Copyright (c) 2025 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,14 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.gt")
+obj = APIBase("torch.Tensor.__neg__")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([[1, 2], [3, 4]]).gt(torch.tensor([[1, 1], [4, 4]]))
+        x = torch.tensor([1., 2.], dtype=torch.float32)
+        result = -x
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -33,9 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[1, 2], [3, 4]])
-        other = torch.tensor([[1, 1], [4, 4]])
-        result = input.gt(other)
+        x = torch.tensor([3., -1.], dtype=torch.float64)
+        result = -x
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,9 +45,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[1, 2], [3, 4]])
-        other = torch.tensor([[1, 2], [3, 4]])
-        result = input.gt(other=other)
+        x = torch.tensor([1, 2], dtype=torch.int32)
+        result = -x
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -57,30 +56,8 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([[1, 2], [3, 4]])
-        other = torch.tensor([1, 2])
-        result = input.gt(other)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.tensor([[1, 2], [3, 4]]).gt(other=torch.tensor(2))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-# paddle not support input scalar, y must be Tensor
-def _test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.tensor([[1, 2], [3, 4]]).gt(2)
+        x = torch.tensor([1, 2], dtype=torch.int64)
+        result = -x
         """
     )
     obj.run(pytorch_code, ["result"])
