@@ -16,7 +16,30 @@ import textwrap
 
 import paddle
 import pytest
-from test_device import DeviceAPIBase
+from apibase import APIBase
+
+
+class DeviceAPIBase(APIBase):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_shape=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
+    ):
+        pytorch_result = str(pytorch_result).replace("cuda", "gpu")
+
+        if "cpu:" in pytorch_result:
+            pytorch_result = "cpu"
+        assert pytorch_result == paddle_result
+
+
+obj = DeviceAPIBase("torch.device")
 
 obj = DeviceAPIBase("torch.set_default_device")
 

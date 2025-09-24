@@ -698,4 +698,6 @@ class GlobalManager:
         "torch.get_device_module",
         "torch.cuda.is_available",
         "torch.device",
+        #Additional additions
+        "torch.cuda.get_device_capability",
     ]
