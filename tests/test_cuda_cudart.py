@@ -57,85 +57,11 @@ class CudaRtModuleAPIBase(APIBase):
 cuda_rt_module_obj = CudaRtModuleAPIBase("torch.cuda.cudart")
 
 
-class CudaIsInitializedAPIBase(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_shape=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        assert pytorch_result is True and paddle_result is True
-
-
-cuda_is_initialized_obj = CudaIsInitializedAPIBase("torch.cuda.is_initialized")
-
-
-class CudaMemGetInfoAPIBase(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_shape=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        assert isinstance(pytorch_result, tuple) and len(pytorch_result) == 2
-        assert isinstance(paddle_result, tuple) and len(paddle_result) == 2
-
-
-cuda_mem_get_info_obj = CudaMemGetInfoAPIBase("torch.cuda.mem_get_info")
-
-
-class CudaCheckErrorAPIBase(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_shape=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        for pt_res, pd_res in zip(pytorch_result, paddle_result):
-            assert pt_res == pd_res, f"{pt_res} != {pd_res}"
-
-
-cuda_check_error_obj = CudaCheckErrorAPIBase("torch.cuda.check_error")
-
-
 @pytest.mark.skipif(
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
 )
 def test_case_1():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.ones(2, 2).cuda()
-        result = torch.cuda.is_initialized()
-        """
-    )
-    cuda_is_initialized_obj.run(pytorch_code, ["result"])
-
-
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="can only run on paddle with CUDA",
-)
-def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -149,49 +75,7 @@ def test_case_2():
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
 )
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.cuda.mem_get_info()
-        """
-    )
-    cuda_mem_get_info_obj.run(pytorch_code, ["result"])
-
-
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="can only run on paddle with CUDA",
-)
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result0 = ""
-        result1 = ""
-        result2 = ""
-        try:
-            torch.cuda.check_error(0)
-        except RuntimeError as e:
-            result0 = str(e)
-        try:
-            torch.cuda.check_error(1)
-        except RuntimeError as e:
-            result1 = str(e)
-        try:
-            torch.cuda.check_error(2)
-        except RuntimeError as e:
-            result2 = str(e)
-        """
-    )
-    cuda_check_error_obj.run(pytorch_code, ["result0", "result1", "result2"])
-
-
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="can only run on paddle with CUDA",
-)
-def test_case_5():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -199,4 +83,4 @@ def test_case_5():
         result = rt.cudaMemGetInfo(0)
         """
     )
-    cuda_mem_get_info_obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, [])

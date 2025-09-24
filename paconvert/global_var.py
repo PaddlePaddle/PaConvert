@@ -192,6 +192,7 @@ class GlobalManager:
         "torch.cuda.cudart",
         "torch.cuda.check_error",
         "torch.cuda.mem_get_info",
+        "torch.cuda.is_initialized",
 
         # hongyu
         "torch.permute",
