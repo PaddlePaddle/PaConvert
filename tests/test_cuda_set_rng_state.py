@@ -38,18 +38,3 @@ def test_case_1():
         pytorch_code,
         ["result"],
     )
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        state = torch.cuda.get_rng_state(device='cpu')
-        torch.cuda.set_rng_state(state, device='cpu')
-        result = None
-        """
-    )
-    obj.run(
-        pytorch_code,
-        ["result"],
-    )

@@ -52,7 +52,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.cuda.get_device_properties()
+        result = torch.cuda.get_device_properties(torch.device(0))
         """
     )
     obj.run(
