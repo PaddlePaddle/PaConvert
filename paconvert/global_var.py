@@ -698,4 +698,14 @@ class GlobalManager:
         # "torch.get_device_module",
         # "torch.cuda.is_available",
         # "torch.device",
+        
+        # geyuqiang
+        "torch.cuda.current_device",
+        "torch.cuda.device_count",
+        "torch.cuda.empty_cache",
+        "torch.cuda.get_device_properties",
+        "torch.cuda.is_initialized",
+        "torch.cuda.memory_allocated",
+        "torch.cuda.memory_reserved",
+        "torch.cuda.set_device",
     ]
