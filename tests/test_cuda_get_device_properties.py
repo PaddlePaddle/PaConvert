@@ -61,7 +61,6 @@ def test_case_1():
     )
 
 
-
 @pytest.mark.skipif(
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
@@ -78,6 +77,7 @@ def test_case_2():
         ["result"],
     )
 
+
 @pytest.mark.skipif(
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
@@ -93,6 +93,8 @@ def test_case_3():
         pytorch_code,
         ["result"],
     )
+
+
 @pytest.mark.skipif(
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
@@ -108,6 +110,7 @@ def test_case_4():
         pytorch_code,
         ["result"],
     )
+
 
 @pytest.mark.skipif(
     condition=not paddle.device.is_compiled_with_cuda(),
