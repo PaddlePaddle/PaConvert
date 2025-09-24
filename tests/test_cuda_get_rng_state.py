@@ -21,10 +21,6 @@ from apibase import APIBase
 obj = APIBase("torch.cuda.get_rng_state")
 
 
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="can only run on paddle with CUDA",
-)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """

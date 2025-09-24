@@ -14,17 +14,38 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.cuda.set_rng_state")
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
         state = torch.cuda.get_rng_state(device='cuda')
         torch.cuda.set_rng_state(state, device='cuda')
+        result = None
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+    )
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        state = torch.cuda.get_rng_state(device='cpu')
+        torch.cuda.set_rng_state(state, device='cpu')
         result = None
         """
     )
