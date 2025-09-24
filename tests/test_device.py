@@ -32,7 +32,9 @@ class DeviceAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        pytorch_result = str(pytorch_result).replace("cuda", "gpu")
+        pytorch_result = str(pytorch_result)
+        if pytorch_result == "cuda":
+            pytorch_result = "cuda:0"
         if "cpu:" in pytorch_result:
             pytorch_result = "cpu"
         assert pytorch_result == paddle_result
