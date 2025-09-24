@@ -18,25 +18,8 @@ import paddle
 import pytest
 from apibase import APIBase
 
-obj = APIBase("torch.cuda.is_initialized")
 
-
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="can only run on paddle with CUDA",
-)
-def test_case_1():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        torch.tensor([1], device='cuda:0')
-        result = torch.cuda.is_initialized()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-class CudaIsInitializedAPIBase(APIBase):
+class CudaCheckErrorAPIBase(APIBase):
     def compare(
         self,
         name,
@@ -49,22 +32,36 @@ class CudaIsInitializedAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        assert pytorch_result is True and paddle_result is True
+        for pt_res, pd_res in zip(pytorch_result, paddle_result):
+            assert pt_res == pd_res, f"{pt_res} != {pd_res}"
 
 
-cuda_is_initialized_obj = CudaIsInitializedAPIBase("torch.cuda.is_initialized")
+cuda_check_error_obj = CudaCheckErrorAPIBase("torch.cuda.check_error")
 
 
 @pytest.mark.skipif(
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
 )
-def test_case_2():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.ones(2, 2).cuda()
-        result = torch.cuda.is_initialized()
+        result0 = ""
+        result1 = ""
+        result2 = ""
+        try:
+            torch.cuda.check_error(0)
+        except RuntimeError as e:
+            result0 = str(e)
+        try:
+            torch.cuda.check_error(1)
+        except RuntimeError as e:
+            result1 = str(e)
+        try:
+            torch.cuda.check_error(2)
+        except RuntimeError as e:
+            result2 = str(e)
         """
     )
-    cuda_is_initialized_obj.run(pytorch_code, ["result"])
+    cuda_check_error_obj.run(pytorch_code, ["result0", "result1", "result2"])
