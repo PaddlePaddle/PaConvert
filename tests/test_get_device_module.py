@@ -16,6 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
+
 class DeviceModuleAPIBase(APIBase):
     def compare(
         self,
@@ -30,6 +31,7 @@ class DeviceModuleAPIBase(APIBase):
         atol=0.0,
     ):
         assert pytorch_result == paddle_result
+
 
 obj = DeviceModuleAPIBase("torch.get_device_module")
 
@@ -48,6 +50,7 @@ def test_case_1():
         check_stop_gradient=False,
     )
 
+
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -62,6 +65,7 @@ def test_case_2():
         check_stop_gradient=False,
     )
 
+
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
@@ -75,4 +79,3 @@ def test_case_3():
         ["result"],
         check_stop_gradient=False,
     )
-

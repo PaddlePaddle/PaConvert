@@ -18,6 +18,7 @@ import paddle
 import pytest
 from apibase import APIBase
 
+
 class DevicePropertiesAPIBase(APIBase):
     def compare(
         self,
@@ -35,7 +36,10 @@ class DevicePropertiesAPIBase(APIBase):
         assert pytorch_result.major == paddle_result.major
         assert pytorch_result.minor == paddle_result.minor
         assert pytorch_result.total_memory == paddle_result.total_memory
-        assert pytorch_result.multi_processor_count == paddle_result.multi_processor_count
+        assert (
+            pytorch_result.multi_processor_count == paddle_result.multi_processor_count
+        )
+
 
 obj = DevicePropertiesAPIBase("torch.cuda.get_device_properties")
 
