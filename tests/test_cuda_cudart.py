@@ -19,10 +19,8 @@ import paddle
 import pytest
 from apibase import APIBase
 
-obj = APIBase("torch.cuda.cudart")
 
-
-class CudaRtModuleAPIBase(APIBase):
+class CudaRtAPIBase(APIBase):
     def compare(
         self,
         name,
@@ -54,7 +52,7 @@ class CudaRtModuleAPIBase(APIBase):
             assert isinstance(pd_func, BuiltinFunctionType), type(pd_func)
 
 
-cuda_rt_module_obj = CudaRtModuleAPIBase("torch.cuda.cudart")
+obj = CudaRtAPIBase("torch.cuda.cudart")
 
 
 @pytest.mark.skipif(
@@ -68,7 +66,10 @@ def test_case_1():
         result = torch.cuda.cudart()
         """
     )
-    cuda_rt_module_obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"])
+
+
+obj_base = APIBase("torch.cuda.cudart")
 
 
 @pytest.mark.skipif(
@@ -83,4 +84,4 @@ def test_case_2():
         result = rt.cudaMemGetInfo(0)
         """
     )
-    obj.run(pytorch_code, [])
+    obj_base.run(pytorch_code, ["result"])

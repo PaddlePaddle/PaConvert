@@ -18,25 +18,7 @@ import paddle
 import pytest
 from apibase import APIBase
 
-
-class CudaCheckErrorAPIBase(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_shape=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        for pt_res, pd_res in zip(pytorch_result, paddle_result):
-            assert pt_res == pd_res, f"{pt_res} != {pd_res}"
-
-
-cuda_check_error_obj = CudaCheckErrorAPIBase("torch.cuda.check_error")
+obj = APIBase("torch.cuda.check_error")
 
 
 @pytest.mark.skipif(
@@ -47,21 +29,17 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result0 = ""
-        result1 = ""
-        result2 = ""
-        try:
-            torch.cuda.check_error(0)
-        except RuntimeError as e:
-            result0 = str(e)
+        torch.cuda.check_error(0)
+
         try:
             torch.cuda.check_error(1)
         except RuntimeError as e:
             result1 = str(e)
+
         try:
             torch.cuda.check_error(2)
         except RuntimeError as e:
             result2 = str(e)
         """
     )
-    cuda_check_error_obj.run(pytorch_code, ["result0", "result1", "result2"])
+    obj.run(pytorch_code, ["result1", "result2"])

@@ -684,9 +684,6 @@ class GlobalManager:
         "torch.scatter",
 
         # xiangyu
-        # "torch.cuda.cudart",
-        # "torch.cuda.mem_get_info",
-        # "torch.cuda.is_initialized",
         # "torch.cuda.current_device",
         # "torch.cuda.device_count",
         # "torch.cuda.empty_cache",
