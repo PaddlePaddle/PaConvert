@@ -14,19 +14,23 @@
 
 set +x
 
-echo "Insalling gpu version torch, which has been installed in Dockerfile"
-#python -m pip install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+echo '************************************************************************************************************'
+echo "Insalling latest release gpu version torch"
+#python -m pip install -U torch torchvision --index-url https://download.pytorch.org/whl/cu118
 python -c "import torch; print('torch version information:' ,torch.__version__)"
 
+echo '************************************************************************************************************'
 echo "Insalling develop gpu version paddle"
 python -m pip uninstall -y paddlepaddle
 python -m pip uninstall -y paddlepaddle-gpu
 python -m pip install --force-reinstall --no-deps -U --pre paddlepaddle-gpu -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
+echo '************************************************************************************************************'
 echo "Insalling paconvert requirements"
 python -m pip install -r requirements.txt
 
+echo '************************************************************************************************************'
 echo "Checking code unit test by pytest ..."
 python -m pip install pytest-timeout pytest-xdist pytest-rerunfailures
 python -m pytest -n 1 --reruns=3 ./tests; check_error=$?
@@ -35,14 +39,14 @@ if [ ${check_error} != 0 ];then
     python -m pytest -n 1 --lf ./tests; check_error=$?
 fi
 
-echo '************************************************************************************'
+echo '************************************************************************************************************'
 echo "______      _____                          _   "
 echo "| ___ \    / ____|                        | |  "
 echo "| |_/ /_ _| |     ___  _ ____   _____ _ __| |_ "
 echo "|  __/ _  | |    / _ \\| \\_ \\ \\ / / _ \\ \\__| __|"
 echo "| | | (_| | |___| (_) | | | \\ V /  __/ |  | |_ "
 echo "\\_|  \\__,_|\\_____\\___/|_| |_|\\_/ \\___|_|   \\__|"
-echo -e '\n************************************************************************************' 
+echo '************************************************************************************************************'
 if [ ${check_error} != 0 ];then
     echo "Your PR code unit test check failed." 
     echo "Please run the following command." 
@@ -54,9 +58,6 @@ if [ ${check_error} != 0 ];then
 else
     echo "Your PR code unit test check passed."
 fi
-echo '************************************************************************************'
+echo '************************************************************************************************************'
 
 exit ${check_error}
-
-                                             
-                                             

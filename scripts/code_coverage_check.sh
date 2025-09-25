@@ -17,6 +17,7 @@ set +x
 cd /workspace/$1/PaConvert/
 
 # use Coverage diff-cover
+echo '************************************************************************************************************'
 echo "Insalling coverage and diff-cover for incremental code inspection"
 python -m pip install coverage diff-cover
 python -m pip install pytest-timeout

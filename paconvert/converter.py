@@ -143,11 +143,12 @@ class Converter:
                 for k, v in unsupport_api_list:
                     log_info(self.logger, "{:<80}{:<8}".format(k, v))
 
-                """
                 import pandas
-                df = pandas.DataFrame(unsupport_api_list, columns=['PyTorch API', 'Count'])
+
+                df = pandas.DataFrame(
+                    unsupport_api_list, columns=["PyTorch API", "Count"]
+                )
                 df.to_excel("unsupport_api_map.xlsx", index=False)
-                """
 
         if self.show_all_api:
             log_info(self.logger, "\n===========================================")
@@ -169,14 +170,13 @@ class Converter:
                         "{:<80}{:<80}{:<8}".format(k, str(v["paddle_api"]), v["count"]),
                     )
 
-                """
                 import pandas
+
                 data = [(k, v["paddle_api"], v["count"]) for k, v in all_api_list]
                 df = pandas.DataFrame(
                     data, columns=["PyTorch API", "Paddle API", "Count"]
                 )
                 df.to_excel("all_api_map.xlsx", index=False)
-                """
 
         faild_api_count = self.torch_api_count - self.success_api_count
         if not self.log_markdown:
