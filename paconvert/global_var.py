@@ -688,8 +688,6 @@ class GlobalManager:
         # "torch.cuda.get_rng_state",
         # "torch.cuda.is_current_stream_capturing",
         # "torch.cuda.manual_seed_all",
-        # "torch.cuda.memory_allocated",
-        # "torch.cuda.memory_reserved",
         # "torch.cuda.set_rng_state",
         # "torch.get_default_device",
         # "torch.get_device_module",
