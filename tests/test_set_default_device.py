@@ -33,13 +33,10 @@ class DeviceAPIBase(APIBase):
         atol=0.0,
     ):
         pytorch_result = str(pytorch_result).replace("cuda", "gpu")
-
         if "cpu:" in pytorch_result:
             pytorch_result = "cpu"
         assert pytorch_result == paddle_result
 
-
-obj = DeviceAPIBase("torch.device")
 
 obj = DeviceAPIBase("torch.set_default_device")
 
