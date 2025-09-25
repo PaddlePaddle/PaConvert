@@ -16,7 +16,10 @@ set +x
 
 echo '************************************************************************************************************'
 echo "Insalling latest release gpu version torch"
-#python -m pip install -U torch torchvision --index-url https://download.pytorch.org/whl/cu118
+python -m pip uninstall -y torchaudio
+python -m pip install torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
+python -m pip install torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
+# python -m pip install -U torch torchvision --index-url https://download.pytorch.org/whl/cu118
 python -c "import torch; print('torch version information:' ,torch.__version__)"
 
 echo '************************************************************************************************************'
