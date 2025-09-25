@@ -684,19 +684,23 @@ class GlobalManager:
         "torch.scatter",
 
         # xiangyu
-        # "torch.cuda.current_device",
-        # "torch.cuda.device_count",
-        # "torch.cuda.empty_cache",
         # "torch.cuda.get_device_properties",
         # "torch.cuda.get_rng_state",
         # "torch.cuda.is_current_stream_capturing",
         # "torch.cuda.manual_seed_all",
         # "torch.cuda.memory_allocated",
         # "torch.cuda.memory_reserved",
-        # "torch.cuda.set_device",
         # "torch.cuda.set_rng_state",
         # "torch.get_default_device",
         # "torch.get_device_module",
         # "torch.cuda.is_available",
         # "torch.device",
+
+        # geyuqiang
+        "torch.cuda.current_device",
+        "torch.cuda.device_count",
+        "torch.cuda.empty_cache",
+        "torch.cuda.memory_allocated",
+        "torch.cuda.memory_reserved",
+        "torch.cuda.set_device",
     ]
