@@ -30,7 +30,10 @@ class DeviceModuleAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        assert pytorch_result == paddle_result
+        assert (
+            pytorch_result.__name__.split(".")[-1]
+            == paddle_result.__name__.split(".")[-1]
+        )
 
 
 obj = DeviceModuleAPIBase("torch.get_device_module")
@@ -41,7 +44,6 @@ def test_case_1():
         """
         import torch
         result = torch.get_device_module("cuda")
-        result = type(result)
         """
     )
     obj.run(
@@ -56,7 +58,6 @@ def test_case_2():
         """
         import torch
         result = torch.get_device_module(torch.device('cuda'))
-        result = type(result)
         """
     )
     obj.run(
@@ -71,7 +72,6 @@ def test_case_3():
         """
         import torch
         result = torch.get_device_module(torch.device('cuda:0'))
-        result = type(result)
         """
     )
     obj.run(
