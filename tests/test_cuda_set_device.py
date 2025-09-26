@@ -59,7 +59,7 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.cuda.set_device(torch.device("cuda:0"))
+        torch.cuda.set_device(0)
         result = torch.cuda.current_device()
         """
     )
@@ -74,7 +74,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.cuda.set_device(device=torch.device("cuda:0"))
+        torch.cuda.set_device(torch.device("cuda:0"))
         result = torch.cuda.current_device()
         """
     )
@@ -86,6 +86,21 @@ def test_case_4():
     reason="can only run on paddle with CUDA",
 )
 def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.cuda.set_device(device=torch.device("cuda:0"))
+        result = torch.cuda.current_device()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -101,7 +116,7 @@ def test_case_5():
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
 )
-def test_case_6():
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -116,7 +131,7 @@ def test_case_6():
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
 )
-def test_case_7():
+def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -131,11 +146,11 @@ def test_case_7():
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
 )
-def test_case_8():
+def test_case_9():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.cuda.set_device(device="cuda")
+        torch.cuda.set_device(device="cuda:0")
         result = torch.cuda.current_device()
         """
     )

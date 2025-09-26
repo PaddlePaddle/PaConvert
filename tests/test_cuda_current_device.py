@@ -44,7 +44,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.cuda.set_device('cuda')
+        torch.cuda.set_device('cuda:0')
         result = torch.cuda.current_device()
         """
     )
@@ -59,21 +59,6 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.cuda.set_device('cuda:0')
-        result = torch.cuda.current_device()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="can only run on paddle with CUDA",
-)
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
         torch.cuda.set_device(torch.device(0))
         result = torch.cuda.current_device()
         """
@@ -85,22 +70,7 @@ def test_case_4():
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
 )
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        torch.cuda.set_device(torch.device('cuda'))
-        result = torch.cuda.current_device()
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="can only run on paddle with CUDA",
-)
-def test_case_6():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
