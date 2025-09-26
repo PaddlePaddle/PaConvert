@@ -32,7 +32,7 @@ class CudaGetDeviceAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        assert pytorch_result == int(paddle_result.replace("gpu:", ""))
+        assert pytorch_result == paddle_result
 
 
 obj = CudaGetDeviceAPIBase("torch.cuda.current_device")
