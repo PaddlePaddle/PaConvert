@@ -684,15 +684,17 @@ class GlobalManager:
         "torch.scatter",
 
         # xiangyu
-        # "torch.cuda.get_device_properties",
-        # "torch.cuda.get_rng_state",
-        # "torch.cuda.is_current_stream_capturing",
-        # "torch.cuda.manual_seed_all",
-        # "torch.cuda.set_rng_state",
+        "torch.cuda.get_device_properties",
+        "torch.cuda.get_rng_state",
+        "torch.cuda.is_current_stream_capturing",
+        "torch.cuda.manual_seed_all",
+        "torch.cuda.set_rng_state",
         # "torch.get_default_device",
-        # "torch.get_device_module",
-        # "torch.cuda.is_available",
-        # "torch.device",
+        "torch.get_device_module",
+        "torch.cuda.is_available",
+        "torch.device",
+        #Additional additions
+        "torch.cuda.get_device_capability",
 
         # geyuqiang
         "torch.cuda.current_device",

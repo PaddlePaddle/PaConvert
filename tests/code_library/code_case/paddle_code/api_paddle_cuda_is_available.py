@@ -1,4 +1,4 @@
 import paddle
 
 print("#########################case1#########################")
-paddle.device.cuda.device_count() >= 1
+paddle.cuda.is_available()

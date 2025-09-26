@@ -14,23 +14,32 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.cuda.set_rng_state")
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
+
         state = torch.cuda.get_rng_state(device='cuda')
+        rand1 = torch.rand([2,3], device='cuda')
+
         torch.cuda.set_rng_state(state, device='cuda')
-        result = None
+        rand2 = torch.rand([2,3], device='cuda')
+
+        result = (rand2 - rand1)
         """
     )
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
     )
