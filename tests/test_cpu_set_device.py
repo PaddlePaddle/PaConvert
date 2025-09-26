@@ -14,9 +14,9 @@
 
 import textwrap
 
-from test_device import DeviceAPIBase
+from test_cpu_current_device import CpuCurrentDeviceAPIBase
 
-obj = DeviceAPIBase("torch.cpu.set_device")
+obj = CpuCurrentDeviceAPIBase("torch.cpu.set_device")
 
 
 def test_case_1():

@@ -18,24 +18,7 @@ import paddle
 import pytest
 from apibase import APIBase
 
-
-class CudaGetDeviceAPIBase(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_shape=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        assert pytorch_result == paddle_result
-
-
-obj = CudaGetDeviceAPIBase("torch.cuda.current_device")
+obj = APIBase("torch.cuda.current_device")
 
 
 @pytest.mark.skipif(
@@ -47,6 +30,81 @@ def test_case_1():
         """
         import torch
         torch.cuda.set_device(0)
+        result = torch.cuda.current_device()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.cuda.set_device('cuda')
+        result = torch.cuda.current_device()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.cuda.set_device('cuda:0')
+        result = torch.cuda.current_device()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.cuda.set_device(torch.device(0))
+        result = torch.cuda.current_device()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.cuda.set_device(torch.device('cuda'))
+        result = torch.cuda.current_device()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.cuda.set_device(torch.device('cuda:0'))
         result = torch.cuda.current_device()
         """
     )

@@ -16,9 +16,9 @@ import textwrap
 
 import paddle
 import pytest
-from test_cuda_current_device import CudaGetDeviceAPIBase
+from apibase import APIBase
 
-obj = CudaGetDeviceAPIBase("torch.cuda.set_device")
+obj = APIBase("torch.cuda.set_device")
 
 
 @pytest.mark.skipif(
@@ -29,7 +29,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.cuda.set_device("cuda:0")
+        torch.cuda.set_device("cuda:1")
         result = torch.cuda.current_device()
         """
     )
@@ -74,7 +74,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.cuda.set_device(device=torch.device("cuda:1"))
+        torch.cuda.set_device(device=torch.device("cuda:0"))
         result = torch.cuda.current_device()
         """
     )
@@ -89,7 +89,7 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        num = 1
+        num = 0
         torch.cuda.set_device(device=f"cuda:{num}")
         result = torch.cuda.current_device()
         """
@@ -120,7 +120,22 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.cuda.set_device(device="cuda:1" if 2 > 1 else "cuda:0")
+        torch.cuda.set_device(device="cuda:0" if 2 > 1 else "cuda:1")
+        result = torch.cuda.current_device()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.cuda.set_device(device="cuda")
         result = torch.cuda.current_device()
         """
     )
