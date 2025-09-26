@@ -38,7 +38,28 @@ class DeviceAPIBase(APIBase):
         assert pytorch_result == paddle_result
 
 
-obj = DeviceAPIBase("torch.device")
+class PaddleDeviceAPIBase(APIBase):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_shape=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
+    ):
+        pytorch_result = str(pytorch_result)
+        if pytorch_result == "cuda":
+            pytorch_result = "cuda:0"
+        if "cpu:" in pytorch_result:
+            pytorch_result = "cpu"
+        assert pytorch_result == paddle_result
+
+
+obj = PaddleDeviceAPIBase("torch.device")
 
 
 def test_case_1():
