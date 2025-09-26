@@ -701,4 +701,5 @@ class GlobalManager:
         "torch.cuda.memory_allocated",
         "torch.cuda.memory_reserved",
         "torch.cuda.set_device",
+        "torch.cuda.current_stream",
     ]

@@ -29,7 +29,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.cuda.set_device(0)
+        torch.cuda.set_device("cuda:0")
         result = torch.cuda.current_device()
         """
     )
