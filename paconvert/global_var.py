@@ -637,6 +637,9 @@ class GlobalManager:
 
 
         # zhouwei
+        "torch.Tensor.clone",
+        "torch.Tensor.contiguous",
+        "torch.Tensor.is_contiguous",
         "torch.utils.cpp_extension.CUDA_HOME",
         "torch.Tensor.is_coalesced",
         "torch.torch.int32",
