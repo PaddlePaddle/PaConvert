@@ -24,7 +24,7 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0.34, -0.56, 0.73]).asin_())
+        result = torch.tensor([0.34, -0.56, 0.73]).asin_()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,7 +35,7 @@ def test_case_2():
         """
         import torch
         a = torch.tensor([0.34, -0.56, 0.73])
-        result = a.asin_())
+        result = a.asin_()
         """
     )
     obj.run(pytorch_code, ["a", "result"])

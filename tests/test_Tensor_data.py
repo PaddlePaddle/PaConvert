@@ -41,3 +41,29 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["x", "result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        linear = torch.nn.Linear(5, 5)
+        torch.nn.init.constant_(linear.weight, 1)
+
+        result = linear.weight.data
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        linear = torch.nn.Linear(5, 5)
+        linear.weight.data = torch.ones(5, 5)
+
+        result = linear.weight.data
+        """
+    )
+    obj.run(pytorch_code, ["result"])

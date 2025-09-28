@@ -28,4 +28,4 @@ def test_case_1():
         result = x.apply_(lambda x: x*2)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x", "result"])
