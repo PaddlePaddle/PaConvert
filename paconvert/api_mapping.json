@@ -1,6 +1,6 @@
 {
   "fairscale.nn.model_parallel.initialize.get_model_parallel_rank": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.distributed.fleet.base.topology._HYBRID_PARALLEL_GROUP.get_model_parallel_rank"
   },
   "fairscale.nn.model_parallel.initialize.get_model_parallel_world_size": {
@@ -102,7 +102,7 @@
     }
   },
   "flash_attn.__version__.split": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.__version__.split",
     "args_list": [
       "sep",
@@ -8447,12 +8447,15 @@
     }
   },
   "torch.finfo": {
-    "Matcher": "IInfoMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.finfo",
     "min_input_args": 1,
     "args_list": [
       "type"
-    ]
+    ],
+    "kwargs_change": {
+      "type": "dtype"
+    }
   },
   "torch.fix": {
     "Matcher": "GenericMatcher",
@@ -9044,12 +9047,15 @@
     }
   },
   "torch.iinfo": {
-    "Matcher": "IInfoMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.iinfo",
     "min_input_args": 1,
     "args_list": [
       "type"
-    ]
+    ],
+    "kwargs_change": {
+      "type": "dtype"
+    }
   },
   "torch.imag": {
     "Matcher": "GenericMatcher",

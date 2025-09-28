@@ -909,11 +909,6 @@ class Is_InferenceMatcher(BaseMatcher):
         return code
 
 
-class IInfoMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        return "{}(dtype={})".format(self.get_paddle_api(), kwargs["type"])
-
-
 class AssertMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(
