@@ -14,6 +14,8 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 
@@ -30,7 +32,7 @@ class LegacyDeviceAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        pytorch_result = str(pytorch_result).replace("cuda", "gpu")
+        pytorch_result = str(pytorch_result)
         if "cpu:" in pytorch_result:
             pytorch_result = "cpu"
         assert pytorch_result == paddle_result
@@ -44,6 +46,32 @@ def test_case_1():
         """
         import torch
         torch.set_default_device('cpu')
+        result = torch.get_default_device()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.set_default_device(device=torch.device("cpu:1"))
+        result = torch.get_default_device()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.set_default_device(device=torch.device("cuda:0"))
         result = torch.get_default_device()
         """
     )
