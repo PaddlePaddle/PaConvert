@@ -691,11 +691,10 @@ class GlobalManager:
         "torch.cuda.is_current_stream_capturing",
         "torch.cuda.manual_seed_all",
         "torch.cuda.set_rng_state",
-        # "torch.get_default_device",
+        "torch.get_default_device",
         "torch.get_device_module",
         "torch.cuda.is_available",
         "torch.device",
-        #Additional additions
         "torch.cuda.get_device_capability",
 
         # geyuqiang

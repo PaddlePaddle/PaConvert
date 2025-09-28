@@ -16,27 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-
-class LegacyDeviceAPIBase(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_shape=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        pytorch_result = str(pytorch_result).replace("cuda", "gpu")
-        if "cpu:" in pytorch_result:
-            pytorch_result = "cpu"
-        assert pytorch_result == paddle_result
-
-
-obj = LegacyDeviceAPIBase("torch.get_default_device")
+obj = APIBase("torch.get_default_device")
 
 
 def test_case_1():
