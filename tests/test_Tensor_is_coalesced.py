@@ -26,13 +26,8 @@ def test_case_1():
         i = torch.tensor([[0, 1, 1],
                           [2, 0, 2]])
         v = torch.tensor([3, 4, 5])
-        result = torch.sparse_coo_tensor(i, v, [2, 4])
-        result = result.is_coalesced()
+        x = torch.sparse_coo_tensor(i, v, [2, 4])
+        result = x.is_coalesced()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])

@@ -194,6 +194,7 @@ class GlobalManager:
         "torch.cuda.mem_get_info",
         "torch.cuda.is_initialized",
 
+
         # hongyu
         "torch.permute",
         "torch.Tensor.permute",
@@ -209,6 +210,7 @@ class GlobalManager:
         "torch.Tensor.stride",
         "torch.Tensor.get_device",
         "torch.random.initial_seed",
+
 
         # linjun
         "torch.as_tensor", 
@@ -241,6 +243,7 @@ class GlobalManager:
         "torch.functional.einsum",
         "torch.functional.norm",
 
+
         # siyu
         "torch.multinomial",
         "torch.var",
@@ -269,12 +272,14 @@ class GlobalManager:
         "torch.scatter_reduce",
         "torch.nn.functional.silu",
 
+
         # yuyan
         "torch.Tensor.softmax",
         "torch.special.softmax",
         "torch.softmax",
         "torch.Tensor.clamp",
         "torch.Tensor.itemsize",
+
 
         # huoda
         "torch.get_default_dtype",
@@ -496,6 +501,7 @@ class GlobalManager:
         "torch.Tensor.__rtruediv__",
         "torch.Tensor.__setitem__",
 
+
         # sundong
         "torch.matmul",
         "torch.linalg.matmul",
@@ -516,6 +522,7 @@ class GlobalManager:
         "torch.log2",
         "torch.Tensor.remainder",
         "torch.remainder",
+
 
         # zhengsheng
         "torch.broadcast_to",
@@ -547,7 +554,6 @@ class GlobalManager:
         "torch.ceil",
         "torch.floor_divide",
         "torch.masked_select",
-
 
 
         # liuyi
@@ -589,6 +595,7 @@ class GlobalManager:
         "torch.nn.functional.gelu",
         "torch.layer_norm",
 
+
         # haoyang
         "torch.logical_not",
         "torch.Tensor.logical_not",
@@ -610,11 +617,6 @@ class GlobalManager:
         "torch.conv3d",
 
 
-        # rongrui
-
-
-        # bingxin
-        
         # zhichao
         "torch.bfloat16",
         "torch.bool",
@@ -633,7 +635,10 @@ class GlobalManager:
         "torch.Tensor.type_as",
         "torch.nn.Sequential",
 
+
         # zhouwei
+        "torch.utils.cpp_extension.CUDA_HOME",
+        "torch.Tensor.is_coalesced",
         "torch.torch.int32",
         "torch.transpose",
         "torch.Tensor.transpose",
@@ -684,6 +689,7 @@ class GlobalManager:
         "torch.Tensor.scatter",
         "torch.Tensor.scatter_",
         "torch.scatter",
+
 
         # xiangyu
         "torch.cuda.get_device_properties",
