@@ -47,6 +47,9 @@ def test_case_1():
         import torch
         torch.set_default_device('cpu')
         result = torch.get_default_device()
+
+        # if not set None, will cause test_vander error
+        torch.set_default_device(None)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -58,6 +61,9 @@ def test_case_2():
         import torch
         torch.set_default_device(device=torch.device("cpu:1"))
         result = torch.get_default_device()
+
+        # if not set None, will cause test_vander error
+        torch.set_default_device(None)
         """
     )
     obj.run(pytorch_code, ["result"])
