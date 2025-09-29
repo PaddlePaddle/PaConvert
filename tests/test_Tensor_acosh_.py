@@ -11,23 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.masked_scatter")
+obj = APIBase("torch.Tensor.acosh_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-
-        x = torch.tensor([0, 0, 0, 0, 0])
-        mask = torch.tensor([[0, 0, 0, 1, 1], [1, 1, 0, 1, 1]], dtype=torch.bool)
-        source = torch.tensor([[0, 1, 2, 3, 4], [5, 6, 7, 8, 9]])
-        result = x.masked_scatter(mask, source)
+        result = torch.tensor([1.3192, 1.9915, 1.9674, 1.7151]).acosh_()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -37,11 +35,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-
-        x = torch.tensor([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]])
-        mask = torch.tensor([[0, 0, 0, 1, 1], [1, 1, 0, 1, 1]], dtype=torch.bool)
-        source = torch.tensor([[0, 1, 2, 3, 4], [5, 6, 7, 8, 9]])
-        result = x.masked_scatter(mask, source)
+        a = torch.tensor([1.3192, 1.9915, 1.9674, 1.7151])
+        result = a.acosh_()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["a", "result"])

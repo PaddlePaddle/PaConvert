@@ -11,24 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.coalesce")
+obj = APIBase("torch.Tensor.apply_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        i = torch.tensor([[0, 1, 1],
-                          [2, 0, 2]])
-        v = torch.tensor([3, 4, 5], dtype=torch.float32)
-        result = torch.sparse_coo_tensor(i, v, [2, 4])
-        v = result.coalesce()
-        result = result.to_dense()
+        x = torch.tensor([1.3192, 1.9915, 1.9674, 1.7151])
+        result = x.apply_(lambda x: x*2)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x", "result"])

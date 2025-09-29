@@ -16,32 +16,18 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.masked_scatter")
+obj = APIBase("torch.Tensor.dense_dim")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-
-        x = torch.tensor([0, 0, 0, 0, 0])
-        mask = torch.tensor([[0, 0, 0, 1, 1], [1, 1, 0, 1, 1]], dtype=torch.bool)
-        source = torch.tensor([[0, 1, 2, 3, 4], [5, 6, 7, 8, 9]])
-        result = x.masked_scatter(mask, source)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-
-        x = torch.tensor([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]])
-        mask = torch.tensor([[0, 0, 0, 1, 1], [1, 1, 0, 1, 1]], dtype=torch.bool)
-        source = torch.tensor([[0, 1, 2, 3, 4], [5, 6, 7, 8, 9]])
-        result = x.masked_scatter(mask, source)
+        i = torch.tensor([[0, 1, 1],
+                          [2, 0, 2]])
+        v = torch.tensor([3, 4, 5], dtype=torch.float32)
+        x = torch.sparse_coo_tensor(i, v, [2, 4])
+        result = x.dense_dim()
         """
     )
     obj.run(pytorch_code, ["result"])

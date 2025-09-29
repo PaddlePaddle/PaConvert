@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.masked_scatter")
+obj = APIBase("torch.Tensor.masked_scatter_")
 
 
 def test_case_1():
@@ -24,24 +24,10 @@ def test_case_1():
         """
         import torch
 
-        x = torch.tensor([0, 0, 0, 0, 0])
-        mask = torch.tensor([[0, 0, 0, 1, 1], [1, 1, 0, 1, 1]], dtype=torch.bool)
-        source = torch.tensor([[0, 1, 2, 3, 4], [5, 6, 7, 8, 9]])
-        result = x.masked_scatter(mask, source)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-
         x = torch.tensor([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]])
         mask = torch.tensor([[0, 0, 0, 1, 1], [1, 1, 0, 1, 1]], dtype=torch.bool)
         source = torch.tensor([[0, 1, 2, 3, 4], [5, 6, 7, 8, 9]])
-        result = x.masked_scatter(mask, source)
+        result = x.masked_scatter_(mask, source)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x", "result"])
