@@ -14,29 +14,11 @@
 
 import textwrap
 
-from apibase import APIBase
+import paddle
+import pytest
+from test_device import DeviceAPIBase
 
-
-class LegacyDeviceAPIBase(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_shape=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        pytorch_result = str(pytorch_result).replace("cuda", "gpu")
-        if "cpu:" in pytorch_result:
-            pytorch_result = "cpu"
-        assert pytorch_result == paddle_result
-
-
-obj = LegacyDeviceAPIBase("torch.get_default_device")
+obj = DeviceAPIBase("torch.get_default_device")
 
 
 def test_case_1():
@@ -44,6 +26,38 @@ def test_case_1():
         """
         import torch
         torch.set_default_device('cpu')
+        result = torch.get_default_device()
+
+        # if not set None, will cause test_vander error
+        torch.set_default_device(None)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.set_default_device(device=torch.device("cpu:1"))
+        result = torch.get_default_device()
+
+        # if not set None, will cause test_vander error
+        torch.set_default_device(None)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.set_default_device(device=torch.device("cuda:0"))
         result = torch.get_default_device()
         """
     )

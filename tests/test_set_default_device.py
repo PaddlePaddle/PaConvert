@@ -16,29 +16,9 @@ import textwrap
 
 import paddle
 import pytest
-from apibase import APIBase
+from test_device import DeviceAPIBase
 
-
-class LegacyDeviceAPIBase(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_shape=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        pytorch_result = str(pytorch_result).replace("cuda", "gpu")
-        if "cpu:" in pytorch_result:
-            pytorch_result = "cpu"
-        assert pytorch_result == paddle_result
-
-
-obj = LegacyDeviceAPIBase("torch.set_default_device")
+obj = DeviceAPIBase("torch.set_default_device")
 
 
 @pytest.mark.skipif(

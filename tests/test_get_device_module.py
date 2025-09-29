@@ -79,3 +79,17 @@ def test_case_3():
         ["result"],
         check_stop_gradient=False,
     )
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.get_device_module(torch.device('cpu'))
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_stop_gradient=False,
+    )
