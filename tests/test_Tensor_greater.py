@@ -65,7 +65,8 @@ def test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_5():
+# paddle not support input scalar, y must be Tensor
+def _test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
