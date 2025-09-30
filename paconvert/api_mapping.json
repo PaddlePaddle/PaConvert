@@ -600,7 +600,7 @@
     }
   },
   "torch.Tensor.argwhere": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.Tensor.nonzero",
     "min_input_args": 0
   },
@@ -2212,7 +2212,7 @@
     "min_input_args": 0
   },
   "torch.Tensor.is_inference": {
-    "Matcher": "Is_InferenceMatcher",
+    "Matcher": "Func2Attribute",
     "paddle_api": "paddle.Tensor.stop_gradient",
     "min_input_args": 0
   },
@@ -3217,7 +3217,7 @@
     "min_input_args": 0
   },
   "torch.Tensor.pinverse": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.Tensor.pinv",
     "min_input_args": 0
   },
@@ -5449,13 +5449,7 @@
   "torch.autograd.function.FunctionCtx.mark_non_differentiable": {
     "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.autograd.PyLayerContext.mark_non_differentiable",
-    "min_input_args": 1,
-    "args_list": [
-      "*args"
-    ],
-    "kwargs_change": {
-      "args": "tensors"
-    }
+    "min_input_args": 1
   },
   "torch.autograd.function.FunctionCtx.mark_shared_storage": {
     "min_input_args": 0
@@ -6438,7 +6432,7 @@
     ]
   },
   "torch.cuda.get_rng_state_all": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.get_rng_state",
     "min_input_args": 0
   },
@@ -6461,7 +6455,7 @@
     "min_input_args": 0
   },
   "torch.cuda.manual_seed": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.seed",
     "min_input_args": 1,
     "args_list": [
@@ -8992,7 +8986,7 @@
     }
   },
   "torch.hub.load": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.hub.load",
     "min_input_args": 2,
     "args_list": [
@@ -10788,10 +10782,13 @@
   "torch.nn.AdaptiveAvgPool1d": {
     "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.nn.AdaptiveAvgPool1D",
-    "min_input_args": 1
+    "min_input_args": 1,
+    "args_list": [
+      "output_size"
+    ]
   },
   "torch.nn.AdaptiveAvgPool2d": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.nn.AdaptiveAvgPool2D",
     "min_input_args": 1,
     "args_list": [
@@ -10799,7 +10796,7 @@
     ]
   },
   "torch.nn.AdaptiveAvgPool3d": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.nn.AdaptiveAvgPool3D",
     "min_input_args": 1,
     "args_list": [
@@ -11896,7 +11893,7 @@
     "min_input_args": 1
   },
   "torch.nn.MaxUnpool1d": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.nn.MaxUnPool1D",
     "args_list": [
       "kernel_size",
@@ -11906,7 +11903,7 @@
     "min_input_args": 1
   },
   "torch.nn.MaxUnpool2d": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.nn.MaxUnPool2D",
     "args_list": [
       "kernel_size",
@@ -11916,7 +11913,7 @@
     "min_input_args": 1
   },
   "torch.nn.MaxUnpool3d": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.nn.MaxUnPool3D",
     "args_list": [
       "kernel_size",
@@ -11934,7 +11931,7 @@
     ]
   },
   "torch.nn.Module": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.nn.Layer",
     "abstract": true,
     "min_input_args": 0
@@ -12035,7 +12032,7 @@
     "min_input_args": 1
   },
   "torch.nn.Module.modules": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.nn.Layer.sublayers",
     "min_input_args": 0
   },
@@ -12946,7 +12943,7 @@
     "min_input_args": 0
   },
   "torch.nn.UpsamplingBilinear2d": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.nn.UpsamplingBilinear2D",
     "args_list": [
       "size",
@@ -12955,7 +12952,7 @@
     "min_input_args": 1
   },
   "torch.nn.UpsamplingNearest2d": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.nn.UpsamplingNearest2D",
     "args_list": [
       "size",
@@ -12964,7 +12961,7 @@
     "min_input_args": 0
   },
   "torch.nn.ZeroPad2d": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.nn.ZeroPad2D",
     "min_input_args": 1,
     "args_list": [
@@ -15424,14 +15421,7 @@
   "torch.optim.Optimizer.step": {
     "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.optimizer.Optimizer.step",
-    "abstract": true,
-    "min_input_args": 0,
-    "args_list": [
-      "closure"
-    ],
-    "unsupport_args": [
-      "closure"
-    ]
+    "min_input_args": 0
   },
   "torch.optim.Optimizer.zero_grad": {
     "Matcher": "ZeroGradMatcher",
@@ -17994,24 +17984,9 @@
     }
   },
   "torch.utils.checkpoint.checkpoint": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "CheckPointMatcher",
     "paddle_api": "paddle.distributed.fleet.utils.recompute",
-    "min_input_args": 1,
-    "args_list": [
-      "function",
-      "*args",
-      "use_reentrant",
-      "context_fn",
-      "determinism_check",
-      "debug",
-      "preserve_rng_state",
-      "**kwargs"
-    ],
-    "kwargs_change": {
-      "context_fn": "",
-      "determinism_check": "",
-      "debug": ""
-    }
+    "min_input_args": 1
   },
   "torch.utils.cpp_extension.BuildExtension": {
     "Matcher": "GenericMatcher",
@@ -18225,7 +18200,7 @@
     ]
   },
   "torch.utils.data.default_collate": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.io.dataloader.collate.default_collate_fn",
     "min_input_args": 1,
     "args_list": [
@@ -18569,17 +18544,17 @@
     ]
   },
   "torchvision.io.ImageReadMode.GRAY": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'gray'",
     "min_input_args": 0
   },
   "torchvision.io.ImageReadMode.RGB": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'rgb'",
     "min_input_args": 0
   },
   "torchvision.io.ImageReadMode.UNCHANGED": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'unchanged'",
     "min_input_args": 0
   },
@@ -18610,62 +18585,62 @@
     }
   },
   "torchvision.models.AlexNet_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.AlexNet_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.DenseNet121_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.DenseNet121_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.DenseNet161_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.DenseNet161_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.DenseNet169_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.DenseNet169_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.DenseNet201_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.DenseNet201_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.GoogLeNet_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.GoogLeNet_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
@@ -18691,322 +18666,322 @@
     ]
   },
   "torchvision.models.Inception_V3_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.Inception_V3_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.MobileNet_V2_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.MobileNet_V2_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.MobileNet_V2_Weights.IMAGENET1K_V2": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V2'",
     "min_input_args": 0
   },
   "torchvision.models.MobileNet_V3_Large_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.MobileNet_V3_Large_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.MobileNet_V3_Large_Weights.IMAGENET1K_V2": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V2'",
     "min_input_args": 0
   },
   "torchvision.models.MobileNet_V3_Small_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.MobileNet_V3_Small_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.MobileNet_V3_Small_Weights.IMAGENET1K_V2": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V2'",
     "min_input_args": 0
   },
   "torchvision.models.ResNeXt50_32X4D_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.ResNeXt50_32X4D_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.ResNeXt50_32X4D_Weights.IMAGENET1K_V2": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V2'",
     "min_input_args": 0
   },
   "torchvision.models.ResNet101_64x4d_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.ResNet101_64x4d_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.ResNet101_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.ResNet101_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.ResNet101_Weights.IMAGENET1K_V2": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V2'",
     "min_input_args": 0
   },
   "torchvision.models.ResNet152_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.ResNet152_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.ResNet152_Weights.IMAGENET1K_V2": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V2'",
     "min_input_args": 0
   },
   "torchvision.models.ResNet18_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.ResNet18_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.ResNet34_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.ResNet34_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.ResNet50_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.ResNet50_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.ResNet50_Weights.IMAGENET1K_V2": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V2'",
     "min_input_args": 0
   },
   "torchvision.models.ShuffleNet_V2_X0_5_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.ShuffleNet_V2_X0_5_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.ShuffleNet_V2_X1_0_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.ShuffleNet_V2_X1_0_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.ShuffleNet_V2_X1_5_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.ShuffleNet_V2_X1_5_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.ShuffleNet_V2_X2_0_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.ShuffleNet_V2_X2_0_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.SqueezeNet1_0_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.SqueezeNet1_0_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.SqueezeNet1_1_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.SqueezeNet1_1_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.VGG11_BN_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.VGG11_BN_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.VGG11_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.VGG11_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.VGG13_BN_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.VGG13_BN_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.VGG13_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.VGG13_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.VGG16_BN_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.VGG16_BN_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.VGG16_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.VGG16_Weights.IMAGENET1K_FEATURES": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_FEATURES'",
     "min_input_args": 0
   },
   "torchvision.models.VGG16_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.VGG19_BN_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.VGG19_BN_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.VGG19_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.VGG19_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.Wide_ResNet101_2_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.Wide_ResNet101_2_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.Wide_ResNet101_2_Weights.IMAGENET1K_V2": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V2'",
     "min_input_args": 0
   },
   "torchvision.models.Wide_ResNet50_2_Weights.DEFAULT": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'DEFAULT'",
     "min_input_args": 0
   },
   "torchvision.models.Wide_ResNet50_2_Weights.IMAGENET1K_V1": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V1'",
     "min_input_args": 0
   },
   "torchvision.models.Wide_ResNet50_2_Weights.IMAGENET1K_V2": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "'IMAGENET1K_V2'",
     "min_input_args": 0
   },
@@ -19590,14 +19565,14 @@
     ]
   },
   "torchvision.transforms.CenterCrop": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.vision.transforms.CenterCrop",
     "args_list": [
       "size"
     ]
   },
   "torchvision.transforms.ColorJitter": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.vision.transforms.ColorJitter",
     "args_list": [
       "brightness",
@@ -19611,7 +19586,7 @@
     "paddle_api": "paddle.vision.transforms.Compose"
   },
   "torchvision.transforms.Grayscale": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.vision.transforms.Grayscale",
     "args_list": [
       "num_output_channels"
@@ -19662,7 +19637,7 @@
     ]
   },
   "torchvision.transforms.Pad": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.vision.transforms.Pad",
     "args_list": [
       "padding",
@@ -19671,7 +19646,7 @@
     ]
   },
   "torchvision.transforms.RandomAffine": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.vision.transforms.RandomAffine",
     "args_list": [
       "degrees",
@@ -19684,7 +19659,7 @@
     ]
   },
   "torchvision.transforms.RandomCrop": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.vision.transforms.RandomCrop",
     "args_list": [
       "size",
@@ -19746,7 +19721,7 @@
     ]
   },
   "torchvision.transforms.RandomRotation": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.vision.transforms.RandomRotation",
     "args_list": [
       "degrees",
@@ -19781,7 +19756,7 @@
     ]
   },
   "torchvision.transforms.ToTensor": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.vision.transforms.ToTensor"
   },
   "torchvision.transforms.functional.adjust_brightness": {
@@ -19797,7 +19772,7 @@
     "paddle_api": "paddle.vision.transforms.adjust_hue"
   },
   "torchvision.transforms.functional.affine": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.vision.transforms.affine",
     "args_list": [
       "img",
@@ -19844,7 +19819,7 @@
     "paddle_api": "paddle.vision.transforms.pad"
   },
   "torchvision.transforms.functional.perspective": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.vision.transforms.perspective",
     "args_list": [
       "img",
@@ -19870,7 +19845,7 @@
     ]
   },
   "torchvision.transforms.functional.rotate": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.vision.transforms.rotate",
     "args_list": [
       "img",
@@ -19886,7 +19861,7 @@
     "paddle_api": "paddle.vision.transforms.to_grayscale"
   },
   "torchvision.transforms.functional.to_tensor": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.vision.transforms.to_tensor",
     "args_list": [
       "pic"
@@ -20129,7 +20104,7 @@
     "paddle_api": "paddleformers.generation.LogitsProcessorList"
   },
   "transformers.generation.utils.GenerateOutput": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddleformers.transformers.model_outputs.BaseModelOutput",
     "abstract": true
   },
@@ -20140,7 +20115,7 @@
     ]
   },
   "transformers.modeling_outputs.BaseModelOutputWithPast": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddleformers.transformers.model_outputs.BaseModelOutputWithPast",
     "args_list": [
       "last_hidden_state",
@@ -20150,7 +20125,7 @@
     ]
   },
   "transformers.modeling_outputs.CausalLMOutputWithPast": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddleformers.transformers.model_outputs.CausalLMOutputWithPast",
     "args_list": [
       "loss",
