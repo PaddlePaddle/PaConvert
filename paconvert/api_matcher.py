@@ -365,25 +365,6 @@ class AtleastMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
-# These APIs only change API name, but not change API args/kwargs
-class ChangeAPIMatcher(BaseMatcher):
-    def get_paddle_api(self):
-        assert "paddle_api" in self.api_mapping_dict
-        return super().get_paddle_api()
-
-    def get_paddle_nodes(self, args, kwargs):
-        args = self.parse_args(args)
-        kwargs = self.parse_kwargs(kwargs, allow_none=True)
-        if kwargs is None:
-            return None
-        kwargs = self.change_kwargs(kwargs)
-        kwargs = self.set_paddle_default_kwargs(kwargs)
-        code = "{}({})".format(
-            self.get_paddle_api(), self.args_and_kwargs_to_str(args, kwargs)
-        )
-        return ast.parse(code).body
-
-
 class EinopsTorchMatcher(BaseMatcher):
     def get_paddle_api(self):
         return self.torch_api.replace("einops.layers.torch", "einops.layers.paddle")
@@ -417,6 +398,30 @@ class NoNeedConvertMatcher(BaseMatcher):
 
     def get_paddle_class_attribute_nodes(self, node):
         return "unchange"
+
+
+# These APIs only change API name, but not change API args/kwargs
+class ChangeAPIMatcher(BaseMatcher):
+    def get_paddle_api(self):
+        assert "paddle_api" in self.api_mapping_dict
+        assert "unsupport_args" not in self.api_mapping_dict
+        assert "kwargs_change" not in self.api_mapping_dict
+        assert "paddle_default_kwargs" not in self.api_mapping_dict
+        return super().get_paddle_api()
+
+    def get_paddle_nodes(self, args, kwargs):
+        args = self.parse_args(args)
+        kwargs = self.parse_kwargs(kwargs, allow_none=True)
+
+        # temporary delete these unsupport args, which paddle does not support now
+        # for k in ["layout", "generator", "memory_format"]:
+        #    if k in kwargs:
+        #        kwargs.pop(k)
+
+        code = "{}({})".format(
+            self.get_paddle_api(), self.args_and_kwargs_to_str(args, kwargs)
+        )
+        return ast.parse(code).body
 
 
 class TransformersGenericMatcher(BaseMatcher):
@@ -903,10 +908,12 @@ class TransformsPositiveDefiniteTransformMatcher(BaseMatcher):
 
 class Is_InferenceMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "input" not in kwargs:
-            kwargs["input"] = self.paddleClass
-        code = "{}.stop_gradient".format(kwargs["input"])
-        return code
+        return "{}.stop_gradient".format(kwargs["input"])
+
+
+class NumelMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        return "{}.size".format(kwargs["input"])
 
 
 class AssertMatcher(BaseMatcher):
@@ -3119,13 +3126,6 @@ class MSortMatcher(BaseMatcher):
             )
             code = API_TEMPLATE.format(kwargs["input"])
         return code
-
-
-class NumelMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        if "input" not in kwargs:
-            kwargs["input"] = self.paddleClass
-        return "{}.size".format(kwargs["input"])
 
 
 class TriangularSolveMatcher(BaseMatcher):

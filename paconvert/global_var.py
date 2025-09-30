@@ -621,6 +621,18 @@ class GlobalManager:
         "torch.nn.Sequential",
 
         # zhouwei
+        "torch.trunc",
+        "torch.nn.PixelUnshuffle",
+        "torch.nn.Upsample",
+        "torch.nn.PixelShuffle",
+        "torch.nn.LocalResponseNorm",
+        "torch.nn.ChannelShuffle",
+        "torch.nn.AdaptiveLogSoftmaxWithLoss",
+        "torch.Tensor.corrcoef",
+        "torch.Tensor.multinomial",
+        "torch.mm",
+        "torch.get_rng_state",
+        "torch.Tensor.trace",
         "torch.Tensor.clone",
         "torch.Tensor.contiguous",
         "torch.Tensor.is_contiguous",
