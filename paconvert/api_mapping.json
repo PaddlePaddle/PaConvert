@@ -5449,13 +5449,7 @@
   "torch.autograd.function.FunctionCtx.mark_non_differentiable": {
     "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.autograd.PyLayerContext.mark_non_differentiable",
-    "min_input_args": 1,
-    "args_list": [
-      "*args"
-    ],
-    "kwargs_change": {
-      "args": "tensors"
-    }
+    "min_input_args": 1
   },
   "torch.autograd.function.FunctionCtx.mark_shared_storage": {
     "min_input_args": 0
@@ -8458,7 +8452,7 @@
     }
   },
   "torch.fix": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.trunc",
     "min_input_args": 1,
     "args_list": [
@@ -8992,7 +8986,7 @@
     }
   },
   "torch.hub.load": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.hub.load",
     "min_input_args": 2,
     "args_list": [
@@ -11048,7 +11042,7 @@
     }
   },
   "torch.nn.ConstantPad1d": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Pad1D",
     "min_input_args": 2,
     "args_list": [
@@ -11057,7 +11051,7 @@
     ]
   },
   "torch.nn.ConstantPad2d": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Pad2D",
     "min_input_args": 2,
     "args_list": [
@@ -11066,7 +11060,7 @@
     ]
   },
   "torch.nn.ConstantPad3d": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Pad3D",
     "min_input_args": 2,
     "args_list": [
@@ -11677,7 +11671,7 @@
     "min_input_args": 0
   },
   "torch.nn.LPPool1d": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.LPPool1D",
     "min_input_args": 2,
     "args_list": [
@@ -11688,7 +11682,7 @@
     ]
   },
   "torch.nn.LPPool2d": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.LPPool2D",
     "min_input_args": 2,
     "args_list": [
@@ -15427,14 +15421,7 @@
   "torch.optim.Optimizer.step": {
     "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.optimizer.Optimizer.step",
-    "abstract": true,
-    "min_input_args": 0,
-    "args_list": [
-      "closure"
-    ],
-    "unsupport_args": [
-      "closure"
-    ]
+    "min_input_args": 0
   },
   "torch.optim.Optimizer.zero_grad": {
     "Matcher": "ZeroGradMatcher",
@@ -17997,24 +17984,9 @@
     }
   },
   "torch.utils.checkpoint.checkpoint": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "CheckPointMatcher",
     "paddle_api": "paddle.distributed.fleet.utils.recompute",
-    "min_input_args": 1,
-    "args_list": [
-      "function",
-      "*args",
-      "use_reentrant",
-      "context_fn",
-      "determinism_check",
-      "debug",
-      "preserve_rng_state",
-      "**kwargs"
-    ],
-    "kwargs_change": {
-      "context_fn": "",
-      "determinism_check": "",
-      "debug": ""
-    }
+    "min_input_args": 1
   },
   "torch.utils.cpp_extension.BuildExtension": {
     "Matcher": "GenericMatcher",
@@ -18109,7 +18081,7 @@
     "min_input_args": 2
   },
   "torch.utils.data.BatchSampler": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.io.BatchSampler",
     "min_input_args": 3,
     "args_list": [
@@ -18174,7 +18146,7 @@
     "min_input_args": 0
   },
   "torch.utils.data.RandomSampler": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.io.RandomSampler",
     "min_input_args": 1,
     "args_list": [
@@ -18200,7 +18172,7 @@
     "min_input_args": 2
   },
   "torch.utils.data.SubsetRandomSampler": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.io.SubsetRandomSampler",
     "min_input_args": 1,
     "args_list": [
@@ -18217,7 +18189,7 @@
     ]
   },
   "torch.utils.data.WeightedRandomSampler": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.io.WeightedRandomSampler",
     "min_input_args": 2,
     "args_list": [
@@ -19552,7 +19524,7 @@
     }
   },
   "torchvision.ops.nms": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.vision.ops.nms",
     "args_list": [
       "boxes",
