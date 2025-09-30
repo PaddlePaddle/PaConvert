@@ -8986,26 +8986,9 @@
     }
   },
   "torch.hub.load": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "HubLoadMatcher",
     "paddle_api": "paddle.hub.load",
-    "min_input_args": 2,
-    "args_list": [
-      "repo_or_dir",
-      "model",
-      "*args",
-      "source",
-      "trust_repo",
-      "force_reload",
-      "verbose",
-      "skip_validation",
-      "**kwargs"
-    ],
-    "kwargs_change": {
-      "repo_or_dir": "repo_dir",
-      "trust_repo": "",
-      "verbose": "",
-      "skip_validation": ""
-    }
+    "min_input_args": 2
   },
   "torch.hub.load_state_dict_from_url": {
     "Matcher": "GenericMatcher",

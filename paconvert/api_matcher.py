@@ -439,6 +439,23 @@ class CheckPointMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
+class HubLoadMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        args = self.parse_args(args)
+        kwargs = self.parse_kwargs(kwargs, allow_none=True)
+
+        if "repo_or_dir" in kwargs:
+            kwargs["repo_dir"] = kwargs.pop("repo_or_dir")
+        for k in ["trust_repo", "verbose", "skip_validation"]:
+            if k in kwargs:
+                kwargs.pop(k)
+
+        code = "{}({})".format(
+            self.get_paddle_api(), self.args_and_kwargs_to_str(args, kwargs)
+        )
+        return ast.parse(code).body
+
+
 class TransformersGenericMatcher(BaseMatcher):
     def get_paddle_api(self):
         return self.torch_api.replace("transformers.", "paddleformers.transformers.")
