@@ -20,6 +20,14 @@ echo "Insalling latest release cpu version torch"
 python -m pip install -U torch torchaudio torchvision --index-url https://download.pytorch.org/whl/cpu
 python -c "import torch; print('torch version information:' ,torch.__version__)"
 
+echo "Installing transformers from git develop branch"
+python -m pip install -U git+https://github.com/huggingface/transformers.git
+python -c "import transformers; print('transformers version information:', transformers.__version__)"
+
+echo "Installing paddleformers from git develop branch"
+python -m pip install -U git+https://github.com/PaddlePaddle/PaddleFormers.git
+python -c "import paddleformers; print('paddleformers version information:', paddleformers.__version__)"
+
 echo "Insalling develop cpu version paddle"
 #python -m pip uninstall -y paddlepaddle
 #python -m pip uninstall -y paddlepaddle-gpu
