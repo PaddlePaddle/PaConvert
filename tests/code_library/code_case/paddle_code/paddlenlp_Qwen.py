@@ -131,7 +131,7 @@ if attention_mask is None:
 print("#########################case8#########################")
 paddle.__version__.split(".")
 print("#########################case9#########################")
-paddle.__version__.split(sep=".")
+paddle.__version__.split(".")
 print("#########################case10########################")
 assert (
     paddle.device.cuda.get_device_capability()[0] >= 8

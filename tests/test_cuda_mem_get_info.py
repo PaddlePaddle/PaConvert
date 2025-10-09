@@ -32,12 +32,7 @@ def test_case_1():
         result = torch.cuda.mem_get_info()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 @pytest.mark.skipif(
@@ -52,12 +47,7 @@ def test_case_2():
         result = torch.cuda.mem_get_info()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 @pytest.mark.skipif(
@@ -72,12 +62,7 @@ def test_case_3():
         result = torch.cuda.mem_get_info(0)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 @pytest.mark.skipif(
@@ -92,12 +77,7 @@ def test_case_4():
         result = torch.cuda.mem_get_info(device=0)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 @pytest.mark.skipif(
@@ -112,12 +92,7 @@ def test_case_5():
         result = torch.cuda.mem_get_info(torch.device("cuda:0"))
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 @pytest.mark.skipif(
@@ -132,9 +107,4 @@ def test_case_6():
         result = torch.cuda.mem_get_info(device=torch.device("cuda:0"))
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
-    )
+    obj.run(pytorch_code, ["result"])

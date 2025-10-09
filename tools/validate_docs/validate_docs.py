@@ -447,10 +447,10 @@ if __name__ == "__main__":
         help="Specify the unittest validation file path.",
     )
     parser.add_argument(
-        "--docs_mappings",
+        "--api_difference_info",
         type=str,
-        default=os.path.join(tool_dir, "docs_mappings.json"),
-        help="Sepcify the docs_mappings.json (from docs/ repo) file path",
+        default=os.path.join(tool_dir, "api_difference_info.json"),
+        help="Sepcify the api_difference_info.json (from docs/ repo) file path",
     )
     parser.add_argument(
         "--verbose_level",

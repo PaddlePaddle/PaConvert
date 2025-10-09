@@ -18,7 +18,25 @@ import paddle
 import pytest
 from apibase import APIBase
 
-obj = APIBase("torch.cuda.is_initialized")
+
+class CudaIsInitializedAPIBase(APIBase):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_shape=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
+    ):
+        assert pytorch_result is True
+        assert paddle_result is True
+
+
+obj = CudaIsInitializedAPIBase("torch.cuda.is_initialized")
 
 
 @pytest.mark.skipif(
@@ -30,6 +48,21 @@ def test_case_1():
         """
         import torch
         torch.tensor([1], device='cuda:0')
+        result = torch.cuda.is_initialized()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones(2, 2).cuda()
         result = torch.cuda.is_initialized()
         """
     )
