@@ -22,20 +22,22 @@ python -m pip install torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64
 # python -m pip install -U torch torchvision --index-url https://download.pytorch.org/whl/cu118
 python -c "import torch; print('torch version information:' ,torch.__version__)"
 
-echo "Installing transformers from git develop branch"
-python -m pip install -U git+https://github.com/huggingface/transformers.git
-python -c "import transformers; print('transformers version information:', transformers.__version__)"
-
-echo "Installing paddleformers from git develop branch"
-python -m pip install -U git+https://github.com/PaddlePaddle/PaddleFormers.git
-python -c "import paddleformers; print('paddleformers version information:', paddleformers.__version__)"
-
 echo '************************************************************************************************************'
 echo "Insalling develop gpu version paddle"
 python -m pip uninstall -y paddlepaddle
 python -m pip uninstall -y paddlepaddle-gpu
 python -m pip install --force-reinstall --no-deps -U --pre paddlepaddle-gpu -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
+
+echo '************************************************************************************************************'
+echo "Installing transformers==4.55.4"
+python -m pip install transformers==4.55.4
+python -c "import transformers; print('transformers version information:', transformers.__version__)"
+
+echo '************************************************************************************************************'
+echo "Installing paddleformers from git develop branch"
+python -m pip install -U git+https://github.com/PaddlePaddle/PaddleFormers.git
+python -c "import paddleformers; print('paddleformers version information:', paddleformers.__version__)"
 
 echo '************************************************************************************************************'
 echo "Insalling paconvert requirements"
