@@ -19956,6 +19956,21 @@
       "num_assistant_tokens_schedule"
     ]
   },
+  "transformers.LogitsProcessor": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddleformers.generation.LogitsProcessor",
+    "args_list": [
+      "input_ids",
+      "scores"
+    ],
+    "kwargs_change": {
+      "scores": "logits"
+    }
+  },
+  "transformers.LogitsProcessorList": {
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddleformers.generation.LogitsProcessorList"
+  },
   "transformers.PreTrainedModel": {
     "Matcher": "TRFMPreTrainedModelMatcher",
     "paddle_api": "paddleformers.transformers.PretrainedModel",
@@ -20070,21 +20085,6 @@
       "scores",
       "**kwargs"
     ]
-  },
-  "transformers.generation.LogitsProcessor": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddleformers.generation.LogitsProcessor",
-    "args_list": [
-      "input_ids",
-      "scores"
-    ],
-    "kwargs_change": {
-      "scores": "logits"
-    }
-  },
-  "transformers.generation.LogitsProcessorList": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddleformers.generation.LogitsProcessorList"
   },
   "transformers.generation.utils.GenerateOutput": {
     "Matcher": "ChangeAPIMatcher",
