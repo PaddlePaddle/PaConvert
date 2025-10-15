@@ -35,7 +35,7 @@ import paddleformers
 
 >>>>>>torch.fake_api(
     paddleformers.transformers.BertTokenizer.from_pretrained("bert-base-chinese"),
-    paddle.rand(shape=[2, 3, 4]),
+    paddle.rand(2, 3, 4),
     paddleformers.transformers.BertTokenizer.from_pretrained("bert-base-chinese"),
 )
 paddleformers.transformers.BertTokenizer.from_pretrained("bert-base-chinese")
