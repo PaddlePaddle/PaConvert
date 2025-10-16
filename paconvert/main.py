@@ -111,6 +111,11 @@ def main():
         action="store_true",
         help="Inner Usage. Calculate convert speed. user do not need to pay attention.",
     )
+    parser.add_argument(
+        "--only_complete",
+        action="store_true",
+        help="Inner Usage. Complete PyTorch code snippets only. user do not need to pay attention.",
+    )
     args = parser.parse_args()
 
     if args.exclude_packages:
@@ -134,6 +139,7 @@ def main():
                 show_unsupport_api=args.show_unsupport_api,
                 no_format=args.no_format,
                 calculate_speed=args.calculate_speed,
+                only_complete=args.only_complete,
             )
 
             project_dir = os.path.join(in_dir, project_name)
@@ -179,6 +185,7 @@ def main():
         show_unsupport_api=args.show_unsupport_api,
         no_format=args.no_format,
         calculate_speed=args.calculate_speed,
+        only_complete=args.only_complete,
     )
 
     if args.run_check:

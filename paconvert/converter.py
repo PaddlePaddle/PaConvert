@@ -58,6 +58,7 @@ class Converter:
         show_unsupport_api=False,
         no_format=False,
         calculate_speed=False,
+        only_complete=False,
     ):
         self.imports_map = collections.defaultdict(dict)
         self.torch_api_count = 0
@@ -78,6 +79,7 @@ class Converter:
         self.convert_rate = 0.0
         self.no_format = no_format
         self.calculate_speed = calculate_speed
+        self.only_complete = only_complete
         self.line_count = 0
 
         log_info(self.logger, "===========================================")
@@ -347,8 +349,8 @@ class Converter:
                         "Skip autoflake format due to error: {}".format(str(e)),
                     )
                 """
-
-            code = self.mark_unsupport(code, old_path)
+            if not self.only_complete:
+                code = self.mark_unsupport(code, old_path)
             with open(new_path, "w", encoding="UTF-8") as file:
                 file.write(code)
             log_info(
@@ -393,6 +395,8 @@ class Converter:
             trans.transform()
             self.torch_api_count += trans.torch_api_count
             self.success_api_count += trans.success_api_count
+            if self.only_complete:
+                break
 
     def mark_unsupport(self, code, file):
         lines = code.split("\n")
