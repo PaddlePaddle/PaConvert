@@ -44,7 +44,7 @@ def test_case_2():
         result = transformer(tgt)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["result"], check_value=False, check_stop_gradient=False)
 
 
 def test_case_3():

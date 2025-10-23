@@ -15,7 +15,7 @@
 
 import textwrap
 
-from apibase import APIBase
+from tests.apibase import APIBase
 
 obj = APIBase("transformers.AddedToken")
 
