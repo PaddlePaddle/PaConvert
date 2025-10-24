@@ -728,11 +728,7 @@
       "p",
       "*",
       "generator"
-    ],
-    "kwargs_change": {
-      "generator": "",
-      "input": "x"
-    }
+    ]
   },
   "torch.Tensor.bernoulli_": {
     "Matcher": "GenericMatcher",
