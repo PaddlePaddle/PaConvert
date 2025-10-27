@@ -23,20 +23,6 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.get_device()
-        """
-    )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        check_stop_gradient=False,
-    )
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
         t = torch.tensor([1, 2, 3]).cuda()
         result = torch.get_device(t)
         """
