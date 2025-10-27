@@ -33,7 +33,7 @@ class cudaEventAPI(APIBase):
         atol=0.0,
     ):
         assert pytorch_result == paddle_result or isinstance(
-            paddle_result, paddle.framework.core.CUDAEvent
+            paddle_result.event_base, paddle.framework.core.CUDAEvent
         )
 
 
