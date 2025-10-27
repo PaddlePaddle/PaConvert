@@ -18,8 +18,8 @@ import paddle
 import pytest
 from apibase import APIBase
 
-
 obj = APIBase("torch.cuda.device")
+
 
 @pytest.mark.skipif(
     condition=not paddle.device.is_compiled_with_cuda(),

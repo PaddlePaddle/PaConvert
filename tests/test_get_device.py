@@ -16,7 +16,6 @@ import textwrap
 
 from apibase import APIBase
 
-
 obj = APIBase("torch.get_device")
 
 
@@ -47,4 +46,3 @@ def test_case_2():
         ["result"],
         check_stop_gradient=False,
     )
-

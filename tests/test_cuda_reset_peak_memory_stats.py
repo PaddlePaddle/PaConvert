@@ -18,7 +18,6 @@ import paddle
 import pytest
 from apibase import APIBase
 
-
 obj = APIBase("torch.cuda.reset_peak_memory_stats")
 
 
