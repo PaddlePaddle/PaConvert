@@ -33,7 +33,9 @@ class cudaSetStreamAPI(APIBase):
         atol=0.0,
     ):
 
-        assert isinstance(pytorch_result, type(None))
+        assert isinstance(pytorch_result, type(None)) and isinstance(
+            paddle_result, paddle.device.Stream
+        ), f"{name} failed."
 
 
 obj = cudaSetStreamAPI("torch.cuda.set_stream")

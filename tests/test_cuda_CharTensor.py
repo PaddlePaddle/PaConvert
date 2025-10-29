@@ -18,7 +18,7 @@ import paddle
 import pytest
 from apibase import APIBase
 
-obj = APIBase("torch.cuda.reset_peak_memory_stats")
+obj = APIBase("torch.cuda.CharTensor")
 
 
 @pytest.mark.skipif(
@@ -29,10 +29,10 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.cuda.reset_peak_memory_stats()
+        result = torch.cuda.CharTensor(2, 3)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 @pytest.mark.skipif(
@@ -43,11 +43,11 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([1,2,3]).cuda()
-        result = torch.cuda.reset_peak_memory_stats(0)
+        shape = [2, 3]
+        result = torch.cuda.CharTensor(*shape)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 @pytest.mark.skipif(
@@ -58,11 +58,11 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([1,2,3]).cuda()
-        result = torch.cuda.reset_peak_memory_stats(device=0)
+        dim1, dim2 = 2, 3
+        result = torch.cuda.CharTensor(dim1, dim2)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 @pytest.mark.skipif(
@@ -73,11 +73,13 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([1,2,3]).cuda()
-        result = torch.cuda.reset_peak_memory_stats(torch.device("cuda:0"))
+        def fun(x: torch.CharTensor):
+            return x * 2
+        a = torch.cuda.CharTensor(3, 4)
+        result = fun(a)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 @pytest.mark.skipif(
@@ -88,8 +90,35 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        t = torch.tensor([1,2,3]).cuda()
-        result = torch.cuda.reset_peak_memory_stats(device=torch.device("cuda:0"))
+        result = torch.cuda.CharTensor([[3, 4], [5, 8]])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.cuda.CharTensor((1, 2, 3))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.cuda.CharTensor()
         """
     )
     obj.run(pytorch_code, ["result"])

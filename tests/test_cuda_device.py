@@ -18,24 +18,7 @@ import paddle
 import pytest
 from apibase import APIBase
 
-
-class CudaDeviceAPIBase(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_shape=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        assert pytorch_result.idx == paddle_result.get_device_id()
-
-
-obj = CudaDeviceAPIBase("torch.cuda.device")
+obj = APIBase("torch.cuda.device")
 
 
 @pytest.mark.skipif(
@@ -46,7 +29,8 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.cuda.device(0)
+        with torch.cuda.device(0):
+            result = torch.cuda.current_device()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -60,7 +44,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.cuda.device(device=1)
+        with torch.cuda.device(device=1):
+            result = torch.cuda.current_device()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -74,7 +59,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.cuda.device(torch.device('cuda', index=1))
+        with torch.cuda.device(torch.device('cuda', index=1)):
+            result = torch.cuda.current_device()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -89,7 +75,8 @@ def test_case_4():
         """
         import torch
         device = torch.device('cuda', index=0)
-        result = torch.cuda.device(device)
+        with torch.cuda.device(device):
+            result = torch.cuda.current_device()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -104,7 +91,8 @@ def test_case_5():
         """
         import torch
         device = 0
-        result = torch.cuda.device(device)
+        with torch.cuda.device(device):
+            result = torch.cuda.current_device()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -119,7 +107,8 @@ def test_case_6():
         """
         import torch
         device = 1
-        result = torch.cuda.device(device)
+        with torch.cuda.device(device):
+            result = torch.cuda.current_device()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -133,7 +122,8 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.cuda.device('cuda:1')
+        with torch.cuda.device('cuda:1'):
+            result = torch.cuda.current_device()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -148,7 +138,8 @@ def test_case_8():
         """
         import torch
         device = 'cuda:1'
-        result = torch.cuda.device(device)
+        with torch.cuda.device(device):
+            result = torch.cuda.current_device()
         """
     )
     obj.run(pytorch_code, ["result"])

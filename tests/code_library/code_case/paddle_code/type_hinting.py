@@ -14,7 +14,7 @@ def fun(b: paddle.BoolTensor):
 
 
 print("#########################case4#########################")
-paddle.set_default_dtype(d=paddle.float16)
+paddle.set_default_dtype(d=paddle.cuda.HalfTensor)
 print("#########################case5#########################")
 
 
