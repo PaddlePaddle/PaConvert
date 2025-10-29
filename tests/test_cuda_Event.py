@@ -16,6 +16,7 @@ import textwrap
 
 import paddle
 import pytest
+import torch
 from apibase import APIBase
 
 
@@ -32,8 +33,9 @@ class cudaEventAPI(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        assert pytorch_result == paddle_result or isinstance(
-            paddle_result.event_base, paddle.framework.core.CUDAEvent
+        assert pytorch_result == paddle_result or (
+            isinstance(paddle_result.event_base, paddle.framework.core.CUDAEvent)
+            and (isinstance(pytorch_result, torch.cuda.Event))
         )
 
 

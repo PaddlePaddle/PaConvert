@@ -36,5 +36,4 @@ def test_case_1():
     obj.run(
         pytorch_code,
         ["result"],
-        check_stop_gradient=False,
     )
