@@ -6442,8 +6442,11 @@
     "min_input_args": 0
   },
   "torch.cuda.is_bf16_supported": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.amp.is_bfloat16_supported"
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.amp.is_bfloat16_supported",
+    "unsupport_args": [
+      "including_emulation"
+    ]
   },
   "torch.cuda.is_initialized": {
     "Matcher": "ChangeAPIMatcher",
