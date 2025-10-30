@@ -13,8 +13,8 @@
 # limitations under the License.
 
 import numpy as np
-import paddle
 import torch
+import paddle
 from apibase import APIBase
 
 
