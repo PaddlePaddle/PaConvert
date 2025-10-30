@@ -495,6 +495,8 @@ class GlobalManager:
         "torch.Tensor.__rsub__",
         "torch.Tensor.__rtruediv__",
         "torch.Tensor.__setitem__",
+        "torch.optim.Optimizer.step",
+        "torch.nn.Module.train",
 
         # sundong
         "torch.matmul",
