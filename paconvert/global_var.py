@@ -548,6 +548,8 @@ class GlobalManager:
         "torch.index_put",
         "torch.Tensor.index_put",
         "torch.Tensor.index_put_",
+        "torch.bucketize",
+        "torch.searchsorted",
 
         # liuyi
         "torch.finfo",
