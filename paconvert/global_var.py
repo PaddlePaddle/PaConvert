@@ -762,10 +762,7 @@ class GlobalManager:
         "torch.device",
         "torch.cuda.get_device_capability",
         "torch.cuda.device",
-<<<<<<< HEAD
         "torch.cuda.is_bf16_supported",
-=======
->>>>>>> 3d0fde0359bf2909ca896934b864041980540a8b
         "torch.cuda.manual_seed",
         "torch.cuda.max_memory_allocated",
         "torch.cuda.reset_peak_memory_stats",
