@@ -87,7 +87,7 @@ def test_case_3():
             loss.backward()
             return loss
 
-        optim.step(closure)
+        optim.step(closure=closure)
         result = optim.state_dict()
         """
     )
