@@ -781,6 +781,9 @@ class GlobalManager:
         'torch.cuda.BoolTensor',
         'torch.cuda.nvtx.range_push',
         'torch.cuda.nvtx.range_pop',
+        'torch.cuda.amp.autocast',
+        'torch.cuda.amp.autocast_mode.autocast',
+        'version.hip',
 
         # geyuqiang
         "torch.cuda.current_device",
