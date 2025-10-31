@@ -91,4 +91,9 @@ def test_case_3():
         result = optim.state_dict()
         """
     )
-    obj.run(pytorch_code, ["result"], unsupport=True)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support 'closure' now!",
+    )

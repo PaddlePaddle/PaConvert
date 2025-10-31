@@ -42,4 +42,10 @@ def test_case_2():
         result = torch.cuda.is_bf16_supported(including_emulation=True)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False, unsupport=True)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+        unsupport=True,
+        reason="paddle does not support 'including_emulation' now!",
+    )

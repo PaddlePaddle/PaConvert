@@ -69,4 +69,9 @@ def test_case_3():
         result = model.training
         """
     )
-    obj.run(pytorch_code, ["result"], unsupport=True)
+    obj.run(
+        pytorch_code,
+        ["result"],
+        unsupport=True,
+        reason="paddle does not support 'mode' now!",
+    )
