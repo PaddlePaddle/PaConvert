@@ -33,3 +33,13 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.cuda.is_bf16_supported(including_emulation=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False, unsupport=True)
