@@ -12194,9 +12194,12 @@
     "min_input_args": 0
   },
   "torch.nn.Module.train": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Layer.train",
-    "min_input_args": 0
+    "min_input_args": 0,
+    "unsupport_args": [
+      "mode"
+    ]
   },
   "torch.nn.Module.type": {
     "Matcher": "GenericMatcher",
@@ -15401,9 +15404,12 @@
     "min_input_args": 0
   },
   "torch.optim.Optimizer.step": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.optimizer.Optimizer.step",
-    "min_input_args": 0
+    "min_input_args": 0,
+    "unsupport_args": [
+      "closure"
+    ]
   },
   "torch.optim.Optimizer.zero_grad": {
     "Matcher": "ZeroGradMatcher",
