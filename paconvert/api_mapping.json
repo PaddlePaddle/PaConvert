@@ -12907,7 +12907,7 @@
   },
   "torch.nn.Unfold": {
     "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.compat.Unfold"
+    "paddle_api": "paddle.compat.nn.Unfold"
   },
   "torch.nn.Upsample": {
     "Matcher": "GenericMatcher",
@@ -14166,7 +14166,7 @@
   },
   "torch.nn.functional.pad": {
     "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.compat.pad"
+    "paddle_api": "paddle.compat.nn.functional.pad"
   },
   "torch.nn.functional.pairwise_distance": {
     "Matcher": "GenericMatcher",
