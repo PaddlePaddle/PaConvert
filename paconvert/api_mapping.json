@@ -12945,9 +12945,25 @@
     ],
     "min_input_args": 0
   },
+  "torch.nn.ZeroPad1d": {
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.nn.ZeroPad1D",
+    "min_input_args": 1,
+    "args_list": [
+      "padding"
+    ]
+  },
   "torch.nn.ZeroPad2d": {
     "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.nn.ZeroPad2D",
+    "min_input_args": 1,
+    "args_list": [
+      "padding"
+    ]
+  },
+  "torch.nn.ZeroPad3d": {
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.nn.ZeroPad3D",
     "min_input_args": 1,
     "args_list": [
       "padding"
@@ -14413,7 +14429,7 @@
   },
   "torch.nn.functional.softmax": {
     "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.compat.softmax"
+    "paddle_api": "paddle.compat.nn.functional.softmax"
   },
   "torch.nn.functional.softmin": {
     "Matcher": "FSoftMinMatcher",
