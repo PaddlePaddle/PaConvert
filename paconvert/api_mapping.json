@@ -6442,8 +6442,11 @@
     "min_input_args": 0
   },
   "torch.cuda.is_bf16_supported": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.amp.is_bfloat16_supported"
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.amp.is_bfloat16_supported",
+    "unsupport_args": [
+      "including_emulation"
+    ]
   },
   "torch.cuda.is_initialized": {
     "Matcher": "ChangeAPIMatcher",
@@ -12191,9 +12194,12 @@
     "min_input_args": 0
   },
   "torch.nn.Module.train": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Layer.train",
-    "min_input_args": 0
+    "min_input_args": 0,
+    "unsupport_args": [
+      "mode"
+    ]
   },
   "torch.nn.Module.type": {
     "Matcher": "GenericMatcher",
@@ -12907,7 +12913,7 @@
   },
   "torch.nn.Unfold": {
     "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.compat.Unfold"
+    "paddle_api": "paddle.compat.nn.Unfold"
   },
   "torch.nn.Upsample": {
     "Matcher": "GenericMatcher",
@@ -14166,7 +14172,7 @@
   },
   "torch.nn.functional.pad": {
     "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.compat.pad"
+    "paddle_api": "paddle.compat.nn.functional.pad"
   },
   "torch.nn.functional.pairwise_distance": {
     "Matcher": "GenericMatcher",
@@ -15398,9 +15404,12 @@
     "min_input_args": 0
   },
   "torch.optim.Optimizer.step": {
-    "Matcher": "ChangeAPIMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.optimizer.Optimizer.step",
-    "min_input_args": 0
+    "min_input_args": 0,
+    "unsupport_args": [
+      "closure"
+    ]
   },
   "torch.optim.Optimizer.zero_grad": {
     "Matcher": "ZeroGradMatcher",
