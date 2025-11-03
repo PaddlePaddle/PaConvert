@@ -156,6 +156,9 @@ class GlobalManager:
         "torch.nn.ReplicationPad1d",
         "torch.nn.ReplicationPad2d",
         "torch.nn.ReplicationPad3d",
+        "torch.nn.CircularPad1d",
+        "torch.nn.CircularPad2d",
+        "torch.nn.CircularPad3d",
         # honggeng
         "torch.nn.functional.dropout1d",
         "torch.nn.parameter.Parameter",
