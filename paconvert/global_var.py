@@ -260,7 +260,11 @@ class GlobalManager:
         "torch.rand_like",
         "torch.mean",
         "torch.Tensor.mean",
-        
+        "torch.nn.functional.dropout",
+        "torch.nn.Dropout",
+        "torch.linspace",
+        "torch.normal",
+
         # shijie
         "torch.msort",
         "torch.Tensor.msort",
