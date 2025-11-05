@@ -9134,7 +9134,7 @@
   "torch.instance_norm": {},
   "torch.inverse": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.linalg.inv",
+    "paddle_api": "paddle.inverse",
     "min_input_args": 1,
     "args_list": [
       "input",

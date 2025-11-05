@@ -630,7 +630,8 @@ class GlobalManager:
         "torch.nn.Sequential",
 
         # zhouwei
-        #"torch.abs",
+        "torch.float8_e4m3fn",
+        "torch.abs",
         "torch.squeeze",
         "torch.randn_like",
         "torch.Tensor.__floordiv__",
