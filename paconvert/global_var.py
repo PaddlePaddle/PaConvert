@@ -834,4 +834,12 @@ class GlobalManager:
 
         # genghaozhe
         "torch.nn.functional.interpolate",
+        
+        #lijinjin
+        "torch.Tensor.clamp_",
+        "torch.nn.functional.logsigmoid",
+        "torch.autocast",
+        "torch.nn.init._calculate_fan_in_and_fan_out"
+        "torch.functional.meshgrid"
+
     ]
