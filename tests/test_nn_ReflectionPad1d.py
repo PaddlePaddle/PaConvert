@@ -27,9 +27,10 @@ def test_case_1():
         x = torch.tensor([[[0., 1., 2., 3.], [4., 5., 6., 7.]]])
         model = nn.ReflectionPad1d(2)
         result = model(x)
+        padding = model.padding
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "padding"])
 
 
 def test_case_2():
@@ -40,9 +41,10 @@ def test_case_2():
         x = torch.tensor([[[0., 1., 2., 3.], [4., 5., 6., 7.]]])
         model = nn.ReflectionPad1d((2, 1))
         result = model(x)
+        padding = model.padding
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "padding"])
 
 
 def test_case_3():
@@ -53,9 +55,10 @@ def test_case_3():
         x = torch.tensor([[[0., 1., 2., 3.], [4., 5., 6., 7.]]])
         model = nn.ReflectionPad1d(padding=2)
         result = model(x)
+        padding = model.padding
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "padding"])
 
 
 def test_case_4():
@@ -66,6 +69,7 @@ def test_case_4():
         x = torch.tensor([[[0., 1., 2., 3.], [4., 5., 6., 7.]]])
         model = torch.nn.ReflectionPad1d(padding=2)
         result = model(x)
+        padding = model.padding
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "padding"])

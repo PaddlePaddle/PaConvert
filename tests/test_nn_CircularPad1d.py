@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.ReflectionPad2d")
+obj = APIBase("torch.nn.CircularPad1d")
 
 
 def test_case_1():
@@ -24,8 +24,11 @@ def test_case_1():
         """
         import torch
         import torch.nn as nn
-        x = torch.tensor([[[[-0.4106,  0.1677], [-0.6648, -0.5669]]]])
-        model = nn.ReflectionPad2d(1)
+        x = torch.tensor([[[-1.3328, -0.4948],
+                            [ 0.8689,  1.1423]],
+                            [[-0.2671, -1.0868],
+                            [ 1.3011,  1.0469]]])
+        model = nn.CircularPad1d(1)
         result = model(x)
         padding = model.padding
         """
@@ -38,8 +41,11 @@ def test_case_2():
         """
         import torch
         import torch.nn as nn
-        x = torch.tensor([[[[-0.4106,  0.1677], [-0.6648, -0.5669]]]])
-        model = nn.ReflectionPad2d((1, 1, 1, 0))
+        x = torch.tensor([[[-1.3328, -0.4948],
+                            [ 0.8689,  1.1423]],
+                            [[-0.2671, -1.0868],
+                            [ 1.3011,  1.0469]]])
+        model = nn.CircularPad1d((1, 1,))
         result = model(x)
         padding = model.padding
         """
@@ -52,8 +58,11 @@ def test_case_3():
         """
         import torch
         import torch.nn as nn
-        x = torch.tensor([[[[-0.4106,  0.1677], [-0.6648, -0.5669]]]])
-        model = nn.ReflectionPad2d(padding=1)
+        x = torch.tensor([[[-1.3328, -0.4948],
+                            [ 0.8689,  1.1423]],
+                            [[-0.2671, -1.0868],
+                            [ 1.3011,  1.0469]]])
+        model = nn.CircularPad1d(padding=1)
         result = model(x)
         padding = model.padding
         """
@@ -66,8 +75,11 @@ def test_case_4():
         """
         import torch
         import torch.nn as nn
-        x = torch.tensor([[[[-0.4106,  0.1677], [-0.6648, -0.5669]]]])
-        model = torch.nn.ReflectionPad2d(padding=(1, 1, 1, 0))
+        x = torch.tensor([[[-1.3328, -0.4948],
+                            [ 0.8689,  1.1423]],
+                            [[-0.2671, -1.0868],
+                            [ 1.3011,  1.0469]]])
+        model = torch.nn.CircularPad1d(padding=(1, 2,))
         result = model(x)
         padding = model.padding
         """
