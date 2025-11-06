@@ -90,12 +90,7 @@ def test_case_6():
                                 recompute_scale_factor=False, antialias=False)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle unsupport parameter antialias",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_7():
@@ -109,12 +104,7 @@ def test_case_7():
                                 antialias=False)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle unsupport parameter antialias",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_8():
@@ -127,12 +117,7 @@ def test_case_8():
         result = F.interpolate(x, None, 3, 'linear', False, True, False)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle unsupport parameter antialias",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_9():
@@ -143,6 +128,31 @@ def test_case_9():
 
         x = torch.tensor([[[1., 2., 3.], [2., 3., 4.]]])
         result = F.interpolate(input=x, scale_factor=3, size=None, recompute_scale_factor=True, mode='linear', align_corners=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# TODO: antialias is not supported yet, will be added later
+def _test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+
+        x = torch.tensor([
+            [[[1., 2., 3.], [2., 3., 4]]],
+            [[[1., 2., 3.], [2., 3., 4]]],
+            ])
+        result = F.interpolate(
+                x,
+                None,  # size
+                [2, 1],  # scale_factor
+                'bilinear',  # mode
+                True,  # align_corners
+                True,  # recompute_scale_factor
+                True,  # antialias
+            )
         """
     )
     obj.run(pytorch_code, ["result"])
