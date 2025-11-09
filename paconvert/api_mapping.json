@@ -11750,21 +11750,8 @@
     "min_input_args": 0
   },
   "torch.nn.Linear": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.Linear",
-    "args_list": [
-      "in_features",
-      "out_features",
-      "bias",
-      "device",
-      "dtype"
-    ],
-    "kwargs_change": {
-      "bias": "bias_attr",
-      "device": "",
-      "dtype": ""
-    },
-    "min_input_args": 2
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.compat.nn.Linear"
   },
   "torch.nn.LocalResponseNorm": {
     "Matcher": "GenericMatcher",
@@ -13849,17 +13836,8 @@
     }
   },
   "torch.nn.functional.linear": {
-    "Matcher": "FunctionalLinearMatcher",
-    "paddle_api": "paddle.nn.functional.linear",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "weight",
-      "bias"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.compat.nn.functional.linear"
   },
   "torch.nn.functional.local_response_norm": {
     "Matcher": "GenericMatcher",
