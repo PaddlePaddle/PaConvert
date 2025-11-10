@@ -14,6 +14,8 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.nn.Linear")
@@ -124,6 +126,10 @@ def test_case_8():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_9():
     pytorch_code = textwrap.dedent(
         """
