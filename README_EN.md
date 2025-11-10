@@ -111,9 +111,9 @@ class MyNet(paddle.nn.Layer):
     test = 'str'
 
     def __init__(self):
-        self._fc1 = paddle.nn.Linear(in_features=10, out_features=10)
-        self._fc2 = paddle.nn.Linear(in_features=10, out_features=10)
-        self._fc3 = paddle.nn.Linear(in_features=10, out_features=10)
+        self._fc1 = paddle.compat.nn.Linear(10, 10)
+        self._fc2 = paddle.compat.nn.Linear(10, 10)
+        self._fc3 = paddle.compat.nn.Linear(10, 10)
 
     @paddle.no_grad()
     def forward(self, x):

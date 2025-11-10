@@ -31,7 +31,7 @@ class SpectralNormAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        assert isinstance(paddle_result, paddle.nn.Linear)
+        assert isinstance(paddle_result, paddle.compat.nn.Linear)
 
 
 obj = SpectralNormAPIBase("torch.nn.utils.parametrizations.spectral_norm")
