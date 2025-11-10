@@ -125,10 +125,10 @@ def test_case_8():
         import torch.nn.functional as F
         x = torch.tensor([[0.5, -0.2, 0.125],
                          [-0.5, 0.25, -0.125],
-                         [0.75, -0.37, 0.1875]]).to(torch.float16)
+                         [0.75, -0.37, 0.1875]]).to(torch.float16).cuda()
         weight = torch.tensor([[0.5, -0.25, 0.125],
-                              [-0.25, 0.12, -0.0625]]).to(torch.float16)
-        bias = torch.tensor([0.5, -0.25]).to(torch.float16)
+                              [-0.25, 0.12, -0.0625]]).to(torch.float16).cuda()
+        bias = torch.tensor([0.5, -0.25]).to(torch.float16).cuda()
         result = F.linear(x, weight, bias)
         """
     )

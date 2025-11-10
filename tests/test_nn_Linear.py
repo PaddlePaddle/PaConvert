@@ -129,8 +129,8 @@ def test_case_9():
         """
         import torch
         import torch.nn as nn
-        x = torch.randn(1, 5, 7).to(torch.float16)
-        model = nn.Linear(out_features=11, in_features=7, bias=False, dtype=torch.float16)
+        x = torch.randn(1, 5, 7).to(torch.float16).cuda()
+        model = nn.Linear(out_features=11, in_features=7, bias=False, dtype=torch.float16, device=x.device)
         result = model(x)
         """
     )
