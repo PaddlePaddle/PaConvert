@@ -788,7 +788,14 @@ class GlobalManager:
         "torch.Tensor.scatter",
         "torch.Tensor.scatter_",
         "torch.scatter",
-        
+
+        #lijinjin 
+        "torch.Tensor.clamp_",
+        "torch.nn.functional.logsigmoid",
+        "torch.autocast",
+        "torch.nn.init._calculate_fan_in_and_fan_out",
+        "torch.functional.meshgrid",
+
         # xiangyu
         "torch.cuda.get_device_properties",
         "torch.cuda.get_rng_state",
@@ -834,4 +841,5 @@ class GlobalManager:
 
         # genghaozhe
         "torch.nn.functional.interpolate",
+        
     ]
