@@ -831,4 +831,7 @@ class GlobalManager:
         "torch.cuda.memory_reserved",
         "torch.cuda.set_device",
         "torch.cuda.current_stream",
+
+        # genghaozhe
+        "torch.nn.functional.interpolate",
     ]
