@@ -11,7 +11,7 @@
     "paddle_api": "paddle.Tensor.data"
   },
   "torch.Tensor.device": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.Tensor.place"
   },
   "torch.Tensor.dtype": {
@@ -114,7 +114,7 @@
   },
   "torch.bool": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "'bool'"
+    "paddle_api": "paddle.bool"
   },
   "torch.cfloat": {
     "Matcher": "GenericMatcher",
@@ -129,19 +129,19 @@
     "paddle_api": "'complex64'"
   },
   "torch.distributed.ReduceOp.MAX": {
-    "Matcher": "UnchangeMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.ReduceOp.MAX"
   },
   "torch.distributed.ReduceOp.MIN": {
-    "Matcher": "UnchangeMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.ReduceOp.MIN"
   },
   "torch.distributed.ReduceOp.PRODUCT": {
-    "Matcher": "UnchangeMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.distributed.ReduceOp.PROD"
   },
   "torch.distributed.ReduceOp.SUM": {
-    "Matcher": "UnchangeMatcher",
+    "Matcher": "GenericMatcher",
     "paddle_api": "paddle.distributed.ReduceOp.SUM"
   },
   "torch.distributions.Distribution.batch_shape": {},
@@ -152,7 +152,7 @@
   "torch.distributions.Distribution.variance": {},
   "torch.double": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "'float64'"
+    "paddle_api": "paddle.float64"
   },
   "torch.dtype": {
     "Matcher": "GenericMatcher",
@@ -164,15 +164,15 @@
   },
   "torch.float16": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "'float16'"
+    "paddle_api": "paddle.float16"
   },
   "torch.float32": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "'float32'"
+    "paddle_api": "paddle.float32"
   },
   "torch.float64": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "'float64'"
+    "paddle_api": "paddle.float64"
   },
   "torch.inf": {
     "Matcher": "GenericMatcher",
@@ -180,23 +180,23 @@
   },
   "torch.int16": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "'int16'"
+    "paddle_api": "paddle.int16"
   },
   "torch.int32": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "'int32'"
+    "paddle_api": "paddle.int32"
   },
   "torch.int64": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "'int64'"
+    "paddle_api": "paddle.int64"
   },
   "torch.int8": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "'int8'"
+    "paddle_api": "paddle.int8"
   },
   "torch.long": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "'int64'"
+    "paddle_api": "paddle.long"
   },
   "torch.nan": {
     "Matcher": "GenericMatcher",

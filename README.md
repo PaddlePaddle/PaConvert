@@ -11,7 +11,7 @@
 
 - ✅ 具备强大的转换能力，当前支持高达 **1600+个torch API、200个torchvision API** 的一键转换，基本实现Pytorch全覆盖
 
-- ✅ 通过 **100+个Pytorch代码库（超25万行代码）测试**，代码行数**平均转换率约为95+%**（剩余<5%需要您手动修改），转换速度极快（不低于1200+行/秒）
+- ✅ 通过 **100+个Pytorch代码库（超25万行代码）测试**，代码行数**平均转换率约为95+%**（剩余<5%需要您手动修改），转换速度极快（不低于2000+行/秒）
 
 ## 概述
 
@@ -114,9 +114,9 @@ class MyNet(paddle.nn.Layer):
         super(MyNet, self).__init__()
 >>>>>>        self._conv = mmcv.cnn.ConvModule(4, 6, (3, 3))
         self._pool = paddle.nn.MaxPool2D(kernel_size=2, stride=1)
-        self._fc1 = paddle.nn.Linear(in_features=6 * 25 * 25, out_features=120)
-        self._fc2 = paddle.nn.Linear(in_features=120, out_features=84)
-        self._fc3 = paddle.nn.Linear(in_features=84, out_features=num_classes)
+        self._fc1 = paddle.compat.nn.Linear(6 * 25 * 25, 120)
+        self._fc2 = paddle.compat.nn.Linear(120, out_features=84)
+        self._fc3 = paddle.compat.nn.Linear(in_features=84, out_features=num_classes)
 
     def forward(self, x):
         x = self._conv(x)
@@ -213,7 +213,6 @@ ______      _____                          _
 
 - **对于不支持转换的 API**：将 **补全为 Pytorch API 全名**，同时在行前通过 `>>>>>>` 的形式加以标记，用户需要对该 API 进行人工手动转换，然后删除 `>>>>>>` 标记，否则代码无法运行。
 
-
 ## 经典案例
 
 以下大语言模型代码库已经支持一键 100%转换率，欢迎学习与交流：
@@ -226,4 +225,4 @@ ______      _____                          _
 
 ## 贡献代码
 
-代码自动转换工具（[PaConvert](https://github.com/PaddlePaddle/PaConvert)）为开源贡献形式，欢迎向我们贡献代码，详细开发步骤请参考 [贡献代码教程](./docs/CONTRIBUTING.md)
+代码自动转换工具（[PaConvert](https://github.com/PaddlePaddle/PaConvert)）为开源贡献形式，欢迎向我们贡献代码，详细开发步骤请参考 [贡献代码教程](./docs/CONTRIBUTING.md)。

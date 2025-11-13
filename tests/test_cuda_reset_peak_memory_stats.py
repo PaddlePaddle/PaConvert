@@ -18,24 +18,7 @@ import paddle
 import pytest
 from apibase import APIBase
 
-
-class cudaResetPeakMemoryStatsAPI(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_shape=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        assert type(pytorch_result) == type(paddle_result)
-
-
-obj = cudaResetPeakMemoryStatsAPI("torch.cuda.reset_peak_memory_stats")
+obj = APIBase("torch.cuda.reset_peak_memory_stats")
 
 
 @pytest.mark.skipif(

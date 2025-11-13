@@ -19,6 +19,9 @@ import re
 import sys
 import traceback
 
+sys.path.insert(0, "../../")
+from paconvert.global_var import GlobalManager
+
 project_dir = os.path.join(os.path.dirname(__file__), "../..")
 tool_dir = os.path.dirname(__file__)
 
@@ -166,6 +169,21 @@ validate_whitelist.extend(cornercase_api_aux_dict.keys())
 validate_whitelist.extend(overloadable_api_aux_set)
 validate_whitelist.extend(missing_docs_whitelist.keys())
 validate_whitelist.extend(missing_matchers_whitelist.keys())
+
+no_need_convert_list = GlobalManager.NO_NEED_CONVERT_LIST
+for api in no_need_convert_list:
+    print(api)
+
+
+def get_no_need_convert_mapping_type_from_doc(docs_mapping):
+    no_need_convert_mapping_type = dict()
+    for api in no_need_convert_list:
+        if api in docs_mapping:
+            if docs_mapping[api]["mapping_type"] == "无参数":
+                no_need_convert_mapping_type[api] = "无参数"
+            else:
+                no_need_convert_mapping_type[api] = "参数完全一致"
+    return no_need_convert_mapping_type
 
 
 def verbose_print(*args, v_level=1, **kwargs):
@@ -429,10 +447,10 @@ if __name__ == "__main__":
         help="Specify the unittest validation file path.",
     )
     parser.add_argument(
-        "--docs_mappings",
+        "--api_difference_info",
         type=str,
-        default=os.path.join(tool_dir, "docs_mappings.json"),
-        help="Sepcify the docs_mappings.json (from docs/ repo) file path",
+        default=os.path.join(tool_dir, "api_difference_info.json"),
+        help="Sepcify the api_difference_info.json (from docs/ repo) file path",
     )
     parser.add_argument(
         "--verbose_level",
@@ -493,7 +511,7 @@ if __name__ == "__main__":
             if re.match(wl, api):
                 whitelist_skip = True
                 break
-        if whitelist_skip:
+        if whitelist_skip and api not in no_need_convert_list:
             continue
 
         if api in docs_mapping:
@@ -526,7 +544,7 @@ if __name__ == "__main__":
             if re.match(wl, docs_api):
                 whitelist_skip = True
                 break
-        if whitelist_skip:
+        if whitelist_skip and docs_api not in no_need_convert_list:
             continue
 
         if docs_api not in api_mapping and docs_api not in attribute_mapping:

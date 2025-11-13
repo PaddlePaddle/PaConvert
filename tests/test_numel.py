@@ -16,7 +16,34 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.numel")
+
+# paddle result's type is `class TensorSize(int)` , but pytorch result's type is `int`
+class NumelAPIBase(APIBase):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_shape=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
+    ):
+        assert issubclass(
+            type(paddle_result), type(pytorch_result)
+        ), "paddle result's type [{}] is inherited from pytorch's type [{}]".format(
+            type(paddle_result), type(pytorch_result)
+        )
+        assert (
+            pytorch_result == paddle_result
+        ), "API ({}): pytorch result is {}, but paddle result is {}".format(
+            name, pytorch_result, paddle_result
+        )
+
+
+obj = NumelAPIBase("torch.numel")
 
 
 def test_case_1():

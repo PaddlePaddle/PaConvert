@@ -31,3 +31,17 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        x = torch.tensor([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]])
+        mask = torch.tensor([[0, 0, 0, 1, 1], [1, 1, 0, 1, 1]], dtype=torch.bool)
+        source = torch.tensor([[0, 1, 2, 3, 4], [5, 6, 7, 8, 9]])
+        result = x.masked_scatter(mask, source)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

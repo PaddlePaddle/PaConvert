@@ -16,36 +16,41 @@ set +x
 
 cd /workspace/$1/PaConvert/
 
+echo '************************************************************************************************************'
 echo "Insalling latest release cpu version torch"
 python -m pip install -U torch --index-url https://download.pytorch.org/whl/cpu
 python -c "import torch; print('torch version information:' ,torch.__version__)"
 
+echo '************************************************************************************************************'
 echo "Insalling develop cpu version paddle"
-#python -m pip uninstall -y paddlepaddle
-#python -m pip uninstall -y paddlepaddle-gpu
-python -m pip install --force-reinstall --no-deps -U --pre paddlepaddle -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/
+python -m pip uninstall -y paddlepaddle
+python -m pip uninstall -y paddlepaddle-gpu
+python -m pip install paddlepaddle-0.0.0-cp39-cp39-linux_x86_64.whl
+# python -m pip install --force-reinstall --no-deps -U --pre paddlepaddle -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
+echo '************************************************************************************************************'
 echo "Insalling paconvert requirements"
 python -m pip install -r requirements.txt
 
-echo '*******************************start modeltest test*********************************'
+echo '************************************************************************************************************'
+echo 'Start modeltest'
 python tools/modeltest/modeltest_check.py;check_error1=$?
 
 
-echo '************************************************************************************'
+echo '************************************************************************************************************'
 echo "______      _____                          _   "
 echo "| ___ \    / ____|                        | |  "
 echo "| |_/ /_ _| |     ___  _ ____   _____ _ __| |_ "
 echo "|  __/ _  | |    / _ \\| \\_ \\ \\ / / _ \\ \\__| __|"
 echo "| | | (_| | |___| (_) | | | \\ V /  __/ |  | |_ "
 echo "\\_|  \\__,_|\\_____\\___/|_| |_|\\_/ \\___|_|   \\__|"
-echo -e '\n************************************************************************************'
+echo '************************************************************************************************************'
 if [ ${check_error1} != 0  ]; then  
     echo "Your PR code model test check failed."
 else
     echo "Your PR code model test check passed."
 fi
-echo '************************************************************************************'
+echo '************************************************************************************************************'
 
 exit ${check_error1}

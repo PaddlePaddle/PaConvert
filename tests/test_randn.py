@@ -59,8 +59,7 @@ def test_case_4():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
-# the only corner case, input a variable which is Constant, has no solution but low usage
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -68,7 +67,7 @@ def _test_case_5():
         result = torch.randn(shape)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_6():

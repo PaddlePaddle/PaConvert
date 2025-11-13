@@ -58,6 +58,7 @@ class Converter:
         show_unsupport_api=False,
         no_format=False,
         calculate_speed=False,
+        only_complete=False,
     ):
         self.imports_map = collections.defaultdict(dict)
         self.torch_api_count = 0
@@ -78,6 +79,7 @@ class Converter:
         self.convert_rate = 0.0
         self.no_format = no_format
         self.calculate_speed = calculate_speed
+        self.only_complete = only_complete
         self.line_count = 0
 
         log_info(self.logger, "===========================================")
@@ -143,11 +145,12 @@ class Converter:
                 for k, v in unsupport_api_list:
                     log_info(self.logger, "{:<80}{:<8}".format(k, v))
 
-                """
                 import pandas
-                df = pandas.DataFrame(unsupport_api_list, columns=['PyTorch API', 'Count'])
+
+                df = pandas.DataFrame(
+                    unsupport_api_list, columns=["PyTorch API", "Count"]
+                )
                 df.to_excel("unsupport_api_map.xlsx", index=False)
-                """
 
         if self.show_all_api:
             log_info(self.logger, "\n===========================================")
@@ -169,14 +172,13 @@ class Converter:
                         "{:<80}{:<80}{:<8}".format(k, str(v["paddle_api"]), v["count"]),
                     )
 
-                """
                 import pandas
+
                 data = [(k, v["paddle_api"], v["count"]) for k, v in all_api_list]
                 df = pandas.DataFrame(
                     data, columns=["PyTorch API", "Paddle API", "Count"]
                 )
                 df.to_excel("all_api_map.xlsx", index=False)
-                """
 
         faild_api_count = self.torch_api_count - self.success_api_count
         if not self.log_markdown:
@@ -347,8 +349,8 @@ class Converter:
                         "Skip autoflake format due to error: {}".format(str(e)),
                     )
                 """
-
-            code = self.mark_unsupport(code, old_path)
+            if not self.only_complete:
+                code = self.mark_unsupport(code, old_path)
             with open(new_path, "w", encoding="UTF-8") as file:
                 file.write(code)
             log_info(
@@ -393,6 +395,8 @@ class Converter:
             trans.transform()
             self.torch_api_count += trans.torch_api_count
             self.success_api_count += trans.success_api_count
+            if self.only_complete:
+                break
 
     def mark_unsupport(self, code, file):
         lines = code.split("\n")
@@ -429,7 +433,7 @@ class Converter:
             if last_in_str or in_str:
                 continue
 
-            # paddle.add(paddlenlp.
+            # paddle.add(paddleformers.
             #   transformers.BertTokenizer)
             """
             # may be removed in future
@@ -448,7 +452,7 @@ class Converter:
                 # model_torch.npy
                 # modeltorch.npy
                 # 1torch.npy
-                # paddlenlp.transformers.*
+                # paddleformers.transformers.*
                 if re.match(r".*[^\w\.]{1}%s\." % torch_package, rm_str_line):
                     lines[i] = ">>>>>>" + line
 
