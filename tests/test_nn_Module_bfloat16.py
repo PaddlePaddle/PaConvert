@@ -34,5 +34,5 @@ def _test_case_1():
         pytorch_code,
         ["result"],
         unsupport=True,
-        reason="paddle does not support this function temporarily",
+        reason="compare error in paddle_result.numpy(): TypeError: Got unsupported ScalarType BFloat16",
     )
