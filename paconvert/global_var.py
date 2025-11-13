@@ -842,4 +842,7 @@ class GlobalManager:
         # genghaozhe
         "torch.nn.functional.interpolate",
         
+        # Android zhang
+        "torch.log10",
+        "torch.log1p"
     ]
