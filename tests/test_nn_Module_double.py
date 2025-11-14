@@ -19,7 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.nn.Module.double")
 
 
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -33,6 +33,4 @@ def _test_case_1():
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
     )

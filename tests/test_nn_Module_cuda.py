@@ -18,6 +18,7 @@ import paddle
 import pytest
 from apibase import APIBase
 
+# 本地测试通过，paconvert中api_mapping中会将torch.Tensor.cuda进行转换，导致出现不存在参数device_id
 obj = APIBase("torch.nn.Module.cuda")
 
 
