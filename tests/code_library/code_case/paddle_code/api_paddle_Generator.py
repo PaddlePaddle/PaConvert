@@ -1,14 +1,16 @@
 import paddle
 
 print("#########################case1#########################")
-g_cpu = paddle.framework.core.default_cpu_generator()
+g_cpu = paddle.Generator()
+
 print("#########################case2#########################")
-g_cpu = paddle.framework.core.default_cpu_generator()
+g_cpu = paddle.Generator(device="cpu")
+
 print("#########################case3#########################")
-g_cpu = paddle.framework.core.default_cpu_generator()
+g_cpu = paddle.Generator("cpu")
+
 print("#########################case4#########################")
-device = paddle.device.get_device()
-g_cuda = paddle.framework.core.default_cuda_generator(int(device[-1]))
+g_cuda = paddle.Generator("cuda")
+
 print("#########################case5#########################")
-device = paddle.device.get_device()
-g_cuda = paddle.framework.core.default_cuda_generator(int(device[-1]))
+g_cuda = paddle.Generator(device="cuda")
