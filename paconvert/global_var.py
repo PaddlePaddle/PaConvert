@@ -863,6 +863,12 @@ class GlobalManager:
         'torch.cuda.nvtx.range_pop',
         'torch.cuda.amp.autocast',
         'torch.cuda.amp.autocast_mode.autocast',
+        "torch.amp.autocast",
+        "torch.cuda.get_device_name",
+        "torch.cuda.stream",
+        "torch.cuda.StreamContext",
+        "torch.Generator",
+
 
         # geyuqiang
         "torch.cuda.current_device",
