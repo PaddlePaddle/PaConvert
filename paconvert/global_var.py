@@ -850,4 +850,7 @@ class GlobalManager:
         # genghaozhe
         "torch.nn.functional.interpolate",
         
+        # algorithm1832
+        "torch.cosh",
+        "torch.Tensor.cosh",
     ]
