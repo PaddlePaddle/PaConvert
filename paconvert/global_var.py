@@ -852,5 +852,4 @@ class GlobalManager:
         
         # algorithm1832
         "torch.cosh",
-        "torch.Tensor.cosh",
     ]
