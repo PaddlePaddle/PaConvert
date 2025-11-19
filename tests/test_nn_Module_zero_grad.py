@@ -19,7 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.nn.Module.zero_grad")
 
 
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -47,7 +47,7 @@ def _test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -131,7 +131,7 @@ def test_case_4():
     obj.run(pytorch_code, ["result"], check_stop_gradient=False)
 
 
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch

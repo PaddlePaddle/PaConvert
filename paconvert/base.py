@@ -383,7 +383,7 @@ class BaseMatcher(object):
         self.paddleClass = new_func[0 : new_func.rfind(".")]
         if self.get_paddle_api():
             new_paddle_api = re.sub(
-                "paddle.Tensor|paddle.nn.Layer|paddle.optimizer.Optimizer|paddle.distribution.Distribution|paddle.autograd.PyLayerContext|paddle.profiler.Profiler",
+                "paddle.Tensor|paddle.nn.Layer|paddle.nn.Module|paddle.optimizer.Optimizer|paddle.distribution.Distribution|paddle.autograd.PyLayerContext|paddle.profiler.Profiler",
                 re.escape(self.paddleClass),
                 self.get_paddle_api(),
             )
