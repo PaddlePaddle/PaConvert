@@ -2,7 +2,7 @@ import paddle
 import paddleformers
 
 
-class A(paddle.nn.Layer):
+class A(paddle.nn.Module):
     def __init__(self, data: paddle.Tensor):
         pass
 
