@@ -14,6 +14,7 @@
 
 import textwrap
 
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.autograd.Variable")
@@ -85,3 +86,54 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+# AI生成case
+def _test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.randn(3, 4)
+        result = torch.autograd.Variable(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# AI生成case
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.zeros(2, 3)
+        result = torch.autograd.Variable(x, requires_grad=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# AI生成case
+@pytest.mark.skip(reason="Variable with complex dtype not supported")
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1+2j, 3+4j])
+        result = torch.autograd.Variable(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# AI生成case
+def _test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., 3.], requires_grad=True)
+        v = torch.autograd.Variable(x)
+        y = v * 2
+        y.backward(torch.ones_like(y))
+        """
+    )
+    obj.run(pytorch_code, ["y", "v.grad"])
