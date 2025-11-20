@@ -79,8 +79,7 @@ class GlobalManager:
     # 完全对齐的Pytorch API名单
     NO_NEED_CONVERT_LIST = [
         # Manfredss
-        "torch.asin"
-
+        "torch.asin",
 
         # zhimin
         "torch.Tensor.bfloat16",
