@@ -14,18 +14,52 @@
 
 import textwrap
 
-from apibase import APIBase
+import paddle
+import pytest
+from test_device import DeviceAPIBase
 
-obj = APIBase("torch.Tensor.device")
+obj = DeviceAPIBase("torch.Tensor.device")
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
+        src = torch.tensor([1., 2., 3., 4., 5., 6.]).to("cuda")
         result = src.device
-        result = True
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([1., 2., 3., 4., 5., 6.]).to("cpu")
+        result = src.device
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        tensor = torch.tensor([1]).to('cuda')
+        tensor_device = tensor.device
+        with tensor_device:
+            new_tensor = torch.tensor([1])
+            result = new_tensor.device
         """
     )
     obj.run(pytorch_code, ["result"])

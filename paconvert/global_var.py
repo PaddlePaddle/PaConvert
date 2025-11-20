@@ -835,6 +835,7 @@ class GlobalManager:
         "torch.cuda.StreamContext",
         "torch.Generator",
         "torch.cuda.ipc_collect",
+        "torch.Tensor.device",
 
 
         # geyuqiang
