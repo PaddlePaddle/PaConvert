@@ -14,6 +14,7 @@
 
 import textwrap
 
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.abs")
@@ -96,3 +97,50 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["out"])
+
+
+# AI生成case
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.abs(torch.tensor([-1.5, -2.3, 3.7]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# AI生成case
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.abs(torch.tensor([0, -0, 0.0]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# AI生成case
+@pytest.mark.skip(reason="complex number abs not supported")
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.abs(torch.tensor([1+2j, -3-4j]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# AI生成case
+def _test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([-1., -2., 3.], requires_grad=True)
+        y = torch.abs(x)
+        y.backward(torch.ones_like(y))
+        """
+    )
+    obj.run(pytorch_code, ["y", "x.grad"])

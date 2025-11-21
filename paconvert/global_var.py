@@ -78,6 +78,9 @@ class GlobalManager:
 
     # 完全对齐的Pytorch API名单
     NO_NEED_CONVERT_LIST = [
+        # Manfredss
+        "torch.asin",
+
         # zhimin
         "torch.Tensor.bfloat16",
         "torch.Tensor.bool",
@@ -602,6 +605,7 @@ class GlobalManager:
         "torch.tensor_split",
         "torch.nn.functional.gelu",
         "torch.layer_norm",
+        "torch.nn.functional.grid_sample",
         
         # haoyang
         "torch.logical_not",
@@ -891,4 +895,6 @@ class GlobalManager:
         "torch.nn.functional.adaptive_max_pool3d",
         "torch.nn.functional.lp_pool1d",
         "torch.nn.functional.lp_pool2d",
+        # algorithm1832
+        "torch.cosh",
     ]
