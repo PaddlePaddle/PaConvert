@@ -854,6 +854,47 @@ class GlobalManager:
         # genghaozhe
         "torch.nn.functional.interpolate",
         
+        # ooooo
+        "torch.nn.AdaptiveAvgPool1d",
+        "torch.nn.AdaptiveAvgPool2d"
+        "torch.nn.AdaptiveAvgPool3d",
+        "torch.nn.HuberLoss",
+        "torch.nn.MaxUnpool1d",
+        "torch.nn.MaxUnpool2d",
+        "torch.nn.MaxUnpool3d",
+        "torch.nn.UpsamplingBilinear2d",
+        "torch.nn.UpsamplingNearest2d",
+        "torch.nn.ZeroPad1d",
+        "torch.nn.ZeroPad2d",
+        "torch.nn.ZeroPad3d",
+        "torch.adaptive_avg_pool1d",
+        "torch.nn.functional.adaptive_avg_pool1d",
+        "torch.nn.functional.adaptive_avg_pool2d",
+        "torch.nn.functional.adaptive_avg_pool3d",
+
+        "torch.nn.GLU",
+        "torch.nn.Hardshrink",
+        "torch.nn.Softshrink",
+        "torch.nn.CosineSimilarity",
+        "torch.nn.Fold",
+        "torch.nn.PairwiseDistance",
+        "torch.nn.LPPool1d",
+        "torch.nn.LPPool2d",
+        "torch.nn.AdaptiveMaxPool1d",
+        "torch.nn.AdaptiveMaxPool2d",
+        "torch.nn.AdaptiveMaxPool3d",
+
+        "torch.nn.functional.hardshrink",
+        "torch.nn.functional.softshrink",
+        "torch.nn.functional.glu",
+        "torch.nn.functional.cosine_similarity",
+        "torch.nn.functional.fold",
+        "torch.nn.functional.pairwise_distance",
+        "torch.nn.functional.adaptive_max_pool1d",
+        "torch.nn.functional.adaptive_max_pool2d",
+        "torch.nn.functional.adaptive_max_pool3d",
+        "torch.nn.functional.lp_pool1d",
+        "torch.nn.functional.lp_pool2d",
         # algorithm1832
         "torch.cosh",
     ]
