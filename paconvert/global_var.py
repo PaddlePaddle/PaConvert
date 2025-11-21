@@ -605,6 +605,7 @@ class GlobalManager:
         "torch.tensor_split",
         "torch.nn.functional.gelu",
         "torch.layer_norm",
+        "torch.nn.functional.grid_sample",
         
         # haoyang
         "torch.logical_not",
