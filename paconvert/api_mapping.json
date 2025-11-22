@@ -18064,7 +18064,7 @@
   },
   "torch.utils.data.BatchSampler": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.io.BatchSampler",
+    "paddle_api": "paddle.utils.data.BatchSampler",
     "min_input_args": 3,
     "args_list": [
       "sampler",
@@ -18074,17 +18074,17 @@
   },
   "torch.utils.data.ChainDataset": {
     "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.ChainDataset",
+    "paddle_api": "paddle.utils.data.ChainDataset",
     "min_input_args": 1
   },
   "torch.utils.data.ConcatDataset": {
     "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.ConcatDataset",
+    "paddle_api": "paddle.utils.data.ConcatDataset",
     "min_input_args": 1
   },
   "torch.utils.data.DataLoader": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.io.DataLoader",
+    "paddle_api": "paddle.utils.data.DataLoader",
     "min_input_args": 1,
     "args_list": [
       "dataset",
@@ -18119,17 +18119,17 @@
   },
   "torch.utils.data.Dataset": {
     "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.Dataset",
+    "paddle_api": "paddle.utils.data.Dataset",
     "min_input_args": 0
   },
   "torch.utils.data.IterableDataset": {
     "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.IterableDataset",
+    "paddle_api": "paddle.utils.data.IterableDataset",
     "min_input_args": 0
   },
   "torch.utils.data.RandomSampler": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.io.RandomSampler",
+    "paddle_api": "paddle.utils.data.RandomSampler",
     "min_input_args": 1,
     "args_list": [
       "data_source",
@@ -18140,22 +18140,22 @@
   },
   "torch.utils.data.Sampler": {
     "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.Sampler",
+    "paddle_api": "paddle.utils.data.Sampler",
     "min_input_args": 0
   },
   "torch.utils.data.SequentialSampler": {
     "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.SequenceSampler",
+    "paddle_api": "paddle.utils.data.SequenceSampler",
     "min_input_args": 0
   },
   "torch.utils.data.Subset": {
     "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.Subset",
+    "paddle_api": "paddle.utils.data.Subset",
     "min_input_args": 2
   },
   "torch.utils.data.SubsetRandomSampler": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.io.SubsetRandomSampler",
+    "paddle_api": "paddle.utils.data.SubsetRandomSampler",
     "min_input_args": 1,
     "args_list": [
       "indices",
@@ -18164,7 +18164,7 @@
   },
   "torch.utils.data.TensorDataset": {
     "Matcher": "TensorDatasetMatcher",
-    "paddle_api": "paddle.io.TensorDataset",
+    "paddle_api": "paddle.utils.data.TensorDataset",
     "min_input_args": 1,
     "args_list": [
       "*tensors"
@@ -18172,7 +18172,7 @@
   },
   "torch.utils.data.WeightedRandomSampler": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.io.WeightedRandomSampler",
+    "paddle_api": "paddle.utils.data.WeightedRandomSampler",
     "min_input_args": 2,
     "args_list": [
       "weights",
@@ -18183,7 +18183,7 @@
   },
   "torch.utils.data.default_collate": {
     "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.dataloader.collate.default_collate_fn",
+    "paddle_api": "paddle.utils.data.dataloader.collate.default_collate_fn",
     "min_input_args": 1,
     "args_list": [
       "batch"
@@ -18191,7 +18191,7 @@
   },
   "torch.utils.data.distributed.DistributedSampler": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.io.DistributedBatchSampler",
+    "paddle_api": "paddle.utils.data.DistributedBatchSampler",
     "min_input_args": 1,
     "args_list": [
       "dataset",
@@ -18211,12 +18211,12 @@
   },
   "torch.utils.data.get_worker_info": {
     "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.get_worker_info",
+    "paddle_api": "paddle.utils.data.get_worker_info",
     "min_input_args": 0
   },
   "torch.utils.data.random_split": {
     "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.random_split",
+    "paddle_api": "paddle.utils.data.random_split",
     "min_input_args": 2
   },
   "torch.utils.dlpack.from_dlpack": {
@@ -18242,7 +18242,7 @@
   },
   "torch.utils.set_module": {
     "Matcher": "UtilsSetModuleMatcher",
-    "paddle_api": "paddle.io.Sampler",
+    "paddle_api": "paddle.utils.data.Sampler",
     "args_list": [
       "obj",
       "mod"
