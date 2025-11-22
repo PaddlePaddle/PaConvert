@@ -37,7 +37,7 @@ def test_case_1():
         import paddleformers
 
 
-        class LlamaForCausalLM(paddle.nn.Layer):
+        class LlamaForCausalLM(paddle.nn.Module):
             @paddleformers.trainer.utils.add_start_docstrings_to_model_forward("test docstring")
             def forward(self, input_ids):
                 return input_ids

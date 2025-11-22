@@ -19,7 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.nn.Module.cpu")
 
 
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
