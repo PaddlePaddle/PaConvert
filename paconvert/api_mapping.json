@@ -17933,7 +17933,6 @@
     ],
     "kwargs_change": {
       "input": "x",
-      "sorted": "",
       "dim": "axis"
     }
   },
