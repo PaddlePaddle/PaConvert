@@ -901,4 +901,9 @@ class GlobalManager:
         "torch.nn.functional.lp_pool2d",
         # algorithm1832
         "torch.cosh",
+        
+        # lijialin
+        "torch.nn.functional.group_norm",
+        "torch.nn.GroupNorm",
+        "torch.nn.LayerNorm",
     ]
