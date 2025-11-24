@@ -107,7 +107,7 @@ After the conversion is completed：
 import paddle
 
 
-class MyNet(paddle.nn.Layer):
+class MyNet(paddle.nn.Module):
     test = 'str'
 
     def __init__(self):

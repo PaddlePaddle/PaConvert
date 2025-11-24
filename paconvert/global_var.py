@@ -197,7 +197,7 @@ class GlobalManager:
         "torch.nn.Module.get_parameter",
         "torch.nn.Module.get_submodule",
         "torch.nn.Module.half",
-        "torch.nn.Module.load_state_dict",
+        # "torch.nn.Module.load_state_dict",
         "torch.nn.Module.modules",
         "torch.nn.Module.named_buffers",
         "torch.nn.Module.named_children",
@@ -212,10 +212,29 @@ class GlobalManager:
         "torch.nn.Module.train",
         "torch.nn.Module.type",
         "torch.nn.Module.xpu",
-        "torch.nn.Module.zero_grad",
+        # "torch.nn.Module.zero_grad",
         "torch.nn.Module",
         "torch.nn.ModuleDict",
         "torch.nn.ModuleList",
+
+        # torch.nn.Module.register_full_backward_hook
+        # torch.nn.Module.register_forward_hook
+        # torch.nn.Module.register_forward_pre_hook
+        # torch.nn.Module.register_full_backward_pre_hook
+        # torch.nn.Module.to_empty
+        # torch.nn.Module.to
+
+        # torch.nn.Module.set_extra_state
+        # torch.nn.Module.ipu
+        # torch.nn.Module.mtia
+        # torch.nn.Module.register_backward_hook
+        # torch.nn.Module.register_state_dict_post_hook
+        # torch.nn.Module.register_state_dict_pre_hook
+        # torch.nn.Module.register_load_state_dict_pre_hook
+        # torch.nn.Module.register_load_state_dict_post_hook
+        # torch.nn.Module.share_memory
+        # torch.nn.Module.compile
+
         
         # sensen
         "torch.range",
