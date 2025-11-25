@@ -979,8 +979,8 @@ class GlobalManager:
         "torch.cosh",
         
         # lijialin
-        #"torch.group_norm",
-        #"torch.layer_norm",
+        "torch.group_norm",
+        "torch.layer_norm",
         "torch.nn.functional.group_norm",
         "torch.nn.GroupNorm",
         "torch.nn.LayerNorm",
