@@ -17922,7 +17922,7 @@
   },
   "torch.unique": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.unique",
+    "paddle_api": "paddle.compat.unique",
     "min_input_args": 1,
     "args_list": [
       "input",
@@ -17930,11 +17930,7 @@
       "return_inverse",
       "return_counts",
       "dim"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis"
-    }
+    ]
   },
   "torch.unique_consecutive": {
     "Matcher": "GenericMatcher",
