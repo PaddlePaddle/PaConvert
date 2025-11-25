@@ -11,21 +11,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+#
 import textwrap
 
-import pytest
 from apibase import APIBase
 
-obj = APIBase("torch.bool")
+obj = APIBase("torch.index_put")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.to(torch.bool)
+        x = torch.ones([5, 3])
+        t = torch.tensor([1.], dtype=torch.float)
+        indices = [torch.tensor(i) for i in [[0, 0], [0, 1]]]
+        result = torch.index_put(x, indices, t)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,65 +36,62 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1., 2., 3., 4., 5., 6.]).to(torch.bool)
+        x = torch.ones([5, 3])
+        t = torch.tensor([1.], dtype=torch.float)
+        indices = [torch.tensor(i) for i in [[0, 0], [0, 1]]]
+        result = torch.index_put(x, indices, values=t)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# AI生成case
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0., 1., 0., 1.]).to(dtype=torch.bool)
+        x = torch.ones([5, 3])
+        t = torch.tensor([1.], dtype=torch.float)
+        indices = [torch.tensor(i) for i in [[0, 0], [0, 1]]]
+        result = torch.index_put(x, indices, t, True)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# AI生成case
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0., 1., 0., 1.]).to(dtype=torch.bool, copy=True)
+        x = torch.ones([5, 3])
+        t = torch.tensor([1.], dtype=torch.float)
+        indices = [torch.tensor(i) for i in [[0, 0], [0, 1]]]
+        result = torch.index_put(input=x, indices=indices, values=t, accumulate=True)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# AI生成case
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([0., 1., 0., 1.])
-        result = x.to(dtype=torch.bool)
+        x = torch.ones([5, 3])
+        t = torch.tensor([1.], dtype=torch.float)
+        indices = [torch.tensor(i) for i in [[0, 0], [0, 1]]]
+        result = torch.index_put(indices=indices, values=t, accumulate=False, input=x)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-# AI生成case
-@pytest.mark.skip(reason="torch.bool with requires_grad not supported")
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([0., 1., 0., 1.], requires_grad=True)
-        result = x.to(dtype=torch.bool)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-# AI生成case
-def test_case_7():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.tensor([]).to(dtype=torch.bool)
+        x = torch.ones([5, 3])
+        t = torch.tensor([1.], dtype=torch.float)
+        indices = [torch.tensor(i) for i in [[0, 0], [0, 1]]]
+        result = torch.index_put(accumulate=True, input=x, indices=indices, values=t)
         """
     )
     obj.run(pytorch_code, ["result"])

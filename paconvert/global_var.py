@@ -78,6 +78,9 @@ class GlobalManager:
 
     # 完全对齐的Pytorch API名单
     NO_NEED_CONVERT_LIST = [
+        # Manfredss
+        "torch.asin",
+
         # zhimin
         "torch.Tensor.bfloat16",
         "torch.Tensor.bool",
@@ -260,7 +263,11 @@ class GlobalManager:
         "torch.rand_like",
         "torch.mean",
         "torch.Tensor.mean",
-        
+        "torch.nn.functional.dropout",
+        "torch.nn.Dropout",
+        "torch.linspace",
+        "torch.normal",
+
         # shijie
         "torch.msort",
         "torch.Tensor.msort",
@@ -563,6 +570,11 @@ class GlobalManager:
         "torch.ceil",
         "torch.floor_divide",
         "torch.masked_select",
+        "torch.index_put",
+        "torch.Tensor.index_put",
+        "torch.Tensor.index_put_",
+        "torch.bucketize",
+        "torch.searchsorted",
         
         # liuyi
         "torch.finfo",
@@ -601,7 +613,7 @@ class GlobalManager:
         "torch.Tensor.any",
         "torch.tensor_split",
         "torch.nn.functional.gelu",
-        "torch.layer_norm",
+        "torch.nn.functional.grid_sample",
         
         # haoyang
         "torch.logical_not",
@@ -648,7 +660,7 @@ class GlobalManager:
         "torch.randn_like",
         "torch.Tensor.__floordiv__",
         "torch.Tensor.__int__",
-        #'torch.Tensor.is_cpu',
+        #"torch.Tensor.is_cpu",
         #"torch.bitwise_or",
         #"torch.Tensor.bitwise_or",
         ##"torch.autograd.function.FunctionCtx.mark_dirty",
@@ -658,7 +670,7 @@ class GlobalManager:
         ##"torch.autograd.function.FunctionCtx.save_for_forward",
         #"torch.autograd.function.FunctionCtx.set_materialize_grads",
         ##"torch.autograd.function.FunctionCtx.saved_tensors",
-        "torch.autograd.function.once_differentiable",
+        #"torch.autograd.function.once_differentiable",
         "torch.nn.PixelUnshuffle",
         "torch.nn.Upsample",
         "torch.nn.PixelShuffle",
@@ -815,20 +827,20 @@ class GlobalManager:
         "torch.cuda.set_stream",
         "torch.cuda.Event",
         "torch.get_device",
-        'torch.cuda.FloatTensor',
-        'torch.cuda.DoubleTensor',
-        'torch.cuda.HalfTensor',
-        'torch.cuda.BFloat16Tensor',
-        'torch.cuda.ByteTensor',
-        'torch.cuda.CharTensor',
-        'torch.cuda.ShortTensor',
-        'torch.cuda.IntTensor',
-        'torch.cuda.LongTensor',
-        'torch.cuda.BoolTensor',
-        'torch.cuda.nvtx.range_push',
-        'torch.cuda.nvtx.range_pop',
-        'torch.cuda.amp.autocast',
-        'torch.cuda.amp.autocast_mode.autocast',
+        "torch.cuda.FloatTensor",
+        "torch.cuda.DoubleTensor",
+        "torch.cuda.HalfTensor",
+        "torch.cuda.BFloat16Tensor",
+        "torch.cuda.ByteTensor",
+        "torch.cuda.CharTensor",
+        "torch.cuda.ShortTensor",
+        "torch.cuda.IntTensor",
+        "torch.cuda.LongTensor",
+        "torch.cuda.BoolTensor",
+        "torch.cuda.nvtx.range_push",
+        "torch.cuda.nvtx.range_pop",
+        "torch.cuda.amp.autocast",
+        "torch.cuda.amp.autocast_mode.autocast",
         "torch.amp.autocast",
         "torch.cuda.get_device_name",
         "torch.cuda.stream",
@@ -838,6 +850,7 @@ class GlobalManager:
         "torch.cuda.synchronize",
         "torch.cuda.Stream",
         "torch.cuda.is_bf16_supported",
+        "torch.Tensor.device",
 
 
         # geyuqiang
@@ -852,4 +865,54 @@ class GlobalManager:
         # genghaozhe
         "torch.nn.functional.interpolate",
         
+        # ooooo
+        "torch.nn.AdaptiveAvgPool1d",
+        "torch.nn.AdaptiveAvgPool2d",
+        "torch.nn.AdaptiveAvgPool3d",
+        "torch.nn.HuberLoss",
+        "torch.nn.MaxUnpool1d",
+        "torch.nn.MaxUnpool2d",
+        "torch.nn.MaxUnpool3d",
+        "torch.nn.UpsamplingBilinear2d",
+        "torch.nn.UpsamplingNearest2d",
+        "torch.nn.ZeroPad1d",
+        "torch.nn.ZeroPad2d",
+        "torch.nn.ZeroPad3d",
+        "torch.adaptive_avg_pool1d",
+        "torch.nn.functional.adaptive_avg_pool1d",
+        "torch.nn.functional.adaptive_avg_pool2d",
+        "torch.nn.functional.adaptive_avg_pool3d",
+
+        "torch.nn.GLU",
+        "torch.nn.Hardshrink",
+        "torch.nn.Softshrink",
+        "torch.nn.CosineSimilarity",
+        "torch.nn.Fold",
+        "torch.nn.PairwiseDistance",
+        "torch.nn.LPPool1d",
+        "torch.nn.LPPool2d",
+        "torch.nn.AdaptiveMaxPool1d",
+        "torch.nn.AdaptiveMaxPool2d",
+        "torch.nn.AdaptiveMaxPool3d",
+
+        "torch.nn.functional.hardshrink",
+        "torch.nn.functional.softshrink",
+        "torch.nn.functional.glu",
+        "torch.nn.functional.cosine_similarity",
+        "torch.nn.functional.fold",
+        "torch.nn.functional.pairwise_distance",
+        "torch.nn.functional.adaptive_max_pool1d",
+        "torch.nn.functional.adaptive_max_pool2d",
+        "torch.nn.functional.adaptive_max_pool3d",
+        "torch.nn.functional.lp_pool1d",
+        "torch.nn.functional.lp_pool2d",
+        # algorithm1832
+        "torch.cosh",
+        
+        # lijialin
+        #"torch.group_norm",
+        #"torch.layer_norm",
+        "torch.nn.functional.group_norm",
+        "torch.nn.GroupNorm",
+        "torch.nn.LayerNorm",
     ]

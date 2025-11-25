@@ -1,4 +1,4 @@
-# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
+# Copyright (c) 2025 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,23 +14,17 @@
 
 import textwrap
 
-import paddle
-import pytest
-from test_device import DeviceAPIBase
+from apibase import APIBase
 
-obj = DeviceAPIBase("torch.Tensor.device")
+obj = APIBase("torch.Tensor.__not__")
 
 
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="can only run on paddle with CUDA",
-)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.]).to("cuda")
-        result = src.device
+        x = torch.tensor([1.], dtype=torch.float32)
+        result = not x
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -40,26 +34,30 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.]).to("cpu")
-        result = src.device
+        x = torch.tensor([3.], dtype=torch.float64)
+        result = not x
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="can only run on paddle with CUDA",
-)
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        tensor = torch.tensor([1]).to('cuda')
-        tensor_device = tensor.device
-        with tensor_device:
-            new_tensor = torch.tensor([1])
-            result = new_tensor.device
+        x = torch.tensor([1], dtype=torch.int32)
+        result = not x
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1], dtype=torch.int64)
+        result = not x
         """
     )
     obj.run(pytorch_code, ["result"])
