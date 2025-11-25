@@ -835,6 +835,9 @@ class GlobalManager:
         "torch.cuda.StreamContext",
         "torch.Generator",
         "torch.cuda.ipc_collect",
+        "torch.cuda.synchronize",
+        "torch.cuda.Stream",
+        "torch.cuda.is_bf16_supported",
 
 
         # geyuqiang
