@@ -32,7 +32,7 @@ class LoadAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        assert isinstance(paddle_result, paddle.nn.Layer)
+        assert isinstance(paddle_result, paddle.nn.Module)
 
 
 obj = LoadAPIBase("torch.hub.load")

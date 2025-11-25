@@ -185,6 +185,59 @@ class GlobalManager:
         "torch.Tensor.sub",
         "torch.Tensor.sub_",
         "torch.Tensor.random_",
+        "torch.meshgrid",
+        "torch.nn.Module.add_module",
+        "torch.nn.Module.apply",
+        "torch.nn.Module.bfloat16",
+        "torch.nn.Module.buffers",
+        "torch.nn.Module.children",
+        "torch.nn.Module.cpu",
+        "torch.nn.Module.cuda",
+        "torch.nn.Module.double",
+        "torch.nn.Module.eval",
+        "torch.nn.Module.float",
+        "torch.nn.Module.get_buffer",
+        "torch.nn.Module.get_parameter",
+        "torch.nn.Module.get_submodule",
+        "torch.nn.Module.half",
+        # "torch.nn.Module.load_state_dict",
+        "torch.nn.Module.modules",
+        "torch.nn.Module.named_buffers",
+        "torch.nn.Module.named_children",
+        "torch.nn.Module.named_modules",
+        "torch.nn.Module.named_parameters",
+        "torch.nn.Module.parameters",
+        "torch.nn.Module.register_buffer",
+        "torch.nn.Module.register_module",
+        "torch.nn.Module.register_parameter",
+        "torch.nn.Module.requires_grad_",
+        "torch.nn.Module.state_dict",
+        "torch.nn.Module.train",
+        "torch.nn.Module.type",
+        "torch.nn.Module.xpu",
+        # "torch.nn.Module.zero_grad",
+        "torch.nn.Module",
+        "torch.nn.ModuleDict",
+        "torch.nn.ModuleList",
+
+        # torch.nn.Module.register_full_backward_hook
+        # torch.nn.Module.register_forward_hook
+        # torch.nn.Module.register_forward_pre_hook
+        # torch.nn.Module.register_full_backward_pre_hook
+        # torch.nn.Module.to_empty
+        # torch.nn.Module.to
+
+        # torch.nn.Module.set_extra_state
+        # torch.nn.Module.ipu
+        # torch.nn.Module.mtia
+        # torch.nn.Module.register_backward_hook
+        # torch.nn.Module.register_state_dict_post_hook
+        # torch.nn.Module.register_state_dict_pre_hook
+        # torch.nn.Module.register_load_state_dict_pre_hook
+        # torch.nn.Module.register_load_state_dict_post_hook
+        # torch.nn.Module.share_memory
+        # torch.nn.Module.compile
+
         
         # sensen
         "torch.range",

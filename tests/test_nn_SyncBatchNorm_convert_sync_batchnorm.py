@@ -31,7 +31,7 @@ class SyncBatchnormAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        assert isinstance(paddle_result, paddle.nn.Layer)
+        assert isinstance(paddle_result, paddle.nn.Module)
 
 
 obj = SyncBatchnormAPIBase("torch.nn.SyncBatchNorm.convert_sync_batchnorm")

@@ -35,7 +35,7 @@ class ModelAPIBase(APIBase):
         Compare models from PyTorch and PaddlePaddle.
         """
         if isinstance(pytorch_result, torch.nn.Module) and isinstance(
-            paddle_result, paddle.nn.Layer
+            paddle_result, paddle.nn.Module
         ):
             if "inception_v3" in name:
                 pytorch_result.eval()
