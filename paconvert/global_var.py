@@ -938,5 +938,4 @@ class GlobalManager:
         "torch.Tensor.quantile",
         "torch.unflatten",
         "torch.Tensor.unflatten",
-        "torch.nn.functional.unfold",
     ]
