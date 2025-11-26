@@ -10845,42 +10845,16 @@
     ]
   },
   "torch.nn.AvgPool1d": {
-    "Matcher": "AvgPoolMatcher",
-    "paddle_api": "paddle.nn.AvgPool1D",
-    "min_input_args": 1,
-    "args_list": [
-      "kernel_size",
-      "stride",
-      "padding",
-      "ceil_mode",
-      "count_include_pad"
-    ]
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.compat.nn.AvgPool1d"
   },
   "torch.nn.AvgPool2d": {
-    "Matcher": "AvgPoolMatcher",
-    "paddle_api": "paddle.nn.AvgPool2D",
-    "min_input_args": 1,
-    "args_list": [
-      "kernel_size",
-      "stride",
-      "padding",
-      "ceil_mode",
-      "count_include_pad",
-      "divisor_override"
-    ]
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.compat.nn.AvgPool2d"
   },
   "torch.nn.AvgPool3d": {
-    "Matcher": "AvgPoolMatcher",
-    "paddle_api": "paddle.nn.AvgPool3D",
-    "min_input_args": 1,
-    "args_list": [
-      "kernel_size",
-      "stride",
-      "padding",
-      "ceil_mode",
-      "count_include_pad",
-      "divisor_override"
-    ]
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.compat.nn.AvgPool3d"
   },
   "torch.nn.BCELoss": {
     "Matcher": "SizeAverageMatcher",
