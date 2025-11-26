@@ -31,7 +31,7 @@ class GetSubAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        assert isinstance(paddle_result, paddle.nn.Layer)
+        assert isinstance(paddle_result, paddle.nn.Module)
 
 
 obj = GetSubAPIBase("torch.nn.Module.get_submodule")

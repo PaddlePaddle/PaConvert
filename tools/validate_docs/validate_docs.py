@@ -213,7 +213,7 @@ def check_unchange_matcher(paconvert_item, doc_item):
 
     api_mapping_rules = {
         "torch.optim.": "paddle.optimizer.",
-        "torch.nn.Module.": "paddle.nn.Layer.",
+        "torch.nn.Module.": "paddle.nn.Module.",
         "torch.autograd.function.FunctionCtx.": "paddle.autograd.PyLayerContext.",
         "torch.": "paddle.",
     }

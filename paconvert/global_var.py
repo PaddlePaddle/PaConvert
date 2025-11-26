@@ -185,6 +185,60 @@ class GlobalManager:
         "torch.Tensor.sub",
         "torch.Tensor.sub_",
         "torch.Tensor.random_",
+        "torch.Tensor.split_with_sizes",
+        "torch.meshgrid",
+        "torch.nn.Module.add_module",
+        "torch.nn.Module.apply",
+        "torch.nn.Module.bfloat16",
+        "torch.nn.Module.buffers",
+        "torch.nn.Module.children",
+        "torch.nn.Module.cpu",
+        "torch.nn.Module.cuda",
+        "torch.nn.Module.double",
+        "torch.nn.Module.eval",
+        "torch.nn.Module.float",
+        "torch.nn.Module.get_buffer",
+        "torch.nn.Module.get_parameter",
+        "torch.nn.Module.get_submodule",
+        "torch.nn.Module.half",
+        "torch.nn.Module.load_state_dict",
+        "torch.nn.Module.modules",
+        "torch.nn.Module.named_buffers",
+        "torch.nn.Module.named_children",
+        "torch.nn.Module.named_modules",
+        "torch.nn.Module.named_parameters",
+        "torch.nn.Module.parameters",
+        "torch.nn.Module.register_buffer",
+        "torch.nn.Module.register_module",
+        "torch.nn.Module.register_parameter",
+        "torch.nn.Module.requires_grad_",
+        "torch.nn.Module.state_dict",
+        "torch.nn.Module.train",
+        "torch.nn.Module.type",
+        "torch.nn.Module.xpu",
+        "torch.nn.Module.zero_grad",
+        "torch.nn.Module",
+        "torch.nn.ModuleDict",
+        "torch.nn.ModuleList",
+
+        # torch.nn.Module.register_full_backward_hook
+        # torch.nn.Module.register_forward_hook
+        # torch.nn.Module.register_forward_pre_hook
+        # torch.nn.Module.register_full_backward_pre_hook
+        # torch.nn.Module.to_empty
+        # torch.nn.Module.to
+
+        # torch.nn.Module.set_extra_state
+        # torch.nn.Module.ipu
+        # torch.nn.Module.mtia
+        # torch.nn.Module.register_backward_hook
+        # torch.nn.Module.register_state_dict_post_hook
+        # torch.nn.Module.register_state_dict_pre_hook
+        # torch.nn.Module.register_load_state_dict_pre_hook
+        # torch.nn.Module.register_load_state_dict_post_hook
+        # torch.nn.Module.share_memory
+        # torch.nn.Module.compile
+
         
         # sensen
         "torch.range",
@@ -793,7 +847,19 @@ class GlobalManager:
         "torch.Tensor.swapdims",
         "torch.Tensor.swapaxes",
         "torch.Tensor.sub",
-        
+        "torch.isclose",
+        "torch.special.expm1",
+        #"torch.nn.Softmax",
+        #"torch.Tensor.requires_grad_",
+        "torch.Tensor.__deepcopy__",
+        "torch.Tensor.__pow__",
+        #"torch.hamming_window",
+        #"torch.blackman_window",
+        "torch.nn.functional.softplus",
+        "torch.Tensor.index_add_",
+        "torch.fft.rfft",
+        "torch.fft.fft",
+
         # qianyue
         "torch.gather",
         "torch.Tensor.gather",
@@ -846,7 +912,12 @@ class GlobalManager:
         "torch.cuda.stream",
         "torch.cuda.StreamContext",
         "torch.Generator",
+        #"torch.cuda.CUDAGraph",
+        #"torch.cuda.graph_pool_handle",
         "torch.cuda.ipc_collect",
+        "torch.cuda.synchronize",
+        "torch.cuda.Stream",
+        "torch.cuda.is_bf16_supported",
         "torch.Tensor.device",
 
 
@@ -903,6 +974,7 @@ class GlobalManager:
         "torch.nn.functional.adaptive_max_pool3d",
         "torch.nn.functional.lp_pool1d",
         "torch.nn.functional.lp_pool2d",
+
         # algorithm1832
         "torch.cosh",
         
@@ -938,4 +1010,26 @@ class GlobalManager:
         "torch.Tensor.quantile",
         "torch.unflatten",
         "torch.Tensor.unflatten",
+        "torch.Tensor.uniform_",
+        "torch.Tensor.unfold",
+        "torch.fft.fft",
+        "torch.fft.ifft",
+        "torch.fft.fft2",
+        "torch.fft.ifft2",
+        "torch.fft.fftn",
+        "torch.fft.ifftn",
+        "torch.fft.rfft",
+        "torch.fft.irfft",
+        "torch.fft.rfft2",
+        "torch.fft.irfft2",
+        "torch.fft.rfftn",
+        "torch.fft.irfftn",
+        "torch.fft.hfft",
+        "torch.fft.ihfft",
+        "torch.fft.hfft2",
+        "torch.fft.ihfft2",
+        "torch.fft.hfftn",
+        "torch.fft.ihfftn",
+        "torch.fft.fftshift",
+        "torch.fft.ifftshift",
     ]
