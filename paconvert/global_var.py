@@ -968,4 +968,26 @@ class GlobalManager:
         "torch.nn.functional.group_norm",
         "torch.nn.GroupNorm",
         "torch.nn.LayerNorm",
+
+        #fangfangssj
+        "torch.fft.fft",
+        "torch.fft.ifft",
+        "torch.fft.fft2",
+        "torch.fft.ifft2",
+        "torch.fft.fftn",
+        "torch.fft.ifftn",
+        "torch.fft.rfft",
+        "torch.fft.irfft",
+        "torch.fft.rfft2",
+        "torch.fft.irfft2",
+        "torch.fft.rfftn",
+        "torch.fft.irfftn",
+        "torch.fft.hfft",
+        "torch.fft.ihfft",
+        "torch.fft.hfft2",
+        "torch.fft.ihfft2",
+        "torch.fft.hfftn",
+        "torch.fft.ihfftn",
+        "torch.fft.fftshift",
+        "torch.fft.ifftshift"
     ]
