@@ -20,3 +20,4 @@ temp.txt
 test_set
 tensor.pt
 __pycache__
+.venv
