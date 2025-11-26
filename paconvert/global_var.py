@@ -846,7 +846,19 @@ class GlobalManager:
         "torch.Tensor.swapdims",
         "torch.Tensor.swapaxes",
         "torch.Tensor.sub",
-        
+        "torch.isclose",
+        "torch.special.expm1",
+        #"torch.nn.Softmax",
+        #"torch.Tensor.requires_grad_",
+        "torch.Tensor.__deepcopy__",
+        "torch.Tensor.__pow__",
+        #"torch.hamming_window",
+        #"torch.blackman_window",
+        "torch.nn.functional.softplus",
+        "torch.Tensor.index_add_",
+        "torch.fft.rfft",
+        "torch.fft.fft",
+
         # qianyue
         "torch.gather",
         "torch.Tensor.gather",
@@ -899,6 +911,8 @@ class GlobalManager:
         "torch.cuda.stream",
         "torch.cuda.StreamContext",
         "torch.Generator",
+        #"torch.cuda.CUDAGraph",
+        #"torch.cuda.graph_pool_handle",
         "torch.cuda.ipc_collect",
         "torch.cuda.synchronize",
         "torch.cuda.Stream",
@@ -959,6 +973,7 @@ class GlobalManager:
         "torch.nn.functional.adaptive_max_pool3d",
         "torch.nn.functional.lp_pool1d",
         "torch.nn.functional.lp_pool2d",
+
         # algorithm1832
         "torch.cosh",
         

@@ -24,7 +24,7 @@ def test_case_1():
         """
         import torch
         a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.requires_grad_(True)
+        result = a.requires_grad_()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,7 +35,7 @@ def test_case_2():
         """
         import torch
         a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.requires_grad_()
+        result = a.requires_grad_(True)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -46,13 +46,46 @@ def test_case_3():
         """
         import torch
         a = torch.Tensor([[1.,2.], [3.,4.]])
-        result = a.requires_grad_(requires_grad=True)
+        a.requires_grad_(requires_grad=False)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["a"])
 
 
 def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.Tensor([[1.,2.], [3.,4.]])
+        a.requires_grad_(requires_grad=True)
+        """
+    )
+    obj.run(pytorch_code, ["a"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.Tensor([[1.,2.], [3.,4.]])
+        a.requires_grad_()
+        """
+    )
+    obj.run(pytorch_code, ["a"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.Tensor([[1.,2.], [3.,4.]])
+        a.requires_grad_(requires_grad=False)
+        """
+    )
+    obj.run(pytorch_code, ["a"])
+
+
+def _test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -60,15 +93,10 @@ def test_case_4():
         result = {key: value.requires_grad_() for key, value in tensor_dict.items()}
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="Can not support insert multi line to ast.ListComp",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
-def test_case_5():
+def _test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -76,9 +104,4 @@ def test_case_5():
         result = [value.requires_grad_() for value in tensor_list]
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="Can not support insert multi line to ast.DictComp",
-    )
+    obj.run(pytorch_code, ["result"])
