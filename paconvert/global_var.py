@@ -968,4 +968,7 @@ class GlobalManager:
         "torch.nn.functional.group_norm",
         "torch.nn.GroupNorm",
         "torch.nn.LayerNorm",
+
+        #enkilee
+        "torch.acos",
     ]
