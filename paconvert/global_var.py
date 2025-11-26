@@ -989,5 +989,5 @@ class GlobalManager:
         "torch.fft.hfftn",
         "torch.fft.ihfftn",
         "torch.fft.fftshift",
-        "torch.fft.ifftshift"
+        "torch.fft.ifftshift",
     ]
