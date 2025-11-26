@@ -7,7 +7,7 @@
 #### 最新版本的paddle库和torch库
 ```bash
 # cpu 版本的paddle
-python -m pip install paddlepaddle==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/cpu-mkl/develop.html
+pip install paddlepaddle -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/
 ```
 
 ```bash
