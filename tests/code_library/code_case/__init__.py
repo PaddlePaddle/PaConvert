@@ -37,7 +37,7 @@ def add_to_skip_format_files(torch_file, paddle_file):
     update_mappings(torch_file, paddle_file, target_dict=SKIP_FORMAT_FILES)
 
 # this part is about api mapping file
-add_to_dict("api_torch_equal.py", "api_paddle_equall_all.py")
+add_to_dict("api_torch_equal.py", "api_paddle_equall.py")
 add_to_dict("api_torch_randint.py", "api_paddle_randint.py")
 add_to_dict("api_torch_LongTensor.py", "api_paddle_Tensor2Long.py")
 add_to_dict("api_torch_sigmoid.py", "api_paddle_sigmoid.py")
