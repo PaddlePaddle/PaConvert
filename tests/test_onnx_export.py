@@ -106,11 +106,11 @@ def test_case_2():
 
 
 
-        class SimpleModel(paddle.nn.Layer):
+        class SimpleModel(paddle.nn.Module):
             def __init__(self):
                 super(SimpleModel, self).__init__()
-                self.fc1 = paddle.nn.Linear(in_features=3, out_features=3)
-                self.fc2 = paddle.nn.Linear(in_features=3, out_features=1)
+                self.fc1 = paddle.compat.nn.Linear(3, 3)
+                self.fc2 = paddle.compat.nn.Linear(3, 1)
 
             def forward(self, x):
                 x = paddle.nn.functional.relu(x=self.fc1(x))

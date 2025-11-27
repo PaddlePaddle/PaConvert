@@ -16,38 +16,26 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Module.requires_grad_")
+obj = APIBase("torch.float8_e4m3fn")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3.])
-        module1 = torch.nn.Module()
-        module1.register_buffer('buffer', x)
-        module1.requires_grad_(True)
-        result = None
+        src = torch.tensor([1., 2., 3., 4., 5., 6.])
+        result = src.to(torch.float8_e4m3fn).float()
+
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3.])
-        module1 = torch.nn.Module()
-        module1.register_buffer('buffer', x)
-        module1.requires_grad_(requires_grad=True)
-        result = None
+        result = torch.tensor([1., 2., 3., 4., 5., 6.]).to(torch.float8_e4m3fn).float()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-    )
+    obj.run(pytorch_code, ["result"])

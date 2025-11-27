@@ -14,40 +14,22 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Module.requires_grad_")
+obj = APIBase("torch.cuda.ipc_collect")
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3.])
-        module1 = torch.nn.Module()
-        module1.register_buffer('buffer', x)
-        module1.requires_grad_(True)
-        result = None
+        result = torch.cuda.ipc_collect()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-    )
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1., 2., 3.])
-        module1 = torch.nn.Module()
-        module1.register_buffer('buffer', x)
-        module1.requires_grad_(requires_grad=True)
-        result = None
-        """
-    )
-    obj.run(
-        pytorch_code,
-        ["result"],
-    )
+    obj.run(pytorch_code, ["result"])

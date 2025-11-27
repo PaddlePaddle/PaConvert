@@ -11,7 +11,7 @@
 
 - ✅ 具备强大的转换能力，当前支持高达 **1600+个torch API、200个torchvision API** 的一键转换，基本实现Pytorch全覆盖
 
-- ✅ 通过 **100+个Pytorch代码库（超25万行代码）测试**，代码行数**平均转换率约为95+%**（剩余<5%需要您手动修改），转换速度极快（不低于1200+行/秒）
+- ✅ 通过 **100+个Pytorch代码库（超25万行代码）测试**，代码行数**平均转换率约为95+%**（剩余<5%需要您手动修改），转换速度极快（不低于2000+行/秒）
 
 ## 概述
 
@@ -107,16 +107,16 @@ for i in range(10):
 import paddle
 
 
-class MyNet(paddle.nn.Layer):
+class MyNet(paddle.nn.Module):
     test = "str"
 
     def __init__(self, num_classes=10):
         super(MyNet, self).__init__()
 >>>>>>        self._conv = mmcv.cnn.ConvModule(4, 6, (3, 3))
         self._pool = paddle.nn.MaxPool2D(kernel_size=2, stride=1)
-        self._fc1 = paddle.nn.Linear(in_features=6 * 25 * 25, out_features=120)
-        self._fc2 = paddle.nn.Linear(in_features=120, out_features=84)
-        self._fc3 = paddle.nn.Linear(in_features=84, out_features=num_classes)
+        self._fc1 = paddle.compat.nn.Linear(6 * 25 * 25, 120)
+        self._fc2 = paddle.compat.nn.Linear(120, out_features=84)
+        self._fc3 = paddle.compat.nn.Linear(in_features=84, out_features=num_classes)
 
     def forward(self, x):
         x = self._conv(x)

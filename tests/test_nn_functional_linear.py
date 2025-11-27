@@ -14,6 +14,8 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.nn.functional.linear")
@@ -86,3 +88,116 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([[ 0.23687,  0.21409], [ 0.68391, -0.93163], [-1.43081,  0.09983]])
+        weight = torch.tensor([[ 0.5023,  1.7030], [-1.0364, -0.9937], [ 0.5375, -0.0217], [-0.2975,  0.2248]])
+        bias = torch.tensor([1., -100., 1., 100.])
+        result = F.linear(bias=bias, input=x, weight=weight)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([[1.2, -0.5, 2.1, 0.8, -1.5],
+                         [0.3, 1.7, -0.9, 2.4, -0.2]]).to(torch.float64)
+        weight = torch.tensor([[0.5, -1.2, 0.8, 1.1, -0.3],
+                              [-0.7, 1.4, 0.2, -0.9, 0.6],
+                              [1.3, -0.4, 0.9, -1.1, 0.5]]).to(torch.float64)
+        result = F.linear(x, weight)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([[0.5, -0.2, 0.125],
+                         [-0.5, 0.25, -0.125],
+                         [0.75, -0.37, 0.1875]]).to(torch.float16).cuda()
+        weight = torch.tensor([[0.5, -0.25, 0.125],
+                              [-0.25, 0.12, -0.0625]]).to(torch.float16).cuda()
+        bias = torch.tensor([0.5, -0.25]).to(torch.float16).cuda()
+        result = F.linear(x, weight, bias)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([[1.5, -0.8, 2.3, 0.7, -1.2, 0.9]]).to(torch.float32)
+        weight = torch.tensor([[0.4, -1.1, 0.6, 0.9, -0.3, 1.2],
+                              [-0.7, 0.8, 1.3, -0.5, 1.1, 0.2],
+                              [1.0, -0.6, 0.4, 1.3, -0.9, 0.5],
+                              [0.3, 1.2, -0.8, 0.7, 1.4, -0.4]]).to(torch.float32)
+        bias = torch.tensor([0.6, -0.9, 1.1, 0.3]).to(torch.float32)
+        result = F.linear(x, weight, bias)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([[0.8, -1.2, 2.1],
+                         [1.5, -0.7, 0.9]], requires_grad=True)
+        weight = torch.tensor([[0.4, -0.9, 1.2],
+                              [-0.7, 1.1, 0.3],
+                              [0.8, -0.5, 1.3],
+                              [1.1, 0.6, -0.8],
+                              [-0.3, 1.4, 0.7]])
+        result = F.linear(x, weight)
+        loss = result.sum()
+        loss.backward()
+        x_grad = x.grad
+        x_grad.requires_grad=False
+        """
+    )
+    obj.run(pytorch_code, ["result", "x_grad"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([[1.25, -0.8],
+                         [0.9, 0.25],
+                         [-1.1, 0.7],
+                         [0.4, -1.3]], requires_grad=True)
+        weight = torch.tensor([[0.6, -1.2],
+                              [0.5, 0.4],
+                              [-0.7, 1.1]])
+        bias = torch.tensor([0.5, -0.8, 1.2])
+        result = F.linear(x, weight, bias)
+        loss = result.mean()
+        loss.backward()
+        x_grad = x.grad
+        x_grad.requires_grad=False
+        """
+    )
+    obj.run(pytorch_code, ["result", "x_grad"])

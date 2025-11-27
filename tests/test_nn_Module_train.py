@@ -52,3 +52,24 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        import torch
+        class TheModelClass(torch.nn.Module):
+            def forward(self, x):
+                return x
+        model = TheModelClass()
+        state = model.state_dict()
+        model.train(mode = False).load_state_dict(state)
+        result = model.training
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+    )

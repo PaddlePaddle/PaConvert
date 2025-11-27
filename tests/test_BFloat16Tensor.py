@@ -15,6 +15,8 @@
 import textwrap
 
 import numpy as np
+import paddle
+import pytest
 from apibase import APIBase
 
 
@@ -129,3 +131,67 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+# AI生成case
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import numpy as np
+        np_array = np.array([1.5, 2.0, 3.0], dtype=np.float32)
+        result = torch.BFloat16Tensor(np_array)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# AI生成case
+def _test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        other = torch.tensor([1.5, 2.0, 3.0], dtype=torch.float32)
+        result = torch.BFloat16Tensor(other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# AI生成case
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.BFloat16Tensor([[1.5, 2.0], [3.0, 4.0]])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# AI生成case
+@pytest.mark.skip(reason="BFloat16Tensor with complex data not supported")
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.BFloat16Tensor([1+2j, 3+4j])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# AI生成case
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.BFloat16Tensor([1., 2., 3.])
+        y = x + x
+        """
+    )
+    obj.run(pytorch_code, ["y"])

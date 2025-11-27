@@ -1,4 +1,4 @@
-# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
+# Copyright (c) 2025 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,38 +16,40 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.Module.requires_grad_")
+obj = APIBase("torch.Tensor.__xor__")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3.])
-        module1 = torch.nn.Module()
-        module1.register_buffer('buffer', x)
-        module1.requires_grad_(True)
-        result = None
+        x = torch.tensor([True, False, True])
+        y = torch.tensor([True, True, False])
+        result = x ^ y
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., 3.])
-        module1 = torch.nn.Module()
-        module1.register_buffer('buffer', x)
-        module1.requires_grad_(requires_grad=True)
-        result = None
+        x = torch.tensor([1, 2, 3], dtype=torch.int32)
+        y = torch.tensor([3, 2, 1], dtype=torch.int32)
+        result = x ^ y
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
+    obj.run(pytorch_code, ["result"])
+
+
+# Paddle don't support scalar input.
+def _test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([True, False])
+        result = x ^ False
+        """
     )
+    obj.run(pytorch_code, ["result"])

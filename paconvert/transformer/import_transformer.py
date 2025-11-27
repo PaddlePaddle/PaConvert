@@ -360,7 +360,9 @@ class ImportTransformer(BaseTransformer):
 
         torch_api = self.get_full_api_from_node(node)
         if torch_api:
-            if torch_api in GlobalManager.ALIAS_MAPPING:
+            if torch_api in GlobalManager.ALIAS_MAPPING and (
+                torch_api not in GlobalManager.NO_NEED_CONVERT_LIST
+            ):
                 torch_api = GlobalManager.ALIAS_MAPPING[torch_api]
             return ast.parse(torch_api).body[0].value
         return node
@@ -453,7 +455,9 @@ class ImportTransformer(BaseTransformer):
         if maybe_torch:
             torch_api = self.get_full_api_from_node(node)
             if torch_api:
-                if torch_api in GlobalManager.ALIAS_MAPPING:
+                if torch_api in GlobalManager.ALIAS_MAPPING and (
+                    torch_api not in GlobalManager.NO_NEED_CONVERT_LIST
+                ):
                     torch_api = GlobalManager.ALIAS_MAPPING[torch_api]
                 if maybe_alias_name:
                     if len(self.parent_node.targets) == 1 and isinstance(

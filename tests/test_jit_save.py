@@ -46,10 +46,10 @@ def test_case_1():
         import paddle
 
 
-        class MyModule(paddle.nn.Layer):
+        class MyModule(paddle.nn.Module):
             def __init__(self):
                 super(MyModule, self).__init__()
-                self.dummy_param = paddle.nn.parameter.Parameter(paddle.tensor([1.0]))
+                self.dummy_param = paddle.nn.Parameter(paddle.tensor([1.0]))
 
             def forward(self, x):
                 return x + 10
@@ -90,10 +90,10 @@ def test_case_2():
         import paddle
 
 
-        class MyModule(paddle.nn.Layer):
+        class MyModule(paddle.nn.Module):
             def __init__(self):
                 super(MyModule, self).__init__()
-                self.dummy_param = paddle.nn.parameter.Parameter(paddle.tensor([1.0]))
+                self.dummy_param = paddle.nn.Parameter(paddle.tensor([1.0]))
 
             def forward(self, x):
                 return x + 10
@@ -135,10 +135,10 @@ def test_case_3():
         import paddle
 
 
-        class MyModule(paddle.nn.Layer):
+        class MyModule(paddle.nn.Module):
             def __init__(self):
                 super(MyModule, self).__init__()
-                self.dummy_param = paddle.nn.parameter.Parameter(paddle.tensor([1.0]))
+                self.dummy_param = paddle.nn.Parameter(paddle.tensor([1.0]))
 
             def forward(self, x):
                 return x + 10
@@ -181,10 +181,10 @@ def test_case_4():
         import paddle
 
 
-        class MyModule(paddle.nn.Layer):
+        class MyModule(paddle.nn.Module):
             def __init__(self):
                 super(MyModule, self).__init__()
-                self.dummy_param = paddle.nn.parameter.Parameter(paddle.tensor([1.0]))
+                self.dummy_param = paddle.nn.Parameter(paddle.tensor([1.0]))
 
             def forward(self, x):
                 return x + 10

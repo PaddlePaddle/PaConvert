@@ -30,9 +30,10 @@ def test_case_1():
                             [ 1.3011,  1.0469]]]]])
         model = nn.CircularPad3d(1)
         result = model(x)
+        padding = model.padding
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "padding"])
 
 
 def test_case_2():
@@ -46,9 +47,10 @@ def test_case_2():
                             [ 1.3011,  1.0469]]]]])
         model = nn.CircularPad3d((1, 1, 1, 1, 1, 1))
         result = model(x)
+        padding = model.padding
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "padding"])
 
 
 def test_case_3():
@@ -62,9 +64,10 @@ def test_case_3():
                             [ 1.3011,  1.0469]]]]])
         model = nn.CircularPad3d(padding=1)
         result = model(x)
+        padding = model.padding
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "padding"])
 
 
 def test_case_4():
@@ -78,6 +81,7 @@ def test_case_4():
                             [ 1.3011,  1.0469]]]]])
         model = torch.nn.CircularPad3d(padding=(1, 2, 1, 2, 2, 1))
         result = model(x)
+        padding = model.padding
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "padding"])

@@ -11,38 +11,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
-import paddle
 from apibase import APIBase
 
-
-class LoadAPIBase(APIBase):
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_shape=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        assert isinstance(paddle_result, paddle.nn.Module)
-
-
-obj = LoadAPIBase("torch.hub.load")
+obj = APIBase("torch.nn.ZeroPad1d")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.hub.load('lyuwenyu/paddlehub_demo:main', 'MM')
+        import torch.nn as nn
+        x = torch.tensor([[[-0.4106,  0.1677], [-0.6648, -0.5669]]])
+        model = nn.ZeroPad1d(1)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -52,7 +36,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.hub.load('lyuwenyu/paddlehub_demo:main', model='MM', source='github', skip_validation=False)
+        import torch.nn as nn
+        x = torch.tensor([[[-0.4106,  0.1677], [-0.6648, -0.5669]]])
+        model = nn.ZeroPad1d((1, 1, 1, 0))
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -62,7 +49,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.hub.load(repo_or_dir='lyuwenyu/paddlehub_demo:main', model='MM', force_reload=False, trust_repo=None, verbose=True, skip_validation=False)
+        import torch.nn as nn
+        x = torch.tensor([[[-0.4106,  0.1677], [-0.6648, -0.5669]]])
+        model = nn.ZeroPad1d(padding=1)
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -72,7 +62,10 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.hub.load(repo_or_dir='lyuwenyu/paddlehub_demo:main', model='MM', source='github', trust_repo=None, force_reload=False, verbose=True, skip_validation=False)
+        import torch.nn as nn
+        x = torch.tensor([[[-0.4106,  0.1677], [-0.6648, -0.5669]]])
+        model = torch.nn.ZeroPad1d(padding=(1, 1, 1, 0))
+        result = model(x)
         """
     )
     obj.run(pytorch_code, ["result"])

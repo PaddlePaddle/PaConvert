@@ -44,7 +44,7 @@ def test_case_1():
         import paddle
 
 
-        class MyModule(paddle.nn.Layer):
+        class MyModule(paddle.nn.Module):
             def forward(self, x):
                 return x * 2
 
