@@ -12579,18 +12579,8 @@
     "min_input_args": 0
   },
   "torch.nn.Softmax": {
-    "Matcher": "SoftmaxMatcher",
-    "paddle_api": "paddle.nn.Softmax",
-    "min_input_args": 0,
-    "args_list": [
-      "dim"
-    ],
-    "kwargs_change": {
-      "dim": "axis"
-    },
-    "paddle_default_kwargs": {
-      "axis": null
-    }
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.compat.nn.Softmax"
   },
   "torch.nn.Softmax2d": {
     "Matcher": "GenericMatcher",
