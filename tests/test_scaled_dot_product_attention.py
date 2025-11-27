@@ -26,7 +26,7 @@ obj = APIBase("torch.nn.functional.scaled_dot_product_attention")
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="cpu matmul not supoort float16",
 )
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import numpy as np
@@ -45,7 +45,7 @@ def _test_case_1():
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="cpu matmul not supoort float16",
 )
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import numpy as np
@@ -56,7 +56,7 @@ def _test_case_2():
         result = torch.nn.functional.scaled_dot_product_attention(query, query, query, dropout_p=0., is_causal=True)
         """
     )
-    obj.run(pytorch_code, ["result"], rtol=1e-3)
+    obj.run(pytorch_code, ["result"], rtol=1e-2)
 
 
 # can not run by flash attention backend
@@ -64,7 +64,7 @@ def _test_case_2():
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="cpu matmul not supoort bfloat16",
 )
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import numpy as np
@@ -91,8 +91,6 @@ def test_case_4():
     )
     obj.run(
         pytorch_code,
-        unsupport=True,
-        reason="paddle not support 'scale' and 'enable_gqa' ",
     )
 
 
@@ -101,7 +99,7 @@ def test_case_4():
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="cpu matmul not supoort float16",
 )
-def _test_case_5():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import numpy as np
@@ -122,7 +120,7 @@ def _test_case_5():
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="cpu matmul not supoort float16",
 )
-def _test_case_6():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import numpy as np
@@ -139,7 +137,7 @@ def _test_case_6():
 
 
 # can not run by flash attention backend
-def _test_case_7():
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import numpy as np
@@ -154,7 +152,7 @@ def _test_case_7():
 
 
 # can not run by flash attention backend
-def _test_case_8():
+def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import numpy as np

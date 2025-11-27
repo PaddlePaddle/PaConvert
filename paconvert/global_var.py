@@ -148,6 +148,7 @@ class GlobalManager:
         "torch.get_autocast_gpu_dtype",
         "torch.cumsum",
         "torch.diff",
+        "torch.Tensor.shape"
 
         # honggeng
         "torch.nn.functional.dropout1d",
