@@ -985,6 +985,8 @@ class GlobalManager:
         "torch.nn.GroupNorm",
         "torch.nn.LayerNorm",
 
+        #enkilee
+        "torch.acos",
         #fangfangssj
         "torch.fft.fft",
         "torch.fft.ifft",
