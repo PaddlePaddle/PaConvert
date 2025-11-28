@@ -987,6 +987,8 @@ class GlobalManager:
 
         #enkilee
         "torch.acos",
+        "torch.acosh",
+
         #fangfangssj
         "torch.abs",
         "torch.Tensor.abs",
