@@ -119,3 +119,31 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(1001, 0, -1)
+        a[1] = 1
+        a[2] = 2
+        dim = 0
+        result = torch.unique(return_inverse=True, input=a, return_counts=False, dim=dim, sorted=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(1001, 0, -1)
+        a[1] = 1
+        a[2] = 2
+        dim = 0
+        result = torch.unique(return_inverse=True, input=a, return_counts=False, dim=dim, sorted=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
