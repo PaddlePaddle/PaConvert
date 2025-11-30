@@ -89,3 +89,63 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1., 2., 3.])
+        b = torch.tensor([1., 2., 3., 4.])
+        result = torch.equal(other=b, input=a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1, 2, 3], dtype=torch.int32)
+        b = torch.tensor([1, 2, 3], dtype=torch.float32)
+        result = torch.equal(other=b, input=a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1, 2], [3, 4]], dtype=torch.int64)
+        b = torch.tensor([1., 2., 3., 4.])
+        result = torch.equal(other=b, input=a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.randn(3, 0, 3)
+        b = torch.randn(3, 0)
+        result = torch.equal(other=b, input=a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.randn(3, 0, 3)
+        b = torch.randn(3, 0, 3)
+        result = torch.equal(other=b, input=a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
