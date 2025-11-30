@@ -7,7 +7,7 @@
 #### 最新版本的paddle库和torch库
 ```bash
 # cpu 版本的paddle
-pip install paddlepaddle -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/
+pip install --pre paddlepaddle -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/
 ```
 
 ```bash
