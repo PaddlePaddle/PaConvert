@@ -976,6 +976,7 @@ class GlobalManager:
 
         # algorithm1832
         "torch.cosh",
+        "torch.frac",
         
         # lijialin
         "torch.group_norm",
