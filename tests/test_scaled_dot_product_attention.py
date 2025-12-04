@@ -20,21 +20,11 @@ from apibase import APIBase
 
 obj = APIBase("torch.nn.functional.scaled_dot_product_attention")
 
-is_bf16_native_supported = (
-    paddle.device.is_compiled_with_cuda()
-    and paddle.cuda.get_device_capability()[0] >= 8
-)
-if not paddle.device.is_available():
-    pytest.skip(
-        "SDPA math backend does not support CPU, skip on CPU.", allow_module_level=True
-    )
+
+is_cpu = not paddle.device.is_available()
 
 
-# can not run by flash attention backend
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="cpu matmul not supoort float16",
-)
+@pytest.mark.skipif(is_cpu, reason="CPU not support fp16/bf16 matmul")
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
@@ -49,11 +39,7 @@ def test_case_1():
     obj.run(pytorch_code, ["result"], rtol=1e-3)
 
 
-# can not run by flash attention backend
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="cpu matmul not supoort float16",
-)
+@pytest.mark.skipif(is_cpu, reason="CPU not support fp16/bf16 matmul")
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -68,10 +54,7 @@ def test_case_2():
     obj.run(pytorch_code, ["result"], rtol=1e-2)
 
 
-# can not run by flash attention backend
-@pytest.mark.skipif(
-    not is_bf16_native_supported, reason="hardware not support bf16 natively"
-)
+@pytest.mark.skipif(is_cpu, reason="CPU not support fp16/bf16 matmul")
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
@@ -86,9 +69,7 @@ def test_case_3():
     obj.run(pytorch_code, ["result"], rtol=1e-2)
 
 
-@pytest.mark.skipif(
-    not is_bf16_native_supported, reason="hardware not support bf16 natively"
-)
+@pytest.mark.skipif(is_cpu, reason="CPU not support fp16/bf16 matmul")
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
@@ -105,11 +86,7 @@ def test_case_4():
     )
 
 
-# can not run by flash attention backend
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="cpu matmul not supoort float16",
-)
+@pytest.mark.skipif(is_cpu, reason="CPU not support fp16/bf16 matmul")
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
@@ -126,11 +103,7 @@ def test_case_5():
     obj.run(pytorch_code, ["result"], rtol=1e-3)
 
 
-# can not run by flash attention backend
-@pytest.mark.skipif(
-    condition=not paddle.device.is_compiled_with_cuda(),
-    reason="cpu matmul not supoort float16",
-)
+@pytest.mark.skipif(is_cpu, reason="CPU not support fp16/bf16 matmul")
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """
@@ -147,7 +120,6 @@ def test_case_6():
     obj.run(pytorch_code, ["result"], rtol=1e-3)
 
 
-# can not run by flash attention backend
 def test_case_7():
     pytorch_code = textwrap.dedent(
         """
@@ -162,7 +134,7 @@ def test_case_7():
     obj.run(pytorch_code, ["result"])
 
 
-# can not run by flash attention backend
+@pytest.mark.skipif(is_cpu, reason="CPU not support is_causal=True")
 def test_case_8():
     pytorch_code = textwrap.dedent(
         """
