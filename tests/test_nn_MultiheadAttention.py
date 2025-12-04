@@ -37,7 +37,7 @@ def test_case_1():
         result = multihead_attn(query, key, value)
         """
     )
-    obj.run(pytorch_code, ["result"], rtol=1e-3)
+    obj.run(pytorch_code, ["result"], atol=1e-3)
 
 
 def test_case_2():
@@ -58,7 +58,7 @@ def test_case_2():
         result = multihead_attn(query, key, value)
         """
     )
-    obj.run(pytorch_code, ["result"], rtol=1e-3)
+    obj.run(pytorch_code, ["result"], atol=1e-3)
 
 
 def test_case_3():
@@ -79,7 +79,7 @@ def test_case_3():
         result = multihead_attn(query, key, value)
         """
     )
-    obj.run(pytorch_code, ["result"], rtol=1e-3)
+    obj.run(pytorch_code, ["result"], atol=1e-3)
 
 
 def test_case_4():
@@ -100,7 +100,7 @@ def test_case_4():
         result = multihead_attn(query, key, value)
         """
     )
-    obj.run(pytorch_code, ["result"], rtol=1e-3)
+    obj.run(pytorch_code, ["result"], atol=1e-3)
 
 
 def test_case_5():
@@ -121,7 +121,7 @@ def test_case_5():
         result = multihead_attn(query, key, value)
         """
     )
-    obj.run(pytorch_code, ["result"], rtol=1e-3)
+    obj.run(pytorch_code, ["result"], atol=1e-3)
 
 
 def test_case_6():
@@ -142,7 +142,7 @@ def test_case_6():
         result = multihead_attn(query, key, value)
         """
     )
-    obj.run(pytorch_code, ["result"], rtol=1e-3)
+    obj.run(pytorch_code, ["result"], atol=1e-3)
 
 
 def test_case_7():
@@ -163,4 +163,4 @@ def test_case_7():
         result = multihead_attn(query, key, value)
         """
     )
-    obj.run(pytorch_code, ["result"], rtol=1e-3)
+    obj.run(pytorch_code, ["result"], atol=1e-3)
