@@ -17921,7 +17921,7 @@
     }
   },
   "torch.unique": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.compat.unique",
     "min_input_args": 1,
     "args_list": [
