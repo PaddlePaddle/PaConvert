@@ -151,6 +151,7 @@ class GlobalManager:
         "torch.get_autocast_gpu_dtype",
         "torch.cumsum",
         "torch.diff",
+        "torch.Tensor.shape",
         "torch.nn.ConstantPad1d",
         "torch.nn.ConstantPad2d",
         "torch.nn.ConstantPad3d",
