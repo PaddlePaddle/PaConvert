@@ -18120,7 +18120,7 @@
   },
   "torch.utils.data.distributed.DistributedSampler": {
     "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.compat.utils.data.DistributedBatchSampler",
+    "paddle_api": "paddle.compat.utils.data.distributed.DistributedSampler",
     "min_input_args": 1,
     "args_list": [
       "dataset",
@@ -18129,14 +18129,7 @@
       "shuffle",
       "seed",
       "drop_last"
-    ],
-    "kwargs_change": {
-      "seed": ""
-    },
-    "paddle_default_kwargs": {
-      "shuffle": "True",
-      "batch_size": "1"
-    }
+    ]
   },
   "torch.utils.data.get_worker_info": {
     "Matcher": "ChangeAPIMatcher",
