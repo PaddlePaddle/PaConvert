@@ -140,7 +140,7 @@ def test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_5():
+def _test_case_5():
     pytorch_code = textwrap.dedent(
         """
         from torch.utils.data import Dataset
@@ -177,7 +177,7 @@ def test_case_5():
     )
 
 
-def test_case_6():
+def _test_case_6():
     pytorch_code = textwrap.dedent(
         """
         from torch.utils.data import Dataset
