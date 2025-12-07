@@ -1,4 +1,4 @@
-# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
+# Copyright (c) 2025 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,15 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.shape")
+obj = APIBase("torch.Tensor.__pow__")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.shape
+        x = torch.tensor([2.0, 3.0])
+        result = x ** 2
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +34,19 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.empty((2, 0))
-        result = src.shape
+        x = torch.tensor([1.0, 2.0])
+        result = x ** 3.0
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([2, 3])
+        result = x ** 4
         """
     )
     obj.run(pytorch_code, ["result"])
