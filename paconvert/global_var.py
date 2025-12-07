@@ -1,3 +1,5 @@
+
+
 # Copyright (c) 2025 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -850,7 +852,7 @@ class GlobalManager:
         "torch.Tensor.sub",
         "torch.isclose",
         "torch.special.expm1",
-        #"torch.Tensor.requires_grad_",
+        "torch.Tensor.requires_grad_",
         "torch.Tensor.__deepcopy__",
         "torch.Tensor.__pow__",
         "torch.hamming_window",
