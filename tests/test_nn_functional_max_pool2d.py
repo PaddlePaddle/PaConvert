@@ -88,9 +88,7 @@ def test_case_4():
         result = F.max_pool2d(input , 3, stride=(2, 1), padding=1, dilation=1)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="dilation is not supported now"
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -108,9 +106,7 @@ def test_case_5():
         result = F.max_pool2d(input, 2, 1, dilation=1)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="dilation is not supported now"
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_6():
@@ -170,12 +166,7 @@ def test_case_8():
                                        return_indices=True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result", "indices"],
-        unsupport=True,
-        reason="dilation is not supported now",
-    )
+    obj.run(pytorch_code, ["result", "indices"])
 
 
 def test_case_9():
@@ -194,12 +185,7 @@ def test_case_9():
         result, indices = F.max_pool2d(input, (2, 2), 2, 1, 2, False, True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result", "indices"],
-        unsupport=True,
-        reason="dilation is not supported now",
-    )
+    obj.run(pytorch_code, ["result", "indices"])
 
 
 def test_case_10():
@@ -219,9 +205,4 @@ def test_case_10():
                                        return_indices=True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result", "indices"],
-        unsupport=True,
-        reason="dilation is not supported now",
-    )
+    obj.run(pytorch_code, ["result", "indices"])
