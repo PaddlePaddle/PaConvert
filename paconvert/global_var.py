@@ -989,6 +989,7 @@ class GlobalManager:
         #enkilee
         "torch.acos",
         "torch.acosh",
+        "torch.atanh",
 
         #fangfangssj
         "torch.abs",
