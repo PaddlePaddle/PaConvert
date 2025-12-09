@@ -166,7 +166,12 @@ def test_case_8():
                                        return_indices=True)
         """
     )
-    obj.run(pytorch_code, ["result", "indices"])
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
+    )
 
 
 def test_case_9():
@@ -185,7 +190,12 @@ def test_case_9():
         result, indices = F.max_pool2d(input, (2, 2), 2, 1, 2, False, True)
         """
     )
-    obj.run(pytorch_code, ["result", "indices"])
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
+    )
 
 
 def test_case_10():
@@ -205,4 +215,9 @@ def test_case_10():
                                        return_indices=True)
         """
     )
-    obj.run(pytorch_code, ["result", "indices"])
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
+    )
