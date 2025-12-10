@@ -80,6 +80,9 @@ class GlobalManager:
     NO_NEED_CONVERT_LIST = [
         # Manfredss
         "torch.asin",
+        "torch.asinh",
+        "torch.atan",
+        "torch.atan2",
 
         # zhimin
         "torch.Tensor.bfloat16",
