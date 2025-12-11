@@ -151,6 +151,7 @@ class GlobalManager:
         "torch.get_autocast_gpu_dtype",
         "torch.cumsum",
         "torch.diff",
+        "torch.Tensor.shape",
         "torch.nn.ConstantPad1d",
         "torch.nn.ConstantPad2d",
         "torch.nn.ConstantPad3d",
@@ -849,7 +850,7 @@ class GlobalManager:
         "torch.Tensor.sub",
         "torch.isclose",
         "torch.special.expm1",
-        #"torch.Tensor.requires_grad_",
+        "torch.Tensor.requires_grad_",
         "torch.Tensor.__deepcopy__",
         "torch.Tensor.__pow__",
         "torch.hamming_window",
@@ -976,6 +977,7 @@ class GlobalManager:
 
         # algorithm1832
         "torch.cosh",
+        "torch.frac",
         
         # lijialin
         "torch.group_norm",
