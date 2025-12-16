@@ -990,6 +990,7 @@ class GlobalManager:
         "torch.acos",
         "torch.acosh",
         "torch.atanh",
+        "torch.sinh",
 
         #fangfangssj
         "torch.abs",
