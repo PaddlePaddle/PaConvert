@@ -45,7 +45,5 @@ def test_case_2():
     obj.run(
         pytorch_code,
         ["result"],
-        check_value=False,
-        unsupport=True,
-        reason="paddle does not support 'including_emulation' now!",
+        check_value=True,
     )

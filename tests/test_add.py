@@ -15,6 +15,7 @@
 
 import textwrap
 
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.add")
@@ -134,6 +135,67 @@ def test_case_11():
         """
         import torch
         result = torch.add(torch.tensor([1, 2, 3], dtype=torch.float64), torch.tensor([1, 4, 6], dtype=torch.complex64))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# AI生成case
+def _test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.add(torch.tensor([1, 2, 3]), torch.tensor([1, 4, 6]), out=torch.empty(3))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# AI生成case
+def _test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., 3.], requires_grad=True)
+        y = torch.tensor([1., 4., 6.], requires_grad=True)
+        z = torch.add(x, y)
+        z.backward(torch.ones_like(z))
+        """
+    )
+    obj.run(pytorch_code, ["z", "x.grad", "y.grad"])
+
+
+# AI生成case
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.add(torch.tensor([1, 2, 3]), torch.tensor([1]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# AI生成case
+def _test_case_15():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.add(torch.tensor([1, 2, 3]), torch.tensor([1, 4, 6]), alpha=0.5)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# AI生成case
+@pytest.mark.skip(reason="add with sparse tensors not supported")
+def test_case_16():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0, 1], [2, 0]]).to_sparse()
+        y = torch.tensor([[1, 0], [0, 2]]).to_sparse()
+        result = torch.add(x, y)
         """
     )
     obj.run(pytorch_code, ["result"])

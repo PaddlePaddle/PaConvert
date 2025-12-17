@@ -37,10 +37,10 @@ def add_to_skip_format_files(torch_file, paddle_file):
     update_mappings(torch_file, paddle_file, target_dict=SKIP_FORMAT_FILES)
 
 # this part is about api mapping file
-add_to_dict("api_torch_equal.py", "api_paddle_equall_all.py")
+add_to_dict("api_torch_equal.py", "api_paddle_equall.py")
 add_to_dict("api_torch_randint.py", "api_paddle_randint.py")
 add_to_dict("api_torch_LongTensor.py", "api_paddle_Tensor2Long.py")
-add_to_dict("api_torch_sigmoid.py", "api_paddle_nn_functional_sigmoid.py")
+add_to_dict("api_torch_sigmoid.py", "api_paddle_sigmoid.py")
 add_to_dict("api_torch_Tensor_to.py", "api_paddle_Tensor_to.py")
 add_to_dict("api_torch_Tensor_new_full.py", "api_paddle_Tensor_new_full.py")
 add_to_dict("api_torch_Generator.py", "api_paddle_Generator.py")
@@ -54,7 +54,7 @@ add_to_dict("api_torch_FloatTensor.py", "api_paddle_Tensor2Float.py")
 add_to_dict("api_torch_Tensor_normal_.py", "api_paddle_Tensor_normal_.py")
 add_to_dict("api_torch_nn_BatchNorm1d.py", "api_paddle_nn_BatchNorm1D.py")
 add_to_dict("api_torch_Tensor_uniform_.py", "api_paddle_Tensor_uniform_.py")
-add_to_dict("api_torch_sigmoid.py", "api_paddle_nn_functional_sigmoid.py")
+add_to_dict("api_torch_sigmoid.py", "api_paddle_sigmoid.py")
 add_to_dict("api_torch_nn_BCEWithLogitsLoss.py", "api_paddle_nn_BCEWithLogitsLoss.py")
 add_to_dict(
     "api_torch_nn_functional_interpolate.py", "api_paddle_nn_functional_interpolate.py"

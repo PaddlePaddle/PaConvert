@@ -14,6 +14,7 @@
 
 import textwrap
 
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.bool")
@@ -35,6 +36,64 @@ def test_case_2():
         """
         import torch
         result = torch.tensor([1., 2., 3., 4., 5., 6.]).to(torch.bool)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# AI生成case
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([0., 1., 0., 1.]).to(dtype=torch.bool)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# AI生成case
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([0., 1., 0., 1.]).to(dtype=torch.bool, copy=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# AI生成case
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([0., 1., 0., 1.])
+        result = x.to(dtype=torch.bool)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# AI生成case
+@pytest.mark.skip(reason="torch.bool with requires_grad not supported")
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([0., 1., 0., 1.], requires_grad=True)
+        result = x.to(dtype=torch.bool)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# AI生成case
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([]).to(dtype=torch.bool)
         """
     )
     obj.run(pytorch_code, ["result"])

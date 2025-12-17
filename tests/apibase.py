@@ -87,7 +87,6 @@ class APIBase(object):
             loc = locals()
             exec(pytorch_code, locals())
             pytorch_result = [loc[name] for name in compared_tensor_names]
-
             exec(paddle_code, locals())
             paddle_result = [loc[name] for name in compared_tensor_names]
             for i in range(len(compared_tensor_names)):
@@ -223,7 +222,6 @@ class APIBase(object):
                     name, pytorch_result, paddle_result
                 )
             return
-
         if pytorch_result.requires_grad:
             pytorch_numpy, paddle_numpy = (
                 pytorch_result.detach().cpu().numpy(),

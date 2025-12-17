@@ -106,7 +106,7 @@ def test_case_2():
 
 
 
-        class SimpleModel(paddle.nn.Layer):
+        class SimpleModel(paddle.nn.Module):
             def __init__(self):
                 super(SimpleModel, self).__init__()
                 self.fc1 = paddle.compat.nn.Linear(3, 3)
