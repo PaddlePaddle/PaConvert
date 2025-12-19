@@ -85,7 +85,6 @@ class GlobalManager:
         "torch.lcm",
         "torch.lcm_",
 
-
         # zhimin
         "torch.Tensor.bfloat16",
         "torch.Tensor.bool",
