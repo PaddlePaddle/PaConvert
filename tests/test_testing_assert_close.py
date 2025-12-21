@@ -89,7 +89,7 @@ def test_case_6():
         y = x
         torch.testing.assert_close(actual=x, expected=y,
                                    allow_subclasses=True, rtol=1e-5, atol=1e-8, equal_nan=True,
-                                   check_device=True, check_dtype=True
+                                   check_device=True, check_dtype=True,
                                    msg="assert_close test message")
         """
     )
