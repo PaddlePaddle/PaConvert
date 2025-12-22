@@ -1018,6 +1018,7 @@ class GlobalManager:
         "torch.Tensor.unflatten",
         "torch.Tensor.uniform_",
         "torch.Tensor.unfold",
+        "torch.testing.assert_close",
         "torch.fft.fft",
         "torch.fft.ifft",
         "torch.fft.fft2",
