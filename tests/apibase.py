@@ -61,9 +61,10 @@ class APIBase(object):
         if unsupport:
             assert (
                 reason is not None
-            ), "Please explain the reason why it is not supported"
-
-            assert ">>>>>>" in paddle_code
+            ), "reason is required, Please explain the reason why these case it is not supported"
+            assert (
+                ">>>>>>" in paddle_code
+            ), "Paddle code must contain '>>>>>>' to mark that it is an unsupported conversion"
             return
         if expect_paddle_code:
             if paddle_code != expect_paddle_code.strip():
@@ -85,25 +86,40 @@ class APIBase(object):
                 assert paddle_code == expect_paddle_code, error_msg
         elif compared_tensor_names:
             loc = locals()
-            exec(pytorch_code, locals())
+            try:
+                exec(pytorch_code, locals())
+            except Exception as e:
+                raise RuntimeError(f"Failed to execute pytorch code:\n{e}")
             pytorch_result = [loc[name] for name in compared_tensor_names]
-            exec(paddle_code, locals())
+            try:
+                exec(paddle_code, locals())
+            except Exception as e:
+                raise RuntimeError(f"Failed to execute paddle code:\n{e}")
             paddle_result = [loc[name] for name in compared_tensor_names]
             for i in range(len(compared_tensor_names)):
-                self.compare(
-                    self.pytorch_api,
-                    pytorch_result[i],
-                    paddle_result[i],
-                    check_value,
-                    check_shape,
-                    check_dtype,
-                    check_stop_gradient,
-                    rtol,
-                    atol,
-                )
+                try:
+                    self.compare(
+                        self.pytorch_api,
+                        pytorch_result[i],
+                        paddle_result[i],
+                        check_value,
+                        check_shape,
+                        check_dtype,
+                        check_stop_gradient,
+                        rtol,
+                        atol,
+                    )
+                except Exception as e:
+                    raise AssertionError(f"Unable to align results: {e}")
         else:
-            exec(pytorch_code, locals())
-            exec(paddle_code, locals())
+            try:
+                exec(pytorch_code, locals())
+            except Exception as e:
+                raise RuntimeError(f"Failed to execute pytorch code:\n{e}")
+            try:
+                exec(paddle_code, locals())
+            except Exception as e:
+                raise RuntimeError(f"Failed to execute paddle code:\n{e}")
 
     def compare(
         self,
