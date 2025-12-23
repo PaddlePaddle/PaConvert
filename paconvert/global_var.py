@@ -851,7 +851,7 @@ class GlobalManager:
         "torch.Tensor.sub",
         "torch.isclose",
         "torch.special.expm1",
-        #"torch.Tensor.requires_grad_",
+        "torch.Tensor.requires_grad_",
         "torch.Tensor.__deepcopy__",
         "torch.Tensor.__pow__",
         "torch.hamming_window",
@@ -990,6 +990,8 @@ class GlobalManager:
         #enkilee
         "torch.acos",
         "torch.acosh",
+        "torch.atanh",
+        "torch.sinh",
 
         #fangfangssj
         "torch.abs",
@@ -1018,6 +1020,7 @@ class GlobalManager:
         "torch.Tensor.unflatten",
         "torch.Tensor.uniform_",
         "torch.Tensor.unfold",
+        "torch.testing.assert_close",
         "torch.fft.fft",
         "torch.fft.ifft",
         "torch.fft.fft2",
