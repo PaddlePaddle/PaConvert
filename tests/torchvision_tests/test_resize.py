@@ -17,23 +17,22 @@ import textwrap
 from apibase import APIBase
 from torchvision_tests.image_apibase import ImageAPIBase
 
-obj = APIBase("torchvision.transforms.functional.resize")
-img_obj = ImageAPIBase("torchvision.transforms.functional.resize")
+obj = APIBase("torchvision.transforms.Resize")
+img_obj = ImageAPIBase("torchvision.transforms.Resize")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torchvision.transforms import InterpolationMode
-        from torchvision.transforms.functional import resize
+        from torchvision.transforms import Resize, InterpolationMode
         from PIL import Image
         torch.manual_seed(1)
-        size = (3, 3)
+        resize = Resize((3, 3), InterpolationMode.BILINEAR)
         img = Image.new('RGB', (4, 4), color=(255, 255, 255))
         img.putpixel((0, 0), (255, 0, 0))
         img.putpixel((3, 3), (0, 255, 0))
-        result = resize(img=img, size=size, interpolation=InterpolationMode.BILINEAR)
+        result = resize(img)
         """
     )
     img_obj.run(pytorch_code, ["result"])
@@ -43,10 +42,11 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torchvision.transforms import InterpolationMode
-        from torchvision.transforms.functional import resize
+        from torchvision.transforms import Resize, InterpolationMode
         from PIL import Image
         torch.manual_seed(3)
+        size = 3
+        resize = Resize(size=size, interpolation=InterpolationMode.BICUBIC)
         img = Image.new('L', (3, 3))
         img.putpixel((0, 0), 50)
         img.putpixel((1, 0), 100)
@@ -57,7 +57,7 @@ def test_case_2():
         img.putpixel((0, 2), 150)
         img.putpixel((1, 2), 200)
         img.putpixel((2, 2), 250)
-        result = resize(img, size=3, interpolation=InterpolationMode.BICUBIC)
+        result = resize(img)
         """
     )
     img_obj.run(pytorch_code, ["result"])
@@ -67,10 +67,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torchvision.transforms import InterpolationMode
-        from torchvision.transforms.functional import resize
+        from torchvision.transforms import Resize, InterpolationMode
         torch.manual_seed(4)
         size = [4, 4]
+        resize = Resize(interpolation=InterpolationMode.NEAREST, size=size)
         img = torch.tensor([
             [
                 [[1, 2, 3, 4, 5],
@@ -91,7 +91,7 @@ def test_case_3():
             ]
         ], dtype=torch.float)
         img = img[0]
-        result = resize(img=img, size=size, interpolation=InterpolationMode.NEAREST)
+        result = resize(img)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -101,15 +101,15 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torchvision.transforms import InterpolationMode
-        from torchvision.transforms.functional import resize
+        from torchvision.transforms import Resize, InterpolationMode
         from PIL import Image
         torch.manual_seed(5)
         size = (4, 4)
+        resize = Resize(size=size, interpolation=InterpolationMode.BICUBIC)
         img = Image.new('RGBA', (6, 6), color=(0, 0, 255, 128))
         img.putpixel((0, 0), (255, 0, 0, 255))
         img.putpixel((5, 5), (0, 255, 0, 255))
-        result = resize(img, size, InterpolationMode.BICUBIC)
+        result = resize(img)
         """
     )
     img_obj.run(pytorch_code, ["result"])
