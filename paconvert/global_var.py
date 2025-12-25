@@ -1042,4 +1042,6 @@ class GlobalManager:
         "torch.fft.ihfftn",
         "torch.fft.fftshift",
         "torch.fft.ifftshift",
+
+        "torch.tile",
     ]
