@@ -978,6 +978,8 @@ class GlobalManager:
         # algorithm1832
         "torch.cosh",
         "torch.frac",
+        "torch.diag",
+        "torch.Tensor.diag",
         
         # lijialin
         "torch.group_norm",
