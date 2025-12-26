@@ -134,7 +134,7 @@ def test_case_9():
 
 
 # TODO: antialias is not supported yet, will be added later
- def test_case_10():
+def test_case_10():
     pytorch_code = textwrap.dedent(
         """
         import torch
