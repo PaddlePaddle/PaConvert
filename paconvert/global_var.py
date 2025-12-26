@@ -81,6 +81,8 @@ class GlobalManager:
         # Manfredss
         "torch.asin",
         "torch.inverse",
+        "torch.log10",
+        "torch.log1p",
 
         # zhimin
         "torch.Tensor.bfloat16",
