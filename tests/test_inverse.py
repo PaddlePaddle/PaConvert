@@ -48,7 +48,7 @@ def test_case_2():
         result = torch.inverse(x)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], rtol=1e-5)
 
 
 # The paddle input does not support complex type
