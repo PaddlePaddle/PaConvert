@@ -10361,10 +10361,7 @@
     ],
     "kwargs_change": {
       "input": "x"
-    },
-    "unsupport_args": [
-      "dilation"
-    ]
+    }
   },
   "torch.max_pool3d": {
     "Matcher": "GenericMatcher",
@@ -13897,9 +13894,6 @@
       "input": "x",
       "return_indices": "return_mask"
     },
-    "unsupport_args": [
-      "dilation"
-    ],
     "min_input_args": 0
   },
   "torch.nn.functional.max_pool3d": {
