@@ -1044,4 +1044,8 @@ class GlobalManager:
         "torch.fft.ifftshift",
 
         "torch.tile",
+
+        # youge325
+        "torch.baddbmm",
+        "torch.Tensor.baddbmm",
     ]
