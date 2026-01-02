@@ -80,6 +80,8 @@ class GlobalManager:
     NO_NEED_CONVERT_LIST = [
         # Manfredss
         "torch.asin",
+        "torch.deg2rad",
+        "torch.tan",
 
         # zhimin
         "torch.Tensor.bfloat16",
