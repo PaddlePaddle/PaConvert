@@ -104,3 +104,52 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """边界值 - 空输入"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([], dtype=torch.int64)
+        result = torch.bincount(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """边界值 - 所有索引相同"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([2, 2, 2, 2])
+        result = torch.bincount(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """不同数据类型 - float64"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0, 1, 2, 1, 0])
+        weights = torch.tensor([1.5, 2.5, 3.5, 4.5, 5.5], dtype=torch.float64)
+        result = torch.bincount(input, weights=weights)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    """不同数据类型 - int64输入"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0, 1, 2, 1, 0], dtype=torch.int64)
+        result = torch.bincount(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

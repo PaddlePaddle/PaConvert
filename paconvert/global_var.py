@@ -34,10 +34,6 @@ class GlobalManager:
     with open(json_file, "r") as file:
         ALIAS_MAPPING = json.load(file)
 
-    json_file = os.path.dirname(__file__) + "/api_alias_mapping.json"
-    with open(json_file, "r") as file:
-        ALIAS_MAPPING = json.load(file)
-
     # used to replace import (means replace api by all)
     IMPORT_PACKAGE_MAPPING = {
         "audiotools": "paddlespeech.audiotools",
@@ -78,6 +74,23 @@ class GlobalManager:
 
     # 完全对齐的Pytorch API名单
     NO_NEED_CONVERT_LIST = [
+        # Edit by AI Agent
+        "torch.fmax",
+        "torch.fmin",
+        "torch.bincount",
+        "torch.diag",
+        "torch.atan",
+        "torch.tan",
+        "torch.bitwise_and",
+        "torch.bitwise_not",
+        "torch.bitwise_xor",
+        "torch.nextafter",
+        "torch.angle",
+        "torch.heaviside",
+        "torch.asinh",
+        "torch.reciprocal",
+        "torch.square",
+
         # Manfredss
         "torch.asin",
 
@@ -978,7 +991,6 @@ class GlobalManager:
         # algorithm1832
         "torch.cosh",
         "torch.frac",
-        "torch.diag",
         "torch.Tensor.diag",
         
         # lijialin

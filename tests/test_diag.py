@@ -96,3 +96,55 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_7():
+    """不同数据类型 - float64"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([0.5950, -0.0872, 2.3298], dtype=torch.float64)
+        result = torch.diag(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """不同对角线偏移 - 正偏移1"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2, 3, 4],
+                        [5, 6, 7, 8],
+                        [9, 10, 11, 12]])
+        result = torch.diag(x, 1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """不同对角线偏移 - 负偏移1"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2, 3, 4],
+                        [5, 6, 7, 8],
+                        [9, 10, 11, 12]])
+        result = torch.diag(x, -1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """边界值 - 从向量构建对角矩阵（带偏移）"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1.0, 2.0, 3.0])
+        result = torch.diag(x, 2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
