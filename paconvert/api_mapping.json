@@ -5587,9 +5587,6 @@
   "torch.autograd.profiler.profile": {
     "min_input_args": 0
   },
-  "torch.autograd.profiler.profile.config": {
-    "min_input_args": 0
-  },
   "torch.autograd.profiler.profile.export_chrome_trace": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.profiler.export_chrome_tracing",
@@ -5600,18 +5597,6 @@
     "kwargs_change": {
       "path": "dir_name"
     }
-  },
-  "torch.autograd.profiler.profile.export_stacks": {
-    "min_input_args": 1
-  },
-  "torch.autograd.profiler.profile.key_averages": {
-    "min_input_args": 0
-  },
-  "torch.autograd.profiler.profile.table": {
-    "min_input_args": 0
-  },
-  "torch.autograd.profiler.profile.total_average": {
-    "min_input_args": 0
   },
   "torch.backends.cuda.is_built": {
     "Matcher": "ChangeAPIMatcher",
@@ -15779,15 +15764,6 @@
     }
   },
   "torch.profiler.profile": {
-    "min_input_args": 0
-  },
-  "torch.profiler.profile.start": {
-    "min_input_args": 0
-  },
-  "torch.profiler.profile.step": {
-    "min_input_args": 0
-  },
-  "torch.profiler.profile.stop": {
     "min_input_args": 0
   },
   "torch.profiler.schedule": {
