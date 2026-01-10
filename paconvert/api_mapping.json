@@ -13672,9 +13672,6 @@
     "kwargs_change": {
       "input": "x"
     },
-    "unsupport_args": [
-      "antialias"
-    ],
     "min_input_args": 1
   },
   "torch.nn.functional.kl_div": {
