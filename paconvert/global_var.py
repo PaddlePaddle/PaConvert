@@ -93,6 +93,10 @@ class GlobalManager:
 
         # Manfredss
         "torch.asin",
+        "torch.nn.functional.relu",
+        "torch.nn.functional.relu_",
+        "torch.nn.functional.leaky_relu",
+        "torch.nn.functional.leaky_relu_",
 
         # zhimin
         "torch.Tensor.bfloat16",
