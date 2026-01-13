@@ -382,6 +382,8 @@ class EinopsTorchMatcher(BaseMatcher):
 class NoNeedConvertMatcher(BaseMatcher):
     def get_paddle_api(self):
         assert "paddle_api" not in self.api_mapping_dict
+        if self.paddle_api:
+            return self.paddle_api
 
         torch_package = self.torch_api.split(".", maxsplit=1)[0]
         assert (
