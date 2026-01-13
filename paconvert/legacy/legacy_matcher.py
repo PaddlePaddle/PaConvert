@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# These Matcher have been discarded, may be used future
+# These Matcher have been discarded, may be used again
 class RandintMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         args = self.parse_args(args)

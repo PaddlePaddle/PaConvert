@@ -74,3 +74,63 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_6():
+    """2D复数张量"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1+1j, 2+2j], [3+3j, 4+4j]])
+        result = torch.angle(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """3D复数张量"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[[1+1j, 2+2j], [3+3j, 4+4j]], [[5+5j, 6+6j], [7+7j, 8+8j]]])
+        result = torch.angle(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """实数输入"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1.0, 2.0, 3.0])
+        result = torch.angle(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """零值复数"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([0+0j, 1+0j, 0+1j])
+        result = torch.angle(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """不同数据类型 - float64"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1+1j, 2+2j, 3+3j], dtype=torch.complex128)
+        result = torch.angle(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

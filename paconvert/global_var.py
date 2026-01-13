@@ -34,10 +34,6 @@ class GlobalManager:
     with open(json_file, "r") as file:
         ALIAS_MAPPING = json.load(file)
 
-    json_file = os.path.dirname(__file__) + "/api_alias_mapping.json"
-    with open(json_file, "r") as file:
-        ALIAS_MAPPING = json.load(file)
-
     # used to replace import (means replace api by all)
     IMPORT_PACKAGE_MAPPING = {
         "audiotools": "paddlespeech.audiotools",
@@ -78,6 +74,23 @@ class GlobalManager:
 
     # 完全对齐的Pytorch API名单
     NO_NEED_CONVERT_LIST = [
+        # Edit by AI Agent
+        "torch.fmax",
+        "torch.fmin",
+        "torch.bincount",
+        "torch.diag",
+        "torch.atan",
+        "torch.tan",
+        "torch.bitwise_and",
+        "torch.bitwise_not",
+        "torch.bitwise_xor",
+        "torch.nextafter",
+        "torch.angle",
+        "torch.heaviside",
+        "torch.asinh",
+        "torch.reciprocal",
+        "torch.square",
+
         # Manfredss
         "torch.asin",
         # zhimin
@@ -834,12 +847,11 @@ class GlobalManager:
         "torch.Tensor.sub",
         "torch.isclose",
         "torch.special.expm1",
-        # "torch.nn.Softmax",
-        # "torch.Tensor.requires_grad_",
+        "torch.Tensor.requires_grad_",
         "torch.Tensor.__deepcopy__",
         "torch.Tensor.__pow__",
-        # "torch.hamming_window",
-        # "torch.blackman_window",
+        "torch.hamming_window",
+        "torch.blackman_window",
         "torch.nn.functional.softplus",
         "torch.Tensor.index_add_",
         "torch.fft.rfft",
@@ -952,13 +964,50 @@ class GlobalManager:
         "torch.nn.functional.lp_pool2d",
         # algorithm1832
         "torch.cosh",
+        "torch.frac",
+        "torch.Tensor.diag",
+        
         # lijialin
-        # "torch.group_norm",
-        # "torch.layer_norm",
+        "torch.group_norm",
+        "torch.layer_norm",
         "torch.nn.functional.group_norm",
         "torch.nn.GroupNorm",
         "torch.nn.LayerNorm",
-        # fangfangssj
+
+        #enkilee
+        "torch.acos",
+        "torch.acosh",
+        "torch.atanh",
+        "torch.sinh",
+
+        #fangfangssj
+        "torch.abs",
+        "torch.Tensor.abs",
+        "torch.cumprod",
+        "torch.Tensor.cumprod",
+        "torch.exp",
+        "torch.Tensor.exp",
+        "torch.expm1",
+        "torch.Tensor.expm1",
+        "torch.diagonal",
+        "torch.Tensor.diagonal",
+        "torch.round",
+        "torch.Tensor.round",
+        "torch.tanh",
+        "torch.Tensor.tanh",
+        "torch.nn.functional.tanh",
+        "torch.index_add",
+        "torch.Tensor.index_add",
+        "torch.Tensor.index_add_",
+        "torch.linalg.solve",
+        "torch.nn.functional.normalize",
+        "torch.quantile",
+        "torch.Tensor.quantile",
+        "torch.unflatten",
+        "torch.Tensor.unflatten",
+        "torch.Tensor.uniform_",
+        "torch.Tensor.unfold",
+        "torch.testing.assert_close",
         "torch.fft.fft",
         "torch.fft.ifft",
         "torch.fft.fft2",
@@ -979,4 +1028,10 @@ class GlobalManager:
         "torch.fft.ihfftn",
         "torch.fft.fftshift",
         "torch.fft.ifftshift",
+
+        "torch.tile",
+
+        # youge325
+        "torch.baddbmm",
+        "torch.Tensor.baddbmm",
     ]

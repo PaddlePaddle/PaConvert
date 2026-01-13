@@ -5631,9 +5631,6 @@
   "torch.autograd.profiler.profile": {
     "min_input_args": 0
   },
-  "torch.autograd.profiler.profile.config": {
-    "min_input_args": 0
-  },
   "torch.autograd.profiler.profile.export_chrome_trace": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.profiler.export_chrome_tracing",
@@ -5644,18 +5641,6 @@
     "kwargs_change": {
       "path": "dir_name"
     }
-  },
-  "torch.autograd.profiler.profile.export_stacks": {
-    "min_input_args": 1
-  },
-  "torch.autograd.profiler.profile.key_averages": {
-    "min_input_args": 0
-  },
-  "torch.autograd.profiler.profile.table": {
-    "min_input_args": 0
-  },
-  "torch.autograd.profiler.profile.total_average": {
-    "min_input_args": 0
   },
   "torch.backends.cuda.is_built": {
     "Matcher": "ChangeAPIMatcher",
@@ -12355,18 +12340,8 @@
     "min_input_args": 0
   },
   "torch.nn.Softmax": {
-    "Matcher": "SoftmaxMatcher",
-    "paddle_api": "paddle.nn.Softmax",
-    "min_input_args": 0,
-    "args_list": [
-      "dim"
-    ],
-    "kwargs_change": {
-      "dim": "axis"
-    },
-    "paddle_default_kwargs": {
-      "axis": null
-    }
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.compat.nn.Softmax"
   },
   "torch.nn.Softmax2d": {
     "Matcher": "GenericMatcher",
@@ -15599,15 +15574,6 @@
   "torch.profiler.profile": {
     "min_input_args": 0
   },
-  "torch.profiler.profile.start": {
-    "min_input_args": 0
-  },
-  "torch.profiler.profile.step": {
-    "min_input_args": 0
-  },
-  "torch.profiler.profile.stop": {
-    "min_input_args": 0
-  },
   "torch.profiler.schedule": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.profiler.make_scheduler",
@@ -17637,8 +17603,8 @@
     }
   },
   "torch.unique": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.unique",
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.compat.unique",
     "min_input_args": 1,
     "args_list": [
       "input",
@@ -17646,12 +17612,7 @@
       "return_inverse",
       "return_counts",
       "dim"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "sorted": "",
-      "dim": "axis"
-    }
+    ]
   },
   "torch.unique_consecutive": {
     "Matcher": "GenericMatcher",
