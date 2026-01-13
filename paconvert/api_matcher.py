@@ -13,7 +13,7 @@
 # limitations under the License.
 
 """
-   isort:skip_file
+isort:skip_file
 """
 
 import ast
@@ -23,6 +23,7 @@ import textwrap
 from paconvert.base import BaseMatcher
 from paconvert.transformer.custom_op_transformer import CPP_EXTENSION_LIST  # noqa: F401
 from paconvert.utils import get_unique_name
+from paconvert.global_var import GlobalManager
 
 TypePromoteFunc = textwrap.dedent(
     """
@@ -165,6 +166,10 @@ class GenericMatcher(BaseMatcher):
         return code
 
 
+class CompositeMatcher(BaseMatcher):
+    pass
+
+
 class SliceScatterMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" in kwargs:
@@ -270,7 +275,7 @@ class DeleteMatcher(BaseMatcher):
         return "delete"
 
 
-class FSInitializeModelParallelMatcher(BaseMatcher):
+class FSInitializeModelParallelMatcher(CompositeMatcher):
     def generate_code(self, kwargs):
         if "pipeline_length" not in kwargs:
             kwargs["pipeline_length"] = 1
@@ -377,10 +382,14 @@ class EinopsTorchMatcher(BaseMatcher):
 class NoNeedConvertMatcher(BaseMatcher):
     def get_paddle_api(self):
         assert "paddle_api" not in self.api_mapping_dict
-        if self.paddle_api:
-            return self.paddle_api
-        else:
-            return self.torch_api.replace("torch.", "paddle.")
+
+        torch_package = self.torch_api.split(".", maxsplit=1)[0]
+        assert (
+            torch_package in GlobalManager.TORCH_PACKAGE_MAPPING
+        ), f"No mapping between {torch_package} and PaddlePaddle API"
+        return self.torch_api.replace(
+            torch_package, GlobalManager.TORCH_PACKAGE_MAPPING[torch_package]
+        )
 
     def get_paddle_nodes(self, args, kwargs):
         args = self.parse_args(args)
@@ -390,10 +399,7 @@ class NoNeedConvertMatcher(BaseMatcher):
         for k in ["layout", "generator", "memory_format", "sparse_grad"]:
             if k in kwargs:
                 kwargs.pop(k)
-
-        code = "{}({})".format(
-            self.get_paddle_api(), self.args_and_kwargs_to_str(args, kwargs)
-        )
+        code = f"{self.get_paddle_api()}({self.args_and_kwargs_to_str(args, kwargs)})"
         return ast.parse(code).body
 
     def get_paddle_class_attribute_nodes(self, node):
@@ -574,24 +580,6 @@ class DimOrderMatcher(BaseMatcher):
         )
         code = API_TEMPLATE.format(self.paddleClass)
         return code
-
-
-class TRFMPreTrainedTokenizerMatcher(BaseMatcher):
-    def generate_utils_code(self):
-        CODE_TEMPLATE = textwrap.dedent(
-            """
-            import paddleformers
-            original_encode = paddleformers.transformers.tokenizer_utils_base.PretrainedTokenizerBase.encode
-            def _encode(self, *args, **kwargs):
-                return original_encode(self, *args, **kwargs)["input_ids"]
-            setattr(paddleformers.transformers.tokenizer_utils_base.PretrainedTokenizerBase, "encode", _encode)
-            """
-        )
-        return CODE_TEMPLATE
-
-    def generate_code(self, kwargs):
-        self.enable_utils_code()
-        return GenericMatcher.generate_code(self, kwargs)
 
 
 class TRFMPreTrainedModelMatcher(BaseMatcher):
@@ -1509,22 +1497,6 @@ class GetLoggerMatcher(BaseMatcher):
             """
         )
         return API_TEMPLATE.format(self.kwargs_to_str(kwargs))
-
-
-class TRFMGenerationConfigMatcher(BaseMatcher):
-    def generate_code(self, kwargs):
-        greedy_search_flag = False
-        num_beans_value = 1
-        if "do_sample" in kwargs:
-            do_sample_value = kwargs["do_sample"]
-            if do_sample_value != '"""False"""':
-                greedy_search_flag = True
-        if greedy_search_flag and "num_beans" in kwargs:
-            num_beans_value = kwargs["num_beans"]
-        if greedy_search_flag:
-            greedy_search = f'"greedy_search" if {do_sample_value} else "sampling" if {num_beans_value} == 1 else "beam_search"'
-            kwargs["greedy_search"] = greedy_search
-        return f"{self.get_paddle_api()}({self.kwargs_to_str(kwargs)})"
 
 
 class TensorMatcher(BaseMatcher):
@@ -2551,7 +2523,6 @@ class ReverseAsyncOpMatcher(BaseMatcher):
 
 class GeneratorMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-
         if not kwargs:
             code = "paddle.framework.core.default_cpu_generator()"
         elif "device" in kwargs:
@@ -3440,6 +3411,45 @@ class TensorResize_as_Matcher(BaseMatcher):
         )
         code = API_TEMPLATE.format(self.paddleClass, kwargs["the_template"])
         return code
+
+
+class TensorResizeMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        shape_str = ""
+        args_code_list = []
+        for node in args:
+            if isinstance(node, ast.Starred):
+                args_code_list.append(astor.to_source(node.value).strip())
+            else:
+                args_code_list.append(astor.to_source(node).strip())
+        if len(args_code_list) > 1:
+            shape_str = f"({', '.join(args_code_list)})"
+        elif len(args_code_list) == 1:
+            shape_str = args_code_list[0]
+        else:
+            for node in kwargs:
+                if node.arg != "sizes":
+                    continue
+                shape_str = astor.to_source(node.value).strip()
+        code = f"{self.get_paddle_api()}({shape_str})"
+        return ast.parse(code).body
+
+
+class TensorSetMatcher(GenericMatcher):
+    def generate_code(self, kwargs):
+        if "size" in kwargs:
+            kwargs["shape"] = kwargs.pop("size")
+
+        if "storage_offset" in kwargs:
+            offset_val = kwargs.pop("storage_offset")
+
+            if "source" in kwargs and kwargs["source"] != "None":
+                src_var = kwargs["source"]
+                kwargs["offset"] = f"{offset_val} * {src_var}.itemsize()"
+            else:
+                kwargs["offset"] = offset_val
+
+        return super().generate_code(kwargs)
 
 
 class SelectMatcher(BaseMatcher):
@@ -5547,6 +5557,33 @@ class WeightsMatcher(BaseMatcher):
             kwargs["pretrained"] = True
         return GenericMatcher.generate_code(self, kwargs)
 
+    def parse_args_and_kwargs(
+        self, args, kwargs, allow_starred=False, allow_none=False
+    ):
+        args_list = self.api_mapping_dict.get("args_list") or []
+
+        if len(args) > len(args_list):
+            return "misidentify"
+
+        new_kwargs = {}
+
+        for i, node in enumerate(args):
+            k = args_list[i]
+            v = astor.to_source(node).replace("\n", "")
+            new_kwargs[k] = v
+
+        for node in kwargs:
+            k = node.arg
+            if k is None:
+                if not allow_none:
+                    return None
+                continue
+
+            v = astor.to_source(node.value).replace("\n", "")
+            new_kwargs[k] = v
+
+        return new_kwargs
+
 
 class VGGMatcher(BaseMatcher):
     def generate_code(self, kwargs):
@@ -5996,3 +6033,34 @@ class LinalgLuSolveMatcher(BaseMatcher):
             kwargs.get("out"),
         )
         return code
+
+
+class CUDAAndCppExtensionMatcher(GenericMatcher):
+    def parse_args_and_kwargs(
+        self, args, kwargs, allow_starred=False, allow_none=False
+    ):
+        args_list = self.api_mapping_dict.get("args_list") or []
+
+        min_input_args_num = self.api_mapping_dict.get("min_input_args") or 0
+        if len(args) + len(kwargs) < min_input_args_num:
+            return "misidentify"
+
+        if len(args) > len(args_list):
+            return "misidentify"
+
+        new_kwargs = {}
+
+        for i, node in enumerate(args):
+            k = args_list[i]
+            v = astor.to_source(node).replace("\n", "")
+            new_kwargs[k] = v
+
+        for node in kwargs:
+            k = node.arg
+            if k is None:
+                if not allow_none:
+                    return None
+                continue
+            v = astor.to_source(node.value).replace("\n", "")
+            new_kwargs[k] = v
+        return new_kwargs

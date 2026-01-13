@@ -89,11 +89,12 @@ def test_case_7():
     obj.run(pytorch_code, ["inception_v3"])
 
 
-def test_case_8():
+# PaConvert can't tell if args in **kawrgs are supported by paddle or not.
+def _test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torchvision
         inception_v3 = torchvision.models.inception_v3(num_classes=1008, aux_logits=False, transform_input=False, dropout=0.5)
         """
     )
-    obj.run(pytorch_code, unsupport=True, reason="paddle not support this argument")
+    obj.run(pytorch_code, ["inception_v3"])
