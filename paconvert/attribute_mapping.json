@@ -116,6 +116,10 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.bool"
   },
+  "torch.cfloat": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "'paddle.cfloat'"
+  },
   "torch.complex128": {
     "Matcher": "GenericMatcher",
     "paddle_api": "'complex128'"
@@ -146,6 +150,10 @@
   "torch.distributions.Distribution.mode": {},
   "torch.distributions.Distribution.stddev": {},
   "torch.distributions.Distribution.variance": {},
+  "torch.double": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.double"
+  },
   "torch.dtype": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.dtype"
@@ -197,6 +205,10 @@
   "torch.newaxis": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.newaxis"
+  },
+  "torch.nn": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn"
   },
   "torch.pi": {
     "Matcher": "GenericMatcher",

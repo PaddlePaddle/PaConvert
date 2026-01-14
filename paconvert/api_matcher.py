@@ -166,10 +166,6 @@ class GenericMatcher(BaseMatcher):
         return code
 
 
-class CompositeMatcher(BaseMatcher):
-    pass
-
-
 class SliceScatterMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" in kwargs:
@@ -275,7 +271,7 @@ class DeleteMatcher(BaseMatcher):
         return "delete"
 
 
-class FSInitializeModelParallelMatcher(CompositeMatcher):
+class FSInitializeModelParallelMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "pipeline_length" not in kwargs:
             kwargs["pipeline_length"] = 1

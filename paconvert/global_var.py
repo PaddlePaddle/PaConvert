@@ -90,7 +90,6 @@ class GlobalManager:
         "torch.asinh",
         "torch.reciprocal",
         "torch.square",
-
         # Manfredss
         "torch.asin",
         # zhimin
@@ -126,9 +125,7 @@ class GlobalManager:
         "torch.nn.Embedding",
         # zhouxin
         "torch.Tensor.bitwise_and",
-        "torch.Tensor.bitwise_and_",
         "torch.Tensor.bitwise_xor",
-        "torch.Tensor.bitwise_xor_",
         "torch.angle",
         "torch.asinh",
         "torch.atan",
@@ -145,9 +142,7 @@ class GlobalManager:
         "torch.square",
         "torch.tan",
         "torch.Tensor.bitwise_and",
-        "torch.Tensor.bitwise_and_",
         "torch.Tensor.bitwise_xor",
-        "torch.Tensor.bitwise_xor_",
         "torch.angle",
         "torch.asinh",
         "torch.atan",
@@ -1004,21 +999,18 @@ class GlobalManager:
         "torch.cosh",
         "torch.frac",
         "torch.Tensor.diag",
-        
         # lijialin
         "torch.group_norm",
         "torch.layer_norm",
         "torch.nn.functional.group_norm",
         "torch.nn.GroupNorm",
         "torch.nn.LayerNorm",
-
-        #enkilee
+        # enkilee
         "torch.acos",
         "torch.acosh",
         "torch.atanh",
         "torch.sinh",
-
-        #fangfangssj
+        # fangfangssj
         "torch.abs",
         "torch.Tensor.abs",
         "torch.cumprod",
@@ -1066,9 +1058,7 @@ class GlobalManager:
         "torch.fft.ihfftn",
         "torch.fft.fftshift",
         "torch.fft.ifftshift",
-
         "torch.tile",
-
         # youge325
         "torch.baddbmm",
         "torch.Tensor.baddbmm",
