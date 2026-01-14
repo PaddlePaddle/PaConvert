@@ -5390,7 +5390,7 @@
       "*grad_outputs"
     ],
     "kwargs_change": {
-      "grad_outputs": "kwargs"
+      "grad_outputs": "args"
     },
     "abstract": true,
     "min_input_args": 1
