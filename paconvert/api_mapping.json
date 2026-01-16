@@ -5039,20 +5039,8 @@
     }
   },
   "torch.allclose": {
-    "Matcher": "AllcloseMatcher",
-    "paddle_api": "paddle.allclose",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "other",
-      "rtol",
-      "atol",
-      "equal_nan"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "other": "y"
-    }
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.compat.allclose"
   },
   "torch.alpha_dropout": {
     "Matcher": "GenericMatcher",
