@@ -93,6 +93,8 @@ class GlobalManager:
 
         # Manfredss
         "torch.asin",
+        "torch.deg2rad",
+        "torch.tan",
 
         # zhimin
         "torch.Tensor.bfloat16",
