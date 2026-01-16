@@ -124,6 +124,7 @@ class GlobalManager:
         "torch.nn.Conv3d",
         "torch.nn.Embedding",
         # zhouxin
+        "torch.Tensor.log_normal_",
         "torch.Tensor.round_",
         "torch.Tensor.bitwise_and",
         "torch.Tensor.bitwise_xor",
