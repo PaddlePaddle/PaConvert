@@ -992,6 +992,7 @@ class GlobalManager:
         "torch.cosh",
         "torch.frac",
         "torch.Tensor.diag",
+        "torch.std",
         
         # lijialin
         "torch.group_norm",
