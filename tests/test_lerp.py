@@ -25,7 +25,7 @@ def test_case_1():
         import torch
         start = torch.tensor([1., 2., 3., 4.])
         end = torch.tensor([10., 10., 10., 10.])
-        weight = torch.tensor([0.5, 1, 0.3, 0.6])
+        weight = 0.5
         result = torch.lerp(start, end, weight)
         """
     )
@@ -36,7 +36,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        weight = torch.tensor([0.5, 1, 0.3, 0.6])
+        weight = 0.3
         result = torch.lerp(torch.tensor([1., 2., 3., 4.]), torch.tensor([10., 10., 10., 10.]), weight)
         """
     )
@@ -49,7 +49,7 @@ def test_case_3():
         import torch
         start = torch.tensor([1., 2., 3., 4.])
         end = torch.tensor([10., 10., 10., 10.])
-        weight = torch.tensor([0.5, 1, 0.3, 0.6])
+        weight = 0.6
         result = torch.lerp(input=start, end=end, weight=weight)
         """
     )
@@ -62,8 +62,8 @@ def test_case_4():
         import torch
         start = torch.tensor([1., 2., 3., 4.])
         end = torch.tensor([10., 10., 10., 10.])
-        weight = torch.tensor([0.5, 1, 0.3, 0.6])
-        out = torch.tensor([0.5, 1, 0.3, 0.6])
+        weight = 0.75
+        out = torch.tensor([0., 0., 0., 0.])
         result = torch.lerp(start, end, weight, out=out)
         """
     )
@@ -89,8 +89,8 @@ def test_case_6():
         import torch
         start = torch.tensor([1., 2., 3., 4.])
         end = torch.tensor([10., 10., 10., 10.])
-        weight = torch.tensor([0.5, 1, 0.3, 0.6])
-        out = torch.tensor([0.5, 1, 0.3, 0.6])
+        weight = 0.25
+        out = torch.tensor([0., 0., 0., 0.])
         result = torch.lerp(input=start, end=end, weight=weight, out=out)
         """
     )
@@ -104,9 +104,186 @@ def test_case_7():
         import torch
         start = torch.tensor([1., 2., 3., 4.])
         end = torch.tensor([10., 10., 10., 10.])
-        weight = torch.tensor([0.5, 1, 0.3, 0.6])
-        out = torch.tensor([0.5, 1, 0.3, 0.6])
+        weight = 0.9
+        out = torch.tensor([0., 0., 0., 0.])
         result = torch.lerp(out=out, weight=weight, end=end, input=start)
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_8():
+    """Test with 2D tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        start = torch.tensor([[1., 2.], [3., 4.]])
+        end = torch.tensor([[10., 10.], [10., 10.]])
+        weight = 0.5
+        result = torch.lerp(start, end, weight)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """Test with 3D tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        start = torch.tensor([[[1., 2.], [3., 4.]], [[5., 6.], [7., 8.]]])
+        end = torch.tensor([[[10., 10.], [10., 10.]], [[10., 10.], [10., 10.]]])
+        weight = 0.3
+        result = torch.lerp(start, end, weight)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """Test with float64 dtype"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        start = torch.tensor([1., 2., 3., 4.], dtype=torch.float64)
+        end = torch.tensor([10., 10., 10., 10.], dtype=torch.float64)
+        weight = 0.5
+        result = torch.lerp(start, end, weight)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    """Test gradient computation"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        start = torch.tensor([1., 2., 3., 4.], requires_grad=True)
+        end = torch.tensor([10., 10., 10., 10.], requires_grad=True)
+        weight = 0.5
+        result = torch.lerp(start, end, weight)
+        result.sum().backward()
+        start_grad = start.grad
+        end_grad = end.grad
+        """
+    )
+    obj.run(pytorch_code, ["result", "start_grad", "end_grad"], check_stop_gradient=False)
+
+
+def test_case_12():
+    """Test with expression parameter"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        start = torch.tensor([1., 2., 3., 4.])
+        end = torch.tensor([10., 10., 10., 10.])
+        result = torch.lerp(start, end, 0.2 + 0.3)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    """Test with weight=0"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        start = torch.tensor([1., 2., 3., 4.])
+        end = torch.tensor([10., 10., 10., 10.])
+        result = torch.lerp(start, end, 0.0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    """Test with weight=1"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        start = torch.tensor([1., 2., 3., 4.])
+        end = torch.tensor([10., 10., 10., 10.])
+        result = torch.lerp(start, end, 1.0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_15():
+    """Test Tensor.lerp() method"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        start = torch.tensor([1., 2., 3., 4.])
+        end = torch.tensor([10., 10., 10., 10.])
+        result = start.lerp(end, 0.5)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_16():
+    """Test Tensor.lerp() with keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        start = torch.tensor([1., 2., 3., 4.])
+        end = torch.tensor([10., 10., 10., 10.])
+        result = start.lerp(end=end, weight=0.75)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_17():
+    """Test Tensor.lerp_() inplace method"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        start = torch.tensor([1., 2., 3., 4.])
+        end = torch.tensor([10., 10., 10., 10.])
+        result = start.lerp_(end, 0.5)
+        """
+    )
+    obj.run(pytorch_code, ["result", "start"])
+
+
+def test_case_18():
+    """Test Tensor.lerp_() inplace with keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        start = torch.tensor([1., 2., 3., 4.])
+        end = torch.tensor([10., 10., 10., 10.])
+        result = start.lerp_(end=end, weight=0.3)
+        """
+    )
+    obj.run(pytorch_code, ["result", "start"])
+
+
+def test_case_19():
+    """Test with negative values"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        start = torch.tensor([-5., -3., -1., 0.])
+        end = torch.tensor([5., 3., 1., 10.])
+        result = torch.lerp(start, end, 0.5)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_20():
+    """Test with mixed positive and negative weights in range"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        start = torch.tensor([1., 2., 3., 4.])
+        end = torch.tensor([10., 10., 10., 10.])
+        result = torch.lerp(start, end, 1.5)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
