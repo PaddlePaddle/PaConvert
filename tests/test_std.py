@@ -121,3 +121,25 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = torch.std(unbiased=False, dim=1, input=input, keepdim=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        args = (torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]]), 1, False, True)
+        result = torch.std(*args)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
