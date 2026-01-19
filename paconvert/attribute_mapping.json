@@ -118,7 +118,7 @@
   },
   "torch.cfloat": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "'complex64'"
+    "paddle_api": "'paddle.cfloat'"
   },
   "torch.complex128": {
     "Matcher": "GenericMatcher",
@@ -152,7 +152,7 @@
   "torch.distributions.Distribution.variance": {},
   "torch.double": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.float64"
+    "paddle_api": "paddle.double"
   },
   "torch.dtype": {
     "Matcher": "GenericMatcher",
