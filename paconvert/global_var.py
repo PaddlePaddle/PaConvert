@@ -1005,6 +1005,11 @@ class GlobalManager:
         "torch.acosh",
         "torch.atanh",
         "torch.sinh",
+        "torch.angle",
+        "torch.conj",
+        "torch.special.i1",
+        "torch.special.i1e",
+
 
         #fangfangssj
         "torch.abs",
