@@ -43,8 +43,7 @@ def _test_case_2():
     obj.run(pytorch_code, ["x"])
 
 
-# torch.Tensor.subtract not support scalar second argument
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -66,7 +65,8 @@ def test_case_4():
     obj.run(pytorch_code, ["x"])
 
 
-def test_case_5():
+# torch.Tensor.subtract not support scalar second argument
+def _test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch

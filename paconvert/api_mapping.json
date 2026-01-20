@@ -2860,21 +2860,7 @@
   },
   "torch.Tensor.sspaddmm": {},
   "torch.Tensor.std": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.std",
-    "min_input_args": 0,
-    "args_list": [
-      "dim",
-      "unbiased",
-      "keepdim",
-      "*",
-      "correction",
-      "keepdim"
-    ],
-    "kwargs_change": {
-      "dim": "axis",
-      "correction": "unbiased"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.stft": {
     "Matcher": "TensorStftMatcher",
@@ -4490,15 +4476,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.conj": {
-    "Matcher": "GenericMatcher",
-    "min_input_args": 1,
-    "paddle_api": "paddle.conj",
-    "args_list": [
-      "input"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.conj_physical": {
     "Matcher": "GenericMatcher",
@@ -12837,30 +12815,10 @@
     }
   },
   "torch.special.i1": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.i1",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.special.i1e": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.i1e",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.special.log1p": {
     "Matcher": "GenericMatcher",
@@ -13036,7 +12994,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.std": {
-    "Matcher": "GenericMatcher",
+    "Matcher": "ChangePrefixMatcher",
     "paddle_api": "paddle.std",
     "min_input_args": 1,
     "args_list": [
