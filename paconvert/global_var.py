@@ -75,5 +75,5 @@ class GlobalManager:
     NO_NEED_CONVERT_LIST = [
         k
         for k, v in API_MAPPING.items()
-        if v.get("Matcher") == "NoNeedConvertMatcher"
+        if v.get("Matcher") == "ChangePrefixMatcher"
     ]
