@@ -15,7 +15,7 @@
 set +x
 
 echo '************************************************************************************************************'
-echo "Installing latest release gpu version torch"
+echo "Insalling latest release gpu version torch"
 python -m pip uninstall -y torchaudio
 python -m pip install torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
 python -m pip install torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
@@ -23,11 +23,10 @@ python -m pip install torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64
 python -c "import torch; print('torch version information:' ,torch.__version__)"
 
 echo '************************************************************************************************************'
-echo "Installing develop gpu version paddle"
+echo "Insalling develop gpu version paddle"
 python -m pip uninstall -y paddlepaddle
 python -m pip uninstall -y paddlepaddle-gpu
-# For bypass broken update in paddle, should not merged into master
-python -m pip install --force-reinstall --no-deps -U --pre paddlepaddle-gpu==3.4.0.dev20260119 -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/
+python -m pip install --force-reinstall --no-deps -U --pre paddlepaddle-gpu -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/
 python -m pip install safetensors==0.6.2
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
@@ -42,74 +41,16 @@ echo '**************************************************************************
 #python -c "import paddleformers; print('paddleformers version information:', paddleformers.__version__)"
 
 echo '************************************************************************************************************'
-echo "Installing paconvert requirements"
+echo "Insalling paconvert requirements"
 python -m pip install -r requirements.txt
 
 echo '************************************************************************************************************'
 echo "Checking code unit test by pytest ..."
-
-# Install pytest and necessary plugins for parallelism and isolation
 python -m pip install pytest-timeout pytest-xdist pytest-rerunfailures pytest-forked
-
-# Detect GPU count using Python to determine the number of parallel workers
-# This ensures we use exactly one process per GPU
-NUM_GPUS=$(python -c "import torch; print(torch.cuda.device_count())")
-
-if [ "$NUM_GPUS" -eq "0" ]; then
-    echo "No GPU detected. Falling back to single process."
-    PYTEST_WORKERS=1
-else
-    echo "Detected ${NUM_GPUS} GPUs. Setting pytest workers to ${NUM_GPUS}."
-    PYTEST_WORKERS=${NUM_GPUS}
-fi
-
-echo "Injecting automatic GPU distribution logic into tests/conftest.py..."
-
-cat <<EOF > tests/conftest.py
-import pytest
-import os
-
-@pytest.fixture(scope="session", autouse=True)
-def distribute_gpus_automatically(worker_id):
-    """
-    Auto-assign GPU based on xdist worker ID.
-    gw0 -> GPU 0
-    gw1 -> GPU 1
-    ...
-    """
-    if worker_id == "master":
-        return
-
-    try:
-        worker_num = int(worker_id.replace("gw", ""))
-    except ValueError:
-        return
-
-    import torch
-    total_gpus = torch.cuda.device_count()
-    
-    if total_gpus > 0:
-        gpu_idx = worker_num % total_gpus
-        
-        os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_idx)
-        
-        # print(f"Worker {worker_id} initialized on GPU {gpu_idx}")
-EOF
-
-echo '************************************************************************************************************'
-echo "Checking code unit test by pytest with ${PYTEST_WORKERS}-Process ISOLATION ..."
-
-
-# Run pytest with dynamic workers and process isolation
-# -n: Number of workers (equal to GPU count)
-# --forked: Isolate each test in a separate process to clean up GPU context
-# --dist=loadscope: Group tests by module to optimize loading time
-python -m pytest -n ${PYTEST_WORKERS} --forked --dist=loadscope --reruns=3 ./tests; check_error=$?
-
+python -m pytest --forked -n 4 --reruns=3 ./tests; check_error=$?
 if [ ${check_error} != 0 ];then
-    echo "Rerun unit test check (Sequential Fallback)." 
-    # Fallback to single process sequential execution if parallel execution fails
-    python -m pytest -n 1 --forked --lf ./tests; check_error=$?
+    echo "Rerun unit test check." 
+    python -m pytest -n 1 --lf ./tests; check_error=$?
 fi
 
 echo '************************************************************************************************************'
@@ -124,7 +65,7 @@ if [ ${check_error} != 0 ];then
     echo "Your PR code unit test check failed." 
     echo "Please run the following command." 
     echo "" 
-    echo "    python -m pytest --forked tests" 
+    echo "    python -m pytest tests" 
     echo "" 
     echo "For more information, please refer to our check guide:" 
     echo "https://github.com/PaddlePaddle/PaConvert#readme." 
