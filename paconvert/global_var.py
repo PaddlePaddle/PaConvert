@@ -71,9 +71,3 @@ class GlobalManager:
         "os",
         "einops",
     ]
-
-    NO_NEED_CONVERT_LIST = [
-        k
-        for k, v in API_MAPPING.items()
-        if v.get("Matcher") == "ChangePrefixMatcher"
-    ]
