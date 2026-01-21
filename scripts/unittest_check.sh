@@ -28,7 +28,7 @@ python -m pip uninstall -y paddlepaddle-gpu
 # python -m pip install paddlepaddle-0.0.0-cp39-cp39-linux_x86_64.whl
 
 # For bypass broken update in paddle, should not merged into master
-python -m pip install --force-reinstall --no-deps -U --pre paddlepaddle==3.4.0.dev20260119 -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/
+no_proxy="*" python -m pip install --force-reinstall --no-deps -U --pre paddlepaddle==3.4.0.dev20260119 -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/
 python -c "import paddle; print('paddle version information:' , paddle.__version__); commit = paddle.__git_commit__;print('paddle commit information:' , commit)"
 
 echo '************************************************************************************************************'
