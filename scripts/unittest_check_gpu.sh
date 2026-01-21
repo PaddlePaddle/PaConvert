@@ -47,7 +47,7 @@ python -m pip install -r requirements.txt
 echo '************************************************************************************************************'
 echo "Checking code unit test by pytest ..."
 python -m pip install pytest-timeout pytest-xdist pytest-rerunfailures pytest-forked
-python -m pytest --forked -n 4 --reruns=3 ./tests; check_error=$?
+python -m pytest --forked -n 1 --reruns=3 ./tests; check_error=$?
 if [ ${check_error} != 0 ];then
     echo "Rerun unit test check." 
     python -m pytest -n 1 --lf ./tests; check_error=$?
