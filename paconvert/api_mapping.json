@@ -6161,22 +6161,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.fft.fftfreq": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.fft.fftfreq",
-    "min_input_args": 1,
-    "args_list": [
-      "n",
-      "d",
-      "*",
-      "out",
-      "dtype",
-      "layout",
-      "device",
-      "requires_grad"
-    ],
-    "kwargs_change": {
-      "dtype": "dtype"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.fft.fftn": {
     "Matcher": "ChangePrefixMatcher"
@@ -6230,22 +6215,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.fft.rfftfreq": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.fft.rfftfreq",
-    "min_input_args": 1,
-    "args_list": [
-      "n",
-      "d",
-      "*",
-      "out",
-      "dtype",
-      "layout",
-      "device",
-      "requires_grad"
-    ],
-    "kwargs_change": {
-      "dtype": "dtype"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.fft.rfftn": {
     "Matcher": "ChangePrefixMatcher"
