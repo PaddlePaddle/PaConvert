@@ -33,8 +33,6 @@ class DeviceAPIBase(APIBase):
         atol=0.0,
     ):
         pytorch_result = str(pytorch_result)
-        if pytorch_result == "cuda":
-            pytorch_result = "cuda:" + str(paddle.device.current_device())
         if "cpu:" in pytorch_result:
             pytorch_result = "cpu"
         assert pytorch_result == paddle_result
