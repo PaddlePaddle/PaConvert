@@ -12845,24 +12845,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.std": {
-    "Matcher": "ChangePrefixMatcher",
-    "paddle_api": "paddle.std",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "dim",
-      "unbiased",
-      "keepdim",
-      "*",
-      "correction",
-      "keepdim",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis",
-      "correction": "unbiased"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.std_mean": {
     "Matcher": "StdMeanMatcher",
