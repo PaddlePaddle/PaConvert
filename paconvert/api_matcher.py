@@ -375,9 +375,8 @@ class EinopsTorchMatcher(BaseMatcher):
 
 
 # These APIs only change torch.* to paddle.*, not change any other thing
-class NoNeedConvertMatcher(BaseMatcher):
+class ChangePrefixMatcher(BaseMatcher):
     def get_paddle_api(self):
-        assert "paddle_api" not in self.api_mapping_dict
         if self.paddle_api:
             return self.paddle_api
 
