@@ -3640,15 +3640,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.abs_": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.abs_",
-    "min_input_args": 1,
-    "args_list": [
-      "input"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.acos": {
     "Matcher": "ChangePrefixMatcher"
