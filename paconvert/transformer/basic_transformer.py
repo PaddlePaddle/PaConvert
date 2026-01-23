@@ -571,6 +571,7 @@ class BasicTransformer(BaseTransformer):
                         ["torch.distributions.distribution.Distribution", attr_list[-1]]
                     )
                 )
+            """
             if is_profile_api:
                 torch_class_apis.append(
                     ".".join(["torch.profiler.profile", attr_list[-1]])
@@ -579,6 +580,7 @@ class BasicTransformer(BaseTransformer):
                 torch_class_apis.append(
                     ".".join(["torch.autograd.profiler.profile", attr_list[-1]])
                 )
+            """
 
             for torch_class_api in torch_class_apis:
                 if self.in_api_mapping(torch_class_api):

@@ -75,3 +75,65 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["out", "result"])
+
+
+def test_case_6():
+    """2D张量"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[0.2341, 0.2539], [-0.6256, -0.6448]])
+        result = torch.atan(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """3D张量"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[[0.1, 0.2], [0.3, 0.4]], [[0.5, 0.6], [0.7, 0.8]]])
+        result = torch.atan(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """边界值 - 零值和无穷大"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0.0, 1.0, -1.0, 100.0, -100.0])
+        result = torch.atan(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """不同数据类型 - float64"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0.2341, 0.2539, -0.6256], dtype=torch.float64)
+        result = torch.atan(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """梯度计算测试"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0.5, 1.0, 2.0], requires_grad=True)
+        y = torch.atan(a)
+        y.sum().backward()
+        a_grad = a.grad
+        """
+    )
+    obj.run(pytorch_code, ["y", "a_grad"], check_stop_gradient=False)

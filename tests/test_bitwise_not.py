@@ -88,3 +88,123 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_7():
+    """测试不同数据类型：int16"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([15, 7, 3], dtype=torch.int16)
+        result = torch.bitwise_not(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """测试不同数据类型：int32"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([255, 127, 63], dtype=torch.int32)
+        result = torch.bitwise_not(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """测试不同数据类型：int64"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([1023, 511, 255], dtype=torch.int64)
+        result = torch.bitwise_not(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """测试不同维度：2D张量"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1, 2], [3, 4]], dtype=torch.int8)
+        result = torch.bitwise_not(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    """测试不同维度：3D张量"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[[1, 2], [3, 4]], [[5, 6], [7, 8]]], dtype=torch.int8)
+        result = torch.bitwise_not(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    """测试混合参数顺序"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.bitwise_not(input=torch.tensor([-1, -2, 3], dtype=torch.int8))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    """测试变量传参"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([True, False, True])
+        args = (input,)
+        result = torch.bitwise_not(*args)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    """测试空张量"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.empty(0, dtype=torch.int8)
+        result = torch.bitwise_not(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_15():
+    """测试表达式参数"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([15, 7, 3], dtype=torch.int8)
+        result = torch.bitwise_not(input + 1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_16():
+    """测试无符号整数类型"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([15, 7, 3], dtype=torch.uint8)
+        result = torch.bitwise_not(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

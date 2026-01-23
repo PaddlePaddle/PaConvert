@@ -52,6 +52,56 @@ def test_case_3():
     obj.run(pytorch_code, ["out"])
 
 
+def test_case_7():
+    """3D张量"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[[1.0, 2.0], [3.0, 4.0]], [[5.0, 6.0], [7.0, 8.0]]])
+        result = torch.reciprocal(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """边界值 - 包含零值"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1.0, -1.0, 0.5, 10.0, 100.0])
+        result = torch.reciprocal(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """不同数据类型 - float64"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0.5, 1.0, 2.0], dtype=torch.float64)
+        result = torch.reciprocal(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """梯度计算测试"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0.5, 1.0, 2.0], requires_grad=True)
+        y = torch.reciprocal(a)
+        y.sum().backward()
+        a_grad = a.grad
+        """
+    )
+    obj.run(pytorch_code, ["y", "a_grad"], check_stop_gradient=False)
+
+
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
