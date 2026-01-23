@@ -90,7 +90,6 @@ class GlobalManager:
         "torch.asinh",
         "torch.reciprocal",
         "torch.square",
-
         # Manfredss
         "torch.asin",
         "torch.std",
@@ -127,8 +126,47 @@ class GlobalManager:
         "torch.nn.Conv2d",
         "torch.nn.Conv3d",
         "torch.nn.Embedding",
-        
         # zhouxin
+        "torch.Tensor.log_normal_",
+        "torch.Tensor.round_",
+        "torch.Tensor.bitwise_and",
+        "torch.Tensor.bitwise_xor",
+        "torch.angle",
+        "torch.asinh",
+        "torch.atan",
+        "torch.bincount",
+        "torch.bitwise_and",
+        "torch.bitwise_not",
+        "torch.bitwise_xor",
+        "torch.diag",
+        "torch.fmax",
+        "torch.fmin",
+        "torch.heaviside",
+        "torch.nextafter",
+        "torch.reciprocal",
+        "torch.square",
+        "torch.tan",
+        "torch.Tensor.bitwise_and",
+        "torch.Tensor.bitwise_xor",
+        "torch.angle",
+        "torch.asinh",
+        "torch.atan",
+        "torch.bincount",
+        "torch.bitwise_and",
+        "torch.bitwise_not",
+        "torch.bitwise_xor",
+        "torch.diag",
+        "torch.fmax",
+        "torch.fmin",
+        "torch.heaviside",
+        "torch.nextafter",
+        "torch.reciprocal",
+        "torch.square",
+        "torch.tan",
+        "torch.nn",
+        "torch.double",
+        "torch.cfloat",
+        "transformers.PreTrainedTokenizer",
         "torch.complex",
         "torch.polar",
         "torch.cat",
@@ -179,7 +217,6 @@ class GlobalManager:
         "torch.nn.CircularPad1d",
         "torch.nn.CircularPad2d",
         "torch.nn.CircularPad3d",
-        
         # honggeng
         "torch.nn.functional.dropout1d",
         "torch.nn.parameter.Parameter",
@@ -236,14 +273,12 @@ class GlobalManager:
         "torch.nn.Module",
         "torch.nn.ModuleDict",
         "torch.nn.ModuleList",
-
         # torch.nn.Module.register_full_backward_hook
         # torch.nn.Module.register_forward_hook
         # torch.nn.Module.register_forward_pre_hook
         # torch.nn.Module.register_full_backward_pre_hook
         # torch.nn.Module.to_empty
         # torch.nn.Module.to
-
         # torch.nn.Module.set_extra_state
         # torch.nn.Module.ipu
         # torch.nn.Module.mtia
@@ -254,8 +289,6 @@ class GlobalManager:
         # torch.nn.Module.register_load_state_dict_post_hook
         # torch.nn.Module.share_memory
         # torch.nn.Module.compile
-
-        
         # sensen
         "torch.range",
         "torch.arange",
@@ -279,7 +312,6 @@ class GlobalManager:
         "torch.cuda.check_error",
         "torch.cuda.mem_get_info",
         "torch.cuda.is_initialized",
-        
         # hongyu
         "torch.permute",
         "torch.Tensor.permute",
@@ -295,7 +327,6 @@ class GlobalManager:
         "torch.Tensor.stride",
         "torch.Tensor.get_device",
         "torch.random.initial_seed",
-        
         # linjun
         "torch.as_tensor",
         "torch.tensor",
@@ -326,7 +357,6 @@ class GlobalManager:
         "torch.functional.broadcast_shapes",
         "torch.functional.einsum",
         "torch.functional.norm",
-        
         # siyu
         "torch.multinomial",
         "torch.var",
@@ -337,7 +367,6 @@ class GlobalManager:
         "torch.nn.Dropout",
         "torch.linspace",
         "torch.normal",
-
         # shijie
         "torch.msort",
         "torch.Tensor.msort",
@@ -357,14 +386,12 @@ class GlobalManager:
         "torch.Tensor.scatter_reduce",
         "torch.scatter_reduce",
         "torch.nn.functional.silu",
-        
         # yuyan
         "torch.Tensor.softmax",
         "torch.special.softmax",
         "torch.softmax",
         "torch.Tensor.clamp",
         "torch.Tensor.itemsize",
-        
         # huoda
         "torch.get_default_dtype",
         "torch.einsum",
@@ -589,7 +616,6 @@ class GlobalManager:
         "torch.Tensor.__rsub__",
         "torch.Tensor.__rtruediv__",
         "torch.Tensor.__setitem__",
-        
         # sundong
         "torch.matmul",
         "torch.linalg.matmul",
@@ -608,7 +634,6 @@ class GlobalManager:
         "torch.log2",
         "torch.Tensor.remainder",
         "torch.remainder",
-        
         # zhengsheng
         "torch.broadcast_to",
         "torch.nn.functional.embedding",
@@ -645,7 +670,6 @@ class GlobalManager:
         "torch.Tensor.index_put_",
         "torch.bucketize",
         "torch.searchsorted",
-        
         # liuyi
         "torch.finfo",
         "torch.is_complex",
@@ -669,7 +693,6 @@ class GlobalManager:
         "torch.is_floating_point",
         "torch.is_tensor",
         "torch.isin",
-        
         # shenwei
         "torch.Tensor.expand_as",
         "torch.logsumexp",
@@ -684,7 +707,6 @@ class GlobalManager:
         "torch.tensor_split",
         "torch.nn.functional.gelu",
         "torch.nn.functional.grid_sample",
-        
         # haoyang
         "torch.logical_not",
         "torch.Tensor.logical_not",
@@ -704,7 +726,6 @@ class GlobalManager:
         "torch.conv1d",
         "torch.conv2d",
         "torch.conv3d",
-        
         # zhichao
         "torch.bfloat16",
         "torch.bool",
@@ -722,7 +743,6 @@ class GlobalManager:
         "torch.narrow",
         "torch.Tensor.type_as",
         "torch.nn.Sequential",
-        
         # zhouwei
         "torch.float8_e4m3fn",
         "torch.abs",
@@ -730,17 +750,17 @@ class GlobalManager:
         "torch.randn_like",
         "torch.Tensor.__floordiv__",
         "torch.Tensor.__int__",
-        #"torch.Tensor.is_cpu",
-        #"torch.bitwise_or",
-        #"torch.Tensor.bitwise_or",
+        # "torch.Tensor.is_cpu",
+        # "torch.bitwise_or",
+        # "torch.Tensor.bitwise_or",
         ##"torch.autograd.function.FunctionCtx.mark_dirty",
-        #"torch.autograd.function.FunctionCtx.mark_non_differentiable",
+        # "torch.autograd.function.FunctionCtx.mark_non_differentiable",
         ##"torch.autograd.function.FunctionCtx.mark_shared_storage",
-        #"torch.autograd.function.FunctionCtx.save_for_backward",
+        # "torch.autograd.function.FunctionCtx.save_for_backward",
         ##"torch.autograd.function.FunctionCtx.save_for_forward",
-        #"torch.autograd.function.FunctionCtx.set_materialize_grads",
+        # "torch.autograd.function.FunctionCtx.set_materialize_grads",
         ##"torch.autograd.function.FunctionCtx.saved_tensors",
-        #"torch.autograd.function.once_differentiable",
+        # "torch.autograd.function.once_differentiable",
         "torch.nn.PixelUnshuffle",
         "torch.nn.Upsample",
         "torch.nn.PixelShuffle",
@@ -874,21 +894,18 @@ class GlobalManager:
         "torch.Tensor.index_add_",
         "torch.fft.rfft",
         "torch.fft.fft",
-
         # qianyue
         "torch.gather",
         "torch.Tensor.gather",
         "torch.Tensor.scatter",
         "torch.Tensor.scatter_",
         "torch.scatter",
-
-        #lijinjin 
+        # lijinjin
         "torch.Tensor.clamp_",
         "torch.nn.functional.logsigmoid",
         "torch.autocast",
         "torch.nn.init._calculate_fan_in_and_fan_out",
         "torch.functional.meshgrid",
-
         # xiangyu
         "torch.cuda.get_device_properties",
         "torch.cuda.get_rng_state",
@@ -903,7 +920,7 @@ class GlobalManager:
         "torch.cuda.device",
         "torch.cuda.manual_seed",
         "torch.cuda.max_memory_allocated",
-        'torch.cuda.max_memory_reserved',
+        "torch.cuda.max_memory_reserved",
         "torch.cuda.reset_peak_memory_stats",
         "torch.cuda.set_stream",
         "torch.cuda.Event",
@@ -927,15 +944,13 @@ class GlobalManager:
         "torch.cuda.stream",
         "torch.cuda.StreamContext",
         "torch.Generator",
-        #"torch.cuda.CUDAGraph",
-        #"torch.cuda.graph_pool_handle",
+        # "torch.cuda.CUDAGraph",
+        # "torch.cuda.graph_pool_handle",
         "torch.cuda.ipc_collect",
         "torch.cuda.synchronize",
         "torch.cuda.Stream",
         "torch.cuda.is_bf16_supported",
         "torch.Tensor.device",
-
-
         # geyuqiang
         "torch.cuda.current_device",
         "torch.cuda.device_count",
@@ -944,10 +959,8 @@ class GlobalManager:
         "torch.cuda.memory_reserved",
         "torch.cuda.set_device",
         "torch.cuda.current_stream",
-
         # genghaozhe
         "torch.nn.functional.interpolate",
-        
         # ooooo
         "torch.nn.AdaptiveAvgPool1d",
         "torch.nn.AdaptiveAvgPool2d",
@@ -965,7 +978,6 @@ class GlobalManager:
         "torch.nn.functional.adaptive_avg_pool1d",
         "torch.nn.functional.adaptive_avg_pool2d",
         "torch.nn.functional.adaptive_avg_pool3d",
-
         "torch.nn.GLU",
         "torch.nn.Hardshrink",
         "torch.nn.Softshrink",
@@ -977,7 +989,6 @@ class GlobalManager:
         "torch.nn.AdaptiveMaxPool1d",
         "torch.nn.AdaptiveMaxPool2d",
         "torch.nn.AdaptiveMaxPool3d",
-
         "torch.nn.functional.hardshrink",
         "torch.nn.functional.softshrink",
         "torch.nn.functional.glu",
@@ -989,26 +1000,28 @@ class GlobalManager:
         "torch.nn.functional.adaptive_max_pool3d",
         "torch.nn.functional.lp_pool1d",
         "torch.nn.functional.lp_pool2d",
-
         # algorithm1832
         "torch.cosh",
         "torch.frac",
         "torch.Tensor.diag",
-        
+        "torch.std",
+        "torch.Tensor.std",
         # lijialin
         "torch.group_norm",
         "torch.layer_norm",
         "torch.nn.functional.group_norm",
         "torch.nn.GroupNorm",
         "torch.nn.LayerNorm",
-
-        #enkilee
+        # enkilee
         "torch.acos",
         "torch.acosh",
         "torch.atanh",
         "torch.sinh",
-
-        #fangfangssj
+        "torch.angle",
+        "torch.conj",
+        "torch.special.i1",
+        "torch.special.i1e",
+        # fangfangssj
         "torch.abs",
         "torch.Tensor.abs",
         "torch.cumprod",
@@ -1056,9 +1069,7 @@ class GlobalManager:
         "torch.fft.ihfftn",
         "torch.fft.fftshift",
         "torch.fft.ifftshift",
-
         "torch.tile",
-
         # youge325
         "torch.baddbmm",
         "torch.Tensor.baddbmm",

@@ -45,13 +45,6 @@ def _post_init(self):
         self._init_weights()
 setattr(paddleformers.transformers.model_utils.PretrainedModel, "post_init", _post_init)
 
-import paddleformers
-
-original_encode = paddleformers.transformers.tokenizer_utils_base.PretrainedTokenizerBase.encode
-def _encode(self, *args, **kwargs):
-    return original_encode(self, *args, **kwargs)["input_ids"]
-setattr(paddleformers.transformers.tokenizer_utils_base.PretrainedTokenizerBase, "encode", _encode)
-
 def apply_rotary_position_embeddings(x, cos, sin):
     if not isinstance(cos, paddle.Tensor):
         cos = paddle.to_tensor(cos)
@@ -177,7 +170,7 @@ paddleformers.transformers.PretrainedModel(config, key1=value1, key2=value2)
 print("#########################case15#########################")
 
 
-class QWenTokenizer(paddleformers.transformers.PretrainedTokenizer):
+class QWenTokenizer(paddleformers.PreTrainedTokenizer):
     pass
 
 
