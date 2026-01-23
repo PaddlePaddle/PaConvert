@@ -1003,6 +1003,7 @@ class GlobalManager:
         "torch.Tensor.diag",
         "torch.std",
         "torch.Tensor.std",
+        "torch.abs_",
         # lijialin
         "torch.group_norm",
         "torch.layer_norm",
