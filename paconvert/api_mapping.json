@@ -7645,10 +7645,7 @@
     ],
     "kwargs_change": {
       "input": "x"
-    },
-    "unsupport_args": [
-      "dilation"
-    ]
+    }
   },
   "torch.max_pool2d": {
     "Matcher": "GenericMatcher",
@@ -7663,10 +7660,7 @@
     ],
     "kwargs_change": {
       "input": "x"
-    },
-    "unsupport_args": [
-      "dilation"
-    ]
+    }
   },
   "torch.max_pool3d": {
     "Matcher": "GenericMatcher",
@@ -7681,10 +7675,7 @@
     ],
     "kwargs_change": {
       "input": "x"
-    },
-    "unsupport_args": [
-      "dilation"
-    ]
+    }
   },
   "torch.maximum": {
     "Matcher": "ChangePrefixMatcher"
@@ -8701,9 +8692,6 @@
     "kwargs_change": {
       "return_indices": "return_mask"
     },
-    "unsupport_args": [
-      "dilation"
-    ],
     "min_input_args": 1
   },
   "torch.nn.MaxPool2d": {
@@ -8720,9 +8708,6 @@
     "kwargs_change": {
       "return_indices": "return_mask"
     },
-    "unsupport_args": [
-      "dilation"
-    ],
     "min_input_args": 1
   },
   "torch.nn.MaxPool3d": {
@@ -8739,9 +8724,6 @@
     "kwargs_change": {
       "return_indices": "return_mask"
     },
-    "unsupport_args": [
-      "dilation"
-    ],
     "min_input_args": 1
   },
   "torch.nn.MaxUnpool1d": {

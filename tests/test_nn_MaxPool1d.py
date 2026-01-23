@@ -79,9 +79,10 @@ def test_case_5():
         x = torch.tensor([[[0.1, 1., 2., 3.], [4., 5., 6., 7.]]])
         model = nn.MaxPool1d(kernel_size=2, stride=1, padding=1, return_indices=True)
         result, indices = model(x)
+        indices = indices.to(torch.int64)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "indices"])
 
 
 def test_case_6():
@@ -91,14 +92,12 @@ def test_case_6():
         import torch.nn as nn
         x = torch.tensor([[[0., 1., 2., 3.], [4., 5., 6., 7.]]])
         model = nn.MaxPool1d(kernel_size=2, stride=1, dilation=2)
-        result, indices = model(x)
+        result = model(x)
         """
     )
     obj.run(
         pytorch_code,
-        ["result", "indices"],
-        unsupport=True,
-        reason="paddle.nn.MaxPool1D dose not support 'dilation' now!",
+        ["result"],
     )
 
 
@@ -110,14 +109,10 @@ def test_case_7():
         x = torch.tensor([[[0.1, 1., 2., 3.], [4., 5., 6., 7.]]])
         model = nn.MaxPool1d(kernel_size=2, stride=1, padding=1, dilation=2, return_indices=True, ceil_mode=False)
         result, indices = model(x)
+        indices = indices.to(torch.int64)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result", "indices"],
-        unsupport=True,
-        reason="paddle.nn.MaxPool1D dose not support 'dilation' now!",
-    )
+    obj.run(pytorch_code, ["result", "indices"])
 
 
 def test_case_8():
@@ -128,14 +123,10 @@ def test_case_8():
         x = torch.tensor([[[0.1, 1., 2., 3.], [4., 5., 6., 7.]]])
         model = nn.MaxPool1d(kernel_size=2, dilation=2, padding=1, return_indices=True, stride=1, ceil_mode=False)
         result, indices = model(x)
+        indices = indices.to(torch.int64)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result", "indices"],
-        unsupport=True,
-        reason="paddle.nn.MaxPool1D dose not support 'dilation' now!",
-    )
+    obj.run(pytorch_code, ["result", "indices"])
 
 
 def test_case_9():
@@ -146,11 +137,7 @@ def test_case_9():
         x = torch.tensor([[[0.1, 1., 2., 3.], [4., 5., 6., 7.]]])
         model = nn.MaxPool1d(2, 1, 1, 2, True, False)
         result, indices = model(x)
+        indices = indices.to(torch.int64)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result", "indices"],
-        unsupport=True,
-        reason="paddle.nn.MaxPool1D dose not support 'dilation' now!",
-    )
+    obj.run(pytorch_code, ["result", "indices"])
