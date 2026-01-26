@@ -80,3 +80,37 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["out"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([20, 40, 80], dtype=torch.int64)
+        other = torch.tensor([2, 1, 3], dtype=torch.int64)
+        result = torch.bitwise_right_shift(input, other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.bitwise_right_shift(torch.tensor([8, 16, 32], dtype=torch.int16), torch.tensor([1, 2, 3], dtype=torch.int16))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([100, 200, 300], dtype=torch.int32)
+        other = torch.tensor([2, 3, 4], dtype=torch.int32)
+        result = torch.bitwise_right_shift(other=other, input=input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

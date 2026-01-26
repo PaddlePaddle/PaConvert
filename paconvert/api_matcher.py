@@ -355,17 +355,6 @@ class InferenceModeMatcher(BaseMatcher):
         return code
 
 
-# TODO: fix torch.atleast bug, which not support input list/tuple
-class AtleastMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        new_args = self.parse_args(args)
-        if len(args) > 0 and isinstance(args[0], (ast.List, ast.Tuple)):
-            code = "{}(*{})".format(self.get_paddle_api(), self.args_to_str(new_args))
-        else:
-            code = "{}({})".format(self.get_paddle_api(), self.args_to_str(new_args))
-        return ast.parse(code).body
-
-
 class EinopsTorchMatcher(BaseMatcher):
     def get_paddle_api(self):
         return self.torch_api.replace("einops.layers.torch", "einops.layers.paddle")
