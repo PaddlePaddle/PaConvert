@@ -114,3 +114,75 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """2D tensor test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        tensor1 = torch.tensor([[1., 2.], [3., 4.]])
+        tensor2 = torch.tensor([[5., 6.], [7., 8.]])
+        input = torch.tensor([[1., 1.], [1., 1.]])
+        result = torch.addcmul(input, tensor1, tensor2, value=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """3D tensor test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        tensor1 = torch.tensor([[[1., 2.], [3., 4.]], [[5., 6.], [7., 8.]]])
+        tensor2 = torch.tensor([[[1., 1.], [1., 1.]], [[1., 1.], [1., 1.]]])
+        input = torch.tensor([[[0., 0.], [0., 0.]], [[0., 0.], [0., 0.]]])
+        result = torch.addcmul(input, tensor1, tensor2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """float64 dtype test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        tensor1 = torch.tensor([1., 2., 3.], dtype=torch.float64)
+        tensor2 = torch.tensor([4., 5., 6.], dtype=torch.float64)
+        input = torch.tensor([7., 8., 9.], dtype=torch.float64)
+        result = torch.addcmul(input, tensor1, tensor2, value=2.0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    """gradient computation test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        tensor1 = torch.tensor([1., 2., 3.], requires_grad=True)
+        tensor2 = torch.tensor([4., 5., 6.], requires_grad=True)
+        input = torch.tensor([7., 8., 9.], requires_grad=True)
+        result = torch.addcmul(input, tensor1, tensor2, value=2.0)
+        result.sum().backward()
+        input_grad = input.grad
+        """
+    )
+    obj.run(pytorch_code, ["result", "input_grad"], check_stop_gradient=False)
+
+
+def test_case_12():
+    """expression argument test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        tensor1 = torch.tensor([1., 2., 3.])
+        tensor2 = torch.tensor([4., 5., 6.])
+        input = torch.tensor([7., 8., 9.])
+        result = torch.addcmul(input, tensor1, tensor2, value=1 + 1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
