@@ -724,8 +724,6 @@ class BasicTransformer(BaseTransformer):
         return False
 
     def in_api_mapping(self, torch_api):
-        if torch_api in GlobalManager.NO_NEED_CONVERT_LIST:
-            return True
         if torch_api in GlobalManager.ALIAS_MAPPING:
             torch_api = GlobalManager.ALIAS_MAPPING[torch_api]
         if torch_api in GlobalManager.API_MAPPING:
@@ -737,9 +735,6 @@ class BasicTransformer(BaseTransformer):
 
     def get_api_matcher(self, torch_api):
         api_mapping_dict = {}
-        if torch_api in GlobalManager.NO_NEED_CONVERT_LIST:
-            return NoNeedConvertMatcher(self, torch_api, {}, self.logger)
-
         if torch_api in GlobalManager.ALIAS_MAPPING:
             torch_api = GlobalManager.ALIAS_MAPPING[torch_api]
         if torch_api in GlobalManager.API_MAPPING:
@@ -758,8 +753,6 @@ class BasicTransformer(BaseTransformer):
         return None
 
     def in_attribute_mapping(self, torch_api):
-        if torch_api in GlobalManager.NO_NEED_CONVERT_LIST:
-            return True
         if torch_api in GlobalManager.ALIAS_MAPPING:
             torch_api = GlobalManager.ALIAS_MAPPING[torch_api]
         if torch_api in GlobalManager.ATTRIBUTE_MAPPING:
@@ -768,8 +761,6 @@ class BasicTransformer(BaseTransformer):
 
     def get_attribute_mather(self, torch_api):
         attr_mapping_dict = {}
-        if torch_api in GlobalManager.NO_NEED_CONVERT_LIST:
-            return NoNeedConvertMatcher(self, torch_api, {}, self.logger)
 
         if torch_api in GlobalManager.ALIAS_MAPPING:
             torch_api = GlobalManager.ALIAS_MAPPING[torch_api]

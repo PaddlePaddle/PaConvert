@@ -308,7 +308,7 @@ class TransposeMatcher(BaseMatcher):
 
 ```json
 "torch.Tensor.tan": {
-    "Matcher": "NoNeedConvertMatcher"
+    "Matcher": "ChangePrefixMatcher"
 }
 ```
 
