@@ -10080,29 +10080,10 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.leaky_relu": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.leaky_relu",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "negative_slope",
-      "inplace"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.leaky_relu_": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.leaky_relu_",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "negative_slope"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.linear": {
     "Matcher": "ChangeAPIMatcher",
@@ -10453,16 +10434,7 @@
     }
   },
   "torch.nn.functional.relu": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.relu",
-    "args_list": [
-      "input",
-      "inplace"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    },
-    "min_input_args": 1
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.relu6": {
     "Matcher": "GenericMatcher",
@@ -10477,15 +10449,7 @@
     "min_input_args": 1
   },
   "torch.nn.functional.relu_": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.relu_",
-    "min_input_args": 1,
-    "args_list": [
-      "input"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.rrelu": {
     "Matcher": "GenericMatcher",
@@ -11865,15 +11829,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.relu": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.relu",
-    "min_input_args": 1,
-    "args_list": [
-      "input"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.remainder": {
     "Matcher": "ChangePrefixMatcher"

@@ -124,3 +124,42 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """1D tensor input"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([-1.5, -0.5, 0.0, 0.5, 1.5])
+        result = F.leaky_relu(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """2D tensor input"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([[-1.0, 2.0], [3.0, -4.0]])
+        result = F.leaky_relu(x, 0.1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    """float64 dtype"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([-1.5, -0.5, 0.0, 0.5, 1.5], dtype=torch.float64)
+        result = F.leaky_relu(x, negative_slope=0.2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

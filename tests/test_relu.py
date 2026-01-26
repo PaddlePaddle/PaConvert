@@ -41,3 +41,39 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    """1D tensor input"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([-1.5, -0.5, 0.0, 0.5, 1.5])
+        result = torch.relu(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    """2D tensor input"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[-1.0, 2.0], [3.0, -4.0]])
+        result = torch.relu(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    """float64 dtype"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([-1.5, -0.5, 0.0, 0.5, 1.5], dtype=torch.float64)
+        result = torch.relu(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
