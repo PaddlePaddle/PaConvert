@@ -13253,9 +13253,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.ConcatDataset": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.ConcatDataset",
-    "min_input_args": 1
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.DataLoader": {
     "Matcher": "GenericMatcher",
