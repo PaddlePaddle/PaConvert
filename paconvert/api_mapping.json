@@ -13314,9 +13314,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.Subset": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.Subset",
-    "min_input_args": 2
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.SubsetRandomSampler": {
     "Matcher": "GenericMatcher",
