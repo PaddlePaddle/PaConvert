@@ -13291,9 +13291,7 @@
     ]
   },
   "torch.utils.data.Dataset": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.Dataset",
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.IterableDataset": {
     "Matcher": "ChangeAPIMatcher",
