@@ -25,7 +25,6 @@ def test_case_1():
         import numpy as np
         import math
         import torch
-        from torch.utils.data import IterableDataset, ChainDataset
         class MyIterableDataset(torch.utils.data.IterableDataset):
             def __init__(self, start, end):
                 super(MyIterableDataset).__init__()
@@ -39,7 +38,7 @@ def test_case_1():
                 return iter(range(iter_start, iter_end))
 
 
-        dataset = ChainDataset([MyIterableDataset(start=3, end=7), MyIterableDataset(start=3, end=7)])
+        dataset = torch.utils.data.ChainDataset([MyIterableDataset(start=3, end=7), MyIterableDataset(start=3, end=7)])
         result = []
         for d in dataset:
             result.append(d)
@@ -54,8 +53,8 @@ def test_case_2():
         import numpy as np
         import math
         import torch
-        from torch.utils.data import IterableDataset, ChainDataset
-        class MyIterableDataset(torch.utils.data.IterableDataset):
+        import torch.utils.data as data
+        class MyIterableDataset(data.IterableDataset):
             def __init__(self, start, end):
                 super(MyIterableDataset).__init__()
                 assert end > start, "this example code only works with end >= start"
@@ -68,7 +67,7 @@ def test_case_2():
                 return iter(range(iter_start, iter_end))
 
 
-        dataset = ChainDataset([MyIterableDataset(start=1, end=10), MyIterableDataset(start=1, end=3)])
+        dataset = data.ChainDataset([MyIterableDataset(start=1, end=10), MyIterableDataset(start=1, end=3)])
         result = []
         for d in dataset:
             result.append(d)
@@ -83,8 +82,8 @@ def test_case_3():
         import numpy as np
         import math
         import torch
-        from torch.utils.data import IterableDataset, ChainDataset
-        class MyIterableDataset(torch.utils.data.IterableDataset):
+        import torch.utils as utils
+        class MyIterableDataset(utils.data.IterableDataset):
             def __init__(self, start, end):
                 super(MyIterableDataset).__init__()
                 assert end > start, "this example code only works with end >= start"
@@ -97,7 +96,7 @@ def test_case_3():
                 return iter(range(iter_start, iter_end))
 
 
-        dataset = ChainDataset([MyIterableDataset(start=1, end=10)])
+        dataset = utils.data.ChainDataset([MyIterableDataset(start=1, end=10)])
         result = []
         for d in dataset:
             result.append(d)
@@ -113,7 +112,7 @@ def test_case_4():
         import math
         import torch
         from torch.utils.data import IterableDataset, ChainDataset
-        class MyIterableDataset(torch.utils.data.IterableDataset):
+        class MyIterableDataset(IterableDataset):
             def __init__(self, start, end):
                 super(MyIterableDataset).__init__()
                 assert end > start, "this example code only works with end >= start"

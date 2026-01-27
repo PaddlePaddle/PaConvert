@@ -51,8 +51,8 @@ def test_case_2():
         """
         import numpy as np
         import torch
-        from torch.utils.data import Dataset, ConcatDataset
-        class RandomDataset(Dataset):
+        import torch.utils.data as data
+        class RandomDataset(data.Dataset):
             def __init__(self, num_samples):
                 self.num_samples = num_samples
 
@@ -64,7 +64,60 @@ def test_case_2():
             def __len__(self):
                 return self.num_samples
 
-        dataset = ConcatDataset(datasets=[RandomDataset(2), RandomDataset(2)])
+        dataset = data.ConcatDataset(datasets=[RandomDataset(2), RandomDataset(2)])
+        result = []
+        for i in range(len(dataset)):
+            result.append(dataset[i])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import numpy as np
+        import torch
+        import torch.utils as utils
+        class RandomDataset(utils.data.Dataset):
+            def __init__(self, num_samples):
+                self.num_samples = num_samples
+
+            def __getitem__(self, idx):
+                image = np.arange(5).astype('float32')
+                label = np.array([idx]).astype('int64')
+                return torch.tensor(image), torch.tensor(label)
+
+            def __len__(self):
+                return self.num_samples
+
+        dataset = utils.data.ConcatDataset([RandomDataset(2), RandomDataset(2)])
+        result = []
+        for i in range(len(dataset)):
+            result.append(dataset[i])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import numpy as np
+        import torch
+        class RandomDataset(torch.utils.data.Dataset):
+            def __init__(self, num_samples):
+                self.num_samples = num_samples
+
+            def __getitem__(self, idx):
+                image = np.arange(5).astype('float32')
+                label = np.array([idx]).astype('int64')
+                return torch.tensor(image), torch.tensor(label)
+
+            def __len__(self):
+                return self.num_samples
+
+        dataset = torch.utils.data.ConcatDataset(datasets=[RandomDataset(2), RandomDataset(2)])
         result = []
         for i in range(len(dataset)):
             result.append(dataset[i])

@@ -45,9 +45,9 @@ def test_case_1():
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data import Dataset
+        import torch.utils.data as data
 
-        class Data(Dataset):
+        class Data(data.Dataset):
             def __init__(self):
                 self.x = [1,2,3,4]
 
@@ -58,8 +58,8 @@ def test_case_2():
                 return len(self.x)
 
 
-        data = Data()
-        result = data.__getitem__(0)
+        my_data = Data()
+        result = my_data.__getitem__(0)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -68,9 +68,9 @@ def test_case_2():
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data import Dataset
+        import torch.utils as utils
 
-        class Data(Dataset):
+        class Data(utils.data.Dataset):
             def __init__(self):
                 self.x = [1,2,3,4]
 
@@ -85,6 +85,29 @@ def test_case_3():
         result = []
         for i in data:
             result.append(i)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        class Data(torch.utils.data.Dataset):
+            def __init__(self):
+                self.x = [1,2,3,4]
+
+            def __getitem__(self, idx):
+                return self.x[idx]
+
+            def __len__(self):
+                return len(self.x)
+
+
+        data = Data()
+        result = data.__len__()
         """
     )
     obj.run(pytorch_code, ["result"])

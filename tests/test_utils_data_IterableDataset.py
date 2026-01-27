@@ -46,9 +46,55 @@ def test_case_1():
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data import IterableDataset
+        import torch.utils.data as data
 
-        class MyIterableDataset(IterableDataset):
+        class MyIterableDataset(data.IterableDataset):
+            def __init__(self, start, end):
+                super(MyIterableDataset).__init__()
+                assert end > start, "this example code only works with end >= start"
+                self.start = start
+                self.end = end
+
+            def __iter__(self):
+                return iter(range(self.start, self.end))
+
+        ds = MyIterableDataset(start=3, end=7)
+        result = next(ds.__iter__())
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.utils as utils
+
+        class MyIterableDataset(utils.data.IterableDataset):
+            def __init__(self, start, end):
+                super(MyIterableDataset).__init__()
+                assert end > start, "this example code only works with end >= start"
+                self.start = start
+                self.end = end
+
+            def __iter__(self):
+                return iter(range(self.start, self.end))
+
+        ds = MyIterableDataset(start=3, end=7)
+        result = []
+        for i in ds:
+            result.append(i)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        class MyIterableDataset(torch.utils.data.IterableDataset):
             def __init__(self, start, end):
                 super(MyIterableDataset).__init__()
                 assert end > start, "this example code only works with end >= start"
