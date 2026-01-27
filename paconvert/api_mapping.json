@@ -13376,9 +13376,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.random_split": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.random_split",
-    "min_input_args": 2
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.dlpack.from_dlpack": {
     "Matcher": "GenericMatcher",
