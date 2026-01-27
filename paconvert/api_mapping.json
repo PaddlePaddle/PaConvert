@@ -13250,9 +13250,7 @@
     ]
   },
   "torch.utils.data.ChainDataset": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.ChainDataset",
-    "min_input_args": 1
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.ConcatDataset": {
     "Matcher": "ChangeAPIMatcher",
