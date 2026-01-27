@@ -13373,9 +13373,7 @@
     }
   },
   "torch.utils.data.get_worker_info": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.get_worker_info",
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.random_split": {
     "Matcher": "ChangeAPIMatcher",
