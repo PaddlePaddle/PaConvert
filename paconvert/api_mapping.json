@@ -1038,18 +1038,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.cumsum_": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.cumsum_",
-    "args_list": [
-      "dim",
-      "*",
-      "dtype"
-    ],
-    "kwargs_change": {
-      "dim": "axis",
-      "dtype": "dtype"
-    },
-    "min_input_args": 1
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.data_ptr": {
     "Matcher": "ChangePrefixMatcher"
