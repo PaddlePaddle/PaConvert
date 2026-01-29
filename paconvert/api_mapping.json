@@ -594,18 +594,7 @@
     "min_input_args": 0
   },
   "torch.Tensor.as_strided": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.as_strided",
-    "min_input_args": 2,
-    "args_list": [
-      "size",
-      "stride",
-      "storage_offset"
-    ],
-    "kwargs_change": {
-      "size": "shape",
-      "storage_offset": "offset"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.as_subclass": {},
   "torch.Tensor.asin": {
