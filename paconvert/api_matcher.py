@@ -4841,16 +4841,15 @@ class Device2IntMatcher(BaseMatcher):
             """
             def device2int(device):
                 if isinstance(device, str):
-                    device = device.replace('cuda', 'gpu')
-                    device = device.replace('gpu:', '')
+                    device = device.replace('cuda:', '')
                 return int(device)
             """
         )
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.enable_utils_code()
         if "device" in kwargs:
+            self.enable_utils_code()
             kwargs["device_id"] = "device2int({})".format(kwargs.pop("device"))
         if "non_blocking" in kwargs:
             kwargs["blocking"] = f"not {kwargs.pop('non_blocking')}"

@@ -2731,7 +2731,15 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.tile": {
-    "Matcher": "ChangePrefixMatcher"
+    "Matcher": "ScalableVarMatcher",
+    "paddle_api": "paddle.Tensor.tile",
+    "min_input_args": 1,
+    "args_list": [
+      "*dims"
+    ],
+    "kwargs_change": {
+      "dims": "repeat_times"
+    }
   },
   "torch.Tensor.to": {
     "Matcher": "ChangePrefixMatcher"
