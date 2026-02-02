@@ -23,9 +23,8 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        from torch.utils.data import Dataset
 
-        class Data(Dataset):
+        class Data(torch.utils.data.Dataset):
             def __init__(self):
                 self.x = [0,1,2,3,4,5,6,7,8,9]
 
@@ -51,10 +50,9 @@ def test_case_1():
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
-        import torch
-        from torch.utils.data import Dataset
+        import torch.utils.data as data
 
-        class Data(Dataset):
+        class Data(data.Dataset):
             def __init__(self):
                 self.x = [0,1,2,3,4,5,6,7,8,9]
 
@@ -65,8 +63,8 @@ def test_case_2():
                 return len(self.x)
 
 
-        data = Data()
-        datasets = torch.utils.data.random_split(data, [3, 3, 4])
+        my_data = Data()
+        datasets = data.random_split(my_data, [3, 3, 4])
 
         results = []
         for d in datasets:
@@ -79,10 +77,9 @@ def test_case_2():
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
-        import torch
-        from torch.utils.data import Dataset
+        import torch.utils as utils
 
-        class Data(Dataset):
+        class Data(utils.data.Dataset):
             def __init__(self):
                 self.x = [0,1,2,3,4,5,6,7,8,9]
 
@@ -95,7 +92,7 @@ def test_case_3():
 
         data = Data()
         lengths = [3, 3, 4]
-        datasets = torch.utils.data.random_split(data, lengths)
+        datasets = utils.data.random_split(data, lengths)
 
         results = []
         for d in datasets:
@@ -137,9 +134,9 @@ def test_case_4():
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
-        import torch
+        from torch.utils.data import random_split
 
-        datasets = torch.utils.data.random_split(range(30), [0.4, 0.4, 0.2])
+        datasets = random_split(range(30), [0.4, 0.4, 0.2])
 
         results = []
         for d in datasets:

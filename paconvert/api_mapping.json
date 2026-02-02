@@ -13233,14 +13233,10 @@
     ]
   },
   "torch.utils.data.ChainDataset": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.ChainDataset",
-    "min_input_args": 1
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.ConcatDataset": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.ConcatDataset",
-    "min_input_args": 1
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.DataLoader": {
     "Matcher": "GenericMatcher",
@@ -13278,14 +13274,10 @@
     ]
   },
   "torch.utils.data.Dataset": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.Dataset",
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.IterableDataset": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.IterableDataset",
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.RandomSampler": {
     "Matcher": "GenericMatcher",
@@ -13299,19 +13291,13 @@
     ]
   },
   "torch.utils.data.Sampler": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.Sampler",
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.SequentialSampler": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.SequenceSampler",
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.Subset": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.Subset",
-    "min_input_args": 2
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.SubsetRandomSampler": {
     "Matcher": "GenericMatcher",
@@ -13370,14 +13356,10 @@
     }
   },
   "torch.utils.data.get_worker_info": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.get_worker_info",
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.random_split": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.random_split",
-    "min_input_args": 2
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.dlpack.from_dlpack": {
     "Matcher": "GenericMatcher",
