@@ -97,3 +97,147 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x1 = torch.tensor([[ 1.6830,  0.0526],
+            [-0.0696,  0.6366],
+            [-1.0091,  1.3363]])
+        x2 = torch.tensor([[-0.0629,  0.2414],
+            [-0.9701, -0.4455]])
+        result = torch.cdist(x1, x2, 2.0, 'use_mm_for_euclid_dist')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x1 = torch.tensor([[ 1.6830,  0.0526],
+            [-0.0696,  0.6366],
+            [-1.0091,  1.3363]])
+        x2 = torch.tensor([[-0.0629,  0.2414],
+            [-0.9701, -0.4455]])
+        result = torch.cdist(x1, x2, p=1.5, compute_mode='donot_use_mm_for_euclid_dist')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x1 = torch.tensor([[ 1.6830,  0.0526],
+            [-0.0696,  0.6366],
+            [-1.0091,  1.3363]])
+        x2 = torch.tensor([[-0.0629,  0.2414],
+            [-0.9701, -0.4455]])
+        result = torch.cdist(x1, x2, 0.0, 'use_mm_for_euclid_dist_if_necessary')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x1 = torch.tensor([[ 1.6830,  0.0526],
+            [-0.0696,  0.6366],
+            [-1.0091,  1.3363]])
+        x2 = torch.tensor([[-0.0629,  0.2414],
+            [-0.9701, -0.4455]])
+        result = torch.cdist(x1, x2, p=float('inf'), compute_mode='donot_use_mm_for_euclid_dist')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x1 = torch.tensor([[ 1.6830,  0.0526],
+            [-0.0696,  0.6366],
+            [-1.0091,  1.3363]], dtype=torch.float64)
+        x2 = torch.tensor([[-0.0629,  0.2414],
+            [-0.9701, -0.4455]], dtype=torch.float64)
+        result = torch.cdist(x1=x1, x2=x2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x1 = torch.empty((3, 0, 4), dtype=torch.float32)
+        x2 = torch.empty((3, 2, 4), dtype=torch.float32)
+        result = torch.cdist(x1, x2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x1 = torch.empty((3, 5, 0), dtype=torch.float32)
+        x2 = torch.empty((3, 2, 0), dtype=torch.float32)
+        result = torch.cdist(x1, x2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x1 = torch.tensor([[ 1.6830,  0.0526],
+            [-0.0696,  0.6366],
+            [-1.0091,  1.3363]])
+        x2 = torch.tensor([[-0.0629,  0.2414],
+            [-0.9701, -0.4455]])
+        result = torch.cdist(x1, x2, 2.0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x1 = torch.tensor([[ 1.6830,  0.0526],
+            [-0.0696,  0.6366],
+            [-1.0091,  1.3363]])
+        x2 = torch.tensor([[-0.0629,  0.2414],
+            [-0.9701, -0.4455]])
+        result = torch.cdist(x1, x2, compute_mode='use_mm_for_euclid_dist')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_15():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x1 = torch.tensor([[ 1.6830,  0.0526],
+            [-0.0696,  0.6366],
+            [-1.0091,  1.3363]])
+        x2 = torch.tensor([[-0.0629,  0.2414],
+            [-0.9701, -0.4455]])
+        result = torch.cdist(x1=x1, x2=x2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

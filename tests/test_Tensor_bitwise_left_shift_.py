@@ -54,3 +54,26 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([5, 10, 15], dtype=torch.int64)
+        other = torch.tensor([2, 1, 3], dtype=torch.int64)
+        result = input.bitwise_left_shift_(other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([1, 2, 3], dtype=torch.int16)
+        result = input.bitwise_left_shift_(torch.tensor([1, 2, 3], dtype=torch.int16))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
