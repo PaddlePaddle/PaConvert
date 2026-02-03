@@ -25,11 +25,11 @@ def test_case_1():
         """
         import torch
         x = torch.randn(20, 16, 50, 32, 16)
-        result = torch.nn.FractionalMaxPool3d(3, output_size=[5, 5, 5], return_indices=True)
-        result = result(x)
+        model = torch.nn.FractionalMaxPool3d(3, output_size=[5, 5, 5], return_indices=True)
+        result, indices = model(x)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False, check_dtype=False)
+    obj.run(pytorch_code, ["result", "indices"], check_value=False)
 
 
 def test_case_2():
@@ -37,11 +37,11 @@ def test_case_2():
         """
         import torch
         x = torch.randn(20, 16, 50, 32, 16)
-        result = torch.nn.FractionalMaxPool3d(kernel_size=3, output_size=[5, 5, 5], return_indices=False)
-        result = result(x)
+        model = torch.nn.FractionalMaxPool3d(kernel_size=3, output_size=[5, 5, 5], return_indices=False)
+        result = model(x)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False, check_dtype=False)
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
@@ -49,8 +49,8 @@ def test_case_3():
         """
         import torch
         x = torch.randn(20, 16, 50, 32, 16)
-        result = torch.nn.FractionalMaxPool3d(output_size=[5, 5, 5], kernel_size=3, return_indices=False)
-        result = result(x)
+        model = torch.nn.FractionalMaxPool3d(output_size=[5, 5, 5], kernel_size=3, return_indices=False)
+        result = model(x)
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False, check_dtype=False)
+    obj.run(pytorch_code, ["result"], check_value=False)
