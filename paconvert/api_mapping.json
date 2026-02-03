@@ -1253,16 +1253,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.fill_diagonal_": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.fill_diagonal_",
-    "min_input_args": 1,
-    "args_list": [
-      "fill_value",
-      "wrap"
-    ],
-    "kwargs_change": {
-      "fill_value": "value"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.fix": {
     "Matcher": "ChangeAPIMatcher",
@@ -2801,15 +2792,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.squeeze_": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.squeeze_",
-    "min_input_args": 0,
-    "args_list": [
-      "dim"
-    ],
-    "kwargs_change": {
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.sspaddmm": {},
   "torch.Tensor.std": {
