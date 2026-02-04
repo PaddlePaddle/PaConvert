@@ -48,11 +48,10 @@ def test_case_1():
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data import SequentialSampler
-        from torch.utils.data import Dataset
+        import torch.utils.data as data
         import numpy as np
 
-        class MyDataset(Dataset):
+        class MyDataset(data.Dataset):
             def __init__(self):
                 self.x = np.arange(0, 100, 1)
 
@@ -62,8 +61,8 @@ def test_case_2():
             def __len__(self):
                 return len(self.x)
 
-        data = MyDataset()
-        s = SequentialSampler(data_source=data)
+        my_data = MyDataset()
+        s = data.SequentialSampler(data_source=my_data)
         result = []
         for d in s:
             result.append(d)
@@ -75,12 +74,11 @@ def test_case_2():
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data import SequentialSampler
-        from torch.utils.data import Dataset
+        import torch.utils as utils
         import numpy as np
         import torch
 
-        class MyDataset(Dataset):
+        class MyDataset(utils.data.Dataset):
             def __init__(self):
                 self.x = np.arange(0, 100, 1).reshape(10, 10)
                 self.y = np.arange(0, 10, 1)
@@ -91,7 +89,45 @@ def test_case_3():
             def __len__(self):
                 return self.x.shape[0]
 
-        class MySampler(SequentialSampler):
+        class MySampler(utils.data.SequentialSampler):
+            def __init__(self, data):
+                self.data_source = data
+
+            def __iter__(self):
+                return iter(range(1, len(self.data_source)+1))
+
+            def __len__(self):
+                return len(self.data_source)
+
+        dataset = MyDataset()
+        s = MySampler(dataset)
+        result = []
+        for d in s:
+            result.append(d)
+        result = torch.tensor(result)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import numpy as np
+        import torch
+
+        class MyDataset(torch.utils.data.Dataset):
+            def __init__(self):
+                self.x = np.arange(0, 100, 1).reshape(10, 10)
+                self.y = np.arange(0, 10, 1)
+
+            def __getitem__(self, idx):
+                return self.x[idx], self.y[idx]
+
+            def __len__(self):
+                return self.x.shape[0]
+
+        class MySampler(torch.utils.data.SequentialSampler):
             def __init__(self, data):
                 self.data_source = data
 

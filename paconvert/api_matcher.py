@@ -355,17 +355,6 @@ class InferenceModeMatcher(BaseMatcher):
         return code
 
 
-# TODO: fix torch.atleast bug, which not support input list/tuple
-class AtleastMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        new_args = self.parse_args(args)
-        if len(args) > 0 and isinstance(args[0], (ast.List, ast.Tuple)):
-            code = "{}(*{})".format(self.get_paddle_api(), self.args_to_str(new_args))
-        else:
-            code = "{}({})".format(self.get_paddle_api(), self.args_to_str(new_args))
-        return ast.parse(code).body
-
-
 class EinopsTorchMatcher(BaseMatcher):
     def get_paddle_api(self):
         return self.torch_api.replace("einops.layers.torch", "einops.layers.paddle")
@@ -4852,16 +4841,15 @@ class Device2IntMatcher(BaseMatcher):
             """
             def device2int(device):
                 if isinstance(device, str):
-                    device = device.replace('cuda', 'gpu')
-                    device = device.replace('gpu:', '')
+                    device = device.replace('cuda:', '')
                 return int(device)
             """
         )
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.enable_utils_code()
         if "device" in kwargs:
+            self.enable_utils_code()
             kwargs["device_id"] = "device2int({})".format(kwargs.pop("device"))
         if "non_blocking" in kwargs:
             kwargs["blocking"] = f"not {kwargs.pop('non_blocking')}"
