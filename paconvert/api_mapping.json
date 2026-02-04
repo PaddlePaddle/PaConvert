@@ -1648,28 +1648,10 @@
     }
   },
   "torch.Tensor.lerp": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.lerp",
-    "min_input_args": 2,
-    "args_list": [
-      "end",
-      "weight"
-    ],
-    "kwargs_change": {
-      "end": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.lerp_": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.lerp_",
-    "min_input_args": 2,
-    "args_list": [
-      "end",
-      "weight"
-    ],
-    "kwargs_change": {
-      "end": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.less": {
     "Matcher": "ChangePrefixMatcher"
@@ -6509,20 +6491,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.lerp": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.lerp",
-    "min_input_args": 3,
-    "args_list": [
-      "input",
-      "end",
-      "weight",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "end": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.less": {
     "Matcher": "ChangePrefixMatcher"
