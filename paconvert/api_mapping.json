@@ -8224,8 +8224,16 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.Linear": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.compat.nn.Linear"
+    "Matcher": "LinearMatcher",
+    "paddle_api": "paddle.compat.nn.Linear",
+    "min_input_args": 2,
+    "args_list": [
+      "in_features",
+      "out_features",
+      "bias",
+      "device",
+      "dtype"
+    ]
   },
   "torch.nn.LocalResponseNorm": {
     "Matcher": "ChangePrefixMatcher"

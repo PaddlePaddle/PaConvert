@@ -2763,12 +2763,14 @@ class LogAddExp2Matcher(BaseMatcher):
 class StdMeanMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "correction" in kwargs:
-            kwargs["unbiased"] = kwargs.pop("correction")
+            std_kwarg_name = "correction"
+            std_kwarg_value = kwargs.pop("correction")
         elif "unbiased" in kwargs:
-            # do nothing
-            pass
+            std_kwarg_name = "unbiased"
+            std_kwarg_value = kwargs["unbiased"]
         else:
-            kwargs["unbiased"] = True
+            std_kwarg_name = "unbiased"
+            std_kwarg_value = True
 
         if "keepdim" not in kwargs:
             kwargs["keepdim"] = False
@@ -2779,14 +2781,15 @@ class StdMeanMatcher(BaseMatcher):
         if "out" in kwargs and kwargs["out"] != "None":
             API_TEMPLATE = textwrap.dedent(
                 """
-                paddle.assign(paddle.std({}, axis={}, unbiased={}, keepdim={}), output={}[0])
+                paddle.assign(paddle.std({}, axis={}, {}={}, keepdim={}), output={}[0])
                 paddle.assign(paddle.mean({}, axis={}, keepdim={}), output={}[1])
                 """
             )
             code = API_TEMPLATE.format(
                 kwargs["input"],
                 kwargs["dim"],
-                kwargs["unbiased"],
+                std_kwarg_name,
+                std_kwarg_value,
                 kwargs["keepdim"],
                 kwargs["out"],
                 kwargs["input"],
@@ -2797,13 +2800,14 @@ class StdMeanMatcher(BaseMatcher):
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
-                tuple([paddle.std({}, axis={}, unbiased={}, keepdim={}), paddle.mean({}, axis={}, keepdim={})])
+                tuple([paddle.std({}, axis={}, {}={}, keepdim={}), paddle.mean({}, axis={}, keepdim={})])
                 """
             )
             code = API_TEMPLATE.format(
                 kwargs["input"],
                 kwargs["dim"],
-                kwargs["unbiased"],
+                std_kwarg_name,
+                std_kwarg_value,
                 kwargs["keepdim"],
                 kwargs["input"],
                 kwargs["dim"],
@@ -2816,12 +2820,14 @@ class StdMeanMatcher(BaseMatcher):
 class VarMeanMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "correction" in kwargs:
-            kwargs["unbiased"] = kwargs.pop("correction")
+            var_kwarg_name = "correction"
+            var_kwarg_value = kwargs.pop("correction")
         elif "unbiased" in kwargs:
-            # do nothing
-            pass
+            var_kwarg_name = "unbiased"
+            var_kwarg_value = kwargs["unbiased"]
         else:
-            kwargs["unbiased"] = True
+            var_kwarg_name = "unbiased"
+            var_kwarg_value = True
 
         if "keepdim" not in kwargs:
             kwargs["keepdim"] = False
@@ -2832,14 +2838,15 @@ class VarMeanMatcher(BaseMatcher):
         if "out" in kwargs and kwargs["out"] != "None":
             API_TEMPLATE = textwrap.dedent(
                 """
-                paddle.assign(paddle.var({}, axis={}, unbiased={}, keepdim={}), output={}[0])
+                paddle.assign(paddle.var({}, axis={}, {}={}, keepdim={}), output={}[0])
                 paddle.assign(paddle.mean({}, axis={}, keepdim={}), output={}[1])
                 """
             )
             code = API_TEMPLATE.format(
                 kwargs["input"],
                 kwargs["dim"],
-                kwargs["unbiased"],
+                var_kwarg_name,
+                var_kwarg_value,
                 kwargs["keepdim"],
                 kwargs["out"],
                 kwargs["input"],
@@ -2850,13 +2857,14 @@ class VarMeanMatcher(BaseMatcher):
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
-                tuple([paddle.var({}, axis={}, unbiased={}, keepdim={}), paddle.mean({}, axis={}, keepdim={})])
+                tuple([paddle.var({}, axis={}, {}={}, keepdim={}), paddle.mean({}, axis={}, keepdim={})])
                 """
             )
             code = API_TEMPLATE.format(
                 kwargs["input"],
                 kwargs["dim"],
-                kwargs["unbiased"],
+                var_kwarg_name,
+                var_kwarg_value,
                 kwargs["keepdim"],
                 kwargs["input"],
                 kwargs["dim"],
@@ -4257,6 +4265,28 @@ class FunctionalLinearMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         kwargs["weight"] = "{}.T".format(kwargs["weight"])
         return GenericMatcher.generate_code(self, kwargs)
+
+
+class LinearMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            class _PaConvertLinear(paddle.compat.nn.Linear):
+                def forward(self, input):
+                    if len(input.shape) == 1:
+                        out = super().forward(input.unsqueeze(0))
+                        return out.squeeze(0)
+                    return super().forward(input)
+
+            def _paconvert_linear(*args, **kwargs):
+                return _PaConvertLinear(*args, **kwargs)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        return "_paconvert_linear({})".format(self.kwargs_to_str(kwargs))
 
 
 class FunctionalBilinearMatcher(BaseMatcher):
@@ -5930,11 +5960,17 @@ class AllGatherIntoTensorMatcher(BaseMatcher):
         CODE_TEMPLATE = textwrap.dedent(
             """
             def all_gather_into_tensor(output_tensor, input_tensor, group, async_op):
-                if async_op is not None:
-                    async_op = not async_op
-                tensor_list = []
-                paddle.distributed.all_gather(tensor_list=tensor_list, tensor=input_tensor, group=group, sync_op=async_op)
-                if paddle.distributed.get_world_size() * input_tensor.shape[0] == output_tensor.shape[0]:
+                if async_op is None:
+                    sync_op = True
+                else:
+                    sync_op = not async_op
+                if group is None:
+                    world_size = paddle.distributed.get_world_size()
+                else:
+                    world_size = paddle.distributed.get_world_size(group)
+                tensor_list = [paddle.empty_like(input_tensor) for _ in range(world_size)]
+                paddle.distributed.all_gather(tensor_list=tensor_list, tensor=input_tensor, group=group, sync_op=sync_op)
+                if world_size * input_tensor.shape[0] == output_tensor.shape[0]:
                     paddle.assign(paddle.concat(tensor_list, axis=0), output=output_tensor)
                 else:
                     paddle.assign(paddle.stack(tensor_list, axis=0), output=output_tensor)
