@@ -27,6 +27,8 @@ ignore =
     F841,
     # Line break before binary operator, it is not compatible with black
     W503
+    # backticks are deprecated, use 'repr()'
+    W604
 per-file-ignores =
     # These files need special signals.
     paconvert/base.py: W605
