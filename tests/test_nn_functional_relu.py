@@ -192,3 +192,96 @@ def test_case_13():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    """4D tensor (batch, channel, height, width)"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([[[[-1.0, 2.0], [3.0, -4.0]], [[0.5, -0.5], [-1.5, 1.5]]]])
+        result = F.relu(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_15():
+    """All negative values"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([-1.0, -2.0, -3.0, -4.0])
+        result = F.relu(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_16():
+    """All positive values"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([1.0, 2.0, 3.0, 4.0])
+        result = F.relu(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_17():
+    """All zeros"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([0.0, 0.0, 0.0])
+        result = F.relu(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_18():
+    """Gradient computation"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([-1.0, 0.0, 1.0, 2.0], requires_grad=True)
+        result = F.relu(x)
+        result.sum().backward()
+        x_grad = x.grad
+        """
+    )
+    obj.run(pytorch_code, ["result", "x_grad"], check_stop_gradient=False)
+
+
+def test_case_19():
+    """Variable as input"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        data = torch.tensor([-2.0, -1.0, 0.0, 1.0, 2.0])
+        result = F.relu(data)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_20():
+    """Expression as input"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([1.0, 2.0, 3.0])
+        result = F.relu(x - 2.0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

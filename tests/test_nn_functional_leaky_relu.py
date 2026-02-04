@@ -163,3 +163,96 @@ def test_case_11():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    """4D tensor (batch, channel, height, width)"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([[[[-1.0, 2.0], [3.0, -4.0]], [[0.5, -0.5], [-1.5, 1.5]]]])
+        result = F.leaky_relu(x, 0.1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    """All negative values"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([-1.0, -2.0, -3.0, -4.0])
+        result = F.leaky_relu(x, 0.2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    """Default negative_slope (0.01)"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([-10.0, -5.0, 0.0, 5.0, 10.0])
+        result = F.leaky_relu(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_15():
+    """Gradient computation"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([-1.0, 0.0, 1.0, 2.0], requires_grad=True)
+        result = F.leaky_relu(x, 0.1)
+        result.sum().backward()
+        x_grad = x.grad
+        """
+    )
+    obj.run(pytorch_code, ["result", "x_grad"], check_stop_gradient=False)
+
+
+def test_case_16():
+    """Large negative_slope"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([-2.0, -1.0, 0.0, 1.0, 2.0])
+        result = F.leaky_relu(x, negative_slope=0.5)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_17():
+    """Expression as input"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([1.0, 2.0, 3.0])
+        result = F.leaky_relu(x - 2.0, 0.1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_18():
+    """3D tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        x = torch.tensor([[[-1.0, 0.5, 1.0], [2.0, -0.5, -1.5]]])
+        result = F.leaky_relu(x, negative_slope=0.15)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

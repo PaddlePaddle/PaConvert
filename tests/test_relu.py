@@ -77,3 +77,77 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    """4D tensor (batch, channel, height, width)"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[[[-1.0, 2.0], [3.0, -4.0]], [[0.5, -0.5], [-1.5, 1.5]]]])
+        result = torch.relu(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """All negative values"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([-1.0, -2.0, -3.0, -4.0])
+        result = torch.relu(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """All positive values"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1.0, 2.0, 3.0, 4.0])
+        result = torch.relu(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """Gradient computation"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([-1.0, 0.0, 1.0, 2.0], requires_grad=True)
+        result = torch.relu(x)
+        result.sum().backward()
+        x_grad = x.grad
+        """
+    )
+    obj.run(pytorch_code, ["result", "x_grad"], check_stop_gradient=False)
+
+
+def test_case_10():
+    """3D tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[[-1.0, 0.5, 1.0], [2.0, -0.5, -1.5]]])
+        result = torch.relu(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    """Expression as input"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1.0, 2.0, 3.0])
+        result = torch.relu(x - 2.0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

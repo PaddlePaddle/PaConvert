@@ -11829,7 +11829,15 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.relu": {
-    "Matcher": "ChangePrefixMatcher"
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.relu",
+    "args_list": [
+      "input"
+    ],
+    "kwargs_change": {
+      "input": "x"
+    },
+    "min_input_args": 1
   },
   "torch.remainder": {
     "Matcher": "ChangePrefixMatcher"
