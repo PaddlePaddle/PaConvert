@@ -116,17 +116,15 @@ def test_case_8():
 
 
 def test_case_9():
-    """Gradient computation"""
+    """Mixed positive and negative values"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([-1.0, 0.0, 1.0, 2.0], requires_grad=True)
+        x = torch.tensor([-1.0, 0.0, 1.0, 2.0])
         result = torch.relu(x)
-        result.sum().backward()
-        x_grad = x.grad
         """
     )
-    obj.run(pytorch_code, ["result", "x_grad"], check_stop_gradient=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_10():

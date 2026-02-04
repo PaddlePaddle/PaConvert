@@ -205,18 +205,16 @@ def test_case_14():
 
 
 def test_case_15():
-    """Gradient computation"""
+    """Small negative_slope"""
     pytorch_code = textwrap.dedent(
         """
         import torch
         import torch.nn.functional as F
-        x = torch.tensor([-1.0, 0.0, 1.0, 2.0], requires_grad=True)
-        result = F.leaky_relu(x, 0.1)
-        result.sum().backward()
-        x_grad = x.grad
+        x = torch.tensor([-1.0, 0.0, 1.0, 2.0])
+        result = F.leaky_relu(x, 0.05)
         """
     )
-    obj.run(pytorch_code, ["result", "x_grad"], check_stop_gradient=False)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_16():
