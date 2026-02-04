@@ -4274,7 +4274,11 @@ class LinearMatcher(BaseMatcher):
             class _PaConvertLinear(paddle.compat.nn.Linear):
                 def forward(self, input):
                     if len(input.shape) == 1:
-                        out = super().forward(input.unsqueeze(0))
+                        out = paddle.matmul(
+                            input.unsqueeze(0), self.weight, transpose_y=True
+                        )
+                        if self.bias is not None:
+                            out = out + self.bias
                         return out.squeeze(0)
                     return super().forward(input)
 
