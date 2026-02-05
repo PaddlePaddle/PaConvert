@@ -76,3 +76,16 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    """Test with expression arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2]])
+        y = torch.tensor([[3], [4]])
+        result = torch.broadcast_tensors(x + 1, y * 2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

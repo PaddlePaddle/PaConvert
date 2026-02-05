@@ -784,26 +784,10 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.copysign": {
-    "Matcher": "Num2TensorBinaryMatcher",
-    "paddle_api": "paddle.Tensor.copysign",
-    "min_input_args": 1,
-    "args_list": [
-      "other"
-    ],
-    "kwargs_change": {
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.copysign_": {
-    "Matcher": "Num2TensorBinaryMatcher",
-    "paddle_api": "paddle.Tensor.copysign_",
-    "min_input_args": 1,
-    "args_list": [
-      "other"
-    ],
-    "kwargs_change": {
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.corrcoef": {
     "Matcher": "ChangePrefixMatcher"
@@ -849,17 +833,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.cross": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.cross",
-    "min_input_args": 1,
-    "args_list": [
-      "other",
-      "dim"
-    ],
-    "kwargs_change": {
-      "other": "y",
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.crow_indices": {
     "Matcher": "ChangeAPIMatcher",
@@ -978,16 +952,7 @@
     "Matcher": "DimOrderMatcher"
   },
   "torch.Tensor.dist": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.dist",
-    "min_input_args": 1,
-    "args_list": [
-      "other",
-      "p"
-    ],
-    "kwargs_change": {
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.div": {
     "Matcher": "ChangePrefixMatcher"
@@ -1140,15 +1105,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.flip": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.flip",
-    "min_input_args": 1,
-    "args_list": [
-      "dims"
-    ],
-    "kwargs_change": {
-      "dims": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.fliplr": {
     "Matcher": "GenericMatcher",
@@ -1267,18 +1224,7 @@
     }
   },
   "torch.Tensor.geometric_": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.geometric_",
-    "min_input_args": 1,
-    "args_list": [
-      "p",
-      "*",
-      "generator"
-    ],
-    "kwargs_change": {
-      "p": "probs",
-      "generator": ""
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.geqrf": {},
   "torch.Tensor.ger": {
@@ -1398,15 +1344,7 @@
     }
   },
   "torch.Tensor.hypot_": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.hypot_",
-    "min_input_args": 1,
-    "args_list": [
-      "other"
-    ],
-    "kwargs_change": {
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.i0": {
     "Matcher": "ChangePrefixMatcher"
@@ -1475,30 +1413,10 @@
     ]
   },
   "torch.Tensor.index_fill": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.index_fill",
-    "min_input_args": 3,
-    "args_list": [
-      "dim",
-      "index",
-      "value"
-    ],
-    "kwargs_change": {
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.index_fill_": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.index_fill_",
-    "min_input_args": 3,
-    "args_list": [
-      "dim",
-      "index",
-      "value"
-    ],
-    "kwargs_change": {
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.index_put": {
     "Matcher": "ChangePrefixMatcher"
@@ -2283,32 +2201,10 @@
     "min_input_args": 0
   },
   "torch.Tensor.renorm": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.renorm",
-    "min_input_args": 3,
-    "args_list": [
-      "p",
-      "dim",
-      "maxnorm"
-    ],
-    "kwargs_change": {
-      "dim": "axis",
-      "maxnorm": "max_norm"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.renorm_": {
-    "Matcher": "GenericMatcher",
-    "min_input_args": 3,
-    "paddle_api": "paddle.Tensor.renorm_",
-    "args_list": [
-      "p",
-      "dim",
-      "maxnorm"
-    ],
-    "kwargs_change": {
-      "dim": "axis",
-      "maxnorm": "max_norm"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.repeat": {
     "Matcher": "ChangePrefixMatcher"
@@ -3828,15 +3724,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.block_diag": {
-    "Matcher": "SimpleScalableVarMatcher",
-    "paddle_api": "paddle.block_diag",
-    "min_input_args": 1,
-    "args_list": [
-      "*tensors"
-    ],
-    "kwargs_change": {
-      "tensors": "inputs"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.bmm": {
     "Matcher": "ChangePrefixMatcher"
@@ -3845,15 +3733,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.broadcast_tensors": {
-    "Matcher": "ScalableVarMatcher",
-    "paddle_api": "paddle.broadcast_tensors",
-    "min_input_args": 1,
-    "args_list": [
-      "*tensors"
-    ],
-    "kwargs_change": {
-      "tensors": "input"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.broadcast_to": {
     "Matcher": "ChangePrefixMatcher"
@@ -3869,15 +3749,7 @@
     ]
   },
   "torch.cartesian_prod": {
-    "Matcher": "SimpleScalableVarMatcher",
-    "paddle_api": "paddle.cartesian_prod",
-    "min_input_args": 1,
-    "args_list": [
-      "*tensors"
-    ],
-    "kwargs_change": {
-      "tensors": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.cat": {
     "Matcher": "ChangePrefixMatcher"
@@ -4063,19 +3935,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.copysign": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.copysign",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "other",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.corrcoef": {
     "Matcher": "GenericMatcher",
@@ -4159,21 +4019,7 @@
     }
   },
   "torch.cross": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.cross",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "other",
-      "dim",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "other": "y",
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.ctc_loss": {},
   "torch.cuda.BFloat16Tensor": {
@@ -4510,18 +4356,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.dist": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.dist",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "other",
-      "p"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.distributed.Backend": {
     "Matcher": "DistributedBackendMatcher",
@@ -5771,17 +5606,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.flip": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.flip",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "dims"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dims": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.fliplr": {
     "Matcher": "GenericMatcher",
@@ -6222,19 +6047,7 @@
     ]
   },
   "torch.index_fill": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.index_fill",
-    "min_input_args": 4,
-    "args_list": [
-      "input",
-      "dim",
-      "index",
-      "value"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.index_put": {
     "Matcher": "ChangePrefixMatcher"
@@ -11419,22 +11232,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.renorm": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.renorm",
-    "min_input_args": 4,
-    "args_list": [
-      "input",
-      "p",
-      "dim",
-      "maxnorm",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis",
-      "maxnorm": "max_norm"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.repeat_interleave": {
     "Matcher": "ChangePrefixMatcher"
