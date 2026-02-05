@@ -587,8 +587,8 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.atan2": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.atan2",
+    "Matcher": "TensorFunc2PaddleFunc",
+    "paddle_api": "paddle.atan2",
     "min_input_args": 1,
     "args_list": [
       "other"
@@ -3526,19 +3526,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.atan2": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.atan2",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "other",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.atanh": {
     "Matcher": "ChangePrefixMatcher"
