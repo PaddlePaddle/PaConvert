@@ -1070,4 +1070,11 @@ class GlobalManager:
         # youge325
         "torch.baddbmm",
         "torch.Tensor.baddbmm",
+        # jinyouzhi
+        "paddle.nn.functional.max_pool1d",
+        "paddle.nn.functional.max_pool2d",
+        "paddle.nn.functional.max_pool3d",
+        "paddle.nn.MaxPool1D",
+        "paddle.nn.MaxPool2D",
+        "paddle.nn.MaxPool3D",
     ]

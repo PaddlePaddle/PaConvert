@@ -41,7 +41,7 @@ def test_case_2():
         """
     )
     obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="dilation is not suppored now"
+        pytorch_code, ["result"]
     )
 
 
@@ -55,7 +55,7 @@ def test_case_3():
         """
     )
     obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="dilation is not supported now"
+        pytorch_code, ["result"]
     )
 
 
@@ -127,5 +127,5 @@ def test_case_8():
         """
     )
     obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="dilation is not supported now"
+        pytorch_code, ["result"]
     )

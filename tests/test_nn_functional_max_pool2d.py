@@ -89,7 +89,7 @@ def test_case_4():
         """
     )
     obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="dilation is not supported now"
+        pytorch_code, ["result"])
     )
 
 
@@ -109,7 +109,7 @@ def test_case_5():
         """
     )
     obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="dilation is not supported now"
+        pytorch_code, ["result"])
     )
 
 
@@ -173,8 +173,8 @@ def test_case_8():
     obj.run(
         pytorch_code,
         ["result", "indices"],
-        unsupport=True,
-        reason="dilation is not supported now",
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
     )
 
 
@@ -197,8 +197,8 @@ def test_case_9():
     obj.run(
         pytorch_code,
         ["result", "indices"],
-        unsupport=True,
-        reason="dilation is not supported now",
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
     )
 
 
@@ -222,6 +222,6 @@ def test_case_10():
     obj.run(
         pytorch_code,
         ["result", "indices"],
-        unsupport=True,
-        reason="dilation is not supported now",
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
     )
