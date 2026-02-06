@@ -4209,7 +4209,6 @@ class FunctionalLinearMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-
 class FunctionalBilinearMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "bias" in kwargs:
@@ -5888,6 +5887,7 @@ class AllGatherIntoTensorMatcher(BaseMatcher):
         async_op_v = kwargs.get("async_op", "False")
         new_kwargs["sync_op"] = f"(not {async_op_v})"
         return "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
+
 
 class ForeachTensorMatcher(BaseMatcher):
     def generate_utils_code(self):
