@@ -4209,31 +4209,6 @@ class FunctionalLinearMatcher(BaseMatcher):
         return GenericMatcher.generate_code(self, kwargs)
 
 
-class LinearMatcher(BaseMatcher):
-    def generate_utils_code(self):
-        CODE_TEMPLATE = textwrap.dedent(
-            """
-            class _PaConvertLinear(paddle.compat.nn.Linear):
-                def forward(self, input):
-                    if len(input.shape) == 1:
-                        out = paddle.matmul(
-                            input.unsqueeze(0), self.weight, transpose_y=True
-                        )
-                        if self.bias is not None:
-                            out = out + self.bias
-                        return out.squeeze(0)
-                    return super().forward(input)
-
-            def _paconvert_linear(*args, **kwargs):
-                return _PaConvertLinear(*args, **kwargs)
-            """
-        )
-        return CODE_TEMPLATE
-
-    def generate_code(self, kwargs):
-        self.enable_utils_code()
-        return "_paconvert_linear({})".format(self.kwargs_to_str(kwargs))
-
 
 class FunctionalBilinearMatcher(BaseMatcher):
     def generate_code(self, kwargs):
@@ -5902,44 +5877,17 @@ class UtilsSetModuleMatcher(BaseMatcher):
 
 
 class AllGatherIntoTensorMatcher(BaseMatcher):
-    def generate_utils_code(self):
-        CODE_TEMPLATE = textwrap.dedent(
-            """
-            def all_gather_into_tensor(output_tensor, input_tensor, group, async_op):
-                if async_op is None:
-                    sync_op = True
-                else:
-                    sync_op = not async_op
-                if group is None:
-                    world_size = paddle.distributed.get_world_size()
-                else:
-                    world_size = paddle.distributed.get_world_size(group)
-                tensor_list = [paddle.empty_like(input_tensor) for _ in range(world_size)]
-                paddle.distributed.all_gather(tensor_list=tensor_list, tensor=input_tensor, group=group, sync_op=sync_op)
-                if world_size * input_tensor.shape[0] == output_tensor.shape[0]:
-                    paddle.assign(paddle.concat(tensor_list, axis=0), output=output_tensor)
-                else:
-                    paddle.assign(paddle.stack(tensor_list, axis=0), output=output_tensor)
-                return output_tensor
-            """
-        )
-        return CODE_TEMPLATE
-
     def generate_code(self, kwargs):
-        self.enable_utils_code()
-        API_TEMPLATE = textwrap.dedent(
-            """
-            all_gather_into_tensor({},{},{},{})
-            """
-        )
-        code = API_TEMPLATE.format(
-            kwargs["output_tensor"],
-            kwargs["input_tensor"],
-            kwargs.get("group"),
-            kwargs.get("async_op"),
-        )
-        return code
+        new_kwargs = {
+            "tensor_or_tensor_list": kwargs["output_tensor"],
+            "tensor": kwargs["input_tensor"],
+        }
+        if "group" in kwargs:
+            new_kwargs["group"] = kwargs["group"]
 
+        async_op_v = kwargs.get("async_op", "False")
+        new_kwargs["sync_op"] = f"(not {async_op_v})"
+        return "{}({})".format(self.get_paddle_api(), self.kwargs_to_str(new_kwargs))
 
 class ForeachTensorMatcher(BaseMatcher):
     def generate_utils_code(self):

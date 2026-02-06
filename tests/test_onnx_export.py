@@ -93,20 +93,6 @@ def test_case_2():
 
         ############################## 相关utils函数，如下 ##############################
 
-        class _PaConvertLinear(paddle.compat.nn.Linear):
-            def forward(self, input):
-                if len(input.shape) == 1:
-                    out = paddle.matmul(
-                        input.unsqueeze(0), self.weight, transpose_y=True
-                    )
-                    if self.bias is not None:
-                        out = out + self.bias
-                    return out.squeeze(0)
-                return super().forward(input)
-
-        def _paconvert_linear(*args, **kwargs):
-            return _PaConvertLinear(*args, **kwargs)
-
         def onnx_export(model,f):
             model = Logic()
             paddle.jit.to_static(model)
@@ -123,8 +109,8 @@ def test_case_2():
         class SimpleModel(paddle.nn.Module):
             def __init__(self):
                 super(SimpleModel, self).__init__()
-                self.fc1 = _paconvert_linear(in_features=3, out_features=3)
-                self.fc2 = _paconvert_linear(in_features=3, out_features=1)
+                self.fc1 = paddle.compat.nn.Linear(3, 3)
+                self.fc2 = paddle.compat.nn.Linear(3, 1)
 
             def forward(self, x):
                 x = paddle.nn.functional.relu(x=self.fc1(x))

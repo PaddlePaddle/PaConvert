@@ -4562,7 +4562,7 @@
   },
   "torch.distributed.all_gather_into_tensor": {
     "Matcher": "AllGatherIntoTensorMatcher",
-    "paddle_api": "paddle.distributed.all_gather",
+    "paddle_api": "paddle.distributed.stream.all_gather",
     "min_input_args": 2,
     "args_list": [
       "output_tensor",
@@ -8224,16 +8224,8 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.Linear": {
-    "Matcher": "LinearMatcher",
-    "paddle_api": "paddle.compat.nn.Linear",
-    "min_input_args": 2,
-    "args_list": [
-      "in_features",
-      "out_features",
-      "bias",
-      "device",
-      "dtype"
-    ]
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.compat.nn.Linear"
   },
   "torch.nn.LocalResponseNorm": {
     "Matcher": "ChangePrefixMatcher"
