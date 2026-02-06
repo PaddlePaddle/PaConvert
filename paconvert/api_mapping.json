@@ -2808,15 +2808,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.unsqueeze_": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.unsqueeze_",
-    "min_input_args": 1,
-    "args_list": [
-      "dim"
-    ],
-    "kwargs_change": {
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.values": {
     "Matcher": "ChangePrefixMatcher"
