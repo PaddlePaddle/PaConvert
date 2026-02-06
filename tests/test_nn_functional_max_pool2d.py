@@ -88,9 +88,7 @@ def test_case_4():
         result = F.max_pool2d(input , 3, stride=(2, 1), padding=1, dilation=1)
         """
     )
-    obj.run(
-        pytorch_code, ["result"])
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -108,9 +106,7 @@ def test_case_5():
         result = F.max_pool2d(input, 2, 1, dilation=1)
         """
     )
-    obj.run(
-        pytorch_code, ["result"])
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_6():

@@ -40,9 +40,7 @@ def test_case_2():
         result = F.max_pool3d(input , 3, 1, 1, 2, True, True)
         """
     )
-    obj.run(
-        pytorch_code, ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -54,9 +52,7 @@ def test_case_3():
         result = F.max_pool3d(input=input, kernel_size=3, stride=1, padding=1, dilation=2, ceil_mode=True, return_indices=False)
         """
     )
-    obj.run(
-        pytorch_code, ["result"]
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -126,6 +122,4 @@ def test_case_8():
         result = F.max_pool3d(input, 3, 1, 1, 2, True, False)
         """
     )
-    obj.run(
-        pytorch_code, ["result"]
-    )
+    obj.run(pytorch_code, ["result"])

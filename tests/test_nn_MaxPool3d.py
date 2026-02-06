@@ -131,7 +131,12 @@ def test_case_5():
         result, indices = model(x)
         """
     )
-    obj.run(pytorch_code, ["result", "indices"], check_dtype=False, reason="torch indices dtype is int64, while paddle is int32")
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
+    )
 
 
 def test_case_6():

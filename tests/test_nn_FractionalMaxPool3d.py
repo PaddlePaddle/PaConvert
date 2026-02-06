@@ -29,7 +29,12 @@ def test_case_1():
         result, indices = result(x)
         """
     )
-    obj.run(pytorch_code, ["result", "indices"], check_dtype=False, reason="torch indices dtype is int64, while paddle is int32")
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
+    )
 
 
 def test_case_2():
@@ -41,7 +46,12 @@ def test_case_2():
         result = result(x)
         """
     )
-    obj.run(pytorch_code, ["result"], check_dtype=False, reason="torch indices dtype is int64, while paddle is int32")
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
+    )
 
 
 def test_case_3():
@@ -54,4 +64,9 @@ def test_case_3():
         result, indices = result(x)
         """
     )
-    obj.run(pytorch_code, ["result"], check_dtype=False, reason="torch indices dtype is int64, while paddle is int32")
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
+    )

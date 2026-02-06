@@ -71,10 +71,7 @@ def test_case_5():
         result, indices = torch.max_pool3d(input, 2, 2, 1, ceil_mode=True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result", "indices"]
-    )
+    obj.run(pytorch_code, ["result", "indices"])
 
 
 def test_case_6():
