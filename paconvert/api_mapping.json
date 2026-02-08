@@ -7219,13 +7219,16 @@
     "paddle_api": "paddle.compat.max"
   },
   "torch.max_pool1d": {
-    "Matcher": "ChangePrefixMatcher"
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.nn.functional.max_pool1d"
   },
   "torch.max_pool2d": {
-    "Matcher": "ChangePrefixMatcher"
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.nn.functional.max_pool2d"
   },
   "torch.max_pool3d": {
-    "Matcher": "ChangePrefixMatcher"
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.nn.functional.max_pool3d"
   },
   "torch.maximum": {
     "Matcher": "ChangePrefixMatcher"

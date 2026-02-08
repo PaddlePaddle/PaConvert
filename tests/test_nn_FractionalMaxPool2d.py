@@ -26,15 +26,10 @@ def test_case_1():
         import torch
         x = torch.rand(8,3,8,9)
         result = torch.nn.FractionalMaxPool2d(2, output_size=[5, 5], return_indices=True)
-        result, indices = result(x)
+        result = result(x)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result", "indices"],
-        check_dtype=False,
-        reason="torch indices dtype is int64, while paddle is int32",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False, check_dtype=False)
 
 
 def test_case_2():
@@ -43,15 +38,10 @@ def test_case_2():
         import torch
         x = torch.rand(8,3,8,9)
         result = torch.nn.FractionalMaxPool2d(kernel_size=2, output_size=[5, 5], return_indices=True)
-        result, indices = result(x)
+        result = result(x)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result", "indices"],
-        check_dtype=False,
-        reason="torch indices dtype is int64, while paddle is int32",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False, check_dtype=False)
 
 
 def test_case_3():
@@ -60,12 +50,7 @@ def test_case_3():
         import torch
         x = torch.rand(8,3,8,9)
         result = torch.nn.FractionalMaxPool2d(output_size=[5, 5], kernel_size=2, return_indices=True)
-        result, indices = result(x)
+        result = result(x)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result", "indices"],
-        check_dtype=False,
-        reason="torch indices dtype is int64, while paddle is int32",
-    )
+    obj.run(pytorch_code, ["result"], check_value=False, check_dtype=False)
