@@ -37,10 +37,13 @@ def test_case_2():
         import torch
         import torch.nn.functional as F
         input = torch.arange(4800, dtype=torch.float32).reshape(2, 3, 8, 10, 10)
-        result = F.max_pool3d(input , 3, 1, 1, 2, True, True)
+        result, indices = F.max_pool3d(input , 3, 1, 1, 2, True, True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code,
+            ["result", "indices"],
+            check_dtype=False,
+            reason="torch indices dtype is int64, while paddle is int32")
 
 
 def test_case_3():
