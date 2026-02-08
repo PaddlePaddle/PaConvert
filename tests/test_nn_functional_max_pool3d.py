@@ -40,10 +40,12 @@ def test_case_2():
         result, indices = F.max_pool3d(input , 3, 1, 1, 2, True, True)
         """
     )
-    obj.run(pytorch_code,
-            ["result", "indices"],
-            check_dtype=False,
-            reason="torch indices dtype is int64, while paddle is int32")
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
+    )
 
 
 def test_case_3():
