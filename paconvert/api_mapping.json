@@ -10494,6 +10494,12 @@
   "torch.nn.utils.vector_to_parameters": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.nn.utils.rnn.pad_sequence": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.nn.utils.rnn.unpad_sequence": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.nn.utils.weight_norm": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.utils.weight_norm",
