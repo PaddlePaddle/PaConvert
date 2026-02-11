@@ -60,10 +60,10 @@ def test_case_2():
         import torch
         import torch.nn as nn
         theta = torch.tensor([1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0], requires_grad=True)
-        l = torch.nn.Linear(10, 1)
+        l = torch.nn.Linear(10, 2)
         optim = torch.optim.Adam(l.parameters(), lr = 1.0)
         z = l(theta)
-        z.backward()
+        z.sum().backward()
         optim.step()
         result = optim.state_dict()
         """
