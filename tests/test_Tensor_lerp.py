@@ -20,61 +20,55 @@ obj = APIBase("torch.Tensor.lerp")
 
 
 def test_case_1():
+    """positional arguments"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        start = torch.tensor([1., 2., 3., 4.])
-        end = torch.tensor([10., 10., 10., 10.])
-        weight = torch.tensor([0.5, 1, 0.3, 0.6])
-        result = start.lerp(end, weight)
+        result = torch.tensor([1., 2., 3., 4.]).lerp(torch.tensor([10., 10., 10., 10.]), 0.5)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
+    """keyword arguments"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        weight = torch.tensor([0.5, 1, 0.3, 0.6])
-        result = torch.tensor([1., 2., 3., 4.]).lerp(torch.tensor([10., 10., 10., 10.]), weight)
+        result = torch.tensor([1., 2., 3., 4.]).lerp(end=torch.tensor([10., 10., 10., 10.]), weight=0.5)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
+    """reordered kwargs"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        start = torch.tensor([1., 2., 3., 4.])
-        end = torch.tensor([10., 10., 10., 10.])
-        weight = torch.tensor([0.5, 1, 0.3, 0.6])
-        result = start.lerp(end=end, weight=weight)
+        result = torch.tensor([1., 2., 3., 4.]).lerp(weight=0.5, end=torch.tensor([10., 10., 10., 10.]))
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
+    """weight as tensor"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        start = torch.tensor([1., 2., 3., 4.])
-        end = torch.tensor([10., 10., 10., 10.])
-        result = start.lerp(end=end, weight=0.5)
+        result = torch.tensor([1., 2., 3., 4.]).lerp(torch.tensor([10., 10., 10., 10.]), torch.tensor([0.1, 0.3, 0.5, 0.7]))
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
+    """2D tensor"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        start = torch.tensor([1., 2., 3., 4.])
-        end = torch.tensor([10., 10., 10., 10.])
-        result = start.lerp(weight=0.5, end=end)
+        result = torch.tensor([[1., 2.], [3., 4.]]).lerp(torch.tensor([[10., 10.], [10., 10.]]), 0.5)
         """
     )
     obj.run(pytorch_code, ["result"])
