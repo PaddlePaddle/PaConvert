@@ -4561,8 +4561,8 @@
     ]
   },
   "torch.distributed.all_gather_into_tensor": {
-    "Matcher": "AllGatherIntoTensorMatcher",
-    "paddle_api": "paddle.distributed.all_gather",
+    "Matcher": "ReverseAsyncOpMatcher",
+    "paddle_api": "paddle.distributed.stream.all_gather",
     "min_input_args": 2,
     "args_list": [
       "output_tensor",
@@ -4571,7 +4571,7 @@
       "async_op"
     ],
     "kwargs_change": {
-      "output_tensor": "tensor_list",
+      "output_tensor": "tensor_or_tensor_list",
       "input_tensor": "tensor"
     }
   },
@@ -12376,14 +12376,8 @@
       "unbiased",
       "keepdim",
       "*",
-      "correction",
-      "keepdim"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis",
-      "correction": "unbiased"
-    }
+      "correction"
+    ]
   },
   "torch.stft": {
     "Matcher": "StftMatcher",
@@ -12936,14 +12930,8 @@
       "unbiased",
       "keepdim",
       "*",
-      "correction",
-      "keepdim"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis",
-      "correction": "unbiased"
-    }
+      "correction"
+    ]
   },
   "torch.vdot": {
     "Matcher": "GenericMatcher",
