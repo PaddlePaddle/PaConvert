@@ -77,3 +77,189 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+# Additional test cases for comprehensive coverage
+
+
+def test_case_6():
+    """Test with 1D tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0.0, 45.0, 90.0, 180.0, 270.0, 360.0])
+        result = torch.deg2rad(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """Test with 3D tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[[90.0, 180.0], [270.0, 360.0]], [[45.0, 135.0], [225.0, 315.0]]])
+        result = torch.deg2rad(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """Test with float64 dtype"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([90.0, 180.0, 270.0], dtype=torch.float64)
+        result = torch.deg2rad(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """Test with float32 dtype explicitly"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([90.0, 180.0, 270.0], dtype=torch.float32)
+        result = torch.deg2rad(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """Test with zero values"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0.0, 0.0, 0.0])
+        result = torch.deg2rad(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    """Test with negative values"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([-45.0, -90.0, -180.0, -360.0])
+        result = torch.deg2rad(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    """Test with large values"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([720.0, 1080.0, 3600.0])
+        result = torch.deg2rad(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    """Test with variable as input"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        degrees = torch.tensor([45.0, 90.0, 135.0])
+        result = torch.deg2rad(degrees)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    """Test with expression as input"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([45.0, 90.0])
+        result = torch.deg2rad(a * 2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_15():
+    """Test with input keyword only"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([30.0, 60.0, 90.0])
+        result = torch.deg2rad(input=a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_16():
+    """Test with single element tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([180.0])
+        result = torch.deg2rad(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_17():
+    """Test with 4D tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[[[90.0, 180.0], [270.0, 360.0]]]])
+        result = torch.deg2rad(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_18():
+    """Test gradient computation"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([90.0, 180.0], requires_grad=True)
+        result = torch.deg2rad(a)
+        result.sum().backward()
+        a_grad = a.grad
+        """
+    )
+    obj.run(pytorch_code, ["result", "a_grad"], check_stop_gradient=False)
+
+
+def test_case_19():
+    """Test with out parameter and different shape output"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([45.0, 90.0, 135.0, 180.0])
+        out = torch.zeros(4)
+        result = torch.deg2rad(a, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_20():
+    """Test with special angles"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([30.0, 45.0, 60.0, 90.0, 120.0, 150.0, 180.0])
+        result = torch.deg2rad(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

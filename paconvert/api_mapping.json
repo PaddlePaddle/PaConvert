@@ -1648,28 +1648,10 @@
     }
   },
   "torch.Tensor.lerp": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.lerp",
-    "min_input_args": 2,
-    "args_list": [
-      "end",
-      "weight"
-    ],
-    "kwargs_change": {
-      "end": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.lerp_": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.lerp_",
-    "min_input_args": 2,
-    "args_list": [
-      "end",
-      "weight"
-    ],
-    "kwargs_change": {
-      "end": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.less": {
     "Matcher": "ChangePrefixMatcher"
@@ -4561,8 +4543,8 @@
     ]
   },
   "torch.distributed.all_gather_into_tensor": {
-    "Matcher": "AllGatherIntoTensorMatcher",
-    "paddle_api": "paddle.distributed.all_gather",
+    "Matcher": "ReverseAsyncOpMatcher",
+    "paddle_api": "paddle.distributed.stream.all_gather",
     "min_input_args": 2,
     "args_list": [
       "output_tensor",
@@ -4571,7 +4553,7 @@
       "async_op"
     ],
     "kwargs_change": {
-      "output_tensor": "tensor_list",
+      "output_tensor": "tensor_or_tensor_list",
       "input_tensor": "tensor"
     }
   },
@@ -6509,20 +6491,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.lerp": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.lerp",
-    "min_input_args": 3,
-    "args_list": [
-      "input",
-      "end",
-      "weight",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "end": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.less": {
     "Matcher": "ChangePrefixMatcher"
@@ -12376,14 +12345,8 @@
       "unbiased",
       "keepdim",
       "*",
-      "correction",
-      "keepdim"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis",
-      "correction": "unbiased"
-    }
+      "correction"
+    ]
   },
   "torch.stft": {
     "Matcher": "StftMatcher",
@@ -12936,14 +12899,8 @@
       "unbiased",
       "keepdim",
       "*",
-      "correction",
-      "keepdim"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis",
-      "correction": "unbiased"
-    }
+      "correction"
+    ]
   },
   "torch.vdot": {
     "Matcher": "GenericMatcher",

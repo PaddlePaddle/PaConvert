@@ -64,3 +64,82 @@ def _test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+# Test with float32 dtype
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 0.7308,  1.0060,  0.5270,  1.4516],
+                        [-0.1383,  1.5706,  0.4724,  0.4141],
+                        [ 0.1193,  0.2829,  0.9037,  0.3957],
+                        [-0.8202, -0.6474, -0.1631, -0.6543]], dtype=torch.float32)
+        result = x.inverse()
+        """
+    )
+    obj.run(pytorch_code, ["result"], rtol=1e-5)
+
+
+# Test with float64 dtype
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 0.7308,  1.0060,  0.5270,  1.4516],
+                        [-0.1383,  1.5706,  0.4724,  0.4141],
+                        [ 0.1193,  0.2829,  0.9037,  0.3957],
+                        [-0.8202, -0.6474, -0.1631, -0.6543]], dtype=torch.float64)
+        result = x.inverse()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# Test with 3D batched input
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[[ 0.7308,  1.0060,  0.5270,  1.4516],
+                          [-0.1383,  1.5706,  0.4724,  0.4141],
+                          [ 0.1193,  0.2829,  0.9037,  0.3957],
+                          [-0.8202, -0.6474, -0.1631, -0.6543]],
+                         [[ 0.7308,  1.0060,  0.5270,  1.4516],
+                          [-0.1383,  1.5706,  0.4724,  0.4141],
+                          [ 0.1193,  0.2829,  0.9037,  0.3957],
+                          [-0.8202, -0.6474, -0.1631, -0.6543]]])
+        result = x.inverse()
+        """
+    )
+    obj.run(pytorch_code, ["result"], rtol=1e-5)
+
+
+# Test with method chaining
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 0.7308,  1.0060,  0.5270,  1.4516],
+                        [-0.1383,  1.5706,  0.4724,  0.4141],
+                        [ 0.1193,  0.2829,  0.9037,  0.3957],
+                        [-0.8202, -0.6474, -0.1631, -0.6543]])
+        result = x.clone().inverse()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# Test inverse of inverse (should approximately equal original)
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 0.7308,  1.0060,  0.5270,  1.4516],
+                        [-0.1383,  1.5706,  0.4724,  0.4141],
+                        [ 0.1193,  0.2829,  0.9037,  0.3957],
+                        [-0.8202, -0.6474, -0.1631, -0.6543]], dtype=torch.float64)
+        result = x.inverse()
+        """
+    )
+    obj.run(pytorch_code, ["result"])

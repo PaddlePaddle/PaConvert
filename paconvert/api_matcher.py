@@ -2762,107 +2762,37 @@ class LogAddExp2Matcher(BaseMatcher):
 
 class StdMeanMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "correction" in kwargs:
-            kwargs["unbiased"] = kwargs.pop("correction")
-        elif "unbiased" in kwargs:
-            # do nothing
-            pass
-        else:
-            kwargs["unbiased"] = True
-
-        if "keepdim" not in kwargs:
-            kwargs["keepdim"] = False
-
-        if "dim" not in kwargs:
-            kwargs["dim"] = None
-
-        if "out" in kwargs and kwargs["out"] != "None":
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.assign(paddle.std({}, axis={}, unbiased={}, keepdim={}), output={}[0])
-                paddle.assign(paddle.mean({}, axis={}, keepdim={}), output={}[1])
-                """
-            )
-            code = API_TEMPLATE.format(
-                kwargs["input"],
-                kwargs["dim"],
-                kwargs["unbiased"],
-                kwargs["keepdim"],
-                kwargs["out"],
-                kwargs["input"],
-                kwargs["dim"],
-                kwargs["keepdim"],
-                kwargs["out"],
-            )
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                tuple([paddle.std({}, axis={}, unbiased={}, keepdim={}), paddle.mean({}, axis={}, keepdim={})])
-                """
-            )
-            code = API_TEMPLATE.format(
-                kwargs["input"],
-                kwargs["dim"],
-                kwargs["unbiased"],
-                kwargs["keepdim"],
-                kwargs["input"],
-                kwargs["dim"],
-                kwargs["keepdim"],
-            )
-
+        std_kwargs = kwargs.copy()
+        kwargs.pop("unbiased", None)
+        kwargs.pop("correction", None)
+        mean_kwargs = kwargs
+        API_TEMPLATE = textwrap.dedent(
+            """
+            (paddle.std({}), paddle.mean({}))
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.kwargs_to_str(std_kwargs),
+            self.kwargs_to_str(mean_kwargs),
+        )
         return code
 
 
 class VarMeanMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "correction" in kwargs:
-            kwargs["unbiased"] = kwargs.pop("correction")
-        elif "unbiased" in kwargs:
-            # do nothing
-            pass
-        else:
-            kwargs["unbiased"] = True
-
-        if "keepdim" not in kwargs:
-            kwargs["keepdim"] = False
-
-        if "dim" not in kwargs:
-            kwargs["dim"] = None
-
-        if "out" in kwargs and kwargs["out"] != "None":
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.assign(paddle.var({}, axis={}, unbiased={}, keepdim={}), output={}[0])
-                paddle.assign(paddle.mean({}, axis={}, keepdim={}), output={}[1])
-                """
-            )
-            code = API_TEMPLATE.format(
-                kwargs["input"],
-                kwargs["dim"],
-                kwargs["unbiased"],
-                kwargs["keepdim"],
-                kwargs["out"],
-                kwargs["input"],
-                kwargs["dim"],
-                kwargs["keepdim"],
-                kwargs["out"],
-            )
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                tuple([paddle.var({}, axis={}, unbiased={}, keepdim={}), paddle.mean({}, axis={}, keepdim={})])
-                """
-            )
-            code = API_TEMPLATE.format(
-                kwargs["input"],
-                kwargs["dim"],
-                kwargs["unbiased"],
-                kwargs["keepdim"],
-                kwargs["input"],
-                kwargs["dim"],
-                kwargs["keepdim"],
-            )
-
+        var_kwargs = kwargs.copy()
+        kwargs.pop("unbiased", None)
+        kwargs.pop("correction", None)
+        mean_kwargs = kwargs
+        API_TEMPLATE = textwrap.dedent(
+            """
+            (paddle.var({}), paddle.mean({}))
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.kwargs_to_str(var_kwargs),
+            self.kwargs_to_str(mean_kwargs),
+        )
         return code
 
 
