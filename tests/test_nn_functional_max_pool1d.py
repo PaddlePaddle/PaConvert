@@ -128,8 +128,8 @@ def test_case_7():
     obj.run(
         pytorch_code,
         ["result", "indices"],
-        unsupport=True,
-        reason="paddle unsupport parameter dilation",
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
     )
 
 
@@ -147,8 +147,8 @@ def test_case_8():
     obj.run(
         pytorch_code,
         ["result", "indices"],
-        unsupport=True,
-        reason="paddle unsupport parameter dilation",
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
     )
 
 
@@ -166,6 +166,6 @@ def test_case_9():
     obj.run(
         pytorch_code,
         ["result", "indices"],
-        unsupport=True,
-        reason="paddle unsupport parameter dilation",
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
     )

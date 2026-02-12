@@ -84,9 +84,7 @@ def test_case_4():
         result = torch.max_pool2d(input, 3, stride=(2, 1), padding=1, dilation=1)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="dilation is not supported now"
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -120,9 +118,7 @@ def test_case_6():
         result = torch.max_pool2d(input=input, kernel_size=3, stride=(2, 1), padding=1, dilation=1, ceil_mode=True)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="dilation is not supported now"
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_7():
@@ -139,9 +135,7 @@ def test_case_7():
         result = torch.max_pool2d(input=input, stride=(2, 1), kernel_size=3, dilation=1, padding=1, ceil_mode=True)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="dilation is not supported now"
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_8():
@@ -158,6 +152,4 @@ def test_case_8():
         result = torch.max_pool2d(input, 3, (2, 1), 1, 1, True)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="dilation is not supported now"
-    )
+    obj.run(pytorch_code, ["result"])
