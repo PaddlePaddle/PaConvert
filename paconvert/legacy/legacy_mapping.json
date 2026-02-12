@@ -1,0 +1,26 @@
+{
+  "torch.autograd.profiler.profile.config": {
+    "min_input_args": 0
+  },
+  "torch.autograd.profiler.profile.export_stacks": {
+    "min_input_args": 1
+  },
+  "torch.autograd.profiler.profile.key_averages": {
+    "min_input_args": 0
+  },
+  "torch.autograd.profiler.profile.table": {
+    "min_input_args": 0
+  },
+  "torch.autograd.profiler.profile.total_average": {
+    "min_input_args": 0
+  },
+  "torch.profiler.profile.start": {
+    "min_input_args": 0
+  },
+  "torch.profiler.profile.step": {
+    "min_input_args": 0
+  },
+  "torch.profiler.profile.stop": {
+    "min_input_args": 0
+  }
+}

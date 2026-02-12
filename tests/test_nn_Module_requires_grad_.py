@@ -27,7 +27,7 @@ def test_case_1():
         module1 = torch.nn.Module()
         module1.register_buffer('buffer', x)
         module1.requires_grad_(True)
-        result = None
+        result = module1.buffer
         """
     )
     obj.run(
@@ -44,7 +44,7 @@ def test_case_2():
         module1 = torch.nn.Module()
         module1.register_buffer('buffer', x)
         module1.requires_grad_(requires_grad=True)
-        result = None
+        result = module1.buffer
         """
     )
     obj.run(

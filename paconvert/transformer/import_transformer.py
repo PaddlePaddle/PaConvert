@@ -54,20 +54,6 @@ class ImportTransformer(BaseTransformer):
 
             # 1. import from current project
             dir_name = os.path.dirname(self.file)
-            """
-            while (
-                len(dir_name) > 1 and dir_name[-2] != ":"
-            ):  # the case of dir_name = 'E:/' will happen with windows
-                import_path = os.path.join(dir_name, alias_node.name.replace(".", "/"))
-
-                if os.path.exists(import_path) or os.path.exists(import_path + ".py"):
-                    self.insert_other_packages(self.imports_map, alias_node)
-                    new_node_names.append(alias_node)
-                    has_done = True
-                    break
-
-                dir_name = os.path.dirname(dir_name)
-            """
             import_path = os.path.join(dir_name, alias_node.name.replace(".", "/"))
             if os.path.exists(import_path) or os.path.exists(import_path + ".py"):
                 self.insert_other_packages(self.imports_map, alias_node)
@@ -197,48 +183,31 @@ class ImportTransformer(BaseTransformer):
         if node.level > 0:
             # from ..datasets import xxx
             # from ... import xxx (node.module is None)
-
-            """
-            if "huggingface_internal" in self.file:
+            if "huggingface_internal" in self.file and (node.level in [2, 3]):
+                # replace ...configuration_utils with transformers.configuration_utils
                 # from ...configuration_utils import PretrainedConfig, layer_type_validation
-                if node.level == 3:
-                    if "pipeline_" in self.file:
-                        node.module = ".".join(["diffusers", node.module])
+                if "pipeline_" in self.file:
+                    if node.level == 3:
+                        prefix = "diffusers"
                     else:
-                        node.module = ".".join(["transformers", node.module])
-                    node.level = 0
-                elif node.level == 2:
-                    if "pipeline_" in self.file:
-                        node.module = ".".join(["diffusers.pipelines", node.module])
-                    else:
-                        node.module = ".".join(["transformers.models", node.module])
-                    node.level = 0
+                        prefix = "diffusers.pipelines"
                 else:
-                    self.insert_other_packages(self.imports_map, node)
-                    return node
+                    if node.level == 3:
+                        prefix = "transformers"
+                    else:
+                        prefix = "transformers.models"
+                if node.module:
+                    node.module = ".".join([prefix, node.module])
+                else:
+                    node.module = prefix
+                node.level = 0
             else:
                 self.insert_other_packages(self.imports_map, node)
                 return node
-            """
-
-            self.insert_other_packages(self.imports_map, node)
-            return node
         else:
             # from yolov3.datasets import xxx
             # from datasets import xxx
             dir_name = os.path.dirname(self.file)
-            """
-            while (
-                len(dir_name) > 1 and dir_name[-2] != ":"
-            ):  # the case of dir_name = 'E:/' will happen with windows
-                import_path = os.path.join(dir_name, node.module.replace(".", "/"))
-
-                if os.path.exists(import_path) or os.path.exists(import_path + ".py"):
-                    self.insert_other_packages(self.imports_map, node)
-                    return node
-
-                dir_name = os.path.dirname(dir_name)
-            """
             import_path = os.path.join(dir_name, node.module.replace(".", "/"))
             if os.path.exists(import_path) or os.path.exists(import_path + ".py"):
                 self.insert_other_packages(self.imports_map, node)
@@ -360,9 +329,7 @@ class ImportTransformer(BaseTransformer):
 
         torch_api = self.get_full_api_from_node(node)
         if torch_api:
-            if torch_api in GlobalManager.ALIAS_MAPPING and (
-                torch_api not in GlobalManager.NO_NEED_CONVERT_LIST
-            ):
+            if torch_api in GlobalManager.ALIAS_MAPPING:
                 torch_api = GlobalManager.ALIAS_MAPPING[torch_api]
             return ast.parse(torch_api).body[0].value
         return node
@@ -455,9 +422,7 @@ class ImportTransformer(BaseTransformer):
         if maybe_torch:
             torch_api = self.get_full_api_from_node(node)
             if torch_api:
-                if torch_api in GlobalManager.ALIAS_MAPPING and (
-                    torch_api not in GlobalManager.NO_NEED_CONVERT_LIST
-                ):
+                if torch_api in GlobalManager.ALIAS_MAPPING:
                     torch_api = GlobalManager.ALIAS_MAPPING[torch_api]
                 if maybe_alias_name:
                     if len(self.parent_node.targets) == 1 and isinstance(

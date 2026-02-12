@@ -102,3 +102,145 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_8():
+    """测试不同数据类型：int16"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([15, 7, 3], dtype=torch.int16)
+        other = torch.tensor([9, 5, 12], dtype=torch.int16)
+        result = torch.bitwise_and(input, other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """测试不同数据类型：int32"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([255, 127, 63], dtype=torch.int32)
+        other = torch.tensor([170, 85, 42], dtype=torch.int32)
+        result = torch.bitwise_and(input, other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """测试不同数据类型：int64"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([1023, 511, 255], dtype=torch.int64)
+        other = torch.tensor([682, 341, 170], dtype=torch.int64)
+        result = torch.bitwise_and(input, other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    """测试不同维度：2D张量"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1, 2], [3, 4]], dtype=torch.int8)
+        other = torch.tensor([[5, 6], [7, 8]], dtype=torch.int8)
+        result = torch.bitwise_and(input, other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    """测试不同维度：3D张量"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[[1, 2], [3, 4]], [[5, 6], [7, 8]]], dtype=torch.int8)
+        other = torch.tensor([[[9, 10], [11, 12]], [[13, 14], [15, 16]]], dtype=torch.int8)
+        result = torch.bitwise_and(input, other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    """测试广播机制"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1, 2, 3], [4, 5, 6]], dtype=torch.int8)
+        other = torch.tensor([7, 8, 9], dtype=torch.int8)
+        result = torch.bitwise_and(input, other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    """测试混合参数顺序"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        other = torch.tensor([1, 0, 3], dtype=torch.int8)
+        result = torch.bitwise_and(other=other, input=torch.tensor([-1, -2, 3], dtype=torch.int8))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_15():
+    """测试变量传参"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([True, False, True])
+        other = torch.tensor([False, True, True])
+        args = (input, other)
+        result = torch.bitwise_and(*args)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def _test_case_16():
+    """测试标量输入 - Paddle不支持标量作为第二个参数"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([15, 7, 3], dtype=torch.int8)
+        result = torch.bitwise_and(input, 5)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_17():
+    """测试空张量"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.empty(0, dtype=torch.int8)
+        other = torch.empty(0, dtype=torch.int8)
+        result = torch.bitwise_and(input, other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_18():
+    """测试表达式参数"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([15, 7, 3], dtype=torch.int8)
+        other = torch.tensor([9, 5, 12], dtype=torch.int8)
+        result = torch.bitwise_and(input, other + 1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

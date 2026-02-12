@@ -170,7 +170,11 @@ validate_whitelist.extend(overloadable_api_aux_set)
 validate_whitelist.extend(missing_docs_whitelist.keys())
 validate_whitelist.extend(missing_matchers_whitelist.keys())
 
-no_need_convert_list = GlobalManager.NO_NEED_CONVERT_LIST
+no_need_convert_list = [
+    k
+    for k, v in GlobalManager.API_MAPPING.items()
+    if v.get("Matcher") == "ChangePrefixMatcher"
+]
 for api in no_need_convert_list:
     print(api)
 
@@ -312,7 +316,7 @@ def check_mapping_args(paconvert_item, doc_item):
 
     # 用副本作为检查来源，避免 inplace 修改出现问题
     for k, v in kwargs_change.copy().items():
-        index = f"{k}:{v}"
+        index = f"{k}: {v}"
 
         if index in KWARGS_CHANGE_CHANGE_DICT:
             kwargs_change.pop(k)
