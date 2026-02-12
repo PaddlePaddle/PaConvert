@@ -11299,26 +11299,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.randint": {
-    "Matcher": "RandintMatcher",
-    "paddle_api": "paddle.randint",
-    "min_input_args": 2,
-    "args_list": [
-      "low",
-      "high",
-      "size",
-      "*",
-      "generator",
-      "out",
-      "dtype",
-      "layout",
-      "device",
-      "pin_memory",
-      "requires_grad"
-    ],
-    "kwargs_change": {
-      "size": "shape",
-      "dtype": "dtype"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.randint_like": {
     "Matcher": "RandintLikeMatcher",
