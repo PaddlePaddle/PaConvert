@@ -38,9 +38,7 @@ def test_case_2():
         result = torch.max_pool3d(input, 3, 1, 1, 2, True)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="dilation is not suppored now"
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -73,12 +71,7 @@ def test_case_5():
         result, indices = torch.max_pool3d(input, 2, 2, 1, ceil_mode=True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result", "indices"],
-        check_dtype=False,
-        reason="torch indices dtype is int64, while paddle is int32",
-    )
+    obj.run(pytorch_code, ["result", "indices"])
 
 
 def test_case_6():
@@ -89,9 +82,7 @@ def test_case_6():
         result = torch.max_pool3d(input=input, kernel_size=(2, 2, 2), stride=(2, 1, 1), padding=1, dilation=1, ceil_mode=True)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="dilation is not suppored now"
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_7():
@@ -102,6 +93,4 @@ def test_case_7():
         result = torch.max_pool3d(input=input, dilation=1, kernel_size=(2, 2, 2), padding=1, stride=(2, 1, 1), ceil_mode=True)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="dilation is not suppored now"
-    )
+    obj.run(pytorch_code, ["result"])
