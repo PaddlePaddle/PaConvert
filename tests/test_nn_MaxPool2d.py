@@ -79,10 +79,14 @@ def test_case_5():
         x = torch.tensor([[[[0., 1., 2., 3.], [4., 5., 6., 7.]]]])
         model = nn.MaxPool2d(kernel_size=2, stride=1, padding=1, return_indices=True)
         result, indices = model(x)
-        indices = indices.to(torch.int64)
         """
     )
-    obj.run(pytorch_code, ["result", "indices"])
+    obj.run(
+        pytorch_code,
+        ["result", "indices"],
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
+    )
 
 
 def test_case_6():
@@ -91,15 +95,15 @@ def test_case_6():
         import torch
         import torch.nn as nn
         x = torch.tensor([[[[0., 1., 2., 3.], [4., 5., 6., 7.]]]])
-        model = nn.MaxPool2d(kernel_size=2, stride=1, dilation=2,return_indices=True)
+        model = nn.MaxPool2d(kernel_size=2, stride=1, dilation=(1, 2), return_indices=True)
         result, indices = model(x)
         """
     )
     obj.run(
         pytorch_code,
         ["result", "indices"],
-        unsupport=True,
-        reason="paddle.nn.MaxPool2D dose not support 'dilation' now!",
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
     )
 
 
@@ -116,8 +120,8 @@ def test_case_7():
     obj.run(
         pytorch_code,
         ["result", "indices"],
-        unsupport=True,
-        reason="paddle.nn.MaxPool2D dose not support 'dilation' now!",
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
     )
 
 
@@ -134,8 +138,8 @@ def test_case_8():
     obj.run(
         pytorch_code,
         ["result", "indices"],
-        unsupport=True,
-        reason="paddle.nn.MaxPool2D dose not support 'dilation' now!",
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
     )
 
 
@@ -152,6 +156,6 @@ def test_case_9():
     obj.run(
         pytorch_code,
         ["result", "indices"],
-        unsupport=True,
-        reason="paddle.nn.MaxPool2D dose not support 'dilation' now!",
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
     )

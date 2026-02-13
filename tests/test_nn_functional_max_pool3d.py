@@ -37,11 +37,14 @@ def test_case_2():
         import torch
         import torch.nn.functional as F
         input = torch.arange(4800, dtype=torch.float32).reshape(2, 3, 8, 10, 10)
-        result = F.max_pool3d(input , 3, 1, 1, 2, True, True)
+        result, indices = F.max_pool3d(input , 3, 1, 1, 2, True, True)
         """
     )
     obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="dilation is not suppored now"
+        pytorch_code,
+        ["result", "indices"],
+        check_dtype=False,
+        reason="torch indices dtype is int64, while paddle is int32",
     )
 
 
@@ -54,9 +57,7 @@ def test_case_3():
         result = F.max_pool3d(input=input, kernel_size=3, stride=1, padding=1, dilation=2, ceil_mode=True, return_indices=False)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="dilation is not supported now"
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -126,6 +127,4 @@ def test_case_8():
         result = F.max_pool3d(input, 3, 1, 1, 2, True, False)
         """
     )
-    obj.run(
-        pytorch_code, ["result"], unsupport=True, reason="dilation is not supported now"
-    )
+    obj.run(pytorch_code, ["result"])

@@ -20,61 +20,60 @@ obj = APIBase("torch.Tensor.lerp_")
 
 
 def test_case_1():
+    """positional arguments"""
     pytorch_code = textwrap.dedent(
         """
         import torch
         start = torch.tensor([1., 2., 3., 4.])
-        end = torch.tensor([10., 10., 10., 10.])
-        weight = torch.tensor([0.5, 1, 0.3, 0.6])
-        result = start.lerp_(end, weight)
+        result = start.lerp_(torch.tensor([10., 10., 10., 10.]), 0.5)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "start"])
 
 
 def test_case_2():
+    """keyword arguments"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        weight = torch.tensor([0.5, 1, 0.3, 0.6])
-        result = torch.tensor([1., 2., 3., 4.]).lerp_(torch.tensor([10., 10., 10., 10.]), weight)
+        start = torch.tensor([1., 2., 3., 4.])
+        result = start.lerp_(end=torch.tensor([10., 10., 10., 10.]), weight=0.5)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "start"])
 
 
 def test_case_3():
+    """reordered kwargs"""
     pytorch_code = textwrap.dedent(
         """
         import torch
         start = torch.tensor([1., 2., 3., 4.])
-        end = torch.tensor([10., 10., 10., 10.])
-        weight = torch.tensor([0.5, 1, 0.3, 0.6])
-        result = start.lerp_(end=end, weight=weight)
+        result = start.lerp_(weight=0.5, end=torch.tensor([10., 10., 10., 10.]))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "start"])
 
 
 def test_case_4():
+    """weight as tensor"""
     pytorch_code = textwrap.dedent(
         """
         import torch
         start = torch.tensor([1., 2., 3., 4.])
-        end = torch.tensor([10., 10., 10., 10.])
-        result = start.lerp_(end=end, weight=0.5)
+        result = start.lerp_(torch.tensor([10., 10., 10., 10.]), torch.tensor([0.1, 0.3, 0.5, 0.7]))
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "start"])
 
 
 def test_case_5():
+    """2D tensor"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        start = torch.tensor([1., 2., 3., 4.])
-        end = torch.tensor([10., 10., 10., 10.])
-        result = start.lerp_(weight=0.5, end=end)
+        start = torch.tensor([[1., 2.], [3., 4.]])
+        result = start.lerp_(torch.tensor([[10., 10.], [10., 10.]]), 0.5)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "start"])
