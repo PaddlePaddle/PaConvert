@@ -50,7 +50,12 @@ def test_case_3():
         result = torch.masked_fill(mask=x>0, input=x, value=2)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    paddle_code = (
+        "import paddle\n\n"
+        "x = paddle.ones(2, 4)\n"
+        "result = paddle.masked_fill(mask=x > 0, input=x, value=2)"
+    )
+    obj.run(pytorch_code, expect_paddle_code=paddle_code)
 
 
 def test_case_4():
@@ -62,7 +67,13 @@ def test_case_4():
         result = torch.masked_fill(input=x, mask=mask, value=2)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    paddle_code = (
+        "import paddle\n\n"
+        "x = paddle.ones(2, 4)\n"
+        "mask = x > 0\n"
+        "result = paddle.masked_fill(input=x, mask=mask, value=2)"
+    )
+    obj.run(pytorch_code, expect_paddle_code=paddle_code)
 
 
 def test_case_5():
