@@ -88,3 +88,133 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_7():
+    """Mixed positional and keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([5, 10, 15])
+        b = torch.tensor([3, 4, 5])
+        result = torch.gcd(a, other=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """2D tensor input"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[12, 18], [24, 36]])
+        b = torch.tensor([[8, 6], [16, 12]])
+        result = torch.gcd(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """Negative values"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([-5, 10, -15])
+        b = torch.tensor([3, -4, -5])
+        result = torch.gcd(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """Broadcasting"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[12, 18, 24]])
+        b = torch.tensor([6])
+        result = torch.gcd(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    """Out parameter with positional args"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([5, 10, 15])
+        b = torch.tensor([3, 4, 5])
+        out = torch.empty(3, dtype=torch.int64)
+        result = torch.gcd(a, b, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_12():
+    """3D tensor input"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[[12, 18], [24, 36]], [[8, 14], [20, 28]]])
+        b = torch.tensor([[[4, 6], [8, 12]], [[2, 7], [10, 14]]])
+        result = torch.gcd(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    """int32 dtype"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([5, 10, 15], dtype=torch.int32)
+        b = torch.tensor([3, 4, 5], dtype=torch.int32)
+        result = torch.gcd(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    """Variable arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([12, 18, 24])
+        y = torch.tensor([8, 6, 16])
+        result = torch.gcd(x, y)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_15():
+    """Zero values"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0, 10, 0])
+        b = torch.tensor([5, 0, 0])
+        result = torch.gcd(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_16():
+    """Expression as argument"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([5, 10, 15])
+        result = torch.gcd(a, torch.tensor([3, 4, 5]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
