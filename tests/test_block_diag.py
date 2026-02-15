@@ -93,3 +93,16 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """Test with expression arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        A = torch.tensor([[1, 2], [3, 4]])
+        B = torch.tensor([[5, 6], [7, 8]])
+        result = torch.block_diag(A + 1, B * 2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

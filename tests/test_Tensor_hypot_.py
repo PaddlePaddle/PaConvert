@@ -76,3 +76,16 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result", "a"])
+
+
+def test_case_6():
+    """Test with keyword arguments and expression"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([3., 4., 5.])
+        b = torch.tensor([1., 2., 3.])
+        result = a.hypot_(other=b*2)
+        """
+    )
+    obj.run(pytorch_code, ["result", "a"])

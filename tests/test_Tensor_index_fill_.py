@@ -84,3 +84,112 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result", "x"])
+
+
+def test_case_6():
+    """Mixed positional and keyword arguments test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.eye(3, 4)
+        indices = torch.tensor([0, 1])
+        result = x.index_fill_(0, index=indices, value=-1)
+        """
+    )
+    obj.run(pytorch_code, ["result", "x"])
+
+
+def test_case_7():
+    """Expression argument test for dim"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.eye(3, 4)
+        indices = torch.tensor([0, 1])
+        result = x.index_fill_(1 + 0, indices, -1)
+        """
+    )
+    obj.run(pytorch_code, ["result", "x"])
+
+
+def test_case_8():
+    """Float64 dtype test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.eye(3, 4, dtype=torch.float64)
+        indices = torch.tensor([0, 1])
+        value = -2.5
+        result = x.index_fill_(0, indices, value)
+        """
+    )
+    obj.run(pytorch_code, ["result", "x"])
+
+
+def test_case_9():
+    """3D tensor test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones(2, 3, 4)
+        indices = torch.tensor([0, 2])
+        value = -1
+        result = x.index_fill_(1, indices, value)
+        """
+    )
+    obj.run(pytorch_code, ["result", "x"])
+
+
+def test_case_10():
+    """4D tensor test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones(2, 3, 4, 5)
+        indices = torch.tensor([0, 1, 3])
+        value = -1
+        result = x.index_fill_(2, indices, value)
+        """
+    )
+    obj.run(pytorch_code, ["result", "x"])
+
+
+def test_case_11():
+    """Tensor value parameter test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.eye(3, 4)
+        indices = torch.tensor([0, 1])
+        value = torch.tensor(-1.0)
+        result = x.index_fill_(0, indices, value)
+        """
+    )
+    obj.run(pytorch_code, ["result", "x"])
+
+
+def test_case_12():
+    """Int32 dtype test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones(3, 4, dtype=torch.int32)
+        indices = torch.tensor([0, 1])
+        value = -1
+        result = x.index_fill_(0, indices, value)
+        """
+    )
+    obj.run(pytorch_code, ["result", "x"])
+
+
+def test_case_13():
+    """Out of order keyword arguments with all parameters"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.eye(3, 4)
+        indices = torch.tensor([0, 1])
+        result = x.index_fill_(value=-1, index=indices, dim=0)
+        """
+    )
+    obj.run(pytorch_code, ["result", "x"])

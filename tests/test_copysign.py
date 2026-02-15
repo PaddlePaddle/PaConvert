@@ -99,3 +99,29 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result", "a"])
+
+
+def test_case_7():
+    """Test with expression arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1.0, 2.0, 3.0])
+        b = torch.tensor([-1.0, 1.0, -1.0])
+        result = torch.copysign(a + 1, b * 2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """Test with mixed keyword and positional arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1.0, -2.0, 3.0])
+        b = torch.tensor([-1.0, 1.0, -1.0])
+        result = torch.copysign(a, other=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
