@@ -95,3 +95,104 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 2., 3.], [4., 5., 6.]])
+        b = torch.tensor([[1., 2.], [3., 4.], [5., 6.]])
+        result = torch.mm(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 2., 3.], [4., 5., 6.]])
+        b = torch.tensor([[1., 2.], [3., 4.], [5., 6.]])
+        result = torch.mm(input=a, mat2=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 2.], [3., 4.], [5., 6.]])
+        b = torch.tensor([[1., 2., 3., 4.], [5., 6., 7., 8.]])
+        result = torch.mm(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 2.], [4., 5.]], dtype=torch.float64)
+        b = torch.tensor([[1., 3.], [3., 6.]], dtype=torch.float64)
+        result = torch.mm(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 2., 3.], [4., 5., 6.], [7., 8., 9.]])
+        b = torch.tensor([[9., 8., 7.], [6., 5., 4.], [3., 2., 1.]])
+        result = torch.mm(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 2.], [4., 5.]])
+        b = torch.tensor([[1., 3.], [3., 6.]])
+        args = (a, b)
+        result = torch.mm(*args)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 2.], [4., 5.]], requires_grad=True)
+        b = torch.tensor([[1., 3.], [3., 6.]], requires_grad=True)
+        result = torch.mm(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_stop_gradient=False)
+
+
+# Paddle leaf tensor .grad returns None in exec() context, framework mechanism difference
+def _test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 2.], [4., 5.]], requires_grad=True)
+        b = torch.tensor([[1., 3.], [3., 6.]], requires_grad=True)
+        result = torch.mm(a, b)
+        result.sum().backward()
+        a_grad = a.grad
+        b_grad = b.grad
+        """
+    )
+    obj.run(pytorch_code, ["result", "a_grad", "b_grad"], check_stop_gradient=False)
