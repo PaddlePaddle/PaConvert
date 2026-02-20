@@ -8447,15 +8447,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.ParameterDict": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.ParameterDict",
-    "min_input_args": 0,
-    "args_list": [
-      "values"
-    ],
-    "kwargs_change": {
-      "values": "parameters"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.ParameterList": {
     "Matcher": "GenericMatcher",
