@@ -92,3 +92,151 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        choices = nn.ParameterDict(parameters={
+            'a': nn.Parameter(torch.ones(2, 3)),
+            'b': nn.Parameter(torch.zeros(4)),
+        })
+        result = list(choices)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        choices = nn.ParameterDict([
+            ('a', nn.Parameter(torch.ones(2, 3))),
+            ('b', nn.Parameter(torch.zeros(4))),
+        ])
+        result = list(choices)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        choices = nn.ParameterDict({'w': nn.Parameter(torch.ones(2, 3))})
+        result = choices['w']
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_stop_gradient=False)
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        choices = nn.ParameterDict({
+            'a': nn.Parameter(torch.ones(1)),
+            'b': nn.Parameter(torch.ones(2)),
+            'c': nn.Parameter(torch.ones(3)),
+        })
+        result = len(choices)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# Paddle ParameterDict does not support keys() method
+def _test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        choices = nn.ParameterDict({
+            'a': nn.Parameter(torch.ones(1)),
+            'b': nn.Parameter(torch.ones(2)),
+        })
+        result = list(choices.keys())
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# Paddle ParameterDict does not support values() method
+def _test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        choices = nn.ParameterDict({
+            'a': nn.Parameter(torch.ones(2, 3)),
+            'b': nn.Parameter(torch.zeros(4)),
+        })
+        result = list(choices.values())
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_stop_gradient=False)
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        choices = nn.ParameterDict({'a': nn.Parameter(torch.ones(2))})
+        result = 'a' in choices
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        choices = nn.ParameterDict(parameters={
+            'a': nn.Parameter(torch.ones(2, 3)),
+            'b': nn.Parameter(torch.zeros(4)),
+        })
+        result = choices['a']
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_stop_gradient=False)
+
+
+def test_case_15():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        choices = nn.ParameterDict(parameters={
+            'a': nn.Parameter(torch.ones(2, 3)),
+            'b': nn.Parameter(torch.zeros(4)),
+        })
+        result = choices['b']
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_stop_gradient=False)
+
+
+# Paddle ParameterDict does not support pop() method
+def _test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        choices = nn.ParameterDict({
+            'a': nn.Parameter(torch.ones(2, 3)),
+            'b': nn.Parameter(torch.zeros(4)),
+        })
+        result = choices.pop('a')
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_stop_gradient=False)
