@@ -76,3 +76,41 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[3., 5.], [8., 12.]])
+        b = torch.tensor([4., 12.])
+        result = a.hypot(other=b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[3., 5.], [8., 12.]])
+        b = torch.tensor([4., 12.])
+        result = a.hypot(other=b+0.5)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([3., 4., 5.], requires_grad=True)
+        b = torch.tensor([4., 3., 12.])
+        y = a.hypot(b)
+        y.sum().backward()
+        a_grad = a.grad
+        """
+    )
+    obj.run(pytorch_code, ["y", "a_grad"], check_stop_gradient=False)

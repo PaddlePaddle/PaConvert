@@ -94,3 +94,28 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[3.0, 5.0], [8.0, 12.0]])
+        y = torch.tensor([4.0, 12.0])
+        args = (x, y)
+        result = torch.hypot(*args)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[3.0, 5.0], [8.0, 12.0]], dtype=torch.float32)
+        y = torch.tensor([[4.0, 12.0], [15.0, 16.0]], dtype=torch.float32)
+        result = torch.hypot(other=y, input=x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
