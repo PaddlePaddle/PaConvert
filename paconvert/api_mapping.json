@@ -431,14 +431,7 @@
     ]
   },
   "torch.Tensor.addcmul": {
-    "Matcher": "AddCMulMatcher",
-    "min_input_args": 2,
-    "args_list": [
-      "tensor1",
-      "tensor2",
-      "*",
-      "value"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.addcmul_": {
     "Matcher": "AddCMul_Matcher",
@@ -3370,16 +3363,7 @@
     ]
   },
   "torch.addcmul": {
-    "Matcher": "AddCMulMatcher",
-    "min_input_args": 3,
-    "args_list": [
-      "input",
-      "tensor1",
-      "tensor2",
-      "*",
-      "value",
-      "out"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.addmm": {
     "Matcher": "ChangePrefixMatcher"
