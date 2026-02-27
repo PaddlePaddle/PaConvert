@@ -1379,26 +1379,10 @@
     }
   },
   "torch.Tensor.hypot": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.hypot",
-    "min_input_args": 1,
-    "args_list": [
-      "other"
-    ],
-    "kwargs_change": {
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.hypot_": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.hypot_",
-    "min_input_args": 1,
-    "args_list": [
-      "other"
-    ],
-    "kwargs_change": {
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.i0": {
     "Matcher": "ChangePrefixMatcher"
@@ -6129,19 +6113,7 @@
     }
   },
   "torch.hypot": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.hypot",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "other",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.i0": {
     "Matcher": "ChangePrefixMatcher"
