@@ -797,15 +797,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.count_nonzero": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.count_nonzero",
-    "min_input_args": 0,
-    "args_list": [
-      "dim"
-    ],
-    "kwargs_change": {
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.cov": {
     "Matcher": "GenericMatcher",
@@ -3921,17 +3913,7 @@
   },
   "torch.cosine_embedding_loss": {},
   "torch.count_nonzero": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.count_nonzero",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "dim"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.cov": {
     "Matcher": "GenericMatcher",
