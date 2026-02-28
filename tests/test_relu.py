@@ -41,3 +41,111 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    """1D tensor input"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([-1.5, -0.5, 0.0, 0.5, 1.5])
+        result = torch.relu(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    """2D tensor input"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[-1.0, 2.0], [3.0, -4.0]])
+        result = torch.relu(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    """float64 dtype"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([-1.5, -0.5, 0.0, 0.5, 1.5], dtype=torch.float64)
+        result = torch.relu(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    """4D tensor (batch, channel, height, width)"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[[[-1.0, 2.0], [3.0, -4.0]], [[0.5, -0.5], [-1.5, 1.5]]]])
+        result = torch.relu(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """All negative values"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([-1.0, -2.0, -3.0, -4.0])
+        result = torch.relu(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """All positive values"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1.0, 2.0, 3.0, 4.0])
+        result = torch.relu(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """Mixed positive and negative values"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([-1.0, 0.0, 1.0, 2.0])
+        result = torch.relu(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """3D tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[[-1.0, 0.5, 1.0], [2.0, -0.5, -1.5]]])
+        result = torch.relu(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    """Expression as input"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1.0, 2.0, 3.0])
+        result = torch.relu(x - 2.0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
