@@ -66,3 +66,29 @@ def _test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    """Test with keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1.0, -2.0, 3.0])
+        b = torch.tensor([-1.0, 1.0, -1.0])
+        result = a.copysign_(other=b)
+        """
+    )
+    obj.run(pytorch_code, ["result", "a"])
+
+
+def test_case_6():
+    """Test with expression arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1.0, 2.0, 3.0])
+        b = torch.tensor([-1.0, 1.0, -1.0])
+        result = a.copysign_(b * 2)
+        """
+    )
+    obj.run(pytorch_code, ["result", "a"])

@@ -80,3 +80,29 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    """Test with expression arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones(3, 4)
+        indices = torch.tensor([0, 2])
+        result = x.index_fill(1, indices, 2 + 3)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """Test with mixed keyword and positional arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.eye(4, 5)
+        indices = torch.tensor([1, 3])
+        result = x.index_fill(0, index=indices, value=-2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

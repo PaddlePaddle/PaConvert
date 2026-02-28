@@ -56,3 +56,45 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["x"])
+
+
+def test_case_4():
+    """Test with expression argument"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 1.,  1.,  1.],
+                            [ 2.,  2.,  2.],
+                            [ 3.,  3.,  3.]])
+        x.renorm_(1 + 1, 0, 4 + 1)
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
+def test_case_5():
+    """Test with mixed positional and keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 1.,  1.,  1.],
+                            [ 2.,  2.,  2.],
+                            [ 3.,  3.,  3.]])
+        x.renorm_(1, dim=0, maxnorm=5)
+        """
+    )
+    obj.run(pytorch_code, ["x"])
+
+
+def test_case_6():
+    """Test with different p value"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 1.,  1.,  1.],
+                            [ 2.,  2.,  2.],
+                            [ 3.,  3.,  3.]])
+        x.renorm_(p=2, dim=1, maxnorm=3)
+        """
+    )
+    obj.run(pytorch_code, ["x"])
