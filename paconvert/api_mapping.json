@@ -7013,15 +7013,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.mm": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.mm",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "mat2",
-      "*",
-      "out"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.mode": {
     "Matcher": "DoubleAssignMatcher",
