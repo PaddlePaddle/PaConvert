@@ -1530,15 +1530,7 @@
     }
   },
   "torch.Tensor.ldexp_": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.ldexp_",
-    "min_input_args": 1,
-    "args_list": [
-      "other"
-    ],
-    "kwargs_change": {
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.le": {
     "Matcher": "ChangePrefixMatcher"
