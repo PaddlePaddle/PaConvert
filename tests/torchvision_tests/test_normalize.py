@@ -17,17 +17,16 @@ import textwrap
 from apibase import APIBase
 from torchvision_tests.image_apibase import ImageAPIBase
 
-obj = APIBase("torchvision.transforms.functional.normalize")
-img_obj = ImageAPIBase("torchvision.transforms.functional.normalize")
+obj = APIBase("torchvision.transforms.Normalize")
+img_obj = ImageAPIBase("torchvision.transforms.Normalize")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torchvision.transforms.functional as F
-        mean = 0.5, 0.5, 0.5
-        std = [0.5, 0.5, 0.5]
+        import torchvision.transforms as transforms
+        normalize = transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
         img = torch.tensor([
             [[0.5, 0.5],
              [0.5, 0.5]],
@@ -36,7 +35,7 @@ def test_case_1():
             [[0.5, 0.5],
              [0.5, 0.5]]
         ])
-        result = F.normalize(img, mean, std)
+        result = normalize(img)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -46,12 +45,22 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torchvision.transforms.functional as F
+        import torchvision.transforms as transforms
+        mean = [0.0, 0.0, 0.0]
+        std = [1.0, 1.0, 1.0]
+        normalize = transforms.Normalize(std=std, mean=mean)
         img = torch.tensor([
-            [[0.2, 0.4],
-             [0.6, 0.8]]
+            [[1.0, 2.0, 3.0],
+             [4.0, 5.0, 6.0],
+             [7.0, 8.0, 9.0]],
+            [[10.0, 11.0, 12.0],
+             [13.0, 14.0, 15.0],
+             [16.0, 17.0, 18.0]],
+            [[19.0, 20.0, 21.0],
+             [22.0, 23.0, 24.0],
+             [25.0, 26.0, 27.0]]
         ])
-        result = F.normalize(tensor=img, mean=0.5, std=[0.5])
+        result = normalize(img)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -61,9 +70,8 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torchvision.transforms.functional as F
-        mean = [0.485, 0.456, 0.406]
-        std = [0.229, 0.224, 0.225]
+        import torchvision.transforms as transforms
+        normalize = transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
         img = torch.tensor([
             [
                 [[0.5, 0.5, 0.5, 0.5],
@@ -94,7 +102,7 @@ def test_case_3():
                  [0.8, 0.8, 0.8, 0.8]]
             ]
         ])
-        result = F.normalize(tensor=img, std=std, mean=mean)
+        result = normalize(img)
         """
     )
     obj.run(pytorch_code, ["result"])

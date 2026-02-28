@@ -17,18 +17,15 @@ import textwrap
 from apibase import APIBase
 from torchvision_tests.image_apibase import ImageAPIBase
 
-obj = APIBase("torchvision.transforms.functional.pad")
-img_obj = ImageAPIBase("torchvision.transforms.functional.pad")
+obj = APIBase("torchvision.transforms.Pad")
+img_obj = ImageAPIBase("torchvision.transforms.Pad")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torchvision.transforms.functional as F
-        padding = 2
-        fill = 0
-        padding_mode = 'constant'
+        from torchvision.transforms import Pad
         img = torch.tensor([
             [[1, 2],
              [3, 4]],
@@ -37,7 +34,8 @@ def test_case_1():
             [[9, 10],
              [11, 12]]
         ], dtype=torch.float)
-        result = F.pad(img=img, padding=padding, fill=fill, padding_mode=padding_mode)
+        pad = Pad(padding=2, fill=0, padding_mode='constant')
+        result = pad(img)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -47,7 +45,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torchvision.transforms.functional as F
+        from torchvision.transforms import Pad
+        padding = [1, 2, 3, 4]
+        fill = 1.0
+        padding_mode = 'constant'
         img = torch.tensor([
             [[1, 2, 3],
              [4, 5, 6],
@@ -59,7 +60,8 @@ def test_case_2():
              [22, 23, 24],
              [25, 26, 27]]
         ], dtype=torch.float)
-        result = F.pad(img, padding=[1, 2, 3, 4], fill=1.0, padding_mode='constant')
+        pad = Pad(padding, fill, padding_mode)
+        result = pad(img)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -69,12 +71,13 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         from PIL import Image
-        import torchvision.transforms.functional as F
+        from torchvision.transforms import Pad
         padding = [2, 3]
         fill = (255, 0, 0)
         padding_mode = 'constant'
         img = Image.new('RGB', (2, 2), color=(0, 255, 0))
-        result = F.pad(padding=padding, fill=fill, padding_mode=padding_mode, img=img)
+        pad = Pad(padding=padding, fill=fill, padding_mode=padding_mode)
+        result = pad(img)
         """
     )
     img_obj.run(pytorch_code, ["result"])
@@ -84,7 +87,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         from PIL import Image
-        import torchvision.transforms.functional as F
+        from torchvision.transforms import Pad
         padding = 1
         padding_mode = 'reflect'
         img = Image.new('L', (3, 3))
@@ -97,7 +100,8 @@ def test_case_4():
         img.putpixel((0, 2), 150)
         img.putpixel((1, 2), 200)
         img.putpixel((2, 2), 250)
-        result = F.pad(img, padding, padding_mode=padding_mode)
+        pad = Pad(padding=padding, padding_mode=padding_mode)
+        result = pad(img)
         """
     )
     img_obj.run(pytorch_code, ["result"])
@@ -107,14 +111,15 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         from PIL import Image
-        import torchvision.transforms.functional as F
+        from torchvision.transforms import Pad
         padding = [1, 1, 1, 1]
         fill = (0, 0, 255, 128)
         padding_mode = 'symmetric'
         img = Image.new('RGBA', (5, 5), color=(0, 0, 255, 128))
         img.putpixel((0, 0), (255, 0, 0, 255))
         img.putpixel((4, 4), (0, 255, 0, 255))
-        result = F.pad(img, padding, fill, padding_mode)
+        pad = Pad(padding=padding, fill=fill, padding_mode=padding_mode)
+        result = pad(img)
         """
     )
     img_obj.run(pytorch_code, ["result"])
