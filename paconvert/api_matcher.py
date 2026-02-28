@@ -355,17 +355,6 @@ class InferenceModeMatcher(BaseMatcher):
         return code
 
 
-# TODO: fix torch.atleast bug, which not support input list/tuple
-class AtleastMatcher(BaseMatcher):
-    def get_paddle_nodes(self, args, kwargs):
-        new_args = self.parse_args(args)
-        if len(args) > 0 and isinstance(args[0], (ast.List, ast.Tuple)):
-            code = "{}(*{})".format(self.get_paddle_api(), self.args_to_str(new_args))
-        else:
-            code = "{}({})".format(self.get_paddle_api(), self.args_to_str(new_args))
-        return ast.parse(code).body
-
-
 class EinopsTorchMatcher(BaseMatcher):
     def get_paddle_api(self):
         return self.torch_api.replace("einops.layers.torch", "einops.layers.paddle")
@@ -2773,107 +2762,37 @@ class LogAddExp2Matcher(BaseMatcher):
 
 class StdMeanMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "correction" in kwargs:
-            kwargs["unbiased"] = kwargs.pop("correction")
-        elif "unbiased" in kwargs:
-            # do nothing
-            pass
-        else:
-            kwargs["unbiased"] = True
-
-        if "keepdim" not in kwargs:
-            kwargs["keepdim"] = False
-
-        if "dim" not in kwargs:
-            kwargs["dim"] = None
-
-        if "out" in kwargs and kwargs["out"] != "None":
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.assign(paddle.std({}, axis={}, unbiased={}, keepdim={}), output={}[0])
-                paddle.assign(paddle.mean({}, axis={}, keepdim={}), output={}[1])
-                """
-            )
-            code = API_TEMPLATE.format(
-                kwargs["input"],
-                kwargs["dim"],
-                kwargs["unbiased"],
-                kwargs["keepdim"],
-                kwargs["out"],
-                kwargs["input"],
-                kwargs["dim"],
-                kwargs["keepdim"],
-                kwargs["out"],
-            )
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                tuple([paddle.std({}, axis={}, unbiased={}, keepdim={}), paddle.mean({}, axis={}, keepdim={})])
-                """
-            )
-            code = API_TEMPLATE.format(
-                kwargs["input"],
-                kwargs["dim"],
-                kwargs["unbiased"],
-                kwargs["keepdim"],
-                kwargs["input"],
-                kwargs["dim"],
-                kwargs["keepdim"],
-            )
-
+        std_kwargs = kwargs.copy()
+        kwargs.pop("unbiased", None)
+        kwargs.pop("correction", None)
+        mean_kwargs = kwargs
+        API_TEMPLATE = textwrap.dedent(
+            """
+            (paddle.std({}), paddle.mean({}))
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.kwargs_to_str(std_kwargs),
+            self.kwargs_to_str(mean_kwargs),
+        )
         return code
 
 
 class VarMeanMatcher(BaseMatcher):
     def generate_code(self, kwargs):
-        if "correction" in kwargs:
-            kwargs["unbiased"] = kwargs.pop("correction")
-        elif "unbiased" in kwargs:
-            # do nothing
-            pass
-        else:
-            kwargs["unbiased"] = True
-
-        if "keepdim" not in kwargs:
-            kwargs["keepdim"] = False
-
-        if "dim" not in kwargs:
-            kwargs["dim"] = None
-
-        if "out" in kwargs and kwargs["out"] != "None":
-            API_TEMPLATE = textwrap.dedent(
-                """
-                paddle.assign(paddle.var({}, axis={}, unbiased={}, keepdim={}), output={}[0])
-                paddle.assign(paddle.mean({}, axis={}, keepdim={}), output={}[1])
-                """
-            )
-            code = API_TEMPLATE.format(
-                kwargs["input"],
-                kwargs["dim"],
-                kwargs["unbiased"],
-                kwargs["keepdim"],
-                kwargs["out"],
-                kwargs["input"],
-                kwargs["dim"],
-                kwargs["keepdim"],
-                kwargs["out"],
-            )
-        else:
-            API_TEMPLATE = textwrap.dedent(
-                """
-                tuple([paddle.var({}, axis={}, unbiased={}, keepdim={}), paddle.mean({}, axis={}, keepdim={})])
-                """
-            )
-            code = API_TEMPLATE.format(
-                kwargs["input"],
-                kwargs["dim"],
-                kwargs["unbiased"],
-                kwargs["keepdim"],
-                kwargs["input"],
-                kwargs["dim"],
-                kwargs["keepdim"],
-            )
-
+        var_kwargs = kwargs.copy()
+        kwargs.pop("unbiased", None)
+        kwargs.pop("correction", None)
+        mean_kwargs = kwargs
+        API_TEMPLATE = textwrap.dedent(
+            """
+            (paddle.var({}), paddle.mean({}))
+            """
+        )
+        code = API_TEMPLATE.format(
+            self.kwargs_to_str(var_kwargs),
+            self.kwargs_to_str(mean_kwargs),
+        )
         return code
 
 
@@ -4852,16 +4771,15 @@ class Device2IntMatcher(BaseMatcher):
             """
             def device2int(device):
                 if isinstance(device, str):
-                    device = device.replace('cuda', 'gpu')
-                    device = device.replace('gpu:', '')
+                    device = device.replace('cuda:', '')
                 return int(device)
             """
         )
         return CODE_TEMPLATE
 
     def generate_code(self, kwargs):
-        self.enable_utils_code()
         if "device" in kwargs:
+            self.enable_utils_code()
             kwargs["device_id"] = "device2int({})".format(kwargs.pop("device"))
         if "non_blocking" in kwargs:
             kwargs["blocking"] = f"not {kwargs.pop('non_blocking')}"

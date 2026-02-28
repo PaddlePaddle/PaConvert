@@ -21,7 +21,6 @@ obj = APIBase("torch.utils.data.Subset")
 
 def generate_torch_code(Subset_segment):
     code_template = f"""
-        import torch
         from torch.utils.data import Dataset, Subset
         class MyDataset(Dataset):
             def __init__(self, size=10):
@@ -57,20 +56,71 @@ def test_case_2():
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
-        generate_torch_code("Subset(MyDataset(10), [9, 1, 3])")
+        """
+        import torch.utils.data as data
+        class MyDataset(data.Dataset):
+            def __init__(self, size=10):
+                super(data.Dataset).__init__()
+                self.data = list(range(size))
+
+            def __getitem__(self, idx):
+                return self.data[idx]
+
+            def __len__(self):
+                return len(self.data)
+
+        dataset = data.Subset(MyDataset(10), [9, 1, 3])
+        result = []
+        for d in dataset:
+            result.append(d)
+        """
     )
     obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
-        generate_torch_code("Subset(dataset=MyDataset(10), indices=[9, 1, 3])")
+        """
+        import torch.utils as utils
+        class MyDataset(utils.data.Dataset):
+            def __init__(self, size=10):
+                super(utils.data.Dataset).__init__()
+                self.data = list(range(size))
+
+            def __getitem__(self, idx):
+                return self.data[idx]
+
+            def __len__(self):
+                return len(self.data)
+
+        dataset = utils.data.Subset(dataset=MyDataset(10), indices=[9, 1, 3])
+        result = []
+        for d in dataset:
+            result.append(d)
+        """
     )
     obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
     pytorch_code = textwrap.dedent(
-        generate_torch_code("Subset(indices=[9, 1, 3], dataset=MyDataset(10))")
+        """
+        import torch
+        class MyDataset(torch.utils.data.Dataset):
+            def __init__(self, size=10):
+                super(torch.utils.data.Dataset).__init__()
+                self.data = list(range(size))
+
+            def __getitem__(self, idx):
+                return self.data[idx]
+
+            def __len__(self):
+                return len(self.data)
+
+        dataset = torch.utils.data.Subset(indices=[9, 1, 3], dataset=MyDataset(10))
+        result = []
+        for d in dataset:
+            result.append(d)
+        """
     )
     obj.run(pytorch_code, ["result"])
