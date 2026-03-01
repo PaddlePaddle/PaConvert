@@ -6955,17 +6955,7 @@
   },
   "torch.margin_ranking_loss": {},
   "torch.masked_fill": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.masked_fill",
-    "min_input_args": 3,
-    "args_list": [
-      "input",
-      "mask",
-      "value"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.masked_select": {
     "Matcher": "ChangePrefixMatcher"
