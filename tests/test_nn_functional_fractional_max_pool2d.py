@@ -125,3 +125,20 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[[[ 1.1524,  0.4714,  0.2857],
+                    [-1.2533, -0.9829, -1.0981],
+                    [ 0.1507, -1.1431, -2.0361]],
+
+                [[ 0.1024, -0.4482,  0.4137],
+                    [ 0.9385,  0.4565,  0.7702],
+                    [ 0.4135, -0.2587,  0.0482]]]])
+        result, indices = torch.nn.functional.fractional_max_pool2d(input, output_size=(2,2), kernel_size=1, return_indices=True)
+        """
+    )
+    obj.run(pytorch_code, ["result", "indices"])
