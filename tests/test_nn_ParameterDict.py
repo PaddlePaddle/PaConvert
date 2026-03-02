@@ -152,8 +152,7 @@ def test_case_9():
     obj.run(pytorch_code, ["result"])
 
 
-# Paddle ParameterDict does not support keys() method
-def _test_case_10():
+def test_case_10():
     pytorch_code = textwrap.dedent(
         """
         import torch.nn as nn
@@ -168,8 +167,7 @@ def _test_case_10():
     obj.run(pytorch_code, ["result"])
 
 
-# Paddle ParameterDict does not support values() method
-def _test_case_11():
+def test_case_11():
     pytorch_code = textwrap.dedent(
         """
         import torch.nn as nn
@@ -226,8 +224,7 @@ def test_case_15():
     obj.run(pytorch_code, ["result"], check_stop_gradient=False)
 
 
-# Paddle ParameterDict does not support pop() method
-def _test_case_13():
+def test_case_13():
     pytorch_code = textwrap.dedent(
         """
         import torch.nn as nn
@@ -240,3 +237,19 @@ def _test_case_13():
         """
     )
     obj.run(pytorch_code, ["result"], check_stop_gradient=False)
+
+
+def test_case_16():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn as nn
+        import torch
+        pd1 = nn.ParameterDict({
+            'a': nn.Parameter(torch.ones(2, 3)),
+            'b': nn.Parameter(torch.zeros(4)),
+        })
+        pd2 = nn.ParameterDict(pd1)
+        result = list(pd2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
