@@ -95,3 +95,14 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.rand(1, 1, 6, 6, 6)
+        result, indices = torch.nn.functional.fractional_max_pool3d(input, output_size=(1,2,2), kernel_size=1, return_indices=True)
+        """
+    )
+    obj.run(pytorch_code, ["result", "indices"], check_value=False)
