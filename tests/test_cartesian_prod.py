@@ -75,3 +75,16 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    """Test with expression arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1, 2])
+        b = torch.tensor([3, 4])
+        result = torch.cartesian_prod(a + 1, b * 2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
