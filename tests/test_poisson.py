@@ -93,3 +93,26 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        rates = torch.linspace(0.5, 4.5, 5, dtype=torch.float64)
+        result = torch.poisson(rates)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        rates = torch.rand(2, 3) * 10
+        gen = torch.Generator()
+        args = (rates, gen)
+        result = torch.poisson(*args)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

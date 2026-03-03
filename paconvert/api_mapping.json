@@ -10833,16 +10833,7 @@
     }
   },
   "torch.poisson": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.poisson",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "generator"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.poisson_nll_loss": {},
   "torch.polar": {
