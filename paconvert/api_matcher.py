@@ -380,6 +380,7 @@ class ChangePrefixMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         args = self.parse_args(args)
         kwargs = self.parse_kwargs(kwargs, allow_none=True)
+        kwargs = self.change_kwargs(kwargs)
 
         # temporary delete these unsupport args, which paddle does not support now
         for k in ["layout", "generator", "memory_format", "sparse_grad"]:

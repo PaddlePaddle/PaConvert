@@ -2335,13 +2335,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.rot90": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.rot90",
-    "min_input_args": 0,
-    "args_list": [
-      "k",
-      "dims"
-    ],
+    "Matcher": "ChangePrefixMatcher",
     "kwargs_change": {
       "dims": "axes"
     }
@@ -11242,14 +11236,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.rot90": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.rot90",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "k",
-      "dims"
-    ],
+    "Matcher": "ChangePrefixMatcher",
     "kwargs_change": {
       "input": "x",
       "dims": "axes"
