@@ -9627,16 +9627,7 @@
     "min_input_args": 3
   },
   "torch.nn.functional.mish": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.mish",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "inplace"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.mse_loss": {
     "Matcher": "SizeAverageMatcher",
