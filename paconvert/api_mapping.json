@@ -2666,19 +2666,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.unique": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.unique",
-    "min_input_args": 0,
-    "args_list": [
-      "sorted",
-      "return_inverse",
-      "return_counts",
-      "dim"
-    ],
-    "kwargs_change": {
-      "sorted": "",
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.unique_consecutive": {
     "Matcher": "ChangePrefixMatcher"
@@ -12233,16 +12221,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.unique": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.compat.unique",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "sorted",
-      "return_inverse",
-      "return_counts",
-      "dim"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.unique_consecutive": {
     "Matcher": "ChangePrefixMatcher"
