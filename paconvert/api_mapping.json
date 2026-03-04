@@ -9542,16 +9542,7 @@
     }
   },
   "torch.nn.functional.pixel_shuffle": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.pixel_shuffle",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "upscale_factor"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.pixel_unshuffle": {
     "Matcher": "GenericMatcher",
