@@ -9436,9 +9436,6 @@
       "reduce",
       "reduction"
     ],
-    "kwargs_change": {
-      "target": "label"
-    },
     "min_input_args": 2
   },
   "torch.nn.functional.multi_margin_loss": {
