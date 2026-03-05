@@ -1491,7 +1491,14 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.isreal": {
-    "Matcher": "ChangePrefixMatcher"
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.Tensor.is_real",
+    "args_list": [
+        "input"
+    ],
+    "kwargs_change": {
+        "input": "x"
+    }
   },
   "torch.Tensor.istft": {
     "Matcher": "ChangePrefixMatcher"
@@ -6112,8 +6119,7 @@
   },
   "torch.isreal": {
     "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.isreal",
-    "min_input_args": 1,
+    "paddle_api": "paddle.is_real",
     "args_list": [
       "input"
     ],
