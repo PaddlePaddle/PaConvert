@@ -36,7 +36,7 @@ lint:
 test: unit-test
 
 unit-test:
-	PYTHONPATH=. pytest tests
+	PYTHONPATH=.:tests pytest tests
 
 # # # # # # # # # # # # # # # Coverage Block # # # # # # # # # # # # # # # 
 
