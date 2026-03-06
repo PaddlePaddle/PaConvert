@@ -87,3 +87,215 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["scaled"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        scaler = torch.cuda.amp.GradScaler(growth_factor=3.0)
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        with torch.cuda.amp.autocast():
+            loss = torch.mean(x*x).to('cpu')
+        scaled = scaler.scale(loss).cpu()
+        """
+    )
+    obj.run(pytorch_code, ["scaled"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        scaler = torch.cuda.amp.GradScaler(backoff_factor=0.25)
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        with torch.cuda.amp.autocast():
+            loss = torch.mean(x*x).to('cpu')
+        scaled = scaler.scale(loss).cpu()
+        """
+    )
+    obj.run(pytorch_code, ["scaled"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        scaler = torch.cuda.amp.GradScaler(init_scale=1024, growth_factor=3.0, backoff_factor=0.25, growth_interval=500, enabled=True)
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        with torch.cuda.amp.autocast():
+            loss = torch.mean(x*x).to('cpu')
+        scaled = scaler.scale(loss).cpu()
+        """
+    )
+    obj.run(pytorch_code, ["scaled"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        scaler = torch.cuda.amp.GradScaler(growth_interval=500, init_scale=32768, backoff_factor=0.25, growth_factor=3.0)
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        with torch.cuda.amp.autocast():
+            loss = torch.mean(x*x).to('cpu')
+        scaled = scaler.scale(loss).cpu()
+        """
+    )
+    obj.run(pytorch_code, ["scaled"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        scaler = torch.cuda.amp.GradScaler(enabled=False)
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        loss = torch.mean(x*x)
+        scaled = scaler.scale(loss).cpu()
+        """
+    )
+    obj.run(pytorch_code, ["scaled"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_8():
+    """Test with init_scale keyword argument only"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        scaler = torch.cuda.amp.GradScaler(init_scale=512)
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        with torch.cuda.amp.autocast():
+            loss = torch.mean(x*x).to('cpu')
+        scaled = scaler.scale(loss).cpu()
+        """
+    )
+    obj.run(pytorch_code, ["scaled"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_9():
+    """Test variable kwargs dict unpacking"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        kwargs = {'init_scale': 1024, 'growth_factor': 3.0, 'backoff_factor': 0.25, 'growth_interval': 500}
+        scaler = torch.cuda.amp.GradScaler(**kwargs)
+        x = torch.tensor([[[-1.3020, -0.1005,  0.5766,  0.6351, -0.8893,  0.0253, -0.1756, 1.2913],
+                            [-0.8833, -0.1369, -0.0168, -0.5409, -0.1511, -0.1240, -1.1870, -1.8816]]])
+        with torch.cuda.amp.autocast():
+            loss = torch.mean(x*x).to('cpu')
+        scaled = scaler.scale(loss).cpu()
+        """
+    )
+    obj.run(pytorch_code, ["scaled"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_10():
+    """Test get_scale() method - verify initial scale value"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        scaler = torch.cuda.amp.GradScaler(init_scale=2048)
+        result = torch.tensor([scaler.get_scale()])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_11():
+    """Test is_enabled() method with enabled=True"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        scaler = torch.cuda.amp.GradScaler(enabled=True)
+        result = torch.tensor([float(scaler.is_enabled())])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_12():
+    """Test is_enabled() method with enabled=False"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        scaler = torch.cuda.amp.GradScaler(enabled=False)
+        result = torch.tensor([float(scaler.is_enabled())])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_13():
+    """Test full training loop: scale, backward, step, update, get_scale"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        model = nn.Linear(3, 1, bias=False).cuda()
+        with torch.no_grad():
+            model.weight.fill_(0.1)
+        optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
+        scaler = torch.cuda.amp.GradScaler(init_scale=512, growth_interval=1000)
+        x = torch.tensor([[1.0, 2.0, 3.0]], device='cuda')
+        with torch.cuda.amp.autocast():
+            output = model(x)
+            loss = output.sum()
+        optimizer.zero_grad()
+        scaler.scale(loss).backward()
+        scaler.step(optimizer)
+        scaler.update()
+        result = torch.tensor([scaler.get_scale()])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
