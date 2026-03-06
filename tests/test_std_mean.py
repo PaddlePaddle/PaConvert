@@ -152,3 +152,35 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["std", "mean"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor(
+            [[ 0.2035,  1.2959,  1.8101, -0.4644],
+            [ 1.5027, -0.3270,  0.5905,  0.6538],
+            [-1.5745,  1.3330, -0.5596, -0.6548],
+            [ 0.1264, -0.5080,  1.6420,  0.1992]])
+        std, mean = torch.std_mean(input=a, correction=0, dim=1, keepdim=True)
+        """
+    )
+    paddle_code = textwrap.dedent(
+        """
+        import paddle
+
+        a = paddle.tensor(
+            [
+                [0.2035, 1.2959, 1.8101, -0.4644],
+                [1.5027, -0.327, 0.5905, 0.6538],
+                [-1.5745, 1.333, -0.5596, -0.6548],
+                [0.1264, -0.508, 1.642, 0.1992],
+            ]
+        )
+        std, mean = paddle.std(correction=0, keepdim=True, x=a, axis=1), paddle.mean(
+            keepdim=True, x=a, axis=1
+        )
+        """
+    )
+    obj.run(pytorch_code, expect_paddle_code=paddle_code)

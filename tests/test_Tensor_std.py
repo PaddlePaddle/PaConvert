@@ -95,3 +95,22 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = input.std(keepdim=True, correction=0, dim=1)
+        """
+    )
+    paddle_code = textwrap.dedent(
+        """
+        import paddle
+
+        input = paddle.tensor([[1.4907, 1.0593, 1.5696], [1.4907, 1.0593, 1.5696]])
+        result = input.std(keepdim=True, correction=0, axis=1)
+        """
+    )
+    obj.run(pytorch_code, expect_paddle_code=paddle_code)

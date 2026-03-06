@@ -166,6 +166,16 @@ class GenericMatcher(BaseMatcher):
         return code
 
 
+class StdMatcher(GenericMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        if len(args) == 1 and isinstance(args[0], ast.Starred) and len(kwargs) == 0:
+            args = self.parse_args(args)
+            code = "{}({})".format(self.get_paddle_api(), self.args_to_str(args))
+            return ast.parse(code).body
+
+        return super().get_paddle_nodes(args, kwargs)
+
+
 class SliceScatterMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         if "input" in kwargs:
@@ -381,10 +391,9 @@ class ChangePrefixMatcher(BaseMatcher):
         args = self.parse_args(args)
         kwargs = self.parse_kwargs(kwargs, allow_none=True)
 
-        # temporary delete these unsupport args, which paddle does not support now
-        for k in ["layout", "generator", "memory_format", "sparse_grad"]:
-            if k in kwargs:
-                kwargs.pop(k)
+        kwargs = self.change_kwargs(
+            kwargs, ["layout", "generator", "memory_format", "sparse_grad"]
+        )
         code = f"{self.get_paddle_api()}({self.args_and_kwargs_to_str(args, kwargs)})"
         return ast.parse(code).body
 
@@ -1447,14 +1456,67 @@ class EqualMatcher(BaseMatcher):
         return API_TEMPLATE.format(self.get_paddle_api(), self.kwargs_to_str(kwargs))
 
 
-class FAFlashAttnFuncMatcher(BaseMatcher):
+class FlashAttnMatcher(BaseMatcher):
+    OPTIONAL_UNSUPPORT_ARG_DEFAULTS = {
+        "window_size": {"None", "(-1,-1)"},
+        "softcap": {"None", "(0)", "(0.0)"},
+        "alibi_slopes": {"None"},
+        "deterministic": {"(False)"},
+        "block_table": {"None"},
+    }
+
+    def is_ignorable_unsupport_arg(self, key, value):
+        normalized_value = value.replace(" ", "")
+        return normalized_value in self.OPTIONAL_UNSUPPORT_ARG_DEFAULTS.get(key, set())
+
+    def parse_args_and_kwargs(
+        self, args, kwargs, allow_starred=False, allow_none=False
+    ):
+        args_list = self.api_mapping_dict.get("args_list") or []
+        unsupport_args = self.api_mapping_dict.get("unsupport_args") or []
+
+        if len(args) > len(args_list):
+            return "misidentify"
+
+        new_kwargs = {}
+        for i, node in enumerate(args):
+            key = args_list[i]
+            value = astor.to_source(node).replace("\n", "")
+            if key in unsupport_args:
+                if self.is_ignorable_unsupport_arg(key, value):
+                    continue
+                return None
+            new_kwargs[key] = value
+
+        for node in kwargs:
+            key = node.arg
+            if key is None:
+                if not allow_none:
+                    return None
+                continue
+
+            value = astor.to_source(node.value).replace("\n", "")
+            if key in unsupport_args:
+                if self.is_ignorable_unsupport_arg(key, value):
+                    continue
+                return None
+            new_kwargs[key] = value
+
+        return new_kwargs
+
+
+class FAFlashAttnFuncMatcher(FlashAttnMatcher):
     def generate_code(self, kwargs):
+        if kwargs.get("softmax_scale") == "None":
+            kwargs.pop("softmax_scale")
         return GenericMatcher.generate_code(self, kwargs) + "[0]"
 
 
-class FAFlashAttnUnpaddedFuncMatcher(BaseMatcher):
+class FAFlashAttnUnpaddedFuncMatcher(FlashAttnMatcher):
     def generate_code(self, kwargs):
         kwargs = self.change_kwargs(kwargs)
+        if kwargs.get("scale") == "None":
+            kwargs.pop("scale")
         if "scale" not in kwargs:
             API_TEMPLATE = textwrap.dedent(
                 """
@@ -1463,7 +1525,7 @@ class FAFlashAttnUnpaddedFuncMatcher(BaseMatcher):
                 {}({})[0]
                 """
             )
-            kwargs["scale"] = "math.sqrt({}.shape[-1])".format(kwargs["query"])
+            kwargs["scale"] = "1.0 / math.sqrt({}.shape[-1])".format(kwargs["query"])
         else:
             API_TEMPLATE = textwrap.dedent(
                 """
@@ -2763,9 +2825,18 @@ class LogAddExp2Matcher(BaseMatcher):
 class StdMeanMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         std_kwargs = kwargs.copy()
-        kwargs.pop("unbiased", None)
-        kwargs.pop("correction", None)
-        mean_kwargs = kwargs
+        if "input" in std_kwargs:
+            std_kwargs["x"] = std_kwargs.pop("input")
+        if "dim" in std_kwargs:
+            std_kwargs["axis"] = std_kwargs.pop("dim")
+
+        mean_kwargs = kwargs.copy()
+        mean_kwargs.pop("unbiased", None)
+        mean_kwargs.pop("correction", None)
+        if "input" in mean_kwargs:
+            mean_kwargs["x"] = mean_kwargs.pop("input")
+        if "dim" in mean_kwargs:
+            mean_kwargs["axis"] = mean_kwargs.pop("dim")
         API_TEMPLATE = textwrap.dedent(
             """
             (paddle.std({}), paddle.mean({}))
@@ -2781,9 +2852,18 @@ class StdMeanMatcher(BaseMatcher):
 class VarMeanMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         var_kwargs = kwargs.copy()
-        kwargs.pop("unbiased", None)
-        kwargs.pop("correction", None)
-        mean_kwargs = kwargs
+        if "input" in var_kwargs:
+            var_kwargs["x"] = var_kwargs.pop("input")
+        if "dim" in var_kwargs:
+            var_kwargs["axis"] = var_kwargs.pop("dim")
+
+        mean_kwargs = kwargs.copy()
+        mean_kwargs.pop("unbiased", None)
+        mean_kwargs.pop("correction", None)
+        if "input" in mean_kwargs:
+            mean_kwargs["x"] = mean_kwargs.pop("input")
+        if "dim" in mean_kwargs:
+            mean_kwargs["axis"] = mean_kwargs.pop("dim")
         API_TEMPLATE = textwrap.dedent(
             """
             (paddle.var({}), paddle.mean({}))
@@ -3211,6 +3291,13 @@ class TensorDivideWithRoundingModeMatcher(BaseMatcher):
 
 
 class AllcloseMatcher(BaseMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        if len(args) == 1 and isinstance(args[0], ast.Starred) and len(kwargs) == 0:
+            args = self.parse_args(args)
+            code = "{}({}).item()".format(self.get_paddle_api(), self.args_to_str(args))
+            return ast.parse(code).body
+        return BaseMatcher.get_paddle_nodes(self, args, kwargs)
+
     def generate_code(self, kwargs):
         code = GenericMatcher.generate_code(self, kwargs)
         code = "{}.item()".format(code)
@@ -3225,6 +3312,668 @@ class Assert_AllcloseMatcher(BaseMatcher):
         code = GenericMatcher.generate_code(self, kwargs)
         code = "assert {}.item(), {}".format(code, msg)
         return code
+
+
+class TestingAssertCloseMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        for key in [
+            "allow_subclasses",
+            "check_device",
+            "check_dtype",
+            "check_layout",
+            "check_stride",
+        ]:
+            kwargs.pop(key, None)
+
+        if "actual" in kwargs:
+            kwargs["x"] = kwargs.pop("actual")
+        if "expected" in kwargs:
+            kwargs["y"] = kwargs.pop("expected")
+
+        return Assert_AllcloseMatcher.generate_code(self, kwargs)
+
+
+class SequenceArgsAsListMatcher(BaseMatcher):
+    def get_paddle_api(self):
+        assert "paddle_api" in self.api_mapping_dict
+        return super().get_paddle_api()
+
+    def get_paddle_nodes(self, args, kwargs):
+        new_kwargs = self.parse_kwargs(kwargs, allow_none=True)
+        if new_kwargs is None:
+            return None
+        if new_kwargs:
+            return "misidentify"
+
+        parts = []
+        literals = []
+        for node in args:
+            if isinstance(node, ast.Starred):
+                if literals:
+                    parts.append("[{}]".format(", ".join(literals)))
+                    literals = []
+                parts.append(
+                    "list({})".format(astor.to_source(node.value).replace("\n", ""))
+                )
+            else:
+                literals.append(astor.to_source(node).replace("\n", ""))
+
+        if literals:
+            parts.append("[{}]".format(", ".join(literals)))
+
+        if not parts:
+            return "misidentify"
+
+        sequence_expr = parts[0] if len(parts) == 1 else " + ".join(parts)
+        code = "{}({})".format(self.get_paddle_api(), sequence_expr)
+        return ast.parse(code).body
+
+
+class StarredGenericMatcher(GenericMatcher):
+    def get_paddle_nodes(self, args, kwargs):
+        if len(args) == 1 and isinstance(args[0], ast.Starred) and len(kwargs) == 0:
+            args = self.parse_args(args)
+            code = "{}({})".format(self.get_paddle_api(), self.args_to_str(args))
+            return ast.parse(code).body
+        return GenericMatcher.get_paddle_nodes(self, args, kwargs)
+
+
+class DistributedIsAvailableMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        return "hasattr(paddle, 'distributed')"
+
+
+class FFTShiftMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def paddle_fftshift(x, axes=None):
+                if axes is None:
+                    axes = tuple(range(len(x.shape)))
+                elif isinstance(axes, int):
+                    axes = (axes,)
+                shifts = [x.shape[axis] // 2 for axis in axes]
+                return paddle.roll(x, shifts=shifts, axis=axes)
+
+
+            def paddle_ifftshift(x, axes=None):
+                if axes is None:
+                    axes = tuple(range(len(x.shape)))
+                elif isinstance(axes, int):
+                    axes = (axes,)
+                shifts = [(x.shape[axis] + 1) // 2 for axis in axes]
+                return paddle.roll(x, shifts=shifts, axis=axes)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        if "input" in kwargs:
+            kwargs["x"] = kwargs.pop("input")
+        if "dim" in kwargs:
+            kwargs["axes"] = kwargs.pop("dim")
+
+        helper_name = (
+            "paddle_ifftshift"
+            if self.torch_api.endswith("ifftshift")
+            else "paddle_fftshift"
+        )
+        return "{}({})".format(helper_name, self.kwargs_to_str(kwargs))
+
+
+class CDistMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def paddle_torch_cdist(x, y, p=2.0, compute_mode='use_mm_for_euclid_dist_if_necessary'):
+                output_shape = tuple(x.shape[:-1]) + (y.shape[-2],)
+                requires_grad = not (x.stop_gradient and y.stop_gradient)
+                if x.shape[-2] == 0 or y.shape[-2] == 0:
+                    return paddle.empty(
+                        output_shape,
+                        dtype=x.dtype,
+                        device=x.place,
+                        requires_grad=requires_grad,
+                    )
+                if x.shape[-1] == 0 and y.shape[-1] == 0:
+                    return paddle.zeros(
+                        output_shape,
+                        dtype=x.dtype,
+                        device=x.place,
+                        requires_grad=requires_grad,
+                    )
+                return paddle.cdist(x=x, y=y, p=p, compute_mode=compute_mode)
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        if "x1" in kwargs:
+            kwargs["x"] = kwargs.pop("x1")
+        if "x2" in kwargs:
+            kwargs["y"] = kwargs.pop("x2")
+        return "paddle_torch_cdist({})".format(self.kwargs_to_str(kwargs))
+
+
+class NormalMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def paddle_torch_normal(mean=0.0, std=1.0, out=None, size=None):
+                if isinstance(mean, paddle.Tensor) and isinstance(std, paddle.Tensor):
+                    result = mean + paddle.randn(
+                        mean.shape, dtype=mean.dtype, device=mean.place
+                    ) * paddle.cast(std, mean.dtype)
+                elif isinstance(std, paddle.Tensor):
+                    dtype = std.dtype if not isinstance(mean, paddle.Tensor) else mean.dtype
+                    mean_tensor = paddle.full(
+                        std.shape, mean, dtype=dtype, device=std.place
+                    )
+                    result = mean_tensor + paddle.randn(
+                        std.shape, dtype=dtype, device=std.place
+                    ) * paddle.cast(std, dtype)
+                elif isinstance(mean, paddle.Tensor):
+                    result = paddle.normal(mean=mean, std=std)
+                elif size is not None:
+                    result = paddle.normal(mean=mean, std=std, shape=size)
+                else:
+                    result = paddle.normal(mean=mean, std=std)
+
+                if out is not None:
+                    paddle.assign(result, output=out)
+                    return out
+                return result
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        kwargs.pop("generator", None)
+        kwargs.setdefault("mean", "0.0")
+        kwargs.setdefault("std", "1.0")
+        return "paddle_torch_normal({})".format(self.kwargs_to_str(kwargs))
+
+
+class DropInplaceModuleMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs.pop("inplace", None)
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class ActivationFunctionMatcher(BaseMatcher):
+    def generate_code(self, kwargs):
+        kwargs.pop("inplace", None)
+        if "input" in kwargs:
+            kwargs["x"] = kwargs.pop("input")
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class MaxPoolMatcher(BaseMatcher):
+    @staticmethod
+    def is_default_dilation(value):
+        if value is None:
+            return True
+        value = str(value).replace(" ", "")
+        return value in {
+            "1",
+            "(1)",
+            "[1]",
+            "(1,)",
+            "[1,]",
+            "(1,1)",
+            "[1,1]",
+            "(1,1,1)",
+            "[1,1,1]",
+        }
+
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            import numpy as np
+
+
+            def _pytorch_max_pool_to_tuple(value, dims):
+                if isinstance(value, (list, tuple)):
+                    if len(value) == 1:
+                        return tuple([int(value[0])] * dims)
+                    return tuple(int(v) for v in value)
+                return tuple([int(value)] * dims)
+
+
+            def _pytorch_max_pool_output_shape(
+                input_shape, kernel_size, stride, padding, dilation, ceil_mode
+            ):
+                output_shape = []
+                for in_size, kernel, step, pad, dilate in zip(
+                    input_shape, kernel_size, stride, padding, dilation
+                ):
+                    effective_kernel = dilate * (kernel - 1) + 1
+                    if ceil_mode:
+                        out_size = (
+                            (
+                                in_size
+                                + 2 * pad
+                                - effective_kernel
+                                + step
+                                - 1
+                            )
+                            // step
+                        ) + 1
+                        while out_size > 0 and (out_size - 1) * step >= in_size + pad:
+                            out_size -= 1
+                    else:
+                        out_size = (
+                            (in_size + 2 * pad - effective_kernel) // step
+                        ) + 1
+                    output_shape.append(max(out_size, 0))
+                return tuple(output_shape)
+
+
+            def _pytorch_max_pool_pad_value(dtype):
+                if np.issubdtype(dtype, np.floating):
+                    return -np.inf
+                if np.issubdtype(dtype, np.integer):
+                    return np.iinfo(dtype).min
+                if np.issubdtype(dtype, np.bool_):
+                    return False
+                return 0
+
+
+            def _pytorch_max_pool_to_tensor(value, x, dtype=None, stop_gradient=True):
+                tensor = paddle.to_tensor(
+                    value,
+                    dtype=dtype,
+                    place=x.place,
+                    stop_gradient=stop_gradient,
+                )
+                return tensor
+
+
+            def _pytorch_max_pool_flat_index(input_idx, input_shape):
+                flat_index = 0
+                for i, value in enumerate(input_idx):
+                    stride = 1
+                    for size in input_shape[i + 1 :]:
+                        stride *= size
+                    flat_index += value * stride
+                return flat_index
+
+
+            def _pytorch_max_pool_nd(
+                x,
+                kernel_size,
+                stride=None,
+                padding=0,
+                dilation=1,
+                ceil_mode=False,
+                return_mask=False,
+            ):
+                spatial_dims = len(x.shape) - 2
+                input_shape = tuple(int(v) for v in x.shape[-spatial_dims:])
+                kernel_size = _pytorch_max_pool_to_tuple(kernel_size, spatial_dims)
+                if stride is None:
+                    stride = kernel_size
+                else:
+                    stride = _pytorch_max_pool_to_tuple(stride, spatial_dims)
+                padding = _pytorch_max_pool_to_tuple(padding, spatial_dims)
+                dilation = _pytorch_max_pool_to_tuple(dilation, spatial_dims)
+                output_shape = _pytorch_max_pool_output_shape(
+                    input_shape,
+                    kernel_size,
+                    stride,
+                    padding,
+                    dilation,
+                    ceil_mode,
+                )
+
+                x_numpy = x.numpy()
+                values = np.empty(
+                    x_numpy.shape[:2] + output_shape, dtype=x_numpy.dtype
+                )
+                indices = None
+                if return_mask:
+                    indices = np.zeros(
+                        x_numpy.shape[:2] + output_shape, dtype=np.int64
+                    )
+
+                pad_value = _pytorch_max_pool_pad_value(x_numpy.dtype)
+                for batch_idx in range(x_numpy.shape[0]):
+                    for channel_idx in range(x_numpy.shape[1]):
+                        input_slice = x_numpy[batch_idx, channel_idx]
+                        for out_idx in np.ndindex(*output_shape):
+                            best_value = None
+                            best_index = 0
+                            for kernel_idx in np.ndindex(*kernel_size):
+                                input_idx = tuple(
+                                    out_idx[i] * stride[i]
+                                    - padding[i]
+                                    + kernel_idx[i] * dilation[i]
+                                    for i in range(spatial_dims)
+                                )
+                                valid = all(
+                                    0 <= input_idx[i] < input_shape[i]
+                                    for i in range(spatial_dims)
+                                )
+                                if valid:
+                                    value = input_slice[input_idx]
+                                    flat_index = _pytorch_max_pool_flat_index(
+                                        input_idx, input_shape
+                                    )
+                                else:
+                                    value = pad_value
+                                    flat_index = 0
+                                if best_value is None or value > best_value:
+                                    best_value = value
+                                    best_index = flat_index
+                            values[(batch_idx, channel_idx) + out_idx] = best_value
+                            if return_mask:
+                                indices[(batch_idx, channel_idx) + out_idx] = best_index
+
+                values = _pytorch_max_pool_to_tensor(
+                    values,
+                    x,
+                    dtype=x.dtype,
+                    stop_gradient=x.stop_gradient,
+                )
+                if not return_mask:
+                    return values
+                indices = _pytorch_max_pool_to_tensor(indices, x, dtype="int64")
+                return values, indices
+
+
+            def pytorch_max_pool1d(
+                x,
+                kernel_size,
+                stride=None,
+                padding=0,
+                dilation=1,
+                ceil_mode=False,
+                return_mask=False,
+            ):
+                if isinstance(kernel_size, (list, tuple)):
+                    kernel_size = kernel_size[0]
+                if stride is None:
+                    stride = kernel_size
+                elif isinstance(stride, (list, tuple)):
+                    stride = stride[0]
+                if isinstance(padding, (list, tuple)):
+                    padding = padding[0]
+                if isinstance(dilation, (list, tuple)):
+                    dilation = dilation[0]
+
+                if dilation == 1:
+                    return paddle.nn.functional.max_pool1d(
+                        x,
+                        kernel_size=kernel_size,
+                        stride=stride,
+                        padding=padding,
+                        return_mask=return_mask,
+                        ceil_mode=ceil_mode,
+                    )
+
+                x_2d = paddle.unsqueeze(x, axis=[2])
+                input_length = x.shape[-1]
+                effective_kernel = dilation * (kernel_size - 1) + 1
+                if ceil_mode:
+                    output_length = (
+                        (input_length + 2 * padding - effective_kernel + stride - 1) // stride
+                    ) + 1
+                else:
+                    output_length = (
+                        (input_length + 2 * padding - effective_kernel) // stride
+                    ) + 1
+                output_length = max(output_length, 0)
+                total_padding = max(
+                    (output_length - 1) * stride + effective_kernel - input_length,
+                    0,
+                )
+                right_padding = max(total_padding - padding, 0)
+                if padding or right_padding:
+                    x_2d = paddle.nn.functional.pad(
+                        x_2d,
+                        [padding, right_padding, 0, 0],
+                        value=float("-inf"),
+                    )
+
+                patches = paddle.nn.functional.unfold(
+                    x_2d,
+                    kernel_sizes=[1, kernel_size],
+                    strides=[1, stride],
+                    paddings=0,
+                    dilations=[1, dilation],
+                )
+                out_length = patches.shape[-1]
+                patches = paddle.reshape(
+                    patches,
+                    [patches.shape[0], x.shape[1], kernel_size, out_length],
+                )
+                values = paddle.max(patches, axis=2)
+                if not return_mask:
+                    return values
+
+                local_indices = paddle.argmax(patches, axis=2)
+                starts = (
+                    paddle.arange(out_length, dtype=local_indices.dtype).reshape([1, 1, out_length])
+                    * stride
+                    - padding
+                )
+                indices = starts + local_indices * dilation
+                return values, indices
+
+
+            class PytorchMaxPool1D(paddle.nn.Layer):
+                def __init__(
+                    self,
+                    kernel_size,
+                    stride=None,
+                    padding=0,
+                    return_mask=False,
+                    ceil_mode=False,
+                    dilation=1,
+                ):
+                    super().__init__()
+                    self.kernel_size = kernel_size
+                    self.stride = stride
+                    self.padding = padding
+                    self.return_mask = return_mask
+                    self.ceil_mode = ceil_mode
+                    self.dilation = dilation
+
+                def forward(self, x):
+                    return pytorch_max_pool1d(
+                        x,
+                        kernel_size=self.kernel_size,
+                        stride=self.stride,
+                        padding=self.padding,
+                        dilation=self.dilation,
+                        ceil_mode=self.ceil_mode,
+                        return_mask=self.return_mask,
+                    )
+
+
+            def pytorch_max_pool2d(
+                x,
+                kernel_size,
+                stride=None,
+                padding=0,
+                dilation=1,
+                ceil_mode=False,
+                return_mask=False,
+            ):
+                return _pytorch_max_pool_nd(
+                    x,
+                    kernel_size=kernel_size,
+                    stride=stride,
+                    padding=padding,
+                    dilation=dilation,
+                    ceil_mode=ceil_mode,
+                    return_mask=return_mask,
+                )
+
+
+            class PytorchMaxPool2D(paddle.nn.Layer):
+                def __init__(
+                    self,
+                    kernel_size,
+                    stride=None,
+                    padding=0,
+                    return_mask=False,
+                    ceil_mode=False,
+                    dilation=1,
+                ):
+                    super().__init__()
+                    self.kernel_size = kernel_size
+                    self.stride = stride
+                    self.padding = padding
+                    self.return_mask = return_mask
+                    self.ceil_mode = ceil_mode
+                    self.dilation = dilation
+
+                def forward(self, x):
+                    return pytorch_max_pool2d(
+                        x,
+                        kernel_size=self.kernel_size,
+                        stride=self.stride,
+                        padding=self.padding,
+                        dilation=self.dilation,
+                        ceil_mode=self.ceil_mode,
+                        return_mask=self.return_mask,
+                    )
+
+
+            def pytorch_max_pool3d(
+                x,
+                kernel_size,
+                stride=None,
+                padding=0,
+                dilation=1,
+                ceil_mode=False,
+                return_mask=False,
+            ):
+                return _pytorch_max_pool_nd(
+                    x,
+                    kernel_size=kernel_size,
+                    stride=stride,
+                    padding=padding,
+                    dilation=dilation,
+                    ceil_mode=ceil_mode,
+                    return_mask=return_mask,
+                )
+
+
+            class PytorchMaxPool3D(paddle.nn.Layer):
+                def __init__(
+                    self,
+                    kernel_size,
+                    stride=None,
+                    padding=0,
+                    return_mask=False,
+                    ceil_mode=False,
+                    dilation=1,
+                ):
+                    super().__init__()
+                    self.kernel_size = kernel_size
+                    self.stride = stride
+                    self.padding = padding
+                    self.return_mask = return_mask
+                    self.ceil_mode = ceil_mode
+                    self.dilation = dilation
+
+                def forward(self, x):
+                    return pytorch_max_pool3d(
+                        x,
+                        kernel_size=self.kernel_size,
+                        stride=self.stride,
+                        padding=self.padding,
+                        dilation=self.dilation,
+                        ceil_mode=self.ceil_mode,
+                        return_mask=self.return_mask,
+                    )
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        if "input" in kwargs:
+            kwargs["x"] = kwargs.pop("input")
+        if "return_indices" in kwargs:
+            kwargs["return_mask"] = kwargs.pop("return_indices")
+
+        dilation = kwargs.pop("dilation", None)
+        paddle_api = self.get_paddle_api()
+        if dilation is not None and not self.is_default_dilation(dilation):
+            helper_api_map = {
+                "paddle.nn.MaxPool1D": "PytorchMaxPool1D",
+                "paddle.nn.functional.max_pool1d": "pytorch_max_pool1d",
+                "paddle.nn.MaxPool2D": "PytorchMaxPool2D",
+                "paddle.nn.functional.max_pool2d": "pytorch_max_pool2d",
+                "paddle.nn.MaxPool3D": "PytorchMaxPool3D",
+                "paddle.nn.functional.max_pool3d": "pytorch_max_pool3d",
+            }
+            helper_api = helper_api_map.get(paddle_api)
+            if helper_api is None:
+                return "misidentify"
+            self.enable_utils_code()
+            self.set_paddle_api(helper_api)
+            kwargs["dilation"] = dilation
+
+        return GenericMatcher.generate_code(self, kwargs)
+
+
+class RNNSequenceMatcher(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def paddle_pad_sequence(
+                sequences, batch_first=False, padding_value=0.0
+            ):
+                max_len = max(seq.shape[0] for seq in sequences)
+                padded_sequences = []
+                for seq in sequences:
+                    pad_len = max_len - seq.shape[0]
+                    if pad_len > 0:
+                        pad_shape = [pad_len] + list(seq.shape[1:])
+                        pad_tensor = paddle.full(
+                            pad_shape,
+                            padding_value,
+                            dtype=seq.dtype,
+                            device=seq.place,
+                            requires_grad=not seq.stop_gradient,
+                        )
+                        seq = paddle.concat([seq, pad_tensor], axis=0)
+                    padded_sequences.append(seq)
+                axis = 0 if batch_first else 1
+                return paddle.stack(padded_sequences, axis=axis)
+
+
+            def paddle_unpad_sequence(
+                padded_sequences, lengths, batch_first=False
+            ):
+                if isinstance(lengths, paddle.Tensor):
+                    lengths = lengths.numpy().tolist()
+                sequences = []
+                for idx, length in enumerate(lengths):
+                    length = int(length)
+                    if batch_first:
+                        sequences.append(padded_sequences[idx, :length])
+                    else:
+                        sequences.append(padded_sequences[:length, idx])
+                return sequences
+            """
+        )
+        return CODE_TEMPLATE
+
+    def generate_code(self, kwargs):
+        self.enable_utils_code()
+        helper_name = (
+            "paddle_unpad_sequence"
+            if self.torch_api.endswith("unpad_sequence")
+            else "paddle_pad_sequence"
+        )
+        return "{}({})".format(helper_name, self.kwargs_to_str(kwargs))
 
 
 class Num2TensorBinaryMatcher(BaseMatcher):
@@ -3820,30 +4569,62 @@ class FAApplyRotaryEmbFuncMatcher(BaseMatcher):
     def generate_utils_code(self):
         CODE_TEMPLATE = textwrap.dedent(
             """
-            def apply_rotary_position_embeddings(x, cos, sin):
+            def apply_rotary_position_embeddings(
+                x,
+                cos,
+                sin,
+                interleaved=False,
+                inplace=False,
+                seqlen_offsets=0,
+                cu_seqlens=None,
+                max_seqlen=None,
+            ):
+                if seqlen_offsets not in (0, None):
+                    raise NotImplementedError(
+                        "PaConvert only supports apply_rotary_emb_func with default seqlen_offsets"
+                    )
+                if cu_seqlens is not None or max_seqlen is not None:
+                    raise NotImplementedError(
+                        "PaConvert only supports apply_rotary_emb_func without cu_seqlens or max_seqlen"
+                    )
                 if not isinstance(cos, paddle.Tensor):
-                    cos = paddle.to_tensor(cos)
+                    cos = paddle.to_tensor(
+                        cos, dtype=x.dtype, place=x.place, stop_gradient=True
+                    )
                 if not isinstance(sin, paddle.Tensor):
-                    sin = paddle.to_tensor(sin)
+                    sin = paddle.to_tensor(
+                        sin, dtype=x.dtype, place=x.place, stop_gradient=True
+                    )
 
                 def _rotate_half(x):
-                    from einops import rearrange
-
-                    x = rearrange(x, "... (j d) -> ... j d", j=2)
-                    x1, x2 = x.unbind(axis=-2)
+                    if interleaved:
+                        x1 = x[..., ::2]
+                        x2 = x[..., 1::2]
+                        return paddle.reshape(
+                            paddle.stack((-x2, x1), axis=-1), shape=x.shape
+                        )
+                    x1, x2 = paddle.split(x, num_or_sections=2, axis=-1)
                     return paddle.concat((-x2, x1), axis=-1)
-                # [seq_len,rotary_dim/2] ==>[seq_len, rotary_dim]
-                cos = paddle.concat([cos,cos],axis=-1)
-                # [seq_len, rotary_dim] ==>[1,seq_len, 1,rotary_dim]
-                cos=cos.unsqueeze(axis=1).unsqueeze(axis=0)
-                # [seq_len,rotary_dim/2] ==>[seq_len, rotary_dim]
-                sin = paddle.concat([sin,sin],axis=-1)
-                # [seq_len, rotary_dim] ==>[1,seq_len, 1,rotary_dim]
-                sin=sin.unsqueeze(axis=1).unsqueeze(axis=0)
-                t_rot, t_pass = x[..., :cos.shape[-1]], x[..., cos.shape[-1]:]
-                t_rot = (t_rot * cos) + (_rotate_half(t_rot) * sin)
 
-                return paddle.concat(x=(t_rot, t_pass), axis=-1)
+                if interleaved:
+                    cos = paddle.repeat_interleave(cos, repeats=2, axis=-1)
+                    sin = paddle.repeat_interleave(sin, repeats=2, axis=-1)
+                else:
+                    cos = paddle.concat([cos, cos], axis=-1)
+                    sin = paddle.concat([sin, sin], axis=-1)
+
+                cos = cos.unsqueeze(axis=-2)
+                sin = sin.unsqueeze(axis=-2)
+                rotary_dim = cos.shape[-1]
+                assert rotary_dim <= x.shape[-1]
+                t_rot, t_pass = x[..., :rotary_dim], x[..., rotary_dim:]
+                out = paddle.concat(
+                    x=((t_rot * cos) + (_rotate_half(t_rot) * sin), t_pass), axis=-1
+                )
+                if inplace:
+                    paddle.assign(out, output=x)
+                    return x
+                return out
             """
         )
         return CODE_TEMPLATE
@@ -3863,18 +4644,53 @@ class FAApplyRotaryEmbFuncMatcher(BaseMatcher):
 
 
 class FARmsNorm(BaseMatcher):
+    def generate_utils_code(self):
+        CODE_TEMPLATE = textwrap.dedent(
+            """
+            def paddle_flash_attn_rms_norm(x, weight, epsilon):
+                if weight is not None and x.place.is_gpu_place():
+                    try:
+                        out = paddle.incubate.nn.functional.fused_rms_norm(
+                            x, weight, paddle.zeros_like(weight), epsilon, len(x.shape) - 1
+                        )
+                        if isinstance(out, (tuple, list)):
+                            return out[0]
+                        return out
+                    except Exception:
+                        pass
+
+                original_dtype = x.dtype
+                if x.dtype in [paddle.float16, paddle.bfloat16]:
+                    compute_x = paddle.cast(x, "float32")
+                else:
+                    compute_x = x
+
+                out = compute_x * paddle.rsqrt(
+                    paddle.mean(paddle.square(compute_x), axis=-1, keepdim=True) + epsilon
+                )
+                if weight is not None:
+                    if weight.dtype != out.dtype:
+                        weight = paddle.cast(weight, out.dtype)
+                    out = out * weight
+
+                if out.dtype != original_dtype:
+                    out = paddle.cast(out, original_dtype)
+                return out
+            """
+        )
+        return CODE_TEMPLATE
+
     def generate_code(self, kwargs):
+        self.enable_utils_code()
         API_TEMPLATE = textwrap.dedent(
             """
-            paddle.incubate.nn.functional.fused_rms_norm({}, {}, paddle.zeros_like({}), {},len({}.shape)-1)[0]
+            paddle_flash_attn_rms_norm({}, {}, {})
             """
         )
         return API_TEMPLATE.format(
             kwargs["x"],
             kwargs["weight"],
-            kwargs["weight"],
             kwargs["epsilon"],
-            kwargs["x"],
         )
 
 

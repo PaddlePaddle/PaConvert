@@ -361,6 +361,33 @@ class BasicTransformer(BaseTransformer):
         )
         return node
 
+    def insert_paddle_tensor_int_helper(self):
+        helper_code = ast.parse(
+            """
+def paddle_tensor_int(x):
+    module_name = type(x).__module__
+    if module_name.startswith("paddle") and hasattr(x, "numel") and hasattr(x, "reshape"):
+        assert x.numel() == 1, "only one element variable can be converted to int."
+        return int(x.reshape([-1])[0].item())
+    return int(x)
+            """
+        ).body
+        self.insert_multi_node(helper_code)
+
+    def trans_builtin_int(self, node):
+        if not isinstance(node.func, ast.Name) or node.func.id != "int":
+            return None
+        if len(node.args) != 1 or len(node.keywords) != 0:
+            return None
+
+        self.insert_paddle_tensor_int_helper()
+        new_node = ast.Call(
+            func=ast.Name(id="paddle_tensor_int", ctx=ast.Load()),
+            args=node.args,
+            keywords=[],
+        )
+        return ast.copy_location(new_node, node)
+
     def visit_Call(self, node):
         """
         if one line has N torch function, it has 2^N method of
@@ -413,6 +440,10 @@ class BasicTransformer(BaseTransformer):
         """
         # Use Postorder traversal
         super(BasicTransformer, self).generic_visit(node)
+
+        builtin_int_node = self.trans_builtin_int(node)
+        if builtin_int_node:
+            return builtin_int_node
 
         full_attr = self.get_full_attr_for_apiname(node.func)
         # 1) Torch Package Call, include torch third_party

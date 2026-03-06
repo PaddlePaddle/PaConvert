@@ -52,3 +52,22 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        from flash_attn.layers.rotary import apply_rotary_emb_func
+        x = torch.ones([1, 2, 2, 4]).cuda()
+        cos = torch.ones([2, 2]).cuda()
+        sin = torch.ones([2, 2]).cuda()
+        result = apply_rotary_emb_func(
+            x, cos, sin, interleaved=False, inplace=False, seqlen_offsets=0
+        )
+        """
+    )
+    paddle_code = obj.convert(pytorch_code)
+    assert "from einops import rearrange" not in paddle_code
+    assert "paddle.assign(out, output=x)" in paddle_code
+    assert "interleaved=False" in paddle_code

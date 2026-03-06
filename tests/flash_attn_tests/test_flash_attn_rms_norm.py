@@ -92,3 +92,21 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        from flash_attn.ops.rms_norm import rms_norm
+        x = torch.tensor([
+            [[0.4742,  3.5466, -4.8008, -8.9079, 0.4742,  9.5466, -8.8008, -6.9079]],
+            [[3.4742,  0.5466, -0.8008, -0.9079, 3.4742,  0.5466, -0.8008, -0.9079]]
+            ]).cuda()
+        weight = torch.ones(8).cuda()
+        result = rms_norm(x, weight,1e-6)
+        """
+    )
+    paddle_code = obj.convert(pytorch_code)
+    assert "paddle_flash_attn_rms_norm" in paddle_code
+    assert "result = paddle_flash_attn_rms_norm(x, weight, 1e-06)" in paddle_code

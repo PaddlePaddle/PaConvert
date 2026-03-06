@@ -40,3 +40,40 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        from flash_attn.flash_attn_interface import flash_attn_varlen_func as flash_attn_unpadded_func
+        q = torch.ones([8,8,8],dtype=torch.float16).cuda()
+        cu_seqlens_q = torch.ones([8],dtype=torch.int32).cuda()
+        result = flash_attn_unpadded_func(q,q,q,cu_seqlens_q,cu_seqlens_q,4,4,0.25)
+        """
+    )
+    expect_paddle_code = textwrap.dedent(
+        """
+        import math
+
+        import paddle
+
+        q = paddle.ones([8, 8, 8], dtype=paddle.float16).cuda()
+        cu_seqlens_q = paddle.ones([8], dtype=paddle.int32).cuda()
+        assert (
+            paddle.device.cuda.get_device_capability()[0] >= 8
+        ), "Device capabilities should be at least 8"
+        result = paddle.nn.functional.flash_attention.flash_attn_unpadded(
+            query=q,
+            key=q,
+            value=q,
+            cu_seqlens_q=cu_seqlens_q,
+            cu_seqlens_k=cu_seqlens_q,
+            max_seqlen_q=4,
+            max_seqlen_k=4,
+            dropout=0.25,
+            scale=1.0 / math.sqrt(q.shape[-1]),
+        )[0]
+        """
+    )
+    obj.run(pytorch_code, expect_paddle_code=expect_paddle_code)

@@ -40,3 +40,47 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import flash_attn
+        q = torch.ones([1,8,8,8],dtype=torch.float16).cuda()
+        result = flash_attn.flash_attn_interface.flash_attn_func(q,q,q,0,None,False)
+        """
+    )
+    expect_paddle_code = textwrap.dedent(
+        """
+        import paddle
+
+        q = paddle.ones([1, 8, 8, 8], dtype=paddle.float16).cuda()
+        result = paddle.nn.functional.flash_attention.flash_attention(
+            query=q, key=q, value=q, dropout=0, causal=False
+        )[0]
+        """
+    )
+    obj.run(pytorch_code, expect_paddle_code=expect_paddle_code)
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import flash_attn
+        q = torch.ones([1,8,8,8],dtype=torch.float16).cuda()
+        result = flash_attn.flash_attn_interface.flash_attn_func(q, q, q, 0, None, False, None, 0.0, None, False)
+        """
+    )
+    expect_paddle_code = textwrap.dedent(
+        """
+        import paddle
+
+        q = paddle.ones([1, 8, 8, 8], dtype=paddle.float16).cuda()
+        result = paddle.nn.functional.flash_attention.flash_attention(
+            query=q, key=q, value=q, dropout=0, causal=False
+        )[0]
+        """
+    )
+    obj.run(pytorch_code, expect_paddle_code=expect_paddle_code)

@@ -44,7 +44,9 @@ def _compare_content(actual_dir, expect_dir):
     result = True
     if os.path.isfile(actual_dir):
         assert os.path.isfile(expect_dir), f"{expect_dir} shoule be a file!"
-        with open(actual_dir, "r") as f1, open(expect_dir, "r") as f2:
+        with open(actual_dir, "r", encoding="utf-8") as f1, open(
+            expect_dir, "r", encoding="utf-8"
+        ) as f2:
             content1 = f1.read().strip()
             content2 = f2.read().strip()
             # 对随机的辅助代码路径进行处理，使用正则表达式匹配并替换

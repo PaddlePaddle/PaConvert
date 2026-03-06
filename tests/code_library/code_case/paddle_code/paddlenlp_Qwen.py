@@ -45,30 +45,92 @@ def _post_init(self):
         self._init_weights()
 setattr(paddleformers.transformers.model_utils.PretrainedModel, "post_init", _post_init)
 
-def apply_rotary_position_embeddings(x, cos, sin):
+def apply_rotary_position_embeddings(
+    x,
+    cos,
+    sin,
+    interleaved=False,
+    inplace=False,
+    seqlen_offsets=0,
+    cu_seqlens=None,
+    max_seqlen=None,
+):
+    if seqlen_offsets not in (0, None):
+        raise NotImplementedError(
+            "PaConvert only supports apply_rotary_emb_func with default seqlen_offsets"
+        )
+    if cu_seqlens is not None or max_seqlen is not None:
+        raise NotImplementedError(
+            "PaConvert only supports apply_rotary_emb_func without cu_seqlens or max_seqlen"
+        )
     if not isinstance(cos, paddle.Tensor):
-        cos = paddle.to_tensor(cos)
+        cos = paddle.to_tensor(
+            cos, dtype=x.dtype, place=x.place, stop_gradient=True
+        )
     if not isinstance(sin, paddle.Tensor):
-        sin = paddle.to_tensor(sin)
+        sin = paddle.to_tensor(
+            sin, dtype=x.dtype, place=x.place, stop_gradient=True
+        )
 
     def _rotate_half(x):
-        from einops import rearrange
-
-        x = rearrange(x, "... (j d) -> ... j d", j=2)
-        x1, x2 = x.unbind(axis=-2)
+        if interleaved:
+            x1 = x[..., ::2]
+            x2 = x[..., 1::2]
+            return paddle.reshape(
+                paddle.stack((-x2, x1), axis=-1), shape=x.shape
+            )
+        x1, x2 = paddle.split(x, num_or_sections=2, axis=-1)
         return paddle.concat((-x2, x1), axis=-1)
-    # [seq_len,rotary_dim/2] ==>[seq_len, rotary_dim]
-    cos = paddle.concat([cos,cos],axis=-1)
-    # [seq_len, rotary_dim] ==>[1,seq_len, 1,rotary_dim]
-    cos=cos.unsqueeze(axis=1).unsqueeze(axis=0)
-    # [seq_len,rotary_dim/2] ==>[seq_len, rotary_dim]
-    sin = paddle.concat([sin,sin],axis=-1)
-    # [seq_len, rotary_dim] ==>[1,seq_len, 1,rotary_dim]
-    sin=sin.unsqueeze(axis=1).unsqueeze(axis=0)
-    t_rot, t_pass = x[..., :cos.shape[-1]], x[..., cos.shape[-1]:]
-    t_rot = (t_rot * cos) + (_rotate_half(t_rot) * sin)
 
-    return paddle.concat(x=(t_rot, t_pass), axis=-1)
+    if interleaved:
+        cos = paddle.repeat_interleave(cos, repeats=2, axis=-1)
+        sin = paddle.repeat_interleave(sin, repeats=2, axis=-1)
+    else:
+        cos = paddle.concat([cos, cos], axis=-1)
+        sin = paddle.concat([sin, sin], axis=-1)
+
+    cos = cos.unsqueeze(axis=-2)
+    sin = sin.unsqueeze(axis=-2)
+    rotary_dim = cos.shape[-1]
+    assert rotary_dim <= x.shape[-1]
+    t_rot, t_pass = x[..., :rotary_dim], x[..., rotary_dim:]
+    out = paddle.concat(
+        x=((t_rot * cos) + (_rotate_half(t_rot) * sin), t_pass), axis=-1
+    )
+    if inplace:
+        paddle.assign(out, output=x)
+        return x
+    return out
+
+def paddle_flash_attn_rms_norm(x, weight, epsilon):
+    if weight is not None and x.place.is_gpu_place():
+        try:
+            out = paddle.incubate.nn.functional.fused_rms_norm(
+                x, weight, paddle.zeros_like(weight), epsilon, len(x.shape) - 1
+            )
+            if isinstance(out, (tuple, list)):
+                return out[0]
+            return out
+        except Exception:
+            pass
+
+    original_dtype = x.dtype
+    if x.dtype in [paddle.float16, paddle.bfloat16]:
+        compute_x = paddle.cast(x, "float32")
+    else:
+        compute_x = x
+
+    out = compute_x * paddle.rsqrt(
+        paddle.mean(paddle.square(compute_x), axis=-1, keepdim=True) + epsilon
+    )
+    if weight is not None:
+        if weight.dtype != out.dtype:
+            weight = paddle.cast(weight, out.dtype)
+        out = out * weight
+
+    if out.dtype != original_dtype:
+        out = paddle.cast(out, original_dtype)
+    return out
 ############################## 相关utils函数，如上 ##############################
 
 
@@ -177,6 +239,4 @@ class QWenTokenizer(paddleformers.PreTrainedTokenizer):
 print("#########################case16#########################")
 apply_rotary_position_embeddings(x=x, cos=cos, sin=sin)
 print("#########################case17#########################")
-paddle.incubate.nn.functional.fused_rms_norm(
-    x, weight, paddle.zeros_like(weight), eps, len(x.shape) - 1
-)[0]
+paddle_flash_attn_rms_norm(x, weight, eps)
