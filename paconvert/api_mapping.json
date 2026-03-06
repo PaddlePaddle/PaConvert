@@ -6947,7 +6947,10 @@
   },
   "torch.margin_ranking_loss": {},
   "torch.masked_fill": {
-    "Matcher": "ChangePrefixMatcher"
+    "Matcher": "ChangePrefixMatcher",
+    "kwargs_change": {
+      "input": "x"
+    }
   },
   "torch.masked_select": {
     "Matcher": "ChangePrefixMatcher"
