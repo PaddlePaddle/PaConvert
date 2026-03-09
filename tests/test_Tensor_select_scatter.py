@@ -49,7 +49,7 @@ def test_case_3():
         import torch
         input = torch.zeros(2, 2)
         src = torch.ones(2)
-        result = input.select_scatter(src, dim=1, index=1)
+        result = input.select_scatter(src=src, dim=1, index=1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -61,7 +61,7 @@ def test_case_4():
         import torch
         input = torch.zeros(2, 2)
         src = torch.ones(2)
-        result = input.select_scatter(src=src, dim=1, index=1)
+        result = input.select_scatter(src, 1, 1)
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -14,6 +14,8 @@
 #
 
 import argparse
+import importlib
+import inspect
 import json
 import os
 import re
@@ -143,6 +145,149 @@ missing_unittest_whitelist = {
     "torch.symeig",
     "torch.utils.cpp_extension.load",
 }
+
+
+# ChangePrefixMatcher removes explicit args_list metadata, so builtin APIs that
+# are not introspectable still need a validator-side fallback.
+change_prefix_validator_metadata_fallback = {
+    "torch.select_scatter": {
+        "args_list": ["input", "src", "dim", "index"],
+        "min_input_args": 4,
+    },
+    "torch.Tensor.select_scatter": {
+        "args_list": ["src", "dim", "index"],
+        "min_input_args": 3,
+    },
+}
+
+
+def isclassname(name, module_parts):
+    if name and name[0].isupper():
+        return True
+    elif (
+        name == "profile" and len(module_parts) >= 1 and module_parts[-1] == "profiler"
+    ):
+        return True
+    return False
+
+
+def resolve_torch_callable(function_string):
+    try:
+        parts = function_string.split(".")
+        function_name = parts.pop()
+        classname = None
+        if len(parts) >= 1 and isclassname(parts[-1], parts[:-1]):
+            classname = parts.pop()
+
+        if len(parts) > 0:
+            module_name = ".".join(parts)
+            module = importlib.import_module(module_name)
+        else:
+            module = globals()
+
+        if classname is not None:
+            module = getattr(module, classname)
+
+        if not hasattr(module, function_name):
+            return None
+
+        return getattr(module, function_name)
+    except Exception:
+        return None
+
+
+def build_args_list_from_signature(api_target, signature):
+    args_list = []
+    need_positional_separator = False
+    need_keyword_separator = True
+
+    for param in signature.parameters.values():
+        if param.name == "self" and api_target.startswith("torch.Tensor."):
+            continue
+
+        if param.kind == inspect.Parameter.POSITIONAL_ONLY:
+            args_list.append(param.name)
+            need_positional_separator = True
+        elif param.kind == inspect.Parameter.POSITIONAL_OR_KEYWORD:
+            if need_positional_separator:
+                args_list.append("/")
+                need_positional_separator = False
+            args_list.append(param.name)
+        elif param.kind == inspect.Parameter.VAR_POSITIONAL:
+            if need_positional_separator:
+                args_list.append("/")
+                need_positional_separator = False
+            args_list.append("*" + param.name)
+            need_keyword_separator = False
+        elif param.kind == inspect.Parameter.KEYWORD_ONLY:
+            if need_positional_separator:
+                args_list.append("/")
+                need_positional_separator = False
+            if need_keyword_separator:
+                args_list.append("*")
+                need_keyword_separator = False
+            args_list.append(param.name)
+        elif param.kind == inspect.Parameter.VAR_KEYWORD:
+            if need_positional_separator:
+                args_list.append("/")
+                need_positional_separator = False
+            args_list.append("**" + param.name)
+
+    if need_positional_separator:
+        args_list.append("/")
+
+    return args_list
+
+
+def infer_min_input_args(api_target, signature):
+    min_input_args = 0
+    for param in signature.parameters.values():
+        if param.name == "self" and api_target.startswith("torch.Tensor."):
+            continue
+        if (
+            param.kind
+            in (
+                inspect.Parameter.POSITIONAL_ONLY,
+                inspect.Parameter.POSITIONAL_OR_KEYWORD,
+            )
+            and param.default == inspect.Parameter.empty
+        ):
+            min_input_args += 1
+    return min_input_args
+
+
+def resolve_validator_metadata(api_target, mapping_data):
+    min_input_args = mapping_data.get("min_input_args")
+    args_list_full = mapping_data.get("args_list")
+
+    if (
+        mapping_data.get("Matcher") != "ChangePrefixMatcher"
+        or "args_list" in mapping_data
+    ):
+        if min_input_args is None:
+            min_input_args = -1
+        if args_list_full is None:
+            args_list_full = []
+        return min_input_args, args_list_full
+
+    pytorch_callable = resolve_torch_callable(api_target)
+    if pytorch_callable is not None:
+        try:
+            signature = inspect.signature(pytorch_callable)
+            if args_list_full is None:
+                args_list_full = build_args_list_from_signature(api_target, signature)
+            if min_input_args is None:
+                min_input_args = infer_min_input_args(api_target, signature)
+        except (TypeError, ValueError):
+            pass
+
+    fallback_metadata = change_prefix_validator_metadata_fallback.get(api_target, {})
+    if args_list_full is None:
+        args_list_full = fallback_metadata.get("args_list", [])
+    if min_input_args is None:
+        min_input_args = fallback_metadata.get("min_input_args", -1)
+
+    return min_input_args, args_list_full
 
 
 def get_test_cases(discovery_paths=["tests"]):
@@ -364,10 +509,10 @@ def check_call_variety(test_data, api_mapping, *, api_alias={}, verbose=True):
 
         position_args_checkable = True
 
-        min_input_args = mapping_data.get("min_input_args", -1)
+        min_input_args, args_list_full = resolve_validator_metadata(
+            api_target, mapping_data
+        )
         aux_detailed_data_api["min_input_args"] = min_input_args
-
-        args_list_full = mapping_data.get("args_list", [])
 
         var_arg_name = None
         var_kwarg_name = None
@@ -444,7 +589,7 @@ def check_call_variety(test_data, api_mapping, *, api_alias={}, verbose=True):
         all_args = False
         all_kwargs = False
         not_subsequence = False
-        all_default = False if "min_input_args" in mapping_data else None
+        all_default = False if min_input_args >= 0 else None
 
         for case_name, code in unittest_data["code"].items():
             try:
