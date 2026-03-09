@@ -110,3 +110,15 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["result", "index", "out"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2, 3, 4, 5], [2, 5, 6, 2, 3]])
+        out = [torch.tensor(1), torch.tensor(2)]
+        result, index = torch.topk(x, 3, 1, True, True)
+        """
+    )
+    obj.run(pytorch_code, ["result", "index", "out"])

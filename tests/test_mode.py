@@ -124,3 +124,15 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["result", "index", "out"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[[1,2,2],[2,3,3]],[[0,5,5],[9,9,0]]])
+        out = (torch.tensor(1), torch.tensor(2))
+        result, index = torch.mode(out=out, keepdim=False, dim=1, input=input)
+        """
+    )
+    obj.run(pytorch_code, ["result", "index", "out"])
