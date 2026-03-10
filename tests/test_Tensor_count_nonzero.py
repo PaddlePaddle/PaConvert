@@ -50,3 +50,30 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor(
+            [
+                [[0.0, 1.1, 1.2], [0.0, 0.0, 1.3], [0.0, 0.0, 0.0]],
+                [[0.0, 2.5, 2.6], [0.0, 0.0, 2.4], [2.1, 2.2, 2.3]],
+            ]
+        )
+        result = a.count_nonzero(dim=(1, 2))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[0, 1, 2], [3, 0, 4]], dtype=torch.int64)
+        result = a.count_nonzero(dim=None)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
