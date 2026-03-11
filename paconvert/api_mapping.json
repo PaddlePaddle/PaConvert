@@ -2198,9 +2198,7 @@
   "torch.Tensor.resolve_conj": {},
   "torch.Tensor.resolve_neg": {},
   "torch.Tensor.retain_grad": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.Tensor.retain_grads",
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.retains_grad": {},
   "torch.Tensor.roll": {
@@ -2371,8 +2369,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.sparse_mask": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.sparse.mask_as"
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.sparse_resize_": {},
   "torch.Tensor.sparse_resize_and_clear_": {},
