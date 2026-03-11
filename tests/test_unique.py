@@ -147,3 +147,58 @@ def test_case_10():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1, 2, 1, 3, 2, 3, 3])
+        result = torch.unique(a, return_counts=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1, 2], [3, 4], [1, 2]])
+        result = torch.unique(a, dim=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1.5, 2.5, 1.5, 3.5])
+        result = torch.unique(a, return_inverse=True, return_counts=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[[1, 2], [2, 3]], [[1, 2], [3, 4]]])
+        result = torch.unique(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_15():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1, 2, 3], [1, 2, 3], [4, 5, 6]])
+        result = torch.unique(a, return_inverse=True, return_counts=True, dim=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
