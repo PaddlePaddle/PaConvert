@@ -8899,43 +8899,13 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.conv_transpose1d": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.conv1d_transpose",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "weight",
-      "bias",
-      "stride",
-      "padding",
-      "output_padding",
-      "groups",
-      "dilation"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.conv_transpose2d": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.conv_transpose3d": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.conv3d_transpose",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "weight",
-      "bias",
-      "stride",
-      "padding",
-      "output_padding",
-      "groups",
-      "dilation"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.cosine_embedding_loss": {
     "Matcher": "SizeAverageMatcher",
