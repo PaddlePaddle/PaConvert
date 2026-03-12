@@ -4248,16 +4248,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.diagflat": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.diagflat",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "offset"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.diagonal": {
     "Matcher": "ChangePrefixMatcher"
