@@ -12371,12 +12371,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.default_collate": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.dataloader.collate.default_collate_fn",
-    "min_input_args": 1,
-    "args_list": [
-      "batch"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.distributed.DistributedSampler": {
     "Matcher": "GenericMatcher",
