@@ -3458,6 +3458,9 @@
   "torch.autograd.function.FunctionCtx.save_for_forward": {
     "min_input_args": 0
   },
+  "torch.autograd.function.FunctionCtx.saved_tensors": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.autograd.function.FunctionCtx.set_materialize_grads": {
     "Matcher": "ChangePrefixMatcher"
   },
