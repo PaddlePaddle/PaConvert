@@ -3441,33 +3441,25 @@
     "min_input_args": 0
   },
   "torch.autograd.function.FunctionCtx": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.autograd.PyLayerContext",
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.autograd.function.FunctionCtx.mark_dirty": {
     "min_input_args": 0
   },
   "torch.autograd.function.FunctionCtx.mark_non_differentiable": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.autograd.PyLayerContext.mark_non_differentiable",
-    "min_input_args": 1
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.autograd.function.FunctionCtx.mark_shared_storage": {
     "min_input_args": 0
   },
   "torch.autograd.function.FunctionCtx.save_for_backward": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.autograd.PyLayerContext.save_for_backward",
-    "min_input_args": 1
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.autograd.function.FunctionCtx.save_for_forward": {
     "min_input_args": 0
   },
   "torch.autograd.function.FunctionCtx.set_materialize_grads": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.autograd.PyLayerContext.set_materialize_grads",
-    "min_input_args": 1
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.autograd.functional.hessian": {
     "Matcher": "GenericMatcher",
