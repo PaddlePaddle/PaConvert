@@ -12364,6 +12364,12 @@
       "generator"
     ]
   },
+  "torch.utils.data.dataset.ChainDataset": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.utils.data.dataset.IterableDataset": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.utils.data.default_collate": {
     "Matcher": "ChangeAPIMatcher",
     "paddle_api": "paddle.io.dataloader.collate.default_collate_fn",
