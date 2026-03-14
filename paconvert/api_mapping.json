@@ -11791,18 +11791,7 @@
     }
   },
   "torch.special.logit": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.logit",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "eps",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.special.logsumexp": {
     "Matcher": "ChangePrefixMatcher"
