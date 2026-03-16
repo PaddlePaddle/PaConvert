@@ -94,6 +94,7 @@ def test_case_7():
     )
     obj.run(pytorch_code, ["result"], check_value=False)
 
+
 def test_case_8():
     pytorch_code = textwrap.dedent(
         """
