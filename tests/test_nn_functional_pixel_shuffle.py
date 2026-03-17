@@ -66,3 +66,114 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        input = torch.arange(1, 17, dtype=torch.float32).reshape(1, 4, 2, 2)
+        result = F.pixel_shuffle(input, 2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        input = torch.arange(1, 37, dtype=torch.float32).reshape(1, 9, 2, 2)
+        result = F.pixel_shuffle(input, upscale_factor=3)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        input = torch.arange(1, 17, dtype=torch.float32).reshape(1, 4, 2, 2)
+        result = F.pixel_shuffle(input=input, upscale_factor=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        input = torch.arange(1, 17, dtype=torch.float32).reshape(1, 4, 2, 2)
+        result = F.pixel_shuffle(upscale_factor=2, input=input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        input = torch.arange(1, 33, dtype=torch.float32).reshape(2, 4, 2, 2)
+        result = F.pixel_shuffle(input, 2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        input = torch.arange(1, 49, dtype=torch.float32).reshape(1, 12, 2, 2)
+        result = F.pixel_shuffle(input, 2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        input = torch.arange(1, 17, dtype=torch.float64).reshape(1, 4, 2, 2)
+        result = F.pixel_shuffle(input, 2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        input = torch.arange(1, 65, dtype=torch.float32).reshape(1, 16, 2, 2)
+        result = F.pixel_shuffle(input, 4)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn.functional as F
+        input = torch.arange(1, 17, dtype=torch.float32).reshape(1, 4, 2, 2)
+        input.requires_grad_(True)
+        result = F.pixel_shuffle(input, 2)
+        result.sum().backward()
+        x_grad = input.grad
+        """
+    )
+    obj.run(pytorch_code, ["result", "x_grad"], check_stop_gradient=False)

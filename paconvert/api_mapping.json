@@ -797,15 +797,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.count_nonzero": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.count_nonzero",
-    "min_input_args": 0,
-    "args_list": [
-      "dim"
-    ],
-    "kwargs_change": {
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.cov": {
     "Matcher": "GenericMatcher",
@@ -1325,15 +1317,7 @@
     }
   },
   "torch.Tensor.hypot": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.hypot",
-    "min_input_args": 1,
-    "args_list": [
-      "other"
-    ],
-    "kwargs_change": {
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.hypot_": {
     "Matcher": "ChangePrefixMatcher"
@@ -3454,33 +3438,28 @@
     "min_input_args": 0
   },
   "torch.autograd.function.FunctionCtx": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.autograd.PyLayerContext",
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.autograd.function.FunctionCtx.mark_dirty": {
     "min_input_args": 0
   },
   "torch.autograd.function.FunctionCtx.mark_non_differentiable": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.autograd.PyLayerContext.mark_non_differentiable",
-    "min_input_args": 1
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.autograd.function.FunctionCtx.mark_shared_storage": {
     "min_input_args": 0
   },
   "torch.autograd.function.FunctionCtx.save_for_backward": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.autograd.PyLayerContext.save_for_backward",
-    "min_input_args": 1
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.autograd.function.FunctionCtx.save_for_forward": {
     "min_input_args": 0
   },
+  "torch.autograd.function.FunctionCtx.saved_tensors": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.autograd.function.FunctionCtx.set_materialize_grads": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.autograd.PyLayerContext.set_materialize_grads",
-    "min_input_args": 1
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.autograd.functional.hessian": {
     "Matcher": "GenericMatcher",
@@ -3910,17 +3889,7 @@
   },
   "torch.cosine_embedding_loss": {},
   "torch.count_nonzero": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.count_nonzero",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "dim"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.cov": {
     "Matcher": "GenericMatcher",
@@ -5943,19 +5912,7 @@
     }
   },
   "torch.hypot": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.hypot",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "other",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.i0": {
     "Matcher": "ChangePrefixMatcher"
@@ -8221,15 +8178,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.ParameterDict": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.ParameterDict",
-    "min_input_args": 0,
-    "args_list": [
-      "values"
-    ],
-    "kwargs_change": {
-      "values": "parameters"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.ParameterList": {
     "Matcher": "GenericMatcher",
@@ -9530,16 +9479,7 @@
     }
   },
   "torch.nn.functional.pixel_shuffle": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.pixel_shuffle",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "upscale_factor"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.pixel_unshuffle": {
     "Matcher": "GenericMatcher",
@@ -12407,13 +12347,14 @@
       "generator"
     ]
   },
+  "torch.utils.data.dataset.ChainDataset": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.utils.data.dataset.IterableDataset": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.utils.data.default_collate": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.io.dataloader.collate.default_collate_fn",
-    "min_input_args": 1,
-    "args_list": [
-      "batch"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.distributed.DistributedSampler": {
     "Matcher": "GenericMatcher",

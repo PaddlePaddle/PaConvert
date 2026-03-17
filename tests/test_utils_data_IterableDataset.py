@@ -70,7 +70,7 @@ def test_case_3():
         """
         import torch.utils as utils
 
-        class MyIterableDataset(utils.data.IterableDataset):
+        class MyIterableDataset(utils.data.dataset.IterableDataset):
             def __init__(self, start, end):
                 super(MyIterableDataset).__init__()
                 assert end > start, "this example code only works with end >= start"
