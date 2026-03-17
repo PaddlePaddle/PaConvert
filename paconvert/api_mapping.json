@@ -2768,12 +2768,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch._assert": {
-    "Matcher": "AssertMatcher",
-    "min_input_args": 2,
-    "args_list": [
-      "condition",
-      "message"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch._foreach_abs": {
     "Matcher": "ForeachMatcher",
