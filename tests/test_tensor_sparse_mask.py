@@ -27,7 +27,8 @@ def test_case_1():
         indices = torch.tensor([[0, 1], [1, 2]])
         values = torch.tensor([0, 0])
         mask = torch.sparse_coo_tensor(indices, values, dense.size())
-        result = dense.sparse_mask(mask)
+        result_sparse = dense.sparse_mask(mask)
+        result = result_sparse.to_dense()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -41,7 +42,8 @@ def test_case_2():
         indices = torch.tensor([[0, 1], [1, 0]])   # 提取 (0,1)=0 和 (1,0)=0
         values = torch.tensor([1, 1])
         mask = torch.sparse_coo_tensor(indices, values, dense.size())
-        result = dense.sparse_mask(mask)
+        result_sparse = dense.sparse_mask(mask)
+        result = result_sparse.to_dense()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -55,7 +57,8 @@ def test_case_3():
         indices = torch.tensor([[0, 1], [1, 2], [3, 0]])  # 提取两个位置
         values = torch.tensor([-1, -1])
         mask = torch.sparse_coo_tensor(indices, values, dense.size())
-        result = dense.sparse_mask(mask)
+        result_sparse = dense.sparse_mask(mask)
+        result = result_sparse.to_dense()
         """
     )
     obj.run(pytorch_code, ["result"])
