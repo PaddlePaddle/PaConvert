@@ -20,120 +20,89 @@ obj = APIBase("torch.cummin")
 
 
 def test_case_1():
+    """Test basic usage with positional and keyword arguments"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1.0, 1.0, 1.0],
-                        [2.0, 2.0, 2.0],
-                        [3.0, 3.0, 3.0]])
+        x = torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
         result = torch.cummin(x, 0)
+        result2 = torch.cummin(x, dim=1)
+        result3 = torch.cummin(input=x, dim=0)  # PyTorch alias
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result", "result2", "result3"])
 
 
 def test_case_2():
+    """Test with out parameter (tuple)"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1.0, 1.0, 1.0],
-                        [2.0, 2.0, 2.0],
-                        [3.0, 3.0, 3.0]])
-        result = torch.cummin(x, dim=1)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[1.0, 1.0, 1.0],
-                        [2.0, 2.0, 2.0],
-                        [3.0, 3.0, 3.0]])
-        result = torch.cummin(input=x, dim=1)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[1.0, 1.0, 1.0],
-                        [2.0, 2.0, 2.0],
-                        [3.0, 3.0, 3.0]])
-        values = torch.tensor([[1.0, 1.0, 1.0],
-                        [2.0, 2.0, 2.0],
-                        [3.0, 3.0, 3.0]]).float()
-        indices = torch.tensor([[1, 1, 1],
-                        [2, 2, 2],
-                        [3, 3, 3]])
-        out = (values, indices)
+        x = torch.tensor([[1.0, 2.0], [3.0, 4.0]])
+        values = torch.empty(2, 2)
+        indices = torch.empty(2, 2, dtype=torch.int64)
         result = torch.cummin(x, 0, out=(values, indices))
         """
     )
-    obj.run(pytorch_code, ["result", "out"])
+    obj.run(pytorch_code, ["result", "values", "indices"])
+
+
+def test_case_3():
+    """Test with 1D and 3D tensors"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x1d = torch.tensor([9.0, 5.0, 2.0, 7.0])
+        result1 = torch.cummin(x1d, 0)
+
+        x3d = torch.tensor([[[12.0, 11.0], [10.0, 9.0]], [[8.0, 7.0], [6.0, 5.0]]])
+        result2 = torch.cummin(x3d, dim=1)
+        result3 = torch.cummin(x3d, dim=2)
+        """
+    )
+    obj.run(pytorch_code, ["result1", "result2", "result3"])
+
+
+def test_case_4():
+    """Test with different dtypes and values"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x_float64 = torch.tensor([[6.0, 5.0]], dtype=torch.float64)
+        result1 = torch.cummin(x_float64, 0)
+
+        x_neg = torch.tensor([[-1.0, 2.0], [-3.0, 4.0]])
+        result2 = torch.cummin(x_neg, dim=1)
+        """
+    )
+    obj.run(pytorch_code, ["result1", "result2"])
 
 
 def test_case_5():
+    """Test NamedTuple access (values, indices and [0], [1])"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1.0, 1.0, 1.0],
-                        [2.0, 2.0, 2.0],
-                        [3.0, 3.0, 3.0]])
-        values = torch.tensor([[1.0, 1.0, 1.0],
-                        [2.0, 2.0, 2.0],
-                        [3.0, 3.0, 3.0]]).float()
-        indices = torch.tensor([[1, 1, 1],
-                        [2, 2, 2],
-                        [3, 3, 3]])
-        out = (values, indices)
-        result = torch.cummin(x, dim = 0, out=(values, indices))
+        x = torch.tensor([[4.0, 2.0], [1.0, 3.0]])
+        result = torch.cummin(x, 0)
+        values = result.values
+        indices = result.indices
+        v0 = result[0]
+        i1 = result[1]
         """
     )
-    obj.run(pytorch_code, ["result", "out"])
+    obj.run(pytorch_code, ["values", "indices", "v0", "i1"])
 
 
 def test_case_6():
+    """Test with out parameter (list)"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[1.0, 1.0, 1.0],
-                        [2.0, 2.0, 2.0],
-                        [3.0, 3.0, 3.0]])
-        values = torch.tensor([[1.0, 1.0, 1.0],
-                        [2.0, 2.0, 2.0],
-                        [3.0, 3.0, 3.0]]).float()
-        indices = torch.tensor([[1, 1, 1],
-                        [2, 2, 2],
-                        [3, 3, 3]])
-        out = (values, indices)
-        result = torch.cummin(input = x, dim =0, out=(values, indices))
+        x = torch.tensor([[1.0, 2.0], [3.0, 4.0]])
+        values = torch.empty(2, 2)
+        indices = torch.empty(2, 2, dtype=torch.int64)
+        result = torch.cummin(x, 0, out=[values, indices])
         """
     )
-    obj.run(pytorch_code, ["result", "out"])
-
-
-# generated by validate_unittest autofix, based on test_case_6
-def test_case_7():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[1.0, 1.0, 1.0],
-                        [2.0, 2.0, 2.0],
-                        [3.0, 3.0, 3.0]])
-        values = torch.tensor([[1.0, 1.0, 1.0],
-                        [2.0, 2.0, 2.0],
-                        [3.0, 3.0, 3.0]]).float()
-        indices = torch.tensor([[1, 1, 1],
-                        [2, 2, 2],
-                        [3, 3, 3]])
-        out = (values, indices)
-        result = torch.cummin(out=(values, indices), dim=0, input=x)
-        """
-    )
-    obj.run(pytorch_code, ["result", "out"])
+    obj.run(pytorch_code, ["result", "values", "indices"])

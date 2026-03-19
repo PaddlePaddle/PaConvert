@@ -96,3 +96,70 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["out"])
+
+
+def test_case_8():
+    """Test with out parameter as keyword argument"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1., 2., 3.])
+        b = torch.tensor([1, 2, 3])
+        out = torch.zeros_like(a)
+        torch.ldexp(input=a, other=b, out=out)
+        result = out
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """Test with different tensor shapes (broadcasting)"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 2.], [3., 4.]])
+        b = torch.tensor([1, 2])
+        result = torch.ldexp(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """Test with float64 dtype"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1.0, 2.0], dtype=torch.float64)
+        b = torch.tensor([1, 2], dtype=torch.int64)
+        result = torch.ldexp(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    """Test with negative exponent"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1., 2., 4.])
+        b = torch.tensor([-1, -2, -3])
+        result = torch.ldexp(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    """Test with zero exponent"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1., 2., 3.])
+        b = torch.tensor([0, 0, 0])
+        result = torch.ldexp(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
