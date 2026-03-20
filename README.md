@@ -21,8 +21,6 @@
 
 ## 安装使用
 
-#### 1. 命令行用法
-
 通过终端命令行的方式使用：
 
 ```bash
@@ -43,15 +41,6 @@ paconvert -i torch_code_dir [-o paddle_code_dir] [-e exclude.py] [--log_dir log_
 --no_format          可选，转换后的代码不进行代码风格优化。默认会优化代码风格。
 --exclude_packages   可选，可以配置无需识别转换的torch包名，多个包名请使用逗号分隔。默认不配置。
 ```
-
-#### 2. IDE交互式用法
-
-在 IDE 中使用，交互式界面更友好。
-
-需要在`PyCharm`或`VS Code`等主流 IDE 中安装 **文心快码插件(Baidu Comate)** 后即可使用。以`VS Code`上使用为例：
-
-![img](./images/comate_paconvert.jpeg)
-
 
 ## 转换示例
 

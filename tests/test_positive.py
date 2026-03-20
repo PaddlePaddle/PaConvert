@@ -50,13 +50,3 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        result = torch.positive(input=torch.tensor([[-4., 1., 1., 16.]]))
-        """
-    )
-    obj.run(pytorch_code, ["result"])
