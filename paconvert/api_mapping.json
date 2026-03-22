@@ -8606,10 +8606,6 @@
       "reduction",
       "pos_weight"
     ],
-    "kwargs_change": {
-      "input": "logit",
-      "target": "label"
-    },
     "min_input_args": 2
   },
   "torch.nn.functional.celu": {

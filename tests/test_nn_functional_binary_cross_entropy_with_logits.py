@@ -154,3 +154,49 @@ def test_case_11():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.zeros(3, requires_grad=True)
+        target = torch.tensor([0.,1.,0.])
+        result = torch.nn.functional.binary_cross_entropy_with_logits(input=a, target=target, weight=None, size_average=None, reduce=True, reduction='sum', pos_weight=None)
+        """
+    )
+    expect_paddle_code = textwrap.dedent(
+        """
+        import paddle
+
+        a = paddle.zeros(3, requires_grad=True)
+        target = paddle.tensor([0.0, 1.0, 0.0])
+        result = paddle.nn.functional.binary_cross_entropy_with_logits(
+            input=a, target=target, weight=None, reduction="mean", pos_weight=None
+        )
+        """
+    )
+    obj.run(pytorch_code, expect_paddle_code=expect_paddle_code)
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.zeros(3, requires_grad=True)
+        target = torch.tensor([0.,1.,0.])
+        result = torch.nn.functional.binary_cross_entropy_with_logits(pos_weight=None, reduction='sum', reduce=True, size_average=None, weight=None, target=target, input=a)
+        """
+    )
+    expect_paddle_code = textwrap.dedent(
+        """
+        import paddle
+
+        a = paddle.zeros(3, requires_grad=True)
+        target = paddle.tensor([0.0, 1.0, 0.0])
+        result = paddle.nn.functional.binary_cross_entropy_with_logits(
+            pos_weight=None, reduction="mean", weight=None, target=target, input=a
+        )
+        """
+    )
+    obj.run(pytorch_code, expect_paddle_code=expect_paddle_code)
