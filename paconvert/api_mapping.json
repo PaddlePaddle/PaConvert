@@ -9307,10 +9307,6 @@
       "reduce",
       "reduction"
     ],
-    "kwargs_change": {
-      "target": "label",
-      "eps": "epsilon"
-    },
     "min_input_args": 2
   },
   "torch.nn.functional.prelu": {
