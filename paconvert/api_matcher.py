@@ -382,7 +382,7 @@ class ChangePrefixMatcher(BaseMatcher):
         kwargs = self.parse_kwargs(kwargs, allow_none=True)
 
         # temporary delete these unsupport args, which paddle does not support now
-        for k in ["layout", "generator", "memory_format", "sparse_grad"]:
+        for k in ["layout", "generator", "memory_format", "sparse_grad", "requires_grad", "pin_memory", "device"]:
             if k in kwargs:
                 kwargs.pop(k)
         code = f"{self.get_paddle_api()}({self.args_and_kwargs_to_str(args, kwargs)})"
