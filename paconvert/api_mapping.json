@@ -5564,19 +5564,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.gcd": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.gcd",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "other",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.ge": {
     "Matcher": "ChangePrefixMatcher"
@@ -6034,19 +6022,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.lcm": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.lcm",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "other",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.ldexp": {
     "Matcher": "GenericMatcher",
