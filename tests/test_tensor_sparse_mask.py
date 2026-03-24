@@ -62,3 +62,18 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        dense = torch.tensor([[7, 8, 9], [10, 11, 12]])
+        indices = torch.tensor([[0, 1], [0, 2]])
+        values = torch.tensor([1, 1])
+        mask = torch.sparse_coo_tensor(indices, values, dense.size())
+        result_sparse = dense.sparse_mask(mask=mask)
+        result = result_sparse.to_dense()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
