@@ -9436,16 +9436,7 @@
     }
   },
   "torch.nn.functional.mse_loss": {
-    "Matcher": "SizeAverageMatcher",
-    "paddle_api": "paddle.nn.functional.mse_loss",
-    "args_list": [
-      "input",
-      "target",
-      "size_average",
-      "reduce",
-      "reduction"
-    ],
-    "min_input_args": 2
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.multi_margin_loss": {
     "Matcher": "SizeAverageMatcher",
