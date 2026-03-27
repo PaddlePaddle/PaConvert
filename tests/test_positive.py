@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
@@ -21,6 +20,7 @@ obj = APIBase("torch.positive")
 
 
 def test_case_1():
+    """Basic usage with 1D tensor"""
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -32,6 +32,7 @@ def test_case_1():
 
 
 def test_case_2():
+    """2D tensor with positional argument"""
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -42,11 +43,72 @@ def test_case_2():
 
 
 def test_case_3():
+    """Keyword argument"""
     pytorch_code = textwrap.dedent(
         """
         import torch
         x = torch.tensor([[-4., 1., 1., 16.]])
         result = torch.positive(input=x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    """Keyword argument with expression"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.positive(input=torch.tensor([[-4., 1., 1., 16.]]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    """Gradient computation"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1.0, -2.0, 3.0], requires_grad=True)
+        y = torch.positive(x)
+        y.sum().backward()
+        x_grad = x.grad
+        """
+    )
+    obj.run(pytorch_code, ["y", "x_grad"], check_stop_gradient=False)
+
+
+def test_case_6():
+    """3D tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[[1.0, -2.0], [3.0, -4.0]], [[5.0, -6.0], [7.0, -8.0]]])
+        result = torch.positive(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """Integer tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, -2, 3, -4])
+        result = torch.positive(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """Expression argument"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.positive(torch.tensor([1.0, -2.0, 3.0]) + torch.tensor([0.5, 0.5, 0.5]))
         """
     )
     obj.run(pytorch_code, ["result"])

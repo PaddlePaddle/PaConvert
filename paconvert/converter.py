@@ -27,9 +27,6 @@ import astor
 
 from paconvert.transformer.basic_transformer import BasicTransformer
 from paconvert.transformer.import_transformer import ImportTransformer
-from paconvert.transformer.tensor_requires_grad_transformer import (
-    TensorRequiresGradTransformer,
-)
 from paconvert.transformer.custom_op_transformer import (
     PreCustomOpTransformer,
     CustomOpTransformer,
@@ -378,7 +375,6 @@ class Converter:
     def transfer_node(self, root, file):
         transformers = [
             ImportTransformer,  # import ast transformer
-            TensorRequiresGradTransformer,  # attribute requires_grad transformer
             BasicTransformer,  # most of api transformer
             PreCustomOpTransformer,  # pre process for C++ custom op
             CustomOpTransformer,  # C++ custom op transformer

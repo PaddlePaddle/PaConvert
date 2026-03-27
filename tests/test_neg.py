@@ -43,7 +43,7 @@ def test_case_2():
 
 
 def test_case_3():
-    """Out parameter with tensor"""
+    """Out parameter with positional and keyword arguments"""
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -56,7 +56,7 @@ def test_case_3():
 
 
 def test_case_4():
-    """Out parameter with keyword arguments"""
+    """Out parameter with all keyword arguments"""
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -118,18 +118,6 @@ def test_case_8():
 
 
 def test_case_9():
-    """Float32 tensor"""
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1.5, -2.5, 3.5], dtype=torch.float32)
-        result = torch.neg(x)
-    """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_10():
     """Float64 tensor"""
     pytorch_code = textwrap.dedent(
         """
@@ -141,20 +129,7 @@ def test_case_10():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_11():
-    """Variable argument"""
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1.0, -2.0, 3.0])
-        result = torch.neg(x)
-        result2 = torch.neg(result)
-    """
-    )
-    obj.run(pytorch_code, ["result2"])
-
-
-def test_case_12():
+def test_case_10():
     """Expression argument"""
     pytorch_code = textwrap.dedent(
         """
@@ -165,37 +140,15 @@ def test_case_12():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_13():
-    """Zero tensor"""
+def test_case_11():
+    """Gradient computation"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.zeros(3)
-        result = torch.neg(x)
-    """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_14():
-    """Ones tensor (negated)"""
-    pytorch_code = textwrap.dedent(
+        x = torch.tensor([1.0, -2.0, 3.0], requires_grad=True)
+        y = torch.neg(x)
+        y.sum().backward()
+        x_grad = x.grad
         """
-        import torch
-        x = torch.ones(3)
-        result = torch.neg(x)
-    """
     )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_15():
-    """Empty parameter specification (default)"""
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1.0, -2.0, 3.0])
-        result = torch.neg(x)
-    """
-    )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["y", "x_grad"], check_stop_gradient=False)
