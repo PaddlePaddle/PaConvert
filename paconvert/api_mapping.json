@@ -9112,16 +9112,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.pixel_unshuffle": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.pixel_unshuffle",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "downscale_factor"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.poisson_nll_loss": {
     "Matcher": "SizeAverageMatcher",
