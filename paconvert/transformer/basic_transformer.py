@@ -145,11 +145,14 @@ class BasicTransformer(BaseTransformer):
             if self.mode == "min" and self.is_change_prefix_api(torch_api):
                 self.record_change_prefix_api(torch_api, node.lineno)
                 return node
+            # can in attribute_matcher or attribute_matcher, but not both
+            attribute_matcher = self.get_attribute_matcher(torch_api)
+            api_matcher = self.get_api_matcher(torch_api)
+            assert not (
+                attribute_matcher and api_matcher
+            ), f"{torch_api} can not be both in attribute_matcher and api_matcher"
 
-            matcher = self.get_api_matcher(torch_api)
-            # can be api_matcher or attribute_matcher
-            if matcher is None:
-                matcher = self.get_attribute_mather(torch_api)
+            matcher = attribute_matcher or api_matcher
 
             if matcher:
                 paddle_api = matcher.get_paddle_api()
@@ -302,7 +305,7 @@ class BasicTransformer(BaseTransformer):
         return node
 
     def trans_class_attribute(self, node, torch_api):
-        matcher = self.get_attribute_mather(torch_api)
+        matcher = self.get_attribute_matcher(torch_api)
         if matcher:
             self.all_api_map[torch_api]["paddle_api"] = (
                 matcher.get_paddle_api() if matcher.get_paddle_api() else ""
@@ -786,6 +789,9 @@ class BasicTransformer(BaseTransformer):
     def get_api_matcher(self, torch_api):
         api_mapping_dict = {}
         if torch_api in GlobalManager.ALIAS_MAPPING:
+            assert (
+                torch_api not in GlobalManager.API_MAPPING
+            ), f"{torch_api} can not be both in alias mapping and api mapping"
             torch_api = GlobalManager.ALIAS_MAPPING[torch_api]
         if torch_api in GlobalManager.API_MAPPING:
             api_mapping_dict = GlobalManager.API_MAPPING[torch_api]
@@ -809,10 +815,12 @@ class BasicTransformer(BaseTransformer):
             return True
         return False
 
-    def get_attribute_mather(self, torch_api):
+    def get_attribute_matcher(self, torch_api):
         attr_mapping_dict = {}
-
         if torch_api in GlobalManager.ALIAS_MAPPING:
+            assert (
+                torch_api not in GlobalManager.ATTRIBUTE_MAPPING
+            ), f"{torch_api} can not be both in alias mapping and attribute mapping"
             torch_api = GlobalManager.ALIAS_MAPPING[torch_api]
         if torch_api in GlobalManager.ATTRIBUTE_MAPPING:
             attr_mapping_dict = GlobalManager.ATTRIBUTE_MAPPING[torch_api]

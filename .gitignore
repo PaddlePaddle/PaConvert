@@ -21,3 +21,4 @@ test_set
 tensor.pt
 __pycache__
 .DS_Store
+test_zzq/

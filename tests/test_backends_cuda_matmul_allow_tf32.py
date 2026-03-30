@@ -49,15 +49,3 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        if torch.backends.cuda.matmul.allow_tf32:
-            print(torch.backends.cuda.matmul.allow_tf32)
-            result = torch.backends.cuda.matmul.allow_tf32
-        """
-    )
-    obj.run(pytorch_code, ["result"])

@@ -27,9 +27,6 @@ import astor
 
 from paconvert.transformer.basic_transformer import BasicTransformer
 from paconvert.transformer.import_transformer import ImportTransformer
-from paconvert.transformer.tensor_requires_grad_transformer import (
-    TensorRequiresGradTransformer,
-)
 from paconvert.transformer.custom_op_transformer import (
     PreCustomOpTransformer,
     CustomOpTransformer,
@@ -312,6 +309,22 @@ class Converter:
 
         return self.success_api_count, faild_api_count
 
+    
+    def __del__(self):
+        """Ensure cleanup happens when Converter is destroyed."""
+        try:
+            # Close all logger handlers
+            for handler in self.logger.handlers[:]:
+                handler.close()
+                self.logger.removeHandler(handler)
+
+            # Clear large data structures
+            self.imports_map.clear()
+            self.all_api_map.clear()
+            self.unsupport_api_map.clear()
+        except:
+            pass
+
     def transfer_dir(self, in_dir, out_dir, exclude, mode):
         if os.path.isfile(in_dir):
             old_path = in_dir
@@ -430,7 +443,6 @@ class Converter:
     def transfer_node(self, root, file, mode):
         transformers = [
             ImportTransformer,  # import ast transformer
-            TensorRequiresGradTransformer,  # attribute requires_grad transformer
             BasicTransformer,  # most of api transformer
             PreCustomOpTransformer,  # pre process for C++ custom op
             CustomOpTransformer,  # C++ custom op transformer
