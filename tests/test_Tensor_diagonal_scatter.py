@@ -77,3 +77,68 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    """Test with positive offset"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.arange(12.0).reshape((3, 4))
+        src = torch.ones((3,))
+        result = input.diagonal_scatter(src, offset=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """Test with negative offset"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.arange(12.0).reshape((3, 4))
+        src = torch.ones((2,))
+        result = input.diagonal_scatter(src, offset=-1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """Test with int dtype"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.arange(6, dtype=torch.int32).reshape((2, 3))
+        src = torch.ones((2,), dtype=torch.int32)
+        result = input.diagonal_scatter(src)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """Test with float64 dtype"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.arange(6.0, dtype=torch.float64).reshape((2, 3))
+        src = torch.ones((2,), dtype=torch.float64)
+        result = input.diagonal_scatter(src, offset=0, dim1=0, dim2=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """Test with 3D tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.arange(24.0).reshape((2, 3, 4))
+        src = torch.ones((3, 2))
+        result = input.diagonal_scatter(src, dim1=0, dim2=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

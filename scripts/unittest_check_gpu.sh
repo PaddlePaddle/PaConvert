@@ -47,10 +47,10 @@ python -m pip install -r requirements.txt
 echo '************************************************************************************************************'
 echo "Checking code unit test by pytest ..."
 python -m pip install pytest-timeout pytest-xdist pytest-rerunfailures
-python -m pytest -n 1 --reruns=3 ./tests; check_error=$?
+python -m pytest -v -s -p no:warnings -n 1 --reruns=3 ./tests; check_error=$?
 if [ ${check_error} != 0 ];then
     echo "Rerun unit test check." 
-    python -m pytest -n 1 --lf ./tests; check_error=$?
+    python -m pytest -v -s -p no:warnings -n 1 --lf ./tests; check_error=$?
 fi
 
 echo '************************************************************************************************************'

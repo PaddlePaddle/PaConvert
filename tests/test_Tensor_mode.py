@@ -98,3 +98,31 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result", "index"])
+
+
+def test_case_8():
+    """Test NamedTuple access (values, indices)"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[[1,2,2],[2,3,3]],[[0,5,5],[9,9,0]]])
+        result = input.mode(1)
+        values = result.values
+        indices = result.indices
+        """
+    )
+    obj.run(pytorch_code, ["values", "indices"])
+
+
+def test_case_9():
+    """Test NamedTuple access with keepdim"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[[1,2,2],[2,3,3]],[[0,5,5],[9,9,0]]])
+        result = input.mode(dim=1, keepdim=True)
+        values = result.values
+        indices = result.indices
+        """
+    )
+    obj.run(pytorch_code, ["values", "indices"])

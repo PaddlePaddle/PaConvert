@@ -122,3 +122,17 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["result", "index", "out"])
+
+
+def test_case_10():
+    """Test NamedTuple access (values, indices)"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2, 3, 4, 5], [2, 5, 6, 2, 3]])
+        result = torch.topk(x, 3, dim=1)
+        values = result.values
+        indices = result.indices
+        """
+    )
+    obj.run(pytorch_code, ["values", "indices"])
