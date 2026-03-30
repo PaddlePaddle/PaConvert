@@ -449,7 +449,7 @@ class BasicTransformer(BaseTransformer):
             full_api = full_attr
         else:
             full_api = self.get_full_api_from_node(node.func)
-            
+
         # 1) Torch Package Call, include torch third_party
         #   such as : torch.add(x, y) / torch.add(torch.abs(x), y)
         #   for may_torch_package_list, will in_api_mapping

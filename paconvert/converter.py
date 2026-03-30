@@ -47,6 +47,7 @@ def listdir_nohidden(path):
         if not f.startswith("."):
             yield f
 
+
 class ResidualTorchApiCollector(BasicTransformer):
     def __init__(self, root, file, mode, imports_map, logger):
         super(ResidualTorchApiCollector, self).__init__(
@@ -66,7 +67,10 @@ class ResidualTorchApiCollector(BasicTransformer):
 
         if isinstance(self.parent_node, ast.Call) and node == self.parent_node.func:
             return node
-        if isinstance(self.parent_node, ast.Attribute) and node == self.parent_node.value:
+        if (
+            isinstance(self.parent_node, ast.Attribute)
+            and node == self.parent_node.value
+        ):
             return node
 
         full_attr = self.get_full_attr_for_apiname(node)
@@ -134,7 +138,7 @@ class Converter:
         log_info(self.logger, "PyTorch to Paddle Convert Start ------>:")
         log_info(self.logger, "===========================================")
 
-    def run(self, in_dir, out_dir=None, exclude=None,mode="default"):
+    def run(self, in_dir, out_dir=None, exclude=None, mode="default"):
         if self.calculate_speed:
             import time
 

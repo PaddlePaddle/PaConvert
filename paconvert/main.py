@@ -202,7 +202,7 @@ def main():
         return
 
     assert args.in_dir is not None, "User must specify --in_dir "
-    converter.run(args.in_dir, args.out_dir, args.exclude,args.mode)
+    converter.run(args.in_dir, args.out_dir, args.exclude, args.mode)
 
     print(r"****************************************************************")
     print(r"______      _____                          _   ")

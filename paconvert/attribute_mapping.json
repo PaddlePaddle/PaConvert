@@ -29,7 +29,6 @@
   },
   "torch.Tensor.is_meta": {},
   "torch.Tensor.is_quantized": {},
-  "torch.Tensor.retains_grad": {},
   "torch.Tensor.is_sparse": {
     "Matcher": "Attribute2Func",
     "paddle_api": "paddle.Tensor.is_sparse"
@@ -61,6 +60,7 @@
   "torch.Tensor.requires_grad": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.Tensor.retains_grad": {},
   "torch.Tensor.shape": {
     "Matcher": "ChangePrefixMatcher"
   },
