@@ -56,18 +56,6 @@ def test_case_3():
 
 
 def test_case_4():
-    """With dim keyword argument (using alias)"""
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[1.0, 2.0, float('nan')], [4.0, 5.0, 6.0]])
-        result = x.nanquantile(0.5, dim=1)
-    """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_5():
     """With keepdim keyword argument"""
     pytorch_code = textwrap.dedent(
         """
@@ -79,7 +67,7 @@ def test_case_5():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_6():
+def test_case_5():
     """Multiple quantile values"""
     pytorch_code = textwrap.dedent(
         """
@@ -91,43 +79,7 @@ def test_case_6():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_7():
-    """Keywords in different order (dim first)"""
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[1.0, 2.0, float('nan')], [4.0, 5.0, 6.0]])
-        result = x.nanquantile(q=0.5, dim=1, keepdim=False)
-    """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_8():
-    """Keywords completely out of order"""
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[1.0, 2.0, float('nan')], [4.0, 5.0, 6.0]])
-        result = x.nanquantile(dim=1, q=0.5, keepdim=True)
-    """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_9():
-    """1D tensor input"""
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1.0, 2.0, float('nan'), 4.0, 5.0])
-        result = x.nanquantile(0.5)
-    """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_10():
+def test_case_6():
     """3D tensor input"""
     pytorch_code = textwrap.dedent(
         """
@@ -139,8 +91,8 @@ def test_case_10():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_11():
-    """Mixed parameter styles"""
+def test_case_7():
+    """Mixed parameter styles with dim and keepdim"""
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -151,7 +103,7 @@ def test_case_11():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_12():
+def test_case_8():
     """Verify NaN handling - all NaN row"""
     pytorch_code = textwrap.dedent(
         """
@@ -163,8 +115,8 @@ def test_case_12():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_13():
-    """Quantile at boundaries"""
+def test_case_9():
+    """Quantile at lower boundary"""
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -175,7 +127,7 @@ def test_case_13():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_14():
+def test_case_10():
     """Quantile at upper boundary"""
     pytorch_code = textwrap.dedent(
         """
@@ -187,13 +139,121 @@ def test_case_14():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_15():
+def test_case_11():
     """Chained method calls"""
     pytorch_code = textwrap.dedent(
         """
         import torch
         x = torch.tensor([[1.0, 2.0, float('nan')], [4.0, 5.0, 6.0]])
         result = x.nanquantile(0.5, 1).nanquantile(0.5)
+    """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    """With interpolation='lower'"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, 2.0, float('nan')], [4.0, 5.0, 6.0]])
+        result = x.nanquantile(0.5, dim=1, interpolation='lower')
+    """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    """With interpolation='higher'"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, 2.0, float('nan')], [4.0, 5.0, 6.0]])
+        result = x.nanquantile(0.5, dim=1, interpolation='higher')
+    """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    """With interpolation='midpoint'"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, 2.0, float('nan')], [4.0, 5.0, 6.0]])
+        result = x.nanquantile(0.5, dim=1, interpolation='midpoint')
+    """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_15():
+    """With interpolation='nearest'"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, 2.0, float('nan')], [4.0, 5.0, 6.0]])
+        result = x.nanquantile(0.5, dim=1, interpolation='nearest')
+    """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_16():
+    """Multiple quantiles with interpolation parameter"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, 2.0, float('nan')], [4.0, 5.0, 6.0]])
+        result = x.nanquantile(torch.tensor([0.25, 0.5, 0.75]), dim=1, interpolation='midpoint')
+    """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_17():
+    """With dim=None explicitly (flatten behavior)"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, 2.0, float('nan')], [4.0, 5.0, 6.0]])
+        result = x.nanquantile(0.5, dim=None)
+    """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_18():
+    """With dim=None and keepdim=True"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, 2.0, float('nan')], [4.0, 5.0, 6.0]])
+        result = x.nanquantile(0.5, dim=None, keepdim=True)
+    """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_19():
+    """Multiple quantiles with interpolation on 3D tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[[1.0, float('nan')], [3.0, 4.0]], [[5.0, 6.0], [float('nan'), 8.0]]])
+        result = x.nanquantile(torch.tensor([0.25, 0.75]), dim=0, interpolation='lower')
+    """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_20():
+    """All parameters including keywords in mixed order"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, 2.0, float('nan')], [4.0, 5.0, 6.0]])
+        result = x.nanquantile(q=0.5, interpolation='higher', dim=1, keepdim=False)
     """
     )
     obj.run(pytorch_code, ["result"])

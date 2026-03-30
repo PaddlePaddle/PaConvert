@@ -27,7 +27,7 @@ def test_case_1():
         x = torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
         result = torch.cummax(x, 0)
         result2 = torch.cummax(x, dim=1)
-        result3 = torch.cummax(input=x, dim=0)  # PyTorch alias
+        result3 = torch.cummax(input=x, dim=0)
         """
     )
     obj.run(pytorch_code, ["result", "result2", "result3"])
@@ -106,3 +106,17 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result", "values", "indices"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, 2.0], [3.0, 4.0]])
+        values = torch.empty(2, 2)
+        indices = torch.empty(2, 2, dtype=torch.int64)
+        out = (values, indices)
+        result = torch.cummax(out=out, dim=0, input=x)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

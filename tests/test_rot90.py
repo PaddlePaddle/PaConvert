@@ -114,3 +114,13 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["y", "x_grad"], check_stop_gradient=False)
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.rot90(dims=[0, 1], k=1, input=torch.tensor([[1, 2, 3], [4, 5, 6]]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])

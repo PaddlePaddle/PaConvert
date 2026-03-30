@@ -106,3 +106,17 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result", "values", "indices"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, 2.0], [3.0, 4.0]])
+        values = torch.empty(2, 2)
+        indices = torch.empty(2, 2, dtype=torch.int64)
+        out = (values, indices)
+        result = torch.cummin(out=out, dim=0, input=x)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])

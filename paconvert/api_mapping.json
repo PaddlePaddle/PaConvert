@@ -5328,9 +5328,6 @@
       "axis": 0
     }
   },
-  "torch.float8_e4m3fn": {
-    "Matcher": "ChangePrefixMatcher"
-  },
   "torch.float_power": {
     "Matcher": "FloatPowerMatcher",
     "min_input_args": 2,
