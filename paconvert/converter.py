@@ -257,6 +257,21 @@ class Converter:
 
         return self.success_api_count, faild_api_count
 
+    def __del__(self):
+        """Ensure cleanup happens when Converter is destroyed."""
+        try:
+            # Close all logger handlers
+            for handler in self.logger.handlers[:]:
+                handler.close()
+                self.logger.removeHandler(handler)
+
+            # Clear large data structures
+            self.imports_map.clear()
+            self.all_api_map.clear()
+            self.unsupport_api_map.clear()
+        except:
+            pass
+
     def transfer_dir(self, in_dir, out_dir, exclude):
         if os.path.isfile(in_dir):
             old_path = in_dir
