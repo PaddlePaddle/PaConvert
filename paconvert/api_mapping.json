@@ -708,7 +708,6 @@
   "torch.Tensor.cfloat": {
     "Matcher": "ChangePrefixMatcher"
   },
-  "torch.Tensor.ccol_indices": {},
   "torch.Tensor.chalf": {},
   "torch.Tensor.char": {
     "Matcher": "ChangePrefixMatcher"
@@ -1637,7 +1636,6 @@
   "torch.Tensor.masked_select": {
     "Matcher": "ChangePrefixMatcher"
   },
-  "torch.Tensor.module_load": {},
   "torch.Tensor.matmul": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -2512,7 +2510,6 @@
   "torch.Tensor.uniform_": {
     "Matcher": "ChangePrefixMatcher"
   },
-  "torch.Tensor.untyped_storage": {},
   "torch.Tensor.unique": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.unique",
@@ -10378,9 +10375,6 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.poisson_nll_loss": {},
-  "torch.contiguous_format": {
-    "Matcher": "ChangePrefixMatcher"
-  },
   "torch.polar": {
     "Matcher": "ChangePrefixMatcher"
   },
