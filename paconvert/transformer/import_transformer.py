@@ -52,7 +52,7 @@ class ImportTransformer(BaseTransformer):
         self.imports_map[self.file]["may_torch_packages"] = set()
         self.imports_map[self.file]["api_alias_name_map"] = {}
         self.insert_pass_node = set()
-
+    
     def visit_Import(self, node):
         """
         1. remove import torch.nn

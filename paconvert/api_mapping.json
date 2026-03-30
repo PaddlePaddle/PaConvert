@@ -2010,7 +2010,6 @@
   "torch.Tensor.register_hook": {
     "Matcher": "ChangePrefixMatcher"
   },
-  "torch.Tensor.register_post_accumulate_grad_hook": {},
   "torch.Tensor.remainder": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -2078,6 +2077,7 @@
   "torch.Tensor.retain_grad": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.Tensor.register_post_accumulate_grad_hook": {},
   "torch.Tensor.roll": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -2510,6 +2510,7 @@
   "torch.Tensor.uniform_": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.Tensor.untyped_storage": {},
   "torch.Tensor.unique": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.Tensor.unique",
@@ -2534,7 +2535,6 @@
   "torch.Tensor.unsqueeze_": {
     "Matcher": "ChangePrefixMatcher"
   },
-  "torch.Tensor.untyped_storage": {},
   "torch.Tensor.values": {
     "Matcher": "ChangePrefixMatcher"
   },
