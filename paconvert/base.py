@@ -21,15 +21,25 @@ from itertools import groupby
 
 import astor
 
+from paconvert.global_var import GlobalManager
 from paconvert.utils import UtilsFileHelper, log_debug
 
 
 class BaseTransformer(ast.NodeTransformer):
     def __init__(
-        self, root, file, imports_map, logger, all_api_map=None, unsupport_api_map=None
+        self,
+        root,
+        file,
+        mode,
+        imports_map,
+        logger,
+        all_api_map=None,
+        unsupport_api_map=None,
+        change_prefix_api_map=None,
     ):
         self.root = root
         self.file = file
+        self.mode = mode
         self.file_name = os.path.basename(file)
         self.imports_map = imports_map
         self.torch_api_count = 0
@@ -42,6 +52,7 @@ class BaseTransformer(ast.NodeTransformer):
         self.black_list = []
         self.all_api_map = all_api_map
         self.unsupport_api_map = unsupport_api_map
+        self.change_prefix_api_map = change_prefix_api_map
 
     def transform(self):
         self.visit(self.root)
@@ -221,6 +232,45 @@ class BaseTransformer(ast.NodeTransformer):
             return torch_api
         else:
             return None
+
+    def get_canonical_torch_api(self, torch_api):
+        return GlobalManager.ALIAS_MAPPING.get(torch_api, torch_api)
+
+    def get_api_mapping_item(self, torch_api):
+        torch_api = self.get_canonical_torch_api(torch_api)
+        if torch_api in GlobalManager.API_MAPPING:
+            return torch_api, GlobalManager.API_MAPPING[torch_api]
+
+        for wildcard_name, mapping in GlobalManager.API_WILDCARD_MAPPING.items():
+            if re.match(wildcard_name, torch_api):
+                return torch_api, mapping
+
+        return torch_api, None
+
+    def get_attribute_mapping_item(self, torch_api):
+        torch_api = self.get_canonical_torch_api(torch_api)
+        if torch_api in GlobalManager.ATTRIBUTE_MAPPING:
+            return torch_api, GlobalManager.ATTRIBUTE_MAPPING[torch_api]
+
+        for wildcard_name, mapping in GlobalManager.API_WILDCARD_MAPPING.items():
+            if re.match(wildcard_name, torch_api):
+                return torch_api, mapping
+
+        return torch_api, None
+
+    def get_matcher_name(self, torch_api):
+        _, api_mapping = self.get_api_mapping_item(torch_api)
+        if api_mapping and "disable" not in api_mapping:
+            return api_mapping.get("Matcher")
+
+        _, attr_mapping = self.get_attribute_mapping_item(torch_api)
+        if attr_mapping and "disable" not in attr_mapping:
+            return attr_mapping.get("Matcher")
+
+        return None
+
+    def is_change_prefix_api(self, torch_api):
+        return self.get_matcher_name(torch_api) == "ChangePrefixMatcher"
 
     def visit_FunctionDef(self, node):
         self.scope_stack.append(node)

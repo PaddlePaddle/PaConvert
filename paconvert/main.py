@@ -58,6 +58,14 @@ def main():
         help="Optional. Regular Pattern. PyTorch file or directory matched will not be converted, multiple patterns should be splited by ',' . Default: None.",
     )
     parser.add_argument(
+        "-m",
+        "--mode",
+        default="default",
+        type=str,
+        choices=["default", "min"],
+        help="Optional. Mode of conversion, default is default.",
+    )
+    parser.add_argument(
         "--exclude_packages",
         default=None,
         type=str,
@@ -194,7 +202,7 @@ def main():
         return
 
     assert args.in_dir is not None, "User must specify --in_dir "
-    converter.run(args.in_dir, args.out_dir, args.exclude)
+    converter.run(args.in_dir, args.out_dir, args.exclude,args.mode)
 
     print(r"****************************************************************")
     print(r"______      _____                          _   ")

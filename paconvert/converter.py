@@ -47,6 +47,53 @@ def listdir_nohidden(path):
         if not f.startswith("."):
             yield f
 
+class ResidualTorchApiCollector(BasicTransformer):
+    def __init__(self, root, file, mode, imports_map, logger):
+        super(ResidualTorchApiCollector, self).__init__(
+            root, file, mode, imports_map, logger
+        )
+        self.line_api_map = collections.defaultdict(set)
+        self.grad_fn_lines = set()
+
+    def record_line_api(self, lineno, torch_api):
+        self.line_api_map[lineno].add(self.get_canonical_torch_api(torch_api))
+
+    def visit_Attribute(self, node):
+        super(ResidualTorchApiCollector, self).generic_visit(node)
+
+        if node.attr == "grad_fn":
+            self.grad_fn_lines.add(node.lineno)
+
+        if isinstance(self.parent_node, ast.Call) and node == self.parent_node.func:
+            return node
+        if isinstance(self.parent_node, ast.Attribute) and node == self.parent_node.value:
+            return node
+
+        full_attr = self.get_full_attr_for_apiname(node)
+        if self.start_with_torch(full_attr):
+            self.record_line_api(node.lineno, full_attr)
+
+        return node
+
+    def visit_Call(self, node):
+        super(ResidualTorchApiCollector, self).generic_visit(node)
+
+        full_attr = self.get_full_attr_for_apiname(node.func)
+        full_api = None
+        if full_attr == "NonTorchClass":
+            full_api = self.get_full_api_from_node(node.func)
+        elif self.start_with_torch(full_attr) or self.in_api_mapping(full_attr):
+            full_api = full_attr
+        else:
+            full_api = self.get_full_api_from_node(node.func)
+
+        if full_api and (
+            self.start_with_torch(full_api) or self.in_api_mapping(full_api)
+        ):
+            self.record_line_api(node.lineno, full_api)
+
+        return node
+
 
 class Converter:
     def __init__(
@@ -76,6 +123,7 @@ class Converter:
         self.all_api_map = collections.defaultdict(dict)
         self.show_unsupport_api = show_unsupport_api
         self.unsupport_api_map = collections.defaultdict(int)
+        self.change_prefix_api_map = collections.defaultdict(set)
         self.convert_rate = 0.0
         self.no_format = no_format
         self.calculate_speed = calculate_speed
@@ -86,7 +134,7 @@ class Converter:
         log_info(self.logger, "PyTorch to Paddle Convert Start ------>:")
         log_info(self.logger, "===========================================")
 
-    def run(self, in_dir, out_dir=None, exclude=None):
+    def run(self, in_dir, out_dir=None, exclude=None,mode="default"):
         if self.calculate_speed:
             import time
 
@@ -122,7 +170,7 @@ class Converter:
                 out_dir + "/paddle_utils.py", is_dir_mode=True, logger=self.logger
             )
 
-        self.transfer_dir(in_dir, out_dir, exclude)
+        self.transfer_dir(in_dir, out_dir, exclude, mode)
         utils_file_helper.write_code()
 
         if self.show_unsupport_api:
@@ -260,7 +308,7 @@ class Converter:
 
         return self.success_api_count, faild_api_count
 
-    def transfer_dir(self, in_dir, out_dir, exclude):
+    def transfer_dir(self, in_dir, out_dir, exclude, mode):
         if os.path.isfile(in_dir):
             old_path = in_dir
             if exclude:
@@ -277,7 +325,7 @@ class Converter:
             if not os.path.isdir(os.path.dirname(new_path)):
                 os.remove(os.path.dirname(new_path))
                 os.makedirs(os.path.dirname(new_path))
-            self.transfer_file(old_path, new_path)
+            self.transfer_file(old_path, new_path, mode)
         elif os.path.isdir(in_dir):
             in_dir_item = listdir_nohidden(in_dir)
             for item in in_dir_item:
@@ -296,14 +344,14 @@ class Converter:
                     if not os.path.exists(new_path):
                         os.makedirs(new_path)
 
-                self.transfer_dir(old_path, new_path, exclude)
+                self.transfer_dir(old_path, new_path, exclude, mode)
         elif os.path.islink(in_dir):
             # may need to create link
             pass
         else:
             raise ValueError(" the input 'in_dir' must be a exist file or directory! ")
 
-    def transfer_file(self, old_path, new_path):
+    def transfer_file(self, old_path, new_path, mode):
         if old_path.endswith(".py"):
             log_info(
                 self.logger, "Start convert file: {} --> {}".format(old_path, new_path)
@@ -314,7 +362,7 @@ class Converter:
                     self.line_count += len(code.splitlines())
                 root = ast.parse(code)
 
-            self.transfer_node(root, old_path)
+            self.transfer_node(root, old_path, mode)
             code = astor.to_source(root)
 
             # format code
@@ -350,7 +398,7 @@ class Converter:
                     )
                 """
             if not self.only_complete:
-                code = self.mark_unsupport(code, old_path)
+                code = self.mark_unsupport(code, old_path, mode)
             with open(new_path, "w", encoding="UTF-8") as file:
                 file.write(code)
             log_info(
@@ -375,7 +423,7 @@ class Converter:
             )
             shutil.copyfile(old_path, new_path)
 
-    def transfer_node(self, root, file):
+    def transfer_node(self, root, file, mode):
         transformers = [
             ImportTransformer,  # import ast transformer
             TensorRequiresGradTransformer,  # attribute requires_grad transformer
@@ -387,10 +435,12 @@ class Converter:
             trans = transformer(
                 root,
                 file,
+                mode,
                 self.imports_map,
                 self.logger,
                 self.all_api_map,
                 self.unsupport_api_map,
+                self.change_prefix_api_map,
             )
             trans.transform()
             self.torch_api_count += trans.torch_api_count
@@ -398,7 +448,15 @@ class Converter:
             if self.only_complete:
                 break
 
-    def mark_unsupport(self, code, file):
+    def mark_unsupport(self, code, file, mode):
+        line_api_map = collections.defaultdict(set)
+        collector = ResidualTorchApiCollector(
+            ast.parse(code), file, mode, self.imports_map, self.logger
+        )
+        collector.transform()
+        line_api_map.update(collector.line_api_map)
+        grad_fn_lines = collector.grad_fn_lines
+
         lines = code.split("\n")
         mark_next_line = False
         in_str = False
@@ -433,27 +491,16 @@ class Converter:
             if last_in_str or in_str:
                 continue
 
-            # paddle.add(paddleformers.
-            #   transformers.BertTokenizer)
-            """
-            # may be removed in future
-            last_bracket_num = bracket_num
-            bracket_num += rm_str_line.count("(")
-            bracket_num -= rm_str_line.count(")")
-            if last_bracket_num > 0:
+            if (i + 1) in grad_fn_lines:
+                lines[i] = ">>>>>>" + line
                 continue
-            """
 
-            for torch_package in self.imports_map[file]["torch_packages"]:
-                if rm_str_line.startswith("%s." % torch_package):
-                    lines[i] = ">>>>>>" + line
-                    break
-
-                # model_torch.npy
-                # modeltorch.npy
-                # 1torch.npy
-                # paddleformers.transformers.*
-                if re.match(r".*[^\w\.]{1}%s\." % torch_package, rm_str_line):
-                    lines[i] = ">>>>>>" + line
+            unsupported_apis = {
+                api
+                for api in line_api_map.get(i + 1, set())
+                if api not in self.change_prefix_api_map[file]
+            }
+            if unsupported_apis:
+                lines[i] = ">>>>>>" + line
 
         return "\n".join(lines)

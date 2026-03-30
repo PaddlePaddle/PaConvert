@@ -39,10 +39,25 @@ def iter_fields(node):
 
 class BasicTransformer(BaseTransformer):
     def __init__(
-        self, root, file, imports_map, logger, all_api_map=None, unsupport_api_map=None
+        self,
+        root,
+        file,
+        mode,
+        imports_map,
+        logger,
+        all_api_map=None,
+        unsupport_api_map=None,
+        change_prefix_api_map=None,
     ):
         super(BasicTransformer, self).__init__(
-            root, file, imports_map, logger, all_api_map, unsupport_api_map
+            root,
+            file,
+            mode,
+            imports_map,
+            logger,
+            all_api_map,
+            unsupport_api_map,
+            change_prefix_api_map,
         )
         # use to identify tensor method/attribute
         self.black_list = list(self.imports_map[self.file]["other_packages"]) + [
@@ -50,6 +65,14 @@ class BasicTransformer(BaseTransformer):
             "args",
             "arg",
         ]
+
+    def record_change_prefix_api(self, torch_api, lineno):
+        if self.change_prefix_api_map is None:
+            return
+
+        self.change_prefix_api_map[self.file].add(
+            self.get_canonical_torch_api(torch_api)
+        )
 
     def visit_Attribute(self, node):
         """
@@ -118,6 +141,10 @@ class BasicTransformer(BaseTransformer):
                 self.file_name,
                 node.lineno,
             )
+
+            if self.mode == "min" and self.is_change_prefix_api(torch_api):
+                self.record_change_prefix_api(torch_api, node.lineno)
+                return node
 
             matcher = self.get_api_matcher(torch_api)
             # can be api_matcher or attribute_matcher
@@ -415,11 +442,21 @@ class BasicTransformer(BaseTransformer):
         super(BasicTransformer, self).generic_visit(node)
 
         full_attr = self.get_full_attr_for_apiname(node.func)
+        full_api = None
+        if full_attr == "NonTorchClass":
+            full_api = self.get_full_api_from_node(node.func)
+        elif self.start_with_torch(full_attr) or self.in_api_mapping(full_attr):
+            full_api = full_attr
+        else:
+            full_api = self.get_full_api_from_node(node.func)
+            
         # 1) Torch Package Call, include torch third_party
         #   such as : torch.add(x, y) / torch.add(torch.abs(x), y)
         #   for may_torch_package_list, will in_api_mapping
-        if self.start_with_torch(full_attr) or self.in_api_mapping(full_attr):
-            torch_api = full_attr
+        if full_api and (
+            self.start_with_torch(full_api) or self.in_api_mapping(full_api)
+        ):
+            torch_api = full_api
             self.torch_api_count += 1
             if torch_api not in self.all_api_map:
                 self.all_api_map[torch_api]["paddle_api"] = ""
@@ -455,6 +492,19 @@ class BasicTransformer(BaseTransformer):
                     log_debug(
                         self.logger,
                         " Misidentify {}".format(torch_api),
+                        self.file_name,
+                        node.lineno,
+                    )
+                    return node
+                elif node_list == "unchange":
+                    # This API usage indicate that is is not a Pytorch API
+                    self.torch_api_count -= 1
+                    del self.all_api_map[torch_api]
+                    if self.mode == "min" and self.is_change_prefix_api(torch_api):
+                        self.record_change_prefix_api(torch_api, node.lineno)
+                    log_debug(
+                        self.logger,
+                        " Unchange {}".format(torch_api),
                         self.file_name,
                         node.lineno,
                     )

@@ -27,10 +27,25 @@ class TensorRequiresGradTransformer(BaseTransformer):
     """
 
     def __init__(
-        self, root, file, imports_map, logger, all_api_map=None, unsupport_api_map=None
+        self,
+        root,
+        file,
+        mode,
+        imports_map,
+        logger,
+        all_api_map=None,
+        unsupport_api_map=None,
+        change_prefix_api_map=None,
     ):
         super(TensorRequiresGradTransformer, self).__init__(
-            root, file, imports_map, logger, all_api_map, unsupport_api_map
+            root,
+            file,
+            mode,
+            imports_map,
+            logger,
+            all_api_map,
+            unsupport_api_map,
+            change_prefix_api_map,
         )
         self.insert_nodes_list = []
 
@@ -43,6 +58,8 @@ class TensorRequiresGradTransformer(BaseTransformer):
         if isinstance(node, (ast.Assign)):
             if isinstance(node.targets[0], ast.Attribute):
                 if node.targets[0].attr == "requires_grad":
+                    if self.mode == "min":
+                            return node
                     node.targets[0].attr = "stop_gradient"
                     node = ast.Assign(
                         targets=[node.targets[0]],
@@ -54,6 +71,8 @@ class TensorRequiresGradTransformer(BaseTransformer):
                     if isinstance(node.targets[0].elts[j], ast.Attribute) and (
                         node.targets[0].elts[j].attr == "requires_grad"
                     ):
+                        if self.mode == "min":
+                            return node
                         new_node = ast.Name(id="temp", ctx=ast.Load())
                         node.targets[0].elts[j].attr = "stop_gradient"
                         assign_node = ast.Assign(

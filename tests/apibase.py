@@ -37,6 +37,7 @@ class APIBase(object):
         pytorch_code,
         compared_tensor_names=None,
         expect_paddle_code=None,
+        mode="default",
         check_value=True,
         check_shape=True,
         check_dtype=True,
@@ -57,7 +58,7 @@ class APIBase(object):
             unsupport: If true, conversion is not supported
             reason: the reason why it is not supported
         """
-        paddle_code = self.convert(pytorch_code).strip()
+        paddle_code = self.convert(pytorch_code,mode).strip()
         if unsupport:
             assert (
                 reason is not None
@@ -280,7 +281,7 @@ class APIBase(object):
                 pytorch_numpy, paddle_numpy, rtol=rtol, atol=atol
             ), "API ({}): paddle result has diff with pytorch result".format(name)
 
-    def convert(self, pytorch_code):
+    def convert(self, pytorch_code,mode):
         """
         convert pytorch code to paddle code.
         args:
@@ -297,7 +298,7 @@ class APIBase(object):
             f.write(pytorch_code)
 
         converter = Converter(log_dir="disable")
-        converter.run(pytorch_code_path, paddle_code_path)
+        converter.run(pytorch_code_path, paddle_code_path,mode=mode)
 
         with open(paddle_code_path, "r", encoding="UTF-8") as f:
             code = f.read()

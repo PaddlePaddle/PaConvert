@@ -23,10 +23,25 @@ AUTOGRAD_FUNC_NODES = {}
 
 class PreCustomOpTransformer(BaseTransformer):
     def __init__(
-        self, root, file, imports_map, logger, all_api_map=None, unsupport_api_map=None
+        self,
+        root,
+        file,
+        mode,
+        imports_map,
+        logger,
+        all_api_map=None,
+        unsupport_api_map=None,
+        change_prefix_api_map=None,
     ):
         super(PreCustomOpTransformer, self).__init__(
-            root, file, imports_map, logger, all_api_map, unsupport_api_map
+            root,
+            file,
+            mode,
+            imports_map,
+            logger,
+            all_api_map,
+            unsupport_api_map,
+            change_prefix_api_map,
         )
         self.cpp_ext_import_names = {}
         self.cpp_ext_load_names = []
@@ -131,10 +146,25 @@ class PreCustomOpTransformer(BaseTransformer):
 
 class CustomOpTransformer(BaseTransformer):
     def __init__(
-        self, root, file, imports_map, logger, all_api_map=None, unsupport_api_map=None
+        self,
+        root,
+        file,
+        mode,
+        imports_map,
+        logger,
+        all_api_map=None,
+        unsupport_api_map=None,
+        change_prefix_api_map=None,
     ):
         super(CustomOpTransformer, self).__init__(
-            root, file, imports_map, logger, all_api_map, unsupport_api_map
+            root,
+            file,
+            mode,
+            imports_map,
+            logger,
+            all_api_map,
+            unsupport_api_map,
+            change_prefix_api_map,
         )
         self.autograd_func_import_names = {}
 
