@@ -48,10 +48,6 @@ echo '**************************************************************************
 echo "Checking code cpu unit test by pytest ..."
 python -m pip install pytest-timeout
 python -m pytest -v -s -p no:warnings ./tests;check_error=$?
-if [ ${check_error} != 0 ];then
-    echo "Rerun cpu unit test check." 
-    python -m pytest -v -s -p no:warnings --lf ./tests; check_error=$?
-fi
 
 echo '************************************************************************************************************'
 echo "______      _____                          _   "
