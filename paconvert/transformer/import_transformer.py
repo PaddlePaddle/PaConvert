@@ -405,18 +405,20 @@ class ImportTransformer(BaseTransformer):
             ),
         ):
             maybe_torch = True
-        elif isinstance(self.parent_node, ast.Call) and isinstance(
-            self.parent_node.func, ast.Name
-        ):
-            if self.parent_node.func == node:  # 6. Tensor(2, 3)
-                maybe_torch = True
-            if (
-                node.id in self.imports_map[self.file]["api_alias_name_map"]
-            ):  # 12. my_add(tensor_1,tensor_2)
-                torch_api = self.imports_map[self.file]["api_alias_name_map"][node.id]
-                if self.mode == "min" and self.is_change_prefix_api(torch_api):
-                    return node
-                return ast.parse(self.get_canonical_torch_api(torch_api)).body[0].value
+        elif isinstance(self.parent_node, ast.Call):
+            if isinstance(self.parent_node.func, ast.Name):
+                if self.parent_node.func == node:  # 6. Tensor(2, 3)
+                    maybe_torch = True
+
+                if (
+                    node.id in self.imports_map[self.file]["api_alias_name_map"]
+                ):  # 12. my_add(tensor_1,tensor_2)
+                    torch_api = self.imports_map[self.file]["api_alias_name_map"][
+                        node.id
+                    ]
+                    if self.mode == "min" and self.is_change_prefix_api(torch_api):
+                        return node
+                    return ast.parse(self.get_canonical_torch_api(torch_api)).body[0].value
 
                 elif self.parent_node.func.id in [
                     "isinstance",
