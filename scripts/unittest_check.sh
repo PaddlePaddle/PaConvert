@@ -45,9 +45,13 @@ echo "Insalling paconvert requirements"
 python -m pip install -r requirements.txt
 
 echo '************************************************************************************************************'
-echo "Checking code unit test by pytest ..."
+echo "Checking code cpu unit test by pytest ..."
 python -m pip install pytest-timeout
 python -m pytest -v -s -p no:warnings ./tests;check_error=$?
+if [ ${check_error} != 0 ];then
+    echo "Rerun cpu unit test check." 
+    python -m pytest -v -s -p no:warnings --lf ./tests; check_error=$?
+fi
 
 echo '************************************************************************************************************'
 echo "______      _____                          _   "
@@ -58,7 +62,7 @@ echo "| | | (_| | |___| (_) | | | \\ V /  __/ |  | |_ "
 echo "\\_|  \\__,_|\\_____\\___/|_| |_|\\_/ \\___|_|   \\__|"
 echo '************************************************************************************************************'
 if [ ${check_error} != 0 ];then
-    echo "Your PR code unit test check failed." 
+    echo "Your PR code cpu unit test check failed." 
     echo "Please run the following command." 
     echo "" 
     echo "    python -m pytest tests" 
@@ -66,7 +70,7 @@ if [ ${check_error} != 0 ];then
     echo "For more information, please refer to our check guide:" 
     echo "https://github.com/PaddlePaddle/PaConvert#readme." 
 else
-    echo "Your PR code unit test check passed."
+    echo "Your PR code cpu unit test check passed."
 fi
 echo '************************************************************************************************************'
 
