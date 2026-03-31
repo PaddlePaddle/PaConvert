@@ -19,8 +19,9 @@ from apibase import APIBase
 obj = APIBase("torch.utils.data.Subset")
 
 
-def generate_torch_code(Subset_segment):
-    code_template = f"""
+def test_case_1():
+    pytorch_code = textwrap.dedent(
+        """
         from torch.utils.data import Dataset, Subset
         class MyDataset(Dataset):
             def __init__(self, size=10):
@@ -33,24 +34,36 @@ def generate_torch_code(Subset_segment):
             def __len__(self):
                 return len(self.data)
 
-        dataset = {Subset_segment}
+        dataset = Subset(MyDataset(10),[1, 2, 3, 4, 5, 6])
         result = []
         for d in dataset:
             result.append(d)
         """
-
-    return code_template
-
-
-def test_case_1():
-    pytorch_code = textwrap.dedent(
-        generate_torch_code("Subset(MyDataset(10),[1, 2, 3, 4, 5, 6])")
     )
     obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
-    pytorch_code = textwrap.dedent(generate_torch_code("Subset(MyDataset(10), [9, 1])"))
+    pytorch_code = textwrap.dedent(
+        """
+        from torch.utils.data import Dataset, Subset
+        class MyDataset(Dataset):
+            def __init__(self, size=10):
+                super(Dataset).__init__()
+                self.data = list(range(size))
+
+            def __getitem__(self, idx):
+                return self.data[idx]
+
+            def __len__(self):
+                return len(self.data)
+
+        dataset = Subset(MyDataset(10), [9, 1])
+        result = []
+        for d in dataset:
+            result.append(d)
+        """
+    )
     obj.run(pytorch_code, ["result"])
 
 
