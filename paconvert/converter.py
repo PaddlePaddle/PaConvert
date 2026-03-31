@@ -465,9 +465,21 @@ class Converter:
                 break
 
     def mark_unsupport(self, code, file, mode):
+        imports_root = ast.parse(code)
+        refreshed_imports_map = collections.defaultdict(dict)
+        import_transformer = ImportTransformer(
+            imports_root,
+            file,
+            mode,
+            refreshed_imports_map,
+            self.logger,
+        )
+        import_transformer.transform()
+
+        collector_root = ast.parse(code)
         line_api_map = collections.defaultdict(set)
         collector = ResidualTorchApiCollector(
-            ast.parse(code), file, mode, self.imports_map, self.logger
+            collector_root, file, mode, refreshed_imports_map, self.logger
         )
         collector.transform()
         line_api_map.update(collector.line_api_map)
@@ -514,7 +526,10 @@ class Converter:
             unsupported_apis = {
                 api
                 for api in line_api_map.get(i + 1, set())
-                if api not in self.change_prefix_api_map[file]
+                if not (
+                    mode == "min"
+                    and collector.get_matcher_name(api) == "ChangePrefixMatcher"
+                )
             }
             if unsupported_apis:
                 lines[i] = ">>>>>>" + line
