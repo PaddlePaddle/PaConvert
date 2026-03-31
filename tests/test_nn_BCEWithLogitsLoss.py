@@ -25,8 +25,13 @@ def test_case_1():
         import torch
         import torch.nn as nn
         loss = torch.nn.BCEWithLogitsLoss(reduction='none')
-        input = torch.tensor([1.,0.7,0.2], requires_grad=True)
-        target = torch.tensor([1.,0., 0.])
+        input = torch.zeros(3)
+        input[0] = 1.0
+        input[1] = 0.7
+        input[2] = 0.2
+        input.requires_grad = True
+        target = torch.zeros(3)
+        target[0] = 1.0
         result = loss(input, target)
         """
     )
@@ -38,9 +43,17 @@ def test_case_2():
         """
         import torch
         import torch.nn as nn
-        loss = nn.BCEWithLogitsLoss(weight=torch.tensor([1.0,0.2, 0.2]), reduction='none')
-        input = torch.tensor([1.,0.7,0.2], requires_grad=True)
-        target = torch.tensor([1.,0., 0.])
+        weight = torch.ones(3)
+        weight[1] = 0.2
+        weight[2] = 0.2
+        loss = nn.BCEWithLogitsLoss(weight=weight, reduction='none')
+        input = torch.zeros(3)
+        input[0] = 1.0
+        input[1] = 0.7
+        input[2] = 0.2
+        input.requires_grad = True
+        target = torch.zeros(3)
+        target[0] = 1.0
         result = loss(input, target)
         """
     )
@@ -52,9 +65,14 @@ def test_case_3():
         """
         import torch
         import torch.nn as nn
-        loss= nn.BCEWithLogitsLoss(pos_weight = torch.ones([3]))
-        input = torch.tensor([1.,0.7,0.2], requires_grad=True)
-        target = torch.tensor([1.,0., 0.])
+        loss= nn.BCEWithLogitsLoss(pos_weight=torch.ones(3))
+        input = torch.zeros(3)
+        input[0] = 1.0
+        input[1] = 0.7
+        input[2] = 0.2
+        input.requires_grad = True
+        target = torch.zeros(3)
+        target[0] = 1.0
         result = loss(input, target)
         """
     )
@@ -67,8 +85,13 @@ def test_case_4():
         import torch
         import torch.nn as nn
         loss = nn.BCEWithLogitsLoss(size_average=True)
-        input = torch.tensor([1.,0.7,0.2], requires_grad=True)
-        target = torch.tensor([1.,0., 0.])
+        input = torch.zeros(3)
+        input[0] = 1.0
+        input[1] = 0.7
+        input[2] = 0.2
+        input.requires_grad = True
+        target = torch.zeros(3)
+        target[0] = 1.0
         result = loss(input, target)
         """
     )
@@ -81,8 +104,13 @@ def test_case_5():
         import torch
         import torch.nn as nn
         loss = nn.BCEWithLogitsLoss()
-        input = torch.tensor([1.,0.7,0.2], requires_grad=True)
-        target = torch.tensor([1.,0., 0.])
+        input = torch.zeros(3)
+        input[0] = 1.0
+        input[1] = 0.7
+        input[2] = 0.2
+        input.requires_grad = True
+        target = torch.zeros(3)
+        target[0] = 1.0
         result = loss(input, target)
         """
     )
@@ -94,9 +122,17 @@ def test_case_6():
         """
         import torch
         import torch.nn as nn
-        loss = nn.BCEWithLogitsLoss(weight=torch.tensor([1.0,0.2, 0.2]), size_average=None, reduce=None, reduction='none', pos_weight=None)
-        input = torch.tensor([1.,0.7,0.2], requires_grad=True)
-        target = torch.tensor([1.,0., 0.])
+        weight = torch.ones(3)
+        weight[1] = 0.2
+        weight[2] = 0.2
+        loss = nn.BCEWithLogitsLoss(weight=weight, size_average=None, reduce=None, reduction='none', pos_weight=None)
+        input = torch.zeros(3)
+        input[0] = 1.0
+        input[1] = 0.7
+        input[2] = 0.2
+        input.requires_grad = True
+        target = torch.zeros(3)
+        target[0] = 1.0
         result = loss(input, target)
         """
     )
@@ -109,9 +145,17 @@ def test_case_7():
         """
         import torch
         import torch.nn as nn
-        loss = nn.BCEWithLogitsLoss(torch.tensor([1.0,0.2, 0.2]), None, None, 'none', None)
-        input = torch.tensor([1.,0.7,0.2], requires_grad=True)
-        target = torch.tensor([1.,0., 0.])
+        weight = torch.ones(3)
+        weight[1] = 0.2
+        weight[2] = 0.2
+        loss = nn.BCEWithLogitsLoss(weight, None, None, 'none', None)
+        input = torch.zeros(3)
+        input[0] = 1.0
+        input[1] = 0.7
+        input[2] = 0.2
+        input.requires_grad = True
+        target = torch.zeros(3)
+        target[0] = 1.0
         result = loss(input, target)
         """
     )
@@ -124,9 +168,17 @@ def test_case_8():
         """
         import torch
         import torch.nn as nn
-        loss = nn.BCEWithLogitsLoss(pos_weight=None, reduction='none', reduce=None, size_average=None, weight=torch.tensor([1.0,0.2, 0.2]))
-        input = torch.tensor([1.,0.7,0.2], requires_grad=True)
-        target = torch.tensor([1.,0., 0.])
+        weight = torch.ones(3)
+        weight[1] = 0.2
+        weight[2] = 0.2
+        loss = nn.BCEWithLogitsLoss(pos_weight=None, reduction='none', reduce=None, size_average=None, weight=weight)
+        input = torch.zeros(3)
+        input[0] = 1.0
+        input[1] = 0.7
+        input[2] = 0.2
+        input.requires_grad = True
+        target = torch.zeros(3)
+        target[0] = 1.0
         result = loss(input, target)
         """
     )

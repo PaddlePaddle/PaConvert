@@ -8404,7 +8404,7 @@
     "min_input_args": 2
   },
   "torch.nn.functional.binary_cross_entropy_with_logits": {
-    "Matcher": "SizeAverageMatcher",
+    "Matcher": "ChangePrefixMatcher",
     "paddle_api": "paddle.nn.functional.binary_cross_entropy_with_logits",
     "args_list": [
       "input",
@@ -8415,10 +8415,6 @@
       "reduction",
       "pos_weight"
     ],
-    "kwargs_change": {
-      "input": "logit",
-      "target": "label"
-    },
     "min_input_args": 2
   },
   "torch.nn.functional.celu": {

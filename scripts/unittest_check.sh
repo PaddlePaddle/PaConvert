@@ -47,7 +47,7 @@ python -m pip install -r requirements.txt
 echo '************************************************************************************************************'
 echo "Checking code unit test by pytest ..."
 python -m pip install pytest-timeout
-python -m pytest -v -s -p no:warnings ./tests;check_error=$?
+PYTHONPATH=.:tests python -m pytest -v -s -p no:warnings ./tests;check_error=$?
 
 echo '************************************************************************************************************'
 echo "______      _____                          _   "
