@@ -360,6 +360,9 @@ class ImportTransformer(BaseTransformer):
             13. Union[List[str], List[AddedToken]],
             14. hasattr(Tensor, add)
             15. ACT2FN['tanh']
+            16. super(Dataset).__init__()
+            17. functools.partial(torch.abs, x)
+            18. partial(torch.abs, x)
         """
         maybe_torch = False
         maybe_alias_name = False
@@ -374,23 +377,33 @@ class ImportTransformer(BaseTransformer):
             ),
         ):
             maybe_torch = True
-        elif isinstance(self.parent_node, ast.Call) and isinstance(
-            self.parent_node.func, ast.Name
-        ):
-            if self.parent_node.func == node:  # 6. Tensor(2, 3)
-                maybe_torch = True
-            if (
-                node.id in self.imports_map[self.file]["api_alias_name_map"]
-            ):  # 12. my_add(tensor_1,tensor_2)
-                torch_api = self.imports_map[self.file]["api_alias_name_map"][node.id]
-                return ast.parse(torch_api).body[0].value
+        elif isinstance(self.parent_node, ast.Call):
+            if isinstance(self.parent_node.func, ast.Name):
+                if self.parent_node.func == node:  # 6. Tensor(2, 3)
+                    maybe_torch = True
 
-            elif self.parent_node.func.id in [
-                "isinstance",
-                "setattr",
-                "hasattr",
-            ]:  # 7/8/14
-                maybe_torch = True
+                if (
+                    node.id in self.imports_map[self.file]["api_alias_name_map"]
+                ):  # 12. my_add(tensor_1,tensor_2)
+                    torch_api = self.imports_map[self.file]["api_alias_name_map"][
+                        node.id
+                    ]
+                    return ast.parse(torch_api).body[0].value
+
+                elif self.parent_node.func.id in [
+                    "isinstance",
+                    "setattr",
+                    "hasattr",
+                    "super",
+                    "partial",
+                ]:  # 7/8/14/18
+                    maybe_torch = True
+            elif isinstance(self.parent_node.func, ast.Attribute):
+                full_attr = self.get_full_attr(self.parent_node.func)
+                if full_attr in [
+                    "functools.partial",
+                ]:  # 17
+                    maybe_torch = True
         elif (
             isinstance(self.parent_node, ast.Subscript)
             and self.parent_node.slice == node
@@ -400,7 +413,7 @@ class ImportTransformer(BaseTransformer):
             isinstance(self.parent_node, ast.Subscript)
             and self.parent_node.value == node
         ):
-            # supplement api which can be indexed
+            # Exclude the following:
             # from torch.utils import data
             # data[0]
             if node.id not in ["data"]:

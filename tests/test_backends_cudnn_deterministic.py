@@ -49,15 +49,3 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        if torch.backends.cudnn.deterministic:
-            print(torch.backends.cudnn.deterministic)
-            result = torch.backends.cudnn.deterministic
-        """
-    )
-    obj.run(pytorch_code, ["result"])

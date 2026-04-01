@@ -29,3 +29,63 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["a"])
+
+
+def test_case_2():
+    """Test with float32"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0.5, -0.5, 1.5], dtype=torch.float32)
+        result = a.erf_()
+        """
+    )
+    obj.run(pytorch_code, ["a", "result"])
+
+
+def test_case_3():
+    """Test with 2D tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[0.1, 0.2], [-0.3, 0.4]])
+        result = a.erf_()
+        """
+    )
+    obj.run(pytorch_code, ["a", "result"])
+
+
+def test_case_4():
+    """Test with 3D tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[[0.1, 0.2], [0.3, 0.4]], [[0.5, 0.6], [0.7, 0.8]]])
+        result = a.erf_()
+        """
+    )
+    obj.run(pytorch_code, ["a", "result"])
+
+
+def test_case_5():
+    """Test with float64"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0.5, 1.0, -0.5], dtype=torch.float64)
+        result = a.erf_()
+        """
+    )
+    obj.run(pytorch_code, ["a", "result"])
+
+
+def test_case_6():
+    """Test return value equals original tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0.5, 1.0, -0.5])
+        b = a.erf_()
+        """
+    )
+    obj.run(pytorch_code, ["a", "b"])
