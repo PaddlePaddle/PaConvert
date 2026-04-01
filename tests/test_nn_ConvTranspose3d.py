@@ -84,8 +84,7 @@ def test_case_5():
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="Paddle does not support parameter of padding_mode",
+        check_value=False,
     )
 
 
@@ -102,8 +101,7 @@ def test_case_6():
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="Paddle does not support parameter of padding_mode",
+        check_value=False,
     )
 
 
@@ -120,8 +118,7 @@ def test_case_7():
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="Paddle does not support parameter of padding_mode",
+        check_value=False,
     )
 
 
@@ -138,8 +135,7 @@ def test_case_8():
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="Paddle does not support parameter of padding_mode",
+        check_value=False,
     )
 
 
@@ -154,3 +150,93 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        conv_args = (8, 6, (3, 3, 2))
+        conv_kwargs = {
+            "stride": (2, 1, 1),
+            "padding": (1, 1, 0),
+            "output_padding": (1, 0, 0),
+            "groups": 2,
+            "bias": False,
+            "dilation": (1, 1, 1),
+        }
+        model = nn.ConvTranspose3d(*conv_args, **conv_kwargs)
+        x = torch.randn(2, 8, 5, 6, 4)
+        result = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        model = nn.ConvTranspose3d(
+            dilation=(1, 1, 1),
+            groups=1,
+            output_padding=(1, 0, 0),
+            padding=(1, 1, 0),
+            stride=(2, 1, 1),
+            kernel_size=(3, 3, 2),
+            out_channels=10,
+            in_channels=8,
+            bias=True,
+        )
+        x = torch.randn(2, 8, 5, 6, 4)
+        result = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        model = nn.ConvTranspose3d(8, 10, (3, 3, 2), (2, 1, 1), padding=(1, 1, 0), output_padding=(1, 0, 0), bias=False)
+        x = torch.randn(2, 8, 5, 6, 4)
+        result = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        model = nn.ConvTranspose3d(8, 10, (3, 3, 2), (2, 1, 1), (1, 1, 0), (1, 0, 0), 1, True, (1, 1, 1))
+        x = torch.randn(2, 8, 5, 6, 4)
+        result = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        model = nn.ConvTranspose3d(4, 5, 3, stride=2, padding=1).double()
+        x = torch.randn(2, 4, 4, 4, 4, dtype=torch.float64)
+        result = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
