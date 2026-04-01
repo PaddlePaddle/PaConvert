@@ -2078,6 +2078,7 @@
   "torch.Tensor.retain_grad": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.Tensor.retains_grad": {},
   "torch.Tensor.roll": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -3687,9 +3688,6 @@
     "kwargs_change": {
       "input": "x"
     }
-  },
-  "torch.contiguous_format": {
-    "Matcher": "ChangePrefixMatcher"
   },
   "torch.conv1d": {
     "Matcher": "ChangePrefixMatcher"
@@ -10382,9 +10380,6 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.pow": {
-    "Matcher": "ChangePrefixMatcher"
-  },
-  "torch.preserve_format": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.prod": {

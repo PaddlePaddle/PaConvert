@@ -45,57 +45,6 @@ def listdir_nohidden(path):
             yield f
 
 
-class ResidualTorchApiCollector(BasicTransformer):
-    def __init__(self, root, file, mode, imports_map, logger):
-        super(ResidualTorchApiCollector, self).__init__(
-            root, file, mode, imports_map, logger
-        )
-        self.line_api_map = collections.defaultdict(set)
-        self.grad_fn_lines = set()
-
-    def record_line_api(self, lineno, torch_api):
-        self.line_api_map[lineno].add(self.get_canonical_torch_api(torch_api))
-
-    def visit_Attribute(self, node):
-        super(ResidualTorchApiCollector, self).generic_visit(node)
-
-        if node.attr == "grad_fn":
-            self.grad_fn_lines.add(node.lineno)
-
-        if isinstance(self.parent_node, ast.Call) and node == self.parent_node.func:
-            return node
-        if (
-            isinstance(self.parent_node, ast.Attribute)
-            and node == self.parent_node.value
-        ):
-            return node
-
-        full_attr = self.get_full_attr_for_apiname(node)
-        if self.start_with_torch(full_attr):
-            self.record_line_api(node.lineno, full_attr)
-
-        return node
-
-    def visit_Call(self, node):
-        super(ResidualTorchApiCollector, self).generic_visit(node)
-
-        full_attr = self.get_full_attr_for_apiname(node.func)
-        full_api = None
-        if full_attr == "NonTorchClass":
-            full_api = self.get_full_api_from_node(node.func)
-        elif self.start_with_torch(full_attr) or self.in_api_mapping(full_attr):
-            full_api = full_attr
-        else:
-            full_api = self.get_full_api_from_node(node.func)
-
-        if full_api and (
-            self.start_with_torch(full_api) or self.in_api_mapping(full_api)
-        ):
-            self.record_line_api(node.lineno, full_api)
-
-        return node
-
-
 class Converter:
     def __init__(
         self,
@@ -309,7 +258,6 @@ class Converter:
 
         return self.success_api_count, faild_api_count
 
-    
     def __del__(self):
         """Ensure cleanup happens when Converter is destroyed."""
         try:
@@ -464,27 +412,14 @@ class Converter:
             if self.only_complete:
                 break
 
+    def mask_change_prefix_apis(self, line, file):
+        keep_apis = sorted(self.change_prefix_api_map[file], key=len, reverse=True)
+        for api in keep_apis:
+            if api in line:
+                line = line.replace(api, "__PC_KEEP_API__")
+        return line
+
     def mark_unsupport(self, code, file, mode):
-        imports_root = ast.parse(code)
-        refreshed_imports_map = collections.defaultdict(dict)
-        import_transformer = ImportTransformer(
-            imports_root,
-            file,
-            mode,
-            refreshed_imports_map,
-            self.logger,
-        )
-        import_transformer.transform()
-
-        collector_root = ast.parse(code)
-        line_api_map = collections.defaultdict(set)
-        collector = ResidualTorchApiCollector(
-            collector_root, file, mode, refreshed_imports_map, self.logger
-        )
-        collector.transform()
-        line_api_map.update(collector.line_api_map)
-        grad_fn_lines = collector.grad_fn_lines
-
         lines = code.split("\n")
         mark_next_line = False
         in_str = False
@@ -519,19 +454,28 @@ class Converter:
             if last_in_str or in_str:
                 continue
 
-            if (i + 1) in grad_fn_lines:
-                lines[i] = ">>>>>>" + line
-                continue
+            if mode == "min":
+                stripped_line = rm_str_line.strip()
+                if stripped_line.startswith("import ") or stripped_line.startswith(
+                    "from "
+                ):
+                    continue
 
-            unsupported_apis = {
-                api
-                for api in line_api_map.get(i + 1, set())
-                if not (
-                    mode == "min"
-                    and collector.get_matcher_name(api) == "ChangePrefixMatcher"
-                )
-            }
-            if unsupported_apis:
-                lines[i] = ">>>>>>" + line
+            scan_line = rm_str_line
+            if mode == "min":
+                scan_line = self.mask_change_prefix_apis(scan_line, file)
+
+            for torch_package in self.imports_map[file]["torch_packages"]:
+                if scan_line.startswith("%s." % torch_package):
+                    lines[i] = ">>>>>>" + line
+                    break
+
+                # model_torch.npy
+                # modeltorch.npy
+                # 1torch.npy
+                # paddleformers.transformers.*
+                if re.match(r".*[^\w\.]{1}%s\." % torch_package, scan_line):
+                    lines[i] = ">>>>>>" + line
+                    break
 
         return "\n".join(lines)

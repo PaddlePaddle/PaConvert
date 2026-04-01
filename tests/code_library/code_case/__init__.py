@@ -16,6 +16,7 @@
 import os
 
 CODE_CONSISTENCY_MAPPING = {}
+MIN_CODE_CONSISTENCY_MAPPING = {}
 SKIP_FORMAT_FILES = {} # 不需要格式化的文件列表
 cur_dir = os.path.dirname(__file__)
 
@@ -28,9 +29,22 @@ def update_mappings(torch_file, paddle_file, target_dict=None):
 
     target_dict[torch_file] = paddle_file
 
+def update_min_mappings(torch_file, paddle_file, target_dict=None):
+    if not os.path.isabs(torch_file):
+        torch_file = os.path.join(cur_dir, "minmode_code_case/torch_code/", torch_file)
+        
+    if not os.path.isabs(paddle_file):
+        paddle_file = os.path.join(cur_dir, "minmode_code_case/paddle_code/", paddle_file)
+
+    target_dict[torch_file] = paddle_file
+
 def add_to_dict(torch_file, paddle_file):
     global CODE_CONSISTENCY_MAPPING
     update_mappings(torch_file, paddle_file, target_dict=CODE_CONSISTENCY_MAPPING)
+
+def add_to_min_dict(torch_file, paddle_file):
+    global MIN_CODE_CONSISTENCY_MAPPING
+    update_min_mappings(torch_file, paddle_file, target_dict=MIN_CODE_CONSISTENCY_MAPPING)
 
 def add_to_skip_format_files(torch_file, paddle_file):
     global SKIP_FORMAT_FILES
@@ -114,3 +128,7 @@ add_to_dict(
 
 # Add files to format whitelist
 add_to_skip_format_files("import_analysis.py", "import_analysis.py")
+
+# Add files to minmode code consistency
+add_to_min_dict("changeprefix_code.py", "changeprefix_code.py")
+add_to_min_dict("functional_defects.py", "functional_defects.py")

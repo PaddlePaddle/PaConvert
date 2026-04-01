@@ -66,13 +66,11 @@ class BasicTransformer(BaseTransformer):
             "arg",
         ]
 
-    def record_change_prefix_api(self, torch_api, lineno):
+    def record_change_prefix_api(self, torch_api):
         if self.change_prefix_api_map is None:
             return
 
-        self.change_prefix_api_map[self.file].add(
-            self.get_canonical_torch_api(torch_api)
-        )
+        self.change_prefix_api_map[self.file].add(torch_api)
 
     def visit_Attribute(self, node):
         """
@@ -143,7 +141,7 @@ class BasicTransformer(BaseTransformer):
             )
 
             if self.mode == "min" and self.is_change_prefix_api(torch_api):
-                self.record_change_prefix_api(torch_api, node.lineno)
+                self.record_change_prefix_api(torch_api)
                 return node
             # can in attribute_matcher or attribute_matcher, but not both
             attribute_matcher = self.get_attribute_matcher(torch_api)
@@ -504,7 +502,7 @@ class BasicTransformer(BaseTransformer):
                     self.torch_api_count -= 1
                     del self.all_api_map[torch_api]
                     if self.mode == "min" and self.is_change_prefix_api(torch_api):
-                        self.record_change_prefix_api(torch_api, node.lineno)
+                        self.record_change_prefix_api(torch_api)
                     log_debug(
                         self.logger,
                         " Unchange {}".format(torch_api),
