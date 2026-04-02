@@ -49,7 +49,7 @@ echo "Checking code gpu unit test by pytest ..."
 python -m pip install pytest-timeout pytest-xdist pytest-rerunfailures
 python -m pytest -v -s -p no:warnings -n 1 --reruns=3 ./tests; check_error=$?
 if [ ${check_error} != 0 ];then
-    echo "Rerun unit test check." 
+    echo "Rerun gpu unit test check." 
     python -m pytest -v -s -p no:warnings -n 1 --lf ./tests; check_error=$?
 fi
 
