@@ -26,7 +26,7 @@ from torch.nn.utils.rnn import pad_sequence
 from torch.nn.utils.rnn import pad_sequence, unpad_sequence
 from torch.utils.cpp_extension import BuildExtension, CppExtension
 from torch.utils.cpp_extension import CUDA_HOME
-import torch.utils.data as data
+import torch.utils.data as torch_data
 from torch.utils.data import Dataset, ConcatDataset
 from torch.utils.data import Dataset
 from torch.utils.data import IterableDataset
@@ -7267,7 +7267,7 @@ result = []
 for d in dataset:
     result.append(d)
 
-class MyIterableDataset(data.IterableDataset):
+class MyIterableDataset(torch_data.IterableDataset):
     def __init__(self, start, end):
         super(MyIterableDataset).__init__()
         assert end > start, "this example code only works with end >= start"
@@ -7280,7 +7280,7 @@ class MyIterableDataset(data.IterableDataset):
         return iter(range(iter_start, iter_end))
 
 
-dataset = data.ChainDataset([MyIterableDataset(start=1, end=10), MyIterableDataset(start=1, end=3)])
+dataset = torch_data.ChainDataset([MyIterableDataset(start=1, end=10), MyIterableDataset(start=1, end=3)])
 result = []
 for d in dataset:
     result.append(d)
@@ -7303,7 +7303,7 @@ result = []
 for i in range(len(dataset)):
     result.append(dataset[i])
 
-class RandomDataset(data.Dataset):
+class RandomDataset(torch_data.Dataset):
     def __init__(self, num_samples):
         self.num_samples = num_samples
 
@@ -7315,7 +7315,7 @@ class RandomDataset(data.Dataset):
     def __len__(self):
         return self.num_samples
 
-dataset = data.ConcatDataset(datasets=[RandomDataset(2), RandomDataset(2)])
+dataset = torch_data.ConcatDataset(datasets=[RandomDataset(2), RandomDataset(2)])
 result = []
 for i in range(len(dataset)):
     result.append(dataset[i])
@@ -7335,7 +7335,7 @@ class Data(Dataset):
 data = Data()
 result = data.__len__()
 
-class Data(data.Dataset):
+class Data(torch_data.Dataset):
     def __init__(self):
         self.x = [1,2,3,4]
 
@@ -7365,7 +7365,7 @@ result = []
 for i in ds:
     result.append(i)
 
-class MyIterableDataset(data.IterableDataset):
+class MyIterableDataset(torch_data.IterableDataset):
     def __init__(self, start, end):
         super(MyIterableDataset).__init__()
         assert end > start, "this example code only works with end >= start"
@@ -7405,7 +7405,7 @@ result = []
 for d in s:
     result.append(d)
 
-class Data(data.Dataset):
+class Data(torch_data.Dataset):
     def __init__(self):
         self.x = np.arange(0,100,1)
 
@@ -7415,7 +7415,7 @@ class Data(data.Dataset):
     def __len__(self):
         return self.x.shape[0]
 
-class MySampler(data.Sampler):
+class MySampler(torch_data.Sampler):
     def __init__(self, data_source):
         self.data_source = data_source
 
@@ -7447,7 +7447,7 @@ result = []
 for d in s:
     result.append(d)
 
-class MyDataset(data.Dataset):
+class MyDataset(torch_data.Dataset):
     def __init__(self):
         self.x = np.arange(0, 100, 1)
 
@@ -7458,7 +7458,7 @@ class MyDataset(data.Dataset):
         return len(self.x)
 
 my_data = MyDataset()
-s = data.SequentialSampler(data_source=my_data)
+s = torch_data.SequentialSampler(data_source=my_data)
 result = []
 for d in s:
     result.append(d)
@@ -7505,7 +7505,7 @@ results = []
 for d in datasets:
     results.append(d.__len__())
 
-class Data(data.Dataset):
+class Data(torch_data.Dataset):
     def __init__(self):
         self.x = [0,1,2,3,4,5,6,7,8,9]
 
@@ -7517,7 +7517,7 @@ class Data(data.Dataset):
 
 
 my_data = Data()
-datasets = data.random_split(my_data, [3, 3, 4])
+datasets = torch_data.random_split(my_data, [3, 3, 4])
 
 results = []
 for d in datasets:
@@ -8262,7 +8262,7 @@ result = []
 for d in dataset:
     result.append(d)
 
-class MyIterableDataset(data.IterableDataset):
+class MyIterableDataset(torch_data.IterableDataset):
     def __init__(self, start, end):
         super(MyIterableDataset).__init__()
         assert end > start, "this example code only works with end >= start"
@@ -8275,7 +8275,7 @@ class MyIterableDataset(data.IterableDataset):
         return iter(range(iter_start, iter_end))
 
 
-dataset = data.ChainDataset([MyIterableDataset(start=1, end=10), MyIterableDataset(start=1, end=3)])
+dataset = torch_data.ChainDataset([MyIterableDataset(start=1, end=10), MyIterableDataset(start=1, end=3)])
 result = []
 for d in dataset:
     result.append(d)
@@ -8296,7 +8296,7 @@ result = []
 for i in ds:
     result.append(i)
 
-class MyIterableDataset(data.IterableDataset):
+class MyIterableDataset(torch_data.IterableDataset):
     def __init__(self, start, end):
         super(MyIterableDataset).__init__()
         assert end > start, "this example code only works with end >= start"

@@ -1,5 +1,6 @@
 import paddle
 import torch
+
 >>>>>>result = torch.BFloat16Storage
 >>>>>>result = torch.BoolStorage
 >>>>>>result = torch.ByteStorage
@@ -27,7 +28,7 @@ y = torch.randn(2, 3, 4)
 >>>>>>result = x.align_as(y)
 x = torch.randn(2, 3, 4)
 """Not Support auto convert *.align_to, please judge whether it is Pytorch API and convert by yourself"""
->>>>>>result = x.align_to('N', 'C', 'H')
+>>>>>>result = x.align_to("N", "C", "H")
 x = torch.randn(2, 3, 4)
 """Not Support auto convert *.as_subclass, please judge whether it is Pytorch API and convert by yourself"""
 >>>>>>result = x.as_subclass(torch.Tensor)
@@ -57,13 +58,13 @@ dim = 1
 index = torch.tensor([0, 1], dtype=torch.int64)
 src = torch.randn(2, 3, 4)
 """Not Support auto convert *.index_reduce, please judge whether it is Pytorch API and convert by yourself"""
->>>>>>result = x.index_reduce(dim, index, src, reduce='sum')
+>>>>>>result = x.index_reduce(dim, index, src, reduce="sum")
 x = torch.randn(2, 3, 4)
 dim = 1
 index = torch.tensor([0, 1], dtype=torch.int64)
 src = torch.randn(2, 3, 4)
 """Not Support auto convert *.index_reduce_, please judge whether it is Pytorch API and convert by yourself"""
->>>>>>result = x.index_reduce_(dim, index, src, reduce='sum')
+>>>>>>result = x.index_reduce_(dim, index, src, reduce="sum")
 x = torch.randn(2, 3, 4)
 """Not Support auto convert *.is_conj, please judge whether it is Pytorch API and convert by yourself"""
 >>>>>>result = x.is_conj()
@@ -120,20 +121,21 @@ x = torch.randn(2, 3, 4)
 >>>>>>result = x.qscheme()
 x = torch.randn(2, 3, 4)
 """Not Support auto convert *.record_stream, please judge whether it is Pytorch API and convert by yourself"""
->>>>>>result = x.record_stream(torch.cuda.current_stream() if torch.cuda.
-    is_available() else None)
+>>>>>>result = x.record_stream(
+    torch.cuda.current_stream() if torch.cuda.is_available() else None
+)
 x = torch.randn(2, 3, 4)
 """Not Support auto convert *.refine_names, please judge whether it is Pytorch API and convert by yourself"""
->>>>>>result = x.refine_names('N', 'C', 'H')
+>>>>>>result = x.refine_names("N", "C", "H")
 x = torch.randn(2, 3, 4)
 """Not Support auto convert *.register_post_accumulate_grad_hook, please judge whether it is Pytorch API and convert by yourself"""
 >>>>>>result = x.register_post_accumulate_grad_hook(lambda grad: grad)
 x = torch.randn(2, 3, 4)
 """Not Support auto convert *.rename, please judge whether it is Pytorch API and convert by yourself"""
->>>>>>result = x.rename('N', 'C', 'H')
+>>>>>>result = x.rename("N", "C", "H")
 x = torch.randn(2, 3, 4)
 """Not Support auto convert *.rename_, please judge whether it is Pytorch API and convert by yourself"""
->>>>>>result = x.rename_('N', 'C', 'H')
+>>>>>>result = x.rename_("N", "C", "H")
 x = torch.randn(2, 3, 4)
 """Not Support auto convert *.resolve_conj, please judge whether it is Pytorch API and convert by yourself"""
 >>>>>>result = x.resolve_conj()
@@ -149,10 +151,15 @@ x = torch.randn(2, 3, 4)
 x = torch.randn(2, 3, 4)
 dim = 1
 src = torch.randn(2, 3, 4)
-scatter_index = torch.tensor([[[0, 1, 0, 1], [1, 0, 1, 0], [0, 1, 0, 1]], [
-    [1, 0, 1, 0], [0, 1, 0, 1], [1, 0, 1, 0]]], dtype=torch.int64)
+scatter_index = torch.tensor(
+    [
+        [[0, 1, 0, 1], [1, 0, 1, 0], [0, 1, 0, 1]],
+        [[1, 0, 1, 0], [0, 1, 0, 1], [1, 0, 1, 0]],
+    ],
+    dtype=torch.int64,
+)
 """Not Support auto convert *.scatter_reduce_, please judge whether it is Pytorch API and convert by yourself"""
->>>>>>result = x.scatter_reduce_(dim, scatter_index, src, reduce='sum')
+>>>>>>result = x.scatter_reduce_(dim, scatter_index, src, reduce="sum")
 x = torch.randn(2, 3, 4)
 """Not Support auto convert *.sgn_, please judge whether it is Pytorch API and convert by yourself"""
 >>>>>>result = x.sgn_()
@@ -226,8 +233,7 @@ x = torch.randn(2, 3, 4)
 >>>>>>result = torch.autograd.function.FunctionCtx.mark_dirty()
 >>>>>>result = torch.autograd.function.InplaceFunction
 >>>>>>result = torch.autograd.function.NestedIOFunction
->>>>>>result = torch.autograd.function.once_differentiable(lambda *args, **kwargs:
-    None)
+>>>>>>result = torch.autograd.function.once_differentiable(lambda *args, **kwargs: None)
 x = torch.randn(2, 3, 4)
 >>>>>>result = torch.autograd.functional.hvp(x)
 x = torch.randn(2, 3, 4)
@@ -242,8 +248,7 @@ x = torch.randn(2, 3, 4)
 >>>>>>result = torch.autograd.graph.Node.name
 >>>>>>result = torch.autograd.graph.Node.next_functions
 >>>>>>result = torch.autograd.graph.Node.register_hook(lambda *args, **kwargs: None)
->>>>>>result = torch.autograd.graph.Node.register_prehook(lambda *args, **kwargs:
-    None)
+>>>>>>result = torch.autograd.graph.Node.register_prehook(lambda *args, **kwargs: None)
 >>>>>>result = torch.autograd.graph.allow_mutation_on_saved_tensors()
 >>>>>>result = torch.autograd.graph.disable_saved_tensors_hooks()
 >>>>>>result = torch.autograd.graph.get_gradient_edge()
@@ -255,13 +260,13 @@ x = torch.randn(2, 3, 4)
 >>>>>>result = torch.autograd.profiler.KinetoStepTracker
 >>>>>>result = torch.autograd.profiler.emit_itt()
 >>>>>>result = torch.autograd.profiler.emit_nvtx()
->>>>>>result = torch.autograd.profiler.load_nvprof('tmp.pt')
+>>>>>>result = torch.autograd.profiler.load_nvprof("tmp.pt")
 >>>>>>result = torch.autograd.profiler.parse_nvprof_trace()
 >>>>>>result = torch.autograd.profiler.profile.key_averages()
 >>>>>>result = torch.autograd.profiler.profile.self_cpu_time_total
 >>>>>>result = torch.autograd.profiler.profile.total_average()
 >>>>>>result = torch.autograd.profiler.profile()
->>>>>>result = torch.autograd.profiler.record_function('tag')
+>>>>>>result = torch.autograd.profiler.record_function("tag")
 >>>>>>result = torch.autograd.profiler_util.Interval
 >>>>>>result = torch.autograd.profiler_util.Kernel
 >>>>>>result = torch.autograd.profiler_util.MemRecordsAcc
@@ -354,7 +359,7 @@ x = torch.randn(2, 3, 4)
 >>>>>>result = torch.cuda.memory_stats()
 >>>>>>result = torch.cuda.memory_summary()
 >>>>>>result = torch.cuda.memory_usage()
->>>>>>result = torch.cuda.nvtx.mark('tag')
+>>>>>>result = torch.cuda.nvtx.mark("tag")
 >>>>>>result = torch.cuda.power_draw()
 >>>>>>result = torch.cuda.seed()
 >>>>>>result = torch.cuda.seed_all()
@@ -392,31 +397,28 @@ x = torch.randn(2, 3, 4)
 >>>>>>result = torch.distributed.algorithms.Join
 >>>>>>result = torch.distributed.algorithms.Joinable
 x = torch.randn(2, 3, 4)
->>>>>>result = torch.distributed.algorithms.ddp_comm_hooks.debugging_hooks.noop_hook(
-    x)
+>>>>>>result = torch.distributed.algorithms.ddp_comm_hooks.debugging_hooks.noop_hook(x)
 x = torch.randn(2, 3, 4)
->>>>>>result = (torch.distributed.algorithms.ddp_comm_hooks.default_hooks.
-    allreduce_hook(x))
+>>>>>>result = torch.distributed.algorithms.ddp_comm_hooks.default_hooks.allreduce_hook(x)
 x = torch.randn(2, 3, 4)
->>>>>>result = (torch.distributed.algorithms.ddp_comm_hooks.default_hooks.
-    bf16_compress_hook(x))
+>>>>>>result = torch.distributed.algorithms.ddp_comm_hooks.default_hooks.bf16_compress_hook(x)
 x = torch.randn(2, 3, 4)
->>>>>>result = (torch.distributed.algorithms.ddp_comm_hooks.default_hooks.
-    bf16_compress_wrapper(x))
+result = (
+>>>>>>    torch.distributed.algorithms.ddp_comm_hooks.default_hooks.bf16_compress_wrapper(x)
+)
 x = torch.randn(2, 3, 4)
->>>>>>result = (torch.distributed.algorithms.ddp_comm_hooks.default_hooks.
-    fp16_compress_hook(x))
+>>>>>>result = torch.distributed.algorithms.ddp_comm_hooks.default_hooks.fp16_compress_hook(x)
 x = torch.randn(2, 3, 4)
->>>>>>result = (torch.distributed.algorithms.ddp_comm_hooks.default_hooks.
-    fp16_compress_wrapper(x))
->>>>>>result = (torch.distributed.algorithms.ddp_comm_hooks.powerSGD_hook.
-    PowerSGDState)
+result = (
+>>>>>>    torch.distributed.algorithms.ddp_comm_hooks.default_hooks.fp16_compress_wrapper(x)
+)
+>>>>>>result = torch.distributed.algorithms.ddp_comm_hooks.powerSGD_hook.PowerSGDState
 x = torch.randn(2, 3, 4)
->>>>>>result = (torch.distributed.algorithms.ddp_comm_hooks.powerSGD_hook.
-    batched_powerSGD_hook(x))
+result = (
+>>>>>>    torch.distributed.algorithms.ddp_comm_hooks.powerSGD_hook.batched_powerSGD_hook(x)
+)
 x = torch.randn(2, 3, 4)
->>>>>>result = (torch.distributed.algorithms.ddp_comm_hooks.powerSGD_hook.
-    powerSGD_hook(x))
+>>>>>>result = torch.distributed.algorithms.ddp_comm_hooks.powerSGD_hook.powerSGD_hook(x)
 x = torch.randn(2, 3, 4)
 >>>>>>result = torch.distributed.autograd.backward(x)
 >>>>>>result = torch.distributed.autograd.context()
@@ -449,16 +451,14 @@ x = torch.randn(2, 3, 4)
 >>>>>>result = torch.distributed.checkpoint.state_dict.set_model_state_dict(True)
 >>>>>>result = torch.distributed.checkpoint.state_dict.set_optimizer_state_dict(True)
 >>>>>>result = torch.distributed.checkpoint.state_dict.set_state_dict(True)
->>>>>>result = torch.distributed.checkpoint.state_dict_loader.load('tmp.pt')
->>>>>>result = torch.distributed.checkpoint.state_dict_loader.load_state_dict(
-    'tmp.pt')
+>>>>>>result = torch.distributed.checkpoint.state_dict_loader.load("tmp.pt")
+>>>>>>result = torch.distributed.checkpoint.state_dict_loader.load_state_dict("tmp.pt")
 x = torch.randn(2, 3, 4)
->>>>>>result = torch.distributed.checkpoint.state_dict_saver.async_save(x, 'tmp.pt')
+>>>>>>result = torch.distributed.checkpoint.state_dict_saver.async_save(x, "tmp.pt")
 x = torch.randn(2, 3, 4)
->>>>>>result = torch.distributed.checkpoint.state_dict_saver.save(x, 'tmp.pt')
+>>>>>>result = torch.distributed.checkpoint.state_dict_saver.save(x, "tmp.pt")
 x = torch.randn(2, 3, 4)
->>>>>>result = torch.distributed.checkpoint.state_dict_saver.save_state_dict(x,
-    'tmp.pt')
+>>>>>>result = torch.distributed.checkpoint.state_dict_saver.save_state_dict(x, "tmp.pt")
 >>>>>>result = torch.distributed.checkpoint.stateful.Stateful
 >>>>>>result = torch.distributed.device_mesh.DeviceMesh
 >>>>>>result = torch.distributed.device_mesh.init_device_mesh()
@@ -488,8 +488,9 @@ x = torch.randn(2, 3, 4)
 >>>>>>result = torch.distributed.optim.ZeroRedundancyOptimizer
 >>>>>>result = torch.distributed.pipeline.sync.Pipe
 >>>>>>result = torch.distributed.pipeline.sync.skip.skippable.pop()
->>>>>>result = torch.distributed.pipeline.sync.skip.skippable.skippable(lambda *
-    args, **kwargs: None)
+>>>>>>result = torch.distributed.pipeline.sync.skip.skippable.skippable(
+    lambda *args, **kwargs: None
+)
 x = torch.randn(2, 3, 4)
 >>>>>>result = torch.distributed.pipeline.sync.skip.skippable.stash(x)
 >>>>>>result = torch.distributed.pipeline.sync.skip.skippable.verify_skippables()
@@ -513,8 +514,7 @@ x = torch.randn(2, 3, 4)
 >>>>>>result = torch.distributions.half_normal.HalfNormal
 >>>>>>result = torch.distributions.inverse_gamma.InverseGamma
 >>>>>>result = torch.distributions.kumaraswamy.Kumaraswamy
->>>>>>result = (torch.distributions.lowrank_multivariate_normal.
-    LowRankMultivariateNormal)
+>>>>>>result = torch.distributions.lowrank_multivariate_normal.LowRankMultivariateNormal
 >>>>>>result = torch.distributions.mixture_same_family.MixtureSameFamily
 >>>>>>result = torch.distributions.negative_binomial.NegativeBinomial
 >>>>>>result = torch.distributions.pareto.Pareto
@@ -542,10 +542,10 @@ x = torch.randn(2, 3, 4)
 >>>>>>result = torch.export.graph_signature.InputSpec
 >>>>>>result = torch.export.graph_signature.OutputKind
 >>>>>>result = torch.export.graph_signature.OutputSpec
->>>>>>result = torch.export.load('tmp.pt')
+>>>>>>result = torch.export.load("tmp.pt")
 >>>>>>result = torch.export.register_dataclass()
 x = torch.randn(2, 3, 4)
->>>>>>result = torch.export.save(x, 'tmp.pt')
+>>>>>>result = torch.export.save(x, "tmp.pt")
 >>>>>>result = torch.export.unflatten.FlatArgsAdapter
 >>>>>>result = torch.export.unflatten.InterpreterModule
 >>>>>>result = torch.export.unflatten.unflatten()
@@ -735,7 +735,7 @@ x = torch.randn(2, 3, 4)
 >>>>>>result = torch.profiler.ProfilerActivity
 >>>>>>result = torch.profiler._KinetoProfile()
 >>>>>>result = torch.profiler.itt.is_available()
->>>>>>result = torch.profiler.itt.mark('tag')
+>>>>>>result = torch.profiler.itt.mark("tag")
 >>>>>>result = torch.profiler.itt.range_pop()
 >>>>>>result = torch.profiler.itt.range_push()
 >>>>>>result = torch.profiler.tensorboard_trace_handler()

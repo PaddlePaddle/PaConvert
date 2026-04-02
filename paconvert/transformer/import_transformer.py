@@ -418,7 +418,9 @@ class ImportTransformer(BaseTransformer):
                     ]
                     if self.mode == "min" and self.is_change_prefix_api(torch_api):
                         return node
-                    return ast.parse(self.get_canonical_torch_api(torch_api)).body[0].value
+                    return (
+                        ast.parse(self.get_canonical_torch_api(torch_api)).body[0].value
+                    )
 
                 elif self.parent_node.func.id in [
                     "isinstance",
