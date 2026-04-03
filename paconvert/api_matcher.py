@@ -366,8 +366,8 @@ class EinopsTorchMatcher(BaseMatcher):
 # These APIs only change torch.* to paddle.*, not change any other thing
 class ChangePrefixMatcher(BaseMatcher):
     def get_paddle_api(self):
-        if hasattr(self.transformer, "mode") and self.transformer.mode == "min":
-            return self.torch_api
+        if self.transformer.mode == "min":
+            return "unchange"
         if self.paddle_api:
             return self.paddle_api
 
@@ -380,7 +380,7 @@ class ChangePrefixMatcher(BaseMatcher):
         )
 
     def get_paddle_nodes(self, args, kwargs):
-        if hasattr(self.transformer, "mode") and self.transformer.mode == "min":
+        if self.transformer.mode == "min":
             return "unchange"
         args = self.parse_args(args)
         kwargs = self.parse_kwargs(kwargs, allow_none=True)
@@ -394,6 +394,11 @@ class ChangePrefixMatcher(BaseMatcher):
 
     def get_paddle_class_attribute_nodes(self, node):
         return "unchange"
+
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        if self.transformer.mode == "min":
+            return "unchange"
+        return super().get_paddle_class_nodes(func, args, kwargs)
 
 
 # These APIs only change API name, but not change API args/kwargs

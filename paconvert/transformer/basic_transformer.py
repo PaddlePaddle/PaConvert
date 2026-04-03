@@ -140,9 +140,6 @@ class BasicTransformer(BaseTransformer):
                 node.lineno,
             )
 
-            if self.in_min_mode(torch_api):
-                self.record_change_prefix_api(torch_api)
-                return node
             # can in attribute_matcher or attribute_matcher, but not both
             attribute_matcher = self.get_attribute_matcher(torch_api)
             api_matcher = self.get_api_matcher(torch_api)
@@ -188,6 +185,18 @@ class BasicTransformer(BaseTransformer):
                         node.lineno,
                     )
                     return node
+                elif paddle_api == "unchange":
+                    self.all_api_map[torch_api]["paddle_api"] = paddle_api
+                    if self.mode == "min" and isinstance(matcher, ChangePrefixMatcher):
+                        self.record_change_prefix_api(torch_api)
+                    self.success_api_count += 1
+                    log_info(
+                        self.logger,
+                        "[Success] Unchange {}".format(torch_api),
+                        self.file_name,
+                        node.lineno,
+                    )
+                    return node
                 elif paddle_api:
                     self.all_api_map[torch_api]["paddle_api"] = (
                         paddle_api if paddle_api else ""
@@ -211,6 +220,21 @@ class BasicTransformer(BaseTransformer):
                 if matcher:
                     torch_api = ".".join(attr_list[:-1])
                     paddle_api = matcher.get_paddle_api()
+                    if paddle_api == "unchange":
+                        if self.mode == "min" and isinstance(
+                            matcher, ChangePrefixMatcher
+                        ):
+                            self.record_change_prefix_api(torch_api)
+                        self.success_api_count += 1
+                        log_info(
+                            self.logger,
+                            "[Success] Unchange setattr({}, '{}')".format(
+                                torch_api, attr_list[-1]
+                            ),
+                            self.file_name,
+                            node.lineno,
+                        )
+                        return node
                     new_node = ast.parse(paddle_api + "." + attr_list[-1]).body[0].value
                     self.success_api_count += 1
                     log_info(
@@ -443,13 +467,11 @@ class BasicTransformer(BaseTransformer):
         super(BasicTransformer, self).generic_visit(node)
 
         full_attr = self.get_full_attr_for_apiname(node.func)
-        full_api = None
-        if full_attr == "NonTorchClass":
-            full_api = self.get_full_api_from_node(node.func)
-        elif self.start_with_torch(full_attr) or self.in_api_mapping(full_attr):
-            full_api = full_attr
-        else:
-            full_api = self.get_full_api_from_node(node.func)
+        full_api = (
+            full_attr
+            if self.start_with_torch(full_attr) or self.in_api_mapping(full_attr)
+            else self.get_full_api_from_node(node.func)
+        )
 
         # 1) Torch Package Call, include torch third_party
         #   such as : torch.add(x, y) / torch.add(torch.abs(x), y)
@@ -498,11 +520,9 @@ class BasicTransformer(BaseTransformer):
                     )
                     return node
                 elif node_list == "unchange":
-                    # This API usage indicate that is is not a Pytorch API
-                    self.torch_api_count -= 1
-                    del self.all_api_map[torch_api]
-                    if self.in_min_mode(torch_api):
+                    if self.mode == "min" and isinstance(matcher, ChangePrefixMatcher):
                         self.record_change_prefix_api(torch_api)
+                    self.success_api_count += 1
                     log_debug(
                         self.logger,
                         " Unchange {}".format(torch_api),
