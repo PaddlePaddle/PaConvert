@@ -236,41 +236,30 @@ class BaseTransformer(ast.NodeTransformer):
     def get_canonical_torch_api(self, torch_api):
         return GlobalManager.ALIAS_MAPPING.get(torch_api, torch_api)
 
-    def get_api_mapping_item(self, torch_api):
+    def in_min_mode(self, torch_api):
+        if self.mode != "min":
+            return False
         torch_api = self.get_canonical_torch_api(torch_api)
-        if torch_api in GlobalManager.API_MAPPING:
-            return torch_api, GlobalManager.API_MAPPING[torch_api]
 
-        for wildcard_name, mapping in GlobalManager.API_WILDCARD_MAPPING.items():
-            if re.match(wildcard_name, torch_api):
-                return torch_api, mapping
-
-        return torch_api, None
-
-    def get_attribute_mapping_item(self, torch_api):
-        torch_api = self.get_canonical_torch_api(torch_api)
-        if torch_api in GlobalManager.ATTRIBUTE_MAPPING:
-            return torch_api, GlobalManager.ATTRIBUTE_MAPPING[torch_api]
-
-        for wildcard_name, mapping in GlobalManager.API_WILDCARD_MAPPING.items():
-            if re.match(wildcard_name, torch_api):
-                return torch_api, mapping
-
-        return torch_api, None
-
-    def get_matcher_name(self, torch_api):
-        _, api_mapping = self.get_api_mapping_item(torch_api)
+        api_mapping = GlobalManager.API_MAPPING.get(torch_api)
+        if api_mapping is None:
+            for wildcard_name, mapping in GlobalManager.API_WILDCARD_MAPPING.items():
+                if re.match(wildcard_name, torch_api):
+                    api_mapping = mapping
+                    break
         if api_mapping and "disable" not in api_mapping:
-            return api_mapping.get("Matcher")
+            return api_mapping.get("Matcher") == "ChangePrefixMatcher"
 
-        _, attr_mapping = self.get_attribute_mapping_item(torch_api)
+        attr_mapping = GlobalManager.ATTRIBUTE_MAPPING.get(torch_api)
+        if attr_mapping is None:
+            for wildcard_name, mapping in GlobalManager.API_WILDCARD_MAPPING.items():
+                if re.match(wildcard_name, torch_api):
+                    attr_mapping = mapping
+                    break
         if attr_mapping and "disable" not in attr_mapping:
-            return attr_mapping.get("Matcher")
+            return attr_mapping.get("Matcher") == "ChangePrefixMatcher"
 
-        return None
-
-    def is_change_prefix_api(self, torch_api):
-        return self.get_matcher_name(torch_api) == "ChangePrefixMatcher"
+        return False
 
     def visit_FunctionDef(self, node):
         self.scope_stack.append(node)

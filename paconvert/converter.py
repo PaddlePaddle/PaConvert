@@ -48,6 +48,7 @@ def listdir_nohidden(path):
 class Converter:
     def __init__(
         self,
+        mode="default",
         log_dir=None,
         log_level="INFO",
         log_markdown=False,
@@ -57,6 +58,7 @@ class Converter:
         calculate_speed=False,
         only_complete=False,
     ):
+        self.mode = mode
         self.imports_map = collections.defaultdict(dict)
         self.torch_api_count = 0
         self.success_api_count = 0
@@ -84,7 +86,7 @@ class Converter:
         log_info(self.logger, "PyTorch to Paddle Convert Start ------>:")
         log_info(self.logger, "===========================================")
 
-    def run(self, in_dir, out_dir=None, exclude=None, mode="default"):
+    def run(self, in_dir, out_dir=None, exclude=None):
         if self.calculate_speed:
             import time
 
@@ -120,7 +122,7 @@ class Converter:
                 out_dir + "/paddle_utils.py", is_dir_mode=True, logger=self.logger
             )
 
-        self.transfer_dir(in_dir, out_dir, exclude, mode)
+        self.transfer_dir(in_dir, out_dir, exclude)
         utils_file_helper.write_code()
 
         if self.show_unsupport_api:
@@ -273,7 +275,7 @@ class Converter:
         except:
             pass
 
-    def transfer_dir(self, in_dir, out_dir, exclude, mode):
+    def transfer_dir(self, in_dir, out_dir, exclude):
         if os.path.isfile(in_dir):
             old_path = in_dir
             if exclude:
@@ -290,7 +292,7 @@ class Converter:
             if not os.path.isdir(os.path.dirname(new_path)):
                 os.remove(os.path.dirname(new_path))
                 os.makedirs(os.path.dirname(new_path))
-            self.transfer_file(old_path, new_path, mode)
+            self.transfer_file(old_path, new_path)
         elif os.path.isdir(in_dir):
             in_dir_item = listdir_nohidden(in_dir)
             for item in in_dir_item:
@@ -309,14 +311,14 @@ class Converter:
                     if not os.path.exists(new_path):
                         os.makedirs(new_path)
 
-                self.transfer_dir(old_path, new_path, exclude, mode)
+                self.transfer_dir(old_path, new_path, exclude)
         elif os.path.islink(in_dir):
             # may need to create link
             pass
         else:
             raise ValueError(" the input 'in_dir' must be a exist file or directory! ")
 
-    def transfer_file(self, old_path, new_path, mode):
+    def transfer_file(self, old_path, new_path):
         if old_path.endswith(".py"):
             log_info(
                 self.logger, "Start convert file: {} --> {}".format(old_path, new_path)
@@ -327,7 +329,7 @@ class Converter:
                     self.line_count += len(code.splitlines())
                 root = ast.parse(code)
 
-            self.transfer_node(root, old_path, mode)
+            self.transfer_node(root, old_path)
             code = astor.to_source(root)
 
             # format code
@@ -363,7 +365,7 @@ class Converter:
                     )
                 """
             if not self.only_complete:
-                code = self.mark_unsupport(code, old_path, mode)
+                code = self.mark_unsupport(code, old_path)
             with open(new_path, "w", encoding="UTF-8") as file:
                 file.write(code)
             log_info(
@@ -388,7 +390,7 @@ class Converter:
             )
             shutil.copyfile(old_path, new_path)
 
-    def transfer_node(self, root, file, mode):
+    def transfer_node(self, root, file):
         transformers = [
             ImportTransformer,  # import ast transformer
             BasicTransformer,  # most of api transformer
@@ -399,7 +401,7 @@ class Converter:
             trans = transformer(
                 root,
                 file,
-                mode,
+                self.mode,
                 self.imports_map,
                 self.logger,
                 self.all_api_map,
@@ -419,7 +421,7 @@ class Converter:
                 line = line.replace(api, "__PC_KEEP_API__")
         return line
 
-    def mark_unsupport(self, code, file, mode):
+    def mark_unsupport(self, code, file):
         lines = code.split("\n")
         mark_next_line = False
         in_str = False
@@ -454,15 +456,13 @@ class Converter:
             if last_in_str or in_str:
                 continue
 
-            if mode == "min":
+            scan_line = rm_str_line
+            if self.mode == "min":
                 stripped_line = rm_str_line.strip()
                 if stripped_line.startswith("import ") or stripped_line.startswith(
                     "from "
                 ):
                     continue
-
-            scan_line = rm_str_line
-            if mode == "min":
                 scan_line = self.mask_change_prefix_apis(scan_line, file)
 
             for torch_package in self.imports_map[file]["torch_packages"]:

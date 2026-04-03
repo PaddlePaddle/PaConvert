@@ -99,9 +99,17 @@ if __name__ == "__main__":
         print(
             "*************************************************************************"
         )
-        print("The following pytorch file convert fail!")
+        print("The following pytorch file convert fail in default mode!!")
         for file_dir in convert_fail_list:
             print(f" {file_dir} convert fail!")
+        print(
+            "*************************************************************************"
+        )
+    else:
+        print(
+            "*************************************************************************"
+        )
+        print("All pytorch files converte successfully in default mode.")
         print(
             "*************************************************************************"
         )
@@ -111,10 +119,38 @@ if __name__ == "__main__":
         print(
             "*************************************************************************"
         )
-        print("The following pytorch file convert inconsistency!")
+        print("The following pytorch file convert inconsistency in default mode!")
         for file_dir in compare_fail_list:
             paddle_dir = CODE_CONSISTENCY_MAPPING[file_dir]
             print(f" {file_dir} convert result is inconsistent with {paddle_dir}!")
+        print(
+            "*************************************************************************"
+        )
+    else:
+        print(
+            "*************************************************************************"
+        )
+        print("All pytorch files converte consistency in default mode.")
+        print(
+            "*************************************************************************"
+        )
+
+    min_convert_fail_list = convert_pytorch_code_to_paddle(mode="min")
+    if min_convert_fail_list:
+        print(
+            "*************************************************************************"
+        )
+        print("The following pytorch file convert fail in min mode!")
+        for file_dir in min_convert_fail_list:
+            print(f" {file_dir} convert fail!")
+        print(
+            "*************************************************************************"
+        )
+    else:
+        print(
+            "*************************************************************************"
+        )
+        print("All pytorch files converte successfully in min mode.")
         print(
             "*************************************************************************"
         )
@@ -131,14 +167,11 @@ if __name__ == "__main__":
         print(
             "*************************************************************************"
         )
-    min_convert_fail_list = convert_pytorch_code_to_paddle(mode="min")
-    if min_convert_fail_list:
+    else:
         print(
             "*************************************************************************"
         )
-        print("The following pytorch file convert fail in min mode!")
-        for file_dir in min_convert_fail_list:
-            print(f" {file_dir} convert fail!")
+        print("All pytorch files converte consistency in min mode.")
         print(
             "*************************************************************************"
         )

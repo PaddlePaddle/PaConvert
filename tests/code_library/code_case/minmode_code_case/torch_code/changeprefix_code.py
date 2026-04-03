@@ -22,18 +22,15 @@ from torch.autograd import Function
 from collections import OrderedDict
 import numpy as np
 import torch.nn.functional as F
-from torch.nn.utils.rnn import pad_sequence
 from torch.nn.utils.rnn import pad_sequence, unpad_sequence
 from torch.utils.cpp_extension import BuildExtension, CppExtension
 from torch.utils.cpp_extension import CUDA_HOME
 import torch.utils.data as torch_data
 from torch.utils.data import Dataset, ConcatDataset
-from torch.utils.data import Dataset
-from torch.utils.data import IterableDataset
 from torch.utils.data import Sampler
 from torch.utils.data import SequentialSampler
 from torch.utils.data import IterableDataset, ChainDataset, get_worker_info
-from torch.utils.data import Dataset, Subset
+from torch.utils.data import Subset
 from torch.utils.data import default_collate
 from torch.distributed import ReduceOp
 from torch.nn.attention import SDPBackend

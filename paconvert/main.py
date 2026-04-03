@@ -140,6 +140,7 @@ def main():
         in_dir = os.path.abspath(args.in_dir)
         for project_name in os.listdir(in_dir):
             converter = Converter(
+                mode=args.mode,
                 log_dir=args.log_dir,
                 log_level=args.log_level,
                 log_markdown=args.log_markdown,
@@ -186,6 +187,7 @@ def main():
         return
 
     converter = Converter(
+        mode=args.mode,
         log_dir=args.log_dir,
         log_level=args.log_level,
         log_markdown=args.log_markdown,
@@ -202,7 +204,7 @@ def main():
         return
 
     assert args.in_dir is not None, "User must specify --in_dir "
-    converter.run(args.in_dir, args.out_dir, args.exclude, args.mode)
+    converter.run(args.in_dir, args.out_dir, args.exclude)
 
     print(r"****************************************************************")
     print(r"______      _____                          _   ")

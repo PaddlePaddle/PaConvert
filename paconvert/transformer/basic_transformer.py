@@ -140,7 +140,7 @@ class BasicTransformer(BaseTransformer):
                 node.lineno,
             )
 
-            if self.mode == "min" and self.is_change_prefix_api(torch_api):
+            if self.in_min_mode(torch_api):
                 self.record_change_prefix_api(torch_api)
                 return node
             # can in attribute_matcher or attribute_matcher, but not both
@@ -501,7 +501,7 @@ class BasicTransformer(BaseTransformer):
                     # This API usage indicate that is is not a Pytorch API
                     self.torch_api_count -= 1
                     del self.all_api_map[torch_api]
-                    if self.mode == "min" and self.is_change_prefix_api(torch_api):
+                    if self.in_min_mode(torch_api):
                         self.record_change_prefix_api(torch_api)
                     log_debug(
                         self.logger,

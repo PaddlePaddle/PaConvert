@@ -58,8 +58,6 @@ class TensorRequiresGradTransformer(BaseTransformer):
         if isinstance(node, (ast.Assign)):
             if isinstance(node.targets[0], ast.Attribute):
                 if node.targets[0].attr == "requires_grad":
-                    if self.mode == "min":
-                        return node
                     node.targets[0].attr = "stop_gradient"
                     node = ast.Assign(
                         targets=[node.targets[0]],
@@ -71,8 +69,6 @@ class TensorRequiresGradTransformer(BaseTransformer):
                     if isinstance(node.targets[0].elts[j], ast.Attribute) and (
                         node.targets[0].elts[j].attr == "requires_grad"
                     ):
-                        if self.mode == "min":
-                            return node
                         new_node = ast.Name(id="temp", ctx=ast.Load())
                         node.targets[0].elts[j].attr = "stop_gradient"
                         assign_node = ast.Assign(

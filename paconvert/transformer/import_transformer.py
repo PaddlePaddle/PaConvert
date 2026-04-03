@@ -91,7 +91,7 @@ class ImportTransformer(BaseTransformer):
                     if alias_node.asname:
                         self.imports_map[self.file][alias_node.asname] = alias_node.name
                         if self.mode == "min":
-                            return node
+                            new_node_names.append(alias_node)
                         else:
                             log_info(
                                 self.logger,
@@ -104,7 +104,7 @@ class ImportTransformer(BaseTransformer):
                     else:
                         self.imports_map[self.file][alias_node.name] = alias_node.name
                         if self.mode == "min":
-                            return node
+                            new_node_names.append(alias_node)
                         else:
                             log_info(
                                 self.logger,
@@ -355,7 +355,7 @@ class ImportTransformer(BaseTransformer):
 
         torch_api = self.get_full_api_from_node(node)
         if torch_api:
-            if self.mode == "min" and self.is_change_prefix_api(torch_api):
+            if self.in_min_mode(torch_api):
                 return node
 
             torch_api = self.get_canonical_torch_api(torch_api)
@@ -416,7 +416,7 @@ class ImportTransformer(BaseTransformer):
                     torch_api = self.imports_map[self.file]["api_alias_name_map"][
                         node.id
                     ]
-                    if self.mode == "min" and self.is_change_prefix_api(torch_api):
+                    if self.in_min_mode(torch_api):
                         return node
                     return (
                         ast.parse(self.get_canonical_torch_api(torch_api)).body[0].value
@@ -475,7 +475,7 @@ class ImportTransformer(BaseTransformer):
                             self.parent_node.targets[0].id
                         ] = torch_api
 
-                if self.mode == "min" and self.is_change_prefix_api(torch_api):
+                if self.in_min_mode(torch_api):
                     return node
 
                 return ast.parse(self.get_canonical_torch_api(torch_api)).body[0].value
