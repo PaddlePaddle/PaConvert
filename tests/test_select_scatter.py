@@ -77,3 +77,68 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    """Test with 2D tensor on different dimension"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.zeros((3, 4)).type(torch.float32)
+        values = torch.ones(4).type(torch.float32)
+        result = torch.select_scatter(x, values, dim=0, index=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """Test with keyword arguments out of order"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.zeros((2,3,4)).type(torch.float32)
+        values = torch.ones((2,4)).type(torch.float32)
+        result = torch.select_scatter(index=1, src=values, dim=1, input=x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """Test with 4D tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.zeros((2, 3, 4, 5)).type(torch.float32)
+        values = torch.ones((2, 3, 5)).type(torch.float32)
+        result = torch.select_scatter(input=x, src=values, dim=2, index=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """Test with index=0"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.zeros((2,3,4)).type(torch.float32)
+        values = torch.ones((2,4)).type(torch.float32)
+        result = torch.select_scatter(x, values, dim=1, index=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """Test with different dtype"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.zeros((2,3,4)).type(torch.float64)
+        values = torch.ones((2,4)).type(torch.float64)
+        result = torch.select_scatter(input=x, src=values, dim=1, index=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
