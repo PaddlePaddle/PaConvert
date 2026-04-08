@@ -15,6 +15,7 @@
 
 import ast
 import os
+from collections import defaultdict
 
 from paconvert.base import BaseTransformer
 from paconvert.global_var import GlobalManager
@@ -35,23 +36,16 @@ class ImportTransformer(BaseTransformer):
         logger,
         all_api_map=None,
         unsupport_api_map=None,
-        change_prefix_api_map=None,
     ):
         super(ImportTransformer, self).__init__(
-            root,
-            file,
-            mode,
-            imports_map,
-            logger,
-            all_api_map,
-            unsupport_api_map,
-            change_prefix_api_map,
+            root, file, mode, imports_map, logger, all_api_map, unsupport_api_map
         )
         self.imports_map[self.file]["other_packages"] = set()
         self.imports_map[self.file]["torch_packages"] = set()
         self.imports_map[self.file]["may_torch_packages"] = set()
         self.imports_map[self.file]["api_alias_name_map"] = {}
         self.insert_pass_node = set()
+        self.change_prefix_api_map = defaultdict(set)
 
     def visit_Import(self, node):
         """
@@ -349,17 +343,40 @@ class ImportTransformer(BaseTransformer):
             nn.Module -> torch.nn.Module
         """
         if isinstance(
-            node.value, (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript)
+            node.value,
+            (
+                ast.Call,
+                ast.Compare,
+                ast.BinOp,
+                ast.UnaryOp,
+                ast.Subscript,
+                ast.Assert,
+                ast.IfExp,
+            ),
         ):
             super(ImportTransformer, self).generic_visit(node)
+        if isinstance(node.value, ast.Attribute):
+            if node.value.attr in [
+                "T",
+                "real",
+                "weight",
+                "bias",
+                "imag",
+            ]:
+                super(ImportTransformer, self).generic_visit(node)
+            # 7.  x.data.cuda()  / avoid  torch.utils.data.*
+            elif node.value.attr == "data":
+                full_api, _ = self.get_full_api_from_node(node.value)
+                if "torch.utils" not in full_api:
+                    super(ImportTransformer, self).generic_visit(node)
 
-        torch_api = self.get_full_api_from_node(node)
-        if torch_api:
+        torch_api, flag = self.get_full_api_from_node(node)
+        if flag:
             if self.in_min_mode(torch_api):
+                self.change_prefix_api_map[self.file].add(torch_api)
                 return node
 
-            torch_api = self.get_canonical_torch_api(torch_api)
-            return ast.parse(torch_api).body[0].value
+            return ast.parse(self.get_canonical_torch_api(torch_api)).body[0].value
         return node
 
     def visit_Name(self, node):
@@ -417,6 +434,7 @@ class ImportTransformer(BaseTransformer):
                         node.id
                     ]
                     if self.in_min_mode(torch_api):
+                        self.change_prefix_api_map[self.file].add(torch_api)
                         return node
                     return (
                         ast.parse(self.get_canonical_torch_api(torch_api)).body[0].value
@@ -465,8 +483,8 @@ class ImportTransformer(BaseTransformer):
             maybe_torch = True  # 13. Union[List[str], List[AddedToken]]
 
         if maybe_torch:
-            torch_api = self.get_full_api_from_node(node)
-            if torch_api:
+            torch_api, flag = self.get_full_api_from_node(node)
+            if flag:
                 if maybe_alias_name:
                     if len(self.parent_node.targets) == 1 and isinstance(
                         self.parent_node.targets[0], ast.Name
@@ -476,6 +494,7 @@ class ImportTransformer(BaseTransformer):
                         ] = torch_api
 
                 if self.in_min_mode(torch_api):
+                    self.change_prefix_api_map[self.file].add(torch_api)
                     return node
 
                 return ast.parse(self.get_canonical_torch_api(torch_api)).body[0].value

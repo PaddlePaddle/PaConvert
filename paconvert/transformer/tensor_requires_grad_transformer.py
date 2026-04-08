@@ -35,7 +35,6 @@ class TensorRequiresGradTransformer(BaseTransformer):
         logger,
         all_api_map=None,
         unsupport_api_map=None,
-        change_prefix_api_map=None,
     ):
         super(TensorRequiresGradTransformer, self).__init__(
             root,
@@ -45,7 +44,6 @@ class TensorRequiresGradTransformer(BaseTransformer):
             logger,
             all_api_map,
             unsupport_api_map,
-            change_prefix_api_map,
         )
         self.insert_nodes_list = []
 

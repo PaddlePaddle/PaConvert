@@ -31,7 +31,6 @@ class PreCustomOpTransformer(BaseTransformer):
         logger,
         all_api_map=None,
         unsupport_api_map=None,
-        change_prefix_api_map=None,
     ):
         super(PreCustomOpTransformer, self).__init__(
             root,
@@ -41,7 +40,6 @@ class PreCustomOpTransformer(BaseTransformer):
             logger,
             all_api_map,
             unsupport_api_map,
-            change_prefix_api_map,
         )
         self.cpp_ext_import_names = {}
         self.cpp_ext_load_names = []
@@ -154,7 +152,6 @@ class CustomOpTransformer(BaseTransformer):
         logger,
         all_api_map=None,
         unsupport_api_map=None,
-        change_prefix_api_map=None,
     ):
         super(CustomOpTransformer, self).__init__(
             root,
@@ -164,7 +161,6 @@ class CustomOpTransformer(BaseTransformer):
             logger,
             all_api_map,
             unsupport_api_map,
-            change_prefix_api_map,
         )
         self.autograd_func_import_names = {}
 

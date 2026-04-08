@@ -109,7 +109,7 @@ if __name__ == "__main__":
         print(
             "*************************************************************************"
         )
-        print("All pytorch files converte successfully in default mode.")
+        print("All pytorch files convert successfully in default mode.")
         print(
             "*************************************************************************"
         )
@@ -119,7 +119,7 @@ if __name__ == "__main__":
         print(
             "*************************************************************************"
         )
-        print("The following pytorch file convert inconsistency in default mode!")
+        print("The following pytorch file compare fail in default mode!")
         for file_dir in compare_fail_list:
             paddle_dir = CODE_CONSISTENCY_MAPPING[file_dir]
             print(f" {file_dir} convert result is inconsistent with {paddle_dir}!")
@@ -130,7 +130,7 @@ if __name__ == "__main__":
         print(
             "*************************************************************************"
         )
-        print("All pytorch files converte consistency in default mode.")
+        print("All pytorch files compare successfully in default mode.")
         print(
             "*************************************************************************"
         )
@@ -150,7 +150,7 @@ if __name__ == "__main__":
         print(
             "*************************************************************************"
         )
-        print("All pytorch files converte successfully in min mode.")
+        print("All pytorch files convert successfully in min mode.")
         print(
             "*************************************************************************"
         )
@@ -160,7 +160,7 @@ if __name__ == "__main__":
         print(
             "*************************************************************************"
         )
-        print("The following pytorch file convert inconsistency in min mode!")
+        print("The following pytorch file compare fail in min mode!")
         for file_dir in min_compare_fail_list:
             paddle_dir = CODE_CONSISTENCY_MAPPING[file_dir]
             print(f" {file_dir} convert result is inconsistent with {paddle_dir}!")
@@ -171,7 +171,7 @@ if __name__ == "__main__":
         print(
             "*************************************************************************"
         )
-        print("All pytorch files converte consistency in min mode.")
+        print("All pytorch files compare successfully in min mode.")
         print(
             "*************************************************************************"
         )

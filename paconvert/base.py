@@ -35,7 +35,6 @@ class BaseTransformer(ast.NodeTransformer):
         logger,
         all_api_map=None,
         unsupport_api_map=None,
-        change_prefix_api_map=None,
     ):
         self.root = root
         self.file = file
@@ -52,7 +51,6 @@ class BaseTransformer(ast.NodeTransformer):
         self.black_list = []
         self.all_api_map = all_api_map
         self.unsupport_api_map = unsupport_api_map
-        self.change_prefix_api_map = change_prefix_api_map
 
     def transform(self):
         self.visit(self.root)
@@ -229,9 +227,9 @@ class BaseTransformer(ast.NodeTransformer):
             new_module = self.imports_map[self.file][old_module]
             attr_list[0] = new_module
             torch_api = ".".join(attr_list)
-            return torch_api
+            return torch_api, True
         else:
-            return None
+            return full_attr, False
 
     def get_canonical_torch_api(self, torch_api):
         return GlobalManager.ALIAS_MAPPING.get(torch_api, torch_api)

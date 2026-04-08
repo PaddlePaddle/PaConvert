@@ -406,9 +406,12 @@ class Converter:
                 self.logger,
                 self.all_api_map,
                 self.unsupport_api_map,
-                self.change_prefix_api_map,
             )
             trans.transform()
+            if isinstance(trans, ImportTransformer):
+                self.change_prefix_api_map[file].update(
+                    trans.change_prefix_api_map[file]
+                )
             self.torch_api_count += trans.torch_api_count
             self.success_api_count += trans.success_api_count
             if self.only_complete:
@@ -417,8 +420,9 @@ class Converter:
     def mask_change_prefix_apis(self, line, file):
         keep_apis = sorted(self.change_prefix_api_map[file], key=len, reverse=True)
         for api in keep_apis:
-            if api in line:
-                line = line.replace(api, "__PC_KEEP_API__")
+            pattern = re.compile(rf"(?<![\w\.]){re.escape(api)}(?![\w\.])")
+            if pattern.search(line):
+                line = pattern.sub("__PC_KEEP_API__", line)
         return line
 
     def mark_unsupport(self, code, file):
