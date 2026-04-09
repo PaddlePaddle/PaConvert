@@ -396,7 +396,9 @@ class ChangePrefixMatcher(BaseMatcher):
         return "unchange"
 
     def get_paddle_class_nodes(self, func, args, kwargs):
-        return "unchange"
+        if self.transformer.mode == "min":
+            return "unchange"
+        return super().get_paddle_class_nodes(func, args, kwargs)
 
 
 # These APIs only change API name, but not change API args/kwargs
