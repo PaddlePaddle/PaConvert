@@ -14,7 +14,34 @@
 
 set +x
 
-cd /workspace/$1/PaConvert/
+cd /workspace/$1/PaConvert/ || {
+    echo "[unittest-cpu] Failed to enter repo root: /workspace/$1/PaConvert/"
+    exit 1
+}
+
+test -f requirements.txt || {
+    echo "[unittest-cpu] requirements.txt not found under repo root"
+    exit 1
+}
+
+test -d tests || {
+    echo "[unittest-cpu] tests directory not found under repo root"
+    exit 1
+}
+
+# These files mutate process-level defaults and are more stable when run in
+# their own pytest process after the main suite.
+ISOLATED_TEST_FILES=(
+  ./tests/test_set_default_device.py
+  ./tests/test_set_default_dtype.py
+  ./tests/test_set_num_threads.py
+  ./tests/test_set_printoptions.py
+)
+
+IGNORE_ARGS=()
+for test_file in "${ISOLATED_TEST_FILES[@]}"; do
+    IGNORE_ARGS+=("--ignore=${test_file}")
+done
 
 echo '************************************************************************************************************'
 echo "Insalling latest release cpu version torch"
@@ -47,10 +74,32 @@ python -m pip install -r requirements.txt
 echo '************************************************************************************************************'
 echo "Checking code cpu unit test by pytest ..."
 python -m pip install pytest-timeout
-python -m pytest -v -s -p no:warnings ./tests;check_error=$?
-if [ ${check_error} != 0 ];then
-    echo "Rerun cpu unit test check." 
-    python -m pytest -v -s -p no:warnings --lf ./tests; check_error=$?
+PYTHONPATH=.:tests python -m pytest -v -s -p no:warnings "${IGNORE_ARGS[@]}" ./tests
+first_run_error=$?
+
+if [ ${first_run_error} != 0 ]; then
+    echo "[unittest-cpu] Diagnostic rerun of failed tests. This does not change the final result."
+    PYTHONPATH=.:tests python -m pytest -v -s -p no:warnings "${IGNORE_ARGS[@]}" --lf ./tests || true
+fi
+
+check_error=${first_run_error}
+
+if [ ${first_run_error} = 0 ]; then
+    isolated_error=0
+    for test_file in "${ISOLATED_TEST_FILES[@]}"; do
+        echo "[unittest-cpu] Running isolated test file: ${test_file}"
+        PYTHONPATH=.:tests python -m pytest -v -s -p no:warnings "${test_file}"
+        file_error=$?
+
+        if [ ${file_error} != 0 ]; then
+            echo "[unittest-cpu] Diagnostic rerun for isolated file: ${test_file}. This does not change the final result."
+            PYTHONPATH=.:tests python -m pytest -v -s -p no:warnings "${test_file}" || true
+            isolated_error=${file_error}
+            break
+        fi
+    done
+
+    check_error=${isolated_error}
 fi
 
 echo '************************************************************************************************************'
