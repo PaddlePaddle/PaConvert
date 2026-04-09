@@ -370,8 +370,8 @@ class ImportTransformer(BaseTransformer):
                 if "torch.utils" not in full_api:
                     super(ImportTransformer, self).generic_visit(node)
 
-        torch_api, flag = self.get_full_api_from_node(node)
-        if flag:
+        torch_api, origin_torch_api = self.get_full_api_from_node(node)
+        if origin_torch_api:
             if self.in_min_mode(torch_api):
                 self.change_prefix_api_map[self.file].add(torch_api)
                 return node
@@ -483,8 +483,8 @@ class ImportTransformer(BaseTransformer):
             maybe_torch = True  # 13. Union[List[str], List[AddedToken]]
 
         if maybe_torch:
-            torch_api, flag = self.get_full_api_from_node(node)
-            if flag:
+            torch_api, origin_torch_api = self.get_full_api_from_node(node)
+            if origin_torch_api:
                 if maybe_alias_name:
                     if len(self.parent_node.targets) == 1 and isinstance(
                         self.parent_node.targets[0], ast.Name

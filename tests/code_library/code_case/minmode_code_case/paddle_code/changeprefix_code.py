@@ -5,7 +5,6 @@ from collections import OrderedDict
 import numpy
 import numpy as np
 import paddle
-import paddleformers
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -15,7 +14,7 @@ from torch.autograd import Function
 from torch.distributed import ReduceOp
 from torch.nn.attention import SDPBackend
 from torch.nn.utils.rnn import pad_sequence, unpad_sequence
-from torch.utils.cpp_extension import CUDA_HOME, BuildExtension, CppExtension
+from torch.utils.cpp_extension import BuildExtension, CUDA_HOME
 from torch.utils.data import (ChainDataset, ConcatDataset, Dataset,
                               IterableDataset, Sampler, SequentialSampler,
                               Subset, default_collate, get_worker_info)
@@ -537,7 +536,7 @@ result = src.conj()
 src = torch.tensor([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
 result = src.contiguous()
 src = torch.tensor([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
->>>>>>result = src.contiguous(memory_format=torch.contiguous_format)
+result = src.contiguous()
 src = torch.tensor([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
 dst = torch.tensor([2.0, 2.0, 3.0, 4.0, 5.0, 6.0])
 result = src.copy_(dst)

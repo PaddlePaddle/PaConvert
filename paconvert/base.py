@@ -227,9 +227,9 @@ class BaseTransformer(ast.NodeTransformer):
             new_module = self.imports_map[self.file][old_module]
             attr_list[0] = new_module
             torch_api = ".".join(attr_list)
-            return torch_api, True
+            return torch_api, full_attr
         else:
-            return full_attr, False
+            return full_attr, None
 
     def get_canonical_torch_api(self, torch_api):
         return GlobalManager.ALIAS_MAPPING.get(torch_api, torch_api)
@@ -315,9 +315,12 @@ class BaseTransformer(ast.NodeTransformer):
 
 
 class BaseMatcher(object):
-    def __init__(self, transformer, torch_api, api_mapping_dict, logger):
+    def __init__(
+        self, transformer, torch_api, origin_torch_api, api_mapping_dict, logger
+    ):
         self.transformer = transformer
         self.torch_api = torch_api
+        self.origin_torch_api = origin_torch_api
         self.paddle_api = None
         self.api_mapping_dict = api_mapping_dict
         self.logger = logger
@@ -418,9 +421,14 @@ class BaseMatcher(object):
     def parse_func(self, func):
         new_func = astor.to_source(func).replace("\n", "")
         self.paddleClass = new_func[0 : new_func.rfind(".")]
+        class_str = "paddle.Tensor|paddle.nn.Module|paddle.optimizer.Optimizer|paddle.distribution.Distribution|paddle.autograd.function.FunctionCtx|paddle.profiler.Profiler"
+        if self.transformer.mode == "min":
+            class_str += (
+                "|torch.Tensor|torch.nn.Module|torch.autograd.function.FunctionCtx"
+            )
         if self.get_paddle_api():
             new_paddle_api = re.sub(
-                "paddle.Tensor|paddle.nn.Module|paddle.optimizer.Optimizer|paddle.distribution.Distribution|paddle.autograd.function.FunctionCtx|paddle.profiler.Profiler",
+                class_str,
                 re.escape(self.paddleClass),
                 self.get_paddle_api(),
             )

@@ -112,7 +112,7 @@ class BasicTransformer(BaseTransformer):
         # only need to convert:
         #   1. x.device...
         #   2. torch.Tensor/torch.nn.Module/torch.add...
-        full_attr, _ = self.get_full_api_from_node(node)
+        full_attr, origin_api = self.get_full_api_from_node(node)
 
         # 1) Torch Package Attribute, include torch third_party
         #   such as torch.Tensor/torch.nn.Module/torch.add...
@@ -132,8 +132,8 @@ class BasicTransformer(BaseTransformer):
             )
 
             # can in attribute_matcher or attribute_matcher, but not both
-            attribute_matcher = self.get_attribute_matcher(torch_api)
-            api_matcher = self.get_api_matcher(torch_api)
+            attribute_matcher = self.get_attribute_matcher(torch_api, origin_api)
+            api_matcher = self.get_api_matcher(torch_api, origin_api)
             assert not (
                 attribute_matcher and api_matcher
             ), f"{torch_api} can not be both in attribute_matcher and api_matcher"
@@ -204,7 +204,7 @@ class BasicTransformer(BaseTransformer):
                 # def add_module(self, module):
                 #     ...
                 # torch.nn.Module.add = add_module
-                matcher = self.get_api_matcher(".".join(attr_list[:-1]))
+                matcher = self.get_api_matcher(".".join(attr_list[:-1]), origin_api)
                 if matcher:
                     torch_api = ".".join(attr_list[:-1])
                     paddle_api = matcher.get_paddle_api()
@@ -305,13 +305,13 @@ class BasicTransformer(BaseTransformer):
                         self.file_name,
                         node.lineno,
                     )
-                    return self.trans_class_attribute(node, torch_class_api)
+                    return self.trans_class_attribute(node, torch_class_api, origin_api)
 
         # 3) Others
         return node
 
-    def trans_class_attribute(self, node, torch_api):
-        matcher = self.get_attribute_matcher(torch_api)
+    def trans_class_attribute(self, node, torch_api, origin_api):
+        matcher = self.get_attribute_matcher(torch_api, origin_api)
         if matcher:
             self.all_api_map[torch_api]["paddle_api"] = (
                 matcher.get_paddle_api() if matcher.get_paddle_api() else ""
@@ -449,7 +449,7 @@ class BasicTransformer(BaseTransformer):
         """
         # Use Postorder traversal
         super(BasicTransformer, self).generic_visit(node)
-        full_attr, _ = self.get_full_api_from_node(node.func)
+        full_attr, origin_api = self.get_full_api_from_node(node.func)
 
         # 1) Torch Package Call, include torch third_party
         #   such as : torch.add(x, y) / torch.add(torch.abs(x), y)
@@ -468,7 +468,7 @@ class BasicTransformer(BaseTransformer):
                 node.lineno,
             )
 
-            matcher = self.get_api_matcher(torch_api)
+            matcher = self.get_api_matcher(torch_api, origin_api)
             if matcher:
                 self.all_api_map[torch_api]["paddle_api"] = (
                     matcher.get_paddle_api() if matcher.get_paddle_api() else ""
@@ -642,13 +642,13 @@ class BasicTransformer(BaseTransformer):
                         self.file_name,
                         node.lineno,
                     )
-                    return self.trans_class_method(node, torch_class_api)
+                    return self.trans_class_method(node, torch_class_api, origin_api)
 
         # 3) Others
         return node
 
-    def trans_class_method(self, node, torch_api):
-        matcher = self.get_api_matcher(torch_api)
+    def trans_class_method(self, node, torch_api, origin_api):
+        matcher = self.get_api_matcher(torch_api, origin_api)
         if matcher:
             node_args = node.args
             # static method call
@@ -778,8 +778,10 @@ class BasicTransformer(BaseTransformer):
                 return True
         return False
 
-    def get_api_matcher(self, torch_api):
+    def get_api_matcher(self, torch_api, origin_torch_api):
         api_mapping_dict = {}
+        if not origin_torch_api:
+            origin_torch_api = torch_api
         if torch_api in GlobalManager.ALIAS_MAPPING:
             assert (
                 torch_api not in GlobalManager.API_MAPPING
@@ -791,13 +793,14 @@ class BasicTransformer(BaseTransformer):
             for wildcard_name in list(GlobalManager.API_WILDCARD_MAPPING.keys()):
                 if re.match(wildcard_name, torch_api):
                     api_mapping_dict = GlobalManager.API_WILDCARD_MAPPING[wildcard_name]
-
         if api_mapping_dict:
             if "disable" in api_mapping_dict:
                 return None
             if "Matcher" in api_mapping_dict:
                 matcher = api_mapping_dict["Matcher"]
-                return eval(matcher)(self, torch_api, api_mapping_dict, self.logger)
+                return eval(matcher)(
+                    self, torch_api, origin_torch_api, api_mapping_dict, self.logger
+                )
         return None
 
     def in_attribute_mapping(self, torch_api):
@@ -807,8 +810,10 @@ class BasicTransformer(BaseTransformer):
             return True
         return False
 
-    def get_attribute_matcher(self, torch_api):
+    def get_attribute_matcher(self, torch_api, origin_torch_api=None):
         attr_mapping_dict = {}
+        if not origin_torch_api:
+            origin_torch_api = torch_api
         if torch_api in GlobalManager.ALIAS_MAPPING:
             assert (
                 torch_api not in GlobalManager.ATTRIBUTE_MAPPING
@@ -822,13 +827,14 @@ class BasicTransformer(BaseTransformer):
                     attr_mapping_dict = GlobalManager.API_WILDCARD_MAPPING[
                         wildcard_name
                     ]
-
         if attr_mapping_dict:
             if "disable" in attr_mapping_dict:
                 return None
             if "Matcher" in attr_mapping_dict:
                 matcher = attr_mapping_dict["Matcher"]
-                return eval(matcher)(self, torch_api, attr_mapping_dict, self.logger)
+                return eval(matcher)(
+                    self, torch_api, origin_torch_api, attr_mapping_dict, self.logger
+                )
         return None
 
     def visit_Expr(self, node):

@@ -417,16 +417,25 @@ class Converter:
             if self.only_complete:
                 break
 
-    def mask_change_prefix_apis(self, line, file):
+    def mask_change_prefix_apis(self, text, file):
         keep_apis = sorted(self.change_prefix_api_map[file], key=len, reverse=True)
         for api in keep_apis:
-            pattern = re.compile(rf"(?<![\w\.]){re.escape(api)}(?![\w\.])")
-            if pattern.search(line):
-                line = pattern.sub("__PC_KEEP_API__", line)
-        return line
+            api_pattern = re.escape(api).replace(r"\.", r"\s*\.\s*")
+            pattern = re.compile(rf"(?<![\w\.]){api_pattern}(?![\w\.])", re.DOTALL)
+            if pattern.search(text):
+                text = pattern.sub("__PC_KEEP_API__", text)
+        return text
 
     def mark_unsupport(self, code, file):
         lines = code.split("\n")
+        scan_lines = lines[:]
+        if self.mode == "min":
+            for i in range(len(scan_lines) - 1):
+                merged = scan_lines[i] + "\n" + scan_lines[i + 1]
+                masked = self.mask_change_prefix_apis(merged, file)
+                first, second = masked.split("\n", 1)
+                scan_lines[i] = first
+                scan_lines[i + 1] = second
         mark_next_line = False
         in_str = False
         bracket_num = 0
@@ -447,7 +456,8 @@ class Converter:
             # " (torch "
             # " torch) "
             # just remove the str, avoid str influence the torch api recognize
-            rm_str_line = re.sub(r"[\"]{3}[^\"]+[\"]{3}", "", line)
+            scan_source = scan_lines[i]
+            rm_str_line = re.sub(r"[\"]{3}[^\"]+[\"]{3}", "", scan_source)
             rm_str_line = re.sub(r"[\"]{1}[^\"]+[\"]{1}", "", rm_str_line)
             rm_str_line = re.sub(r"[\']{1}[^\']+[\']{1}", "", rm_str_line)
 
@@ -467,7 +477,6 @@ class Converter:
                     "from "
                 ):
                     continue
-                scan_line = self.mask_change_prefix_apis(scan_line, file)
 
             for torch_package in self.imports_map[file]["torch_packages"]:
                 if scan_line.startswith("%s." % torch_package):
