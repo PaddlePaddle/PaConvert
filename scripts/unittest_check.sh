@@ -34,6 +34,7 @@ test -d tests || {
 ISOLATED_TEST_FILES=(
   ./tests/test_set_default_device.py
   ./tests/test_set_default_dtype.py
+  ./tests/test_set_default_tensor_type.py
   ./tests/test_set_num_threads.py
   ./tests/test_set_printoptions.py
 )
@@ -82,24 +83,22 @@ if [ ${first_run_error} != 0 ]; then
     PYTHONPATH=.:tests python -m pytest -v -s -p no:warnings "${IGNORE_ARGS[@]}" --lf ./tests || true
 fi
 
-check_error=${first_run_error}
+isolated_error=0
+for test_file in "${ISOLATED_TEST_FILES[@]}"; do
+    echo "[unittest-cpu] Running isolated test file: ${test_file}"
+    PYTHONPATH=.:tests python -m pytest -v -s -p no:warnings "${test_file}"
+    file_error=$?
 
-if [ ${first_run_error} = 0 ]; then
-    isolated_error=0
-    for test_file in "${ISOLATED_TEST_FILES[@]}"; do
-        echo "[unittest-cpu] Running isolated test file: ${test_file}"
-        PYTHONPATH=.:tests python -m pytest -v -s -p no:warnings "${test_file}"
-        file_error=$?
+    if [ ${file_error} != 0 ]; then
+        echo "[unittest-cpu] Diagnostic rerun for isolated file: ${test_file}. This does not change the final result."
+        PYTHONPATH=.:tests python -m pytest -v -s -p no:warnings "${test_file}" || true
+        isolated_error=1
+    fi
+done
 
-        if [ ${file_error} != 0 ]; then
-            echo "[unittest-cpu] Diagnostic rerun for isolated file: ${test_file}. This does not change the final result."
-            PYTHONPATH=.:tests python -m pytest -v -s -p no:warnings "${test_file}" || true
-            isolated_error=${file_error}
-            break
-        fi
-    done
-
-    check_error=${isolated_error}
+check_error=0
+if [ ${first_run_error} != 0 ] || [ ${isolated_error} != 0 ]; then
+    check_error=1
 fi
 
 echo '************************************************************************************************************'
