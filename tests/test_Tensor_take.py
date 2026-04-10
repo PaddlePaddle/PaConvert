@@ -41,3 +41,75 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    """1D tensor test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 2, 3, 4, 5])
+        result = x.take(torch.tensor([0, 2, 4]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    """3D tensor test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+        result = x.take(torch.tensor([0, 3, 7]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    """Float tensor test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.5, 2.5, 3.5], [4.5, 5.5, 6.5]])
+        result = x.take(torch.tensor([1, 4]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    """Multiple indices"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        result = x.take(torch.tensor([0, 4, 8]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """Repeated indices"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1, 2], [3, 4]])
+        result = x.take(torch.tensor([0, 0, 3]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """Expression argument test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 2, 3, 4, 5, 6])
+        result = x.take(torch.tensor([1 + 1]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
