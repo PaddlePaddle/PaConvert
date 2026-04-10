@@ -202,3 +202,41 @@ def test_case_15():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_16():
+    # variable args
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1, 2, 1, 3, 2, 3, 3])
+        args = (a,)
+        result = torch.unique(*args)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_17():
+    # kwargs dict unpacking
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1, 2, 1, 3, 2, 3, 3])
+        kwargs = {'input': a, 'return_inverse': True, 'return_counts': True}
+        result = torch.unique(**kwargs)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_18():
+    # negative dim
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1, 2, 1], [3, 4, 3]])
+        result = torch.unique(a, dim=-1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

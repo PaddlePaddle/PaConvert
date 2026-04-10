@@ -152,3 +152,40 @@ def test_case_12():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    # keyword args shuffled
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([3, 1, 2, 1, 3])
+        result = src.unique(return_counts=True, dim=0, sorted=True, return_inverse=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    # negative dim
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([[1, 2, 1], [3, 4, 3]])
+        result = src.unique(dim=-1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def _test_case_15():  # Converter does not support **kwargs unpacking for Tensor methods
+    # kwargs dict unpacking
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([3, 1, 2, 1, 3])
+        kwargs = {'return_inverse': True, 'return_counts': True}
+        result = src.unique(**kwargs)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
