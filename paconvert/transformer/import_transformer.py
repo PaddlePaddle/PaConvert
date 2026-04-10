@@ -366,12 +366,12 @@ class ImportTransformer(BaseTransformer):
                 super(ImportTransformer, self).generic_visit(node)
             # 7.  x.data.cuda()  / avoid  torch.utils.data.*
             elif node.value.attr == "data":
-                full_api, _ = self.get_full_api_from_node(node.value)
-                if "torch.utils" not in full_api:
+                full_attr = self.get_full_attr_strict(node.value)
+                if "utils.data" not in full_attr:
                     super(ImportTransformer, self).generic_visit(node)
 
-        torch_api, origin_torch_api = self.get_full_api_from_node(node)
-        if origin_torch_api:
+        torch_api = self.get_torch_api_from_node(node)
+        if torch_api:
             if self.in_min_mode(torch_api):
                 self.change_prefix_api_map[self.file].add(torch_api)
                 return node
@@ -483,8 +483,8 @@ class ImportTransformer(BaseTransformer):
             maybe_torch = True  # 13. Union[List[str], List[AddedToken]]
 
         if maybe_torch:
-            torch_api, origin_torch_api = self.get_full_api_from_node(node)
-            if origin_torch_api:
+            torch_api = self.get_torch_api_from_node(node)
+            if torch_api:
                 if maybe_alias_name:
                     if len(self.parent_node.targets) == 1 and isinstance(
                         self.parent_node.targets[0], ast.Name

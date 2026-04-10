@@ -37,6 +37,7 @@ from paconvert.utils import (
     log_info,
     log_warning,
 )
+from paconvert.global_var import GlobalManager
 
 
 def listdir_nohidden(path):
@@ -53,6 +54,7 @@ class Converter:
         log_level="INFO",
         log_markdown=False,
         show_all_api=False,
+        show_unalign_api=False,
         show_unsupport_api=False,
         no_format=False,
         calculate_speed=False,
@@ -73,6 +75,7 @@ class Converter:
         self.log_markdown = log_markdown
         self.show_all_api = show_all_api
         self.all_api_map = collections.defaultdict(dict)
+        self.show_unalign_api = show_unalign_api
         self.show_unsupport_api = show_unsupport_api
         self.unsupport_api_map = collections.defaultdict(int)
         self.change_prefix_api_map = collections.defaultdict(set)
@@ -125,33 +128,6 @@ class Converter:
         self.transfer_dir(in_dir, out_dir, exclude)
         utils_file_helper.write_code()
 
-        if self.show_unsupport_api:
-            log_info(self.logger, "\n===========================================")
-            log_info(self.logger, "Not Support API List:")
-            log_info(self.logger, "===========================================")
-            if len(self.unsupport_api_map) == 0:
-                log_info(
-                    self.logger,
-                    "Congratulations! All APIs have been successfully converted!",
-                )
-            else:
-                log_info(
-                    self.logger,
-                    "These Pytorch APIs are not supported to convert to Paddle now, which will be supported in future!\n",
-                )
-                unsupport_api_list = sorted(
-                    self.unsupport_api_map.items(), key=lambda x: x[1], reverse=True
-                )
-                for k, v in unsupport_api_list:
-                    log_info(self.logger, "{:<80}{:<8}".format(k, v))
-
-                import pandas
-
-                df = pandas.DataFrame(
-                    unsupport_api_list, columns=["PyTorch API", "Count"]
-                )
-                df.to_excel("unsupport_api_map.xlsx", index=False)
-
         if self.show_all_api:
             log_info(self.logger, "\n===========================================")
             log_info(self.logger, "ALL API List:")
@@ -163,6 +139,7 @@ class Converter:
                     self.logger,
                     "All APIs to be converted are as follows.\n",
                 )
+
                 all_api_list = sorted(
                     self.all_api_map.items(), key=lambda x: x[1]["count"], reverse=True
                 )
@@ -179,6 +156,72 @@ class Converter:
                     data, columns=["PyTorch API", "Paddle API", "Count"]
                 )
                 df.to_excel("all_api_map.xlsx", index=False)
+
+        if self.show_unalign_api:
+            log_info(self.logger, "\n===========================================")
+            log_info(self.logger, "UnAlign Native Pytorch API List:")
+            log_info(self.logger, "===========================================")
+
+            unalign_api_map = self.all_api_map.copy()
+            for k, v in self.all_api_map.items():
+                if not k.startswith("torch."):
+                    unalign_api_map.pop(k)
+                if k in GlobalManager.CHANGE_PREFIX_API:
+                    unalign_api_map.pop(k)
+
+            if len(unalign_api_map) == 0:
+                log_info(
+                    self.logger,
+                    "Congratulations! All Native Pytorch APIs are already aligned!",
+                )
+            else:
+                log_info(
+                    self.logger,
+                    "These Native Pytorch APIs are still not fully aligned!\n",
+                )
+                unalign_api_list = sorted(
+                    unalign_api_map.items(), key=lambda x: x[1]["count"], reverse=True
+                )
+                for k, v in unalign_api_list:
+                    log_info(
+                        self.logger,
+                        "{:<80}{:<80}{:<8}".format(k, str(v["paddle_api"]), v["count"]),
+                    )
+
+                import pandas
+
+                data = [(k, v["paddle_api"], v["count"]) for k, v in unalign_api_list]
+                df = pandas.DataFrame(
+                    data, columns=["PyTorch API", "Paddle API", "Count"]
+                )
+                df.to_excel("unalign_api_map.xlsx", index=False)
+
+        if self.show_unsupport_api:
+            log_info(self.logger, "\n===========================================")
+            log_info(self.logger, "Not Support API List:")
+            log_info(self.logger, "===========================================")
+            if len(self.unsupport_api_map) == 0:
+                log_info(
+                    self.logger,
+                    "Congratulations! All APIs have been successfully converted!",
+                )
+            else:
+                log_info(
+                    self.logger,
+                    "These Pytorch APIs are not supported to convert to Paddle automatically now!\n",
+                )
+                unsupport_api_list = sorted(
+                    self.unsupport_api_map.items(), key=lambda x: x[1], reverse=True
+                )
+                for k, v in unsupport_api_list:
+                    log_info(self.logger, "{:<80}{:<8}".format(k, v))
+
+                import pandas
+
+                df = pandas.DataFrame(
+                    unsupport_api_list, columns=["PyTorch API", "Count"]
+                )
+                df.to_excel("unsupport_api_map.xlsx", index=False)
 
         faild_api_count = self.torch_api_count - self.success_api_count
         if not self.log_markdown:

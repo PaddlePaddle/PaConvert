@@ -175,7 +175,19 @@ class BaseTransformer(ast.NodeTransformer):
         else:
             return "None"
 
-    def get_full_attr_for_apiname(self, node):
+    def get_torch_api_from_node(self, node):
+        full_attr = self.get_full_attr(node)
+        attr_list = full_attr.split(".")
+        old_module = attr_list[0]
+        if old_module in self.imports_map[self.file]:
+            new_module = self.imports_map[self.file][old_module]
+            attr_list[0] = new_module
+            torch_api = ".".join(attr_list)
+            return torch_api
+        else:
+            return None
+
+    def get_full_attr_strict(self, node):
         if len(self.imports_map[self.file]["torch_packages"]) == 0:
             return "NonTorchClass"
         # x.abs() -> 'abs'
@@ -183,7 +195,7 @@ class BaseTransformer(ast.NodeTransformer):
             for item in self.black_list:
                 if item == node.attr:
                     return "NonTorchClass"
-            return self.get_full_attr_for_apiname(node.value) + "." + node.attr
+            return self.get_full_attr_strict(node.value) + "." + node.attr
         # x.abs() -> 'x'
         elif isinstance(node, ast.Name):
             for item in self.black_list:
@@ -202,7 +214,7 @@ class BaseTransformer(ast.NodeTransformer):
             node,
             (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript, ast.Assert),
         ):
-            node_str = astor.to_source(node).replace("\n", "")
+            node_str = astor.to_source(node).strip("\n")
             for item in self.black_list:
                 # (array(1.) + array(2.)).abs() ...
                 if re.match(".*[^A-Za-z_]{1}%s\(" % item, node_str):
@@ -219,17 +231,16 @@ class BaseTransformer(ast.NodeTransformer):
         else:
             return "NonTorchClass"
 
-    def get_full_api_from_node(self, node):
-        full_attr = self.get_full_attr_for_apiname(node)
+    def replace_torch_module(self, origin_attr):
+        full_attr = origin_attr
+
         attr_list = full_attr.split(".")
         old_module = attr_list[0]
         if old_module in self.imports_map[self.file]:
             new_module = self.imports_map[self.file][old_module]
             attr_list[0] = new_module
-            torch_api = ".".join(attr_list)
-            return torch_api, full_attr
-        else:
-            return full_attr, None
+            full_attr = ".".join(attr_list)
+        return full_attr, origin_attr
 
     def get_canonical_torch_api(self, torch_api):
         return GlobalManager.ALIAS_MAPPING.get(torch_api, torch_api)
@@ -315,12 +326,10 @@ class BaseTransformer(ast.NodeTransformer):
 
 
 class BaseMatcher(object):
-    def __init__(
-        self, transformer, torch_api, origin_torch_api, api_mapping_dict, logger
-    ):
+    def __init__(self, transformer, torch_api, origin_attr, api_mapping_dict, logger):
         self.transformer = transformer
         self.torch_api = torch_api
-        self.origin_torch_api = origin_torch_api
+        self.origin_attr = origin_attr
         self.paddle_api = None
         self.api_mapping_dict = api_mapping_dict
         self.logger = logger
@@ -373,7 +382,7 @@ class BaseMatcher(object):
             # not support some API args
             if k in unsupport_args:
                 return None
-            v = astor.to_source(node).replace("\n", "")
+            v = astor.to_source(node).strip("\n")
             # v = ast.unparse(node)
             new_kwargs[k] = v
 
@@ -385,7 +394,7 @@ class BaseMatcher(object):
                     f"Parameter '{k}' specified multiple times - cannot be both positional and keyword argument",
                     self.transformer.file_name,
                 )
-            v = astor.to_source(node.value).replace("\n", "")
+            v = astor.to_source(node.value).strip("\n")
             # v = ast.unparse(node.value)
             new_kwargs[k] = v
 
@@ -396,7 +405,7 @@ class BaseMatcher(object):
         for node in args:
             # if isinstance(node, ast.Starred) and not allow_starred:
             #    return None
-            ele = astor.to_source(node).replace("\n", "")
+            ele = astor.to_source(node).strip("\n")
             new_args.append(ele)
 
         return new_args
@@ -413,19 +422,15 @@ class BaseMatcher(object):
             # not support some API args
             if k in unsupport_args:
                 return None
-            v = astor.to_source(node.value).replace("\n", "")
+            v = astor.to_source(node.value).strip("\n")
             new_kwargs[k] = v
 
         return new_kwargs
 
     def parse_func(self, func):
-        new_func = astor.to_source(func).replace("\n", "")
-        self.paddleClass = new_func[0 : new_func.rfind(".")]
+        func_str = astor.to_source(func).strip("\n")
+        self.paddleClass = func_str[0 : func_str.rfind(".")]
         class_str = "paddle.Tensor|paddle.nn.Module|paddle.optimizer.Optimizer|paddle.distribution.Distribution|paddle.autograd.function.FunctionCtx|paddle.profiler.Profiler"
-        if self.transformer.mode == "min":
-            class_str += (
-                "|torch.Tensor|torch.nn.Module|torch.autograd.function.FunctionCtx"
-            )
         if self.get_paddle_api():
             new_paddle_api = re.sub(
                 class_str,
@@ -434,9 +439,7 @@ class BaseMatcher(object):
             )
             # reverse escape
             new_paddle_api = re.sub(r"\\(.)", r"\1", new_paddle_api)
-            self.set_paddle_api(new_paddle_api)
-
-        return new_func
+            self.paddle_api = new_paddle_api
 
     def args_to_str(self, args):
         str_list = []
@@ -532,24 +535,21 @@ class BaseMatcher(object):
             utils_file_helper.add_code(utils_code)
             log_debug(self.logger, "add 'import utils'", self.transformer.file_name)
 
-    def set_paddle_api(self, paddle_api):
-        self.paddle_api = paddle_api
-
     def get_paddle_api(self):
-        paddle_api = None
+        ret = None
         if self.paddle_api:
-            paddle_api = self.paddle_api
+            ret = self.paddle_api
         elif "paddle_api" in self.api_mapping_dict:
-            paddle_api = self.api_mapping_dict["paddle_api"]
+            ret = self.api_mapping_dict["paddle_api"]
         if (
-            paddle_api
+            ret
             and self.api_mapping_dict.get("abstract")
             and self.generate_utils_code() is not None
         ):
             self.enable_utils_code()
         if self.api_mapping_dict.get("enable_utils_code"):
             self.enable_utils_code()
-        return paddle_api
+        return ret
 
     def get_paddle_class_attribute_nodes(self, node):
         self.parse_func(node)

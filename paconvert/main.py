@@ -90,6 +90,11 @@ def main():
         help="Optional. Show all APIs which should be converted",
     )
     parser.add_argument(
+        "--show_unalign_api",
+        action="store_true",
+        help="Optional. Show those APIs which are not unaligned",
+    )
+    parser.add_argument(
         "--show_unsupport_api",
         action="store_true",
         help="Optional. Show those APIs which are not supported to convert",
@@ -148,6 +153,7 @@ def main():
                 log_level=args.log_level,
                 log_markdown=args.log_markdown,
                 show_all_api=args.show_all_api,
+                show_unalign_api=args.show_unalign_api,
                 show_unsupport_api=args.show_unsupport_api,
                 no_format=args.no_format,
                 calculate_speed=args.calculate_speed,
@@ -195,6 +201,7 @@ def main():
         log_level=args.log_level,
         log_markdown=args.log_markdown,
         show_all_api=args.show_all_api,
+        show_unalign_api=args.show_unalign_api,
         show_unsupport_api=args.show_unsupport_api,
         no_format=args.no_format,
         calculate_speed=args.calculate_speed,
