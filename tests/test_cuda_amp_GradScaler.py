@@ -234,7 +234,7 @@ def test_case_10():
         """
         import torch
         scaler = torch.cuda.amp.GradScaler(init_scale=2048)
-        result = torch.tensor([scaler.get_scale()])
+        result = torch.tensor([float(scaler.get_scale())])
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -295,7 +295,7 @@ def test_case_13():
         scaler.scale(loss).backward()
         scaler.step(optimizer)
         scaler.update()
-        result = torch.tensor([scaler.get_scale()])
+        result = torch.tensor([float(scaler.get_scale())])
         """
     )
     obj.run(pytorch_code, ["result"])
