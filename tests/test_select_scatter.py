@@ -49,7 +49,7 @@ def test_case_3():
         import torch
         x = torch.zeros((2,3,4)).type(torch.float32)
         values = torch.ones((2,4)).type(torch.float32)
-        result = torch.select_scatter(input=x, dim=1, src=values, index=1)
+        result = torch.select_scatter(input=x, src=values, dim=1, index=1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -61,7 +61,7 @@ def test_case_4():
         import torch
         x = torch.zeros((2,3,4)).type(torch.float32)
         values = torch.ones((2,4)).type(torch.float32)
-        result = torch.select_scatter(input=x, src=values, dim=1, index=1)
+        result = torch.select_scatter(x, values, 1, 1)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -73,7 +73,7 @@ def test_case_5():
         import torch
         x = torch.zeros((2,3,4)).type(torch.float32)
         values = torch.ones((2,4)).type(torch.float32)
-        result = torch.select_scatter(x, values, 1, 1)
+        result = torch.select_scatter(index=1, dim=1, src=values, input=x)
         """
     )
     obj.run(pytorch_code, ["result"])

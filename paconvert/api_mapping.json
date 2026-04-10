@@ -2122,18 +2122,7 @@
     ]
   },
   "torch.Tensor.select_scatter": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.select_scatter",
-    "min_input_args": 3,
-    "args_list": [
-      "src",
-      "dim",
-      "index"
-    ],
-    "kwargs_change": {
-      "src": "values",
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.set_": {
     "Matcher": "TensorSetMatcher",
@@ -10629,20 +10618,7 @@
     ]
   },
   "torch.select_scatter": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.select_scatter",
-    "min_input_args": 4,
-    "args_list": [
-      "input",
-      "src",
-      "dim",
-      "index"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "src": "values",
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.selu": {
     "Matcher": "GenericMatcher",
