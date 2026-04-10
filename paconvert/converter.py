@@ -48,6 +48,7 @@ def listdir_nohidden(path):
 class Converter:
     def __init__(
         self,
+        mode="default",
         log_dir=None,
         log_level="INFO",
         log_markdown=False,
@@ -57,6 +58,7 @@ class Converter:
         calculate_speed=False,
         only_complete=False,
     ):
+        self.mode = mode
         self.imports_map = collections.defaultdict(dict)
         self.torch_api_count = 0
         self.success_api_count = 0
@@ -73,6 +75,7 @@ class Converter:
         self.all_api_map = collections.defaultdict(dict)
         self.show_unsupport_api = show_unsupport_api
         self.unsupport_api_map = collections.defaultdict(int)
+        self.change_prefix_api_map = collections.defaultdict(set)
         self.convert_rate = 0.0
         self.no_format = no_format
         self.calculate_speed = calculate_speed
@@ -398,19 +401,50 @@ class Converter:
             trans = transformer(
                 root,
                 file,
+                self.mode,
                 self.imports_map,
                 self.logger,
                 self.all_api_map,
                 self.unsupport_api_map,
             )
             trans.transform()
+            if isinstance(trans, ImportTransformer):
+                self.change_prefix_api_map[file].update(
+                    trans.change_prefix_api_map[file]
+                )
             self.torch_api_count += trans.torch_api_count
             self.success_api_count += trans.success_api_count
             if self.only_complete:
                 break
 
+    def mask_change_prefix_apis(self, text, file):
+        keep_apis = sorted(self.change_prefix_api_map[file], key=len, reverse=True)
+
+        def _mask_match(match):
+            matched = match.group(0)
+            chars = []
+            for ch in matched:
+                if ch == "\n":
+                    chars.append("\n")
+                elif ch.isspace():
+                    chars.append(ch)
+                else:
+                    chars.append("_")
+            return "".join(chars)
+
+        for api in keep_apis:
+            api_pattern = re.escape(api).replace(r"\.", r"\s*\.\s*")
+            pattern = re.compile(rf"(?<![\w\.]){api_pattern}(?![\w\.])", re.DOTALL)
+            text = pattern.sub(_mask_match, text)
+        return text
+
     def mark_unsupport(self, code, file):
+        scan_code = code
+        if self.mode == "min":
+            scan_code = self.mask_change_prefix_apis(code, file)
+
         lines = code.split("\n")
+        scan_lines = scan_code.split("\n")
         mark_next_line = False
         in_str = False
         bracket_num = 0
@@ -431,7 +465,8 @@ class Converter:
             # " (torch "
             # " torch) "
             # just remove the str, avoid str influence the torch api recognize
-            rm_str_line = re.sub(r"[\"]{3}[^\"]+[\"]{3}", "", line)
+            scan_source = scan_lines[i]
+            rm_str_line = re.sub(r"[\"]{3}[^\"]+[\"]{3}", "", scan_source)
             rm_str_line = re.sub(r"[\"]{1}[^\"]+[\"]{1}", "", rm_str_line)
             rm_str_line = re.sub(r"[\']{1}[^\']+[\']{1}", "", rm_str_line)
 
@@ -444,19 +479,16 @@ class Converter:
             if last_in_str or in_str:
                 continue
 
-            # paddle.add(paddleformers.
-            #   transformers.BertTokenizer)
-            """
-            # may be removed in future
-            last_bracket_num = bracket_num
-            bracket_num += rm_str_line.count("(")
-            bracket_num -= rm_str_line.count(")")
-            if last_bracket_num > 0:
-                continue
-            """
+            scan_line = rm_str_line
+            if self.mode == "min":
+                stripped_line = rm_str_line.strip()
+                if stripped_line.startswith("import ") or stripped_line.startswith(
+                    "from "
+                ):
+                    continue
 
             for torch_package in self.imports_map[file]["torch_packages"]:
-                if rm_str_line.startswith("%s." % torch_package):
+                if scan_line.startswith("%s." % torch_package):
                     lines[i] = ">>>>>>" + line
                     break
 
@@ -464,7 +496,8 @@ class Converter:
                 # modeltorch.npy
                 # 1torch.npy
                 # paddleformers.transformers.*
-                if re.match(r".*[^\w\.]{1}%s\." % torch_package, rm_str_line):
+                if re.match(r".*[^\w\.]{1}%s\." % torch_package, scan_line):
                     lines[i] = ">>>>>>" + line
+                    break
 
         return "\n".join(lines)

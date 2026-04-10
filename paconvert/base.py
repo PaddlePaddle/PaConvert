@@ -21,15 +21,24 @@ from itertools import groupby
 
 import astor
 
+from paconvert.global_var import GlobalManager
 from paconvert.utils import UtilsFileHelper, log_debug
 
 
 class BaseTransformer(ast.NodeTransformer):
     def __init__(
-        self, root, file, imports_map, logger, all_api_map=None, unsupport_api_map=None
+        self,
+        root,
+        file,
+        mode,
+        imports_map,
+        logger,
+        all_api_map=None,
+        unsupport_api_map=None,
     ):
         self.root = root
         self.file = file
+        self.mode = mode
         self.file_name = os.path.basename(file)
         self.imports_map = imports_map
         self.torch_api_count = 0
@@ -218,9 +227,37 @@ class BaseTransformer(ast.NodeTransformer):
             new_module = self.imports_map[self.file][old_module]
             attr_list[0] = new_module
             torch_api = ".".join(attr_list)
-            return torch_api
+            return torch_api, full_attr
         else:
-            return None
+            return full_attr, None
+
+    def get_canonical_torch_api(self, torch_api):
+        return GlobalManager.ALIAS_MAPPING.get(torch_api, torch_api)
+
+    def in_min_mode(self, torch_api):
+        if self.mode != "min":
+            return False
+        torch_api = self.get_canonical_torch_api(torch_api)
+
+        api_mapping = GlobalManager.API_MAPPING.get(torch_api)
+        if api_mapping is None:
+            for wildcard_name, mapping in GlobalManager.API_WILDCARD_MAPPING.items():
+                if re.match(wildcard_name, torch_api):
+                    api_mapping = mapping
+                    break
+        if api_mapping and "disable" not in api_mapping:
+            return api_mapping.get("Matcher") == "ChangePrefixMatcher"
+
+        attr_mapping = GlobalManager.ATTRIBUTE_MAPPING.get(torch_api)
+        if attr_mapping is None:
+            for wildcard_name, mapping in GlobalManager.API_WILDCARD_MAPPING.items():
+                if re.match(wildcard_name, torch_api):
+                    attr_mapping = mapping
+                    break
+        if attr_mapping and "disable" not in attr_mapping:
+            return attr_mapping.get("Matcher") == "ChangePrefixMatcher"
+
+        return False
 
     def visit_FunctionDef(self, node):
         self.scope_stack.append(node)
@@ -278,9 +315,12 @@ class BaseTransformer(ast.NodeTransformer):
 
 
 class BaseMatcher(object):
-    def __init__(self, transformer, torch_api, api_mapping_dict, logger):
+    def __init__(
+        self, transformer, torch_api, origin_torch_api, api_mapping_dict, logger
+    ):
         self.transformer = transformer
         self.torch_api = torch_api
+        self.origin_torch_api = origin_torch_api
         self.paddle_api = None
         self.api_mapping_dict = api_mapping_dict
         self.logger = logger
@@ -381,9 +421,14 @@ class BaseMatcher(object):
     def parse_func(self, func):
         new_func = astor.to_source(func).replace("\n", "")
         self.paddleClass = new_func[0 : new_func.rfind(".")]
+        class_str = "paddle.Tensor|paddle.nn.Module|paddle.optimizer.Optimizer|paddle.distribution.Distribution|paddle.autograd.function.FunctionCtx|paddle.profiler.Profiler"
+        if self.transformer.mode == "min":
+            class_str += (
+                "|torch.Tensor|torch.nn.Module|torch.autograd.function.FunctionCtx"
+            )
         if self.get_paddle_api():
             new_paddle_api = re.sub(
-                "paddle.Tensor|paddle.nn.Module|paddle.optimizer.Optimizer|paddle.distribution.Distribution|paddle.autograd.function.FunctionCtx|paddle.profiler.Profiler",
+                class_str,
                 re.escape(self.paddleClass),
                 self.get_paddle_api(),
             )
