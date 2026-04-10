@@ -8390,7 +8390,7 @@
     }
   },
   "torch.nn.functional.binary_cross_entropy": {
-    "Matcher": "SizeAverageMatcher",
+    "Matcher": "ChangePrefixMatcher",
     "paddle_api": "paddle.nn.functional.binary_cross_entropy",
     "args_list": [
       "input",
@@ -8400,9 +8400,6 @@
       "reduce",
       "reduction"
     ],
-    "kwargs_change": {
-      "target": "label"
-    },
     "min_input_args": 2
   },
   "torch.nn.functional.binary_cross_entropy_with_logits": {
