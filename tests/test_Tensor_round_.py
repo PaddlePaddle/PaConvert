@@ -71,3 +71,68 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    """Test return value equals original tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[ 0.9254, -0.6213]])
+        b = a.round_()
+        """
+    )
+    obj.run(pytorch_code, ["a", "b"])
+
+
+def test_case_7():
+    """Test with 3D tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[[0.123, 0.456], [0.789, 0.111]], [[0.222, 0.333], [0.444, 0.555]]])
+        result = a.round_(decimals=2)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["a", "result"],
+        check_value=False,
+        reason="paddle 0.555 round to 0.55, but torch is 0.56, torch use Banker's Rounding for .5",
+    )
+
+
+def test_case_8():
+    """Test with float64"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[ 0.9254, -0.6213]], dtype=torch.float64)
+        result = a.round_()
+        """
+    )
+    obj.run(pytorch_code, ["a", "result"])
+
+
+def test_case_9():
+    """Test round half to even"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([-0.5, 0.5, 1.5, 2.5])
+        result = a.round_()
+        """
+    )
+    obj.run(pytorch_code, ["a", "result"])
+
+
+def test_case_10():
+    """Test with decimals=0 explicitly"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[0.5, 1.5], [2.5, 3.5]])
+        result = a.round_(decimals=0)
+        """
+    )
+    obj.run(pytorch_code, ["a", "result"])

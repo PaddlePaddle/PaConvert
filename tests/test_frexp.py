@@ -20,6 +20,7 @@ obj = APIBase("torch.frexp")
 
 
 def test_case_1():
+    """Basic usage with 1D tensor"""
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -31,6 +32,7 @@ def test_case_1():
 
 
 def test_case_2():
+    """2D tensor test"""
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -42,6 +44,7 @@ def test_case_2():
 
 
 def test_case_3():
+    """Keyword argument input with out parameter"""
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -55,6 +58,7 @@ def test_case_3():
 
 
 def test_case_4():
+    """Keyword arguments out of order"""
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -65,3 +69,75 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["out"], check_dtype=False)
+
+
+def test_case_5():
+    """3D tensor test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[[1.0, 2.0], [3.0, 4.0]], [[5.0, 6.0], [7.0, 8.0]]])
+        mantissa, exponent = torch.frexp(x)
+        """
+    )
+    obj.run(pytorch_code, ["mantissa", "exponent"], check_dtype=False)
+
+
+def test_case_6():
+    """Float64 dtype test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([10.0, 20.0, 30.0], dtype=torch.float64)
+        mantissa, exponent = torch.frexp(x)
+        """
+    )
+    obj.run(pytorch_code, ["mantissa", "exponent"], check_dtype=False)
+
+
+def test_case_7():
+    """Negative values test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([-1.0, -2.5, -0.5, -128.0])
+        mantissa, exponent = torch.frexp(x)
+        """
+    )
+    obj.run(pytorch_code, ["mantissa", "exponent"], check_dtype=False)
+
+
+def test_case_8():
+    """Large values test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1e10, 1e20, 1e-10, 1e-20])
+        mantissa, exponent = torch.frexp(x)
+        """
+    )
+    obj.run(pytorch_code, ["mantissa", "exponent"], check_dtype=False)
+
+
+def test_case_9():
+    """Mixed positive and negative values"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1.5, -2.5, 0.125, -0.125, 16.0, -16.0])
+        mantissa, exponent = torch.frexp(x)
+        """
+    )
+    obj.run(pytorch_code, ["mantissa", "exponent"], check_dtype=False)
+
+
+def test_case_10():
+    """4D tensor test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[[[1.0, 2.0], [3.0, 4.0]], [[5.0, 6.0], [7.0, 8.0]]]])
+        mantissa, exponent = torch.frexp(x)
+        """
+    )
+    obj.run(pytorch_code, ["mantissa", "exponent"], check_dtype=False)

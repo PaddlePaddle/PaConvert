@@ -87,7 +87,7 @@ add_to_dict("simplified_name_call.py", "simplified_name_call.py")
 
 add_to_dict(
     "attribute_torch_Tensor_requires_grad.py",
-    "attribute_paddle_Tensor_stop_gradient.py",
+    "attribute_paddle_Tensor_requires_grad.py",
 )
 
 add_to_dict(

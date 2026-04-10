@@ -19,9 +19,8 @@
 
 使用 `-i` 指定输入目录，转换过程不会改动原目录，会将原目录中的文件一一转换到 `-o` 指定的输出目录中（如不指定，则默认为`./paddle_project`），转换时会尽量保持原代码的风格与结构不变。
 
-## 安装使用
 
-#### 1. 命令行用法
+## 安装使用
 
 通过终端命令行的方式使用：
 
@@ -43,15 +42,6 @@ paconvert -i torch_code_dir [-o paddle_code_dir] [-e exclude.py] [--log_dir log_
 --no_format          可选，转换后的代码不进行代码风格优化。默认会优化代码风格。
 --exclude_packages   可选，可以配置无需识别转换的torch包名，多个包名请使用逗号分隔。默认不配置。
 ```
-
-#### 2. IDE交互式用法
-
-在 IDE 中使用，交互式界面更友好。
-
-需要在`PyCharm`或`VS Code`等主流 IDE 中安装 **文心快码插件(Baidu Comate)** 后即可使用。以`VS Code`上使用为例：
-
-![img](./images/comate_paconvert.jpeg)
-
 
 ## 转换示例
 
@@ -221,7 +211,6 @@ ______      _____                          _
 | ----------------------------------------------------------| ------------------------------ | ----------- | ---------- |
 | Llama大模型 | https://github.com/meta-llama/llama.git  | 推理 | [Llama](./docs/TypicalCase_Llama.md)|
 | Qwen大模型  | https://huggingface.co/Qwen/Qwen-7B-Chat  | 推理 | [Qwen](./docs/TypicalCase_Qwen.md)  |
-
 
 ## 贡献代码
 
