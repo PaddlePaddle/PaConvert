@@ -72,3 +72,102 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_6():
+    """2D tensor test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[-0.6341, -1.4208], [-1.0900, 0.5826]])
+        result = input.geometric_(0.5)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_7():
+    """3D tensor test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.ones(2, 3, 4)
+        result = input.geometric_(0.5)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_8():
+    """Float64 dtype test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([-0.6341, -1.4208, -1.0900, 0.5826], dtype=torch.float64)
+        result = input.geometric_(0.5)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_9():
+    """Expression argument test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([-0.6341, -1.4208, -1.0900, 0.5826])
+        result = input.geometric_(0.3 + 0.2)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_10():
+    """Boundary value test: p = 0.1"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([1.0, 2.0, 3.0, 4.0])
+        result = input.geometric_(0.1)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_11():
+    """Boundary value test: p = 0.9"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([1.0, 2.0, 3.0, 4.0])
+        result = input.geometric_(0.9)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_12():
+    """In-place modification verification"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([1.0, 2.0, 3.0, 4.0])
+        original_id = id(input)
+        result = input.geometric_(p=0.5)
+        modified_id = id(result)
+        same_object = (original_id == modified_id)
+        """
+    )
+    obj.run(pytorch_code, ["result", "same_object"], check_value=False)
+
+
+def test_case_13():
+    """Large tensor test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.ones(100, 100)
+        result = input.geometric_(0.5)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

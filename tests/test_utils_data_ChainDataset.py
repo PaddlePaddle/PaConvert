@@ -111,7 +111,7 @@ def test_case_4():
         import numpy as np
         import math
         import torch
-        from torch.utils.data import IterableDataset, ChainDataset
+        from torch.utils.data.dataset import IterableDataset, ChainDataset
         class MyIterableDataset(IterableDataset):
             def __init__(self, start, end):
                 super(MyIterableDataset).__init__()

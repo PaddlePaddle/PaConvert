@@ -79,3 +79,124 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+# Shuffled keyword order: other, out, input
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.9041, 0.0196, -0.3108, -2.4423])
+        other = torch.tensor([0.2341, 0.2539, -0.6256, -0.6448])
+        out = input.clone().detach()
+        result = torch.atan2(other=other, out=out, input=input)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+# *args unpacking
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.9041, 0.0196, -0.3108, -2.4423])
+        other = torch.tensor([0.2341, 0.2539, -0.6256, -0.6448])
+        args = (input, other)
+        result = torch.atan2(*args)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# Test with float32 dtype
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.9041, 0.0196, -0.3108, -2.4423], dtype=torch.float32)
+        other = torch.tensor([0.2341, 0.2539, -0.6256, -0.6448], dtype=torch.float32)
+        result = torch.atan2(input, other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# Test with float64 dtype
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.9041, 0.0196, -0.3108, -2.4423], dtype=torch.float64)
+        other = torch.tensor([0.2341, 0.2539, -0.6256, -0.6448], dtype=torch.float64)
+        result = torch.atan2(input, other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# Test with 2D input
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[0.9041, 0.0196], [-0.3108, -2.4423]])
+        other = torch.tensor([[0.2341, 0.2539], [-0.6256, -0.6448]])
+        result = torch.atan2(input, other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# Test with 3D input
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[[0.9041, 0.0196], [-0.3108, -2.4423]],
+                              [[0.5012, -0.1234], [0.7891, 0.3456]]])
+        other = torch.tensor([[[0.2341, 0.2539], [-0.6256, -0.6448]],
+                              [[0.1122, -0.3344], [0.5566, 0.7788]]])
+        result = torch.atan2(input, other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# Test with mixed positional and keyword arguments
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.9041, 0.0196, -0.3108, -2.4423])
+        other = torch.tensor([0.2341, 0.2539, -0.6256, -0.6448])
+        result = torch.atan2(input, other=other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# Test with broadcasting (different shapes)
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[0.9041], [0.0196], [-0.3108]])
+        other = torch.tensor([0.2341, 0.2539, -0.6256])
+        result = torch.atan2(input, other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# Test with 2D input and keyword arguments
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[0.9041, 0.0196], [-0.3108, -2.4423]])
+        other = torch.tensor([[0.2341, 0.2539], [-0.6256, -0.6448]])
+        result = torch.atan2(input=input, other=other)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

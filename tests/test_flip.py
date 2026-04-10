@@ -62,3 +62,39 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    """Test with single axis"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0, 1],[2, 3]])
+        result = torch.flip(x, [0])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    """Test with negative axis"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0, 1],[2, 3]])
+        result = torch.flip(x, [-1])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """Test with mixed positional and keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0, 1],[2, 3]])
+        result = torch.flip(x, dims=(0, 1))
+        """
+    )
+    obj.run(pytorch_code, ["result"])

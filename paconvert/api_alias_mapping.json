@@ -104,7 +104,6 @@
   "torch.functional.unique": "torch.unique",
   "torch.half": "torch.float16",
   "torch.hardshrink": "torch.nn.functional.hardshrink",
-  "torch.i0": "torch.special.i0",
   "torch.igamma": "torch.special.gammainc",
   "torch.igammac": "torch.special.gammaincc",
   "torch.int": "torch.int32",
