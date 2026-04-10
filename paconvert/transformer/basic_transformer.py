@@ -100,8 +100,8 @@ class BasicTransformer(BaseTransformer):
                 super(BasicTransformer, self).generic_visit(node)
             # 7.  x.data.cuda()  / avoid  torch.utils.data.*
             elif node.value.attr == "data":
-                full_api, _ = self.get_full_api_from_node(node.value)
-                if "torch.utils" not in full_api:
+                full_attr = self.get_full_attr_strict(node.value)
+                if "utils.data" not in full_attr:
                     super(BasicTransformer, self).generic_visit(node)
 
         # should be handled by visit_Call
@@ -112,7 +112,8 @@ class BasicTransformer(BaseTransformer):
         # only need to convert:
         #   1. x.device...
         #   2. torch.Tensor/torch.nn.Module/torch.add...
-        full_attr, origin_api = self.get_full_api_from_node(node)
+        full_attr = self.get_full_attr_strict(node)
+        full_attr, origin_attr = self.replace_torch_module(full_attr)
 
         # 1) Torch Package Attribute, include torch third_party
         #   such as torch.Tensor/torch.nn.Module/torch.add...
@@ -132,8 +133,8 @@ class BasicTransformer(BaseTransformer):
             )
 
             # can in attribute_matcher or attribute_matcher, but not both
-            attribute_matcher = self.get_attribute_matcher(torch_api, origin_api)
-            api_matcher = self.get_api_matcher(torch_api, origin_api)
+            attribute_matcher = self.get_attribute_matcher(torch_api, origin_attr)
+            api_matcher = self.get_api_matcher(torch_api, origin_attr)
             assert not (
                 attribute_matcher and api_matcher
             ), f"{torch_api} can not be both in attribute_matcher and api_matcher"
@@ -204,7 +205,7 @@ class BasicTransformer(BaseTransformer):
                 # def add_module(self, module):
                 #     ...
                 # torch.nn.Module.add = add_module
-                matcher = self.get_api_matcher(".".join(attr_list[:-1]), origin_api)
+                matcher = self.get_api_matcher(".".join(attr_list[:-1]), origin_attr)
                 if matcher:
                     torch_api = ".".join(attr_list[:-1])
                     paddle_api = matcher.get_paddle_api()
@@ -305,13 +306,15 @@ class BasicTransformer(BaseTransformer):
                         self.file_name,
                         node.lineno,
                     )
-                    return self.trans_class_attribute(node, torch_class_api, origin_api)
+                    return self.trans_class_attribute(
+                        node, torch_class_api, origin_attr
+                    )
 
         # 3) Others
         return node
 
-    def trans_class_attribute(self, node, torch_api, origin_api):
-        matcher = self.get_attribute_matcher(torch_api, origin_api)
+    def trans_class_attribute(self, node, torch_api, origin_attr):
+        matcher = self.get_attribute_matcher(torch_api, origin_attr)
         if matcher:
             self.all_api_map[torch_api]["paddle_api"] = (
                 matcher.get_paddle_api() if matcher.get_paddle_api() else ""
@@ -449,7 +452,9 @@ class BasicTransformer(BaseTransformer):
         """
         # Use Postorder traversal
         super(BasicTransformer, self).generic_visit(node)
-        full_attr, origin_api = self.get_full_api_from_node(node.func)
+
+        full_attr = self.get_full_attr_strict(node.func)
+        full_attr, origin_attr = self.replace_torch_module(full_attr)
 
         # 1) Torch Package Call, include torch third_party
         #   such as : torch.add(x, y) / torch.add(torch.abs(x), y)
@@ -468,7 +473,7 @@ class BasicTransformer(BaseTransformer):
                 node.lineno,
             )
 
-            matcher = self.get_api_matcher(torch_api, origin_api)
+            matcher = self.get_api_matcher(torch_api, origin_attr)
             if matcher:
                 self.all_api_map[torch_api]["paddle_api"] = (
                     matcher.get_paddle_api() if matcher.get_paddle_api() else ""
@@ -642,13 +647,13 @@ class BasicTransformer(BaseTransformer):
                         self.file_name,
                         node.lineno,
                     )
-                    return self.trans_class_method(node, torch_class_api, origin_api)
+                    return self.trans_class_method(node, torch_class_api, origin_attr)
 
         # 3) Others
         return node
 
-    def trans_class_method(self, node, torch_api, origin_api):
-        matcher = self.get_api_matcher(torch_api, origin_api)
+    def trans_class_method(self, node, torch_api, origin_attr):
+        matcher = self.get_api_matcher(torch_api, origin_attr)
         if matcher:
             node_args = node.args
             # static method call
@@ -778,10 +783,8 @@ class BasicTransformer(BaseTransformer):
                 return True
         return False
 
-    def get_api_matcher(self, torch_api, origin_torch_api):
+    def get_api_matcher(self, torch_api, origin_attr=None):
         api_mapping_dict = {}
-        if not origin_torch_api:
-            origin_torch_api = torch_api
         if torch_api in GlobalManager.ALIAS_MAPPING:
             assert (
                 torch_api not in GlobalManager.API_MAPPING
@@ -799,7 +802,7 @@ class BasicTransformer(BaseTransformer):
             if "Matcher" in api_mapping_dict:
                 matcher = api_mapping_dict["Matcher"]
                 return eval(matcher)(
-                    self, torch_api, origin_torch_api, api_mapping_dict, self.logger
+                    self, torch_api, origin_attr, api_mapping_dict, self.logger
                 )
         return None
 
@@ -810,10 +813,8 @@ class BasicTransformer(BaseTransformer):
             return True
         return False
 
-    def get_attribute_matcher(self, torch_api, origin_torch_api=None):
+    def get_attribute_matcher(self, torch_api, origin_attr=None):
         attr_mapping_dict = {}
-        if not origin_torch_api:
-            origin_torch_api = torch_api
         if torch_api in GlobalManager.ALIAS_MAPPING:
             assert (
                 torch_api not in GlobalManager.ATTRIBUTE_MAPPING
@@ -833,7 +834,7 @@ class BasicTransformer(BaseTransformer):
             if "Matcher" in attr_mapping_dict:
                 matcher = attr_mapping_dict["Matcher"]
                 return eval(matcher)(
-                    self, torch_api, origin_torch_api, attr_mapping_dict, self.logger
+                    self, torch_api, origin_attr, attr_mapping_dict, self.logger
                 )
         return None
 
