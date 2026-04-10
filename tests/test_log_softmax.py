@@ -176,3 +176,40 @@ def test_case_13():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    # all positional parameters including dtype
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+        result = torch.log_softmax(x, 1, torch.float64)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_15():
+    # all keyword parameters including dtype
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+        result = torch.log_softmax(input=x, dim=1, dtype=torch.float64)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_16():
+    # kwargs dict unpacking
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+        kwargs = {'input': x, 'dim': 1, 'dtype': torch.float64}
+        result = torch.log_softmax(**kwargs)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

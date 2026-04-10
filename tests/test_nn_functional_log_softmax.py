@@ -19,7 +19,7 @@ from apibase import APIBase
 obj = APIBase("torch.nn.functional.log_softmax")
 
 
-def test_case_1():
+def _test_case_1():  # Implicit dim is deprecated in PyTorch, Paddle uses different default
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -53,7 +53,7 @@ def test_case_2():
     obj.run(pytorch_code, ["result"], atol=1e-05, rtol=1e-06)
 
 
-def test_case_3():
+def _test_case_3():  # Implicit dim is deprecated in PyTorch, Paddle uses different default
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -70,7 +70,7 @@ def test_case_3():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_4():
+def _test_case_4():  # _stacklevel is a PyTorch internal parameter, not supported in Paddle
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -87,7 +87,7 @@ def test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_5():
+def _test_case_5():  # _stacklevel is a PyTorch internal parameter, not supported in Paddle
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -104,7 +104,7 @@ def test_case_5():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_6():
+def _test_case_6():  # _stacklevel is a PyTorch internal parameter, not supported in Paddle
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -121,7 +121,7 @@ def test_case_6():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_7():
+def _test_case_7():  # _stacklevel is a PyTorch internal parameter, not supported in Paddle
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -310,7 +310,7 @@ def test_case_20():
     obj.run(pytorch_code, ["result"])
 
 
-def test_case_21():
+def _test_case_21():  # _stacklevel is a PyTorch internal parameter, not supported in Paddle
     # positional dim + positional _stacklevel + keyword dtype
     pytorch_code = textwrap.dedent(
         """

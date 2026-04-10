@@ -6819,8 +6819,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.log_softmax": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.nn.functional.log_softmax"
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.logaddexp": {
     "Matcher": "GenericMatcher",
@@ -9325,8 +9324,7 @@
     }
   },
   "torch.nn.functional.log_softmax": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.compat.nn.functional.log_softmax"
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.logsigmoid": {
     "Matcher": "ChangePrefixMatcher"
@@ -11765,8 +11763,7 @@
   },
   "torch.special.log_ndtr": {},
   "torch.special.log_softmax": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.nn.functional.log_softmax"
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.special.logit": {
     "Matcher": "GenericMatcher",
