@@ -125,6 +125,9 @@ def main():
         help="Inner Usage. Complete PyTorch code snippets only. user do not need to pay attention.",
     )
     args = parser.parse_args()
+    if args.mode == "min" and not args.no_format:
+        args.no_format = True
+        print("[Warning] --no_format must be true in min mode.")
 
     if args.exclude_packages:
         exclude_packages = args.exclude_packages.split(",")

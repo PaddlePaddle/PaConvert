@@ -419,23 +419,32 @@ class Converter:
 
     def mask_change_prefix_apis(self, text, file):
         keep_apis = sorted(self.change_prefix_api_map[file], key=len, reverse=True)
+
+        def _mask_match(match):
+            matched = match.group(0)
+            chars = []
+            for ch in matched:
+                if ch == "\n":
+                    chars.append("\n")
+                elif ch.isspace():
+                    chars.append(ch)
+                else:
+                    chars.append("_")
+            return "".join(chars)
+
         for api in keep_apis:
             api_pattern = re.escape(api).replace(r"\.", r"\s*\.\s*")
             pattern = re.compile(rf"(?<![\w\.]){api_pattern}(?![\w\.])", re.DOTALL)
-            if pattern.search(text):
-                text = pattern.sub("__PC_KEEP_API__", text)
+            text = pattern.sub(_mask_match, text)
         return text
 
     def mark_unsupport(self, code, file):
-        lines = code.split("\n")
-        scan_lines = lines[:]
+        scan_code = code
         if self.mode == "min":
-            for i in range(len(scan_lines) - 1):
-                merged = scan_lines[i] + "\n" + scan_lines[i + 1]
-                masked = self.mask_change_prefix_apis(merged, file)
-                first, second = masked.split("\n", 1)
-                scan_lines[i] = first
-                scan_lines[i + 1] = second
+            scan_code = self.mask_change_prefix_apis(code, file)
+
+        lines = code.split("\n")
+        scan_lines = scan_code.split("\n")
         mark_next_line = False
         in_str = False
         bracket_num = 0

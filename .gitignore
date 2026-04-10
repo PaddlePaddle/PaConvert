@@ -21,3 +21,4 @@ test_set
 tensor.pt
 __pycache__
 .DS_Store
+tests/code_library/code_case/minmode_code_case/paddle_code

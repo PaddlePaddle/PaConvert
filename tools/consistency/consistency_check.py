@@ -18,7 +18,7 @@
 import os
 import sys
 import re
-
+import difflib
 from difflib import context_diff
 
 sys.path.append(os.path.dirname(__file__) + "/../..")
@@ -27,6 +27,17 @@ from tests.code_library.code_case import (
     MIN_CODE_CONSISTENCY_MAPPING,
     SKIP_FORMAT_FILES,
 )
+
+
+def generate_diff(old_file, new_file):
+    with open(old_file) as f1, open(new_file) as f2:
+        old_lines = f1.readlines()
+        new_lines = f2.readlines()
+
+    diff = difflib.unified_diff(
+        old_lines, new_lines, fromfile=old_file, tofile=new_file, lineterm=""
+    )
+    return list(diff)
 
 
 def convert_pytorch_code_to_paddle(mode="default"):
@@ -93,6 +104,24 @@ def compare_code_consistency(mode="default"):
     return compare_fail_list
 
 
+def compare_diff_consistency():
+    map = MIN_CODE_CONSISTENCY_MAPPING
+    compare_fail_list = []
+    for pytorch_dir, diff_dir in map.items():
+        pytorch_file_name = pytorch_dir.split("/")[-1]
+        convert_paddle_dir = pytorch_dir.replace("torch_code", "convert_paddle_code")
+        convert_diff_dir = diff_dir.replace("diff", "convert_diff")
+        convert_diff = generate_diff(pytorch_dir, convert_paddle_dir)
+        convert_diff = [l.rstrip() for l in convert_diff[2:] if l.strip()]
+
+        with open(diff_dir) as f:
+            excepted_diff = f.readlines()
+            excepted_diff = [l.rstrip() for l in excepted_diff[2:] if l.strip()]
+        if convert_diff != excepted_diff:
+            compare_fail_list.append(pytorch_dir)
+    return compare_fail_list
+
+
 if __name__ == "__main__":
     convert_fail_list = convert_pytorch_code_to_paddle(mode="default")
     if convert_fail_list:
@@ -155,15 +184,15 @@ if __name__ == "__main__":
             "*************************************************************************"
         )
 
-    min_compare_fail_list = compare_code_consistency(mode="min")
+    min_compare_fail_list = compare_diff_consistency()
     if min_compare_fail_list:
         print(
             "*************************************************************************"
         )
         print("The following pytorch file compare fail in min mode!")
         for file_dir in min_compare_fail_list:
-            paddle_dir = CODE_CONSISTENCY_MAPPING[file_dir]
-            print(f" {file_dir} convert result is inconsistent with {paddle_dir}!")
+            diff_dir = MIN_CODE_CONSISTENCY_MAPPING[file_dir]
+            print(f" {file_dir} convert result is inconsistent with {diff_dir}!")
         print(
             "*************************************************************************"
         )
