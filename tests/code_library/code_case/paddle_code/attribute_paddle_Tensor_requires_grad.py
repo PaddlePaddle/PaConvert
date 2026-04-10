@@ -7,7 +7,7 @@ if not data.requires_grad:
 print("#########################case2#########################")
 print(data.requires_grad)
 print("#########################case3#########################")
-data.stop_gradient = not False
+data.requires_grad = False
 print("#########################case4#########################")
 requires_grad = data.requires_grad
 print("#########################case5#########################")
@@ -25,9 +25,8 @@ def test():
     return True
 
 
-data.stop_gradient = not test()
+data.requires_grad = test()
 print("#########################case10#########################")
 z = True, False, True
-a, temp, c = z
-data.stop_gradient = not temp
+a, data.requires_grad, c = z
 print(data.requires_grad)

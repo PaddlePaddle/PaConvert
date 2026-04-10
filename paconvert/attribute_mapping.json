@@ -68,7 +68,7 @@
   },
   "torch.autograd.function.FunctionCtx.saved_tensors": {
     "Matcher": "Attribute2Func",
-    "paddle_api": "paddle.autograd.PyLayerContext.saved_tensor"
+    "paddle_api": "paddle.autograd.function.FunctionCtx.saved_tensor"
   },
   "torch.autograd.profiler.profile.self_cpu_time_total": {},
   "torch.backends.cuda.matmul.allow_tf32": {
@@ -146,6 +146,9 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.float64": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.float8_e4m3fn": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.inf": {

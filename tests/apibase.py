@@ -85,17 +85,22 @@ class APIBase(object):
                 )
                 assert paddle_code == expect_paddle_code, error_msg
         elif compared_tensor_names:
-            loc = locals()
+            pytorch_ns = {}
             try:
-                exec(pytorch_code, locals())
+                exec(pytorch_code, pytorch_ns)
             except Exception as e:
                 raise RuntimeError(f"Failed to execute pytorch code:\n{e}")
-            pytorch_result = [loc[name] for name in compared_tensor_names]
+            pytorch_result = [pytorch_ns[name] for name in compared_tensor_names]
+            pytorch_ns.clear()
+
+            paddle_ns = {}
             try:
-                exec(paddle_code, locals())
+                exec(paddle_code, paddle_ns)
             except Exception as e:
                 raise RuntimeError(f"Failed to execute paddle code:\n{e}")
-            paddle_result = [loc[name] for name in compared_tensor_names]
+            paddle_result = [paddle_ns[name] for name in compared_tensor_names]
+            paddle_ns.clear()
+
             for i in range(len(compared_tensor_names)):
                 try:
                     self.compare(
@@ -112,14 +117,21 @@ class APIBase(object):
                 except Exception as e:
                     raise AssertionError(f"Unable to align results: {e}")
         else:
+            pytorch_ns = {}
             try:
-                exec(pytorch_code, locals())
+                exec(pytorch_code, pytorch_ns)
             except Exception as e:
                 raise RuntimeError(f"Failed to execute pytorch code:\n{e}")
+            finally:
+                pytorch_ns.clear()
+
+            paddle_ns = {}
             try:
-                exec(paddle_code, locals())
+                exec(paddle_code, paddle_ns)
             except Exception as e:
                 raise RuntimeError(f"Failed to execute paddle code:\n{e}")
+            finally:
+                paddle_ns.clear()
 
     def compare(
         self,
