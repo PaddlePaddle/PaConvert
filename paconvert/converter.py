@@ -27,9 +27,6 @@ import astor
 
 from paconvert.transformer.basic_transformer import BasicTransformer
 from paconvert.transformer.import_transformer import ImportTransformer
-from paconvert.transformer.tensor_requires_grad_transformer import (
-    TensorRequiresGradTransformer,
-)
 from paconvert.transformer.custom_op_transformer import (
     PreCustomOpTransformer,
     CustomOpTransformer,
@@ -40,6 +37,7 @@ from paconvert.utils import (
     log_info,
     log_warning,
 )
+from paconvert.global_var import GlobalManager
 
 
 def listdir_nohidden(path):
@@ -51,15 +49,18 @@ def listdir_nohidden(path):
 class Converter:
     def __init__(
         self,
+        mode="default",
         log_dir=None,
         log_level="INFO",
         log_markdown=False,
         show_all_api=False,
+        show_unalign_api=False,
         show_unsupport_api=False,
         no_format=False,
         calculate_speed=False,
         only_complete=False,
     ):
+        self.mode = mode
         self.imports_map = collections.defaultdict(dict)
         self.torch_api_count = 0
         self.success_api_count = 0
@@ -74,8 +75,10 @@ class Converter:
         self.log_markdown = log_markdown
         self.show_all_api = show_all_api
         self.all_api_map = collections.defaultdict(dict)
+        self.show_unalign_api = show_unalign_api
         self.show_unsupport_api = show_unsupport_api
         self.unsupport_api_map = collections.defaultdict(int)
+        self.change_prefix_api_map = collections.defaultdict(set)
         self.convert_rate = 0.0
         self.no_format = no_format
         self.calculate_speed = calculate_speed
@@ -125,33 +128,6 @@ class Converter:
         self.transfer_dir(in_dir, out_dir, exclude)
         utils_file_helper.write_code()
 
-        if self.show_unsupport_api:
-            log_info(self.logger, "\n===========================================")
-            log_info(self.logger, "Not Support API List:")
-            log_info(self.logger, "===========================================")
-            if len(self.unsupport_api_map) == 0:
-                log_info(
-                    self.logger,
-                    "Congratulations! All APIs have been successfully converted!",
-                )
-            else:
-                log_info(
-                    self.logger,
-                    "These Pytorch APIs are not supported to convert to Paddle now, which will be supported in future!\n",
-                )
-                unsupport_api_list = sorted(
-                    self.unsupport_api_map.items(), key=lambda x: x[1], reverse=True
-                )
-                for k, v in unsupport_api_list:
-                    log_info(self.logger, "{:<80}{:<8}".format(k, v))
-
-                import pandas
-
-                df = pandas.DataFrame(
-                    unsupport_api_list, columns=["PyTorch API", "Count"]
-                )
-                df.to_excel("unsupport_api_map.xlsx", index=False)
-
         if self.show_all_api:
             log_info(self.logger, "\n===========================================")
             log_info(self.logger, "ALL API List:")
@@ -163,6 +139,7 @@ class Converter:
                     self.logger,
                     "All APIs to be converted are as follows.\n",
                 )
+
                 all_api_list = sorted(
                     self.all_api_map.items(), key=lambda x: x[1]["count"], reverse=True
                 )
@@ -179,6 +156,72 @@ class Converter:
                     data, columns=["PyTorch API", "Paddle API", "Count"]
                 )
                 df.to_excel("all_api_map.xlsx", index=False)
+
+        if self.show_unalign_api:
+            log_info(self.logger, "\n===========================================")
+            log_info(self.logger, "UnAlign Native Pytorch API List:")
+            log_info(self.logger, "===========================================")
+
+            unalign_api_map = self.all_api_map.copy()
+            for k, v in self.all_api_map.items():
+                if not k.startswith("torch."):
+                    unalign_api_map.pop(k)
+                if k in GlobalManager.CHANGE_PREFIX_API:
+                    unalign_api_map.pop(k)
+
+            if len(unalign_api_map) == 0:
+                log_info(
+                    self.logger,
+                    "Congratulations! All Native Pytorch APIs are already aligned!",
+                )
+            else:
+                log_info(
+                    self.logger,
+                    "These Native Pytorch APIs are still not fully aligned!\n",
+                )
+                unalign_api_list = sorted(
+                    unalign_api_map.items(), key=lambda x: x[1]["count"], reverse=True
+                )
+                for k, v in unalign_api_list:
+                    log_info(
+                        self.logger,
+                        "{:<80}{:<80}{:<8}".format(k, str(v["paddle_api"]), v["count"]),
+                    )
+
+                import pandas
+
+                data = [(k, v["paddle_api"], v["count"]) for k, v in unalign_api_list]
+                df = pandas.DataFrame(
+                    data, columns=["PyTorch API", "Paddle API", "Count"]
+                )
+                df.to_excel("unalign_api_map.xlsx", index=False)
+
+        if self.show_unsupport_api:
+            log_info(self.logger, "\n===========================================")
+            log_info(self.logger, "Not Support API List:")
+            log_info(self.logger, "===========================================")
+            if len(self.unsupport_api_map) == 0:
+                log_info(
+                    self.logger,
+                    "Congratulations! All APIs have been successfully converted!",
+                )
+            else:
+                log_info(
+                    self.logger,
+                    "These Pytorch APIs are not supported to convert to Paddle automatically now!\n",
+                )
+                unsupport_api_list = sorted(
+                    self.unsupport_api_map.items(), key=lambda x: x[1], reverse=True
+                )
+                for k, v in unsupport_api_list:
+                    log_info(self.logger, "{:<80}{:<8}".format(k, v))
+
+                import pandas
+
+                df = pandas.DataFrame(
+                    unsupport_api_list, columns=["PyTorch API", "Count"]
+                )
+                df.to_excel("unsupport_api_map.xlsx", index=False)
 
         faild_api_count = self.torch_api_count - self.success_api_count
         if not self.log_markdown:
@@ -259,6 +302,21 @@ class Converter:
             )
 
         return self.success_api_count, faild_api_count
+
+    def __del__(self):
+        """Ensure cleanup happens when Converter is destroyed."""
+        try:
+            # Close all logger handlers
+            for handler in self.logger.handlers[:]:
+                handler.close()
+                self.logger.removeHandler(handler)
+
+            # Clear large data structures
+            self.imports_map.clear()
+            self.all_api_map.clear()
+            self.unsupport_api_map.clear()
+        except:
+            pass
 
     def transfer_dir(self, in_dir, out_dir, exclude):
         if os.path.isfile(in_dir):
@@ -378,7 +436,6 @@ class Converter:
     def transfer_node(self, root, file):
         transformers = [
             ImportTransformer,  # import ast transformer
-            TensorRequiresGradTransformer,  # attribute requires_grad transformer
             BasicTransformer,  # most of api transformer
             PreCustomOpTransformer,  # pre process for C++ custom op
             CustomOpTransformer,  # C++ custom op transformer
@@ -387,19 +444,50 @@ class Converter:
             trans = transformer(
                 root,
                 file,
+                self.mode,
                 self.imports_map,
                 self.logger,
                 self.all_api_map,
                 self.unsupport_api_map,
             )
             trans.transform()
+            if isinstance(trans, ImportTransformer):
+                self.change_prefix_api_map[file].update(
+                    trans.change_prefix_api_map[file]
+                )
             self.torch_api_count += trans.torch_api_count
             self.success_api_count += trans.success_api_count
             if self.only_complete:
                 break
 
+    def mask_change_prefix_apis(self, text, file):
+        keep_apis = sorted(self.change_prefix_api_map[file], key=len, reverse=True)
+
+        def _mask_match(match):
+            matched = match.group(0)
+            chars = []
+            for ch in matched:
+                if ch == "\n":
+                    chars.append("\n")
+                elif ch.isspace():
+                    chars.append(ch)
+                else:
+                    chars.append("_")
+            return "".join(chars)
+
+        for api in keep_apis:
+            api_pattern = re.escape(api).replace(r"\.", r"\s*\.\s*")
+            pattern = re.compile(rf"(?<![\w\.]){api_pattern}(?![\w\.])", re.DOTALL)
+            text = pattern.sub(_mask_match, text)
+        return text
+
     def mark_unsupport(self, code, file):
+        scan_code = code
+        if self.mode == "min":
+            scan_code = self.mask_change_prefix_apis(code, file)
+
         lines = code.split("\n")
+        scan_lines = scan_code.split("\n")
         mark_next_line = False
         in_str = False
         bracket_num = 0
@@ -420,7 +508,8 @@ class Converter:
             # " (torch "
             # " torch) "
             # just remove the str, avoid str influence the torch api recognize
-            rm_str_line = re.sub(r"[\"]{3}[^\"]+[\"]{3}", "", line)
+            scan_source = scan_lines[i]
+            rm_str_line = re.sub(r"[\"]{3}[^\"]+[\"]{3}", "", scan_source)
             rm_str_line = re.sub(r"[\"]{1}[^\"]+[\"]{1}", "", rm_str_line)
             rm_str_line = re.sub(r"[\']{1}[^\']+[\']{1}", "", rm_str_line)
 
@@ -433,19 +522,16 @@ class Converter:
             if last_in_str or in_str:
                 continue
 
-            # paddle.add(paddleformers.
-            #   transformers.BertTokenizer)
-            """
-            # may be removed in future
-            last_bracket_num = bracket_num
-            bracket_num += rm_str_line.count("(")
-            bracket_num -= rm_str_line.count(")")
-            if last_bracket_num > 0:
-                continue
-            """
+            scan_line = rm_str_line
+            if self.mode == "min":
+                stripped_line = rm_str_line.strip()
+                if stripped_line.startswith("import ") or stripped_line.startswith(
+                    "from "
+                ):
+                    continue
 
             for torch_package in self.imports_map[file]["torch_packages"]:
-                if rm_str_line.startswith("%s." % torch_package):
+                if scan_line.startswith("%s." % torch_package):
                     lines[i] = ">>>>>>" + line
                     break
 
@@ -453,7 +539,8 @@ class Converter:
                 # modeltorch.npy
                 # 1torch.npy
                 # paddleformers.transformers.*
-                if re.match(r".*[^\w\.]{1}%s\." % torch_package, rm_str_line):
+                if re.match(r".*[^\w\.]{1}%s\." % torch_package, scan_line):
                     lines[i] = ">>>>>>" + line
+                    break
 
         return "\n".join(lines)

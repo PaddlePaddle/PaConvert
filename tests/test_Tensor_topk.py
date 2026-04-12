@@ -105,3 +105,45 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """Test NamedTuple access (values, indices)"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.Tensor([[1.,2.], [3.,4.]])
+        result = a.topk(2, dim=0)
+        values = result.values
+        indices = result.indices
+        """
+    )
+    obj.run(pytorch_code, ["values", "indices"])
+
+
+def test_case_10():
+    """Test NamedTuple access with largest=False"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.Tensor([[1.,2.], [3.,4.]])
+        result = a.topk(k=2, dim=0, largest=False, sorted=True)
+        values = result.values
+        indices = result.indices
+        """
+    )
+    obj.run(pytorch_code, ["values", "indices"])
+
+
+def test_case_11():
+    """Test NamedTuple access with 3D tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[[1.,2.], [3.,4.]], [[5.,6.], [7.,8.]]])
+        result = a.topk(1, dim=1)
+        values = result.values
+        indices = result.indices
+        """
+    )
+    obj.run(pytorch_code, ["values", "indices"])

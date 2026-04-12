@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import textwrap
 
 from apibase import APIBase
@@ -56,6 +57,83 @@ def test_case_4():
         """
         import torch
         result = torch.tensor([1.]).ldexp(torch.tensor([1., 2., -3., -4., 5.]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    """Test with int second argument"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1., 2., 3.])
+        b = torch.tensor([1, 2, 3])
+        result = a.ldexp(b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    """Test with float64 dtype"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1.0, 2.0], dtype=torch.float64)
+        b = torch.tensor([1, 2], dtype=torch.int64)
+        result = a.ldexp(b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """Test with negative exponent"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1., 2., 4.])
+        b = torch.tensor([-1, -2, -3])
+        result = a.ldexp(b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """Test with zero exponent"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1., 2., 3.])
+        b = torch.tensor([0, 0, 0])
+        result = a.ldexp(b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """Test with 2D tensors"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 2.], [3., 4.]])
+        b = torch.tensor([[1, 2], [3, 4]])
+        result = a.ldexp(b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """Test with keyword argument"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1., 2., 3.])
+        result = a.ldexp(other=torch.tensor([1, 2, 3]))
         """
     )
     obj.run(pytorch_code, ["result"])

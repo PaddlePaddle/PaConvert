@@ -15,6 +15,7 @@
 
 import ast
 import os
+from collections import defaultdict
 
 from paconvert.base import BaseTransformer
 from paconvert.global_var import GlobalManager
@@ -27,16 +28,24 @@ class ImportTransformer(BaseTransformer):
     """
 
     def __init__(
-        self, root, file, imports_map, logger, all_api_map=None, unsupport_api_map=None
+        self,
+        root,
+        file,
+        mode,
+        imports_map,
+        logger,
+        all_api_map=None,
+        unsupport_api_map=None,
     ):
         super(ImportTransformer, self).__init__(
-            root, file, imports_map, logger, all_api_map, unsupport_api_map
+            root, file, mode, imports_map, logger, all_api_map, unsupport_api_map
         )
         self.imports_map[self.file]["other_packages"] = set()
         self.imports_map[self.file]["torch_packages"] = set()
         self.imports_map[self.file]["may_torch_packages"] = set()
         self.imports_map[self.file]["api_alias_name_map"] = {}
         self.insert_pass_node = set()
+        self.change_prefix_api_map = defaultdict(set)
 
     def visit_Import(self, node):
         """
@@ -75,22 +84,28 @@ class ImportTransformer(BaseTransformer):
                         self.imports_map[self.file]["torch_packages"].add(pkg_name)
                     if alias_node.asname:
                         self.imports_map[self.file][alias_node.asname] = alias_node.name
-                        log_info(
-                            self.logger,
-                            "remove 'import {} as {}' ".format(
-                                alias_node.name, alias_node.asname
-                            ),
-                            self.file_name,
-                            node.lineno,
-                        )
+                        if self.mode == "min":
+                            new_node_names.append(alias_node)
+                        else:
+                            log_info(
+                                self.logger,
+                                "remove 'import {} as {}' ".format(
+                                    alias_node.name, alias_node.asname
+                                ),
+                                self.file_name,
+                                node.lineno,
+                            )
                     else:
                         self.imports_map[self.file][alias_node.name] = alias_node.name
-                        log_info(
-                            self.logger,
-                            "remove 'import {}' ".format(alias_node.name),
-                            self.file_name,
-                            node.lineno,
-                        )
+                        if self.mode == "min":
+                            new_node_names.append(alias_node)
+                        else:
+                            log_info(
+                                self.logger,
+                                "remove 'import {}' ".format(alias_node.name),
+                                self.file_name,
+                                node.lineno,
+                            )
                     has_done = True
                     break
             if has_done:
@@ -228,26 +243,31 @@ class ImportTransformer(BaseTransformer):
                         self.imports_map[self.file][alias_node.asname] = ".".join(
                             [node.module, alias_node.name]
                         )
-                        log_info(
-                            self.logger,
-                            "remove 'from {} import {} as {}' ".format(
-                                node.module, alias_node.name, alias_node.asname
-                            ),
-                            self.file_name,
-                            node.lineno,
-                        )
+                        if self.mode != "min":
+                            log_info(
+                                self.logger,
+                                "remove 'from {} import {} as {}' ".format(
+                                    node.module, alias_node.name, alias_node.asname
+                                ),
+                                self.file_name,
+                                node.lineno,
+                            )
                     else:
                         self.imports_map[self.file][alias_node.name] = ".".join(
                             [node.module, alias_node.name]
                         )
-                        log_info(
-                            self.logger,
-                            "remove 'from {} import {}' ".format(
-                                node.module, alias_node.name
-                            ),
-                            self.file_name,
-                            node.lineno,
-                        )
+                        if self.mode != "min":
+                            log_info(
+                                self.logger,
+                                "remove 'from {} import {}' ".format(
+                                    node.module, alias_node.name
+                                ),
+                                self.file_name,
+                                node.lineno,
+                            )
+
+                if self.mode == "min":
+                    return node
 
                 if (
                     isinstance(self.parent_node, (ast.If, ast.Try))
@@ -323,15 +343,40 @@ class ImportTransformer(BaseTransformer):
             nn.Module -> torch.nn.Module
         """
         if isinstance(
-            node.value, (ast.Call, ast.Compare, ast.BinOp, ast.UnaryOp, ast.Subscript)
+            node.value,
+            (
+                ast.Call,
+                ast.Compare,
+                ast.BinOp,
+                ast.UnaryOp,
+                ast.Subscript,
+                ast.Assert,
+                ast.IfExp,
+            ),
         ):
             super(ImportTransformer, self).generic_visit(node)
+        if isinstance(node.value, ast.Attribute):
+            if node.value.attr in [
+                "T",
+                "real",
+                "weight",
+                "bias",
+                "imag",
+            ]:
+                super(ImportTransformer, self).generic_visit(node)
+            # 7.  x.data.cuda()  / avoid  torch.utils.data.*
+            elif node.value.attr == "data":
+                full_attr = self.get_full_attr_strict(node.value)
+                if "utils.data" not in full_attr:
+                    super(ImportTransformer, self).generic_visit(node)
 
-        torch_api = self.get_full_api_from_node(node)
+        torch_api = self.get_torch_api_from_node(node)
         if torch_api:
-            if torch_api in GlobalManager.ALIAS_MAPPING:
-                torch_api = GlobalManager.ALIAS_MAPPING[torch_api]
-            return ast.parse(torch_api).body[0].value
+            if self.in_min_mode(torch_api):
+                self.change_prefix_api_map[self.file].add(torch_api)
+                return node
+
+            return ast.parse(self.get_canonical_torch_api(torch_api)).body[0].value
         return node
 
     def visit_Name(self, node):
@@ -360,6 +405,9 @@ class ImportTransformer(BaseTransformer):
             13. Union[List[str], List[AddedToken]],
             14. hasattr(Tensor, add)
             15. ACT2FN['tanh']
+            16. super(Dataset).__init__()
+            17. functools.partial(torch.abs, x)
+            18. partial(torch.abs, x)
         """
         maybe_torch = False
         maybe_alias_name = False
@@ -374,23 +422,38 @@ class ImportTransformer(BaseTransformer):
             ),
         ):
             maybe_torch = True
-        elif isinstance(self.parent_node, ast.Call) and isinstance(
-            self.parent_node.func, ast.Name
-        ):
-            if self.parent_node.func == node:  # 6. Tensor(2, 3)
-                maybe_torch = True
-            if (
-                node.id in self.imports_map[self.file]["api_alias_name_map"]
-            ):  # 12. my_add(tensor_1,tensor_2)
-                torch_api = self.imports_map[self.file]["api_alias_name_map"][node.id]
-                return ast.parse(torch_api).body[0].value
+        elif isinstance(self.parent_node, ast.Call):
+            if isinstance(self.parent_node.func, ast.Name):
+                if self.parent_node.func == node:  # 6. Tensor(2, 3)
+                    maybe_torch = True
 
-            elif self.parent_node.func.id in [
-                "isinstance",
-                "setattr",
-                "hasattr",
-            ]:  # 7/8/14
-                maybe_torch = True
+                if (
+                    node.id in self.imports_map[self.file]["api_alias_name_map"]
+                ):  # 12. my_add(tensor_1,tensor_2)
+                    torch_api = self.imports_map[self.file]["api_alias_name_map"][
+                        node.id
+                    ]
+                    if self.in_min_mode(torch_api):
+                        self.change_prefix_api_map[self.file].add(torch_api)
+                        return node
+                    return (
+                        ast.parse(self.get_canonical_torch_api(torch_api)).body[0].value
+                    )
+
+                elif self.parent_node.func.id in [
+                    "isinstance",
+                    "setattr",
+                    "hasattr",
+                    "super",
+                    "partial",
+                ]:  # 7/8/14/18
+                    maybe_torch = True
+            elif isinstance(self.parent_node.func, ast.Attribute):
+                full_attr = self.get_full_attr(self.parent_node.func)
+                if full_attr in [
+                    "functools.partial",
+                ]:  # 17
+                    maybe_torch = True
         elif (
             isinstance(self.parent_node, ast.Subscript)
             and self.parent_node.slice == node
@@ -400,7 +463,7 @@ class ImportTransformer(BaseTransformer):
             isinstance(self.parent_node, ast.Subscript)
             and self.parent_node.value == node
         ):
-            # supplement api which can be indexed
+            # Exclude the following:
             # from torch.utils import data
             # data[0]
             if node.id not in ["data"]:
@@ -420,10 +483,8 @@ class ImportTransformer(BaseTransformer):
             maybe_torch = True  # 13. Union[List[str], List[AddedToken]]
 
         if maybe_torch:
-            torch_api = self.get_full_api_from_node(node)
+            torch_api = self.get_torch_api_from_node(node)
             if torch_api:
-                if torch_api in GlobalManager.ALIAS_MAPPING:
-                    torch_api = GlobalManager.ALIAS_MAPPING[torch_api]
                 if maybe_alias_name:
                     if len(self.parent_node.targets) == 1 and isinstance(
                         self.parent_node.targets[0], ast.Name
@@ -431,7 +492,12 @@ class ImportTransformer(BaseTransformer):
                         self.imports_map[self.file]["api_alias_name_map"][
                             self.parent_node.targets[0].id
                         ] = torch_api
-                return ast.parse(torch_api).body[0].value
+
+                if self.in_min_mode(torch_api):
+                    self.change_prefix_api_map[self.file].add(torch_api)
+                    return node
+
+                return ast.parse(self.get_canonical_torch_api(torch_api)).body[0].value
         return node
 
     def visit_Module(self, node):

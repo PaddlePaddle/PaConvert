@@ -66,7 +66,8 @@ def test_case_4():
     obj.run(pytorch_code, ["a"])
 
 
-def test_case_5():
+# Paddle does not support scalar input for floor_divide_
+def _test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -77,7 +78,8 @@ def test_case_5():
     obj.run(pytorch_code, ["a"])
 
 
-def test_case_6():
+# Paddle does not support scalar input for floor_divide_
+def _test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch

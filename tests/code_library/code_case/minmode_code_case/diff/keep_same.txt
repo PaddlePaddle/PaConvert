@@ -1,0 +1,10 @@
+--- tests/code_library/code_case/minmode_code_case/torch_code/keep_same.py
++++ tests/code_library/code_case/minmode_code_case/paddle_code/keep_same.py
+@@ -1,3 +1,4 @@
++import paddle
+
+ import torch
+
+ import copy
+
+ print('#########################case1#########################')

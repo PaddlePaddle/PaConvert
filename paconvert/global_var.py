@@ -71,3 +71,12 @@ class GlobalManager:
         "os",
         "einops",
     ]
+
+    CHANGE_PREFIX_API = set()
+    for torch_api, api_config in API_MAPPING.items():
+        if api_config.get("Matcher") == "ChangePrefixMatcher":
+            CHANGE_PREFIX_API.add(torch_api)
+    
+    for torch_api, api_config in ATTRIBUTE_MAPPING.items():
+        if api_config.get("Matcher") == "ChangePrefixMatcher":
+            CHANGE_PREFIX_API.add(torch_api)
