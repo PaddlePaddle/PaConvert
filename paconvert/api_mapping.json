@@ -11786,14 +11786,7 @@
     "min_input_args": 2
   },
   "torch.utils.data.BatchSampler": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.io.BatchSampler",
-    "min_input_args": 3,
-    "args_list": [
-      "sampler",
-      "batch_size",
-      "drop_last"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.ChainDataset": {
     "Matcher": "ChangePrefixMatcher"
