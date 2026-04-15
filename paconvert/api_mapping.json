@@ -1837,9 +1837,7 @@
     "min_input_args": 0
   },
   "torch.Tensor.nelement": {
-    "Matcher": "Func2Attribute",
-    "paddle_api": "paddle.Tensor.size",
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.new_empty": {
     "Matcher": "ChangePrefixMatcher"
