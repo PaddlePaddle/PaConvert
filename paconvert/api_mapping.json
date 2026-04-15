@@ -11836,15 +11836,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.RandomSampler": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.io.RandomSampler",
-    "min_input_args": 1,
-    "args_list": [
-      "data_source",
-      "replacement",
-      "num_samples",
-      "generator"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.Sampler": {
     "Matcher": "ChangePrefixMatcher"
