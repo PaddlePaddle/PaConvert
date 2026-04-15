@@ -1001,17 +1001,7 @@
     "min_input_args": 0
   },
   "torch.Tensor.exponential_": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.exponential_",
-    "min_input_args": 0,
-    "args_list": [
-      "lambd",
-      "*",
-      "generator"
-    ],
-    "kwargs_change": {
-      "lambd": "lam"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.fill_": {
     "Matcher": "ChangePrefixMatcher"
