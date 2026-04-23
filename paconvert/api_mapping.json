@@ -995,9 +995,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.expm1_": {
-    "Matcher": "TensorFunc2PaddleFunc",
-    "paddle_api": "paddle.expm1_",
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.exponential_": {
     "Matcher": "GenericMatcher",
@@ -2265,9 +2263,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.square_": {
-    "Matcher": "TensorFunc2PaddleFunc",
-    "paddle_api": "paddle.square_",
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.squeeze": {
     "Matcher": "ChangePrefixMatcher"
@@ -2378,15 +2374,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.tile": {
-    "Matcher": "ScalableVarMatcher",
-    "paddle_api": "paddle.Tensor.tile",
-    "min_input_args": 1,
-    "args_list": [
-      "*dims"
-    ],
-    "kwargs_change": {
-      "dims": "repeat_times"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.to": {
     "Matcher": "ChangePrefixMatcher"

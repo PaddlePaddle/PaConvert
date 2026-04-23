@@ -15,6 +15,7 @@
 import textwrap
 
 from apibase import APIBase
+from unary_inplace_test_utils import register_standard_unary_inplace_tests
 
 obj = APIBase("torch.Tensor.reciprocal_")
 
@@ -49,3 +50,12 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+register_standard_unary_inplace_tests(
+    globals(),
+    obj,
+    "reciprocal_",
+    "[[-2.0, -0.5, 0.25], [4.0, -1.25, 2.5]]",
+    "[[[-2.0, -0.5], [0.25, 4.0]], [[-1.25, 2.5], [0.5, -4.0]]]",
+)

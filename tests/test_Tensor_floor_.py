@@ -16,6 +16,7 @@
 import textwrap
 
 from apibase import APIBase
+from unary_inplace_test_utils import register_standard_unary_inplace_tests
 
 obj = APIBase("torch.Tensor.floor_")
 
@@ -50,3 +51,12 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+register_standard_unary_inplace_tests(
+    globals(),
+    obj,
+    "floor_",
+    "[[-0.7, -0.2, 0.3], [0.9, -1.4, 2.1]]",
+    "[[[-0.7, -0.2], [0.3, 0.9]], [[-1.4, 2.1], [1.2, -2.6]]]",
+)

@@ -16,6 +16,7 @@
 import textwrap
 
 from apibase import APIBase
+from unary_inplace_test_utils import register_standard_unary_inplace_tests
 
 obj = APIBase("torch.Tensor.asin_")
 
@@ -39,3 +40,12 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["a", "result"])
+
+
+register_standard_unary_inplace_tests(
+    globals(),
+    obj,
+    "asin_",
+    "[[-0.9, -0.25, 0.25], [0.9, -0.5, 0.5]]",
+    "[[[-0.9, -0.25], [0.25, 0.9]], [[-0.5, 0.5], [0.1, -0.1]]]",
+)
