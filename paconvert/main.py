@@ -58,6 +58,14 @@ def main():
         help="Optional. Regular Pattern. PyTorch file or directory matched will not be converted, multiple patterns should be splited by ',' . Default: None.",
     )
     parser.add_argument(
+        "-m",
+        "--mode",
+        default="default",
+        type=str,
+        choices=["default", "min"],
+        help="Optional. Mode of conversion, default is default.",
+    )
+    parser.add_argument(
         "--exclude_packages",
         default=None,
         type=str,
@@ -80,6 +88,11 @@ def main():
         "--show_all_api",
         action="store_true",
         help="Optional. Show all APIs which should be converted",
+    )
+    parser.add_argument(
+        "--show_unalign_api",
+        action="store_true",
+        help="Optional. Show those APIs which are not unaligned",
     )
     parser.add_argument(
         "--show_unsupport_api",
@@ -117,6 +130,9 @@ def main():
         help="Inner Usage. Complete PyTorch code snippets only. user do not need to pay attention.",
     )
     args = parser.parse_args()
+    if args.mode == "min" and not args.no_format:
+        args.no_format = True
+        print("[Warning] --no_format must be true in min mode.")
 
     if args.exclude_packages:
         exclude_packages = args.exclude_packages.split(",")
@@ -132,10 +148,12 @@ def main():
         in_dir = os.path.abspath(args.in_dir)
         for project_name in os.listdir(in_dir):
             converter = Converter(
+                mode=args.mode,
                 log_dir=args.log_dir,
                 log_level=args.log_level,
                 log_markdown=args.log_markdown,
                 show_all_api=args.show_all_api,
+                show_unalign_api=args.show_unalign_api,
                 show_unsupport_api=args.show_unsupport_api,
                 no_format=args.no_format,
                 calculate_speed=args.calculate_speed,
@@ -178,10 +196,12 @@ def main():
         return
 
     converter = Converter(
+        mode=args.mode,
         log_dir=args.log_dir,
         log_level=args.log_level,
         log_markdown=args.log_markdown,
         show_all_api=args.show_all_api,
+        show_unalign_api=args.show_unalign_api,
         show_unsupport_api=args.show_unsupport_api,
         no_format=args.no_format,
         calculate_speed=args.calculate_speed,

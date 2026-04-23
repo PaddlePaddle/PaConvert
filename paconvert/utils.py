@@ -85,6 +85,52 @@ class UtilsFileHelper(object):
             self.code_map[code_hash] = code
         return code_hash
 
+    def _find_import_insert_idx(self, lines):
+        insert_idx = 0
+        i = 0
+        n = len(lines)
+
+        while i < n:
+            line = lines[i]
+            stripped = line.strip()
+
+            if not stripped or stripped.startswith("#"):
+                i += 1
+                continue
+
+            if stripped.startswith("import "):
+                insert_idx = i + 1
+                i += 1
+                while i < n and lines[i - 1].rstrip().endswith("\\"):
+                    insert_idx = i + 1
+                    i += 1
+                continue
+
+            if stripped.startswith("from "):
+                insert_idx = i + 1
+                paren_depth = line.count("(") - line.count(")")
+                saw_paren = ("(" in line) or (")" in line)
+                i += 1
+                while i < n:
+                    prev_line = lines[i - 1]
+                    continued_by_backslash = prev_line.rstrip().endswith("\\")
+                    continued_by_paren = saw_paren and paren_depth > 0
+                    if not continued_by_backslash and not continued_by_paren:
+                        break
+
+                    current_line = lines[i]
+                    paren_depth += current_line.count("(") - current_line.count(")")
+                    saw_paren = (
+                        saw_paren or ("(" in current_line) or (")" in current_line)
+                    )
+                    insert_idx = i + 1
+                    i += 1
+                continue
+
+            break
+
+        return insert_idx
+
     def write_code(self):
         """
         Write all the code in the code map to destination file
@@ -111,10 +157,7 @@ class UtilsFileHelper(object):
 
             # find a position to insert the new code
             lines = existing_content.splitlines()
-            insert_idx = 0
-            for i, line in enumerate(lines):
-                if line.startswith("import ") or line.startswith("from "):
-                    insert_idx = i + 1
+            insert_idx = self._find_import_insert_idx(lines)
 
             # insert the new code after all imports
             new_content = "".join(

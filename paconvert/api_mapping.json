@@ -695,6 +695,7 @@
   "torch.Tensor.cauchy_": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.Tensor.ccol_indices": {},
   "torch.Tensor.cdouble": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -1702,6 +1703,7 @@
   "torch.Tensor.mode": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.Tensor.module_load": {},
   "torch.Tensor.moveaxis": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -2006,6 +2008,7 @@
   "torch.Tensor.register_hook": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.Tensor.register_post_accumulate_grad_hook": {},
   "torch.Tensor.remainder": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -2073,7 +2076,6 @@
   "torch.Tensor.retain_grad": {
     "Matcher": "ChangePrefixMatcher"
   },
-  "torch.Tensor.retains_grad": {},
   "torch.Tensor.roll": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -2086,6 +2088,7 @@
   "torch.Tensor.round_": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.Tensor.row_indices": {},
   "torch.Tensor.rsqrt": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -2388,10 +2391,13 @@
     "paddle_api": "paddle.Tensor.to_sparse_coo",
     "min_input_args": 1
   },
+  "torch.Tensor.to_sparse_bsc": {},
+  "torch.Tensor.to_sparse_bsr": {},
   "torch.Tensor.to_sparse_coo": {
     "Matcher": "TensorToSparseCooMatcher",
     "paddle_api": "paddle.Tensor.to_sparse_coo"
   },
+  "torch.Tensor.to_sparse_csc": {},
   "torch.Tensor.to_sparse_csr": {
     "Matcher": "GenericMatcher",
     "min_input_args": 0,
@@ -2516,6 +2522,7 @@
   "torch.Tensor.unsqueeze_": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.Tensor.untyped_storage": {},
   "torch.Tensor.values": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -2587,12 +2594,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch._assert": {
-    "Matcher": "AssertMatcher",
-    "min_input_args": 2,
-    "args_list": [
-      "condition",
-      "message"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch._foreach_abs": {
     "Matcher": "ForeachMatcher",
@@ -11279,18 +11281,7 @@
     }
   },
   "torch.special.logit": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.logit",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "eps",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.special.logsumexp": {
     "Matcher": "ChangePrefixMatcher"
