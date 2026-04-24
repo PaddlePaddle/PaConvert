@@ -2355,12 +2355,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.take": {
-    "Matcher": "TensorTakeMatcher",
-    "paddle_api": "paddle.Tensor.take",
-    "min_input_args": 1,
-    "args_list": [
-      "index"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.take_along_dim": {
     "Matcher": "ChangePrefixMatcher"
@@ -11522,16 +11517,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.take": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.take",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "index"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.take_along_dim": {
     "Matcher": "ChangePrefixMatcher"
