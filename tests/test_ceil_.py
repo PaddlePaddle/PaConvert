@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from apibase import APIBase
-from inplace_unary_test_utils import run_torch_case
+from inplace_unary_helper import run_torch_case
 
 obj = APIBase("torch.ceil_")
 
