@@ -189,3 +189,31 @@ def test_case_12():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1.25, -0.75, 0.33],
+            [0.48, 1.12, -1.42]], dtype=torch.float32)
+        target = torch.tensor([[0.75, -0.25, 0.10],
+            [1.50, 0.80, -0.90]], dtype=torch.float32)
+        result = torch.nn.functional.mse_loss(input=input, target=target, reduction='sum')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1.10, -0.60, 0.45],
+            [0.52, 1.35, -1.10]], dtype=torch.float32)
+        target = torch.tensor([[0.65, -0.15, 0.25],
+            [1.20, 0.95, -0.70]], dtype=torch.float32)
+        result = torch.nn.functional.mse_loss(input, target=target, size_average=False, reduce=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

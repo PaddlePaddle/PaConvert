@@ -177,3 +177,31 @@ def test_case_12():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[0.42, -1.15, 1.37],
+            [1.08, 0.25, -0.74]], dtype=torch.float32)
+        target = torch.tensor([2, 0], dtype=torch.long)
+        weight = torch.tensor([0.4, 0.8, 0.6], dtype=torch.float32)
+        result = torch.nn.functional.multi_margin_loss(input=input, target=target, p=2, margin=0.7, weight=weight, reduction='sum')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[0.31, -0.84, 1.22],
+            [1.45, 0.18, -0.52]], dtype=torch.float32)
+        target = torch.tensor([2, 0], dtype=torch.long)
+        weight = torch.tensor([0.5, 0.7, 0.3], dtype=torch.float32)
+        result = torch.nn.functional.multi_margin_loss(input, target=target, p=1, margin=1.2, weight=weight, size_average=False, reduce=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

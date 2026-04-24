@@ -200,3 +200,35 @@ def test_case_12():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[0.12, 0.73, 0.41],
+            [0.88, 0.26, 0.64]], dtype=torch.float32)
+        target = torch.tensor([[0., 1., 0.],
+            [1., 0., 1.]], dtype=torch.float32)
+        weight = torch.tensor([[0.5, 0.2, 0.7],
+            [0.3, 0.9, 0.4]], dtype=torch.float32)
+        result = torch.nn.functional.binary_cross_entropy(input=input, target=target, weight=weight, reduction='sum')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[0.18, 0.67, 0.39],
+            [0.81, 0.34, 0.58]], dtype=torch.float32)
+        target = torch.tensor([[0., 1., 0.],
+            [1., 0., 1.]], dtype=torch.float32)
+        weight = torch.tensor([[0.4, 0.8, 0.6],
+            [0.7, 0.3, 0.5]], dtype=torch.float32)
+        result = torch.nn.functional.binary_cross_entropy(input, target=target, weight=weight, size_average=False, reduce=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

@@ -24,9 +24,10 @@ def test_case_1():
         """
         import torch
         import torch.nn as nn
-        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
-            [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([1, 2])
+        logits = torch.tensor([[1.2837, -0.0297, 0.0355],
+            [0.9112, -1.7526, -0.4061]])
+        input = torch.nn.functional.log_softmax(logits, dim=1)
+        target = torch.tensor([1, 2], dtype=torch.long)
         result = torch.nn.functional.nll_loss(input, target, size_average=True)
         """
     )
@@ -38,9 +39,10 @@ def test_case_2():
         """
         import torch
         import torch.nn as nn
-        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
-            [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([1, 2])
+        logits = torch.tensor([[1.2837, -0.0297, 0.0355],
+            [0.9112, -1.7526, -0.4061]])
+        input = torch.nn.functional.log_softmax(logits, dim=1)
+        target = torch.tensor([1, 2], dtype=torch.long)
         result = torch.nn.functional.nll_loss(input, target, size_average=False)
         """
     )
@@ -52,9 +54,10 @@ def test_case_3():
         """
         import torch
         import torch.nn as nn
-        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
-            [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([1, 2])
+        logits = torch.tensor([[1.2837, -0.0297, 0.0355],
+            [0.9112, -1.7526, -0.4061]])
+        input = torch.nn.functional.log_softmax(logits, dim=1)
+        target = torch.tensor([1, 2], dtype=torch.long)
         result = torch.nn.functional.nll_loss(input, target, reduction='none')
         """
     )
@@ -66,9 +69,10 @@ def test_case_4():
         """
         import torch
         import torch.nn as nn
-        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
-            [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([1, 2])
+        logits = torch.tensor([[1.2837, -0.0297, 0.0355],
+            [0.9112, -1.7526, -0.4061]])
+        input = torch.nn.functional.log_softmax(logits, dim=1)
+        target = torch.tensor([1, 2], dtype=torch.long)
         result = torch.nn.functional.nll_loss(input, target, reduction='mean')
         """
     )
@@ -80,9 +84,10 @@ def test_case_5():
         """
         import torch
         import torch.nn as nn
-        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
-            [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([1, 2])
+        logits = torch.tensor([[1.2837, -0.0297, 0.0355],
+            [0.9112, -1.7526, -0.4061]])
+        input = torch.nn.functional.log_softmax(logits, dim=1)
+        target = torch.tensor([1, 2], dtype=torch.long)
         result = torch.nn.functional.nll_loss(input, target, reduction='sum')
         """
     )
@@ -94,9 +99,10 @@ def test_case_6():
         """
         import torch
         import torch.nn as nn
-        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
-            [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([1, 2])
+        logits = torch.tensor([[1.2837, -0.0297, 0.0355],
+            [0.9112, -1.7526, -0.4061]])
+        input = torch.nn.functional.log_softmax(logits, dim=1)
+        target = torch.tensor([1, 2], dtype=torch.long)
         result = torch.nn.functional.nll_loss(input, target, reduce=True)
         """
     )
@@ -108,9 +114,10 @@ def test_case_7():
         """
         import torch
         import torch.nn as nn
-        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
-            [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([1, 2])
+        logits = torch.tensor([[1.2837, -0.0297, 0.0355],
+            [0.9112, -1.7526, -0.4061]])
+        input = torch.nn.functional.log_softmax(logits, dim=1)
+        target = torch.tensor([1, 2], dtype=torch.long)
         result = torch.nn.functional.nll_loss(input, target, reduce=False)
         """
     )
@@ -122,9 +129,10 @@ def test_case_8():
         """
         import torch
         import torch.nn as nn
-        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
-            [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([1, 2])
+        logits = torch.tensor([[1.2837, -0.0297, 0.0355],
+            [0.9112, -1.7526, -0.4061]])
+        input = torch.nn.functional.log_softmax(logits, dim=1)
+        target = torch.tensor([1, 2], dtype=torch.long)
         result = torch.nn.functional.nll_loss(input, target, weight=None, size_average=None, ignore_index=-100, reduce=True, reduction='mean')
         """
     )
@@ -137,9 +145,10 @@ def test_case_9():
         """
         import torch
         import torch.nn as nn
-        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
-            [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([1, 2])
+        logits = torch.tensor([[1.2837, -0.0297, 0.0355],
+            [0.9112, -1.7526, -0.4061]])
+        input = torch.nn.functional.log_softmax(logits, dim=1)
+        target = torch.tensor([1, 2], dtype=torch.long)
         result = torch.nn.functional.nll_loss(input, target, None, None, -100, True, 'mean')
         """
     )
@@ -152,9 +161,10 @@ def test_case_10():
         """
         import torch
         import torch.nn as nn
-        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
-            [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([1, 2])
+        logits = torch.tensor([[1.2837, -0.0297, 0.0355],
+            [0.9112, -1.7526, -0.4061]])
+        input = torch.nn.functional.log_softmax(logits, dim=1)
+        target = torch.tensor([1, 2], dtype=torch.long)
         result = torch.nn.functional.nll_loss(input=input, target=target, weight=None, size_average=None, ignore_index=-100, reduce=True, reduction='mean')
         """
     )
@@ -167,9 +177,10 @@ def test_case_11():
         """
         import torch
         import torch.nn as nn
-        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
-            [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([1, 2])
+        logits = torch.tensor([[1.2837, -0.0297, 0.0355],
+            [0.9112, -1.7526, -0.4061]])
+        input = torch.nn.functional.log_softmax(logits, dim=1)
+        target = torch.tensor([1, 2], dtype=torch.long)
         result = torch.nn.functional.nll_loss(reduction='mean', reduce=True, ignore_index=-100, size_average=None, weight=None, target=target, input=input)
         """
     )
@@ -182,10 +193,41 @@ def test_case_12():
         """
         import torch
         import torch.nn as nn
-        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
-            [ 0.9112, -1.7526, -0.4061]])
-        target = torch.tensor([1, 2])
+        logits = torch.tensor([[1.2837, -0.0297, 0.0355],
+            [0.9112, -1.7526, -0.4061]])
+        input = torch.nn.functional.log_softmax(logits, dim=1)
+        target = torch.tensor([1, 2], dtype=torch.long)
         result = torch.nn.functional.nll_loss(input, target)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        logits = torch.tensor([[1.30, -0.20, 0.70],
+            [-0.45, 1.10, 0.25]], dtype=torch.float32)
+        input = torch.nn.functional.log_softmax(logits, dim=1)
+        target = torch.tensor([0, 1], dtype=torch.long)
+        weight = torch.tensor([0.4, 0.8, 0.6], dtype=torch.float32)
+        result = torch.nn.functional.nll_loss(input=input, target=target, weight=weight, ignore_index=-100, reduction='sum')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        logits = torch.tensor([[0.80, -0.35, 1.15],
+            [-0.20, 0.95, 0.40]], dtype=torch.float32)
+        input = torch.nn.functional.log_softmax(logits, dim=1)
+        target = torch.tensor([2, 1], dtype=torch.long)
+        weight = torch.tensor([0.6, 0.5, 0.9], dtype=torch.float32)
+        result = torch.nn.functional.nll_loss(input, target=target, weight=weight, size_average=False, ignore_index=-100, reduce=True)
         """
     )
     obj.run(pytorch_code, ["result"])
