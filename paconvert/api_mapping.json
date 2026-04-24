@@ -8875,7 +8875,8 @@
     }
   },
   "torch.nn.functional.log_softmax": {
-    "Matcher": "ChangePrefixMatcher"
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.compat.nn.functional.log_softmax"
   },
   "torch.nn.functional.logsigmoid": {
     "Matcher": "ChangePrefixMatcher"
