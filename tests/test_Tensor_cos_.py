@@ -16,6 +16,7 @@
 import textwrap
 
 from apibase import APIBase
+from unary_inplace_test_utils import register_standard_unary_inplace_tests
 
 obj = APIBase("torch.Tensor.cos_")
 
@@ -29,3 +30,12 @@ def test_case_1():
         """
     )
     obj.run(pytorch_code, ["a"])
+
+
+register_standard_unary_inplace_tests(
+    globals(),
+    obj,
+    "cos_",
+    "[[-0.6, 0.4, 1.2], [0.7, -1.3, 2.1]]",
+    "[[[0.2, -0.7], [1.5, -1.1]], [[0.9, -0.4], [2.3, -0.2]]]",
+)
