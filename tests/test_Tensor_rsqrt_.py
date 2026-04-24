@@ -12,39 +12,52 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import textwrap
-
 from apibase import APIBase
-from unary_inplace_test_utils import register_standard_unary_inplace_tests
+from inplace_unary_test_utils import run_torch_case
 
 obj = APIBase("torch.Tensor.rsqrt_")
 
 
 def test_case_1():
-    pytorch_code = textwrap.dedent(
+    run_torch_case(
+        obj,
         """
-        import torch
-        result = torch.tensor([0.2970,  1.5420, 4]).rsqrt_()
-        """
+        x = torch.tensor([0.25, 1.0, 4.0, 9.0], dtype=torch.float32)
+        result = x.rsqrt_()
+        """,
+        ["x", "result"],
     )
-    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
-    pytorch_code = textwrap.dedent(
+    run_torch_case(
+        obj,
         """
-        import torch
-        result = torch.tensor([0.2970,  1.5420, 4])
-        result.rsqrt_()
-        """
+        x = torch.tensor([[0.5, 1.5], [3.0, 12.5]], dtype=torch.float64)
+        result = x.rsqrt_()
+        """,
+        ["x", "result"],
     )
-    obj.run(pytorch_code, ["result"])
 
 
-register_standard_unary_inplace_tests(
-    globals(),
-    obj,
-    "rsqrt_",
-    "[[0.25, 1.5, 2.25], [4.0, 0.75, 3.24]]",
-    "[[[0.25, 1.5], [2.25, 4.0]], [[0.75, 3.24], [1.0, 6.25]]]",
-)
+def test_case_3():
+    run_torch_case(
+        obj,
+        """
+        x = torch.tensor(
+            [0.125, 0.5, 1.0, 1.5, 2.0, 4.5, 8.0, 18.0], dtype=torch.float32
+        ).reshape(2, 2, 2)
+        result = x.rsqrt_()
+        """,
+        ["x", "result"],
+    )
+
+
+def test_case_4():
+    run_torch_case(
+        obj,
+        """
+        result = torch.tensor([0.0625, 4.0, 16.0], dtype=torch.float64).rsqrt_()
+        """,
+        ["result"],
+    )

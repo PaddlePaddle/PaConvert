@@ -11,42 +11,54 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-
-import textwrap
 
 from apibase import APIBase
-from unary_inplace_test_utils import register_standard_unary_inplace_tests
+from inplace_unary_test_utils import run_torch_case
 
 obj = APIBase("torch.Tensor.expm1_")
 
 
 def test_case_1():
-    pytorch_code = textwrap.dedent(
+    run_torch_case(
+        obj,
         """
-        import torch
-        a = torch.tensor([0., -2., 3.])
-        a.expm1_()
-        """
+        x = torch.tensor([-1.0, -0.25, 0.25, 1.25], dtype=torch.float32)
+        result = x.expm1_()
+        """,
+        ["x", "result"],
     )
-    obj.run(pytorch_code, ["a"])
 
 
 def test_case_2():
-    pytorch_code = textwrap.dedent(
+    run_torch_case(
+        obj,
         """
-        import torch
-        a = torch.tensor([1., -2., 3.])
-        a.expm1_()
-        """
+        x = torch.tensor([[-1.5, -0.5], [0.5, 1.5]], dtype=torch.float64)
+        result = x.expm1_()
+        """,
+        ["x", "result"],
     )
-    obj.run(pytorch_code, ["a"])
 
 
-register_standard_unary_inplace_tests(
-    globals(),
-    obj,
-    "expm1_",
-    "[[-0.6, 0.4, 1.2], [0.7, -1.3, 2.1]]",
-    "[[[0.2, -0.7], [1.5, -1.1]], [[0.9, -0.4], [2.3, -0.2]]]",
-)
+def test_case_3():
+    run_torch_case(
+        obj,
+        """
+        x = torch.tensor(
+            [-2.0, -1.25, -0.5, -0.125, 0.125, 0.5, 1.25, 2.0],
+            dtype=torch.float32,
+        ).reshape(2, 2, 2)
+        result = x.expm1_()
+        """,
+        ["x", "result"],
+    )
+
+
+def test_case_4():
+    run_torch_case(
+        obj,
+        """
+        result = torch.tensor([-0.75, 0.0, 0.75], dtype=torch.float64).expm1_()
+        """,
+        ["result"],
+    )

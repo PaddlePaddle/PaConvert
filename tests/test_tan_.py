@@ -15,15 +15,15 @@
 from apibase import APIBase
 from inplace_unary_test_utils import run_torch_case
 
-obj = APIBase("torch.Tensor.atan_")
+obj = APIBase("torch.tan_")
 
 
 def test_case_1():
     run_torch_case(
         obj,
         """
-        x = torch.tensor([-3.0, -0.5, 0.25, 2.5], dtype=torch.float32)
-        result = x.atan_()
+        x = torch.tensor([-1.0, -0.5, 0.25, 1.0], dtype=torch.float32)
+        result = torch.tan_(x)
         """,
         ["x", "result"],
     )
@@ -33,8 +33,8 @@ def test_case_2():
     run_torch_case(
         obj,
         """
-        x = torch.tensor([[-4.0, -1.0], [0.5, 3.0]], dtype=torch.float64)
-        result = x.atan_()
+        x = torch.tensor([[-1.2, -0.25], [0.25, 1.2]], dtype=torch.float64)
+        result = torch.tan_(input=x)
         """,
         ["x", "result"],
     )
@@ -45,9 +45,10 @@ def test_case_3():
         obj,
         """
         x = torch.tensor(
-            [-6.0, -2.5, -1.0, -0.125, 0.125, 1.0, 2.5, 6.0], dtype=torch.float32
+            [-1.3, -1.0, -0.6, -0.2, 0.2, 0.6, 1.0, 1.3], dtype=torch.float32
         ).reshape(2, 2, 2)
-        result = x.atan_()
+        args = (x,)
+        result = torch.tan_(*args)
         """,
         ["x", "result"],
     )
@@ -57,7 +58,7 @@ def test_case_4():
     run_torch_case(
         obj,
         """
-        result = torch.tensor([-1.5, 0.0, 1.5], dtype=torch.float64).atan_()
+        result = torch.tan_(torch.tensor([-0.75, 0.0, 0.75], dtype=torch.float64))
         """,
         ["result"],
     )

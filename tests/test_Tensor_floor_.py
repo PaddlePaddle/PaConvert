@@ -11,52 +11,53 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-
-import textwrap
 
 from apibase import APIBase
-from unary_inplace_test_utils import register_standard_unary_inplace_tests
+from inplace_unary_test_utils import run_torch_case
 
 obj = APIBase("torch.Tensor.floor_")
 
 
 def test_case_1():
-    pytorch_code = textwrap.dedent(
+    run_torch_case(
+        obj,
         """
-        import torch
-        a = torch.tensor([1.1, 2.5, 3.6, 4.8])
-        result = a.floor_()
-        """
+        x = torch.tensor([1.2, -3.4, 0.1, 2.0], dtype=torch.float32)
+        result = x.floor_()
+        """,
+        ["x", "result"],
     )
-    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
-    pytorch_code = textwrap.dedent(
+    run_torch_case(
+        obj,
         """
-        import torch
-        result = torch.tensor([0.1, -1.5, -2.3, 3.8])
-        result.floor_()
-        """
+        x = torch.tensor([[-1.2, 1.01], [2.5, -4.75]], dtype=torch.float64)
+        result = x.floor_()
+        """,
+        ["x", "result"],
     )
-    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
-    pytorch_code = textwrap.dedent(
+    run_torch_case(
+        obj,
         """
-        import torch
-        result = torch.tensor([3.14, 2.71, -1.618, 0.0]).floor_()
-        """
+        x = torch.tensor(
+            [-2.3, -1.1, -0.01, 0.2, 1.3, 2.8, 3.01, 4.5], dtype=torch.float32
+        ).reshape(2, 2, 2)
+        result = x.floor_()
+        """,
+        ["x", "result"],
     )
-    obj.run(pytorch_code, ["result"])
 
 
-register_standard_unary_inplace_tests(
-    globals(),
-    obj,
-    "floor_",
-    "[[-0.7, -0.2, 0.3], [0.9, -1.4, 2.1]]",
-    "[[[-0.7, -0.2], [0.3, 0.9]], [[-1.4, 2.1], [1.2, -2.6]]]",
-)
+def test_case_4():
+    run_torch_case(
+        obj,
+        """
+        result = torch.tensor([-2.2, 0.0, 3.3], dtype=torch.float64).floor_()
+        """,
+        ["result"],
+    )
