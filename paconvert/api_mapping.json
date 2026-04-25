@@ -1880,16 +1880,7 @@
     "min_input_args": 0
   },
   "torch.Tensor.numpy": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.numpy",
-    "min_input_args": 0,
-    "args_list": [
-      "*",
-      "force"
-    ],
-    "kwargs_change": {
-      "force": ""
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.orgqr": {
     "Matcher": "GenericMatcher",
