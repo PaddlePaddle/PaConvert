@@ -503,3 +503,34 @@ def test_case_33():
         """
     )
     obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
+
+
+def test_case_34():
+    """*args unpacking"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.Tensor([[1, 5, 3], [0, 3, 2], [1, 4, 1]]).type(torch.float32)
+        positive= torch.Tensor([[5, 1, 2], [3, 2, 1], [3, -1, 1]]).type(torch.float32)
+        negative = torch.Tensor([[2, 1, -3], [1, 1, -1], [4, -2, 1]]).type(torch.float32)
+        args = (1.5, 2)
+        cri = torch.nn.TripletMarginLoss(*args, eps=1e-06, swap=True, reduction='sum')
+        result = cri(input, positive, negative)
+        """
+    )
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
+
+
+def test_case_35():
+    """Out-of-order keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.Tensor([[1, 5, 3], [0, 3, 2], [1, 4, 1]]).type(torch.float32)
+        positive= torch.Tensor([[5, 1, 2], [3, 2, 1], [3, -1, 1]]).type(torch.float32)
+        negative = torch.Tensor([[2, 1, -3], [1, 1, -1], [4, -2, 1]]).type(torch.float32)
+        cri = torch.nn.TripletMarginLoss(reduction='none', swap=True, eps=1e-06, p=2, margin=1.0)
+        result = cri(input, positive, negative)
+        """
+    )
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
