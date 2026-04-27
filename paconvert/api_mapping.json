@@ -7270,18 +7270,7 @@
     "min_input_args": 2
   },
   "torch.nn.GaussianNLLLoss": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.GaussianNLLLoss",
-    "min_input_args": 0,
-    "args_list": [
-      "*",
-      "full",
-      "eps",
-      "reduction"
-    ],
-    "kwargs_change": {
-      "eps": "epsilon"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.GroupNorm": {
     "Matcher": "ChangePrefixMatcher"
@@ -8664,22 +8653,7 @@
     ]
   },
   "torch.nn.functional.gaussian_nll_loss": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.gaussian_nll_loss",
-    "min_input_args": 3,
-    "args_list": [
-      "input",
-      "target",
-      "var",
-      "full",
-      "eps",
-      "reduction"
-    ],
-    "kwargs_change": {
-      "target": "label",
-      "var": "variance",
-      "eps": "epsilon"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.gelu": {
     "Matcher": "ChangePrefixMatcher"
@@ -9332,22 +9306,7 @@
     }
   },
   "torch.nn.functional.triplet_margin_with_distance_loss": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.triplet_margin_with_distance_loss",
-    "args_list": [
-      "anchor",
-      "positive",
-      "negative",
-      "*",
-      "distance_function",
-      "margin",
-      "swap",
-      "reduction"
-    ],
-    "kwargs_change": {
-      "anchor": "input"
-    },
-    "min_input_args": 3
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.unfold": {
     "Matcher": "ChangeAPIMatcher",
