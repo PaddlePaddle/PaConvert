@@ -10433,9 +10433,6 @@
   "torch.randn_like": {
     "Matcher": "ChangePrefixMatcher"
   },
-  "torch.random.get_rng_state": {
-    "Matcher": "ChangePrefixMatcher"
-  },
   "torch.random.initial_seed": {
     "Matcher": "ChangePrefixMatcher"
   },
