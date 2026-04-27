@@ -6413,7 +6413,9 @@
   "torch.log2": {
     "Matcher": "ChangePrefixMatcher"
   },
-  "torch.log_softmax": {},
+  "torch.log_softmax": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.logaddexp": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.logaddexp",
@@ -8848,21 +8850,8 @@
     }
   },
   "torch.nn.functional.log_softmax": {
-    "Matcher": "FSoftmaxMatcher",
-    "paddle_api": "paddle.nn.functional.log_softmax",
-    "args_list": [
-      "input",
-      "dim",
-      "_stacklevel",
-      "dtype"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis",
-      "_stacklevel": "",
-      "dtype": "dtype"
-    },
-    "min_input_args": 1
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.compat.nn.functional.log_softmax"
   },
   "torch.nn.functional.logsigmoid": {
     "Matcher": "ChangePrefixMatcher"
@@ -11245,20 +11234,7 @@
   },
   "torch.special.log_ndtr": {},
   "torch.special.log_softmax": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.log_softmax",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "dim",
-      "*",
-      "dtype"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis",
-      "dtype": "dtype"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.special.logit": {
     "Matcher": "ChangePrefixMatcher"
