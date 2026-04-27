@@ -15,7 +15,6 @@
 import textwrap
 
 from apibase import APIBase
-from unary_inplace_test_utils import register_standard_unary_inplace_tests
 
 obj = APIBase("torch.Tensor.square_")
 
@@ -24,27 +23,42 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([0.2970,  1.5420, 4])
-        x.square_()
+        x = torch.tensor([-2.0, -0.5, 1.5, 3.0], dtype=torch.float32)
+        result = x.square_()
         """
     )
-    obj.run(pytorch_code, ["x"])
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0.2970,  1.5420, 4]).square_()
+        x = torch.tensor([[-3.0, -1.25], [0.75, 2.5]], dtype=torch.float64)
+        result = x.square_()
+        """
+    )
+    obj.run(pytorch_code, ["x", "result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor(
+            [-4.0, -2.5, -1.0, -0.125, 0.125, 1.0, 2.5, 4.0], dtype=torch.float32
+        ).reshape(2, 2, 2)
+        result = x.square_()
+        """
+    )
+    obj.run(pytorch_code, ["x", "result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([-1.5, 0.0, 1.5], dtype=torch.float64).square_()
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-register_standard_unary_inplace_tests(
-    globals(),
-    obj,
-    "square_",
-    "[[-0.6, 0.4, 1.2], [0.7, -1.3, 2.1]]",
-    "[[[0.2, -0.7], [1.5, -1.1]], [[0.9, -0.4], [2.3, -0.2]]]",
-)

@@ -3043,7 +3043,13 @@
   "torch.acos": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.acos_": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.acosh": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.acosh_": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.adaptive_avg_pool1d": {
@@ -3202,7 +3208,13 @@
   "torch.asin": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.asin_": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.asinh": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.asinh_": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.atan": {
@@ -3211,7 +3223,13 @@
   "torch.atan2": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.atan_": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.atanh": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.atanh_": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.atleast_1d": {
@@ -3516,6 +3534,9 @@
   "torch.ceil": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.ceil_": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.celu": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.celu",
@@ -3700,7 +3721,13 @@
   "torch.cos": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.cos_": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.cosh": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.cosh_": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.cosine_embedding_loss": {},
@@ -5175,7 +5202,13 @@
   "torch.exp": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.exp_": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.expm1": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.expm1_": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.eye": {
@@ -5306,6 +5339,9 @@
     ]
   },
   "torch.floor": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.floor_": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.floor_divide": {
@@ -10458,6 +10494,9 @@
   "torch.reciprocal": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.reciprocal_": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.relu": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.functional.relu",
@@ -10518,6 +10557,9 @@
     }
   },
   "torch.rsqrt": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.rsqrt_": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.save": {
@@ -10691,6 +10733,9 @@
     }
   },
   "torch.sigmoid": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.sigmoid_": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.sign": {
@@ -10908,7 +10953,13 @@
   "torch.sin": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.sin_": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.sinh": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.sinh_": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.slice_scatter": {
@@ -11359,7 +11410,13 @@
   "torch.sqrt": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.sqrt_": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.square": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.square_": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.squeeze": {
@@ -11481,6 +11538,9 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.tan": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.tan_": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.tanh": {

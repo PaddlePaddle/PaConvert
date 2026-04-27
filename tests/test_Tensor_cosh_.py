@@ -11,12 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
 from apibase import APIBase
-from unary_inplace_test_utils import register_standard_unary_inplace_tests
 
 obj = APIBase("torch.Tensor.cosh_")
 
@@ -25,17 +23,42 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1.4309,  1.2706, -0.8562,  0.9796])
-        a.cosh_()
+        x = torch.tensor([0.0, 0.5, 1.25, 2.0], dtype=torch.float32)
+        result = x.cosh_()
         """
     )
-    obj.run(pytorch_code, ["a"])
+    obj.run(pytorch_code, ["x", "result"])
 
 
-register_standard_unary_inplace_tests(
-    globals(),
-    obj,
-    "cosh_",
-    "[[-0.6, 0.4, 1.2], [0.7, -1.3, 2.1]]",
-    "[[[0.2, -0.7], [1.5, -1.1]], [[0.9, -0.4], [2.3, -0.2]]]",
-)
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[0.25, 0.75], [1.5, 2.25]], dtype=torch.float64)
+        result = x.cosh_()
+        """
+    )
+    obj.run(pytorch_code, ["x", "result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor(
+            [0.0, 0.125, 0.5, 0.75, 1.0, 1.5, 2.0, 2.5], dtype=torch.float32
+        ).reshape(2, 2, 2)
+        result = x.cosh_()
+        """
+    )
+    obj.run(pytorch_code, ["x", "result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([0.1, 1.0, 2.2], dtype=torch.float64).cosh_()
+        """
+    )
+    obj.run(pytorch_code, ["result"])

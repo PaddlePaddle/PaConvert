@@ -15,7 +15,6 @@
 import textwrap
 
 from apibase import APIBase
-from unary_inplace_test_utils import register_standard_unary_inplace_tests
 
 obj = APIBase("torch.Tensor.tan_")
 
@@ -24,17 +23,42 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        a.tan_()
+        x = torch.tensor([-1.0, -0.5, 0.25, 1.0], dtype=torch.float32)
+        result = x.tan_()
         """
     )
-    obj.run(pytorch_code, ["a"])
+    obj.run(pytorch_code, ["x", "result"])
 
 
-register_standard_unary_inplace_tests(
-    globals(),
-    obj,
-    "tan_",
-    "[[-0.6, 0.4, 1.2], [0.7, -1.3, 2.1]]",
-    "[[[0.2, -0.7], [1.5, -1.1]], [[0.9, -0.4], [2.3, -0.2]]]",
-)
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[-1.2, -0.25], [0.25, 1.2]], dtype=torch.float64)
+        result = x.tan_()
+        """
+    )
+    obj.run(pytorch_code, ["x", "result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor(
+            [-1.3, -1.0, -0.6, -0.2, 0.2, 0.6, 1.0, 1.3], dtype=torch.float32
+        ).reshape(2, 2, 2)
+        result = x.tan_()
+        """
+    )
+    obj.run(pytorch_code, ["x", "result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([-0.75, 0.0, 0.75], dtype=torch.float64).tan_()
+        """
+    )
+    obj.run(pytorch_code, ["result"])

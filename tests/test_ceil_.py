@@ -1,4 +1,4 @@
-# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
+# Copyright (c) 2026 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,15 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.sqrt_")
+obj = APIBase("torch.ceil_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([0.25, 1.0, 2.25, 9.0], dtype=torch.float32)
-        result = x.sqrt_()
+        x = torch.tensor([1.2, -3.4, 0.1, 2.0], dtype=torch.float32)
+        result = torch.ceil_(x)
         """
     )
     obj.run(pytorch_code, ["x", "result"])
@@ -34,8 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[0.5, 1.5], [3.0, 12.5]], dtype=torch.float64)
-        result = x.sqrt_()
+        x = torch.tensor([[-1.2, 1.01], [2.5, -4.75]], dtype=torch.float64)
+        result = torch.ceil_(input=x)
         """
     )
     obj.run(pytorch_code, ["x", "result"])
@@ -46,9 +46,10 @@ def test_case_3():
         """
         import torch
         x = torch.tensor(
-            [0.125, 0.5, 1.0, 1.5, 2.0, 4.5, 8.0, 18.0], dtype=torch.float32
+            [-2.3, -1.1, -0.01, 0.2, 1.3, 2.8, 3.01, 4.5], dtype=torch.float32
         ).reshape(2, 2, 2)
-        result = x.sqrt_()
+        args = (x,)
+        result = torch.ceil_(*args)
         """
     )
     obj.run(pytorch_code, ["x", "result"])
@@ -58,7 +59,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0.0625, 4.0, 16.0], dtype=torch.float64).sqrt_()
+        result = torch.ceil_(torch.tensor([-2.2, 0.0, 3.3], dtype=torch.float64))
         """
     )
     obj.run(pytorch_code, ["result"])

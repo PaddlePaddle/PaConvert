@@ -1,4 +1,4 @@
-# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
+# Copyright (c) 2026 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,15 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.sqrt_")
+obj = APIBase("torch.tan_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([0.25, 1.0, 2.25, 9.0], dtype=torch.float32)
-        result = x.sqrt_()
+        x = torch.tensor([-1.0, -0.5, 0.25, 1.0], dtype=torch.float32)
+        result = torch.tan_(x)
         """
     )
     obj.run(pytorch_code, ["x", "result"])
@@ -34,8 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([[0.5, 1.5], [3.0, 12.5]], dtype=torch.float64)
-        result = x.sqrt_()
+        x = torch.tensor([[-1.2, -0.25], [0.25, 1.2]], dtype=torch.float64)
+        result = torch.tan_(input=x)
         """
     )
     obj.run(pytorch_code, ["x", "result"])
@@ -46,9 +46,10 @@ def test_case_3():
         """
         import torch
         x = torch.tensor(
-            [0.125, 0.5, 1.0, 1.5, 2.0, 4.5, 8.0, 18.0], dtype=torch.float32
+            [-1.3, -1.0, -0.6, -0.2, 0.2, 0.6, 1.0, 1.3], dtype=torch.float32
         ).reshape(2, 2, 2)
-        result = x.sqrt_()
+        args = (x,)
+        result = torch.tan_(*args)
         """
     )
     obj.run(pytorch_code, ["x", "result"])
@@ -58,7 +59,7 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0.0625, 4.0, 16.0], dtype=torch.float64).sqrt_()
+        result = torch.tan_(torch.tensor([-0.75, 0.0, 0.75], dtype=torch.float64))
         """
     )
     obj.run(pytorch_code, ["result"])

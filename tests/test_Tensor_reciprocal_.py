@@ -15,7 +15,6 @@
 import textwrap
 
 from apibase import APIBase
-from unary_inplace_test_utils import register_standard_unary_inplace_tests
 
 obj = APIBase("torch.Tensor.reciprocal_")
 
@@ -24,38 +23,42 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298]).reciprocal_()
+        x = torch.tensor([0.5, -2.0, 4.0, -0.25], dtype=torch.float32)
+        result = x.reciprocal_()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([-0.4595, -2.1219, -1.4314,  0.7298])
-        result = a.reciprocal_()
+        x = torch.tensor([[0.125, -1.5], [3.0, -8.0]], dtype=torch.float64)
+        result = x.reciprocal_()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[-0.4595, -2.1219, -1.4314,  0.7298], [-0.4595, -2.1219, -1.4314,  0.7298]])
-        result = a.reciprocal_()
+        x = torch.tensor(
+            [0.2, -0.4, 0.8, -1.6, 2.0, -2.5, 4.0, -5.0], dtype=torch.float32
+        ).reshape(2, 2, 2)
+        result = x.reciprocal_()
+        """
+    )
+    obj.run(pytorch_code, ["x", "result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([0.75, -1.25, 2.5], dtype=torch.float64).reciprocal_()
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-register_standard_unary_inplace_tests(
-    globals(),
-    obj,
-    "reciprocal_",
-    "[[-2.0, -0.5, 0.25], [4.0, -1.25, 2.5]]",
-    "[[[-2.0, -0.5], [0.25, 4.0]], [[-1.25, 2.5], [0.5, -4.0]]]",
-)

@@ -11,12 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
 from apibase import APIBase
-from unary_inplace_test_utils import register_standard_unary_inplace_tests
 
 obj = APIBase("torch.Tensor.ceil_")
 
@@ -25,27 +23,42 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([-0.6341, -1.4208, -1.0900,  0.5826]).ceil_()
+        x = torch.tensor([1.2, -3.4, 0.1, 2.0], dtype=torch.float32)
+        result = x.ceil_()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        input = torch.tensor([-0.6341, -1.4208, -1.0900,  0.5826])
-        result = input.ceil_()
+        x = torch.tensor([[-1.2, 1.01], [2.5, -4.75]], dtype=torch.float64)
+        result = x.ceil_()
+        """
+    )
+    obj.run(pytorch_code, ["x", "result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor(
+            [-2.3, -1.1, -0.01, 0.2, 1.3, 2.8, 3.01, 4.5], dtype=torch.float32
+        ).reshape(2, 2, 2)
+        result = x.ceil_()
+        """
+    )
+    obj.run(pytorch_code, ["x", "result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([-2.2, 0.0, 3.3], dtype=torch.float64).ceil_()
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-register_standard_unary_inplace_tests(
-    globals(),
-    obj,
-    "ceil_",
-    "[[-0.7, -0.2, 0.3], [0.9, -1.4, 2.1]]",
-    "[[[-0.7, -0.2], [0.3, 0.9]], [[-1.4, 2.1], [1.2, -2.6]]]",
-)
