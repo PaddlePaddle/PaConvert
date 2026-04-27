@@ -12,55 +12,56 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import textwrap
+
 from apibase import APIBase
-from inplace_unary_helper import run_torch_case
 
 obj = APIBase("torch.reciprocal_")
 
 
 def test_case_1():
-    run_torch_case(
-        obj,
+    pytorch_code = textwrap.dedent(
         """
+        import torch
         x = torch.tensor([0.5, -2.0, 4.0, -0.25], dtype=torch.float32)
         result = torch.reciprocal_(x)
-        """,
-        ["x", "result"],
+        """
     )
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_2():
-    run_torch_case(
-        obj,
+    pytorch_code = textwrap.dedent(
         """
+        import torch
         x = torch.tensor([[0.125, -1.5], [3.0, -8.0]], dtype=torch.float64)
         result = torch.reciprocal_(input=x)
-        """,
-        ["x", "result"],
+        """
     )
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_3():
-    run_torch_case(
-        obj,
+    pytorch_code = textwrap.dedent(
         """
+        import torch
         x = torch.tensor(
             [0.2, -0.4, 0.8, -1.6, 2.0, -2.5, 4.0, -5.0], dtype=torch.float32
         ).reshape(2, 2, 2)
         args = (x,)
         result = torch.reciprocal_(*args)
-        """,
-        ["x", "result"],
+        """
     )
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_4():
-    run_torch_case(
-        obj,
+    pytorch_code = textwrap.dedent(
         """
+        import torch
         result = torch.reciprocal_(
             torch.tensor([0.75, -1.25, 2.5], dtype=torch.float64)
         )
-        """,
-        ["result"],
+        """
     )
+    obj.run(pytorch_code, ["result"])

@@ -12,53 +12,54 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import textwrap
+
 from apibase import APIBase
-from inplace_unary_helper import run_torch_case
 
 obj = APIBase("torch.sigmoid_")
 
 
 def test_case_1():
-    run_torch_case(
-        obj,
+    pytorch_code = textwrap.dedent(
         """
+        import torch
         x = torch.tensor([-3.0, -0.5, 0.5, 2.0], dtype=torch.float32)
         result = torch.sigmoid_(x)
-        """,
-        ["x", "result"],
+        """
     )
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_2():
-    run_torch_case(
-        obj,
+    pytorch_code = textwrap.dedent(
         """
+        import torch
         x = torch.tensor([[-4.0, -1.25], [0.75, 3.0]], dtype=torch.float64)
         result = torch.sigmoid_(input=x)
-        """,
-        ["x", "result"],
+        """
     )
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_3():
-    run_torch_case(
-        obj,
+    pytorch_code = textwrap.dedent(
         """
+        import torch
         x = torch.tensor(
             [-5.0, -2.5, -1.0, -0.25, 0.25, 1.0, 2.5, 5.0], dtype=torch.float32
         ).reshape(2, 2, 2)
         args = (x,)
         result = torch.sigmoid_(*args)
-        """,
-        ["x", "result"],
+        """
     )
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_4():
-    run_torch_case(
-        obj,
+    pytorch_code = textwrap.dedent(
         """
+        import torch
         result = torch.sigmoid_(torch.tensor([-1.5, 0.0, 1.5], dtype=torch.float64))
-        """,
-        ["result"],
+        """
     )
+    obj.run(pytorch_code, ["result"])

@@ -12,54 +12,55 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import textwrap
+
 from apibase import APIBase
-from inplace_unary_helper import run_torch_case
 
 obj = APIBase("torch.sinh_")
 
 
 def test_case_1():
-    run_torch_case(
-        obj,
+    pytorch_code = textwrap.dedent(
         """
+        import torch
         x = torch.tensor([-1.2, -0.3, 0.7, 1.4], dtype=torch.float32)
         result = torch.sinh_(x)
-        """,
-        ["x", "result"],
+        """
     )
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_2():
-    run_torch_case(
-        obj,
+    pytorch_code = textwrap.dedent(
         """
+        import torch
         x = torch.tensor([[-1.5, -0.5], [0.5, 1.5]], dtype=torch.float64)
         result = torch.sinh_(input=x)
-        """,
-        ["x", "result"],
+        """
     )
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_3():
-    run_torch_case(
-        obj,
+    pytorch_code = textwrap.dedent(
         """
+        import torch
         x = torch.tensor(
             [-2.0, -1.25, -0.5, -0.125, 0.125, 0.5, 1.25, 2.0],
             dtype=torch.float32,
         ).reshape(2, 2, 2)
         args = (x,)
         result = torch.sinh_(*args)
-        """,
-        ["x", "result"],
+        """
     )
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_4():
-    run_torch_case(
-        obj,
+    pytorch_code = textwrap.dedent(
         """
+        import torch
         result = torch.sinh_(torch.tensor([-0.75, 0.0, 0.75], dtype=torch.float64))
-        """,
-        ["result"],
+        """
     )
+    obj.run(pytorch_code, ["result"])

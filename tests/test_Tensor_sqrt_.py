@@ -12,52 +12,53 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import textwrap
+
 from apibase import APIBase
-from inplace_unary_helper import run_torch_case
 
 obj = APIBase("torch.Tensor.sqrt_")
 
 
 def test_case_1():
-    run_torch_case(
-        obj,
+    pytorch_code = textwrap.dedent(
         """
+        import torch
         x = torch.tensor([0.25, 1.0, 2.25, 9.0], dtype=torch.float32)
         result = x.sqrt_()
-        """,
-        ["x", "result"],
+        """
     )
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_2():
-    run_torch_case(
-        obj,
+    pytorch_code = textwrap.dedent(
         """
+        import torch
         x = torch.tensor([[0.5, 1.5], [3.0, 12.5]], dtype=torch.float64)
         result = x.sqrt_()
-        """,
-        ["x", "result"],
+        """
     )
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_3():
-    run_torch_case(
-        obj,
+    pytorch_code = textwrap.dedent(
         """
+        import torch
         x = torch.tensor(
             [0.125, 0.5, 1.0, 1.5, 2.0, 4.5, 8.0, 18.0], dtype=torch.float32
         ).reshape(2, 2, 2)
         result = x.sqrt_()
-        """,
-        ["x", "result"],
+        """
     )
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_4():
-    run_torch_case(
-        obj,
+    pytorch_code = textwrap.dedent(
         """
+        import torch
         result = torch.tensor([0.0625, 4.0, 16.0], dtype=torch.float64).sqrt_()
-        """,
-        ["result"],
+        """
     )
+    obj.run(pytorch_code, ["result"])

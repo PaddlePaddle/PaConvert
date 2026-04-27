@@ -12,52 +12,53 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import textwrap
+
 from apibase import APIBase
-from inplace_unary_helper import run_torch_case
 
 obj = APIBase("torch.Tensor.floor_")
 
 
 def test_case_1():
-    run_torch_case(
-        obj,
+    pytorch_code = textwrap.dedent(
         """
+        import torch
         x = torch.tensor([1.2, -3.4, 0.1, 2.0], dtype=torch.float32)
         result = x.floor_()
-        """,
-        ["x", "result"],
+        """
     )
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_2():
-    run_torch_case(
-        obj,
+    pytorch_code = textwrap.dedent(
         """
+        import torch
         x = torch.tensor([[-1.2, 1.01], [2.5, -4.75]], dtype=torch.float64)
         result = x.floor_()
-        """,
-        ["x", "result"],
+        """
     )
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_3():
-    run_torch_case(
-        obj,
+    pytorch_code = textwrap.dedent(
         """
+        import torch
         x = torch.tensor(
             [-2.3, -1.1, -0.01, 0.2, 1.3, 2.8, 3.01, 4.5], dtype=torch.float32
         ).reshape(2, 2, 2)
         result = x.floor_()
-        """,
-        ["x", "result"],
+        """
     )
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_4():
-    run_torch_case(
-        obj,
+    pytorch_code = textwrap.dedent(
         """
+        import torch
         result = torch.tensor([-2.2, 0.0, 3.3], dtype=torch.float64).floor_()
-        """,
-        ["result"],
+        """
     )
+    obj.run(pytorch_code, ["result"])
