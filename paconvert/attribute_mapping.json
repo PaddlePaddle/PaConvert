@@ -21,6 +21,9 @@
     "Matcher": "Attribute2Func",
     "paddle_api": "paddle.Tensor.imag"
   },
+  "torch.Tensor.is_cpu": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.Tensor.is_cuda": {
     "Matcher": "ChangePrefixMatcher"
   },
