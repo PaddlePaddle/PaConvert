@@ -366,8 +366,8 @@ class EinopsTorchMatcher(BaseMatcher):
 # These APIs only change torch.* to paddle.*, not change any other thing
 class ChangePrefixMatcher(BaseMatcher):
     def get_paddle_api(self):
-        if self.paddle_api:
-            return self.paddle_api
+        if self.transformer.mode == "min":
+            return self.origin_attr
 
         torch_package = self.torch_api.split(".", maxsplit=1)[0]
         assert (
@@ -390,6 +390,22 @@ class ChangePrefixMatcher(BaseMatcher):
 
     def get_paddle_class_attribute_nodes(self, node):
         return "unchange"
+
+    def get_paddle_class_nodes(self, func, args, kwargs):
+        if self.transformer.mode == "min":
+            self.paddle_api = astor.to_source(func).strip("\n")
+        else:
+            self.parse_func(func)
+
+        args = self.parse_args(args)
+        kwargs = self.parse_kwargs(kwargs, allow_none=True)
+
+        # temporary delete these unsupport args, which paddle does not support now
+        for k in ["layout", "generator", "memory_format", "sparse_grad", "foreach"]:
+            if k in kwargs:
+                kwargs.pop(k)
+        code = f"{self.paddle_api}({self.args_and_kwargs_to_str(args, kwargs)})"
+        return ast.parse(code).body
 
 
 # These APIs only change API name, but not change API args/kwargs
@@ -943,7 +959,7 @@ class MakeTMatcher(BaseMatcher):
             if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
                 shape = self.parse_args(args)
             elif isinstance(args[0], ast.Starred):
-                shape = astor.to_source(args[0].value).replace("\n", "")
+                shape = astor.to_source(args[0].value).strip("\n")
             else:
                 shape = self.parse_args(args)[0]
             kwargs = {"shape": str(shape).replace("'", ""), **kwargs}
@@ -1001,7 +1017,7 @@ class CreateMatcher(BaseMatcher):
             if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
                 shape = self.parse_args(args)
             elif isinstance(args[0], ast.Starred):
-                shape = astor.to_source(args[0].value).replace("\n", "")
+                shape = astor.to_source(args[0].value).strip("\n")
             else:
                 shape = self.parse_args(args)[0]
 
@@ -1219,9 +1235,9 @@ class _MaxMinMatcherBase(BaseMatcher):
 
         self.enable_utils_code()
         if paddle_api == "paddle.min":
-            self.set_paddle_api("paddle_min")
+            self.paddle_api = "paddle_min"
         elif paddle_api == "paddle.max":
-            self.set_paddle_api("paddle_max")
+            self.paddle_api = "paddle_max"
 
         return ChangeAPIMatcher.get_paddle_nodes(self, args, kwargs)
 
@@ -1504,7 +1520,7 @@ class TensorMatcher(BaseMatcher):
             if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
                 shape = self.parse_args(args)
             elif len(args) == 1 and isinstance(args[0], ast.Starred):
-                shape = astor.to_source(args[0].value).replace("\n", "")
+                shape = astor.to_source(args[0].value).strip("\n")
             else:
                 if len(args) == 0:
                     data = []
@@ -1783,7 +1799,7 @@ class TensorTileMatcher(BaseMatcher):
             if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
                 perm = self.parse_args(args)
             elif isinstance(args[0], ast.Starred):
-                perm = astor.to_source(args[0].value).replace("\n", "")
+                perm = astor.to_source(args[0].value).strip("\n")
             else:
                 perm = self.parse_args(args)[0]
 
@@ -1805,7 +1821,7 @@ class TensorNew_Matcher(BaseMatcher):
             if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
                 shape = self.parse_args(args)
             elif isinstance(args[0], ast.Starred):
-                shape = astor.to_source(args[0].value).replace("\n", "")
+                shape = astor.to_source(args[0].value).strip("\n")
             else:
                 shape = self.parse_args(args)[0]
 
@@ -1957,7 +1973,7 @@ class SplitMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.enable_utils_code()
-        self.set_paddle_api("paddle_split")
+        self.paddle_api = "paddle_split"
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -2027,7 +2043,7 @@ class TensorExpandMatcher(BaseMatcher):
             if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
                 shape = self.parse_args(args)
             elif isinstance(args[0], ast.Starred):
-                shape = astor.to_source(args[0].value).replace("\n", "")
+                shape = astor.to_source(args[0].value).strip("\n")
             else:
                 shape = self.parse_args(args)[0]
 
@@ -2534,7 +2550,7 @@ class SizeMatcher(BaseMatcher):
         if len(args) == 0:
             code = "()"
         else:
-            code = "tuple({})".format(astor.to_source(args[0]).replace("\n", ""))
+            code = "tuple({})".format(astor.to_source(args[0]).strip("\n"))
 
         return ast.parse(code).body
 
@@ -4872,7 +4888,7 @@ class EmbeddingMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.enable_utils_code()
-        self.set_paddle_api("Embedding")
+        self.paddle_api = "Embedding"
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -4935,7 +4951,7 @@ class SimpleScalableVarMatcher(BaseMatcher):
             x = self.parse_args(args)
         else:
             if isinstance(args[0], ast.Starred):
-                x = astor.to_source(args[0].value).replace("\n", "")
+                x = astor.to_source(args[0].value).strip("\n")
             else:
                 x = self.parse_args(args)
         kwargs = {dest_var_arg_name: str(x).replace("'", "")}
@@ -4968,7 +4984,7 @@ class ScalableVarMatcher(BaseMatcher):
             if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
                 dest_var_arg_value = self.parse_args(args)
             elif len(args) == 1 and isinstance(args[0], ast.Starred):
-                dest_var_arg_value = astor.to_source(args[0].value).replace("\n", "")
+                dest_var_arg_value = astor.to_source(args[0].value).strip("\n")
             else:
                 dest_var_arg_value = self.parse_args(args)[0]
 
@@ -4997,7 +5013,7 @@ class ScalableVarMatcher(BaseMatcher):
             if len(args) > 1 or (len(args) == 1 and isinstance(args[0], ast.Constant)):
                 dest_var_arg_value = self.parse_args(args)
             elif len(args) == 1 and isinstance(args[0], ast.Starred):
-                dest_var_arg_value = astor.to_source(args[0].value).replace("\n", "")
+                dest_var_arg_value = astor.to_source(args[0].value).strip("\n")
             else:
                 dest_var_arg_value = self.parse_args(args)[0]
 
@@ -5484,7 +5500,7 @@ class WeightsMatcher(BaseMatcher):
 
         for i, node in enumerate(args):
             k = args_list[i]
-            v = astor.to_source(node).replace("\n", "")
+            v = astor.to_source(node).strip("\n")
             new_kwargs[k] = v
 
         for node in kwargs:
@@ -5494,7 +5510,7 @@ class WeightsMatcher(BaseMatcher):
                     return None
                 continue
 
-            v = astor.to_source(node.value).replace("\n", "")
+            v = astor.to_source(node.value).strip("\n")
             new_kwargs[k] = v
 
         return new_kwargs
@@ -5522,7 +5538,7 @@ class GRUCellMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.enable_utils_code()
-        self.set_paddle_api("GRUCell")
+        self.paddle_api = "GRUCell"
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -5539,7 +5555,7 @@ class LSTMCellMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.enable_utils_code()
-        self.set_paddle_api("LSTMCell")
+        self.paddle_api = "LSTMCell"
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -5556,7 +5572,7 @@ class RNNCellMatcher(BaseMatcher):
 
     def generate_code(self, kwargs):
         self.enable_utils_code()
-        self.set_paddle_api("SimpleRNNCell")
+        self.paddle_api = "SimpleRNNCell"
         return GenericMatcher.generate_code(self, kwargs)
 
 
@@ -5967,7 +5983,7 @@ class CUDAAndCppExtensionMatcher(GenericMatcher):
 
         for i, node in enumerate(args):
             k = args_list[i]
-            v = astor.to_source(node).replace("\n", "")
+            v = astor.to_source(node).strip("\n")
             new_kwargs[k] = v
 
         for node in kwargs:
@@ -5976,6 +5992,6 @@ class CUDAAndCppExtensionMatcher(GenericMatcher):
                 if not allow_none:
                     return None
                 continue
-            v = astor.to_source(node.value).replace("\n", "")
+            v = astor.to_source(node.value).strip("\n")
             new_kwargs[k] = v
         return new_kwargs

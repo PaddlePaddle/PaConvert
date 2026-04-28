@@ -60,6 +60,7 @@
   "torch.Tensor.requires_grad": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.Tensor.retains_grad": {},
   "torch.Tensor.shape": {
     "Matcher": "ChangePrefixMatcher"
   },

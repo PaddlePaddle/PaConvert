@@ -11,8 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-
 
 import textwrap
 
@@ -25,18 +23,42 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([1.3192, 1.9915, 1.9674, 1.7151]).acosh_()
+        x = torch.tensor([1.1, 1.5, 2.0, 3.25], dtype=torch.float32)
+        result = x.acosh_()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1.3192, 1.9915, 1.9674, 1.7151])
-        result = a.acosh_()
+        x = torch.tensor([[1.01, 1.25], [2.5, 4.0]], dtype=torch.float64)
+        result = x.acosh_()
         """
     )
-    obj.run(pytorch_code, ["a", "result"])
+    obj.run(pytorch_code, ["x", "result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor(
+            [1.001, 1.1, 1.25, 1.5, 2.0, 2.5, 3.0, 4.0], dtype=torch.float32
+        ).reshape(2, 2, 2)
+        result = x.acosh_()
+        """
+    )
+    obj.run(pytorch_code, ["x", "result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([1.05, 1.75, 3.5], dtype=torch.float64).acosh_()
+        """
+    )
+    obj.run(pytorch_code, ["result"])

@@ -23,19 +23,43 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([0.34, -0.56, 0.73])
-        a.acos_()
+        x = torch.tensor([-0.9, -0.25, 0.25, 0.75], dtype=torch.float32)
+        result = x.acos_()
         """
     )
-    obj.run(pytorch_code, ["a"])
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([1., -1., 0.])
-        a.acos_()
+        x = torch.tensor([[-0.8, -0.1], [0.1, 0.8]], dtype=torch.float64)
+        result = x.acos_()
         """
     )
-    obj.run(pytorch_code, ["a"])
+    obj.run(pytorch_code, ["x", "result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor(
+            [-0.95, -0.7, -0.35, -0.05, 0.05, 0.35, 0.7, 0.95],
+            dtype=torch.float32,
+        ).reshape(2, 2, 2)
+        result = x.acos_()
+        """
+    )
+    obj.run(pytorch_code, ["x", "result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([-0.6, 0.0, 0.6], dtype=torch.float64).acos_()
+        """
+    )
+    obj.run(pytorch_code, ["result"])

@@ -23,8 +23,42 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.Tensor([[1.,2.], [3.,4.]])
-        a.sigmoid_()
+        x = torch.tensor([-3.0, -0.5, 0.5, 2.0], dtype=torch.float32)
+        result = x.sigmoid_()
         """
     )
-    obj.run(pytorch_code, ["a"])
+    obj.run(pytorch_code, ["x", "result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[-4.0, -1.25], [0.75, 3.0]], dtype=torch.float64)
+        result = x.sigmoid_()
+        """
+    )
+    obj.run(pytorch_code, ["x", "result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor(
+            [-5.0, -2.5, -1.0, -0.25, 0.25, 1.0, 2.5, 5.0], dtype=torch.float32
+        ).reshape(2, 2, 2)
+        result = x.sigmoid_()
+        """
+    )
+    obj.run(pytorch_code, ["x", "result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([-1.5, 0.0, 1.5], dtype=torch.float64).sigmoid_()
+        """
+    )
+    obj.run(pytorch_code, ["result"])

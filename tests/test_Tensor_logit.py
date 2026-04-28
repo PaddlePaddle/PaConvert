@@ -61,3 +61,64 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    """2D input with eps"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[0.2, 0.5, 0.8], [0.1, 0.9, 0.3]])
+        result = input.logit(eps=1e-6)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    """3D input, no eps"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[[0.2, 0.8], [0.4, 0.6]], [[0.1, 0.9], [0.3, 0.7]]])
+        result = input.logit()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """float64 dtype"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([0.2796, 0.9331, 0.6486], dtype=torch.float64)
+        result = input.logit(eps=1e-6)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """Gradient computation"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([0.2796, 0.9331, 0.6486], requires_grad=True)
+        y = x.logit(eps=1e-6)
+        y.sum().backward()
+        x_grad = x.grad
+        """
+    )
+    obj.run(pytorch_code, ["y", "x_grad"], check_stop_gradient=False)
+
+
+def test_case_9():
+    """Chained call"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([0.2, 0.5, 0.8]).logit(1e-6)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
