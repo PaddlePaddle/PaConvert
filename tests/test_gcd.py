@@ -218,3 +218,5 @@ def test_case_16():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+    obj.run(pytorch_code, ["result"])
