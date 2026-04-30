@@ -3132,15 +3132,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.aminmax": {
-    "Matcher": "AMinMaxMatcher",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "*",
-      "dim",
-      "keepdim",
-      "out"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.amp.autocast": {
     "Matcher": "ChangePrefixMatcher"
