@@ -39,3 +39,99 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    """Test with 2D tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[0.5950, -0.0872], [2.3298, -0.2972]])
+        result = a.sgn()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    """Test with 3D tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[[0.5950, -0.0872], [2.3298, -0.2972]]])
+        result = a.sgn()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    """Test with zero values"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0., 1., 0., -1., 0.])
+        result = a.sgn()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    """Test with negative values only"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([-1., -2., -3., -0.5])
+        result = a.sgn()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """Test with positive values only"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1., 2., 3., 0.5])
+        result = a.sgn()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """Test with single element tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([3.5])
+        result = a.sgn()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """Test with large values"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1e10, -1e10, 1e-10, -1e-10])
+        result = a.sgn()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """Test with float64 dtype"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([0.5950, -0.0872, 2.3298, -0.2972], dtype=torch.float64)
+        result = a.sgn()
+        """
+    )
+    obj.run(pytorch_code, ["result"])

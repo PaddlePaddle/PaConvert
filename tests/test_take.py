@@ -90,3 +90,51 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """1D tensor test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 2, 3, 4, 5])
+        result = torch.take(x, torch.tensor([0, 2, 4]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """3D tensor test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+        result = torch.take(x, torch.tensor([0, 3, 7]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """Mixed parameter types"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+        idx = torch.tensor([1, 4])
+        result = torch.take(input=x, index=idx)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """Expression argument test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.take(torch.tensor([1, 2, 3, 4, 5, 6]), torch.tensor([2 * 2]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])

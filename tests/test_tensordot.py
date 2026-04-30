@@ -80,3 +80,68 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_6():
+    """Single dimension contraction"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(12.).reshape(3, 4)
+        b = torch.arange(12.).reshape(4, 3)
+        result = torch.tensordot(a, b, dims=([1], [0]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """4D tensors"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.randn(2, 3, 4, 5)
+        b = torch.randn(4, 5, 2, 3)
+        result = torch.tensordot(a, b, dims=([2, 3], [0, 1]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """Integer dims parameter"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(6.).reshape(2, 3)
+        b = torch.arange(6.).reshape(2, 3)
+        result = torch.tensordot(a, b, dims=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """Keyword arguments out of order"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(24.).reshape(3, 8)
+        b = torch.arange(24.).reshape(3, 8)
+        result = torch.tensordot(b=b, a=a, dims=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """All keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(12.).reshape(3, 4)
+        b = torch.arange(12.).reshape(4, 3)
+        result = torch.tensordot(a=a, b=b, dims=([1], [0]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])

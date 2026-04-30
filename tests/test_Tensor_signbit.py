@@ -39,3 +39,99 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    """Test with 2D tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[-1., 2., -3.], [4., -5., 6.]], dtype=torch.float32)
+        result = x.signbit()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    """Test with 3D tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[[-0., 1.1], [-2.1, 0.]], [[2.5, -3.], [4., -5.]]], dtype=torch.float32)
+        result = x.signbit()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    """Test with all positive values"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., 3., 0.5, 10.], dtype=torch.float32)
+        result = x.signbit()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    """Test with all negative values"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([-1., -2., -3., -0.5, -10.], dtype=torch.float32)
+        result = x.signbit()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """Test with single element tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([-5.], dtype=torch.float32)
+        result = x.signbit()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """Test with single positive element"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([5.], dtype=torch.float32)
+        result = x.signbit()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """Test with mixed positive and negative"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., -2., 3., -0.5, 5.], dtype=torch.float32)
+        result = x.signbit()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """Test with all zeros"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([0., 0., 0., 0.], dtype=torch.float32)
+        result = x.signbit()
+        """
+    )
+    obj.run(pytorch_code, ["result"])

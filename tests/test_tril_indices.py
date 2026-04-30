@@ -87,3 +87,69 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """Rectangular matrix (more rows than cols)"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tril_indices(row=5, col=3)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """Rectangular matrix (more cols than rows)"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tril_indices(row=2, col=5)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """Large positive offset"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tril_indices(row=5, col=5, offset=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    """1x1 matrix"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tril_indices(row=1, col=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    """Default dtype and device"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tril_indices(3, 3, offset=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    """Expression argument test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tril_indices(2 + 1, 3, offset=-1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
