@@ -6973,85 +6973,13 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.ConvTranspose1d": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.Conv1DTranspose",
-    "args_list": [
-      "in_channels",
-      "out_channels",
-      "kernel_size",
-      "stride",
-      "padding",
-      "output_padding",
-      "groups",
-      "bias",
-      "dilation",
-      "padding_mode",
-      "device",
-      "dtype"
-    ],
-    "unsupport_args": [
-      "padding_mode"
-    ],
-    "kwargs_change": {
-      "bias": "bias_attr",
-      "device": "",
-      "dtype": ""
-    },
-    "min_input_args": 3
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.ConvTranspose2d": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.Conv2DTranspose",
-    "args_list": [
-      "in_channels",
-      "out_channels",
-      "kernel_size",
-      "stride",
-      "padding",
-      "output_padding",
-      "groups",
-      "bias",
-      "dilation",
-      "padding_mode",
-      "device",
-      "dtype"
-    ],
-    "unsupport_args": [
-      "padding_mode"
-    ],
-    "kwargs_change": {
-      "bias": "bias_attr",
-      "device": "",
-      "dtype": ""
-    },
-    "min_input_args": 3
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.ConvTranspose3d": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.Conv3DTranspose",
-    "args_list": [
-      "in_channels",
-      "out_channels",
-      "kernel_size",
-      "stride",
-      "padding",
-      "output_padding",
-      "groups",
-      "bias",
-      "dilation",
-      "padding_mode",
-      "device",
-      "dtype"
-    ],
-    "unsupport_args": [
-      "padding_mode"
-    ],
-    "kwargs_change": {
-      "bias": "bias_attr",
-      "device": "",
-      "dtype": ""
-    },
-    "min_input_args": 3
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.CosineEmbeddingLoss": {
     "Matcher": "SizeAverageMatcher",
@@ -8436,58 +8364,13 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.conv_transpose1d": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.conv1d_transpose",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "weight",
-      "bias",
-      "stride",
-      "padding",
-      "output_padding",
-      "groups",
-      "dilation"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.conv_transpose2d": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.conv2d_transpose",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "weight",
-      "bias",
-      "stride",
-      "padding",
-      "output_padding",
-      "groups",
-      "dilation"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.conv_transpose3d": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.conv3d_transpose",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "weight",
-      "bias",
-      "stride",
-      "padding",
-      "output_padding",
-      "groups",
-      "dilation"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.cosine_embedding_loss": {
     "Matcher": "SizeAverageMatcher",
