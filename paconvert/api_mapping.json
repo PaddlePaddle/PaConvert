@@ -3280,6 +3280,9 @@
   "torch.autograd.function.FunctionCtx.set_materialize_grads": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.autograd.function.once_differentiable": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.autograd.functional.hessian": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.incubate.autograd.Hessian",
