@@ -21,6 +21,9 @@
     "Matcher": "Attribute2Func",
     "paddle_api": "paddle.Tensor.imag"
   },
+  "torch.Tensor.is_cpu": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.Tensor.is_cuda": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -68,8 +71,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.autograd.function.FunctionCtx.saved_tensors": {
-    "Matcher": "Attribute2Func",
-    "paddle_api": "paddle.autograd.function.FunctionCtx.saved_tensor"
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.autograd.profiler.profile.self_cpu_time_total": {},
   "torch.backends.cuda.matmul.allow_tf32": {

@@ -9,7 +9,7 @@ from apibase import APIBase
 obj = APIBase("torch.autograd.function.once_differentiable")
 
 
-def _test_case_1():
+def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -33,10 +33,14 @@ def _test_case_1():
         result_grad = x.grad
     """
     )
-    obj.run(pytorch_code, ["result_y", "result_grad"])
+    obj.run(
+        pytorch_code,
+        ["result_y", "result_grad"],
+        check_stop_gradient=False,
+    )
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -57,12 +61,19 @@ def _test_case_2():
         b = torch.tensor([3.0, 4.0], requires_grad=True)
         y = CustomFunction.apply(a, b)
         y.sum().backward()
+        result_y = y
+        result_a_grad = a.grad
+        result_b_grad = b.grad
     """
     )
-    obj.run(pytorch_code, ["y", "a.grad", "b.grad"])
+    obj.run(
+        pytorch_code,
+        ["result_y", "result_a_grad", "result_b_grad"],
+        check_stop_gradient=False,
+    )
 
 
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -83,12 +94,17 @@ def _test_case_3():
         y = SquareFunction.apply(x)
         z = y * 3
         z.sum().backward()
+        result_x_grad = x.grad
     """
     )
-    obj.run(pytorch_code, ["y", "z", "x.grad"])
+    obj.run(
+        pytorch_code,
+        ["y", "z", "result_x_grad"],
+        check_stop_gradient=False,
+    )
 
 
-def _test_case_4():
+def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -104,42 +120,22 @@ def _test_case_4():
             @staticmethod
             def backward(ctx, grad_output):
                 x, = ctx.saved_tensors
-                return grad_output * ctx.factor, None
+                return grad_output * ctx.factor
 
         x = torch.tensor([1.0, 2.0], requires_grad=True)
         y = ComplexFunction.apply(x)
         y.sum().backward()
+        result_x_grad = x.grad
     """
     )
-    obj.run(pytorch_code, ["y", "x.grad"])
-
-
-def _test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-
-        class DTFunction(torch.autograd.Function):
-            @staticmethod
-            @torch.autograd.function.once_differentiable
-            def forward(ctx, x):
-                ctx.save_for_backward(x)
-                return x.float() * 1.5
-
-            @staticmethod
-            def backward(ctx, grad_output):
-                x, = ctx.saved_tensors
-                return grad_output.to(x.dtype) * 1.5
-
-        x = torch.tensor([1, 2], dtype=torch.int32, requires_grad=True)
-        y = DTFunction.apply(x)
-        y.sum().backward()
-    """
+    obj.run(
+        pytorch_code,
+        ["y", "result_x_grad"],
+        check_stop_gradient=False,
     )
-    obj.run(pytorch_code, ["y", "x.grad"])
 
 
-def _test_case_6():
+def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -161,10 +157,14 @@ def _test_case_6():
         result_y = y
     """
     )
-    obj.run(pytorch_code, ["result_y"])
+    obj.run(
+        pytorch_code,
+        ["result_y"],
+        check_stop_gradient=False,
+    )
 
 
-def _test_case_7():
+def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -185,13 +185,18 @@ def _test_case_7():
         y = NestedFunction.apply(x)
         z = y * y
         z.sum().backward()
+        result_x_grad = x.grad
     """
     )
-    obj.run(pytorch_code, ["y", "z", "x.grad"])
+    obj.run(
+        pytorch_code,
+        ["y", "z", "result_x_grad"],
+        check_stop_gradient=False,
+    )
 
 
 @pytest.mark.skip(reason="Complex tensor operations require special handling")
-def _test_case_8():
+def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -211,6 +216,11 @@ def _test_case_8():
         x = torch.tensor([1+2j, 3+4j], requires_grad=True)
         y = ComplexTensorFunction.apply(x)
         y.sum().backward()
+        result_x_grad = x.grad
     """
     )
-    obj.run(pytorch_code, ["y", "x.grad"])
+    obj.run(
+        pytorch_code,
+        ["y", "x.grad"],
+        check_stop_gradient=False,
+    )
