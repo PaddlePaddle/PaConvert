@@ -87,3 +87,32 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    """*args unpacking with reduction kwarg"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        args = (True, False)
+        loss = torch.nn.PoissonNLLLoss(*args, eps=1e-06, reduction='mean')
+        input = torch.full([5, 2], 1).to(dtype=torch.float32)
+        label = torch.full([5, 2], 2).to(dtype=torch.float32)
+        result = loss(input, label)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """Out-of-order keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        loss = torch.nn.PoissonNLLLoss(reduction='none', eps=1e-08, full=False, log_input=True)
+        input = torch.full([5, 2], 1).to(dtype=torch.float32)
+        label = torch.full([5, 2], 2).to(dtype=torch.float32)
+        result = loss(input, label)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

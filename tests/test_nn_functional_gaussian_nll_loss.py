@@ -82,3 +82,102 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    """All keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[0.5, -0.3], [1.2, 0.7], [-0.8, 0.4]], dtype=torch.float32)
+        label = torch.tensor([[0.4, -0.2], [1.0, 0.5], [-0.6, 0.3]], dtype=torch.float32)
+        variance = torch.tensor([[0.1, 0.2], [0.3, 0.4], [0.5, 0.6]], dtype=torch.float32)
+        result = torch.nn.functional.gaussian_nll_loss(input=input, target=label, var=variance, full=True, eps=1e-08, reduction='sum')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """Mixed positional and keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[0.5, -0.3], [1.2, 0.7]], dtype=torch.float32)
+        label = torch.tensor([[0.4, -0.2], [1.0, 0.5]], dtype=torch.float32)
+        variance = torch.tensor([[0.1, 0.2], [0.3, 0.4]], dtype=torch.float32)
+        result = torch.nn.functional.gaussian_nll_loss(input, label, variance, full=True, reduction='none')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """Out-of-order keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[0.5, -0.3, 0.1], [1.2, 0.7, -0.5]], dtype=torch.float32)
+        label = torch.tensor([[0.4, -0.2, 0.0], [1.0, 0.5, -0.4]], dtype=torch.float32)
+        variance = torch.tensor([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]], dtype=torch.float32)
+        result = torch.nn.functional.gaussian_nll_loss(reduction='mean', eps=1e-06, full=False, var=variance, target=label, input=input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """3D input tensors"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.ones([2, 3, 4], dtype=torch.float32) * 0.5
+        label = torch.ones([2, 3, 4], dtype=torch.float32)
+        variance = torch.ones([2, 3, 4], dtype=torch.float32) * 2.0
+        result = torch.nn.functional.gaussian_nll_loss(input, label, variance)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """float64 input"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[0.5, -0.3], [1.2, 0.7]], dtype=torch.float64)
+        label = torch.tensor([[0.4, -0.2], [1.0, 0.5]], dtype=torch.float64)
+        variance = torch.tensor([[0.1, 0.2], [0.3, 0.4]], dtype=torch.float64)
+        result = torch.nn.functional.gaussian_nll_loss(input, label, variance, reduction='sum')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    """Variable args unpacking"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.ones([5, 2], dtype=torch.float32)
+        label = torch.ones([5, 2], dtype=torch.float32)
+        variance = torch.ones([5, 2], dtype=torch.float32)
+        args = (input, label, variance)
+        result = torch.nn.functional.gaussian_nll_loss(*args)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    """Default args omitted"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1.5, 2.3], [-0.5, 1.7]], dtype=torch.float32)
+        label = torch.tensor([[1.0, 2.0], [-0.3, 1.5]], dtype=torch.float32)
+        variance = torch.tensor([[0.2, 0.3], [0.4, 0.5]], dtype=torch.float32)
+        result = torch.nn.functional.gaussian_nll_loss(input, label, variance)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

@@ -548,3 +548,34 @@ def test_case_36():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_37():
+    """*args unpacking with reduction kwarg"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input1 = torch.Tensor([[1.6, 1.2, -0.5], [3.2, 2.6, -5.8]]).type(torch.float32)
+        input2 = torch.Tensor([[0.5, 0.5, -1.8], [2.3, -1.4, 1.1]]).type(torch.float32)
+        label = torch.Tensor([1, -1]).type(torch.int64)
+        args = (0.5,)
+        loss = torch.nn.CosineEmbeddingLoss(*args, reduction='sum')
+        result = loss(input1, input2, label)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_38():
+    """Out-of-order keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input1 = torch.Tensor([[1.6, 1.2, -0.5], [3.2, 2.6, -5.8]]).type(torch.float32)
+        input2 = torch.Tensor([[0.5, 0.5, -1.8], [2.3, -1.4, 1.1]]).type(torch.float32)
+        label = torch.Tensor([1, -1]).type(torch.int64)
+        loss = torch.nn.CosineEmbeddingLoss(reduction='none', margin=0.3)
+        result = loss(input1, input2, label)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
