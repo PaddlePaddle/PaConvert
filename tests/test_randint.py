@@ -31,7 +31,7 @@ def test_case_1():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
-def _test_case_2():  # 2-arg form: paddle.randint(low, high, shape) signature differs from torch.randint(high, size)
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -117,7 +117,7 @@ def test_case_9():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
-def _test_case_10():  # 2-arg form: paddle.randint(low, high, shape) signature differs from torch.randint(high, size)
+def test_case_10():
     pytorch_code = textwrap.dedent(
         """
         import torch
