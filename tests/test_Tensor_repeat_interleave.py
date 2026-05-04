@@ -95,3 +95,51 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """float16 input on CPU (CPU kernel previously missing float16 registration)"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 2., 3.], [4., 5., 6.]], dtype=torch.float16)
+        result = a.repeat_interleave(2, dim=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """float16 with tensor repeats on dim=0"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 2., 3.], [4., 5., 6.]], dtype=torch.float16)
+        result = a.repeat_interleave(torch.tensor([1, 2]), dim=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """float16 1-D input, default dim=None"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1., 2., 3., 4.], dtype=torch.float16)
+        result = a.repeat_interleave(3)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    """bfloat16 input — sanity check companion dtype"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., 2., 3.], [4., 5., 6.]], dtype=torch.bfloat16)
+        result = a.repeat_interleave(2, dim=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
