@@ -102,16 +102,31 @@
   "torch.bfloat16": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.bfloat16.itemsize": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.bool": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.bool.itemsize": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.cfloat": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.cfloat.itemsize": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.complex128": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.complex128.itemsize": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.complex64": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.complex64.itemsize": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.distributed.ReduceOp.MAX": {
@@ -136,6 +151,9 @@
   "torch.double": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.double.itemsize": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.dtype": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -145,13 +163,25 @@
   "torch.float16": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.float16.itemsize": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.float32": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.float32.itemsize": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.float64": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.float64.itemsize": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.float8_e4m3fn": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.float8_e4m3fn.itemsize": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.inf": {
@@ -160,16 +190,31 @@
   "torch.int16": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.int16.itemsize": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.int32": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.int32.itemsize": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.int64": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.int64.itemsize": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.int8": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.int8.itemsize": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.long": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.long.itemsize": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nan": {
@@ -185,6 +230,9 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.uint8": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.uint8.itemsize": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.cpp_extension.BuildExtension.with_options": {
