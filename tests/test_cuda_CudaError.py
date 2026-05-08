@@ -24,14 +24,14 @@ def test_case_1():
         """
         import torch
         try:
-            torch.cuda.check_error(1)
+            raise torch.cuda.CudaError("test")
         except torch.cuda.CudaError as e:
             result = str(e)
         """
     )
     obj.run(
         pytorch_code,
-        expect_paddle_code="import paddle\n\ntry:\n    paddle.cuda.check_error(1)\nexcept paddle.cuda.CudaError as e:\n    result = str(e)\n",
+        expect_paddle_code="import paddle\n\ntry:\n    raise paddle.cuda.CudaError(\"test\")\nexcept paddle.cuda.CudaError as e:\n    result = str(e)\n",
     )
 
 
