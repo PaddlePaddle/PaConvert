@@ -3759,6 +3759,9 @@
   "torch.cuda.ByteTensor": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.cuda.CUDAGraph": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.cuda.CharTensor": {
     "Matcher": "ChangePrefixMatcher"
   },
