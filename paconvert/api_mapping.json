@@ -1480,15 +1480,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.logaddexp": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.logaddexp",
-    "min_input_args": 1,
-    "args_list": [
-      "other"
-    ],
-    "kwargs_change": {
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.logaddexp2": {
     "Matcher": "LogAddExp2Matcher",
@@ -1738,7 +1730,8 @@
       "dim",
       "keepdim",
       "*",
-      "dtype"
+      "dtype",
+      "out"
     ],
     "kwargs_change": {
       "dim": "axis"
@@ -1770,11 +1763,11 @@
       "dim",
       "keepdim",
       "*",
-      "dtype"
+      "dtype",
+      "out"
     ],
     "kwargs_change": {
-      "dim": "axis",
-      "dtype": "dtype"
+      "dim": "axis"
     }
   },
   "torch.Tensor.narrow": {
@@ -2090,18 +2083,7 @@
     ]
   },
   "torch.Tensor.select_scatter": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.select_scatter",
-    "min_input_args": 3,
-    "args_list": [
-      "src",
-      "dim",
-      "index"
-    ],
-    "kwargs_change": {
-      "src": "values",
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.set_": {
     "Matcher": "TensorSetMatcher",
@@ -6458,8 +6440,7 @@
     ],
     "kwargs_change": {
       "end": "stop",
-      "steps": "num",
-      "dtype": "dtype"
+      "steps": "num"
     }
   },
   "torch.logsumexp": {
@@ -6705,8 +6686,7 @@
     ],
     "kwargs_change": {
       "input": "x",
-      "dim": "axis",
-      "dtype": "dtype"
+      "dim": "axis"
     }
   },
   "torch.narrow": {
@@ -10446,20 +10426,7 @@
     ]
   },
   "torch.select_scatter": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.select_scatter",
-    "min_input_args": 4,
-    "args_list": [
-      "input",
-      "src",
-      "dim",
-      "index"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "src": "values",
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.selu": {
     "Matcher": "GenericMatcher",
@@ -11482,7 +11449,7 @@
       "layout"
     ],
     "kwargs_change": {
-      "dtype": "dtype"
+      "device": "device"
     }
   },
   "torch.triplet_margin_loss": {},
@@ -11503,7 +11470,7 @@
       "layout"
     ],
     "kwargs_change": {
-      "dtype": "dtype"
+      "device": "device"
     }
   },
   "torch.true_divide": {
