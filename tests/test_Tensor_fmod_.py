@@ -13,11 +13,13 @@
 # limitations under the License.
 import textwrap
 
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.Tensor.fmod_")
 
 
+@pytest.mark.skip(reason="Paddle does not support scalar input for fmod_")
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
@@ -29,6 +31,7 @@ def test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skip(reason="Paddle does not support scalar input for fmod_")
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """

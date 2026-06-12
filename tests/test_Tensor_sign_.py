@@ -16,75 +16,65 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.bernoulli_")
+obj = APIBase("torch.Tensor.sign_")
 
 
 def test_case_1():
+    """Basic usage with float tensor"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.bernoulli_(0.5)
+        x = torch.tensor([-2.0, -1.0, 0.0, 1.0, 2.0])
+        x.sign_()
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        check_value=False,
-    )
+    obj.run(pytorch_code, ["x"])
 
 
 def test_case_2():
+    """With integer tensor"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.bernoulli_(0.5, generator=None)
+        x = torch.tensor([-5, -3, 0, 3, 5])
+        x.sign_()
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["x"])
 
 
 def test_case_3():
+    """2D tensor"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.bernoulli_(p=0.5, generator=None)
+        x = torch.tensor([[-1.5, 0.0, 2.3], [-0.5, 1.0, -3.0]])
+        x.sign_()
         """
     )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["x"])
 
 
 def test_case_4():
+    """3D tensor"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.bernoulli_(p=0, generator=None)
+        x = torch.tensor([[[-1.5, 0.0], [2.3, -0.5]], [[1.0, -3.0], [0.5, 1.5]]])
+        x.sign_()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x"])
 
 
 def test_case_5():
+    """Return value is the same tensor"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.bernoulli_(1.0)
+        x = torch.tensor([-2.0, -1.0, 0.0, 1.0, 2.0])
+        result = x.sign_()
+        same = result is x
         """
     )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        src = torch.zeros(3, 3)
-        p = torch.ones(3, 3) * 0.5
-        result = src.bernoulli_(p)
-        """
-    )
-    obj.run(pytorch_code, ["result"], check_value=False)
+    obj.run(pytorch_code, ["x", "result", "same"])

@@ -1,8 +1,6 @@
 {
   "flash_attn.flash_attn_interface.flash_attn_varlen_func": "flash_attn.flash_attn_interface.flash_attn_unpadded_func",
   "timm.models.layers.trunc_normal_": "torch.nn.init.trunc_normal_",
-  "torch.Tensor.absolute": "torch.Tensor.abs",
-  "torch.Tensor.absolute_": "torch.Tensor.abs_",
   "torch.Tensor.arccos": "torch.Tensor.acos",
   "torch.Tensor.arccos_": "torch.Tensor.acos_",
   "torch.Tensor.arccosh": "torch.Tensor.acosh",
@@ -92,7 +90,6 @@
   "torch.erfc": "torch.special.erfc",
   "torch.erfinv": "torch.special.erfinv",
   "torch.exp2": "torch.special.exp2",
-  "torch.float": "torch.float32",
   "torch.functional.block_diag": "torch.block_diag",
   "torch.functional.broadcast_tensors": "torch.broadcast_tensors",
   "torch.functional.cartesian_prod": "torch.cartesian_prod",

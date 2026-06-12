@@ -16,75 +16,69 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.bernoulli_")
+obj = APIBase("torch.nn.init.xavier_uniform")
 
 
 def test_case_1():
+    """Basic usage with positional args"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.bernoulli_(0.5)
+        x = torch.empty(3, 5)
+        torch.nn.init.xavier_uniform(x)
+        result = x
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        check_value=False,
-    )
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_2():
+    """With gain parameter"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.bernoulli_(0.5, generator=None)
+        x = torch.empty(3, 5)
+        torch.nn.init.xavier_uniform(x, gain=2.0)
+        result = x
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_3():
+    """With all keyword arguments"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.bernoulli_(p=0.5, generator=None)
+        x = torch.empty(3, 5)
+        torch.nn.init.xavier_uniform(tensor=x, gain=1.5)
+        result = x
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_4():
+    """2D tensor initialization"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.bernoulli_(p=0, generator=None)
+        weight = torch.empty(10, 20)
+        torch.nn.init.xavier_uniform(weight)
+        result = weight
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["result"], check_value=False)
 
 
 def test_case_5():
+    """4D conv weight tensor initialization"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        src = torch.tensor([1., 2., 3., 4., 5., 6.])
-        result = src.bernoulli_(1.0)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        src = torch.zeros(3, 3)
-        p = torch.ones(3, 3) * 0.5
-        result = src.bernoulli_(p)
+        weight = torch.empty(8, 4, 3, 3)
+        torch.nn.init.xavier_uniform(weight)
+        result = weight
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
