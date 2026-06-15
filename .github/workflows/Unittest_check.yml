@@ -1,0 +1,126 @@
+name: CI Unittest
+
+on:
+    # Nightly: re-validate master against the freshly built nightly paddle
+    # Cron is UTC: '0 21 * * *' => 05:00 UTC+8
+    # schedule:
+    #     - cron: '0 21 * * *'  
+    pull_request:
+        branches: [master, develop, "release/**"]
+        paths-ignore:
+            - '**/*.md'
+            - 'docs/**'
+            - 'LICENSE'
+            - '.gitignore'
+            - '.pre-commit-config.yaml'
+    push:
+        branches: [master, develop]
+        paths-ignore:
+            - '**/*.md'
+            - 'docs/**'
+            - 'LICENSE'
+            - '.gitignore'
+            - '.pre-commit-config.yaml'
+
+permissions:
+    contents: read
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    ci-unittest:
+        name: CI Unittest
+        # TODO: replace with the actual self-hosted CPU runner group name
+        runs-on: ubuntu-24.04
+        timeout-minutes: 60
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                fetch-depth: 0
+
+            - name: Setup Python
+              uses: actions/setup-python@v5
+              with:
+                python-version: '3.10'
+                cache: pip
+                cache-dependency-path: |
+                  requirements.txt
+                  tests/requirements.txt
+
+            - name: Check Env
+              run: |
+                python --version
+                pwd
+
+            - name: Install Latest Release CPU Version Torch
+              run: |
+                python -m pip install --upgrade pip
+                python -m pip install -U torch torchvision --index-url https://download.pytorch.org/whl/cpu
+                python -c "import torch; print('torch version information:', torch.__version__)"
+
+            - name: Install Latest develop CPU Version Paddle
+              run: |
+                python -m pip uninstall -y paddlepaddle
+                python -m pip uninstall -y paddlepaddle-gpu
+                python -m pip install --force-reinstall --no-deps --no-cache-dir -U --pre paddlepaddle \
+                    -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/ \
+                    --timeout 120 --retries 3
+                python -c "import paddle; print('paddle version information:', paddle.__version__); print('paddle commit information:', paddle.__git_commit__)"
+
+            - name: Install paconvert requirements
+              run: |
+                python -m pip install -r requirements.txt
+                if [ -f tests/requirements.txt ]; then
+                    python -m pip install -r tests/requirements.txt
+                fi
+
+            - name: Run CI Unittest
+              shell: bash
+              run: |
+                python -m pip install pytest-timeout pytest-xdist pytest-rerunfailures
+
+                # Disable errexit so a failing run is captured instead of aborting immediately
+                # A passing retry can clear the error.
+                set +e
+
+                echo "Checking code cpu unit test by pytest ..."
+                # tee output to pytest.log so it can be uploaded as an artifact on failure;
+                # PIPESTATUS[0] preserves pytest's exit code instead of tee's.
+                python -m pytest -v -s -p no:warnings -n 1 --reruns=3 ./tests 2>&1 | tee pytest.log
+                check_error=${PIPESTATUS[0]}
+                if [ ${check_error} -ne 0 ]; then
+                    echo "Rerun cpu unit test check."
+                    python -m pytest -v -s -p no:warnings -n 1 --lf ./tests 2>&1 | tee -a pytest.log
+                    check_error=${PIPESTATUS[0]}
+                fi
+
+                echo '************************************************************************************************************'
+                if [ ${check_error} -ne 0 ]; then
+                    echo "Your PR code cpu unit test check failed."
+                    echo "Please run the following command:"
+                    echo ""
+                    echo "    python -m pytest tests"
+                    echo ""
+                    echo "For more information, please refer to our check guide:"
+                    echo "https://github.com/PaddlePaddle/PaConvert#readme."
+                else
+                    echo "Your PR code cpu unit test check passed."
+                fi
+                echo '************************************************************************************************************'
+
+                exit ${check_error}
+
+            - name: Upload logs on failure
+              if: failure()
+              uses: actions/upload-artifact@v4
+              with:
+                name: ci-unittest-log-${{ github.run_id }}
+                path: |
+                  pytest.log
+                  tests/**/pytest.log
+                if-no-files-found: ignore
+                retention-days: 14
