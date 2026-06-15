@@ -71,6 +71,7 @@ jobs:
                         echo "WARNING: local wheel found but none matches ABI $PY_ABI; falling back to nightly."
                         python -m pip install --force-reinstall --no-cache-dir --pre paddlepaddle \
                             -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/ \
+                            --extra-index-url https://pypi.org/simple \
                             --timeout 120 --retries 3
                     else
                         echo "Installing local wheel: $MATCHED_WHL"
