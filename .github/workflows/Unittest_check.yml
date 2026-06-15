@@ -4,7 +4,7 @@ on:
     # Nightly: re-validate master against the freshly built nightly paddle
     # Cron is UTC: '0 21 * * *' => 05:00 UTC+8
     # schedule:
-    #     - cron: '0 21 * * *'  
+    #     - cron: '0 21 * * *'
     pull_request:
         branches: [master, develop, "release/**"]
         paths-ignore:
