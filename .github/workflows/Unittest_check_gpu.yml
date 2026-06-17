@@ -99,11 +99,11 @@ jobs:
                 echo "Checking code gpu unit test by pytest ..."
                 # tee output to pytest.log so it can be uploaded as an artifact on failure;
                 # PIPESTATUS[0] preserves pytest's exit code instead of tee's.
-                python -m pytest -v -s -p no:warnings -n 1 --reruns=3 ./tests 2>&1 | tee pytest.log
+                python -m pytest -v -s -p no:warnings --reruns=3 ./tests 2>&1 | tee pytest.log
                 check_error=${PIPESTATUS[0]}
                 if [ ${check_error} -ne 0 ]; then
                     echo "Rerun gpu unit test check."
-                    python -m pytest -v -s -p no:warnings -n 1 --lf ./tests 2>&1 | tee -a pytest.log
+                    python -m pytest -v -s -p no:warnings --lf ./tests 2>&1 | tee -a pytest.log
                     check_error=${PIPESTATUS[0]}
                 fi
 
