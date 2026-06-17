@@ -86,11 +86,12 @@ jobs:
               run: |
                 python -m pip uninstall -y paddlepaddle
                 python -m pip uninstall -y paddlepaddle-gpu
-                python -m pip install --force-reinstall --no-cache-dir -U --pre paddlepaddle-gpu \
+                NO_PROXY='*' no_proxy='*' python -m pip install --force-reinstall --no-cache-dir -U --pre paddlepaddle-gpu \
                     -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/ \
-                    --extra-index-url https://pypi.org/simple \
+                    --extra-index-url https://pypi.tuna.tsinghua.edu.cn/simple \
                     --timeout 120 --retries 3
-                python -m pip install safetensors==0.6.2
+                NO_PROXY='*' no_proxy='*' python -m pip install safetensors==0.6.2 \
+                    -i https://pypi.tuna.tsinghua.edu.cn/simple
                 python -c "import paddle; print('paddle version information:', paddle.__version__); print('paddle commit information:', paddle.__git_commit__)"
 
             - name: Install paconvert requirements
