@@ -33,7 +33,8 @@ jobs:
     ci-unittest:
         name: CI Unittest
         # TODO: replace with the actual self-hosted CPU runner group name
-        runs-on: ubuntu-24.04
+        runs-on:
+            group: PaConvert
         timeout-minutes: 60
 
         steps:
