@@ -58,8 +58,14 @@ jobs:
 
             - name: Download GPU dependencies
               run: |
+                echo "Downloading torch wheel..."
                 wget --no-verbose https://paddle-paconvert.bj.bcebos.com/torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
+                ls -lh torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
+
+                echo "Downloading torchvision wheel..."
                 wget --no-verbose https://paddle-paconvert.bj.bcebos.com/torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
+                ls -lh torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
+
                 echo "Downloaded GPU dependencies successfully!"
 
             - name: Install Latest Release GPU Version Torch
