@@ -37,16 +37,6 @@ jobs:
         timeout-minutes: 120
 
         steps:
-            - name: Diagnose network before checkout
-              run: |
-                echo "user=$(whoami)"
-                echo "home=$HOME"
-                echo "host=$(hostname)"
-                env | grep -i proxy || true
-                git config --global --list || true
-                curl -I https://github.com || true
-                curl -v https://github.com 2>&1 | head -120 || true
-
             - name: Checkout repository
               uses: actions/checkout@v4
               with:
