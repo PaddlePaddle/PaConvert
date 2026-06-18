@@ -59,7 +59,7 @@ jobs:
             - name: Download GPU dependencies
               working-directory: tests/distributed
               run: |
-                wget -q https://paddle-paconvert.bj.bcebos.com/torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
+                wget --no-verbose https://paddle-paconvert.bj.bcebos.com/torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
 
             - name: Install Latest Release GPU Version Torch
               working-directory: tests/distributed
