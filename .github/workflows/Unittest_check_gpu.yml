@@ -56,28 +56,28 @@ jobs:
                 python3 --version
                 pwd
 
-            - name: Download GPU dependencies
-              run: |
-                echo "Downloading torch wheel..."
-                wget --no-verbose https://paddle-paconvert.bj.bcebos.com/torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
-                ls -lh torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
+            # - name: Download GPU dependencies
+            #   run: |
+            #     echo "Downloading torch wheel..."
+            #     wget --no-verbose https://paddle-paconvert.bj.bcebos.com/torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
+            #     ls -lh torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
 
-                echo "Downloading torchvision wheel..."
-                wget --no-verbose https://paddle-paconvert.bj.bcebos.com/torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
-                ls -lh torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
+            #     echo "Downloading torchvision wheel..."
+            #     wget --no-verbose https://paddle-paconvert.bj.bcebos.com/torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
+            #     ls -lh torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
 
-                echo "Downloaded GPU dependencies successfully!"
+            #     echo "Downloaded GPU dependencies successfully!"
 
-            - name: Install Latest Release GPU Version Torch
-              run: |
-                python3 -m pip install --upgrade pip
-                python3 -m pip uninstall -y torchaudio
-                NO_PROXY='*' no_proxy='*' python3 -m pip install \
-                    torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl \
-                    torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl \
-                    -i https://pypi.tuna.tsinghua.edu.cn/simple \
-                    --timeout 120 --retries 3
-                python3 -c "import torch; print('torch version information:', torch.__version__)"
+            # - name: Install Latest Release GPU Version Torch
+            #   run: |
+            #     python3 -m pip install --upgrade pip
+            #     python3 -m pip uninstall -y torchaudio
+            #     NO_PROXY='*' no_proxy='*' python3 -m pip install \
+            #         torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl \
+            #         torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl \
+            #         -i https://pypi.tuna.tsinghua.edu.cn/simple \
+            #         --timeout 120 --retries 3
+            #     python3 -c "import torch; print('torch version information:', torch.__version__)"
 
             - name: Install Latest develop GPU Version Paddle
               run: |
