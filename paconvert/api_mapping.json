@@ -3253,9 +3253,7 @@
     ]
   },
   "torch.autograd.enable_grad": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.enable_grad",
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.autograd.function.FunctionCtx": {
     "Matcher": "ChangePrefixMatcher"
