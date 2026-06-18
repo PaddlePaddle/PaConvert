@@ -58,8 +58,8 @@ jobs:
 
             - name: Download GPU dependencies
               run: |
-                wget --no-proxy -q https://paddle-paconvert.bj.bcebos.com/torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
-                wget --no-proxy -q https://paddle-paconvert.bj.bcebos.com/torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
+                wget -q https://paddle-paconvert.bj.bcebos.com/torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
+                wget -q https://paddle-paconvert.bj.bcebos.com/torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
 
             - name: Install Latest Release GPU Version Torch
               run: |
