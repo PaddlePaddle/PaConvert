@@ -3,8 +3,8 @@ FROM registry.baidubce.com/paddlepaddle/paddle:latest-dev-cuda11.8-cudnn8.6-trt8
 
 ENV PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple
 
-RUN apt-get update && \
-    apt-get install -y net-tools
+RUN apt-get -o Acquire::Retries=5 update || true; \
+    apt-get -o Acquire::Retries=5 install -y net-tools || true
 
 RUN ln -sf `which python3.10` /usr/bin/python
 
@@ -25,9 +25,9 @@ RUN wget -q https://paddle-paconvert.bj.bcebos.com/torch-2.7.1+cu118-cp310-cp310
     rm -f torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl \
           torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
 
-RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.1-1_all.deb && \
+RUN wget --retries=5 --timeout=60 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.1-1_all.deb && \
     dpkg -i cuda-keyring_1.1-1_all.deb && \
     rm cuda-keyring_1.1-1_all.deb
 
-RUN apt-get update && \
-    apt-get install -y cudnn9-cuda-11
+RUN apt-get -o Acquire::Retries=5 update && \
+    apt-get -o Acquire::Retries=5 install -y cudnn9-cuda-11
