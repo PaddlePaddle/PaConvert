@@ -17,15 +17,15 @@ RUN python -m pip install --no-cache-dir \
         pytest-timeout \
         pytest-rerunfailures
 
-RUN wget --no-proxy -q https://paddle-paconvert.bj.bcebos.com/torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl \
-                       https://paddle-paconvert.bj.bcebos.com/torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl && \ 
+RUN wget -q https://paddle-paconvert.bj.bcebos.com/torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl \
+            https://paddle-paconvert.bj.bcebos.com/torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl && \ 
     python -m pip install --no-cache-dir \
         torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl \
         torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl && \
     rm -f torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl \
           torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
 
-RUN wget --retries=5 --timeout=60 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.1-1_all.deb && \
+RUN wget --tries=5 --timeout=60 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.1-1_all.deb && \
     dpkg -i cuda-keyring_1.1-1_all.deb && \
     rm cuda-keyring_1.1-1_all.deb
 
