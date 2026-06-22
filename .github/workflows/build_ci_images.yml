@@ -30,7 +30,7 @@ jobs:
 
             - name: Build Image
               run: |
-                  docker build --pull -t paconvert-ci:cu118 -f tools/docker/Dockerfile tools/docker
+                  docker build --pull --network=host -t paconvert-ci:cu118 -f tools/docker/Dockerfile tools/docker
 
             - name: GPU Test
               run: |
