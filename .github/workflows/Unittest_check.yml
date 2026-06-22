@@ -45,7 +45,11 @@ jobs:
             - name: Ensure CI image Exists
               run: |
                 docker image inspect paconvert-ci:cu118 >/dev/null 2>&1 || \
-                    docker build --pull --network=host -t paconvert-ci:cu118 -f tools/docker/Dockerfile tools/docker
+                    docker build --pull --network=host \
+                    --build-arg http_proxy=$http_proxy \
+                    --build-arg https_proxy=$https_proxy \
+                    --build-arg no_proxy=".baidu.com,.bcebos.com,.tuna.tsinghua.edu.cn" \
+                    -t paconvert-ci:cu118 -f tools/docker/Dockerfile tools/docker
 
             - name: Start Container
               run: |
