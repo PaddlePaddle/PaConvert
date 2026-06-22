@@ -1,0 +1,62 @@
+# Copyright (c) 2026 PaddlePaddle Authors. All Rights Reserved.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#     http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# 
+
+set -eo pipefail
+
+echo '******************************************************************************'
+echo "Installing develop CPU version paddle"
+python -m pip uninstall -y paddlepaddle paddlepaddle-gpu || true
+python -m pip install --force-reinstall --no-cache-dir -U --pre paddlepaddle \
+    -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/ \
+    -extra-index-url https://pypi.org/simple \
+    --timeout 120 --retries 3
+python -c "import paddle; print('paddle version: ', paddle.__version__); print('paddle commit info: ', paddle.__git_commit__)"
+
+echo '******************************************************************************'
+echo "Installing paconvert requirements"
+python -m pip install -r requirements.txt
+if [ -f tests/requirements.txt ]; then
+    python -m pip install -r tests/requirements.txt
+fi
+
+echo '******************************************************************************'
+python -c "import torch; print('torch version: ', torch.__version__, '| cuda available: ', torch.cuda.is_available())"
+
+echo '******************************************************************************'
+echo "Checking code cpu unit test by pytest ..."
+set +e
+python -m pytest -v -s -p no:warnings --reruns=3 ./tests 2>&1 | tee pytest.log
+check_errors=${PIPESTATUS[0]}
+if [ ${check_errors} -ne 0 ]; then
+    echo "Rerun CPU unit test"
+    python -m pytest -v -s -p no:warnings ./tests 2>&1 | tee -a pytest.log
+    check_errors=${PIPESTATUS[0]}
+fi
+
+echo '******************************************************************************'
+if [ ${check_errors} -eq 0 ]; then
+    echo "Your PR code CPU unit test check FAILED"
+    echo "Please run the following command:"
+    echo ""
+    echo "    pytest -m pytest tests"
+    echo ""
+    echo "For more information, please refer to our check guides:"
+    echo "https://github.com/paddlepaddle/paconvert#readme"
+else
+    echo "All tests PASSED!"
+fi
+echo '******************************************************************************'
+
+exit ${check_errors}

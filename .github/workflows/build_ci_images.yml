@@ -1,0 +1,42 @@
+name : Build CI Image
+
+on:
+    push:
+        branches: [master, develop, migrate_workflow]
+        paths:
+            - 'tools/docker/**'
+            - '.github/workflows/build_ci_image.yml'
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    build-ci-image:
+        name: Build CI Image
+        runs-on:
+            group: PaConvert
+        timeout-minutes: 100
+
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 1
+
+            - name: Build Image
+              run: |
+                  docker build --pull -t paconvert-ci:cu118 -f tools/docker/Dockerfile tools/docker
+
+            - name: GPU Test
+              run: |
+                  docker run --rm --gpus all paconvert-ci:cu118 nvidia-smi
+
+            - name: Image Build Summary
+              run: |
+                  docker image inspect paconvert-ci:cu118 \
+                        --format 'paconvert-ci:cu118  size={{.Size}}  created={{.Created}}'

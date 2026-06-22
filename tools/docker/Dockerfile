@@ -8,14 +8,24 @@ RUN ln -sf `which python3.10` /usr/bin/python
 
 RUN ln -sf `which pip3.10` /usr/local/bin/pip
 
-RUN python -m pip install astor
+RUN python -m pip install --no-cache-dir \
+        astor \
+        pandas \
+        openpyxl \
+        pytest-timeout \
+        pytest-rerunfailures
 
-RUN python -m pip install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+RUN wget -q https://paddle-paconvert.bj.bcebos.com/torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl \
+            https://paddle-paconvert.bj.bcebos.com/torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl && \ 
+    python -m pip install --no-cache-dir \
+        torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl \
+        torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl && \
+    rm -f torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl \
+          torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
 
 RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.1-1_all.deb && \
     dpkg -i cuda-keyring_1.1-1_all.deb && \
     rm cuda-keyring_1.1-1_all.deb
 
 RUN apt-get update && \
-    apt-get install -y \
-    cudnn9-cuda-11
+    apt-get install -y cudnn9-cuda-11
