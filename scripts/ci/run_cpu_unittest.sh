@@ -20,7 +20,7 @@ echo "Installing develop CPU version paddle"
 python -m pip uninstall -y paddlepaddle paddlepaddle-gpu || true
 python -m pip install --force-reinstall --no-cache-dir -U --pre paddlepaddle \
     -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/ \
-    --extra-index-url https://pypi.org/simple \
+    --extra-index-url https://pypi.tuna.tsinghua.edu.cn/simple \
     --timeout 120 --retries 3
 python -c "import paddle; print('paddle version: ', paddle.__version__); print('paddle commit info: ', paddle.__git_commit__)"
 
