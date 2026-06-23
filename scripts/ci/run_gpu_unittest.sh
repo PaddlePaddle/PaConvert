@@ -16,12 +16,13 @@
 set -eo pipefail
 
 echo '******************************************************************************'
-echo "Installing develop CPU version paddle"
+echo "Installing develop GPU version paddle"
 python -m pip uninstall -y paddlepaddle paddlepaddle-gpu || true
-python -m pip install --force-reinstall --no-cache-dir -U --pre paddlepaddle \
-    -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/ \
+python -m pip install --force-reinstall --no-cache-dir -U --pre paddlepaddle-gpu \
+    -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/ \
     --extra-index-url https://pypi.tuna.tsinghua.edu.cn/simple \
     --timeout 120 --retries 3
+python -m pip install safetensors==0.6.2
 python -c "import paddle; print('paddle version: ', paddle.__version__); print('paddle commit info: ', paddle.__git_commit__)"
 
 echo '******************************************************************************'
@@ -35,27 +36,20 @@ echo '**************************************************************************
 python -c "import torch; print('torch version: ', torch.__version__, '| cuda available: ', torch.cuda.is_available())"
 
 echo '******************************************************************************'
-echo "Checking code cpu unit test by pytest ..."
+echo "Checking code gpu unit test by pytest ..."
 set +e
 
-PYTEST_IGNORE="\
---ignore=tests/test_backend_cpu_is_built.py \
---ignore=tests/test_backend_cudnn_is_available.py \
---ignore=tests/test_cuda_is_bf16_supported.py \
---ignore=tests/test_distributed_is_nccl_available.py\
-"
-
-python -m pytest -v -s -p no:warnings $PYTEST_IGNORE --reruns=3 ./tests 2>&1 | tee pytest.log
+python -m pytest -v -s -p no:warnings --reruns=3 ./tests 2>&1 | tee pytest.log
 check_errors=${PIPESTATUS[0]}
 if [ ${check_errors} -ne 0 ]; then
     echo "Rerun CPU unit test"
-    python -m pytest -v -s -p no:warnings $PYTEST_IGNORE --lf ./tests 2>&1 | tee -a pytest.log
+    python -m pytest -v -s -p no:warnings --lf ./tests 2>&1 | tee -a pytest.log
     check_errors=${PIPESTATUS[0]}
 fi
 
 echo '******************************************************************************'
 if [ ${check_errors} -ne 0 ]; then
-    echo "Your PR code CPU unit test check FAILED"
+    echo "Your PR code GPU unit test check FAILED"
     echo "Please run the following command:"
     echo ""
     echo "    pytest -m pytest tests"

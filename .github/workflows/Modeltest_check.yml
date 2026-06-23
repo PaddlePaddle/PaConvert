@@ -45,84 +45,27 @@ jobs:
               with:
                 fetch-depth: 1
 
-            - name: Setup Python
-              uses: actions/setup-python@v5
-              with:
-                python-version: '3.10'
-                cache: pip
-                cache-dependency-path: |
-                  requirements.txt
-                  tests/requirements.txt
-
-            - name: Install dependencies
+            - name: Ensure CI image Exists
               run: |
-                python -m pip install --upgrade pip
-                python -m pip install -U torch --index-url https://download.pytorch.org/whl/cpu
-                python -m pip uninstall -y paddlepaddle paddlepaddle-gpu
+                docker image inspect paconvert-ci:cu118 >/dev/null 2>&1 || \
+                    docker build --pull -t paconvert-ci:cu118 -f tools/docker/Dockerfile tools/docker
 
-                # Detect current Python ABI tag (e.g. cp310) to avoid installing a mismatched wheel
-                PY_ABI=$(python -c "import sys; print('cp{}{}'.format(*sys.version_info[:2]))")
-                echo "Current Python ABI: $PY_ABI"
-
-                if ls paddlepaddle-0.0.0-*.whl >/dev/null 2>&1; then
-                    # Validate the local wheel matches the current Python version before installing
-                    MATCHED_WHL=$(ls paddlepaddle-0.0.0-*${PY_ABI}*.whl 2>/dev/null | head -1)
-                    if [ -z "$MATCHED_WHL" ]; then
-                        echo "WARNING: local wheel found but none matches ABI $PY_ABI; falling back to nightly."
-                        python -m pip install --force-reinstall --no-cache-dir --pre paddlepaddle \
-                            -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/ \
-                            --extra-index-url https://pypi.org/simple \
-                            --timeout 120 --retries 3
-                    else
-                        echo "Installing local wheel: $MATCHED_WHL"
-                        python -m pip install "$MATCHED_WHL"
-                    fi
-                else
-                    # No local wheel — install from nightly with retry to reduce transient failures
-                    python -m pip install --force-reinstall --no-cache-dir --pre paddlepaddle \
-                        -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/ \
-                        --timeout 120 --retries 3
-                fi
-                python -m pip install -r requirements.txt
-                python -m pip install pandas openpyxl
-                python -c "import torch; print('torch version information:', torch.__version__)"
-                python -c "import paddle; print('paddle version information:', paddle.__version__); print('paddle commit information:', paddle.__git_commit__)"
-
-            - name: Run code set convert check
-              shell: bash
+            - name: Start Container
               run: |
-                if [ ! -d "$TORCH_PROJECT_PATH" ]; then
-                    echo "$TORCH_PROJECT_PATH does not exist. Please prepare the model code set on the self-hosted runner."
-                    exit 1
-                fi
+                container_name="paconvert-modeltest-${{ github.run_id }}-${{ github.run_attempt }}"
+                echo "container_name=${container_name}" >> "$GITHUB_ENV"
+                docker run -d --name "${container_name}" \
+                    -e NVIDIA_VISIBLE_DEVICES=void \
+                    -e TORCH_PROJECT_PATH="${TORCH_PROEJCT_PATH}" \
+                    --network host \
+                    -v /dev/shm:/dev/shm \
+                    -v "${{ github.workspace }}:/ws" \
+                    -v "${TORCH_PROJECT_PATH}:${TORCH_PROJECT_PATH}:ro" \
+                    -w /ws \
+                    paconvert-ci:cu118 sleep infinity
 
-                shopt -s nullglob
-                projects=("$TORCH_PROJECT_PATH"/*)
-                if [ ${#projects[@]} -eq 0 ]; then
-                    echo "$TORCH_PROJECT_PATH is empty. Please prepare the model code set on the self-hosted runner."
-                    exit 1
-                fi
-
-                failed_projects=()
-                for project in "${projects[@]}"; do
-                    if [ -d "$project" ]; then
-                        project_name=$(basename "$project")
-                        echo "[code-set-convert] Converting project: $project_name"
-                        if ! python paconvert/main.py --in_dir "$project" --show_unsupport_api --calculate_speed; then
-                            failed_projects+=("$project_name")
-                        fi
-                    fi
-                done
-
-                if [ ${#failed_projects[@]} -ne 0 ]; then
-                    printf '%s\n' "${failed_projects[@]}" > failed_projects.txt
-                    echo "[code-set-convert] The following projects failed to convert:"
-                    cat failed_projects.txt
-                    exit 1
-                fi
-
-            - name: Run modeltest
-              run: python tools/modeltest/modeltest_check.py
+            - name: Run Modeltest
+              run: docker exec "${container_name}" bash scripts/ci/run_modeltest.sh
 
             - name: Upload modeltest logs on failure
               if: failure()
@@ -134,3 +77,102 @@ jobs:
                   tests/code_library/model_case/**/convert_paddle_code*
                 if-no-files-found: ignore
                 retention-days: 14
+
+            - name: Cleanup Container
+              if: always()
+              run: |
+                if [ -n "${container_name:-}" ]; then
+                    docker exec "${container_name}" chown -R "$(id -u):$(id -g)" /ws 2>/dev/null || true
+                    docker rm -f "${container_name}" || true
+                fi
+
+
+            # - name: Setup Python
+            #   uses: actions/setup-python@v5
+            #   with:
+            #     python-version: '3.10'
+            #     cache: pip
+            #     cache-dependency-path: |
+            #       requirements.txt
+            #       tests/requirements.txt
+
+            # - name: Install dependencies
+            #   run: |
+            #     python -m pip install --upgrade pip
+            #     python -m pip install -U torch --index-url https://download.pytorch.org/whl/cpu
+            #     python -m pip uninstall -y paddlepaddle paddlepaddle-gpu
+
+            #     # Detect current Python ABI tag (e.g. cp310) to avoid installing a mismatched wheel
+            #     PY_ABI=$(python -c "import sys; print('cp{}{}'.format(*sys.version_info[:2]))")
+            #     echo "Current Python ABI: $PY_ABI"
+
+            #     if ls paddlepaddle-0.0.0-*.whl >/dev/null 2>&1; then
+            #         # Validate the local wheel matches the current Python version before installing
+            #         MATCHED_WHL=$(ls paddlepaddle-0.0.0-*${PY_ABI}*.whl 2>/dev/null | head -1)
+            #         if [ -z "$MATCHED_WHL" ]; then
+            #             echo "WARNING: local wheel found but none matches ABI $PY_ABI; falling back to nightly."
+            #             python -m pip install --force-reinstall --no-cache-dir --pre paddlepaddle \
+            #                 -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/ \
+            #                 --extra-index-url https://pypi.org/simple \
+            #                 --timeout 120 --retries 3
+            #         else
+            #             echo "Installing local wheel: $MATCHED_WHL"
+            #             python -m pip install "$MATCHED_WHL"
+            #         fi
+            #     else
+            #         # No local wheel — install from nightly with retry to reduce transient failures
+            #         python -m pip install --force-reinstall --no-cache-dir --pre paddlepaddle \
+            #             -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/ \
+            #             --timeout 120 --retries 3
+            #     fi
+            #     python -m pip install -r requirements.txt
+            #     python -m pip install pandas openpyxl
+            #     python -c "import torch; print('torch version information:', torch.__version__)"
+            #     python -c "import paddle; print('paddle version information:', paddle.__version__); print('paddle commit information:', paddle.__git_commit__)"
+
+            # - name: Run code set convert check
+            #   shell: bash
+            #   run: |
+            #     if [ ! -d "$TORCH_PROJECT_PATH" ]; then
+            #         echo "$TORCH_PROJECT_PATH does not exist. Please prepare the model code set on the self-hosted runner."
+            #         exit 1
+            #     fi
+
+            #     shopt -s nullglob
+            #     projects=("$TORCH_PROJECT_PATH"/*)
+            #     if [ ${#projects[@]} -eq 0 ]; then
+            #         echo "$TORCH_PROJECT_PATH is empty. Please prepare the model code set on the self-hosted runner."
+            #         exit 1
+            #     fi
+
+            #     failed_projects=()
+            #     for project in "${projects[@]}"; do
+            #         if [ -d "$project" ]; then
+            #             project_name=$(basename "$project")
+            #             echo "[code-set-convert] Converting project: $project_name"
+            #             if ! python paconvert/main.py --in_dir "$project" --show_unsupport_api --calculate_speed; then
+            #                 failed_projects+=("$project_name")
+            #             fi
+            #         fi
+            #     done
+
+            #     if [ ${#failed_projects[@]} -ne 0 ]; then
+            #         printf '%s\n' "${failed_projects[@]}" > failed_projects.txt
+            #         echo "[code-set-convert] The following projects failed to convert:"
+            #         cat failed_projects.txt
+            #         exit 1
+            #     fi
+
+            # - name: Run modeltest
+            #   run: python tools/modeltest/modeltest_check.py
+
+            # - name: Upload modeltest logs on failure
+            #   if: failure()
+            #   uses: actions/upload-artifact@v4
+            #   with:
+            #     name: modeltest-log-${{ github.run_id }}
+            #     path: |
+            #       failed_projects.txt
+            #       tests/code_library/model_case/**/convert_paddle_code*
+            #     if-no-files-found: ignore
+            #     retention-days: 14

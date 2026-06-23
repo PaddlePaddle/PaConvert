@@ -15,6 +15,8 @@
 
 set -eo pipefail
 
+TORCH_PROJECT_PATH="${TORCH_PROJECT_PATH:-/workspace/torch_project}"
+
 echo '******************************************************************************'
 echo "Installing develop CPU version paddle"
 python -m pip uninstall -y paddlepaddle paddlepaddle-gpu || true
@@ -27,43 +29,52 @@ python -c "import paddle; print('paddle version: ', paddle.__version__); print('
 echo '******************************************************************************'
 echo "Installing paconvert requirements"
 python -m pip install -r requirements.txt
-if [ -f tests/requirements.txt ]; then
-    python -m pip install -r tests/requirements.txt
-fi
+python -m pip install pandas openpyxl || true
 
-echo '******************************************************************************'
-python -c "import torch; print('torch version: ', torch.__version__, '| cuda available: ', torch.cuda.is_available())"
-
-echo '******************************************************************************'
-echo "Checking code cpu unit test by pytest ..."
 set +e
 
-PYTEST_IGNORE="\
---ignore=tests/test_backend_cpu_is_built.py \
---ignore=tests/test_backend_cudnn_is_available.py \
---ignore=tests/test_cuda_is_bf16_supported.py \
---ignore=tests/test_distributed_is_nccl_available.py\
-"
+echo '******************************************************************************'
+echo "[code-set-convert] Start converting code set under ${TORCH_PROJECT_PATH}"
+if [ ! -d "${TORCH_PROJECT_PATH}" ]; then
+    echo "${TORCH_PROJECT_PATH} is not a valid directory. Please stage the model code set on the runner host."
+    exit 1
+fi
 
-python -m pytest -v -s -p no:warnings $PYTEST_IGNORE --reruns=3 ./tests 2>&1 | tee pytest.log
-check_errors=${PIPESTATUS[0]}
-if [ ${check_errors} -ne 0 ]; then
-    echo "Rerun CPU unit test"
-    python -m pytest -v -s -p no:warnings $PYTEST_IGNORE --lf ./tests 2>&1 | tee -a pytest.log
-    check_errors=${PIPESTATUS[0]}
+shopt -s nullglob
+projects=("${TORCH_PROJECT_PATH}"/*)
+if [ ${#projects[@]} -eq 0 ]; then
+    echo "${TORCH_PROJECT_PATH} is empty. Please stage the model code set on the runner host."
+    exit 1
+fi
+
+failed_project=()
+for project in "${projects[@]}"; do
+    if [ -d "$project" ]; then
+        project_name=$(basename "$project")
+        echo "[code-set-convert] Converting project: $project_name"
+        if ! python paconvert/main.py --in_dir "$project" --show_unsupport_api --calculate_speed; then
+            failed_project+=("$project_name")
+        fi
+    fi
+done
+
+if [ ${#failed_project[@]} -ne 0 ]; then
+    printf '%s\n' "${failed_project[@]}" > failed_projects.txt
+    echo "[code-set-convert] The following projects fail to convert:"
+    cat failed_projects.txt
+    exit 1
 fi
 
 echo '******************************************************************************'
+echo "[modeltest] Start modeltest"
+python tools/modeltest/modeltest_check.py
+check_errors=$?
+
+echo '******************************************************************************'
 if [ ${check_errors} -ne 0 ]; then
-    echo "Your PR code CPU unit test check FAILED"
-    echo "Please run the following command:"
-    echo ""
-    echo "    pytest -m pytest tests"
-    echo ""
-    echo "For more information, please refer to our check guides:"
-    echo "https://github.com/paddlepaddle/paconvert#readme"
+    echo "Your PR code modeltest check FAILED"
 else
-    echo "All tests PASSED!"
+    echo "All Modeltest PASSED!"
 fi
 echo '******************************************************************************'
 

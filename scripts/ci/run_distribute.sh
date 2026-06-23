@@ -15,50 +15,54 @@
 
 set -eo pipefail
 
+DIST_OUT="$(pwd)/paddle_dist"
+
 echo '******************************************************************************'
-echo "Installing develop CPU version paddle"
+echo "Installing develop GPU version paddle"
 python -m pip uninstall -y paddlepaddle paddlepaddle-gpu || true
-python -m pip install --force-reinstall --no-cache-dir -U --pre paddlepaddle \
-    -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/ \
+python -m pip install --force-reinstall --no-cache-dir -U --pre paddlepaddle-gpu \
+    -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/ \
     --extra-index-url https://pypi.tuna.tsinghua.edu.cn/simple \
     --timeout 120 --retries 3
+python -m pip install safetensors==0.6.2
 python -c "import paddle; print('paddle version: ', paddle.__version__); print('paddle commit info: ', paddle.__git_commit__)"
 
 echo '******************************************************************************'
 echo "Installing paconvert requirements"
-python -m pip install -r requirements.txt
-if [ -f tests/requirements.txt ]; then
-    python -m pip install -r tests/requirements.txt
-fi
+
+cd tests/distributed
 
 echo '******************************************************************************'
-python -c "import torch; print('torch version: ', torch.__version__, '| cuda available: ', torch.cuda.is_available())"
+echo 'Converting torch code to paddle -> ${DIST_OUT}'
+rm -rf "${DIST_OUT}"
+python ../../paconvert/main.py -i . -o "${DIST_OUT}" --log_level "DEBUG"
 
 echo '******************************************************************************'
-echo "Checking code cpu unit test by pytest ..."
+echo "Running Distribute Unit Tests"
 set +e
 
-PYTEST_IGNORE="\
---ignore=tests/test_backend_cpu_is_built.py \
---ignore=tests/test_backend_cudnn_is_available.py \
---ignore=tests/test_cuda_is_bf16_supported.py \
---ignore=tests/test_distributed_is_nccl_available.py\
-"
-
-python -m pytest -v -s -p no:warnings $PYTEST_IGNORE --reruns=3 ./tests 2>&1 | tee pytest.log
-check_errors=${PIPESTATUS[0]}
-if [ ${check_errors} -ne 0 ]; then
-    echo "Rerun CPU unit test"
-    python -m pytest -v -s -p no:warnings $PYTEST_IGNORE --lf ./tests 2>&1 | tee -a pytest.log
-    check_errors=${PIPESTATUS[0]}
-fi
+check_errors=0
+failed_tests=()
+test_list=$(ls *.py | grep -v run_and_compare.py)
+for item in $test_list; do
+    cmd1="torchrun --nproc_per_node=2 ${item}"
+    cmd2="python -m paddle.distributed.launch ${DIST_OUT}/${item}"
+    python run_and_compare.py "$cmd1" "$cmd2"
+    if [ $? -ne 0 ]; then
+        failed_tests+=("${item}")
+        check_errors=1
+    fi
+done
 
 echo '******************************************************************************'
-if [ ${check_errors} -ne 0 ]; then
-    echo "Your PR code CPU unit test check FAILED"
+if [ ${#failed_tests[@]} -ne 0 ]; then
+    printf '%s\n' "${failed_tests[@]}" > failed_tests.txt
+    echo "Your PR code Distributed unit test check FAILED"
+    echo "The following distributed tests failed:"
+    cat failed_tests.txt
     echo "Please run the following command:"
     echo ""
-    echo "    pytest -m pytest tests"
+    echo "    cd tests/distributed && bash unittest_check_distribute.sh"
     echo ""
     echo "For more information, please refer to our check guides:"
     echo "https://github.com/paddlepaddle/paconvert#readme"

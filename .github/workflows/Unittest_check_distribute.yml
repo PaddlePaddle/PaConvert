@@ -35,12 +35,62 @@ jobs:
         runs-on:
             group: PaConvert
         timeout-minutes: 120
+        concurrency:
+            group: paconvert-gpu-runner
+            cancel-in-progress: false
 
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
               with:
                 fetch-depth: 0
+
+            - name: Ensure CI image Exists
+              run: |
+                docker image inspect paconvert-ci:cu118 >/dev/null 2>&1 || \
+                    docker build --pull -t paconvert-ci:cu118 -f tools/docker/Dockerfile tools/docker
+
+            - name: Free port
+              run: |
+                ss -ltnp 2>/dev/null | grep ':29500' | grep -oP 'pid=\K[0-9]+' | xargs -r kill -9 2>/dev/null || true
+
+            - name: Start Container
+              run: |
+                container_name="paconvert-distribute-${{ github.run_id }}-${{ github.run_attempt }}"
+                echo "container_name=${container_name}" >> "$GITHUB_ENV"
+                docker run -d --name "${container_name}" \
+                    --gpus all \
+                    --network host \
+                    --ipc host \
+                    -e CUDA_VISIBLE_DEVICES=0,1 \
+                    -v /dev/shm:/dev/shm \
+                    -v "${{ github.workspace }}:/ws" \
+                    -w /ws \
+                    paconvert-ci:cu118 sleep infinity
+
+            - name: Run Distributed Unittest
+              run: |
+                docker exec "${container_name}" bash scripts/ci/run_distributed.sh
+
+            - name: Upload logs on failure
+              if: failure()
+              uses: actions/upload-artifact@v4
+              with:
+                name: distributed-unittest-log-${{ github.run_id }}
+                path: |
+                  tests/distributed/failed_tests.txt
+                  tests/distributed/*.log
+                  paddle_dist/**
+                if-no-files-found: ignore
+                retention-days: 14
+
+            - name: Cleanup Container
+              if: always()
+              run: |
+                if [ -n "${container_name:-}" ]; then
+                    docker exec "${container_name}" chown -R "$(id -u):$(id -g)" /ws 2>/dev/null || true
+                    docker rm -f "${container_name}" || true
+                fi
 
             # - name: Setup Python
             #   uses: actions/setup-python@v5
@@ -51,10 +101,10 @@ jobs:
             #       requirements.txt
             #       tests/requirements.txt
 
-            - name: Check Env
-              run: |
-                python3 --version
-                pwd
+            # - name: Check Env
+            #   run: |
+            #     python3 --version
+            #     pwd
 
             # - name: Download GPU dependencies
             #   working-directory: tests/distributed
@@ -76,80 +126,80 @@ jobs:
             #         --timeout 120 --retries 3
             #     python3 -c "import torch; print('torch version information:', torch.__version__)"
 
-            - name: Install Latest develop GPU Version Paddle
-              run: |
-                python3 -m pip uninstall -y paddlepaddle
-                python3 -m pip uninstall -y paddlepaddle-gpu
-                python3 -m pip install --force-reinstall --no-cache-dir -U --pre paddlepaddle-gpu \
-                    -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/ \
-                    --extra-index-url https://pypi.org/simple \
-                    --timeout 120 --retries 3
-                python3 -m pip install safetensors==0.6.2
-                python3 -c "import paddle; print('paddle version information:', paddle.__version__); print('paddle commit information:', paddle.__git_commit__)"
+            # - name: Install Latest develop GPU Version Paddle
+            #   run: |
+            #     python3 -m pip uninstall -y paddlepaddle
+            #     python3 -m pip uninstall -y paddlepaddle-gpu
+            #     python3 -m pip install --force-reinstall --no-cache-dir -U --pre paddlepaddle-gpu \
+            #         -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/ \
+            #         --extra-index-url https://pypi.org/simple \
+            #         --timeout 120 --retries 3
+            #     python3 -m pip install safetensors==0.6.2
+            #     python3 -c "import paddle; print('paddle version information:', paddle.__version__); print('paddle commit information:', paddle.__git_commit__)"
 
-            - name: Install paconvert requirements
-              run: |
-                python3 -m pip install -r requirements.txt
+            # - name: Install paconvert requirements
+            #   run: |
+            #     python3 -m pip install -r requirements.txt
 
-            - name: Convert torch code to paddle
-              working-directory: tests/distributed
-              run: |
-                python3 ../../paconvert/main.py -i . -o /tmp/paddle_dist --log_level "DEBUG"
+            # - name: Convert torch code to paddle
+            #   working-directory: tests/distributed
+            #   run: |
+            #     python3 ../../paconvert/main.py -i . -o /tmp/paddle_dist --log_level "DEBUG"
 
-            - name: Run distributed unit tests
-              working-directory: tests/distributed
-              shell: bash
-              env:
-                CUDA_VISIBLE_DEVICES: "0,1"
-              run: |
-                # Free port 29500 if any leftover process is occupying it
-                netstat -tulnp 2>/dev/null | grep ':29500' | awk '{print $7}' | cut -d/ -f1 | xargs -r kill -9 2>/dev/null || true
+            # - name: Run distributed unit tests
+            #   working-directory: tests/distributed
+            #   shell: bash
+            #   env:
+            #     CUDA_VISIBLE_DEVICES: "0,1"
+            #   run: |
+            #     # Free port 29500 if any leftover process is occupying it
+            #     netstat -tulnp 2>/dev/null | grep ':29500' | awk '{print $7}' | cut -d/ -f1 | xargs -r kill -9 2>/dev/null || true
 
-                # Disable errexit so every test runs and all failures are collected
-                # Instead of aborting on the first failing test.
-                set +e
+            #     # Disable errexit so every test runs and all failures are collected
+            #     # Instead of aborting on the first failing test.
+            #     set +e
 
-                check_error=0
-                failed_tests=()
-                test_list=$(ls *.py | grep -v run_and_compare.py)
-                for item in $test_list; do
-                    cmd1="torchrun --nproc_per_node=2 ${item}"
-                    cmd2="python3 -m paddle.distributed.launch /tmp/paddle_dist/${item}"
-                    python3 run_and_compare.py "$cmd1" "$cmd2"
-                    tmp_check_error=$?
-                    if [ $tmp_check_error -ne 0 ]; then
-                        check_error=1
-                        failed_tests+=("$item")
-                    fi
-                done
+            #     check_error=0
+            #     failed_tests=()
+            #     test_list=$(ls *.py | grep -v run_and_compare.py)
+            #     for item in $test_list; do
+            #         cmd1="torchrun --nproc_per_node=2 ${item}"
+            #         cmd2="python3 -m paddle.distributed.launch /tmp/paddle_dist/${item}"
+            #         python3 run_and_compare.py "$cmd1" "$cmd2"
+            #         tmp_check_error=$?
+            #         if [ $tmp_check_error -ne 0 ]; then
+            #             check_error=1
+            #             failed_tests+=("$item")
+            #         fi
+            #     done
 
-                echo '************************************************************************************************************'
-                if [ ${#failed_tests[@]} -ne 0 ]; then
-                    printf '%s\n' "${failed_tests[@]}" > failed_tests.txt
-                    echo "Your PR code distributed unittest check FAILED"
-                    echo "The following distributed tests failed:"
-                    cat failed_tests.txt
-                    echo "Please run the following command:"
-                    echo ""
-                    echo "    cd tests/distributed && bash unittest_check_distribute.sh"
-                    echo ""
-                    echo "For more information, please refer to our check guide:"
-                    echo "https://github.com/PaddlePaddle/PaConvert#readme"
-                else
-                    echo "Your PR code distributed unit test check passed."
-                fi
-                echo '************************************************************************************************************'
+            #     echo '************************************************************************************************************'
+            #     if [ ${#failed_tests[@]} -ne 0 ]; then
+            #         printf '%s\n' "${failed_tests[@]}" > failed_tests.txt
+            #         echo "Your PR code distributed unittest check FAILED"
+            #         echo "The following distributed tests failed:"
+            #         cat failed_tests.txt
+            #         echo "Please run the following command:"
+            #         echo ""
+            #         echo "    cd tests/distributed && bash unittest_check_distribute.sh"
+            #         echo ""
+            #         echo "For more information, please refer to our check guide:"
+            #         echo "https://github.com/PaddlePaddle/PaConvert#readme"
+            #     else
+            #         echo "Your PR code distributed unit test check passed."
+            #     fi
+            #     echo '************************************************************************************************************'
 
-                exit ${check_error}
+            #     exit ${check_error}
 
-            - name: Upload logs on failure
-              if: failure()
-              uses: actions/upload-artifact@v4
-              with:
-                name: distributed-unittest-log-${{ github.run_id }}
-                path: |
-                  tests/distributed/failed_tests.txt
-                  tests/distributed/*.log
-                  /tmp/paddle_dist/**
-                if-no-files-found: ignore
-                retention-days: 14
+            # - name: Upload logs on failure
+            #   if: failure()
+            #   uses: actions/upload-artifact@v4
+            #   with:
+            #     name: distributed-unittest-log-${{ github.run_id }}
+            #     path: |
+            #       tests/distributed/failed_tests.txt
+            #       tests/distributed/*.log
+            #       /tmp/paddle_dist/**
+            #     if-no-files-found: ignore
+            #     retention-days: 14
