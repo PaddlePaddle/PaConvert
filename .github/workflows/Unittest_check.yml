@@ -68,7 +68,7 @@ jobs:
 
             - name: Run CI Unittest
               shell: bash
-              run: docker exec "$container_name" bash /scripts/ci/run_cpu_unittest.sh
+              run: docker exec "$container_name" bash scripts/ci/run_cpu_unittest.sh
 
             - name: Upload logs on failing
               if: failure()
