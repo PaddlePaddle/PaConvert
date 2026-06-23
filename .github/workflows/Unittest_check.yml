@@ -44,12 +44,12 @@ jobs:
 
             - name: Ensure CI image Exists
               run: |
-                docker image inspect paconvert-ci:cu118 >/dev/null 2>&1 || \
+                docker image inspect paconvert-ci:cpu >/dev/null 2>&1 || \
                     docker build --pull --network=host \
                     --build-arg http_proxy=$http_proxy \
                     --build-arg https_proxy=$https_proxy \
                     --build-arg no_proxy="localhost,127.0.0.1" \
-                    -t paconvert-ci:cu118 -f tools/docker/Dockerfile tools/docker
+                    -t paconvert-ci:cpu -f tools/docker/Dockerfile_CPU tools/docker
 
             - name: Start Container
               run: |
@@ -64,7 +64,7 @@ jobs:
                     -v /dev/shm:/dev/shm \
                     -v "${{ github.workspace }}:/ws" \
                     -w /ws \
-                    paconvert-ci:cu118 sleep infinity
+                    paconvert-ci:cpu sleep infinity
 
             - name: Run CI Unittest
               shell: bash

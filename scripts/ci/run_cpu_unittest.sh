@@ -41,12 +41,12 @@ python -m pytest -v -s -p no:warnings --reruns=3 ./tests 2>&1 | tee pytest.log
 check_errors=${PIPESTATUS[0]}
 if [ ${check_errors} -ne 0 ]; then
     echo "Rerun CPU unit test"
-    python -m pytest -v -s -p no:warnings ./tests 2>&1 | tee -a pytest.log
+    python -m pytest -v -s -p no:warnings --lf ./tests 2>&1 | tee -a pytest.log
     check_errors=${PIPESTATUS[0]}
 fi
 
 echo '******************************************************************************'
-if [ ${check_errors} -eq 0 ]; then
+if [ ${check_errors} -ne 0 ]; then
     echo "Your PR code CPU unit test check FAILED"
     echo "Please run the following command:"
     echo ""
