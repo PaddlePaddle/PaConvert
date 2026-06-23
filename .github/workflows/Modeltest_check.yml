@@ -56,7 +56,7 @@ jobs:
                 echo "container_name=${container_name}" >> "$GITHUB_ENV"
                 docker run -d --name "${container_name}" \
                     -e NVIDIA_VISIBLE_DEVICES=void \
-                    -e TORCH_PROJECT_PATH="${TORCH_PROEJCT_PATH}" \
+                    -e TORCH_PROJECT_PATH="${TORCH_PROJECT_PATH}" \
                     --network host \
                     -v /dev/shm:/dev/shm \
                     -v "${{ github.workspace }}:/ws" \
