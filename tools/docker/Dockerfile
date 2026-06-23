@@ -29,5 +29,5 @@ RUN wget --tries=5 --timeout=60 https://developer.download.nvidia.com/compute/cu
     dpkg -i cuda-keyring_1.1-1_all.deb && \
     rm cuda-keyring_1.1-1_all.deb
 
-RUN apt-get -o Acquire::Retries=5 update && \
+RUN apt-get -o Acquire::Retries=5 update || true; \
     apt-get -o Acquire::Retries=5 install -y cudnn9-cuda-11
