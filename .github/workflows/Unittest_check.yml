@@ -57,11 +57,29 @@ jobs:
                 echo "container_name=${container_name}" >> "$GITHUB_ENV"
                 docker run -d --name "${container_name}" \
                     -e NVIDIA_VISIBLE_DEVICES=void \
+                    -e http_proxy=$http_proxy \
+                    -e https_proxy=$https_proxy \
+                    -e no_proxy="localhost,127.0.0.1" \
                     --network host \
                     -v /dev/shm:/dev/shm \
                     -v "${{ github.workspace }}:/ws" \
                     -w /ws \
                     paconvert-ci:cu118 sleep infinity
+
+            - name: Run CI Unittest
+              shell: bash
+              run: docker exec "$container_name" bash /scripts/ci/run_cpu_unittest.sh
+
+            - name: Upload logs on failing
+              if: failure()
+              uses: actions/upload-artifact@v4
+              with:
+                name: ci-unittest-log-${{ github.run_id }}
+                path: |
+                    pytest.log
+                    tests/**/pytest.log
+                if-no-files-found: ignore
+                retention-days: 14
 
             - name: Cleanup Container
               if: always()
