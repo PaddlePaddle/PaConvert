@@ -19,4 +19,4 @@ RUN python -m pip install --no-cache-dir \
 
 RUN python -m pip install --no-cache-dir \
         torch==2.7.1 torchvision==0.22.1 \
-        --index-url https://download.pytorch.org/whl/cpu
+        --index-url https://mirrors.aliyun.com/pytorch-wheels/cpu
