@@ -55,8 +55,8 @@ jobs:
                 container_name="paconvert-modeltest-${{ github.run_id }}-${{ github.run_attempt }}"
                 echo "container_name=${container_name}" >> "$GITHUB_ENV"
                 docker run -d --name "${container_name}" \
-                    -e http_proxy="http_proxy" \
-                    -e https_proxy="https_proxy" \
+                    -e http_proxy=$http_proxy \
+                    -e https_proxy=$https_proxy \
                     -e no_proxy="localhost,127.0.0.1" \
                     -e NVIDIA_VISIBLE_DEVICES=void \
                     -e TORCH_PROJECT_PATH="${TORCH_PROJECT_PATH}" \
