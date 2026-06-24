@@ -39,11 +39,11 @@ echo '**************************************************************************
 echo "Checking code gpu unit test by pytest ..."
 set +e
 
-python -m pytest -v -s -p no:warnings --reruns=3 ./tests 2>&1 | tee pytest.log
+python -m pytest -v -s -p no:warnings -n 1 --reruns=3 ./tests 2>&1 | tee pytest.log
 check_errors=${PIPESTATUS[0]}
 if [ ${check_errors} -ne 0 ]; then
-    echo "Rerun CPU unit test"
-    python -m pytest -v -s -p no:warnings --lf ./tests 2>&1 | tee -a pytest.log
+    echo "Rerun GPU unit test"
+    python -m pytest -v -s -p no:warnings -n 1 --lf ./tests 2>&1 | tee -a pytest.log
     check_errors=${PIPESTATUS[0]}
 fi
 

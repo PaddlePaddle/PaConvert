@@ -39,10 +39,15 @@ echo "Checking code cpu unit test by pytest ..."
 set +e
 
 PYTEST_IGNORE="\
---ignore=tests/test_backends_cpu_is_built.py \
+--ignore=tests/test_backends_cuda_is_built.py \
 --ignore=tests/test_cuda_is_bf16_supported.py \
 --ignore=tests/test_backends_cudnn_is_available.py \
---ignore=tests/test_distributed_is_nccl_available.py\
+--ignore=tests/test_distributed_is_nccl_available.py \
+--ignore=tests/test_hub_download_url_to_file.py \
+--ignore=tests/test_hub_help.py \ 
+--ignore=tests/test_hub_list.py \
+--ignore=tests/test_hub_load.py \
+--ignore=tests/test_hub_load_state_dict_from_url.py \
 "
 
 python -m pytest -v -s -p no:warnings $PYTEST_IGNORE --reruns=3 ./tests 2>&1 | tee pytest.log

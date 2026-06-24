@@ -15,7 +15,8 @@ RUN python -m pip install --no-cache-dir \
         pandas \
         openpyxl \
         pytest-timeout \
-        pytest-rerunfailures
+        pytest-rerunfailures \
+        pytest-xdist
 
 RUN wget -q https://paddle-paconvert.bj.bcebos.com/torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl \
             https://paddle-paconvert.bj.bcebos.com/torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl && \ 

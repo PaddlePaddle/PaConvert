@@ -29,6 +29,7 @@ python -c "import paddle; print('paddle version: ', paddle.__version__); print('
 
 echo '******************************************************************************'
 echo "Installing paconvert requirements"
+python -m pip install -r requirements.txt
 
 cd tests/distributed
 
