@@ -45,44 +45,37 @@ jobs:
               with:
                 fetch-depth: 0
 
-            - name: GPU unittest on host
+            - name: Ensure CI image Exists
               run: |
-                set -eo pipefail
-                python3 -m venv /tmp/gpuci && source /tmp/gpuci/bin/activate
-                python -m pip install --upgrade pip
-                python -m pip install --no-cache-dir \
-                    https://paddle-paconvert.bj.bcebos.com/torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl \
-                    https://paddle-paconvert.bj.bcebos.com/torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
-                bash scripts/ci/run_gpu_unittest.sh
+                docker image inspect paconvert-ci:cu118 >/dev/null 2>&1 || \
+                    docker build --pull -t paconvert-ci:cu118 -f tools/docker/Dockerfile tools/docker
 
-            # - name: Ensure CI image Exists
-            #   run: |
-            #     docker image inspect paconvert-ci:cu118 >/dev/null 2>&1 || \
-            #         docker build --pull -t paconvert-ci:cu118 -f tools/docker/Dockerfile tools/docker
+            - name: Start Container
+              run: |
+                container_name="paconvert-gpu-unittest-${{ github.run_id }}-${{ github.run_attempt }}"
+                echo "container_name=${container_name}" >> "$GITHUB_ENV"
+                docker run -d --name "${container_name}" \
+                    -e http_proxy=$http_proxy \
+                    -e https_proxy=$https_proxy \
+                    -e no_proxy="localhost,127.0.0.1" \
+                    --gpus all \
+                    --network host \
+                    -v /dev/shm:/dev/shm \
+                    -v "${{ github.workspace }}:/ws" \
+                    -w /ws \
+                    paconvert-ci:cu118 sleep infinity
 
-            # - name: Start Container
-            #   run: |
-            #     container_name="paconvert-gpu-unittest-${{ github.run_id }}-${{ github.run_attempt }}"
-            #     echo "container_name=${container_name}" >> "$GITHUB_ENV"
-            #     docker run -d --name "${container_name}" \
-            #         --gpus all \
-            #         --network host \
-            #         -v /dev/shm:/dev/shm \
-            #         -v "${{ github.workspace }}:/ws" \
-            #         -w /ws \
-            #         paconvert-ci:cu118 sleep infinity
+            - name: Run GPU Unittest
+              run: |
+                docker exec "$container_name" bash scripts/ci/run_gpu_unittest.sh
 
-            # - name: Run GPU Unittest
-            #   run: |
-            #     docker exec "$container_name" bash scripts/ci/run_gpu_unittest.sh
-
-            # - name: Cleanup Container
-            #   if: always()
-            #   run: |
-            #     if [ -n "${container_name:-}" ]; then
-            #         docker exec "${container_name}" chown -R "$(id -u):$(id -g)" /ws 2>/dev/null || true
-            #         docker rm -f "${container_name}" || true
-            #     fi
+            - name: Cleanup Container
+              if: always()
+              run: |
+                if [ -n "${container_name:-}" ]; then
+                    docker exec "${container_name}" chown -R "$(id -u):$(id -g)" /ws 2>/dev/null || true
+                    docker rm -f "${container_name}" || true
+                fi
 
             # - name: Setup Python
             #   uses: actions/setup-python@v5
