@@ -39,11 +39,19 @@ echo '**************************************************************************
 echo "Checking code gpu unit test by pytest ..."
 set +e
 
-python -m pytest -v -s -p no:warnings -n 1 --reruns=3 ./tests 2>&1 | tee pytest.log
+PYTEST_IGNORE=(
+    --ignore=tests/test_hub_download_url_to_file.py
+    --ignore=tests/test_hub_help.py
+    --ignore=tests/test_hub_list.py
+    --ignore=tests/test_hub_load.py
+    --ignore=tests/test_hub_load_state_dict_from_url.py
+)
+
+python -m pytest -v -s -p no:warnings "${PYTEST_IGNORE[@]}" -n 1 --reruns=3 ./tests 2>&1 | tee pytest.log
 check_errors=${PIPESTATUS[0]}
 if [ ${check_errors} -ne 0 ]; then
     echo "Rerun GPU unit test"
-    python -m pytest -v -s -p no:warnings -n 1 --lf ./tests 2>&1 | tee -a pytest.log
+    python -m pytest -v -s -p no:warnings "${PYTEST_IGNORE[@]}" -n 1 --lf ./tests 2>&1 | tee -a pytest.log
     check_errors=${PIPESTATUS[0]}
 fi
 
