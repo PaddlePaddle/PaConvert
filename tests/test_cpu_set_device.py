@@ -14,9 +14,18 @@
 
 import textwrap
 
+import paddle
+import pytest
 from test_cpu_current_device import CpuCurrentDeviceAPIBase
 
 obj = CpuCurrentDeviceAPIBase("torch.cpu.set_device")
+
+
+@pytest.fixture(autouse=True)
+def _restore_default_device():
+    yield
+    if paddle.device.is_compiled_with_cuda():
+        paddle.device.set_device("gpu:0")
 
 
 def test_case_1():
