@@ -89,7 +89,6 @@ def test_case_2():
     )
     paddle_code = textwrap.dedent(
         """
-
         import paddle
 
         ############################## 相关utils函数，如下 ##############################
@@ -114,7 +113,7 @@ def test_case_2():
                 self.fc2 = paddle.compat.nn.Linear(3, 1)
 
             def forward(self, x):
-                x = paddle.relu(self.fc1(x))
+                x = paddle.nn.functional.relu(x=self.fc1(x))
                 x = self.fc2(x)
                 return x
 
