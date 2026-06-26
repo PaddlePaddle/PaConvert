@@ -1,6 +1,6 @@
 {
   "torch.Tensor.H": {
-    "Matcher": "TensorHMatcher"
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.T": {
     "Matcher": "ChangePrefixMatcher"
