@@ -35,9 +35,6 @@ jobs:
         runs-on:
             group: PaConvert
         timeout-minutes: 120
-        concurrency:
-            group: paconvert-gpu-runner
-            cancel-in-progress: false
 
         steps:
             - name: Checkout repository
