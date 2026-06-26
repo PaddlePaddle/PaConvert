@@ -600,22 +600,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.backward": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.backward",
-    "min_input_args": 0,
-    "args_list": [
-      "gradient",
-      "retain_graph",
-      "create_graph",
-      "inputs"
-    ],
-    "kwargs_change": {
-      "gradient": "grad_tensor"
-    },
-    "unsupport_args": [
-      "create_graph",
-      "inputs"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.baddbmm": {
     "Matcher": "ChangePrefixMatcher"
