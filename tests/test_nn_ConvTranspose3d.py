@@ -239,4 +239,3 @@ def test_case_14():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
-

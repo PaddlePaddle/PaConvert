@@ -1,0 +1,75 @@
+# Copyright (c) 2026 PaddlePaddle Authors. All Rights Reserved.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#     http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# 
+
+set -eo pipefail
+
+echo '******************************************************************************'
+echo "Installing develop CPU version paddle"
+python -m pip uninstall -y paddlepaddle paddlepaddle-gpu || true
+python -m pip install --force-reinstall --no-cache-dir -U --pre paddlepaddle \
+    -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/ \
+    --extra-index-url https://pypi.tuna.tsinghua.edu.cn/simple \
+    --timeout 120 --retries 3
+python -c "import paddle; print('paddle version: ', paddle.__version__); print('paddle commit info: ', paddle.__git_commit__)"
+
+echo '******************************************************************************'
+echo "Installing paconvert requirements"
+python -m pip install -r requirements.txt
+if [ -f tests/requirements.txt ]; then
+    python -m pip install -r tests/requirements.txt
+fi
+
+echo '******************************************************************************'
+python -c "import torch; print('torch version: ', torch.__version__, '| cuda available: ', torch.cuda.is_available())"
+
+echo '******************************************************************************'
+echo "Checking code cpu unit test by pytest ..."
+set +e
+
+PYTEST_IGNORE=(
+    --ignore=tests/test_backends_cuda_is_built.py
+    --ignore=tests/test_cuda_is_bf16_supported.py
+    --ignore=tests/test_backends_cudnn_is_available.py
+    --ignore=tests/test_distributed_is_nccl_available.py
+    --ignore=tests/test_hub_download_url_to_file.py
+    --ignore=tests/test_hub_help.py
+    --ignore=tests/test_hub_list.py
+    --ignore=tests/test_hub_load.py
+    --ignore=tests/test_hub_load_state_dict_from_url.py
+)
+
+python -m pytest -v -s -p no:warnings "${PYTEST_IGNORE[@]}" --reruns=3 ./tests 2>&1 | tee pytest.log
+check_errors=${PIPESTATUS[0]}
+if [ ${check_errors} -ne 0 ]; then
+    echo "Rerun CPU unit test"
+    python -m pytest -v -s -p no:warnings "${PYTEST_IGNORE[@]}" --lf ./tests 2>&1 | tee -a pytest.log
+    check_errors=${PIPESTATUS[0]}
+fi
+
+echo '******************************************************************************'
+if [ ${check_errors} -ne 0 ]; then
+    echo "Your PR code CPU unit test check FAILED"
+    echo "Please run the following command:"
+    echo ""
+    echo "    pytest -m pytest tests"
+    echo ""
+    echo "For more information, please refer to our check guides:"
+    echo "https://github.com/paddlepaddle/paconvert#readme"
+else
+    echo "All tests PASSED!"
+fi
+echo '******************************************************************************'
+
+exit ${check_errors}

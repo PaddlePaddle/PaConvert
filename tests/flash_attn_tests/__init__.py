@@ -11,31 +11,4 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-import textwrap
-
-from apibase import APIBase
-
-obj = APIBase("torch.Tensor.mvlgamma_")
-
-
-def test_case_1():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([1.5, 2.5, 3.5], dtype=torch.float32)
-        result = x.mvlgamma_(2)
-        """
-    )
-    obj.run(pytorch_code, ["x", "result"])
-
-
-def test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[1.5, 2.5], [3.5, 4.5]], dtype=torch.float64)
-        result = x.mvlgamma_(3)
-        """
-    )
-    obj.run(pytorch_code, ["x", "result"])
+#

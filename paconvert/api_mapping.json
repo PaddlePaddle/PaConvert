@@ -1243,9 +1243,6 @@
       "other": "y"
     }
   },
-  "torch.Tensor.imag": {
-    "Matcher": "ChangePrefixMatcher"
-  },
   "torch.Tensor.index_add": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -1874,9 +1871,6 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.ravel": {
-    "Matcher": "ChangePrefixMatcher"
-  },
-  "torch.Tensor.real": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.reciprocal": {
@@ -5609,9 +5603,7 @@
       "example_inputs": "input_spec"
     }
   },
-  "torch.kl_div": {
-    "Matcher": "ChangePrefixMatcher"
-  },
+  "torch.kl_div": {},
   "torch.kron": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -6999,7 +6991,8 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.LogSoftmax": {
-    "Matcher": "ChangePrefixMatcher"
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.compat.nn.Softmax"
   },
   "torch.nn.MSELoss": {
     "Matcher": "SizeAverageMatcher",
@@ -7464,7 +7457,8 @@
     "min_input_args": 0
   },
   "torch.nn.Softmax": {
-    "Matcher": "ChangePrefixMatcher"
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.compat.nn.Softmax"
   },
   "torch.nn.Softmax2d": {
     "Matcher": "GenericMatcher",
@@ -7985,9 +7979,7 @@
     },
     "min_input_args": 2
   },
-  "torch.nn.functional.ctc_loss": {
-    "Matcher": "ChangePrefixMatcher"
-  },
+  "torch.nn.functional.ctc_loss": {},
   "torch.nn.functional.dropout": {
     "Matcher": "ChangePrefixMatcher"
   },
