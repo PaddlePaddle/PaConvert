@@ -26,10 +26,9 @@ def test_case_1():
         import torch
         x = torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
         x.resize_([2, 1])
-        result = x
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x"])
 
 
 def test_case_2():
@@ -39,10 +38,9 @@ def test_case_2():
         import torch
         x = torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
         x.resize_(2, 1)
-        result = x
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x"])
 
 
 def test_case_3():
@@ -52,10 +50,9 @@ def test_case_3():
         import torch
         x = torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
         x.resize_(2, 2)
-        result = x
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x"])
 
 
 def test_case_4():
@@ -65,10 +62,9 @@ def test_case_4():
         import torch
         x = torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
         x.resize_(6)
-        result = x
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x"])
 
 
 def test_case_5():
@@ -78,10 +74,9 @@ def test_case_5():
         import torch
         x = torch.arange(24, dtype=torch.float32).reshape(2, 3, 4)
         x.resize_(2, 4, 3)
-        result = x
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x"])
 
 
 def test_case_6():
@@ -92,7 +87,19 @@ def test_case_6():
         x = torch.tensor([[1.0, 2.0], [3.0, 4.0]])
         shape = (1, 4)
         x.resize_(*shape)
-        result = x
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x"])
+
+
+def test_case_7():
+    """Return value is the same tensor"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+        result = x.resize_([2, 1])
+        same = result is x
+        """
+    )
+    obj.run(pytorch_code, ["x", "result", "same"])

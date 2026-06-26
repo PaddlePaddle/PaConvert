@@ -6991,8 +6991,18 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.LogSoftmax": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.compat.nn.Softmax"
+    "Matcher": "LogSoftmaxMatcher",
+    "paddle_api": "paddle.nn.LogSoftmax",
+    "min_input_args": 0,
+    "args_list": [
+      "dim"
+    ],
+    "kwargs_change": {
+      "dim": "axis"
+    },
+    "paddle_default_kwargs": {
+      "axis": 0
+    }
   },
   "torch.nn.MSELoss": {
     "Matcher": "SizeAverageMatcher",
