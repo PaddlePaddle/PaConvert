@@ -18,7 +18,7 @@ set -eo pipefail
 echo '******************************************************************************'
 echo "Installing develop GPU version paddle"
 python -m pip uninstall -y paddlepaddle paddlepaddle-gpu || true
-python -m pip install --force-reinstall --no-cache-dir -U --pre paddlepaddle-gpu \
+python -m pip install --force-reinstall --no-cache-dir --no-deps -U --pre paddlepaddle-gpu \
     -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/ \
     --extra-index-url https://pypi.tuna.tsinghua.edu.cn/simple \
     --timeout 120 --retries 3
