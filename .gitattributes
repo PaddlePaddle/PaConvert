@@ -1,0 +1,7 @@
+# Enforce LF line endings for line-ending-sensitive files on every platform,
+# so editors on Windows can't introduce CRLF (which breaks shell scripts and
+# trips the codestyle / pre-commit checks).
+*.sh   text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.py   text eol=lf
