@@ -9844,29 +9844,10 @@
     ]
   },
   "torch.optim.lr_scheduler.CosineAnnealingLR": {
-    "Matcher": "Optim2LrSchedulerMatcher",
-    "paddle_api": "paddle.optimizer.lr.CosineAnnealingDecay",
-    "min_input_args": 2,
-    "args_list": [
-      "optimizer",
-      "T_max",
-      "eta_min",
-      "last_epoch",
-      "verbose"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.optim.lr_scheduler.CosineAnnealingWarmRestarts": {
-    "Matcher": "Optim2LrSchedulerMatcher",
-    "paddle_api": "paddle.optimizer.lr.CosineAnnealingWarmRestarts",
-    "min_input_args": 2,
-    "args_list": [
-      "optimizer",
-      "T_0",
-      "T_mult",
-      "eta_min",
-      "last_epoch",
-      "verbose"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.optim.lr_scheduler.CyclicLR": {
     "Matcher": "LRSchedulerMatcher",
@@ -9903,15 +9884,7 @@
     }
   },
   "torch.optim.lr_scheduler.ExponentialLR": {
-    "Matcher": "Optim2LrSchedulerMatcher",
-    "paddle_api": "paddle.optimizer.lr.ExponentialDecay",
-    "min_input_args": 2,
-    "args_list": [
-      "optimizer",
-      "gamma",
-      "last_epoch",
-      "verbose"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.optim.lr_scheduler.LambdaLR": {
     "Matcher": "Optim2LrSchedulerMatcher",
@@ -9944,16 +9917,7 @@
     }
   },
   "torch.optim.lr_scheduler.MultiStepLR": {
-    "Matcher": "Optim2LrSchedulerMatcher",
-    "paddle_api": "paddle.optimizer.lr.MultiStepDecay",
-    "min_input_args": 2,
-    "args_list": [
-      "optimizer",
-      "milestones",
-      "gamma",
-      "last_epoch",
-      "verbose"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.optim.lr_scheduler.MultiplicativeLR": {
     "Matcher": "Optim2LrSchedulerMatcher",
@@ -9999,36 +9963,10 @@
     ]
   },
   "torch.optim.lr_scheduler.ReduceLROnPlateau": {
-    "Matcher": "Optim2LrSchedulerMatcher",
-    "paddle_api": "paddle.optimizer.lr.ReduceOnPlateau",
-    "min_input_args": 1,
-    "args_list": [
-      "optimizer",
-      "mode",
-      "factor",
-      "patience",
-      "threshold",
-      "threshold_mode",
-      "cooldown",
-      "min_lr",
-      "eps",
-      "verbose"
-    ],
-    "kwargs_change": {
-      "eps": "epsilon"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.optim.lr_scheduler.StepLR": {
-    "Matcher": "Optim2LrSchedulerMatcher",
-    "paddle_api": "paddle.optimizer.lr.StepDecay",
-    "min_input_args": 2,
-    "args_list": [
-      "optimizer",
-      "step_size",
-      "gamma",
-      "last_epoch",
-      "verbose"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.ormqr": {
     "Matcher": "GenericMatcher",
@@ -11584,12 +11522,7 @@
     ]
   },
   "torch.utils.data.TensorDataset": {
-    "Matcher": "TensorDatasetMatcher",
-    "paddle_api": "paddle.io.TensorDataset",
-    "min_input_args": 1,
-    "args_list": [
-      "*tensors"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.WeightedRandomSampler": {
     "Matcher": "GenericMatcher",
