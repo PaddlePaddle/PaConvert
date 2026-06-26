@@ -5629,8 +5629,7 @@
     ]
   },
   "torch.initial_seed": {
-    "Matcher": "SeedMatcher",
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.inner": {
     "Matcher": "ChangePrefixMatcher"
@@ -9157,6 +9156,9 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.init.orthogonal_": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.nn.init.sparse_": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.init.trunc_normal_": {
