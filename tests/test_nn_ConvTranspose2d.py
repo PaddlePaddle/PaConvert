@@ -256,4 +256,3 @@ def test_case_15():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
-
