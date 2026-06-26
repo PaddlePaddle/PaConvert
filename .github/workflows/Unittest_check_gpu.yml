@@ -1,0 +1,181 @@
+name: GPU Unittest Check
+
+on:
+    # Nightly: re-validate master against the freshly built nightly paddle
+    # Cron is UTC: '0 21 * * *' => 05:00 UTC+8
+    # schedule:
+    #     - cron: '0 21 * * *'
+    pull_request:
+        branches: [master, develop, "release/**"]
+        paths-ignore:
+            - '**/*.md'
+            - 'docs/**'
+            - 'LICENSE'
+            - '.gitignore'
+            - '.pre-commit-config.yaml'
+    push:
+        branches: [master, develop]
+        paths-ignore:
+            - '**/*.md'
+            - 'docs/**'
+            - 'LICENSE'
+            - '.gitignore'
+            - '.pre-commit-config.yaml'
+
+permissions:
+    contents: read
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    gpu-unittest:
+        name: GPU Unittest Check
+        runs-on:
+            group: PaConvert
+        timeout-minutes: 120
+        concurrency:
+            group: paconvert-gpu-runner
+            cancel-in-progress: false
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                fetch-depth: 0
+
+            - name: Ensure CI image Exists
+              run: |
+                docker image inspect paconvert-ci:cu118 >/dev/null 2>&1 || \
+                    docker build --pull -t paconvert-ci:cu118 -f tools/docker/Dockerfile tools/docker
+
+            - name: Start Container
+              run: |
+                container_name="paconvert-gpu-unittest-${{ github.run_id }}-${{ github.run_attempt }}"
+                echo "container_name=${container_name}" >> "$GITHUB_ENV"
+                docker run -d --name "${container_name}" \
+                    -e http_proxy=$http_proxy \
+                    -e https_proxy=$https_proxy \
+                    -e no_proxy="localhost,127.0.0.1" \
+                    --gpus all \
+                    --network host \
+                    -v /dev/shm:/dev/shm \
+                    -v "${{ github.workspace }}:/ws" \
+                    -w /ws \
+                    paconvert-ci:cu118 sleep infinity
+
+            - name: Run GPU Unittest
+              run: |
+                docker exec "$container_name" bash scripts/ci/run_gpu_unittest.sh
+
+            - name: Cleanup Container
+              if: always()
+              run: |
+                if [ -n "${container_name:-}" ]; then
+                    docker exec "${container_name}" chown -R "$(id -u):$(id -g)" /ws 2>/dev/null || true
+                    docker rm -f "${container_name}" || true
+                fi
+
+            # - name: Setup Python
+            #   uses: actions/setup-python@v5
+            #   with:
+            #     python-version: '3.10'
+            #     cache: pip
+            #     cache-dependency-path: |
+            #       requirements.txt
+            #       tests/requirements.txt
+
+            # - name: Check Env
+            #   run: |
+            #     python3 --version
+            #     pwd
+
+            # - name: Download GPU dependencies
+            #   run: |
+            #     echo "Downloading torch wheel..."
+            #     wget --no-verbose https://paddle-paconvert.bj.bcebos.com/torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
+            #     ls -lh torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
+
+            #     echo "Downloading torchvision wheel..."
+            #     wget --no-verbose https://paddle-paconvert.bj.bcebos.com/torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
+            #     ls -lh torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl
+
+            #     echo "Downloaded GPU dependencies successfully!"
+
+            # - name: Install Latest Release GPU Version Torch
+            #   run: |
+            #     python3 -m pip install --upgrade pip
+            #     python3 -m pip uninstall -y torchaudio
+            #     NO_PROXY='*' no_proxy='*' python3 -m pip install \
+            #         torch-2.7.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl \
+            #         torchvision-0.22.1+cu118-cp310-cp310-manylinux_2_28_x86_64.whl \
+            #         -i https://pypi.tuna.tsinghua.edu.cn/simple \
+            #         --timeout 120 --retries 3
+            #     python3 -c "import torch; print('torch version information:', torch.__version__)"
+
+            # - name: Install Latest develop GPU Version Paddle
+            #   run: |
+            #     python3 -m pip uninstall -y paddlepaddle
+            #     python3 -m pip uninstall -y paddlepaddle-gpu
+            #     NO_PROXY='*' no_proxy='*' python3 -m pip install --force-reinstall --no-cache-dir -U --pre paddlepaddle-gpu \
+            #         -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/ \
+            #         --extra-index-url https://pypi.tuna.tsinghua.edu.cn/simple \
+            #         --timeout 120 --retries 3
+            #     NO_PROXY='*' no_proxy='*' python3 -m pip install safetensors==0.6.2 \
+            #         -i https://pypi.tuna.tsinghua.edu.cn/simple
+            #     python3 -c "import paddle; print('paddle version information:', paddle.__version__); print('paddle commit information:', paddle.__git_commit__)"
+
+            # - name: Install paconvert requirements
+            #   run: |
+            #     python3 -m pip install -r requirements.txt
+            #     if [ -f tests/requirements.txt ]; then
+            #         python3 -m pip install -r tests/requirements.txt
+            #     fi
+
+            # - name: Run GPU Unittest
+            #   shell: bash
+            #   run: |
+            #     python3 -m pip install pytest-timeout pytest-xdist pytest-rerunfailures
+
+            #     # Disable errexit so a failing run is captured instead of aborting immediately
+            #     # A passing retry can clear the error.
+            #     set +e
+
+            #     echo "Checking code gpu unit test by pytest ..."
+            #     # tee output to pytest.log so it can be uploaded as an artifact on failure;
+            #     # PIPESTATUS[0] preserves pytest's exit code instead of tee's.
+            #     python3 -m pytest -v -s -p no:warnings --reruns=3 ./tests 2>&1 | tee pytest.log
+            #     check_error=${PIPESTATUS[0]}
+            #     if [ ${check_error} -ne 0 ]; then
+            #         echo "Rerun gpu unit test check."
+            #         python3 -m pytest -v -s -p no:warnings --lf ./tests 2>&1 | tee -a pytest.log
+            #         check_error=${PIPESTATUS[0]}
+            #     fi
+
+            #     echo '************************************************************************************************************'
+            #     if [ ${check_error} -ne 0 ]; then
+            #         echo "Your PR code gpu unit test check failed."
+            #         echo "Please run the following command:"
+            #         echo ""
+            #         echo "    python3 -m pytest tests"
+            #         echo ""
+            #         echo "For more information, please refer to our check guide:"
+            #         echo "https://github.com/PaddlePaddle/PaConvert#readme."
+            #     else
+            #         echo "Your PR code gpu unit test check passed."
+            #     fi
+            #     echo '************************************************************************************************************'
+
+            #     exit ${check_error}
+
+            # - name: Upload logs on failure
+            #   if: failure()
+            #   uses: actions/upload-artifact@v4
+            #   with:
+            #     name: gpu-unittest-log-${{ github.run_id }}
+            #     path: |
+            #       pytest.log
+            #       tests/**/pytest.log
+            #     if-no-files-found: ignore
+            #     retention-days: 14

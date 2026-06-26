@@ -32,7 +32,7 @@ class VersionAPI(APIBase):
         atol=0.0,
     ):
         # torch return: torch.torch_version.TorchVersion
-        assert type(str(pytorch_result)) == type(paddle_result)
+        assert type(str(pytorch_result)) == type(str(paddle_result))
 
 
 obj = VersionAPI("torch.__version__")
