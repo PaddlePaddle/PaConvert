@@ -33,9 +33,8 @@ def test_case_1():
     )
     paddle_code = textwrap.dedent(
         """
-        import paddleformers
-
         import paddle
+        import paddleformers
 
 
         class LlamaForCausalLM(paddle.nn.Module):
