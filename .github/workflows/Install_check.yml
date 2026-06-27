@@ -1,0 +1,93 @@
+name: Install Check
+
+on:
+    # Nightly: re-validate master against the freshly built nightly paddle
+    # Cron is UTC: '0 21 * * *' => 05:00 UTC+8
+    # schedule:
+    #     - cron: '0 21 * * *'
+    pull_request:
+        branches: [master, develop, "release/**"]
+        paths-ignore:
+            - '**/*.md'
+            - 'docs/**'
+            - 'LICENSE'
+            - '.gitignore'
+            - '.pre-commit-config.yaml'
+
+    push:
+        branches: [master, develop]
+        paths-ignore:
+            - '**/*.md'
+            - 'docs/**'
+            - 'LICENSE'
+            - '.gitignore'
+            - '.pre-commit-config.yaml'
+
+permissions:
+    contents: read
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    install-check:
+        name: Install Check
+        # TODO: replace with the actual self-hosted CPU runner group name
+        runs-on: ubuntu-24.04
+        timeout-minutes: 20
+
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
+              with:
+                fetch-depth: 0
+
+            - name: Setup Python
+              uses: actions/setup-python@v5
+              with:
+                python-version: '3.10'
+                cache: pip
+                cache-dependency-path: |
+                  requirements.txt
+                  tests/requirements.txt
+
+            - name: Install Latest Release CPU Version Torch
+              run: |
+                python -m pip install --upgrade pip
+                python -m pip install -U torch torchvision --index-url https://download.pytorch.org/whl/cpu
+                python -c "import torch; print('torch version information:', torch.__version__)"
+
+            - name: Install Latest develop CPU Version Paddle
+              run: |
+                python -m pip uninstall -y paddlepaddle
+                python -m pip uninstall -y paddlepaddle-gpu
+                python -m pip install --force-reinstall --no-cache-dir -U --pre paddlepaddle \
+                    -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/ \
+                    --extra-index-url https://pypi.org/simple \
+                    --timeout 120 --retries 3
+                python -c "import paddle; print('paddle version information:', paddle.__version__); print('paddle commit information:', paddle.__git_commit__)"
+
+            - name: Install dependencies
+              run: |
+                python -m pip install --upgrade pip
+                python -m pip install -r requirements.txt
+                if [ -f tests/requirements.txt ]; then
+                    python -m pip install -r tests/requirements.txt
+                fi
+
+            - name: Install Check
+              run: |
+                python setup.py sdist bdist_wheel
+                python -m pip install dist/*.whl --force-reinstall
+                paconvert -V
+                paconvert --run_check
+
+            - name: Upload dist on failure
+              if: failure()
+              uses: actions/upload-artifact@v4
+              with:
+                name: install-dist-${{ github.run_id }}
+                path: dist/
+                if-no-files-found: ignore
+                retention-days: 14

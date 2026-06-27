@@ -23,18 +23,42 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0.2970,  1.5420, 4]).rsqrt_()
+        x = torch.tensor([0.25, 1.0, 4.0, 9.0], dtype=torch.float32)
+        result = x.rsqrt_()
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["x", "result"])
 
 
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([0.2970,  1.5420, 4])
-        result.rsqrt_()
+        x = torch.tensor([[0.5, 1.5], [3.0, 12.5]], dtype=torch.float64)
+        result = x.rsqrt_()
+        """
+    )
+    obj.run(pytorch_code, ["x", "result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor(
+            [0.125, 0.5, 1.0, 1.5, 2.0, 4.5, 8.0, 18.0], dtype=torch.float32
+        ).reshape(2, 2, 2)
+        result = x.rsqrt_()
+        """
+    )
+    obj.run(pytorch_code, ["x", "result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.tensor([0.0625, 4.0, 16.0], dtype=torch.float64).rsqrt_()
         """
     )
     obj.run(pytorch_code, ["result"])
