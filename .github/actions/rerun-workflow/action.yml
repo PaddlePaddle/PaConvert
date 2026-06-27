@@ -1,0 +1,31 @@
+name: 'Rerun workflow'
+description: 'Rerun a failed jobs or a specific named job for a pull request'
+
+inputs:
+  GITHUB_TOKEN:
+    description: 'Token with actions:write scope (pass secrets.GITHUB_TOKEN).'
+    required: true
+  OWNER:
+    description: 'Repository owner'
+    required: true
+  REPO:
+    description: 'Repository name'
+    required: true
+  PR_ID:
+    description: 'Pull request ID'
+    required: true
+  JOB_NAME:
+    description: 'Name of the job to rerun'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - run: bash ./.github/actions/rerun-workflow/rerun.sh
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+        OWNER: ${{ inputs.OWNER }}
+        REPO: ${{ inputs.REPO }}
+        PR_ID: ${{ inputs.PR_ID }}
+        JOB_NAME: ${{ inputs.JOB_NAME }}
