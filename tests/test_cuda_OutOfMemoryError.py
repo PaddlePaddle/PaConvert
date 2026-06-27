@@ -31,7 +31,7 @@ def test_case_1():
     )
     obj.run(
         pytorch_code,
-        expect_paddle_code="import paddle\n\ntry:\n    raise paddle.cuda.OutOfMemoryError(\"test\")\nexcept paddle.cuda.OutOfMemoryError as e:\n    result = str(e)\n",
+        expect_paddle_code='import paddle\n\ntry:\n    raise paddle.cuda.OutOfMemoryError("test")\nexcept paddle.cuda.OutOfMemoryError as e:\n    result = str(e)\n',
     )
 
 
