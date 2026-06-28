@@ -181,6 +181,9 @@
   "torch.nn": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.optim.Optimizer.step": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.pi": {
     "Matcher": "ChangePrefixMatcher"
   },
