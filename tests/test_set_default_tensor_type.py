@@ -21,9 +21,22 @@ from apibase import APIBase
 obj = APIBase("torch.set_default_tensor_type")
 
 
-# These test has been run locally. Due to torch.set_default_tensor_type would make a global setting,
-# other tests are affected. So we disable most of them here.
-def _test_case_1():
+def test_case_1():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.set_default_tensor_type(torch.HalfTensor)
+        result = torch.tensor([1.2, 3])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -34,144 +47,11 @@ def _test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_2():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        torch.set_default_tensor_type(t=torch.cuda.HalfTensor)
-        result = torch.tensor([1.2, 3])
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def _test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        torch.set_default_tensor_type(t="torch.cuda.HalfTensor")
-        result = torch.tensor([1.2, 3.8])
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def _test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        torch.set_default_tensor_type("torch.DoubleTensor")
-        result = torch.tensor([1.2, 3.8])
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def _test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        torch.set_default_tensor_type(torch.DoubleTensor)
-        result = torch.tensor([1.2, 3.8])
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-# TODO: Start all test when torch.set_default_tensor_type == paddle.set_default_tensor_type
 @pytest.mark.skipif(
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
 )
-def _test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        torch.set_default_tensor_type("torch.FloatTensor")
-        result = torch.tensor([1.2, 3.8])
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def _test_case_7():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        torch.set_default_tensor_type(torch.FloatTensor)
-        result = torch.tensor([1.2, 3.8])
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def _test_case_8():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        torch.set_default_tensor_type("torch.BFloat16Tensor")
-        result = True
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def _test_case_9():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        torch.set_default_tensor_type(torch.BFloat16Tensor)
-        result = True
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def _test_case_10():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        torch.set_default_tensor_type("torch.cuda.DoubleTensor")
-        result = torch.tensor([1.2, 3.8])
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def _test_case_11():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        torch.set_default_tensor_type(torch.cuda.DoubleTensor)
-        result = torch.tensor([1.2, 3.8])
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def _test_case_12():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        torch.set_default_tensor_type("torch.cuda.FloatTensor")
-        result = torch.tensor([1.2, 3.8])
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def _test_case_13():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        torch.set_default_tensor_type(torch.cuda.FloatTensor)
-        result = torch.tensor([1.2, 3.8])
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def _test_case_14():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -182,7 +62,152 @@ def _test_case_14():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_15():
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.set_default_tensor_type("torch.DoubleTensor")
+        result = torch.tensor([1.2, 3.8])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.set_default_tensor_type(torch.DoubleTensor)
+        result = torch.tensor([1.2, 3.8])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.set_default_tensor_type("torch.FloatTensor")
+        result = torch.tensor([1.2, 3.8])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.set_default_tensor_type(torch.FloatTensor)
+        result = torch.tensor([1.2, 3.8])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.set_default_tensor_type("torch.BFloat16Tensor")
+        result = True
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.set_default_tensor_type(torch.BFloat16Tensor)
+        result = True
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.set_default_tensor_type("torch.cuda.DoubleTensor")
+        result = torch.tensor([1.2, 3.8])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.set_default_tensor_type(torch.cuda.DoubleTensor)
+        result = torch.tensor([1.2, 3.8])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.set_default_tensor_type("torch.cuda.FloatTensor")
+        result = torch.tensor([1.2, 3.8])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.set_default_tensor_type(torch.cuda.FloatTensor)
+        result = torch.tensor([1.2, 3.8])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.set_default_tensor_type("torch.cuda.HalfTensor")
+        result = torch.tensor([1.2, 3.8])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_15():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -193,7 +218,11 @@ def _test_case_15():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_16():
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_16():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -204,11 +233,26 @@ def _test_case_16():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_17():
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
+def test_case_17():
     pytorch_code = textwrap.dedent(
         """
         import torch
         torch.set_default_tensor_type(torch.cuda.BFloat16Tensor)
+        result = True
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_18():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        torch.set_default_tensor_type(torch.FloatTensor)
         result = True
         """
     )

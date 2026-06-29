@@ -370,6 +370,9 @@
   "torch.Tensor.abs_": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.Tensor.absolute": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.Tensor.acos": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -421,14 +424,7 @@
     ]
   },
   "torch.Tensor.addcdiv_": {
-    "Matcher": "AddCDiv_Matcher",
-    "min_input_args": 2,
-    "args_list": [
-      "tensor1",
-      "tensor2",
-      "*",
-      "value"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.addcmul": {
     "Matcher": "AddCMulMatcher",
@@ -469,16 +465,7 @@
     ]
   },
   "torch.Tensor.addmv_": {
-    "Matcher": "AddMR_Matcher",
-    "paddle_api": "paddle.mm",
-    "min_input_args": 2,
-    "args_list": [
-      "mat",
-      "vec",
-      "*",
-      "beta",
-      "alpha"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.addr": {
     "Matcher": "AddMRMatcher",
@@ -493,16 +480,7 @@
     ]
   },
   "torch.Tensor.addr_": {
-    "Matcher": "AddMR_Matcher",
-    "paddle_api": "paddle.outer",
-    "min_input_args": 2,
-    "args_list": [
-      "vec1",
-      "vec2",
-      "*",
-      "beta",
-      "alpha"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.adjoint": {
     "Matcher": "AdjointMatcher",
@@ -627,16 +605,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.bernoulli_": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.bernoulli_",
-    "args_list": [
-      "p",
-      "*",
-      "generator"
-    ],
-    "kwargs_change": {
-      "generator": ""
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.bfloat16": {
     "Matcher": "ChangePrefixMatcher"
@@ -752,8 +721,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.col_indices": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.Tensor.cols"
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.conj": {
     "Matcher": "ChangePrefixMatcher"
@@ -815,8 +783,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.crow_indices": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.Tensor.crows"
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.cuda": {
     "Matcher": "ChangePrefixMatcher"
@@ -850,9 +817,7 @@
   },
   "torch.Tensor.dequantize": {},
   "torch.Tensor.det": {
-    "Matcher": "TensorFunc2PaddleFunc",
-    "paddle_api": "paddle.linalg.det",
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.detach": {
     "Matcher": "ChangePrefixMatcher"
@@ -1013,9 +978,7 @@
     "min_input_args": 0
   },
   "torch.Tensor.fix_": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.Tensor.trunc_",
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.flatten": {
     "Matcher": "ChangePrefixMatcher"
@@ -1075,26 +1038,10 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.fmod": {
-    "Matcher": "Num2TensorBinaryMatcher",
-    "paddle_api": "paddle.Tensor.mod",
-    "min_input_args": 1,
-    "args_list": [
-      "other"
-    ],
-    "kwargs_change": {
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.fmod_": {
-    "Matcher": "Num2TensorBinaryMatcher",
-    "paddle_api": "paddle.Tensor.mod_",
-    "min_input_args": 1,
-    "args_list": [
-      "other"
-    ],
-    "kwargs_change": {
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.frac": {
     "Matcher": "ChangePrefixMatcher"
@@ -1480,15 +1427,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.logaddexp": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.logaddexp",
-    "min_input_args": 1,
-    "args_list": [
-      "other"
-    ],
-    "kwargs_change": {
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.logaddexp2": {
     "Matcher": "LogAddExp2Matcher",
@@ -1619,9 +1558,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.matrix_exp": {
-    "Matcher": "TensorFunc2PaddleFunc",
-    "paddle_api": "paddle.linalg.matrix_exp",
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.matrix_power": {
     "Matcher": "ChangePrefixMatcher"
@@ -1720,9 +1657,7 @@
     "min_input_args": 1
   },
   "torch.Tensor.mvlgamma_": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.Tensor.multigammaln_",
-    "min_input_args": 1
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.nan_to_num": {
     "Matcher": "ChangePrefixMatcher"
@@ -1731,18 +1666,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.nanmean": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.nanmean",
-    "min_input_args": 0,
-    "args_list": [
-      "dim",
-      "keepdim",
-      "*",
-      "dtype"
-    ],
-    "kwargs_change": {
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.nanmedian": {
     "Matcher": "GenericMatcher",
@@ -1763,19 +1687,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.nansum": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.nansum",
-    "min_input_args": 0,
-    "args_list": [
-      "dim",
-      "keepdim",
-      "*",
-      "dtype"
-    ],
-    "kwargs_change": {
-      "dim": "axis",
-      "dtype": "dtype"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.narrow": {
     "Matcher": "ChangePrefixMatcher"
@@ -1821,9 +1733,7 @@
     "min_input_args": 0
   },
   "torch.Tensor.negative_": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.Tensor.neg_",
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.nelement": {
     "Matcher": "ChangePrefixMatcher"
@@ -1916,9 +1826,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.pinverse": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.Tensor.pinv",
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.polygamma": {
     "Matcher": "ChangePrefixMatcher"
@@ -2022,24 +1930,10 @@
     ]
   },
   "torch.Tensor.resize_": {
-    "Matcher": "TensorResizeMatcher",
-    "min_input_args": 1,
-    "args_list": [
-      "*sizes",
-      "memory_format"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.resize_as_": {
-    "Matcher": "TensorResize_as_Matcher",
-    "min_input_args": 1,
-    "args_list": [
-      "the_template",
-      "*",
-      "memory_format"
-    ],
-    "kwargs_change": {
-      "memory_format": ""
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.resolve_conj": {},
   "torch.Tensor.resolve_neg": {},
@@ -2080,7 +1974,9 @@
   "torch.Tensor.scatter_reduce": {
     "Matcher": "ChangePrefixMatcher"
   },
-  "torch.Tensor.scatter_reduce_": {},
+  "torch.Tensor.scatter_reduce_": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.Tensor.select": {
     "Matcher": "SelectMatcher",
     "min_input_args": 2,
@@ -2090,18 +1986,7 @@
     ]
   },
   "torch.Tensor.select_scatter": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.select_scatter",
-    "min_input_args": 3,
-    "args_list": [
-      "src",
-      "dim",
-      "index"
-    ],
-    "kwargs_change": {
-      "src": "values",
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.set_": {
     "Matcher": "TensorSetMatcher",
@@ -2133,7 +2018,9 @@
   "torch.Tensor.sign": {
     "Matcher": "ChangePrefixMatcher"
   },
-  "torch.Tensor.sign_": {},
+  "torch.Tensor.sign_": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.Tensor.signbit": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -2159,23 +2046,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.slice_scatter": {
-    "Matcher": "SliceScatterMatcher",
-    "paddle_api": "paddle.Tensor.slice_scatter",
-    "min_input_args": 1,
-    "args_list": [
-      "src",
-      "dim",
-      "start",
-      "end",
-      "step"
-    ],
-    "kwargs_change": {
-      "src": "value",
-      "dim": "axes",
-      "start": "starts",
-      "end": "ends",
-      "step": "strides"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.slogdet": {
     "Matcher": "SLogDetMatcher",
@@ -2321,12 +2192,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.take": {
-    "Matcher": "TensorTakeMatcher",
-    "paddle_api": "paddle.Tensor.take",
-    "min_input_args": 1,
-    "args_list": [
-      "index"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.take_along_dim": {
     "Matcher": "ChangePrefixMatcher"
@@ -2357,9 +2223,7 @@
   },
   "torch.Tensor.to_mkldnn": {},
   "torch.Tensor.to_sparse": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.Tensor.to_sparse_coo",
-    "min_input_args": 1
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.to_sparse_bsc": {},
   "torch.Tensor.to_sparse_bsr": {},
@@ -3070,32 +2934,10 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.addmv": {
-    "Matcher": "AddMRMatcher",
-    "paddle_api": "paddle.mm",
-    "min_input_args": 3,
-    "args_list": [
-      "input",
-      "mat",
-      "vec",
-      "*",
-      "beta",
-      "alpha",
-      "out"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.addr": {
-    "Matcher": "AddMRMatcher",
-    "paddle_api": "paddle.outer",
-    "min_input_args": 3,
-    "args_list": [
-      "input",
-      "vec1",
-      "vec2",
-      "*",
-      "beta",
-      "alpha",
-      "out"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.adjoint": {
     "Matcher": "AdjointMatcher",
@@ -3253,9 +3095,7 @@
     ]
   },
   "torch.autograd.enable_grad": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.enable_grad",
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.autograd.function.FunctionCtx": {
     "Matcher": "ChangePrefixMatcher"
@@ -3965,15 +3805,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.det": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.linalg.det",
-    "min_input_args": 1,
-    "args_list": [
-      "input"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.detach": {
     "Matcher": "DetachMatcher",
@@ -5170,6 +5002,18 @@
   "torch.exp_": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.expand_copy": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.expand_copy",
+    "args_list": [
+      "input",
+      "size"
+    ],
+    "kwargs_change": {
+      "input": "x",
+      "size": "shape"
+    }
+  },
   "torch.expm1": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -5250,14 +5094,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.fix": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.trunc",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "*",
-      "out"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.flatten": {
     "Matcher": "ChangePrefixMatcher"
@@ -5319,19 +5156,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.fmod": {
-    "Matcher": "Num2TensorBinaryConvertTypeMatcher",
-    "paddle_api": "paddle.mod",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "other",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.frac": {
     "Matcher": "ChangePrefixMatcher"
@@ -5449,44 +5274,14 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.hann_window": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.audio.functional.get_window",
-    "min_input_args": 1,
-    "args_list": [
-      "window_length",
-      "periodic",
-      "*",
-      "dtype",
-      "layout",
-      "device",
-      "requires_grad"
-    ],
-    "kwargs_change": {
-      "window_length": "win_length",
-      "periodic": "fftbins",
-      "dtype": "dtype"
-    },
-    "paddle_default_kwargs": {
-      "dtype": "'float32'",
-      "window": "'hann'"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.heaviside": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.hinge_embedding_loss": {},
   "torch.histc": {
-    "Matcher": "HistcMatcher",
-    "paddle_api": "paddle.histogram",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "bins",
-      "min",
-      "max",
-      "*",
-      "out"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.histogram": {
     "Matcher": "HistogramMatcher",
@@ -5637,15 +5432,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.imag": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.imag",
-    "min_input_args": 1,
-    "args_list": [
-      "input"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.index_add": {
     "Matcher": "ChangePrefixMatcher"
@@ -6035,17 +5822,7 @@
     }
   },
   "torch.linalg.inv": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.linalg.inv",
-    "min_input_args": 1,
-    "args_list": [
-      "A",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "A": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.linalg.inv_ex": {
     "Matcher": "LinalgInvExMatcher",
@@ -6217,22 +5994,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.linalg.pinv": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.linalg.pinv",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "*",
-      "atol",
-      "rtol",
-      "hermitian",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "atol": "",
-      "rtol": "rcond"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.linalg.qr": {
     "Matcher": "Linalg_qrMatcher",
@@ -6394,19 +6156,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.logaddexp": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.logaddexp",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "other",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.logaddexp2": {
     "Matcher": "LogAddExp2Matcher",
@@ -6441,26 +6191,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.logspace": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.logspace",
-    "min_input_args": 3,
-    "args_list": [
-      "start",
-      "end",
-      "steps",
-      "base",
-      "*",
-      "out",
-      "dtype",
-      "layout",
-      "device",
-      "requires_grad"
-    ],
-    "kwargs_change": {
-      "end": "stop",
-      "steps": "num",
-      "dtype": "dtype"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.logsumexp": {
     "Matcher": "ChangePrefixMatcher"
@@ -6509,17 +6240,7 @@
   },
   "torch.margin_ranking_loss": {},
   "torch.masked_fill": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.masked_fill",
-    "min_input_args": 3,
-    "args_list": [
-      "input",
-      "mask",
-      "value"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.masked_select": {
     "Matcher": "ChangePrefixMatcher"
@@ -6573,17 +6294,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.moveaxis": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.moveaxis",
-    "min_input_args": 3,
-    "args_list": [
-      "input",
-      "source",
-      "destination"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.movedim": {
     "Matcher": "GenericMatcher",
@@ -6652,37 +6363,10 @@
     }
   },
   "torch.nan_to_num": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nan_to_num",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "nan",
-      "posinf",
-      "neginf",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nanmean": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nanmean",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "dim",
-      "keepdim",
-      "*",
-      "dtype",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nanmedian": {
     "Matcher": "ChangeAPIMatcher",
@@ -6692,22 +6376,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nansum": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nansum",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "dim",
-      "keepdim",
-      "*",
-      "dtype",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dim": "axis",
-      "dtype": "dtype"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.narrow": {
     "Matcher": "ChangePrefixMatcher"
@@ -7047,17 +6716,7 @@
     ]
   },
   "torch.nn.Flatten": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.Flatten",
-    "min_input_args": 0,
-    "args_list": [
-      "start_dim",
-      "end_dim"
-    ],
-    "kwargs_change": {
-      "start_dim": "start_axis",
-      "end_dim": "stop_axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.Fold": {
     "Matcher": "ChangePrefixMatcher"
@@ -7101,28 +6760,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.GRU": {
-    "Matcher": "RNNMatcher",
-    "paddle_api": "paddle.nn.GRU",
-    "args_list": [
-      "input_size",
-      "hidden_size",
-      "num_layers",
-      "bias",
-      "batch_first",
-      "dropout",
-      "bidirectional",
-      "device",
-      "dtype"
-    ],
-    "kwargs_change": {
-      "bias": [
-        "bias_ih_attr",
-        "bias_hh_attr"
-      ],
-      "device": "",
-      "dtype": ""
-    },
-    "min_input_args": 2
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.GRUCell": {
     "Matcher": "GRUCellMatcher",
@@ -7295,14 +6933,7 @@
     "min_input_args": 0
   },
   "torch.nn.L1Loss": {
-    "Matcher": "SizeAverageMatcher",
-    "paddle_api": "paddle.nn.L1Loss",
-    "args_list": [
-      "size_average",
-      "reduce",
-      "reduction"
-    ],
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.LPPool1d": {
     "Matcher": "ChangePrefixMatcher"
@@ -7668,15 +7299,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.ParameterList": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.ParameterList",
-    "args_list": [
-      "values"
-    ],
-    "kwargs_change": {
-      "values": "parameters"
-    },
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.PixelShuffle": {
     "Matcher": "ChangePrefixMatcher"
@@ -8378,6 +8001,7 @@
     },
     "min_input_args": 2
   },
+  "torch.nn.functional.ctc_loss": {},
   "torch.nn.functional.dropout": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -8616,18 +8240,7 @@
     "min_input_args": 2
   },
   "torch.nn.functional.huber_loss": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.smooth_l1_loss",
-    "args_list": [
-      "input",
-      "target",
-      "reduction",
-      "delta"
-    ],
-    "kwargs_change": {
-      "target": "label"
-    },
-    "min_input_args": 2
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.instance_norm": {
     "Matcher": "ReverseMomentumMatcher",
@@ -8651,20 +8264,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.kl_div": {
-    "Matcher": "SizeAverageMatcher",
-    "paddle_api": "paddle.nn.functional.kl_div",
-    "args_list": [
-      "input",
-      "target",
-      "size_average",
-      "reduce",
-      "reduction",
-      "log_target"
-    ],
-    "kwargs_change": {
-      "target": "label"
-    },
-    "min_input_args": 2
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.l1_loss": {
     "Matcher": "SizeAverageMatcher",
@@ -8866,21 +8466,7 @@
     "min_input_args": 2
   },
   "torch.nn.functional.nll_loss": {
-    "Matcher": "SizeAverageMatcher",
-    "paddle_api": "paddle.nn.functional.nll_loss",
-    "args_list": [
-      "input",
-      "target",
-      "weight",
-      "size_average",
-      "ignore_index",
-      "reduce",
-      "reduction"
-    ],
-    "kwargs_change": {
-      "target": "label"
-    },
-    "min_input_args": 2
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.normalize": {
     "Matcher": "ChangePrefixMatcher"
@@ -8948,19 +8534,20 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.relu6": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.functional.relu6",
-    "args_list": [
-      "input",
-      "inplace"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    },
-    "min_input_args": 1
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.functional.relu_": {
     "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.nn.functional.rms_norm": {
+    "Matcher": "GenericMatcher",
+    "paddle_api": "paddle.nn.functional.rms_norm",
+    "args_list": [
+      "input",
+      "normalized_shape",
+      "weight",
+      "eps"
+    ]
   },
   "torch.nn.functional.rrelu": {
     "Matcher": "GenericMatcher",
@@ -9257,6 +8844,9 @@
   "torch.nn.init.xavier_normal_": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.nn.init.xavier_uniform": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.nn.init.xavier_uniform_": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -9399,7 +8989,25 @@
     },
     "min_input_args": 1
   },
+  "torch.nn.utils.rnn.PackedSequence": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.nn.utils.rnn.invert_permutation": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.nn.utils.rnn.pack_padded_sequence": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.nn.utils.rnn.pack_sequence": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.nn.utils.rnn.pad_packed_sequence": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.nn.utils.rnn.pad_sequence": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.nn.utils.rnn.unpack_sequence": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.utils.rnn.unpad_sequence": {
@@ -9424,17 +9032,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.utils.weight_norm": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.utils.weight_norm",
-    "args_list": [
-      "module",
-      "name",
-      "dim"
-    ],
-    "kwargs_change": {
-      "module": "layer"
-    },
-    "min_input_args": 1
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.no_grad": {
     "Matcher": "ChangePrefixMatcher"
@@ -10157,16 +9755,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.pinverse": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.linalg.pinv",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "rcond"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.poisson": {
     "Matcher": "ChangePrefixMatcher"
@@ -10254,25 +9843,7 @@
     }
   },
   "torch.randint_like": {
-    "Matcher": "RandintLikeMatcher",
-    "paddle_api": "paddle.randint_like",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "low",
-      "high",
-      "*",
-      "memory_format",
-      "dtype",
-      "layout",
-      "device",
-      "pin_memory",
-      "requires_grad"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "dtype": "dtype"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.randn": {
     "Matcher": "ChangePrefixMatcher"
@@ -10299,15 +9870,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.real": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.real",
-    "min_input_args": 1,
-    "args_list": [
-      "input"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.reciprocal": {
     "Matcher": "ChangePrefixMatcher"
@@ -10446,20 +10009,7 @@
     ]
   },
   "torch.select_scatter": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.select_scatter",
-    "min_input_args": 4,
-    "args_list": [
-      "input",
-      "src",
-      "dim",
-      "index"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "src": "values",
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.selu": {
     "Matcher": "GenericMatcher",
@@ -10487,14 +10037,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.set_default_tensor_type": {
-    "Matcher": "SetDefaultTensorTypeMatcher",
-    "paddle_api": "paddle.set_default_dtype",
-    "args_list": [
-      "t"
-    ],
-    "kwargs_change": {
-      "t": "d"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.set_num_interop_threads": {
     "Matcher": "SetNumInteropThreadsMatcher",
@@ -10538,17 +10081,7 @@
     }
   },
   "torch.sgn": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.sgn",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.sigmoid": {
     "Matcher": "ChangePrefixMatcher"
@@ -10756,17 +10289,7 @@
     }
   },
   "torch.signbit": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.signbit",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "*",
-      "out"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.sin": {
     "Matcher": "ChangePrefixMatcher"
@@ -10781,25 +10304,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.slice_scatter": {
-    "Matcher": "SliceScatterMatcher",
-    "paddle_api": "paddle.slice_scatter",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "src",
-      "dim",
-      "start",
-      "end",
-      "step"
-    ],
-    "kwargs_change": {
-      "input": "x",
-      "src": "value",
-      "dim": "axes",
-      "start": "starts",
-      "end": "ends",
-      "step": "strides"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.slogdet": {
     "Matcher": "SLogDetMatcher",
@@ -11171,15 +10676,7 @@
     }
   },
   "torch.special.round": {
-    "Matcher": "RoundMatcher",
-    "paddle_api": "paddle.round",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "*",
-      "decimals",
-      "out"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.special.scaled_modified_bessel_k0": {},
   "torch.special.scaled_modified_bessel_k1": {},
@@ -11341,16 +10838,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.take": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.take",
-    "min_input_args": 2,
-    "args_list": [
-      "input",
-      "index"
-    ],
-    "kwargs_change": {
-      "input": "x"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.take_along_dim": {
     "Matcher": "ChangePrefixMatcher"
@@ -11371,37 +10859,10 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.tensordot": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.tensordot",
-    "min_input_args": 2,
-    "args_list": [
-      "a",
-      "b",
-      "dims",
-      "out"
-    ],
-    "kwargs_change": {
-      "a": "x",
-      "b": "y",
-      "dims": "axes"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.testing.assert_allclose": {
-    "Matcher": "Assert_AllcloseMatcher",
-    "paddle_api": "paddle.allclose",
-    "min_input_args": 2,
-    "args_list": [
-      "actual",
-      "expected",
-      "rtol",
-      "atol",
-      "equal_nan",
-      "msg"
-    ],
-    "kwargs_change": {
-      "actual": "x",
-      "expected": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.testing.assert_close": {
     "Matcher": "ChangePrefixMatcher"
@@ -11469,55 +10930,20 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.tril_indices": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.tril_indices",
-    "min_input_args": 2,
-    "args_list": [
-      "row",
-      "col",
-      "offset",
-      "*",
-      "dtype",
-      "device",
-      "layout"
-    ],
-    "kwargs_change": {
-      "dtype": "dtype"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.triplet_margin_loss": {},
   "torch.triu": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.triu_indices": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.triu_indices",
-    "min_input_args": 2,
-    "args_list": [
-      "row",
-      "col",
-      "offset",
-      "*",
-      "dtype",
-      "device",
-      "layout"
-    ],
-    "kwargs_change": {
-      "dtype": "dtype"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.true_divide": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.trunc": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.trunc",
-    "min_input_args": 1,
-    "args_list": [
-      "input",
-      "*",
-      "out"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.unbind": {
     "Matcher": "ChangePrefixMatcher"
@@ -11763,17 +11189,7 @@
     "min_input_args": 2
   },
   "torch.vander": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.vander",
-    "min_input_args": 1,
-    "args_list": [
-      "x",
-      "N",
-      "increasing"
-    ],
-    "kwargs_change": {
-      "N": "n"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.var": {
     "Matcher": "ChangePrefixMatcher"

@@ -142,6 +142,9 @@
   "torch.e": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.float": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.float16": {
     "Matcher": "ChangePrefixMatcher"
   },

@@ -24,9 +24,10 @@ def test_case_1():
         """
         import torch.nn as nn
         import torch
+        params = nn.ParameterList([nn.Parameter(torch.ones(10, 10)) for i in range(10)])
         result = []
         for i in range(10):
-            result.append(nn.Parameter(torch.ones(i+1, i+1)))
+            result.append(params[i])
         """
     )
     obj.run(pytorch_code, ["result"])

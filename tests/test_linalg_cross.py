@@ -29,7 +29,7 @@ def test_case_1():
         y = torch.tensor([[1.0, 1.0, 1.0],
                         [1.0, 1.0, 1.0],
                         [1.0, 1.0, 1.0]])
-        result = torch.linalg.cross(x, y)
+        result = torch.linalg.cross(x, y, dim=-1)
         """
     )
     obj.run(pytorch_code, ["result"])
