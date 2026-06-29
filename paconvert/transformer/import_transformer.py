@@ -525,3 +525,20 @@ class ImportTransformer(BaseTransformer):
                 (self.root, "body", 0), ast.parse(f"import {paddle_package}").body
             )
             line_NO += 1
+
+        # Inject `paddle.enable_compat()` right after the imports so that
+        # prefix-only converted calls (torch.X -> paddle.X via ChangePrefixMatcher)
+        # resolve to the torch-aligned paddle.compat.* implementations at runtime
+        # `import paddle` is included explicitly (deduped if already added) so the
+        # call is valid even when torch was imported as a submodule alias
+        # (e.g. `import torch.nn as nn` -> `import paddle.nn as nn`)
+        if paddle_package_list:
+            log_info(
+                self.logger,
+                "add 'paddle.enable_compat()' after imports",
+                self.file_name,
+            )
+            self.record_scope(
+                (self.root, "body", 0),
+                ast.parse("import paddle\npaddle.enable_compat()").body,
+            )
