@@ -122,3 +122,36 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["bits", "min", "max"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        info = torch.finfo(torch.float32)
+        eps = info.eps
+        min = info.min
+        max = info.max
+        tiny = info.tiny
+        smallest_normal = info.smallest_normal
+        bits = info.bits
+        """
+    )
+    obj.run(pytorch_code, ["eps", "min", "max", "tiny", "smallest_normal", "bits"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        dtype = torch.float64
+        info = torch.finfo(type=dtype)
+        eps = info.eps
+        min = info.min
+        max = info.max
+        tiny = info.tiny
+        smallest_normal = info.smallest_normal
+        bits = info.bits
+        """
+    )
+    obj.run(pytorch_code, ["eps", "min", "max", "tiny", "smallest_normal", "bits"])

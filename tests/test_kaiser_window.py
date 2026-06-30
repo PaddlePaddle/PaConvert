@@ -11,20 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
+import pytest
 from apibase import APIBase
 
-obj = APIBase("torch.special.erf")
+obj = APIBase("torch.kaiser_window")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.special.erf(torch.tensor([0, -1., 10.]))
+        args = (7, False, 6.0)
+        result = torch.kaiser_window(*args)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -34,8 +35,14 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([0, -1., 10.])
-        result = torch.special.erf(a)
+        result = torch.kaiser_window(
+            window_length=7,
+            periodic=False,
+            beta=6.0,
+            dtype=torch.float64,
+            layout=torch.strided,
+            device="cpu",
+        )
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,80 +52,82 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([0, -1., 10.])
-        out = torch.tensor([0, -1., 10.])
-        result = torch.special.erf(a, out=out)
+        result = torch.kaiser_window(7)
         """
     )
-    obj.run(pytorch_code, ["result", "out"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([0, -1., 10.])
-        result = torch.special.erf(input=a)
+        result = torch.kaiser_window(7, dtype=None)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skip(reason="torch.kaiser_window does not accept out in current PyTorch")
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([0, -1., 10.])
-        out = torch.tensor([0, -1., 10.])
-        result = torch.special.erf(input=a, out=out)
+        out = torch.empty(7)
+        result = torch.kaiser_window(7, out=out)
+        output = out
         """
     )
-    obj.run(pytorch_code, ["result", "out"])
+    obj.run(pytorch_code, ["result", "output"])
 
 
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([0, -1., 10.])
-        out = torch.tensor([0, -1., 10.])
-        result = torch.special.erf(out=out, input=a)
+        result0 = torch.kaiser_window(0)
+        result1 = torch.kaiser_window(1)
         """
     )
-    obj.run(pytorch_code, ["result", "out"])
+    obj.run(pytorch_code, ["result0", "result1"])
 
 
+@pytest.mark.skip(reason="torch.sparse_coo conversion is not supported by PaConvert")
 def test_case_7():
-    # two-dimensional float32 matrix spanning negative & positive ranges
     pytorch_code = textwrap.dedent(
         """
+        import pytest
         import torch
-        a = torch.tensor([[-3., -2., -1.], [0., 1., 2.]])
-        result = torch.special.erf(input=a)
+
+        with pytest.raises(RuntimeError):
+            torch.kaiser_window(7, layout=torch.sparse_coo)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, [])
 
 
 def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.linspace(-6., 6., steps=13, dtype=torch.float64)
-        result = torch.special.erf(a)
+        result = torch.kaiser_window(9, beta=8.5, periodic=True, dtype=torch.float32)
         """
     )
     obj.run(pytorch_code, ["result"])
 
 
 def test_case_9():
-    # expression-derived argument passed positionally
     pytorch_code = textwrap.dedent(
         """
         import torch
-        base = torch.arange(7)
-        x = base.to(torch.float32) * (-0.25 + 0.05 * 3)
-        result = torch.special.erf(x)
+        result = torch.kaiser_window(
+            beta=5.5,
+            device="cpu",
+            window_length=11,
+            dtype=torch.float64,
+            periodic=False,
+            layout=torch.strided,
+        )
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -128,19 +137,14 @@ def test_case_10():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.tensor([[0.0, -1.5], [2.0, 3.25]], dtype=torch.float64)
-        result = torch.special.erf(a)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_11():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        args = (torch.tensor([[0.0, 1.0], [-2.0, 3.0]], dtype=torch.float32),)
-        result = torch.special.erf(*args)
+        result = torch.kaiser_window(
+            13,
+            periodic=True,
+            beta=7.0,
+            dtype=torch.float64,
+            layout=torch.strided,
+            device="cpu",
+        )
         """
     )
     obj.run(pytorch_code, ["result"])
