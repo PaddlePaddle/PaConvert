@@ -118,3 +118,42 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.zeros(2, 3, dtype=torch.float32)
+        source = torch.tensor([[1, 2], [4, 5]], dtype=torch.float32)
+        index = torch.tensor([2, 0])
+        result = x.index_copy_(dim=-1, index=index, source=source)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor(0.0)
+        source = torch.tensor(5.0)
+        index = torch.tensor([0])
+        result = x.index_copy_(0, index, source)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.arange(6, dtype=torch.float32).reshape(2, 3)
+        source = torch.empty([2, 0], dtype=torch.float32)
+        index = torch.tensor([], dtype=torch.int64)
+        result = x.index_copy_(1, index, source)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

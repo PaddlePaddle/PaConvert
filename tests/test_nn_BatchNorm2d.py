@@ -149,3 +149,99 @@ def test_alias_case_1():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        args = (5, 1e-05, 0.2, True, False, None, torch.float64)
+        m = torch.nn.BatchNorm2d(*args)
+        input = torch.arange(160, dtype=torch.float64).reshape(2, 5, 4, 4)
+        result = m(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.nn.BatchNorm2d(
+            dtype=torch.float64,
+            device=None,
+            track_running_stats=False,
+            affine=True,
+            momentum=0.2,
+            eps=1e-05,
+            num_features=5,
+        )
+        input = torch.arange(160, dtype=torch.float64).reshape(2, 5, 4, 4)
+        result = m(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.nn.BatchNorm2d(5)
+        m.eval()
+        input = torch.arange(160, dtype=torch.float32).reshape(2, 5, 4, 4)
+        result = m(input)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.nn.BatchNorm2d(5)
+        x1 = torch.arange(160, dtype=torch.float32).reshape(2, 5, 4, 4)
+        x2 = torch.arange(160, 320, dtype=torch.float32).reshape(2, 5, 4, 4)
+        m(x1)
+        result = m(x2)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+    )
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.nn.BatchNorm2d(5, momentum=None)
+        x1 = torch.arange(160, dtype=torch.float32).reshape(2, 5, 4, 4)
+        x2 = torch.arange(160, 320, dtype=torch.float32).reshape(2, 5, 4, 4)
+        m(x1)
+        result = m(x2)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+    )
+
+
+def test_case_15():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.nn.BatchNorm2d(5, track_running_stats=False)
+        input = torch.arange(160, dtype=torch.float32).reshape(2, 5, 4, 4)
+        m.eval()
+        result = m(input)
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+    )

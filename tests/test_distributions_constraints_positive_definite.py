@@ -1,4 +1,4 @@
-# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
+# Copyright (c) 2026 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,16 +16,15 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.reshape_as")
+obj = APIBase("torch.distributions.constraints.positive_definite")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.ones([15])
-        b = torch.zeros([3, 5])
-        result = a.reshape_as(b)
+        value = torch.tensor([[2.0, 0.5], [0.5, 1.5]])
+        result = torch.distributions.constraints.positive_definite.check(value)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -35,33 +34,8 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        a = torch.ones([15])
-        b = torch.zeros([3, 5])
-        result = a.reshape_as(other=b)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_3():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.ones([15])
-        b = torch.zeros([3, 5])
-        result = a.reshape_as(other=b+1)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-def test_case_4():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        a = torch.arange(24, dtype=torch.float64)
-        b = torch.zeros([2, 3, 4], dtype=torch.float32)
-        result = a.reshape_as(b)
+        value = torch.tensor([[1.0, 2.0], [0.0, 1.0]])
+        result = torch.distributions.constraints.positive_definite.check(value)
         """
     )
     obj.run(pytorch_code, ["result"])

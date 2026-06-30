@@ -63,3 +63,26 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["out"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[0.0, 0.5], [-1.0, 1.5]], dtype=torch.float64)
+        out = torch.empty_like(a)
+        result = torch.special.sinc(a, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        args = (torch.tensor([[0.0, 0.25], [0.75, -0.5]], dtype=torch.float32),)
+        result = torch.special.sinc(*args)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
