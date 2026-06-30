@@ -87,3 +87,41 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.arange(6, dtype=torch.float32).reshape(1, 2, 3)
+        with torch.inference_mode(mode=True):
+            result = x * 2
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_stop_gradient=False)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.arange(6, dtype=torch.float32).reshape(1, 2, 3)
+        with torch.inference_mode(mode=False):
+            result = x * 3
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_stop_gradient=False)
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.arange(6, dtype=torch.float32).reshape(1, 2, 3)
+        @torch.inference_mode
+        def doubler(y):
+            return y * 2
+        result = doubler(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_stop_gradient=False)

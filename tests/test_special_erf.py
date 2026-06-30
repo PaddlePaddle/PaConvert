@@ -86,3 +86,25 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[0.0, -1.5], [2.0, 3.25]], dtype=torch.float64)
+        result = torch.special.erf(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        args = (torch.tensor([[0.0, 1.0], [-2.0, 3.0]], dtype=torch.float32),)
+        result = torch.special.erf(*args)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

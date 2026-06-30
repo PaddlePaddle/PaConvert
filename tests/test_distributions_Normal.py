@@ -72,3 +72,68 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        loc = torch.tensor([[0.5, -1.5], [2.0, 3.5]], dtype=torch.float32)
+        scale = torch.tensor([[1.0, 0.5], [2.0, 1.5]], dtype=torch.float32)
+        m = torch.distributions.Normal(loc, scale)
+        mean = m.mean
+        variance = m.variance
+        entropy = m.entropy()
+        log_prob = m.log_prob(torch.tensor([[0.0, -1.0], [1.0, 4.0]], dtype=torch.float32))
+        """
+    )
+    obj.run(pytorch_code, ["mean", "variance", "entropy", "log_prob"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        loc = torch.tensor([0.25, -0.75, 1.5], dtype=torch.float64)
+        scale = torch.tensor([0.5, 1.25, 2.0], dtype=torch.float64)
+        m = torch.distributions.normal.Normal(
+            scale=scale,
+            validate_args=True,
+            loc=loc,
+        )
+        mean = m.mean
+        variance = m.variance
+        log_prob = m.log_prob(torch.tensor([0.0, -1.0, 2.0], dtype=torch.float64))
+        """
+    )
+    obj.run(pytorch_code, ["mean", "variance", "log_prob"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        args = (
+            torch.tensor([[1.0, -2.0], [3.0, 0.5]], dtype=torch.float64),
+            torch.tensor([[0.75, 1.5], [2.5, 0.8]], dtype=torch.float64),
+            None,
+        )
+        m = torch.distributions.Normal(*args)
+        entropy = m.entropy()
+        log_prob = m.log_prob(torch.tensor([[0.5, -1.5], [2.5, 1.0]], dtype=torch.float64))
+        """
+    )
+    obj.run(pytorch_code, ["entropy", "log_prob"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        loc = torch.tensor([[[0.2, -0.4], [1.1, 2.3]]], dtype=torch.float32)
+        scale = torch.tensor([[[1.5, 0.7], [0.9, 2.1]]], dtype=torch.float32)
+        m = torch.distributions.Normal(loc=loc, scale=scale, validate_args=None)
+        result = m.log_prob(torch.tensor([[[0.0, -0.5], [1.0, 2.0]]], dtype=torch.float32))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
