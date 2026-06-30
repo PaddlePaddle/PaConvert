@@ -70,7 +70,7 @@
   "torch.__version__": {
     "Matcher": "ChangePrefixMatcher"
   },
-  "torch.autograd.function.FunctionCtx.saved_tensors": {
+  "torch.autograd.Function.saved_tensors": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.autograd.profiler.profile.self_cpu_time_total": {},
@@ -179,9 +179,6 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.newaxis": {
-    "Matcher": "ChangePrefixMatcher"
-  },
-  "torch.nn": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.pi": {

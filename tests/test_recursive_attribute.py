@@ -17,7 +17,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.attribute")
+obj = APIBase("noapi")
 
 
 # Attribute

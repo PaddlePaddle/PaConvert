@@ -13,6 +13,7 @@
 # limitations under the License.
 #
 
+import copy
 import os
 import subprocess
 import sys
@@ -23,6 +24,14 @@ import torch
 
 sys.path.append(os.path.dirname(__file__) + "/..")
 from apibase import APIBase
+
+
+def _make_env(extra_vars):
+    """Create a clean env dict with extra vars added."""
+    env = copy.copy(os.environ)
+    env.update(extra_vars)
+    return env
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
@@ -40,7 +49,7 @@ if __name__ == "__main__":
         pytorch_cmd.split(" "),
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        env=os.environ.update({"DUMP_FILE": torch_ret_file}),
+        env=_make_env({"DUMP_FILE": torch_ret_file}),
     )
     local_out, local_err = local_proc.communicate()
     sys.stdout.write("torch local_out: %s\n" % local_out.decode())
@@ -54,7 +63,7 @@ if __name__ == "__main__":
         paddle_cmd.split(" "),
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        env=os.environ.update({"DUMP_FILE": paddle_ret_file}),
+        env=_make_env({"DUMP_FILE": paddle_ret_file}),
     )
     local_out, local_err = local_proc.communicate()
     sys.stdout.write("paddle local_out: %s\n" % local_out.decode())

@@ -15,7 +15,6 @@
 
 import textwrap
 
-import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.add")
@@ -182,20 +181,6 @@ def _test_case_15():
         """
         import torch
         result = torch.add(torch.tensor([1, 2, 3]), torch.tensor([1, 4, 6]), alpha=0.5)
-        """
-    )
-    obj.run(pytorch_code, ["result"])
-
-
-# AI生成case
-@pytest.mark.skip(reason="add with sparse tensors not supported")
-def test_case_16():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        x = torch.tensor([[0, 1], [2, 0]]).to_sparse()
-        y = torch.tensor([[1, 0], [0, 2]]).to_sparse()
-        result = torch.add(x, y)
         """
     )
     obj.run(pytorch_code, ["result"])
