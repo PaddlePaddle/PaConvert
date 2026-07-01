@@ -12,53 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import re
 import textwrap
 
 import pytest
 from apibase import APIBase
 
-
-class CollateAPIBase(APIBase):
-    """APIBase with custom compare logic for collate objects (Pattern, Match)."""
-
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_shape=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        if isinstance(pytorch_result, re.Match):
-            assert isinstance(paddle_result, re.Match), (
-                f"API ({name}): paddle result should be a re.Match, "
-                f"got {type(paddle_result)}"
-            )
-            if check_value:
-                assert pytorch_result.group() == paddle_result.group(), (
-                    f"API ({name}): match group mismatch, "
-                    f"torch is {pytorch_result.group()}, paddle is {paddle_result.group()}"
-                )
-            return
-        super().compare(
-            name,
-            pytorch_result,
-            paddle_result,
-            check_value,
-            check_shape,
-            check_dtype,
-            check_stop_gradient,
-            rtol,
-            atol,
-        )
-
-
-obj = CollateAPIBase("torch.utils.data._utils.collate.np_str_obj_array_pattern")
+obj = APIBase("torch.utils.data._utils.collate.np_str_obj_array_pattern")
 
 
 @pytest.mark.skip(

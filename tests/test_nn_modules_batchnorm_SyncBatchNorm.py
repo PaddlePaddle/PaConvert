@@ -14,11 +14,19 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.nn.modules.batchnorm.SyncBatchNorm")
 
+cuda_only = pytest.mark.skipif(
+    not paddle.device.is_compiled_with_cuda(),
+    reason="SyncBatchNorm requires CUDA",
+)
 
+
+@cuda_only
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
@@ -30,6 +38,7 @@ def test_case_1():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
+@cuda_only
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -41,6 +50,7 @@ def test_case_2():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
+@cuda_only
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
@@ -52,6 +62,7 @@ def test_case_3():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
+@cuda_only
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
@@ -63,6 +74,7 @@ def test_case_4():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
+@cuda_only
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
@@ -74,6 +86,7 @@ def test_case_5():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
+@cuda_only
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """
@@ -85,6 +98,7 @@ def test_case_6():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
+@cuda_only
 def test_case_7():
     pytorch_code = textwrap.dedent(
         """
@@ -96,6 +110,7 @@ def test_case_7():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
+@cuda_only
 def test_case_8():
     pytorch_code = textwrap.dedent(
         """
@@ -107,6 +122,7 @@ def test_case_8():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
+@cuda_only
 def test_case_9():
     pytorch_code = textwrap.dedent(
         """
@@ -118,6 +134,7 @@ def test_case_9():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
+@cuda_only
 def test_case_10():
     pytorch_code = textwrap.dedent(
         """

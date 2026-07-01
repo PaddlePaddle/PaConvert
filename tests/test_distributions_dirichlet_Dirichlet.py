@@ -14,68 +14,7 @@
 
 import textwrap
 
-import numpy as np
-from apibase import APIBase
-
-
-class DistributionAPIBase(APIBase):
-    """APIBase with custom compare logic for Distribution objects."""
-
-    def compare(
-        self,
-        name,
-        pytorch_result,
-        paddle_result,
-        check_value=True,
-        check_shape=True,
-        check_dtype=True,
-        check_stop_gradient=True,
-        rtol=1.0e-6,
-        atol=0.0,
-    ):
-        if hasattr(pytorch_result, "batch_shape") and hasattr(
-            pytorch_result, "event_shape"
-        ):
-            assert hasattr(paddle_result, "batch_shape") and hasattr(
-                paddle_result, "event_shape"
-            ), f"paddle result should be Distribution, got {type(paddle_result)}"
-            assert pytorch_result.batch_shape == paddle_result.batch_shape
-            assert pytorch_result.event_shape == paddle_result.event_shape
-            if (
-                hasattr(pytorch_result, "probs")
-                and hasattr(paddle_result, "probs")
-                and pytorch_result.probs is not None
-            ):
-                np.testing.assert_allclose(
-                    pytorch_result.probs.detach().cpu().numpy(),
-                    paddle_result.probs.numpy(),
-                    rtol=rtol,
-                    atol=atol,
-                )
-            if (
-                hasattr(pytorch_result, "logits")
-                and hasattr(paddle_result, "logits")
-                and pytorch_result.logits is not None
-            ):
-                np.testing.assert_allclose(
-                    pytorch_result.logits.detach().cpu().numpy(),
-                    paddle_result.logits.numpy(),
-                    rtol=rtol,
-                    atol=atol,
-                )
-            return
-        super().compare(
-            name,
-            pytorch_result,
-            paddle_result,
-            check_value,
-            check_shape,
-            check_dtype,
-            check_stop_gradient,
-            rtol,
-            atol,
-        )
-
+from dist_apibase import DistributionAPIBase
 
 obj = DistributionAPIBase("torch.distributions.dirichlet.Dirichlet")
 

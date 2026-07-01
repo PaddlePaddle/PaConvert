@@ -3348,9 +3348,6 @@
   "torch.cdist": {
     "Matcher": "ChangePrefixMatcher"
   },
-  "torch.cdouble": {
-    "Matcher": "ChangePrefixMatcher"
-  },
   "torch.ceil": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -5285,9 +5282,6 @@
   "torch.gt": {
     "Matcher": "ChangePrefixMatcher"
   },
-  "torch.half": {
-    "Matcher": "ChangePrefixMatcher"
-  },
   "torch.hamming_window": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -5491,9 +5485,6 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.instance_norm": {},
-  "torch.int": {
-    "Matcher": "ChangePrefixMatcher"
-  },
   "torch.inverse": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -8925,9 +8916,6 @@
     },
     "min_input_args": 1
   },
-  "torch.nn.parallel.DataParallel": {
-    "Matcher": "ChangePrefixMatcher"
-  },
   "torch.nn.parallel.DistributedDataParallel": {
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.DataParallel",
@@ -8960,7 +8948,7 @@
     ],
     "min_input_args": 1
   },
-  "torch.nn.parallel.distributed.DistributedDataParallel": {
+  "torch.nn.parallel.data_parallel.DataParallel": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.parameter.Parameter": {
@@ -10123,9 +10111,6 @@
     }
   },
   "torch.sgn": {
-    "Matcher": "ChangePrefixMatcher"
-  },
-  "torch.short": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.sigmoid": {

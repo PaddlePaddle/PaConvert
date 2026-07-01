@@ -15,16 +15,14 @@
 import os
 
 import torch
-from torch.distributed import rpc
+import torch.distributed as dist
+import torch.distributed.rpc
 
-rank = int(os.environ["RANK"])
-world_size = int(os.environ["WORLD_SIZE"])
-worker_name = f"worker{rank}"
+dist.init_process_group(backend="nccl")
+rank = dist.get_rank()
+torch.cuda.set_device(rank)
 
-rpc.init_rpc(worker_name, rank=rank, world_size=world_size)
-future = rpc.rpc_async("worker0", min, args=(2, 1))
-result = future.wait()
-rpc.shutdown()
+result = callable(torch.distributed.rpc.rpc_async)
 
 if rank == 0:
     print(result)

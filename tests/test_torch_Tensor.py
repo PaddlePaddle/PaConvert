@@ -33,9 +33,18 @@ class DTypeAPIBase(APIBase):
         atol=0.0,
     ):
         if not hasattr(pytorch_result, "requires_grad"):
-            # Non-Tensor object (e.g., dtype) - just verify creation
-            assert pytorch_result is not None
-            assert paddle_result is not None
+            # Non-Tensor object (e.g., dtype) - compare values directly
+            pytorch_str = str(pytorch_result)
+            paddle_str = str(paddle_result)
+            # Normalize framework prefixes (torch. vs paddle.) for dtype comparison
+            pytorch_normalized = pytorch_str.replace("torch.", "").replace(
+                "paddle.", ""
+            )
+            paddle_normalized = paddle_str.replace("torch.", "").replace("paddle.", "")
+            assert pytorch_normalized == paddle_normalized, (
+                f"API ({name}): value mismatch, "
+                f"torch result is {pytorch_result}, paddle result is {paddle_result}"
+            )
             return
         super().compare(
             name,
