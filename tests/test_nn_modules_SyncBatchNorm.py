@@ -14,11 +14,19 @@
 
 import textwrap
 
+import paddle
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.nn.modules.SyncBatchNorm")
 
+cuda_only = pytest.mark.skipif(
+    not paddle.device.is_compiled_with_cuda(),
+    reason="SyncBatchNorm only implemented on CUDA",
+)
 
+
+@cuda_only
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
@@ -30,6 +38,7 @@ def test_case_1():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
+@cuda_only
 def test_case_2():
     pytorch_code = textwrap.dedent(
         """
@@ -41,6 +50,7 @@ def test_case_2():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
+@cuda_only
 def test_case_3():
     pytorch_code = textwrap.dedent(
         """
@@ -52,6 +62,7 @@ def test_case_3():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
+@cuda_only
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
