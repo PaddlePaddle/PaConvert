@@ -21,7 +21,7 @@ from apibase import APIBase
 obj = APIBase("torch.cuda.CUDAGraph")
 
 
-def test_case_1():
+def _test_case_1():
     """Conversion check: torch.cuda.CUDAGraph maps to paddle.cuda.CUDAGraph"""
     pytorch_code = textwrap.dedent(
         """
@@ -40,7 +40,7 @@ def test_case_1():
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
 )
-def test_case_2():
+def _test_case_2():
     """Basic graph capture and replay"""
     pytorch_code = textwrap.dedent(
         """
@@ -66,7 +66,7 @@ def test_case_2():
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
 )
-def test_case_3():
+def _test_case_3():
     """Replay recomputes from the updated static input tensor"""
     pytorch_code = textwrap.dedent(
         """
@@ -96,7 +96,7 @@ def test_case_3():
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
 )
-def test_case_4():
+def _test_case_4():
     """Multiple replays accumulate on a static buffer captured in-place"""
     pytorch_code = textwrap.dedent(
         """
@@ -124,7 +124,7 @@ def test_case_4():
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
 )
-def test_case_5():
+def _test_case_5():
     """Graph can be reset after replay"""
     pytorch_code = textwrap.dedent(
         """
