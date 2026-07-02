@@ -27,14 +27,7 @@ def test_case_1():
         result = torch.float32.itemsize
         """
     )
-    expect = textwrap.dedent(
-        """
-        import paddle
-
-        result = paddle.float32.itemsize
-        """
-    )
-    obj.run(pytorch_code, expect_paddle_code=expect)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
@@ -45,14 +38,7 @@ def test_case_2():
         result = torch.int64.itemsize
         """
     )
-    expect = textwrap.dedent(
-        """
-        import paddle
-
-        result = paddle.int64.itemsize
-        """
-    )
-    obj.run(pytorch_code, expect_paddle_code=expect)
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -66,17 +52,7 @@ def test_case_3():
         d = torch.float8_e4m3fn.itemsize
         """
     )
-    expect = textwrap.dedent(
-        """
-        import paddle
-
-        a = paddle.complex128.itemsize
-        b = paddle.bool.itemsize
-        c = paddle.bfloat16.itemsize
-        d = paddle.float8_e4m3fn.itemsize
-        """
-    )
-    obj.run(pytorch_code, expect_paddle_code=expect)
+    obj.run(pytorch_code, ["a", "b", "c", "d"])
 
 
 def test_case_4():
@@ -89,13 +65,21 @@ def test_case_4():
         c = torch.cfloat.itemsize
         """
     )
-    expect = textwrap.dedent(
-        """
-        import paddle
+    obj.run(pytorch_code, ["a", "b", "c"])
 
-        a = paddle.long.itemsize
-        b = paddle.double.itemsize
-        c = paddle.cfloat.itemsize
+
+def test_case_5():
+    """Remaining mapped dtypes: float16/float64/complex64/int8/int16/int32/uint8."""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.float16.itemsize
+        b = torch.float64.itemsize
+        c = torch.complex64.itemsize
+        d = torch.int8.itemsize
+        e = torch.int16.itemsize
+        f = torch.int32.itemsize
+        g = torch.uint8.itemsize
         """
     )
-    obj.run(pytorch_code, expect_paddle_code=expect)
+    obj.run(pytorch_code, ["a", "b", "c", "d", "e", "f", "g"])

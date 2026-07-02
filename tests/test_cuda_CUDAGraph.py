@@ -21,8 +21,12 @@ from apibase import APIBase
 obj = APIBase("torch.cuda.CUDAGraph")
 
 
+@pytest.mark.skipif(
+    condition=not paddle.device.is_compiled_with_cuda(),
+    reason="can only run on paddle with CUDA",
+)
 def test_case_1():
-    """Conversion check: torch.cuda.CUDAGraph maps to paddle.cuda.CUDAGraph"""
+    """CUDAGraph object construction"""
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -30,10 +34,7 @@ def test_case_1():
         result = isinstance(g, torch.cuda.CUDAGraph)
         """
     )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code="import paddle\n\ng = paddle.cuda.CUDAGraph()\nresult = isinstance(g, paddle.cuda.CUDAGraph)\n",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 @pytest.mark.skipif(

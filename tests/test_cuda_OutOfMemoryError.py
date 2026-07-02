@@ -20,6 +20,7 @@ obj = APIBase("torch.cuda.OutOfMemoryError")
 
 
 def test_case_1():
+    """Raise and catch the exception, checking the message"""
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -29,20 +30,29 @@ def test_case_1():
             result = str(e)
         """
     )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code='import paddle\n\ntry:\n    raise paddle.cuda.OutOfMemoryError("test")\nexcept paddle.cuda.OutOfMemoryError as e:\n    result = str(e)\n',
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_2():
+    """The exception is a RuntimeError subclass"""
     pytorch_code = textwrap.dedent(
         """
         import torch
         result = issubclass(torch.cuda.OutOfMemoryError, RuntimeError)
         """
     )
-    obj.run(
-        pytorch_code,
-        expect_paddle_code="import paddle\n\nresult = issubclass(paddle.cuda.OutOfMemoryError, RuntimeError)\n",
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    """The exception can be caught as RuntimeError"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        try:
+            raise torch.cuda.OutOfMemoryError("out of memory")
+        except RuntimeError as e:
+            result = str(e)
+        """
     )
+    obj.run(pytorch_code, ["result"])

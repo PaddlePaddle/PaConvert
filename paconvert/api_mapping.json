@@ -3617,9 +3617,6 @@
   "torch.cuda.CharTensor": {
     "Matcher": "ChangePrefixMatcher"
   },
-  "torch.cuda.CudaError": {
-    "Matcher": "ChangePrefixMatcher"
-  },
   "torch.cuda.DoubleTensor": {
     "Matcher": "ChangePrefixMatcher"
   },
