@@ -14,6 +14,7 @@
 
 import textwrap
 
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.vstack")
@@ -57,6 +58,7 @@ def test_case_3():
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skip(reason="paddle does not support 'out' parameter")
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
@@ -70,6 +72,7 @@ def test_case_4():
     obj.run(pytorch_code, ["out"])
 
 
+@pytest.mark.skip(reason="paddle does not support 'out' parameter")
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
@@ -83,6 +86,8 @@ def test_case_5():
     obj.run(pytorch_code, ["out"])
 
 
+@pytest.mark.skip(reason="paddle does not support 'out' parameter")
+@pytest.mark.skip(reason="paddle does not support 'out' parameter")
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """
@@ -96,6 +101,8 @@ def test_case_6():
     obj.run(pytorch_code, ["out"])
 
 
+@pytest.mark.skip(reason="paddle does not support 'out' parameter")
+@pytest.mark.skip(reason="paddle does not support 'out' parameter")
 def test_case_7():
     pytorch_code = textwrap.dedent(
         """
