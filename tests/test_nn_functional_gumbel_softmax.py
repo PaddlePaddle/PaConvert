@@ -15,6 +15,7 @@
 
 import textwrap
 
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.nn.functional.gumbel_softmax")
@@ -68,6 +69,7 @@ def test_case_4():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
+@pytest.mark.skip(reason="paddle does not support the deprecated 'eps' parameter")
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
@@ -80,6 +82,7 @@ def test_case_5():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
+@pytest.mark.skip(reason="paddle does not support the deprecated 'eps' parameter")
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """
@@ -91,6 +94,7 @@ def test_case_6():
     obj.run(pytorch_code, ["result"], check_value=False)
 
 
+@pytest.mark.skip(reason="paddle does not support the deprecated 'eps' parameter")
 def test_case_7():
     pytorch_code = textwrap.dedent(
         """
