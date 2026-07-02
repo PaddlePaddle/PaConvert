@@ -21,7 +21,7 @@ from apibase import APIBase
 obj = APIBase("torch.cuda.CUDAGraph")
 
 
-def _test_case_1():
+def test_case_1():
     """Conversion check: torch.cuda.CUDAGraph maps to paddle.cuda.CUDAGraph"""
     pytorch_code = textwrap.dedent(
         """
@@ -40,7 +40,7 @@ def _test_case_1():
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
 )
-def _test_case_2():
+def test_case_2():
     """Basic graph capture and replay"""
     pytorch_code = textwrap.dedent(
         """
@@ -66,7 +66,7 @@ def _test_case_2():
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
 )
-def _test_case_3():
+def test_case_3():
     """Replay recomputes from the updated static input tensor"""
     pytorch_code = textwrap.dedent(
         """
@@ -96,18 +96,19 @@ def _test_case_3():
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
 )
-def _test_case_4():
+def test_case_4():
     """Multiple replays accumulate on a static buffer captured in-place"""
     pytorch_code = textwrap.dedent(
         """
         import torch
         counter = torch.zeros([3], device="cuda")
+        one = torch.ones([3], device="cuda")
         g = torch.cuda.CUDAGraph()
         s = torch.cuda.Stream()
         torch.cuda.synchronize()
         with torch.cuda.stream(s):
             g.capture_begin()
-            counter.add_(1.0)
+            counter.add_(one)
             g.capture_end()
         torch.cuda.synchronize()
         g.replay()
@@ -124,7 +125,7 @@ def _test_case_4():
     condition=not paddle.device.is_compiled_with_cuda(),
     reason="can only run on paddle with CUDA",
 )
-def _test_case_5():
+def test_case_5():
     """Graph can be reset after replay"""
     pytorch_code = textwrap.dedent(
         """
