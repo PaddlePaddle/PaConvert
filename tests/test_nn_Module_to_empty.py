@@ -33,8 +33,7 @@ def test_case_1():
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
+        check_value=False,
     )
 
 
@@ -52,6 +51,101 @@ def test_case_2():
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="paddle does not support this function temporarily",
+        check_value=False,
+    )
+
+
+def test_case_3():
+    """Keyword argument with recurse=True"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., 3.])
+        module1 = torch.nn.Module()
+        module1.register_buffer('buffer', x)
+        module1.to_empty(device="cpu", recurse=True)
+        result = module1.buffer
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+    )
+
+
+def test_case_4():
+    """Out-of-order keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., 3.])
+        module1 = torch.nn.Module()
+        module1.register_buffer('buffer', x)
+        module1.to_empty(recurse=False, device="cpu")
+        result = module1.buffer
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+    )
+
+
+def test_case_5():
+    """Keyword argument with recurse=False"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., 3.])
+        module1 = torch.nn.Module()
+        module1.register_buffer('buffer', x)
+        module1.to_empty(device="cpu", recurse=False)
+        result = module1.buffer
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+    )
+
+
+def test_case_6():
+    """Variable device argument"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., 3.])
+        module1 = torch.nn.Module()
+        module1.register_buffer('buffer', x)
+        dev = "cpu"
+        module1.to_empty(device=dev)
+        result = module1.buffer
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
+    )
+
+
+def test_case_7():
+    """Expression device argument"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., 3.])
+        module1 = torch.nn.Module()
+        module1.register_buffer('buffer', x)
+        module1.to_empty(device="cpu" if True else "cpu:1")
+        result = module1.buffer
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["result"],
+        check_value=False,
     )

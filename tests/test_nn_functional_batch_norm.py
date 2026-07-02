@@ -197,3 +197,120 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["result"], atol=1e-4)
+
+
+def test_case_10():
+    """Variable arguments test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn.functional as F
+        import torch
+        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857],
+                                [-1.2533, -0.9829, -1.0981],
+                                [ 0.1507, -1.1431, -2.0361]],
+
+                                [[ 0.1024, -0.4482,  0.4137],
+                                [ 0.9385,  0.4565,  0.7702],
+                                [ 0.4135, -0.2587,  0.0482]]])
+        data = torch.tensor([1., 1., 1.])
+        args = (input, data, data, data, data)
+        result = F.batch_norm(*args)
+        """
+    )
+    obj.run(pytorch_code, ["result"], atol=1e-4)
+
+
+def test_case_11():
+    """4D input (NCHW) test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn.functional as F
+        import torch
+        input = torch.tensor([[[[ 0.1524,  0.4714,  0.2857,  0.1050, -0.1050],
+                                 [-0.2857, -0.4714, -0.1524,  0.2000, -0.2000],
+                                 [ 0.0500, -0.0500,  0.1000, -0.1000,  0.3000],
+                                 [ 0.4000, -0.4000,  0.5000, -0.5000,  0.6000]],
+
+                                [[ 0.1024, -0.4482,  0.4137, -0.3000,  0.3000],
+                                 [ 0.9385,  0.4565,  0.7702, -0.4000,  0.4000],
+                                 [ 0.4135, -0.2587,  0.0482,  0.5000, -0.5000],
+                                 [-0.2000,  0.2000, -0.3000,  0.3000, -0.4000]],
+
+                                [[-0.1524, -0.4714, -0.2857,  0.1500, -0.1500],
+                                 [ 0.2857,  0.4714,  0.1524, -0.2000,  0.2000],
+                                 [-0.0500,  0.0500, -0.1000,  0.1000, -0.3000],
+                                 [-0.4000,  0.4000, -0.5000,  0.5000, -0.6000]]]])
+        running_mean = torch.zeros(3)
+        running_var = torch.ones(3)
+        weight = torch.ones(3)
+        bias = torch.zeros(3)
+        result = F.batch_norm(input, running_mean, running_var, weight, bias, training=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"], atol=1e-4)
+
+
+def test_case_12():
+    """2D input (N, C) test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn.functional as F
+        import torch
+        input = torch.tensor([[ 1.1524,  0.4714,  0.2857],
+                               [-1.2533, -0.9829, -1.0981]])
+        running_mean = torch.zeros(3)
+        running_var = torch.ones(3)
+        weight = torch.ones(3)
+        bias = torch.zeros(3)
+        result = F.batch_norm(input, running_mean, running_var, weight, bias, training=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"], atol=1e-4)
+
+
+def test_case_13():
+    """Float64 data type test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn.functional as F
+        import torch
+        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857],
+                                [-1.2533, -0.9829, -1.0981],
+                                [ 0.1507, -1.1431, -2.0361]],
+
+                                [[ 0.1024, -0.4482,  0.4137],
+                                [ 0.9385,  0.4565,  0.7702],
+                                [ 0.4135, -0.2587,  0.0482]]], dtype=torch.float64)
+        running_mean = torch.zeros(3, dtype=torch.float64)
+        running_var = torch.ones(3, dtype=torch.float64)
+        weight = torch.ones(3, dtype=torch.float64)
+        bias = torch.zeros(3, dtype=torch.float64)
+        result = F.batch_norm(input, running_mean, running_var, weight, bias, training=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"], atol=1e-4)
+
+
+def test_case_14():
+    """Gradient computation test with training=True, momentum=0.5"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn.functional as F
+        import torch
+        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857],
+                                [-1.2533, -0.9829, -1.0981],
+                                [ 0.1507, -1.1431, -2.0361]],
+
+                                [[ 0.1024, -0.4482,  0.4137],
+                                [ 0.9385,  0.4565,  0.7702],
+                                [ 0.4135, -0.2587,  0.0482]]], requires_grad=True)
+        running_mean = torch.zeros(3)
+        running_var = torch.ones(3)
+        weight = torch.ones(3)
+        bias = torch.zeros(3)
+        result = F.batch_norm(input, running_mean, running_var, weight, bias, training=True, momentum=0.5)
+        result.sum().backward()
+        x_grad = input.grad
+        """
+    )
+    obj.run(pytorch_code, ["result", "x_grad"], check_stop_gradient=False, atol=1e-4)

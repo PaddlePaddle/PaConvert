@@ -109,6 +109,48 @@ def test_case_7():
     obj.run(pytorch_code, ["out"])
 
 
+def test_case_8():
+    """Variable tensor tuple test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1, 2, 3])
+        b = torch.tensor([4, 5, 6])
+        tensors = (a, b)
+        result = torch.vstack(tensors)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """Gradient computation test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1., 2., 3.], requires_grad=True)
+        b = torch.tensor([4., 5., 6.])
+        result = torch.vstack((a, b))
+        result.sum().backward()
+        a_grad = a.grad
+        """
+    )
+    obj.run(pytorch_code, ["result", "a_grad"], check_stop_gradient=False)
+
+
+def test_case_10():
+    """Expression argument test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1, 2, 3])
+        b = torch.tensor([4, 5, 6])
+        result = torch.vstack((a, b) if True else (b, a))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
 # dtype mismatch, torch dtype is float32, paddle dtype is int64
 def _test_case_8():
     pytorch_code = textwrap.dedent(
