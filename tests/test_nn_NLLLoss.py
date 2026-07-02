@@ -302,3 +302,37 @@ def test_case_19():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_20():
+    """*args unpacking"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        input = torch.arange(0, 15, dtype=torch.float32, requires_grad=True).reshape((3, 5))
+        target = torch.tensor([1, 0, 4])
+        m = nn.LogSoftmax(dim=1)
+        weight = torch.tensor([1.0, 0.5, 1.0, 0.7, 1.2])
+        args = (weight,)
+        loss = nn.NLLLoss(*args, ignore_index=2, reduction='sum')
+        result = loss(m(input), target)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_21():
+    """Out-of-order keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        input = torch.arange(0, 15, dtype=torch.float32, requires_grad=True).reshape((3, 5))
+        target = torch.tensor([1, 0, 4])
+        m = nn.LogSoftmax(dim=1)
+        loss = nn.NLLLoss(reduction='none', ignore_index=-100, weight=None)
+        result = loss(m(input), target)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
