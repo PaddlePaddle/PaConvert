@@ -3614,6 +3614,9 @@
   "torch.cuda.CharTensor": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.cuda.CudaError": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.cuda.DoubleTensor": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -3630,6 +3633,9 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.cuda.LongTensor": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.cuda.OutOfMemoryError": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.cuda.ShortTensor": {
