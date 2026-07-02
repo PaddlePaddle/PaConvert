@@ -50,3 +50,14 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[1 + 0j, 2 + 3j], [4.0, 5 + 0j]])
+        result = x.isreal()
+        """
+    )
+    obj.run(pytorch_code, ["result"])

@@ -75,3 +75,30 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    """Keyword arguments test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1, 2, 3])
+        b = torch.tensor([5, 6])
+        result = torch.functional.cartesian_prod(a, b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """Mixed arguments test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1, 2])
+        b = torch.tensor([3, 4])
+        c = torch.tensor([5])
+        result = torch.functional.cartesian_prod(a, b, c)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
