@@ -156,3 +156,40 @@ def test_case_11():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+# beta=0 degrades to the L1 loss, aligned with PyTorch via paddle.compat
+def test_case_12():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1., 2., 3.], [4., 5., 6.]])
+        label = torch.tensor([[1.5, 0.5, 5.], [4., 2., 9.]])
+        result = torch.nn.functional.smooth_l1_loss(input, label, beta=0.0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1., 2., 3.], [4., 5., 6.]])
+        label = torch.tensor([[1.5, 0.5, 5.], [4., 2., 9.]])
+        result = torch.nn.functional.smooth_l1_loss(input, label, beta=0.0, reduction='sum')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1., 2., 3.], [4., 5., 6.]])
+        label = torch.tensor([[1.5, 0.5, 5.], [4., 2., 9.]])
+        result = torch.nn.functional.smooth_l1_loss(input, label, beta=2.0, reduction='none')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
