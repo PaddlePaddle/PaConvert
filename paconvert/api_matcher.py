@@ -566,13 +566,6 @@ class TensorToSparseCooMatcher(BaseMatcher):
         return code
 
 
-class TensorNbytesMatcher(BaseMatcher):
-    def get_paddle_class_attribute_nodes(self, node):
-        self.parse_func(node)
-        code = "{}.size * {}.element_size()".format(self.paddleClass, self.paddleClass)
-        return ast.parse(code).body
-
-
 class DimOrderMatcher(BaseMatcher):
     def generate_code(self, kwargs):
         API_TEMPLATE = textwrap.dedent(

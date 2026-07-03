@@ -35,7 +35,7 @@ class cudaResetMaxMemoryCachedAPI(APIBase):
         assert type(pytorch_result) == type(paddle_result)
 
 
-obj = cudaResetMaxMemoryCachedAPI("torch.cuda.reset_max_memory_allocated")
+obj = cudaResetMaxMemoryCachedAPI("torch.cuda.reset_max_memory_cached")
 
 
 @pytest.mark.skipif(

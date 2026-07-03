@@ -51,3 +51,29 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import numpy as np
+        np.random.seed(42)
+        a = torch.from_numpy(np.random.randn(3, 4).astype('float32'))
+        result = a.pinverse(rcond=1e-10)
+        """
+    )
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import numpy as np
+        np.random.seed(42)
+        a = torch.from_numpy(np.random.randn(3, 4).astype('float32'))
+        result = a.pinverse(1e-10)
+        """
+    )
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)

@@ -41,3 +41,40 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[4, 3, 5],
+                              [6, 7, 8]])
+        indices = [0, 2, 5]
+        result = input.take(torch.tensor(indices))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import numpy as np
+        np.random.seed(42)
+        input = torch.from_numpy(np.random.randn(2, 3, 4))
+        result = input.take(torch.tensor([0, 5, 10, 15, 20]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([10, 20, 30])
+        result = input.take(torch.tensor([0, 2]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])

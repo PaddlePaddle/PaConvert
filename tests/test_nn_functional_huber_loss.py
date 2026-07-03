@@ -98,3 +98,65 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """reduction='sum' test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[-1.2837, -0.0297,  0.0355],
+            [ 0.9112, -1.7526, -0.4061]])
+        target = torch.tensor([[1., 2., 1.],[1., 2., 3.]])
+        result = torch.nn.functional.huber_loss(input, target, reduction='sum')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """3D input test with fixed seed"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import numpy as np
+        np.random.seed(42)
+        input = torch.from_numpy(np.random.randn(2, 3, 4).astype(np.float32))
+        target = torch.from_numpy(np.random.randn(2, 3, 4).astype(np.float32))
+        result = torch.nn.functional.huber_loss(input, target)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """1D input test with fixed seed"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import numpy as np
+        np.random.seed(42)
+        input = torch.from_numpy(np.random.randn(10).astype(np.float32))
+        target = torch.from_numpy(np.random.randn(10).astype(np.float32))
+        result = torch.nn.functional.huber_loss(input, target)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """Gradient computation test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import numpy as np
+        np.random.seed(42)
+        input = torch.from_numpy(np.random.randn(3, 5).astype(np.float32))
+        input.requires_grad = True
+        target = torch.from_numpy(np.random.randn(3, 5).astype(np.float32))
+        loss = torch.nn.functional.huber_loss(input, target)
+        loss.backward()
+        input_grad = input.grad
+        """
+    )
+    obj.run(pytorch_code, ["loss", "input_grad"], check_stop_gradient=False)
