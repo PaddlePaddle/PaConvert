@@ -383,3 +383,34 @@ def test_case_25():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_26():
+    """*args unpacking"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.Tensor([[1, 2], [3, 4]]).type(torch.float32)
+        other = torch.Tensor([[2, 1], [2, 4]]).type(torch.float32)
+        label = torch.Tensor([[1, -1], [-1, -1]]).type(torch.float32)
+        args = (0.5,)
+        loss = torch.nn.MarginRankingLoss(*args, reduction='sum')
+        result = loss(input, other, label)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_27():
+    """Out-of-order keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.Tensor([[1, 2], [3, 4]]).type(torch.float32)
+        other = torch.Tensor([[2, 1], [2, 4]]).type(torch.float32)
+        label = torch.Tensor([[1, -1], [-1, -1]]).type(torch.float32)
+        loss = torch.nn.MarginRankingLoss(reduction='none', margin=1.0)
+        result = loss(input, other, label)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

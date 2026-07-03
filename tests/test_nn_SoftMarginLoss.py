@@ -358,3 +358,32 @@ def test_case_25():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_26():
+    """*args unpacking"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.Tensor([[1, -2, 3], [0, -1, 2]]).type(torch.float32)
+        label = torch.Tensor([[-1, 1, -1], [1, 1, 1]]).type(torch.float32)
+        args = ()
+        cri = torch.nn.SoftMarginLoss(*args, reduction='sum')
+        result = cri(input, label)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_27():
+    """Out-of-order keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.Tensor([[1, -2, 3], [0, -1, 2]]).type(torch.float32)
+        label = torch.Tensor([[-1, 1, -1], [1, 1, 1]]).type(torch.float32)
+        cri = torch.nn.SoftMarginLoss(reduction='none', reduce=None, size_average=None)
+        result = cri(input, label)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
