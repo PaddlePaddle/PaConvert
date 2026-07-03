@@ -4416,42 +4416,42 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.distributions.distribution.Distribution.cdf": {
-    "Matcher": "BoundMethodMatcher",
+    "Matcher": "ChangePrefixMatcher",
     "min_input_args": 1
   },
   "torch.distributions.distribution.Distribution.entropy": {
-    "Matcher": "BoundMethodMatcher",
+    "Matcher": "ChangePrefixMatcher",
     "min_input_args": 0
   },
   "torch.distributions.distribution.Distribution.enumerate_support": {
-    "Matcher": "BoundMethodMatcher",
+    "Matcher": "ChangePrefixMatcher",
     "min_input_args": 0
   },
   "torch.distributions.distribution.Distribution.expand": {
     "min_input_args": 1
   },
   "torch.distributions.distribution.Distribution.icdf": {
-    "Matcher": "BoundMethodMatcher",
+    "Matcher": "ChangePrefixMatcher",
     "min_input_args": 1
   },
   "torch.distributions.distribution.Distribution.log_prob": {
-    "Matcher": "BoundMethodMatcher",
+    "Matcher": "ChangePrefixMatcher",
     "min_input_args": 1
   },
   "torch.distributions.distribution.Distribution.perplexity": {
-    "Matcher": "BoundMethodMatcher",
+    "Matcher": "ChangePrefixMatcher",
     "min_input_args": 0
   },
   "torch.distributions.distribution.Distribution.rsample": {
-    "Matcher": "BoundMethodMatcher",
+    "Matcher": "ChangePrefixMatcher",
     "min_input_args": 0
   },
   "torch.distributions.distribution.Distribution.sample": {
-    "Matcher": "BoundMethodMatcher",
+    "Matcher": "ChangePrefixMatcher",
     "min_input_args": 0
   },
   "torch.distributions.distribution.Distribution.sample_n": {
-    "Matcher": "BoundMethodMatcher",
+    "Matcher": "ChangePrefixMatcher",
     "min_input_args": 1
   },
   "torch.distributions.distribution.Distribution.set_default_validate_args": {

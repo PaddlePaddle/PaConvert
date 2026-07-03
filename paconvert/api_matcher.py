@@ -432,39 +432,6 @@ class ChangeAPIMatcher(BaseMatcher):
         return ast.parse(code).body
 
 
-class BoundMethodMatcher(BaseMatcher):
-    def get_paddle_api(self):
-        if "paddle_api" not in self.api_mapping_dict:
-            return None
-        return super().get_paddle_api()
-
-    def prepare_bound_method_call(self, func, args, kwargs):
-        func_str = astor.to_source(func).strip("\n")
-        if self.get_paddle_api():
-            self.parse_func(func)
-        else:
-            self.paddle_api = func_str
-        args = self.parse_args(args)
-        kwargs = self.parse_kwargs(kwargs, allow_none=True)
-        if kwargs is None:
-            return None, None
-
-        for k in ["layout", "generator", "memory_format", "sparse_grad", "foreach"]:
-            if k in kwargs:
-                kwargs.pop(k)
-
-        return args, kwargs
-
-    def get_paddle_class_nodes(self, func, args, kwargs):
-        args, kwargs = self.prepare_bound_method_call(func, args, kwargs)
-        if kwargs is None:
-            return None
-
-        kwargs = self.change_kwargs(kwargs)
-        code = f"{self.paddle_api}({self.args_and_kwargs_to_str(args, kwargs)})"
-        return ast.parse(code).body
-
-
 class CheckPointMatcher(BaseMatcher):
     def get_paddle_nodes(self, args, kwargs):
         args = self.parse_args(args)
