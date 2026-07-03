@@ -187,10 +187,10 @@
   "torch.float8_e4m3fn": {
     "Matcher": "ChangePrefixMatcher"
   },
-  "torch.float8_e5m2": {
+  "torch.float8_e4m3fn.itemsize": {
     "Matcher": "ChangePrefixMatcher"
   },
-  "torch.float8_e4m3fn.itemsize": {
+  "torch.float8_e5m2": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.half": {
