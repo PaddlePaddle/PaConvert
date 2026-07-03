@@ -125,3 +125,29 @@ def test_case_9():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """Mixed arguments test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        t = torch.arange(8).float()
+        capsule = torch.utils.dlpack.to_dlpack(t)
+        result = torch.utils.dlpack.from_dlpack(capsule)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    """Keyword arguments out of order test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        t = torch.arange(4).float()
+        capsule = torch.utils.dlpack.to_dlpack(t)
+        result = torch.utils.dlpack.from_dlpack(ext_tensor=capsule)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

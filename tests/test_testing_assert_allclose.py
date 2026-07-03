@@ -67,7 +67,7 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        x = torch.tensor([1., 2., float('nan')])
+        x = torch.tensor([1., 2., float('nan')], device='cpu')
         y = x.cpu()
         torch.testing.assert_allclose(actual=x, expected=y, rtol=1e-5, atol=1e-8, equal_nan=True, msg="assert_allclose testing message.")
         """

@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.functional.conv_transpose3d")
+obj = APIBase("torch.conv_transpose3d")
 
 
 def test_case_1():
@@ -26,7 +26,7 @@ def test_case_1():
         import torch.nn.functional as F
         x = torch.randn(20, 16, 10, 10, 10)
         weight = torch.randn(16, 33, 2, 2, 2)
-        result = F.conv_transpose3d(x, weight)
+        result = torch.conv_transpose3d(x, weight)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -40,7 +40,7 @@ def test_case_2():
         x = torch.randn(20, 16, 10, 10, 10)
         weight = torch.randn(16, 33, 2, 2, 2)
         bias = torch.randn(33)
-        result = F.conv_transpose3d(x, weight, bias)
+        result = torch.conv_transpose3d(x, weight, bias)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -53,7 +53,7 @@ def test_case_3():
         import torch.nn.functional as F
         x = torch.randn(20, 16, 10, 10, 10)
         weight = torch.randn(16, 33, 2, 2, 2)
-        result = F.conv_transpose3d(x, weight, stride=2)
+        result = torch.conv_transpose3d(x, weight, stride=2)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -66,7 +66,7 @@ def test_case_4():
         import torch.nn.functional as F
         x = torch.randn(20, 16, 10, 10, 10)
         weight = torch.randn(16, 33, 2, 2, 2)
-        result = F.conv_transpose3d(x, weight, stride=2, padding=2)
+        result = torch.conv_transpose3d(x, weight, stride=2, padding=2)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -79,7 +79,7 @@ def test_case_5():
         import torch.nn.functional as F
         x = torch.randn(20, 16, 10, 10, 10)
         weight = torch.randn(16, 33, 2, 2, 2)
-        result = F.conv_transpose3d(x, weight, stride=2, padding=2, dilation=1)
+        result = torch.conv_transpose3d(x, weight, stride=2, padding=2, dilation=1)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -105,7 +105,61 @@ def test_case_7():
         import torch.nn.functional as F
         x = torch.randn(20, 16, 10, 10, 10)
         weight = torch.randn(16, 8, 2, 2, 2)
-        result = F.conv_transpose3d(x, weight, stride=2, padding=2, output_padding=1, dilation=1, groups=2)
+        result = torch.conv_transpose3d(x, weight, stride=2, padding=2, output_padding=1, dilation=1, groups=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_8():
+    """Keyword arguments test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.randn(20, 16, 10, 10, 10)
+        weight = torch.randn(16, 33, 2, 2, 2)
+        result = torch.conv_transpose3d(input=x, weight=weight)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_9():
+    """Keyword arguments out of order test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.randn(20, 16, 10, 10, 10)
+        weight = torch.randn(16, 33, 2, 2, 2)
+        bias = torch.randn(33)
+        result = torch.conv_transpose3d(bias=bias, weight=weight, input=x)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_10():
+    """Mixed arguments test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.randn(20, 16, 10, 10, 10)
+        weight = torch.randn(16, 33, 2, 2, 2)
+        result = torch.conv_transpose3d(x, weight, stride=2, padding=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_11():
+    """Variable argument test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.randn(20, 16, 10, 10, 10)
+        weight = torch.randn(16, 33, 2, 2, 2)
+        args = (x, weight)
+        result = torch.conv_transpose3d(*args)
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)

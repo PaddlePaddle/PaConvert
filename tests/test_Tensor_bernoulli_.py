@@ -76,3 +76,15 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.zeros(3, 3)
+        p = torch.ones(3, 3) * 0.5
+        result = src.bernoulli_(p)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

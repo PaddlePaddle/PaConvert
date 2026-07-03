@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.__add__")
+obj = APIBase("torch.Tensor.__sub__")
 
 
 def test_case_1():
@@ -83,6 +83,19 @@ def test_case_6():
         import torch
         x = torch.tensor([1., 2., 3.], dtype=torch.float64)
         result = x - 5.
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """Variable argument test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., 3.])
+        args = (torch.tensor([3., 2., 1.]),)
+        result = x.__sub__(*args)
         """
     )
     obj.run(pytorch_code, ["result"])

@@ -51,7 +51,7 @@
   },
   "torch.Tensor.names": {},
   "torch.Tensor.nbytes": {
-    "Matcher": "TensorNbytesMatcher"
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.ndim": {
     "Matcher": "ChangePrefixMatcher"
@@ -70,7 +70,7 @@
   "torch.__version__": {
     "Matcher": "ChangePrefixMatcher"
   },
-  "torch.autograd.function.FunctionCtx.saved_tensors": {
+  "torch.autograd.Function.saved_tensors": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.autograd.profiler.profile.self_cpu_time_total": {},
@@ -103,6 +103,9 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.bool": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.cdouble": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.cfloat": {
@@ -142,6 +145,9 @@
   "torch.e": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.float": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.float16": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -154,7 +160,13 @@
   "torch.float8_e4m3fn": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.half": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.inf": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.int": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.int16": {
@@ -178,13 +190,13 @@
   "torch.newaxis": {
     "Matcher": "ChangePrefixMatcher"
   },
-  "torch.nn": {
-    "Matcher": "ChangePrefixMatcher"
-  },
   "torch.optim.Optimizer.step": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.pi": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.short": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.uint8": {

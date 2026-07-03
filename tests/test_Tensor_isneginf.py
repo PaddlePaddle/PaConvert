@@ -49,3 +49,14 @@ def test_case_3():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[float('-inf'), 0.0], [float('inf'), float('nan')]])
+        result = input.isneginf()
+        """
+    )
+    obj.run(pytorch_code, ["result"])

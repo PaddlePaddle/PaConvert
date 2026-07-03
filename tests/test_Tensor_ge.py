@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.ge")
+obj = APIBase("torch.Tensor.ge")
 
 
 def test_case_1():

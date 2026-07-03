@@ -47,12 +47,23 @@ PYTEST_IGNORE=(
     --ignore=tests/test_hub_load_state_dict_from_url.py
 )
 
-python -m pytest -v -s -p no:warnings "${PYTEST_IGNORE[@]}" -n 1 --reruns=3 ./tests 2>&1 | tee pytest.log
+# Run test_cuda_stream.py separately and FIRST (GPU state is clean),
+# as it can segfault when run after other GPU tests (Paddle FullKernel issue).
+# Running in isolation prevents the segfault from killing the entire test batch.
+python -m pytest -v -s -p no:warnings tests/test_cuda_stream.py 2>&1 | tee pytest.log
+stream_exit=${PIPESTATUS[0]}
+
+python -m pytest -v -s -p no:warnings "${PYTEST_IGNORE[@]}" --ignore=tests/test_cuda_stream.py -n 1 --reruns=3 ./tests 2>&1 | tee -a pytest.log
 check_errors=${PIPESTATUS[0]}
 if [ ${check_errors} -ne 0 ]; then
     echo "Rerun GPU unit test"
-    python -m pytest -v -s -p no:warnings "${PYTEST_IGNORE[@]}" -n 1 --lf ./tests 2>&1 | tee -a pytest.log
+    python -m pytest -v -s -p no:warnings "${PYTEST_IGNORE[@]}" --ignore=tests/test_cuda_stream.py -n 1 --lf ./tests 2>&1 | tee -a pytest.log
     check_errors=${PIPESTATUS[0]}
+fi
+
+# Propagate stream test failure if any
+if [ ${stream_exit} -ne 0 ]; then
+    check_errors=${stream_exit}
 fi
 
 echo '******************************************************************************'

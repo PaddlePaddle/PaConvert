@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.Tensor.is_cuda")
+obj = APIBase("torch.Tensor.is_leaf")
 
 
 def test_case_1():
@@ -25,6 +25,41 @@ def test_case_1():
         import torch
         src = torch.tensor([1., 2., 3., 4., 5., 6.])
         result = src.is_leaf
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., 3.], requires_grad=True)
+        result = x.is_leaf
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., 3.], requires_grad=True)
+        y = x + 1
+        result = y.is_leaf
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2., 3.])
+        y = x.detach()
+        result = y.is_leaf
         """
     )
     obj.run(pytorch_code, ["result"])

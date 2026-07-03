@@ -16,7 +16,7 @@ b = a.to(dtype=paddle.float64)
 print("#########################case6#########################")
 b = a.to(c)
 print("#########################case7#########################")
-a = a.to(paddle.float16)
+a = a.to(paddle.half)
 print("#########################case8#########################")
 table = a
 b = a.to(table.device)

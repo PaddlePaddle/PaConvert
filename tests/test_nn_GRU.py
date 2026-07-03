@@ -113,6 +113,7 @@ def test_case_4():
 
 
 def test_case_5():
+    """PyTorch positional arguments: (input_size, hidden_size, num_layers, bias, batch_first, dropout, bidirectional)"""
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -135,8 +136,8 @@ def test_case_5():
     obj.run(pytorch_code, ["output", "h_n"], check_value=False)
 
 
-# when bias=False, paddle has bug in paddle.nn.RNNBase flatten_parameters()
-def _test_case_6():
+def test_case_6():
+    """Test bias=False with PyTorch positional arguments"""
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -160,6 +161,7 @@ def _test_case_6():
 
 
 def test_case_7():
+    """Test device and dtype keyword arguments"""
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -177,6 +179,69 @@ def test_case_7():
         x = torch.randn(5, 3, 10)  # (batch_size, seq_len, input_size)
         model = SimpleRNNModel()
         output, h_n = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["output", "h_n"], check_value=False)
+
+
+def test_case_8():
+    """Test bias keyword argument"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        class SimpleRNNModel(nn.Module):
+            def __init__(self):
+                super(SimpleRNNModel, self).__init__()
+                self.gru = nn.GRU(10, 20, bias=False)
+
+            def forward(self, x):
+                output, h_n = self.gru(x)
+                return output, h_n
+
+        x = torch.randn(3, 5, 10)
+        model = SimpleRNNModel()
+        output, h_n = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["output", "h_n"], check_value=False)
+
+
+def test_case_9():
+    """Test device and dtype as keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        class SimpleRNNModel(nn.Module):
+            def __init__(self):
+                super(SimpleRNNModel, self).__init__()
+                self.gru = nn.GRU(10, 20, 2, True, False, 0.0, False, device="cpu", dtype=torch.float32)
+
+            def forward(self, x):
+                output, h_n = self.gru(x)
+                return output, h_n
+
+        x = torch.randn(3, 5, 10)
+        model = SimpleRNNModel()
+        output, h_n = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["output", "h_n"], check_value=False)
+
+
+def test_case_10():
+    """Test mixed positional and keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+
+        gru = nn.GRU(10, 20, num_layers=2, bias=True, batch_first=True)
+        x = torch.randn(5, 3, 10)
+        output, h_n = gru(x)
         """
     )
     obj.run(pytorch_code, ["output", "h_n"], check_value=False)

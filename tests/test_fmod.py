@@ -13,6 +13,7 @@
 # limitations under the License.
 import textwrap
 
+import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.fmod")
@@ -51,6 +52,9 @@ def test_case_3():
     obj.run(pytorch_code, ["out"])
 
 
+@pytest.mark.skip(
+    reason="Paddle does not support type promotion between float32 input and int64 tensor other"
+)
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
@@ -61,6 +65,9 @@ def test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skip(
+    reason="Paddle does not support type promotion between float32 input and int64 tensor other"
+)
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """

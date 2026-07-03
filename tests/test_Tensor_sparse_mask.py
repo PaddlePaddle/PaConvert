@@ -16,7 +16,7 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.tensor.sparse_mask")
+obj = APIBase("torch.Tensor.sparse_mask")
 
 
 def test_case_1():
