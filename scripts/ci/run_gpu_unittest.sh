@@ -53,17 +53,26 @@ PYTEST_IGNORE=(
 python -m pytest -v -s -p no:warnings tests/test_cuda_stream.py 2>&1 | tee pytest.log
 stream_exit=${PIPESTATUS[0]}
 
-python -m pytest -v -s -p no:warnings "${PYTEST_IGNORE[@]}" --ignore=tests/test_cuda_stream.py -n 1 --reruns=3 ./tests 2>&1 | tee -a pytest.log
+# Run test_cuda_CUDAGraph.py in its own process as well: CUDA graph
+# capture/replay leaves Paddle GPU state that can natively crash later
+# AMP tests (e.g. test_cuda_amp_GradScaler) in the same pytest worker.
+python -m pytest -v -s -p no:warnings tests/test_cuda_CUDAGraph.py 2>&1 | tee -a pytest.log
+cudagraph_exit=${PIPESTATUS[0]}
+
+python -m pytest -v -s -p no:warnings "${PYTEST_IGNORE[@]}" --ignore=tests/test_cuda_stream.py --ignore=tests/test_cuda_CUDAGraph.py -n 1 --reruns=3 ./tests 2>&1 | tee -a pytest.log
 check_errors=${PIPESTATUS[0]}
 if [ ${check_errors} -ne 0 ]; then
     echo "Rerun GPU unit test"
-    python -m pytest -v -s -p no:warnings "${PYTEST_IGNORE[@]}" --ignore=tests/test_cuda_stream.py -n 1 --lf ./tests 2>&1 | tee -a pytest.log
+    python -m pytest -v -s -p no:warnings "${PYTEST_IGNORE[@]}" --ignore=tests/test_cuda_stream.py --ignore=tests/test_cuda_CUDAGraph.py -n 1 --lf ./tests 2>&1 | tee -a pytest.log
     check_errors=${PIPESTATUS[0]}
 fi
 
-# Propagate stream test failure if any
+# Propagate isolated test failures if any
 if [ ${stream_exit} -ne 0 ]; then
     check_errors=${stream_exit}
+fi
+if [ ${cudagraph_exit} -ne 0 ]; then
+    check_errors=${cudagraph_exit}
 fi
 
 echo '******************************************************************************'
