@@ -68,7 +68,7 @@ def test_case_3():
                 return torch.tensor([3.0, 4.0])
 
         Demo().state_dict()
-        result = torch.tensor(int(called["flag"]))
+        result = called["flag"]
         """
     )
     obj.run(pytorch_code, ["result"])
