@@ -526,19 +526,19 @@ class ImportTransformer(BaseTransformer):
             )
             line_NO += 1
 
-        # Inject `paddle.enable_compat()` right after the imports so that
-        # prefix-only converted calls (torch.X -> paddle.X via ChangePrefixMatcher)
-        # resolve to the torch-aligned paddle.compat.* implementations at runtime
-        # `import paddle` is included explicitly (deduped if already added) so the
-        # call is valid even when torch was imported as a submodule alias
-        # (e.g. `import torch.nn as nn` -> `import paddle.nn as nn`)
+        # Inject `paddle.enable_compat(level=2)` after the imports so prefix-only
+        # converted calls (torch.X -> paddle.X) resolve to the torch-aligned
+        # paddle.compat.* impls. level=2 (not the default) is required: aliasing
+        # the public `paddle.*` surface is opt-in, and caller-aware dispatch keeps
+        # paddle internals native. `import paddle` is explicit (deduped) so the call
+        # is valid even for submodule aliases (`import torch.nn as nn`).
         if paddle_package_list:
             log_info(
                 self.logger,
-                "add 'paddle.enable_compat()' after imports",
+                "add 'paddle.enable_compat(level=2)' after imports",
                 self.file_name,
             )
             self.record_scope(
                 (self.root, "body", 0),
-                ast.parse("import paddle\npaddle.enable_compat()").body,
+                ast.parse("import paddle\npaddle.enable_compat(level=2)").body,
             )
