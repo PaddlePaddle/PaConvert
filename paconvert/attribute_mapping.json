@@ -51,7 +51,7 @@
   },
   "torch.Tensor.names": {},
   "torch.Tensor.nbytes": {
-    "Matcher": "TensorNbytesMatcher"
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.ndim": {
     "Matcher": "ChangePrefixMatcher"
