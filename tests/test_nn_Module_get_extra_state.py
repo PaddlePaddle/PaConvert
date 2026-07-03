@@ -50,3 +50,25 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        called = {"flag": False}
+
+        class Demo(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.weight = torch.nn.Parameter(torch.tensor([1.0, 2.0]))
+
+            def get_extra_state(self):
+                called["flag"] = True
+                return torch.tensor([3.0, 4.0])
+
+        Demo().state_dict()
+        result = torch.tensor(int(called["flag"]))
+        """
+    )
+    obj.run(pytorch_code, ["result"])

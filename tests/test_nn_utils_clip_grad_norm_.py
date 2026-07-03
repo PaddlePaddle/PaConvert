@@ -126,6 +126,10 @@ def test_case_7():
     obj.run(pytorch_code, ["result", "output"])
 
 
+# foreach as the 5th positional argument is a real signature mismatch:
+# torch.clip_grad_norm_(parameters, max_norm, norm_type, error_if_nonfinite, foreach)
+# paddle.clip_grad_norm_(parameters, max_norm, norm_type, error_if_nonfinite)
+# ChangePrefixMatcher cannot rewrite the 5th positional argument into a dropped keyword.
 def _test_case_8():
     pytorch_code = textwrap.dedent(
         """

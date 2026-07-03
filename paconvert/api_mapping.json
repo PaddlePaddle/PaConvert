@@ -5050,9 +5050,6 @@
       "axis": 0
     }
   },
-  "torch.float8_e5m2": {
-    "Matcher": "ChangePrefixMatcher"
-  },
   "torch.float_power": {
     "Matcher": "FloatPowerMatcher",
     "min_input_args": 2,
@@ -6836,9 +6833,6 @@
     ]
   },
   "torch.nn.Module": {
-    "Matcher": "ChangePrefixMatcher"
-  },
-  "torch.nn.Module.__init__": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.Module.add_module": {
@@ -10297,15 +10291,6 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.trunc": {
-    "Matcher": "ChangePrefixMatcher"
-  },
-  "torch.uint16": {
-    "Matcher": "ChangePrefixMatcher"
-  },
-  "torch.uint32": {
-    "Matcher": "ChangePrefixMatcher"
-  },
-  "torch.uint64": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.unbind": {
