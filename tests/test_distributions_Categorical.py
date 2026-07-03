@@ -14,7 +14,6 @@
 
 import textwrap
 
-import pytest
 from dist_apibase import DistributionAPIBase
 
 obj = DistributionAPIBase("torch.distributions.Categorical")
@@ -132,9 +131,6 @@ def test_case_10():
     obj.run(pytorch_code, ["result"])
 
 
-@pytest.mark.skip(
-    reason="Paddle framework issue: PaConvert generates sample(shape=...) but paddle.compat.distributions.Categorical uses sample_shape= parameter"
-)
 def test_case_11():
     """Categorical with sample"""
     pytorch_code = textwrap.dedent(

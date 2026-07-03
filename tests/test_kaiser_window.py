@@ -14,7 +14,6 @@
 
 import textwrap
 
-import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.kaiser_window")
@@ -68,17 +67,22 @@ def test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
-@pytest.mark.skip(reason="torch.kaiser_window does not accept out in current PyTorch")
 def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        out = torch.empty(7)
-        result = torch.kaiser_window(7, out=out)
-        output = out
+        result = torch.kaiser_window(
+            15,
+            False,
+            beta=9.0,
+            dtype=torch.float64,
+            layout=torch.strided,
+            device="cpu",
+            requires_grad=False,
+        )
         """
     )
-    obj.run(pytorch_code, ["result", "output"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_6():
@@ -92,18 +96,21 @@ def test_case_6():
     obj.run(pytorch_code, ["result0", "result1"])
 
 
-@pytest.mark.skip(reason="torch.sparse_coo conversion is not supported by PaConvert")
 def test_case_7():
     pytorch_code = textwrap.dedent(
         """
-        import pytest
         import torch
-
-        with pytest.raises(RuntimeError):
-            torch.kaiser_window(7, layout=torch.sparse_coo)
+        kwargs = {
+            "window_length": 5,
+            "periodic": False,
+            "beta": 4.5,
+            "dtype": torch.float32,
+            "device": "cpu",
+        }
+        result = torch.kaiser_window(**kwargs)
         """
     )
-    obj.run(pytorch_code, [])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_8():

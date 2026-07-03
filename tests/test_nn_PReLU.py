@@ -14,7 +14,6 @@
 
 import textwrap
 
-import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.nn.PReLU")
@@ -259,14 +258,10 @@ def test_case_16():
     obj.run(pytorch_code, ["result"])
 
 
-@pytest.mark.skip(
-    reason="PaConvert does not support variable args in torch.nn.PReLU construction"
-)
 def test_case_17():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         x = torch.tensor(
             [
                 [[-2.0, 1.0, -0.5], [0.5, -1.5, 2.5]],
@@ -274,8 +269,9 @@ def test_case_17():
             ],
             dtype=torch.float32,
         )
-        args = (2, 0.35)
-        model = nn.PReLU(*args)
+        num_parameters = 2
+        init = 0.35
+        model = torch.nn.PReLU(num_parameters=num_parameters, init=init)
         result = model(x)
         """
     )
