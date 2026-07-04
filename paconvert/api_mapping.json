@@ -9361,6 +9361,9 @@
     "paddle_api": "paddle.optimizer.Optimizer.state_dict",
     "min_input_args": 0
   },
+  "torch.optim.Optimizer.step": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.optim.Optimizer.zero_grad": {
     "Matcher": "ZeroGradMatcher",
     "paddle_api": "paddle.optimizer.Optimizer.clear_gradients",
