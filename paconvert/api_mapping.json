@@ -8984,12 +8984,7 @@
     "min_input_args": 0
   },
   "torch.optim.Optimizer.step": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.optimizer.Optimizer.step",
-    "min_input_args": 0,
-    "unsupport_args": [
-      "closure"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.optim.Optimizer.zero_grad": {
     "Matcher": "ZeroGradMatcher",

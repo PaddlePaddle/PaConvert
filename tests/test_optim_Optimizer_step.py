@@ -14,6 +14,7 @@
 
 import textwrap
 
+import numpy as np
 from apibase import APIBase
 
 
@@ -30,7 +31,10 @@ class optimOptimizerAPIBase(APIBase):
         rtol=1.0e-6,
         atol=0.0,
     ):
-        assert paddle_result == pytorch_result
+        if isinstance(paddle_result, np.ndarray):
+            np.testing.assert_array_equal(paddle_result, pytorch_result)
+        else:
+            assert paddle_result == pytorch_result
 
 
 obj = optimOptimizerAPIBase("torch.optim.Optimizer.step")
@@ -47,27 +51,27 @@ def test_case_1():
         result = type(optim.step)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-    )
+    obj.run(pytorch_code, ["result"])
 
 
-def _test_case_2():
+def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
         import torch.nn as nn
         theta = torch.tensor([1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0], requires_grad=True)
         l = torch.nn.Linear(10, 1)
-        optim = torch.optim.SGD(l.parameters(), lr = 1.0)
+        torch.nn.init.constant_(l.weight, 3.0)
+        torch.nn.init.constant_(l.bias, 4.0)
+        optim = torch.optim.SGD(l.parameters(), lr=1.0)
         z = l(theta)
         z.backward()
         optim.step()
-        result = optim.state_dict()
+        weight = l.weight.data.numpy(force=True)
+        bias = l.bias.data.numpy(force=True)
         """
     )
-    obj.run(pytorch_code, ["result"])
+    obj.run(pytorch_code, ["weight", "bias"])
 
 
 def test_case_3():
@@ -78,7 +82,9 @@ def test_case_3():
 
         theta = torch.tensor([1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0], requires_grad=True)
         l = torch.nn.Linear(10, 1)
-        optim = torch.optim.LBFGS(l.parameters(), lr=0.01)
+        torch.nn.init.constant_(l.weight, 3.0)
+        torch.nn.init.constant_(l.bias, 4.0)
+        optim = torch.optim.SGD(l.parameters(), lr=0.01)
 
         def closure():
             optim.zero_grad()
@@ -87,13 +93,8 @@ def test_case_3():
             loss.backward()
             return loss
 
-        optim.step(closure=closure)
-        result = optim.state_dict()
+        loss_value = optim.step(closure=closure)
+        result = loss_value.numpy(force=True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not support 'closure' now!",
-    )
+    obj.run(pytorch_code, ["result"])
