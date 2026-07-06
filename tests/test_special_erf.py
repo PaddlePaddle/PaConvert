@@ -86,3 +86,40 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_7():
+    # two-dimensional float32 matrix spanning negative & positive ranges
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[-3., -2., -1.], [0., 1., 2.]])
+        result = torch.special.erf(input=a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    # higher precision float64 along a wider grid including extreme magnitudes
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.linspace(-6., 6., steps=13, dtype=torch.float64)
+        result = torch.special.erf(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    # expression-derived argument passed positionally
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        base = torch.arange(7)
+        x = base.to(torch.float32) * (-0.25 + 0.05 * 3)
+        result = torch.special.erf(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
