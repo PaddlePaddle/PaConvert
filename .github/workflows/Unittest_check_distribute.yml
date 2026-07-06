@@ -34,6 +34,7 @@ jobs:
         name: Distributed Unittest Check
         runs-on:
             group: PaConvert
+            labels: [gpu]
         timeout-minutes: 120
 
         steps:
