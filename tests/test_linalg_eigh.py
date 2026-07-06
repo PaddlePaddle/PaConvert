@@ -66,10 +66,10 @@ def test_case_4():
         A = torch.ones((2, 2), dtype=torch.complex128)
         A = A + A.T.conj()  # creates a Hermitian matrix
         result = torch.linalg.eigh(input=A, UPLO='L')
-        out = [torch.tensor([], dtype=torch.float64),torch.tensor([], dtype=torch.complex128)]
+        out = (torch.tensor([], dtype=torch.float64), torch.tensor([], dtype=torch.complex128))
         result = torch.linalg.eigh(input=A, UPLO='L', out=out)
-        result = [result[0], torch.abs(result[1])]
-        out = [out[0], torch.abs(out[1])]
+        result = (result[0], torch.abs(result[1]))
+        out = (out[0], torch.abs(out[1]))
         """
     )
     obj.run(pytorch_code, ["result", "out"], atol=1e-7)
@@ -81,10 +81,10 @@ def test_case_5():
         import torch
         A = torch.ones((2, 2), dtype=torch.complex128)
         A = A + A.T.conj()  # creates a Hermitian matrix
-        out = [torch.tensor([], dtype=torch.float64),torch.tensor([], dtype=torch.complex128)]
+        out = (torch.tensor([], dtype=torch.float64), torch.tensor([], dtype=torch.complex128))
         result = torch.linalg.eigh(A, 'L', out=out)
-        result = [result[0], torch.abs(result[1])]
-        out = [out[0], torch.abs(out[1])]
+        result = (result[0], torch.abs(result[1]))
+        out = (out[0], torch.abs(out[1]))
         """
     )
     obj.run(pytorch_code, ["result", "out"], atol=1e-7)
@@ -97,10 +97,10 @@ def test_case_6():
         import torch
         A = torch.ones((2, 2), dtype=torch.complex128)
         A = A + A.T.conj()  # creates a Hermitian matrix
-        out = [torch.tensor([], dtype=torch.float64),torch.tensor([], dtype=torch.complex128)]
+        out = (torch.tensor([], dtype=torch.float64), torch.tensor([], dtype=torch.complex128))
         result = torch.linalg.eigh(input=A, UPLO='L', out=out)
-        result = [result[0], torch.abs(result[1])]
-        out = [out[0], torch.abs(out[1])]
+        result = (result[0], torch.abs(result[1]))
+        out = (out[0], torch.abs(out[1]))
         """
     )
     obj.run(pytorch_code, ["result", "out"], atol=1e-7)
