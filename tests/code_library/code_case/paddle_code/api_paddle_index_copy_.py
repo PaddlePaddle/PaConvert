@@ -1,26 +1,4 @@
-import numpy as np
 import paddle
-
-############################## 相关utils函数，如下 ##############################
-
-def _Tensor_index_copy_(self, dim, index, source):
-    if dim == 0:
-        return self.scatter_(index, source)
-
-    shape = self.shape
-
-    new_index = []
-    for i in range(0, np.prod(shape[:dim])):
-        new_index.append(index + i * len(index))
-    new_index = paddle.concat(new_index)
-    new_self = self.reshape_([-1] + shape[dim+1:])
-    new_source = source.reshape([-1] + shape[dim+1:])
-
-    return new_self.scatter_(new_index, new_source).reshape_(shape)
-
-setattr(paddle.Tensor, "index_copy_", _Tensor_index_copy_)
-############################## 相关utils函数，如上 ##############################
-
 
 print("#########################case1#########################")
 x = paddle.zeros(5, 3)

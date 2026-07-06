@@ -73,3 +73,50 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    # integer-typed activation output stays consistent across frameworks
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.tensor([[-9, -6, -3, 0, 3, 6, 9]], dtype=torch.int64)
+        m = nn.Hardswish()
+        # cast back to float since hardswish needs floating math
+        y = x.to(torch.float32)
+        result = m(y)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    # float64 high-dim input through keyword-instantiated module
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.randn(3, 4, 5, dtype=torch.float64)
+        layer = nn.Hardswish(inplace=False)
+        first = layer(x)
+        second = layer(x)
+        result = ((first == second).all().item(), )
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_stop_gradient=False)
+
+
+def test_case_7():
+    # larger 2-D matrix exercising boundary values around ±3
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        grid = torch.linspace(-4.0, 4.0, steps=17, dtype=torch.float32)
+        two_d = grid.repeat(3, 1)
+        act = nn.Hardswish(inplace=False)
+        result = act(two_d)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
