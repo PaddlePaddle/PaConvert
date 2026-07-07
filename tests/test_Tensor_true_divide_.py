@@ -41,3 +41,17 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["a"])
+
+
+def test_case_3():
+    """Variable arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.Tensor([[1., 2.], [3., 4.]])
+        b = torch.Tensor([[5., 6.], [7., 8.]])
+        args = (b,)
+        a.true_divide_(*args)
+        """
+    )
+    obj.run(pytorch_code, ["a"])

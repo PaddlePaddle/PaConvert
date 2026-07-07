@@ -171,3 +171,64 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
+
+
+def test_case_9():
+    """Mixed parameters: positional and keyword"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn.functional as F
+        import torch
+        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857],
+                                [-1.2533, -0.9829, -1.0981],
+                                [ 0.1507, -1.1431, -2.0361]],
+
+                                [[ 0.1024, -0.4482,  0.4137],
+                                [ 0.9385,  0.4565,  0.7702],
+                                [ 0.4135, -0.2587,  0.0482]]])
+        data = torch.tensor([1., 1., 1.])
+        result = F.instance_norm(input, data, data, weight=data, bias=data)
+        """
+    )
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
+
+
+def test_case_10():
+    """Out-of-order keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn.functional as F
+        import torch
+        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857],
+                                [-1.2533, -0.9829, -1.0981],
+                                [ 0.1507, -1.1431, -2.0361]],
+
+                                [[ 0.1024, -0.4482,  0.4137],
+                                [ 0.9385,  0.4565,  0.7702],
+                                [ 0.4135, -0.2587,  0.0482]]])
+        data = torch.tensor([1., 1., 1.])
+        result = F.instance_norm(bias=data, weight=data, running_var=data, running_mean=data, input=input)
+        """
+    )
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)
+
+
+def test_case_11():
+    """Variable arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch.nn.functional as F
+        import torch
+        input = torch.tensor([[[ 1.1524,  0.4714,  0.2857],
+                                [-1.2533, -0.9829, -1.0981],
+                                [ 0.1507, -1.1431, -2.0361]],
+
+                                [[ 0.1024, -0.4482,  0.4137],
+                                [ 0.9385,  0.4565,  0.7702],
+                                [ 0.4135, -0.2587,  0.0482]]])
+        data = torch.tensor([1., 1., 1.])
+        args = (input, data, data, data, data)
+        result = F.instance_norm(*args)
+        """
+    )
+    obj.run(pytorch_code, ["result"], rtol=1.0e-5, atol=1.0e-8)

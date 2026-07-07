@@ -87,3 +87,28 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_7():
+    """Mixed parameters: positional and keyword"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([-1.7120,  0.1734, -0.0478, 0.8922])
+        result = torch.clamp_max(a, max=-0.5)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """Variable arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([-1.7120,  0.1734, -0.0478, 0.8922])
+        args = (a, -0.5)
+        result = torch.clamp_max(*args)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

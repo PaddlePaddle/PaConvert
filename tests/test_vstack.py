@@ -152,7 +152,7 @@ def test_case_10():
 
 
 # dtype mismatch, torch dtype is float32, paddle dtype is int64
-def _test_case_8():
+def test_case_11():
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -162,4 +162,4 @@ def _test_case_8():
         result = torch.vstack((a,b), out=out)
         """
     )
-    obj.run(pytorch_code, ["out"])
+    obj.run(pytorch_code, ["out"], check_dtype=False)

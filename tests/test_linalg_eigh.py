@@ -104,3 +104,18 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result", "out"], atol=1e-7)
+
+
+def test_case_7():
+    """Variable arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        A = torch.ones((2, 2), dtype=torch.complex128)
+        A = A + A.T.conj()  # creates a Hermitian matrix
+        args = (A,)
+        result = torch.linalg.eigh(*args)
+        result = [result[0], torch.abs(result[1])]
+        """
+    )
+    obj.run(pytorch_code, ["result"], atol=1e-7)

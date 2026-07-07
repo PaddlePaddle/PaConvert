@@ -24,7 +24,6 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input1 = torch.tensor([1.0, 2.0, 3.0])
         input2 = torch.tensor([4.0, 5.0, 6.0])
         target = torch.tensor([1.0, -1.0, 1.0])
@@ -40,7 +39,6 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input1 = torch.tensor([1.0, 2.0, 3.0])
         input2 = torch.tensor([4.0, 5.0, 6.0])
         target = torch.tensor([1.0, -1.0, 1.0])
@@ -56,7 +54,6 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input1 = torch.tensor([1.0, 2.0, 3.0])
         input2 = torch.tensor([4.0, 5.0, 6.0])
         target = torch.tensor([1.0, -1.0, 1.0])
@@ -72,7 +69,6 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input1 = torch.tensor([1.0, 2.0, 3.0])
         input2 = torch.tensor([4.0, 5.0, 6.0])
         target = torch.tensor([1.0, -1.0, 1.0])
@@ -88,7 +84,6 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input1 = torch.tensor([1.0, 2.0, 3.0])
         input2 = torch.tensor([4.0, 5.0, 6.0])
         target = torch.tensor([1.0, -1.0, 1.0])
@@ -104,7 +99,6 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input1 = torch.tensor([1.0, 2.0, 3.0])
         input2 = torch.tensor([4.0, 5.0, 6.0])
         target = torch.tensor([1.0, -1.0, 1.0])
@@ -120,7 +114,6 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input1 = torch.tensor([1.0, 2.0, 3.0])
         input2 = torch.tensor([4.0, 5.0, 6.0])
         target = torch.tensor([1.0, -1.0, 1.0])

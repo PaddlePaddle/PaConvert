@@ -130,13 +130,26 @@ def test_case_9():
     obj.run(pytorch_code, ["result", "out"])
 
 
+def test_case_10():
+    """Variable arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[12., -51, 4], [6, 167, -68], [-4, 24, -41]])
+        args = (x,)
+        Q, R = torch.linalg.qr(*args)
+        """
+    )
+    obj.run(pytorch_code, ["Q", "R"])
+
+
 # Paddle mode='r' returns a single Tensor R (differs from PyTorch).
 # PyTorch: result = torch.linalg.qr(A=x, mode='r') returns (Q, R) named tuple.
 # Paddle:  result = paddle.linalg.qr(x, mode='r') returns a single Tensor R.
 @pytest.mark.skip(
     reason="Paddle mode='r' returns a single Tensor R (differs from PyTorch named tuple)"
 )
-def test_case_10():
+def test_case_11():
     pytorch_code = textwrap.dedent(
         """
         import torch

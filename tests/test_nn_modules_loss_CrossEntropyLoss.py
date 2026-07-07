@@ -24,10 +24,9 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input = torch.ones(3, 5, requires_grad=True)
         target = torch.ones(3, dtype=torch.long)
-        loss = nn.CrossEntropyLoss()
+        loss = torch.nn.modules.loss.CrossEntropyLoss()
         result = loss(input, target)
         """
     )
@@ -38,11 +37,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         weight = torch.Tensor([1, 3, 4, 3, 2])
         input = torch.ones(3, 5)
         target = torch.ones(3, dtype=torch.long)
-        loss = nn.CrossEntropyLoss(weight=weight)
+        loss = torch.nn.modules.loss.CrossEntropyLoss(weight=weight)
         result = loss(input, target)
         """
     )
@@ -56,10 +54,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input = torch.ones(3, 5)
         target = torch.zeros(3, dtype=torch.long)
-        loss = nn.CrossEntropyLoss(ignore_index=0)
+        loss = torch.nn.modules.loss.CrossEntropyLoss(ignore_index=0)
         result = loss(input, target)
         """
     )
@@ -70,10 +67,9 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input = torch.ones(3, 5)
         target = torch.ones(3, dtype=torch.long)
-        loss = nn.CrossEntropyLoss(reduction='none')
+        loss = torch.nn.modules.loss.CrossEntropyLoss(reduction='none')
         result = loss(input, target)
         """
     )
@@ -84,10 +80,9 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input = torch.ones(3, 5)
         target = torch.ones(3, dtype=torch.long)
-        loss = nn.CrossEntropyLoss(reduction='mean')
+        loss = torch.nn.modules.loss.CrossEntropyLoss(reduction='mean')
         result = loss(input, target)
         """
     )
@@ -98,10 +93,9 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input = torch.ones(3, 5)
         target = torch.ones(3, dtype=torch.long)
-        loss = nn.CrossEntropyLoss(reduction='sum')
+        loss = torch.nn.modules.loss.CrossEntropyLoss(reduction='sum')
         result = loss(input, target)
         """
     )
@@ -112,10 +106,9 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input = torch.ones(3, 5)
         target = torch.ones(3, dtype=torch.long)
-        loss = nn.CrossEntropyLoss(label_smoothing=0.1)
+        loss = torch.nn.modules.loss.CrossEntropyLoss(label_smoothing=0.1)
         result = loss(input, target)
         """
     )
@@ -126,11 +119,10 @@ def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         weight = torch.Tensor([1, 3, 4, 3, 2])
         input = torch.ones(3, 5)
         target = torch.ones(3, dtype=torch.long)
-        loss = nn.CrossEntropyLoss(weight=weight, size_average=False, ignore_index=0, reduce=True, reduction='sum', label_smoothing=0.1)
+        loss = torch.nn.modules.loss.CrossEntropyLoss(weight=weight, size_average=False, ignore_index=0, reduce=True, reduction='sum', label_smoothing=0.1)
         result = loss(input, target)
         """
     )
@@ -141,10 +133,9 @@ def test_case_9():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input = torch.ones(3, 5)
         target = torch.ones(3, dtype=torch.long)
-        loss = nn.CrossEntropyLoss(size_average=True)
+        loss = torch.nn.modules.loss.CrossEntropyLoss(size_average=True)
         result = loss(input, target)
         """
     )
@@ -155,10 +146,9 @@ def test_case_10():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input = torch.ones(3, 5)
         target = torch.ones(3, dtype=torch.long)
-        loss = nn.CrossEntropyLoss(reduce=False)
+        loss = torch.nn.modules.loss.CrossEntropyLoss(reduce=False)
         result = loss(input, target)
         """
     )
@@ -170,11 +160,10 @@ def test_case_11():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         weight = torch.Tensor([1, 3, 4, 3, 2])
         input = torch.ones(3, 5)
         target = torch.ones(3, dtype=torch.long)
-        loss = nn.CrossEntropyLoss(weight, False, 0, True, 'sum', 0.1)
+        loss = torch.nn.modules.loss.CrossEntropyLoss(weight, False, 0, True, 'sum', 0.1)
         result = loss(input, target)
         """
     )
@@ -186,11 +175,10 @@ def test_case_12():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         weight = torch.Tensor([1, 3, 4, 3, 2])
         input = torch.ones(3, 5)
         target = torch.ones(3, dtype=torch.long)
-        loss = nn.CrossEntropyLoss(weight=weight, label_smoothing=0.1, reduce=True, size_average=False, ignore_index=0, reduction='sum')
+        loss = torch.nn.modules.loss.CrossEntropyLoss(weight=weight, label_smoothing=0.1, reduce=True, size_average=False, ignore_index=0, reduction='sum')
         result = loss(input, target)
         """
     )

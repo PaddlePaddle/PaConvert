@@ -141,3 +141,43 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_8():
+    """Test default dim=-1 with shape [3, 2, 3] where auto-axis would differ"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.arange(18., dtype=torch.float32).reshape(3, 2, 3)
+        y = torch.ones(18, dtype=torch.float32).reshape(3, 2, 3)
+        result = torch.linalg.cross(x, y)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """Default dim=-1 using input/other keyword form"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.arange(18., dtype=torch.float32).reshape(3, 2, 3)
+        y = torch.ones(18, dtype=torch.float32).reshape(3, 2, 3)
+        result = torch.linalg.cross(input=x, other=y)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """Variable arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.arange(18., dtype=torch.float32).reshape(3, 2, 3)
+        y = torch.ones(18, dtype=torch.float32).reshape(3, 2, 3)
+        args = (x, y)
+        result = torch.linalg.cross(*args)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

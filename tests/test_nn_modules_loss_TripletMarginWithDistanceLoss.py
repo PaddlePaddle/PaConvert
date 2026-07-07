@@ -24,11 +24,10 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         anchor = torch.tensor([[1., 5, 3, 0], [0, 3, 2, 1]])
         positive = torch.tensor([[5., 1, 2, 0], [3, 2, 1, 0]])
         negative = torch.tensor([[2., 1, -3, 0], [1, 1, -1, 0]])
-        model = nn.TripletMarginWithDistanceLoss()
+        model = torch.nn.modules.loss.TripletMarginWithDistanceLoss()
         result = model(anchor, positive, negative)
         """
     )
@@ -40,11 +39,10 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         anchor = torch.tensor([[1., 5, 3, 0], [0, 3, 2, 1]])
         positive = torch.tensor([[5., 1, 2, 0], [3, 2, 1, 0]])
         negative = torch.tensor([[2., 1, -3, 0], [1, 1, -1, 0]])
-        model = nn.TripletMarginWithDistanceLoss(margin=2)
+        model = torch.nn.modules.loss.TripletMarginWithDistanceLoss(margin=2)
         result = model(anchor, positive, negative)
         """
     )
@@ -56,11 +54,10 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         anchor = torch.tensor([[1., 5, 3, 0], [0, 3, 2, 1]])
         positive = torch.tensor([[5., 1, 2, 0], [3, 2, 1, 0]])
         negative = torch.tensor([[2., 1, -3, 0], [1, 1, -1, 0]])
-        model = nn.TripletMarginWithDistanceLoss(margin=2, swap=True)
+        model = torch.nn.modules.loss.TripletMarginWithDistanceLoss(margin=2, swap=True)
         result = model(anchor, positive, negative)
         """
     )
@@ -72,11 +69,10 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         anchor = torch.tensor([[1., 5, 3, 0], [0, 3, 2, 1]])
         positive = torch.tensor([[5., 1, 2, 0], [3, 2, 1, 0]])
         negative = torch.tensor([[2., 1, -3, 0], [1, 1, -1, 0]])
-        model = nn.TripletMarginWithDistanceLoss(margin=2, reduction='mean')
+        model = torch.nn.modules.loss.TripletMarginWithDistanceLoss(margin=2, reduction='mean')
         result = model(anchor, positive, negative)
         """
     )
@@ -88,11 +84,10 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         anchor = torch.tensor([[1., 5, 3, 0], [0, 3, 2, 1]])
         positive = torch.tensor([[5., 1, 2, 0], [3, 2, 1, 0]])
         negative = torch.tensor([[2., 1, -3, 0], [1, 1, -1, 0]])
-        model = nn.TripletMarginWithDistanceLoss(margin=2, reduction='sum')
+        model = torch.nn.modules.loss.TripletMarginWithDistanceLoss(margin=2, reduction='sum')
         result = model(anchor, positive, negative)
         """
     )
@@ -104,11 +99,10 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         anchor = torch.tensor([[1., 5, 3, 0], [0, 3, 2, 1]])
         positive = torch.tensor([[5., 1, 2, 0], [3, 2, 1, 0]])
         negative = torch.tensor([[2., 1, -3, 0], [1, 1, -1, 0]])
-        model = nn.TripletMarginWithDistanceLoss(margin=2, reduction='none')
+        model = torch.nn.modules.loss.TripletMarginWithDistanceLoss(margin=2, reduction='none')
         result = model(anchor, positive, negative)
         """
     )
@@ -125,7 +119,7 @@ def test_case_7():
         positive = torch.tensor([[5., 1, 2, 0], [3, 2, 1, 0]])
         negative = torch.tensor([[2., 1, -3, 0], [1, 1, -1, 0]])
         distance_function = nn.PairwiseDistance()
-        model = nn.TripletMarginWithDistanceLoss(distance_function=distance_function, margin=2, reduction='sum', swap=False)
+        model = torch.nn.modules.loss.TripletMarginWithDistanceLoss(distance_function=distance_function, margin=2, reduction='sum', swap=False)
         result = model(anchor, positive, negative)
         """
     )
@@ -142,7 +136,7 @@ def test_case_8():
         positive = torch.tensor([[5., 1, 2, 0], [3, 2, 1, 0]])
         negative = torch.tensor([[2., 1, -3, 0], [1, 1, -1, 0]])
         distance_function = nn.PairwiseDistance()
-        model = nn.TripletMarginWithDistanceLoss(distance_function=distance_function, margin=2, reduction='mean')
+        model = torch.nn.modules.loss.TripletMarginWithDistanceLoss(distance_function=distance_function, margin=2, reduction='mean')
         result = model(anchor, positive, negative)
         """
     )
@@ -154,11 +148,10 @@ def test_case_9():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         anchor = torch.tensor([[1., 5, 3, 0], [0, 3, 2, 1]])
         positive = torch.tensor([[5., 1, 2, 0], [3, 2, 1, 0]])
         negative = torch.tensor([[2., 1, -3, 0], [1, 1, -1, 0]])
-        model = nn.TripletMarginWithDistanceLoss(distance_function=None, margin=2, reduction='sum', swap=False)
+        model = torch.nn.modules.loss.TripletMarginWithDistanceLoss(distance_function=None, margin=2, reduction='sum', swap=False)
         result = model(anchor, positive, negative)
         """
     )

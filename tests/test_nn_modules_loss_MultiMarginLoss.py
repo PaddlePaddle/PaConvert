@@ -25,7 +25,6 @@ def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input = torch.tensor([[0.1, 0.2, 0.3, 0.4],
             [0.5, 0.6, 0.7, 0.8],
             [0.9, 1.0, 1.1, 1.2]])
@@ -42,7 +41,6 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input = torch.tensor([[0.1, 0.2, 0.3, 0.4],
             [0.5, 0.6, 0.7, 0.8],
             [0.9, 1.0, 1.1, 1.2]])
@@ -59,7 +57,6 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input = torch.tensor([[0.1, 0.2, 0.3, 0.4],
             [0.5, 0.6, 0.7, 0.8],
             [0.9, 1.0, 1.1, 1.2]])
@@ -76,7 +73,6 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input = torch.tensor([[0.1, 0.2, 0.3, 0.4],
             [0.5, 0.6, 0.7, 0.8],
             [0.9, 1.0, 1.1, 1.2]])
@@ -94,7 +90,6 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input = torch.tensor([[0.1, 0.2, 0.3, 0.4],
             [0.5, 0.6, 0.7, 0.8],
             [0.9, 1.0, 1.1, 1.2]])
@@ -111,7 +106,6 @@ def test_case_6():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input = torch.tensor([[0.1, 0.2, 0.3, 0.4],
             [0.5, 0.6, 0.7, 0.8],
             [0.9, 1.0, 1.1, 1.2]])
@@ -128,7 +122,6 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input = torch.tensor([[0.1, 0.2, 0.3, 0.4],
             [0.5, 0.6, 0.7, 0.8],
             [0.9, 1.0, 1.1, 1.2]])
@@ -149,7 +142,6 @@ def test_case_8():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        import torch.nn as nn
         input = torch.tensor([[0.1, 0.2, 0.3, 0.4],
             [0.5, 0.6, 0.7, 0.8],
             [0.9, 1.0, 1.1, 1.2]])
