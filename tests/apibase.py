@@ -20,29 +20,11 @@ import sys
 import numpy as np
 
 sys.path.append(os.path.dirname(__file__) + "/..")
+sys.path.append(os.path.dirname(__file__))
+
+from conftest import disable_paddle_compat
 
 from paconvert.converter import Converter
-
-
-def _ensure_paddle_compat_disabled():
-    """Converted Paddle code now injects ``paddle.enable_compat()``, which installs
-    a global ``import torch`` -> Paddle proxy and aliases ``paddle.*`` to the
-    torch-aligned ``paddle.compat.*`` APIs. That global state must be OFF when the
-    torch *reference* snippet runs, otherwise its ``import torch`` would be proxied
-    to Paddle and the reference would no longer be real torch. No-op when Paddle
-    was never imported (compat cannot be active then), so the first reference run is
-    unaffected.
-    """
-    if "paddle" not in sys.modules:
-        return
-    paddle = sys.modules["paddle"]
-    try:
-        from paddle.compat.proxy import TORCH_PROXY_FINDER
-
-        while TORCH_PROXY_FINDER in sys.meta_path:
-            paddle.disable_compat()
-    except ImportError:
-        pass
 
 
 class APIBase(object):
@@ -106,7 +88,7 @@ class APIBase(object):
                 )
                 assert paddle_code == expect_paddle_code, error_msg
         elif compared_tensor_names:
-            _ensure_paddle_compat_disabled()
+            disable_paddle_compat()
             pytorch_ns = {}
             try:
                 exec(pytorch_code, pytorch_ns)
@@ -139,7 +121,7 @@ class APIBase(object):
                 except Exception as e:
                     raise AssertionError(f"Unable to align results: {e}")
         else:
-            _ensure_paddle_compat_disabled()
+            disable_paddle_compat()
             pytorch_ns = {}
             try:
                 exec(pytorch_code, pytorch_ns)

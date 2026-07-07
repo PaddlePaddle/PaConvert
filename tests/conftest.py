@@ -17,19 +17,20 @@ import sys
 import pytest
 
 
-@pytest.fixture(autouse=True)
-def _reset_paddle_compat_mode():
-    """Converted Paddle code node injects ``paddle.enable_compat()``, which flips
-    global state: it installs an ``import torch`` -> Paddle proxy adn aliases
-    ``paddle.*`` to the torch-aligned ``paddle.compat.*`` APIs. Disable it after
-    every test so it cannot leak into a later test (e.g., corrupt another test's)
-    real-torch reference run, or break tests that assume compat is off.
+def disable_paddle_compat():
+    """Turn OFF Paddle's torch-compat proxy if it is currently active.
+
+    Converted Paddle code injects ``paddle.enable_compat(level=2)``, which flips
+    process-global state: it installs an ``import torch`` -> Paddle proxy and
+    aliases ``paddle.*`` to the torch-aligned ``paddle.compat.*`` APIs. That state
+    must be cleared so it cannot leak into (a) a later test, or (b) a torch
+    *reference* run within the same test, whose ``import torch`` would otherwise be
+    proxied to Paddle so the reference would no longer be real torch.
 
     Lazy and best-effort: a no-op when Paddle was never imported, so it does not
     force a Paddle import (and thus does not change torch/paddle import ordering)
-    for tests that never touch Paddle
+    for tests that never touch Paddle.
     """
-    yield
     if "paddle" not in sys.modules:
         return
     paddle = sys.modules["paddle"]
@@ -40,3 +41,10 @@ def _reset_paddle_compat_mode():
             paddle.disable_compat()
     except Exception:
         pass
+
+
+@pytest.fixture(autouse=True)
+def _reset_paddle_compat_mode():
+    """Disable torch-compat after every test so it cannot leak into a later one."""
+    yield
+    disable_paddle_compat()

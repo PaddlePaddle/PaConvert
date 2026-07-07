@@ -46,6 +46,9 @@ class ImportTransformer(BaseTransformer):
         self.imports_map[self.file]["api_alias_name_map"] = {}
         self.insert_pass_node = set()
         self.change_prefix_api_map = defaultdict(set)
+        # Set in visit_Module: True when this file actually imports torch (so we
+        # added paddle imports) and therefore needs paddle.enable_compat injected.
+        self.need_enable_compat = False
 
     def visit_Import(self, node):
         """
@@ -526,19 +529,93 @@ class ImportTransformer(BaseTransformer):
             )
             line_NO += 1
 
-        # Inject `paddle.enable_compat(level=2)` after the imports so prefix-only
-        # converted calls (torch.X -> paddle.X) resolve to the torch-aligned
-        # paddle.compat.* impls. level=2 (not the default) is required: aliasing
-        # the public `paddle.*` surface is opt-in, and caller-aware dispatch keeps
-        # paddle internals native. `import paddle` is explicit (deduped) so the call
-        # is valid even for submodule aliases (`import torch.nn as nn`).
-        if paddle_package_list:
-            log_info(
-                self.logger,
-                "add 'paddle.enable_compat(level=2)' after imports",
-                self.file_name,
-            )
-            self.record_scope(
-                (self.root, "body", 0),
-                ast.parse("import paddle\npaddle.enable_compat(level=2)").body,
-            )
+        # enable_compat is injected in transform() (needs all imports in the body).
+        # Gate on real torch imports, not paddle_package_list: the latter also holds
+        # MAY_TORCH packages (os/einops/setuptools) that need no compat switch.
+        if self.imports_map[self.file]["torch_packages"]:
+            self.need_enable_compat = True
+
+    def transform(self):
+        super(ImportTransformer, self).transform()
+        self._inject_enable_compat()
+
+    @staticmethod
+    def _is_future_import(node):
+        return isinstance(node, ast.ImportFrom) and node.module == "__future__"
+
+    @staticmethod
+    def _is_import(node):
+        return isinstance(node, (ast.Import, ast.ImportFrom))
+
+    @staticmethod
+    def _is_docstring(node):
+        return (
+            isinstance(node, ast.Expr)
+            and isinstance(node.value, ast.Constant)
+            and isinstance(node.value.value, str)
+        )
+
+    @staticmethod
+    def _is_enable_compat_call(node):
+        return (
+            isinstance(node, ast.Expr)
+            and isinstance(node.value, ast.Call)
+            and isinstance(node.value.func, ast.Attribute)
+            and node.value.func.attr == "enable_compat"
+            and isinstance(node.value.func.value, ast.Name)
+            and node.value.func.value.id == "paddle"
+        )
+
+    @staticmethod
+    def _binds_paddle(node):
+        # `import paddle` or `import paddle.xxx` (no asname) binds the name `paddle`
+        if isinstance(node, ast.Import):
+            for alias_node in node.names:
+                if alias_node.asname is None and (
+                    alias_node.name == "paddle" or alias_node.name.startswith("paddle.")
+                ):
+                    return True
+        return False
+
+    def _inject_enable_compat(self):
+        """Insert ``paddle.enable_compat(level=2)`` after the docstring,
+        ``__future__`` imports and the import block (level=2 aliases the
+        torch-aligned ``paddle.compat.*`` APIs onto ``paddle.*``). Post-pass so it
+        is never placed above a ``__future__`` import (which is a SyntaxError).
+        """
+        if not self.need_enable_compat:
+            return
+
+        body = [n for n in self.root.body if not self._is_enable_compat_call(n)]
+
+        # hoist all __future__ imports (they must precede every other statement)
+        futures = [n for n in body if self._is_future_import(n)]
+        body = [n for n in body if not self._is_future_import(n)]
+
+        # hoist the module docstring if only imports precede it (we prepend imports)
+        doc = []
+        for i, node in enumerate(body):
+            if self._is_docstring(node) and all(self._is_import(n) for n in body[:i]):
+                doc = [node]
+                body = body[:i] + body[i + 1 :]
+                break
+
+        # split off the contiguous import block at the top of the remainder
+        end = 0
+        while end < len(body) and self._is_import(body[end]):
+            end += 1
+        imports, rest = body[:end], body[end:]
+
+        # enable_compat needs the name `paddle` bound (submodule-only aliases may
+        # not bind it, e.g. `import torch.nn as nn` -> `import paddle.nn as nn`)
+        if not any(self._binds_paddle(n) for n in imports):
+            imports = ast.parse("import paddle").body + imports
+
+        compat = ast.parse("paddle.enable_compat(level=2)").body
+        self.root.body = doc + futures + imports + compat + rest
+        ast.fix_missing_locations(self.root)
+        log_info(
+            self.logger,
+            "add 'paddle.enable_compat(level=2)' after imports",
+            self.file_name,
+        )
