@@ -63,3 +63,40 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["out"])
+
+
+def test_case_5():
+    # two-dimensional float32 input including the zero element
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[1., -2., 3.], [0., -4., 5.]])
+        result = torch.special.sinc(input=a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    # high precision grid covering both integer and fractional inputs
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.linspace(-1.5, 1.5, steps=19, dtype=torch.float64)
+        result = torch.special.sinc(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    # expression-derived argument passed positionally
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        n = (torch.arange(9) % 3) * (-0.5 + 0.25*4)
+        x = n.to(torch.float64) / 2
+        result = torch.special.sinc(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

@@ -35,6 +35,7 @@ jobs:
         name: Modeltest Check
         runs-on:
             group: PaConvert
+            labels: [cpu]
         timeout-minutes: 120
         env:
             TORCH_PROJECT_PATH: /workspace/torch_project

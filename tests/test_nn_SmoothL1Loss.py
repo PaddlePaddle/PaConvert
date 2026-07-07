@@ -86,7 +86,6 @@ def test_case_5():
     obj.run(pytorch_code, ["result"])
 
 
-# paddle result has diff with pytorch result
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """
@@ -100,13 +99,53 @@ def test_case_6():
     obj.run(pytorch_code, ["result"])
 
 
-# paddle result has diff with pytorch result
 def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
         beta = 1.5
         loss = torch.nn.SmoothL1Loss(beta=beta, reduction='none')
+        input = torch.ones([3, 3]).to(dtype=torch.float32)
+        label = torch.full([3, 3], 2).to(dtype=torch.float32)
+        result = loss(input, label)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# beta=0 degrades to the L1 loss, aligned with PyTorch via paddle.compat
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        loss = torch.nn.SmoothL1Loss(beta=0.0)
+        input = torch.tensor([[1., 2., 3.], [4., 5., 6.]])
+        label = torch.tensor([[1.5, 0.5, 5.], [4., 2., 9.]])
+        result = loss(input, label)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        loss = torch.nn.SmoothL1Loss(beta=0.0, reduction='none')
+        input = torch.tensor([[1., 2., 3.], [4., 5., 6.]])
+        label = torch.tensor([[1.5, 0.5, 5.], [4., 2., 9.]])
+        result = loss(input, label)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+# kwargs out of order
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        loss = torch.nn.SmoothL1Loss(reduction='sum', beta=0.5)
         input = torch.ones([3, 3]).to(dtype=torch.float32)
         label = torch.full([3, 3], 2).to(dtype=torch.float32)
         result = loss(input, label)

@@ -116,3 +116,95 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """All keyword arguments with all options"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        import numpy as np
+        np.random.seed(101)
+        anchor = torch.tensor(np.random.rand(64, 32), dtype=torch.float32)
+        positive = torch.tensor(np.random.rand(64, 32), dtype=torch.float32)
+        negative = torch.tensor(np.random.rand(64, 32), dtype=torch.float32)
+        result = torch.nn.functional.triplet_margin_with_distance_loss(
+            anchor=anchor, positive=positive, negative=negative,
+            distance_function=nn.PairwiseDistance(p=2),
+            margin=1.5, swap=False, reduction='sum')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """Mixed positional and keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        import numpy as np
+        np.random.seed(102)
+        anchor = torch.tensor(np.random.rand(8, 16), dtype=torch.float32)
+        positive = torch.tensor(np.random.rand(8, 16), dtype=torch.float32)
+        negative = torch.tensor(np.random.rand(8, 16), dtype=torch.float32)
+        result = torch.nn.functional.triplet_margin_with_distance_loss(
+            anchor, positive, negative, margin=2.0, swap=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """Default args omitted (no distance_function, all defaults)"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        import numpy as np
+        np.random.seed(103)
+        anchor = torch.tensor(np.random.rand(4, 8), dtype=torch.float32)
+        positive = torch.tensor(np.random.rand(4, 8), dtype=torch.float32)
+        negative = torch.tensor(np.random.rand(4, 8), dtype=torch.float32)
+        result = torch.nn.functional.triplet_margin_with_distance_loss(
+            anchor, positive, negative, reduction='none')
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """Variable args unpacking"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        import numpy as np
+        np.random.seed(104)
+        anchor = torch.tensor(np.random.rand(16, 8), dtype=torch.float32)
+        positive = torch.tensor(np.random.rand(16, 8), dtype=torch.float32)
+        negative = torch.tensor(np.random.rand(16, 8), dtype=torch.float32)
+        args = (anchor, positive, negative)
+        result = torch.nn.functional.triplet_margin_with_distance_loss(*args, margin=1.0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    """float64 dtype"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        import numpy as np
+        np.random.seed(105)
+        anchor = torch.tensor(np.random.rand(8, 8), dtype=torch.float64)
+        positive = torch.tensor(np.random.rand(8, 8), dtype=torch.float64)
+        negative = torch.tensor(np.random.rand(8, 8), dtype=torch.float64)
+        result = torch.nn.functional.triplet_margin_with_distance_loss(
+            anchor, positive, negative, margin=0.5)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

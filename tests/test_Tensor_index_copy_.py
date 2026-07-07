@@ -118,3 +118,45 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    # integer source tensor with int64 target
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.zeros(6, 2, dtype=torch.int64)
+        t = torch.tensor([[10, 20], [30, 40], [50, 60]], dtype=torch.int64)
+        index = torch.tensor([0, 2, 5])
+        result = x.index_copy_(0, index, t)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    # float64 along last dimension of a 2D tensor
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.zeros(2, 4, dtype=torch.float64)
+        t = torch.tensor([[1.1, 9.9], [2.2, 8.8]], dtype=torch.float64)
+        idx = torch.tensor([0, 3])
+        result = x.index_copy_(dim=1, index=idx, source=t)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    # keyword-only call (no positional args) using default-name keywords reordered
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones(4, 3) * -1.0
+        t = torch.arange(6).reshape(2, 3).to(torch.float32)
+        i = torch.tensor([0, 3])
+        result = x.index_copy_(source=t, index=i, dim=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
