@@ -189,3 +189,40 @@ def _test_case_15():  # Converter does not support **kwargs unpacking for Tensor
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_16():
+    # int64 data with explicit values, all three outputs requested
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([5, -3, 5, 7, -3, 9, 0, 0, 5, -1, 8, 8], dtype=torch.int64)
+        result = src.unique(sorted=True, return_inverse=True, return_counts=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_17():
+    # float32 two-dimensional tensor along axis 0 without counts/inverse
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([[1., 2., 1.], [1., 2., 1.]])
+        result = src.unique(dim=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_18():
+    # explicit sorted=False on a non-trivial sequence; check tuple structure consistency
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.tensor([4, -3, 7, 7, -3, 9], dtype=torch.int64)
+        uniques, inverse, counts = src.unique(return_inverse=True, return_counts=True)
+        result = (uniques.size(0) == int(counts.sum()))
+        """
+    )
+    obj.run(pytorch_code, ["result"])

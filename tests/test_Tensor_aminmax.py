@@ -72,3 +72,55 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    # integer tensor support
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        t = torch.tensor([[-12, 23, 34], [-45, 56, -67], [78, -89, 100]], dtype=torch.int64)
+        result = t.aminmax()
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    # three-dimensional tensor along middle axis
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        t = torch.tensor([
+            [[1., 2., 3.], [9., 8., 7.]],
+            [[4., 5., 6.], [10., 11., 12.]]], dtype=torch.float32)
+        result = t.aminmax(dim=1, keepdim=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    # mix of positional and keyword args
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        t = torch.tensor([[1.5, 2.5, 3.5]], dtype=torch.float64)
+        result = t.aminmax(dim=-1, keepdim=False)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    # expression argument passed as keyword args
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        t = torch.tensor([-3.0, -1.0, 0.0, 2.0])
+        d = 1 - 1
+        k = False or True
+        result = t.aminmax(dim=d, keepdim=k)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

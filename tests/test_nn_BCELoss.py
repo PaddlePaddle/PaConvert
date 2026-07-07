@@ -194,3 +194,36 @@ def test_case_11():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    """*args unpacking"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        input = torch.tensor([[0.2837, 0.0297,  0.0355],
+            [ 0.9112, 0.7526, 0.4061]])
+        target = torch.tensor([[1.,0.,1.],[0.,1.,0.]])
+        weight = torch.tensor([0.5,0.2,0.3])
+        args = (weight,)
+        loss = torch.nn.BCELoss(*args, reduction='sum')
+        result = loss(input, target)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    """Different dim (1D) and float64 dtype"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        input = torch.tensor([0.5, 0.6, 0.7, 0.4], dtype=torch.float64)
+        target = torch.tensor([1., 0., 1., 0.], dtype=torch.float64)
+        loss = torch.nn.BCELoss(reduction='none')
+        result = loss(input, target)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

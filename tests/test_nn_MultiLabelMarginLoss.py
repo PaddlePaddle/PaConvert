@@ -121,3 +121,32 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """*args unpacking"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        args = ()
+        loss = torch.nn.MultiLabelMarginLoss(*args, reduction='none')
+        input = torch.tensor([[0.1, 0.2, 0.4, 0.8], [0.2, 0.5, 0.3, 0.1]]).to(dtype=torch.float32)
+        label = torch.LongTensor([[3, 0, -1, -1], [0, 2, -1, -1]])
+        result = loss(input, label)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """Out-of-order keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        loss = torch.nn.MultiLabelMarginLoss(reduction='sum', reduce=None, size_average=None)
+        input = torch.tensor([[0.1, 0.2, 0.4, 0.8], [0.2, 0.5, 0.3, 0.1]]).to(dtype=torch.float32)
+        label = torch.LongTensor([[3, 0, -1, -1], [0, 2, -1, -1]])
+        result = loss(input, label)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

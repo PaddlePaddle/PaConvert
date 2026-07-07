@@ -96,3 +96,23 @@ def test_case_8():
         )
     )
     obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+
+
+def test_case_9():
+    # additional coverage using purely positional form; varies only the lambda shape.
+    pytorch_code = textwrap.dedent(
+        generate_lr_scheduler_test_code(
+            "torch.optim.lr_scheduler.LambdaLR(sgd, lambda x: max(0.1, 1 - x * 0.07))"
+        )
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)
+
+
+def test_case_10():
+    # cosine-like decay expressed entirely positionally; uses math.cos via __import__
+    pytorch_code = textwrap.dedent(
+        generate_lr_scheduler_test_code(
+            "torch.optim.lr_scheduler.LambdaLR(sgd, lambda epoch: 0.5 * (1 + __import__('math').cos(__import__('math').pi * epoch / 10)))"
+        )
+    )
+    obj.run(pytorch_code, ["result1", "result2"], rtol=1.0e-5)

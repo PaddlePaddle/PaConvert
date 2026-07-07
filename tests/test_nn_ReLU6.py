@@ -73,3 +73,46 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    # float64 input with values crossing the [0, 6] saturation bounds
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.linspace(-5., 12., steps=18, dtype=torch.float64).reshape(3, 6)
+        layer = nn.ReLU6(inplace=False)
+        result = layer(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    # int32 input cast to float then activated; verify idempotent forward passes
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        raw = torch.arange(-10, 10, dtype=torch.int32).to(torch.float32)
+        m = nn.ReLU6()
+        a = m(raw); b = m(raw)
+        result = ((a == b).all().item(), (a >= 0).all().item(), (a <= 6).all().item())
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    # higher-rank tensor with explicit inplace keyword argument
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        t = torch.arange(-12., 12., dtype=torch.float32).reshape(2, 3, 4)
+        act = nn.ReLU6(inplace=False)
+        result = act(t)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

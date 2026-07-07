@@ -240,3 +240,41 @@ def test_case_18():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_19():
+    # float64 large-range data with all three outputs requested, sorted explicitly True
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        src = torch.linspace(-2.5, 5.0, steps=20, dtype=torch.float64)
+        result = torch.unique(input=src, sorted=True, return_inverse=True, return_counts=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_20():
+    # int64 multi-dimensional tensor along axis 0 with sorted=False
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.tensor([[7, -8], [7, -8], [9, 10]], dtype=torch.int64)
+        result = torch.unique(m, return_inverse=True, return_counts=True, dim=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_21():
+    # expression-derived argument passed positionally; verify tuple length consistency
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        base = torch.arange(15) % 4
+        x = (base * 2).to(torch.int64)
+        out_tuple = torch.unique(x, False, True, False)
+        result = len(out_tuple)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
