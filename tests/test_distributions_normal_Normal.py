@@ -85,3 +85,15 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_7():
+    """Torch-style alias test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.normal.Normal(torch.tensor([1.0]), scale=torch.tensor([0.5]))
+        result = m.sample(sample_shape=[2, 3])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

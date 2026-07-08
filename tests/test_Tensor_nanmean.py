@@ -81,7 +81,7 @@ def test_case_6():
         import torch
         input = torch.tensor([[1, 2], [3., float("nan")]])
         dim, keepdim = 1, False
-        result = input.nanmean(dim, keepdim=keepdim)
+        result = input.nanmean(dtype=torch.float64)
         """
     )
     obj.run(pytorch_code, ["result"])

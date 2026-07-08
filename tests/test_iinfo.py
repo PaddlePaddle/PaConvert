@@ -193,3 +193,42 @@ def test_case_13():
         """
     )
     obj.run(pytorch_code, ["bits", "min", "max"])
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        info = torch.iinfo(torch.uint16)
+        bits = info.bits
+        min = info.min
+        max = info.max
+        """
+    )
+    obj.run(pytorch_code, ["bits", "min", "max"])
+
+
+def test_case_15():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        info = torch.iinfo(type=torch.uint32)
+        bits = info.bits
+        min = info.min
+        max = info.max
+        """
+    )
+    obj.run(pytorch_code, ["bits", "min", "max"])
+
+
+def test_case_16():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        info = torch.iinfo(torch.uint64)
+        bits = info.bits
+        min = info.min
+        max = info.max
+        """
+    )
+    obj.run(pytorch_code, ["bits", "min", "max"])

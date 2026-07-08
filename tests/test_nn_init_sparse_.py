@@ -1,4 +1,4 @@
-# Copyright (c) 2024 PaddlePaddle Authors. All Rights Reserved.
+# Copyright (c) 2026 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,21 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.distributions.distribution.Distribution.sample")
+obj = APIBase("torch.nn.init.sparse_")
 
 
 def test_case_1():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        normal_dist = torch.distributions.Normal(0, 1)
-        result = normal_dist.sample()
+        tensor = torch.empty(3, 5)
+        torch.nn.init.sparse_(tensor, sparsity=0.1, std=0.01)
+        result = tensor
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -35,8 +35,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        normal_dist = torch.distributions.Normal(0, 1)
-        result = normal_dist.sample((3,))
+        tensor = torch.empty(4, 6)
+        torch.nn.init.sparse_(tensor=tensor, sparsity=0.2, std=0.05)
+        result = tensor
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -46,8 +47,9 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        normal_dist = torch.distributions.Normal(3, 1)
-        result = normal_dist.sample(torch.Size([1, 2, 3]))
+        tensor = torch.empty(5, 10)
+        torch.nn.init.sparse_(tensor, std=0.1, sparsity=0.3)
+        result = tensor
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -57,8 +59,9 @@ def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        normal_dist = torch.distributions.Normal(0, 1)
-        result = normal_dist.sample([2,5])
+        tensor = torch.empty(8, 8)
+        torch.nn.init.sparse_(tensor, 0.5, 0.2)
+        result = tensor
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
@@ -68,31 +71,9 @@ def test_case_5():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        normal_dist = torch.distributions.Normal(0, 1)
-        result = normal_dist.sample(sample_shape=[2,5])
-        """
-    )
-    obj.run(pytorch_code, ["result"], check_value=False)
-
-
-def test_case_6():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        normal_dist = torch.distributions.Normal(torch.tensor([1.0, 2.0]), torch.tensor([0.5, 1.5]))
-        sample_shape = (2, 1)
-        result = normal_dist.sample(sample_shape=sample_shape)
-        """
-    )
-    obj.run(pytorch_code, ["result"], check_value=False)
-
-
-def test_case_7():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        normal_dist = torch.distributions.Normal(torch.tensor([1.0, 2.0]), torch.tensor([0.5, 1.5]))
-        result = normal_dist.sample(sample_shape=torch.Size([2, 3]))
+        tensor = torch.empty(3, 2)
+        torch.nn.init.sparse_(sparsity=0.2, std=0.05, tensor=tensor)
+        result = tensor
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)

@@ -34,6 +34,7 @@ jobs:
         name: CI Unittest
         runs-on:
             group: PaConvert
+            labels: [cpu]
         timeout-minutes: 60
 
         steps:

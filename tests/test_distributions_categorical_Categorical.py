@@ -14,13 +14,12 @@
 
 import textwrap
 
-import pytest
 from dist_apibase import DistributionAPIBase
 
 obj = DistributionAPIBase("torch.distributions.categorical.Categorical")
 
 
-def _test_case_1():
+def test_case_1():
     """Categorical with positional probs"""
     pytorch_code = textwrap.dedent(
         """
@@ -31,7 +30,7 @@ def _test_case_1():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_2():
+def test_case_2():
     """Categorical with probs"""
     pytorch_code = textwrap.dedent(
         """
@@ -42,7 +41,7 @@ def _test_case_2():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_3():
+def test_case_3():
     """Categorical with logits"""
     pytorch_code = textwrap.dedent(
         """
@@ -53,7 +52,7 @@ def _test_case_3():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_4():
+def test_case_4():
     """Categorical with logits and validate_args"""
     pytorch_code = textwrap.dedent(
         """
@@ -64,7 +63,7 @@ def _test_case_4():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_5():
+def test_case_5():
     """Categorical with probs=None, logits provided"""
     pytorch_code = textwrap.dedent(
         """
@@ -75,7 +74,7 @@ def _test_case_5():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_6():
+def test_case_6():
     """Categorical with probs and logits=None"""
     pytorch_code = textwrap.dedent(
         """
@@ -86,7 +85,7 @@ def _test_case_6():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_7():
+def test_case_7():
     """Categorical with keyword arguments out of order"""
     pytorch_code = textwrap.dedent(
         """
@@ -97,7 +96,7 @@ def _test_case_7():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_8():
+def test_case_8():
     """3D tensor input"""
     pytorch_code = textwrap.dedent(
         """
@@ -109,7 +108,7 @@ def _test_case_8():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_9():
+def test_case_9():
     """float64 dtype input"""
     pytorch_code = textwrap.dedent(
         """
@@ -121,7 +120,7 @@ def _test_case_9():
     obj.run(pytorch_code, ["result"])
 
 
-def _test_case_10():
+def test_case_10():
     """Expression as argument"""
     pytorch_code = textwrap.dedent(
         """
@@ -132,10 +131,7 @@ def _test_case_10():
     obj.run(pytorch_code, ["result"])
 
 
-@pytest.mark.skip(
-    reason="Paddle framework issue: PaConvert generates sample(shape=...) but paddle.compat.distributions.categorical.Categorical uses sample_shape= parameter"
-)
-def _test_case_11():
+def test_case_11():
     """Categorical with sample"""
     pytorch_code = textwrap.dedent(
         """
