@@ -73,3 +73,26 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        normal_dist = torch.distributions.Normal(torch.tensor([1.0, 2.0]), torch.tensor([0.5, 1.5]))
+        sample_shape = (2, 1)
+        result = normal_dist.sample(sample_shape=sample_shape)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        normal_dist = torch.distributions.Normal(torch.tensor([1.0, 2.0]), torch.tensor([0.5, 1.5]))
+        result = normal_dist.sample(sample_shape=torch.Size([2, 3]))
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
