@@ -6345,76 +6345,13 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.BatchNorm1d": {
-    "Matcher": "ReverseMomentumMatcher",
-    "paddle_api": "paddle.nn.BatchNorm1D",
-    "min_input_args": 1,
-    "args_list": [
-      "num_features",
-      "eps",
-      "momentum",
-      "affine",
-      "track_running_stats",
-      "device",
-      "dtype"
-    ],
-    "kwargs_change": {
-      "eps": "epsilon",
-      "affine": [
-        "weight_attr",
-        "bias_attr"
-      ],
-      "track_running_stats": "",
-      "device": "",
-      "dtype": ""
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.BatchNorm2d": {
-    "Matcher": "ReverseMomentumMatcher",
-    "paddle_api": "paddle.nn.BatchNorm2D",
-    "min_input_args": 1,
-    "args_list": [
-      "num_features",
-      "eps",
-      "momentum",
-      "affine",
-      "track_running_stats",
-      "device",
-      "dtype"
-    ],
-    "kwargs_change": {
-      "eps": "epsilon",
-      "affine": [
-        "weight_attr",
-        "bias_attr"
-      ],
-      "track_running_stats": "",
-      "device": "",
-      "dtype": ""
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.BatchNorm3d": {
-    "Matcher": "ReverseMomentumMatcher",
-    "paddle_api": "paddle.nn.BatchNorm3D",
-    "min_input_args": 1,
-    "args_list": [
-      "num_features",
-      "eps",
-      "momentum",
-      "affine",
-      "track_running_stats",
-      "device",
-      "dtype"
-    ],
-    "kwargs_change": {
-      "eps": "epsilon",
-      "affine": [
-        "weight_attr",
-        "bias_attr"
-      ],
-      "track_running_stats": "",
-      "device": "",
-      "dtype": ""
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.Bilinear": {
     "Matcher": "GenericMatcher",
