@@ -430,7 +430,7 @@ class BaseMatcher(object):
     def parse_func(self, func):
         func_str = astor.to_source(func).strip("\n")
         self.paddleClass = func_str[0 : func_str.rfind(".")]
-        class_str = "paddle.Tensor|paddle.nn.Module|paddle.optimizer.Optimizer|paddle.distribution.Distribution|paddle.distributions.distribution.Distribution|paddle.autograd.function.FunctionCtx|paddle.profiler.Profiler"
+        class_str = "paddle.Tensor|paddle.nn.Module|paddle.optimizer.Optimizer|paddle.optim.Optimizer|paddle.distribution.Distribution|paddle.distributions.distribution.Distribution|paddle.autograd.function.FunctionCtx|paddle.profiler.Profiler"
         if self.get_paddle_api():
             new_paddle_api = re.sub(
                 class_str,
