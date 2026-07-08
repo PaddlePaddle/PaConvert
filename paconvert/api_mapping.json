@@ -1537,18 +1537,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.max": {
-    "Matcher": "TensorMaxMatcher",
-    "paddle_api": "paddle.Tensor.max",
-    "min_input_args": 0,
-    "args_list": [
-      "dim",
-      "keepdim",
-      "other"
-    ],
-    "kwargs_change": {
-      "dim": "axis",
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.maximum": {
     "Matcher": "ChangePrefixMatcher"
@@ -1557,33 +1546,10 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.median": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.Tensor.median",
-    "min_input_args": 0,
-    "args_list": [
-      "dim",
-      "keepdim"
-    ],
-    "kwargs_change": {
-      "dim": "axis"
-    },
-    "unsupport_args": [
-      "dim"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.min": {
-    "Matcher": "TensorMinMatcher",
-    "paddle_api": "paddle.Tensor.min",
-    "min_input_args": 0,
-    "args_list": [
-      "dim",
-      "keepdim",
-      "other"
-    ],
-    "kwargs_change": {
-      "dim": "axis",
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.minimum": {
     "Matcher": "ChangePrefixMatcher"
@@ -7251,7 +7217,7 @@
     "Matcher": "GenericMatcher",
     "paddle_api": "paddle.nn.Softmax",
     "paddle_default_kwargs": {
-      "axis": -3
+      "dim": -3
     },
     "min_input_args": 0
   },
