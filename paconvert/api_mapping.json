@@ -1081,7 +1081,18 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.gt_": {
-    "Matcher": "ChangePrefixMatcher"
+    "Matcher": "TensorInplaceReserveTypeMatcher",
+    "paddle_api": "paddle.Tensor.greater_than_",
+    "min_input_args": 1,
+    "convert_tensor": [
+      "other"
+    ],
+    "args_list": [
+      "other"
+    ],
+    "kwargs_change": {
+      "other": "y"
+    }
   },
   "torch.Tensor.half": {
     "Matcher": "ChangePrefixMatcher"
