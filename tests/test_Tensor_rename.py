@@ -30,11 +30,11 @@ def test_case_1():
     obj.run(
         pytorch_code,
         expect_paddle_code="""
-            import paddle
+import paddle
 
-            paddle.enable_compat(level=2)
-            x = paddle.tensor([1, 2, 3])
-            x.rename(columns={"iids": iids})
+paddle.enable_compat(level=2)
+x = paddle.tensor([1, 2, 3])
+x.rename(columns={"iids": iids})
             """,
     )
 
