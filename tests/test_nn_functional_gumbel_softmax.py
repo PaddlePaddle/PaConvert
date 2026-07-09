@@ -100,3 +100,69 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_8():
+    """Variable args test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [[1.3192, 1.9915, 1.9674, 1.7151],[1.3492, 0.1915, 2.9434, 1.4151]]
+        x = torch.tensor(a)
+        args = (x,)
+        result = torch.nn.functional.gumbel_softmax(*args)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_9():
+    """Out-of-order keyword arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [[1.3192, 1.9915, 1.9674, 1.7151],[1.3492, 0.1915, 2.9434, 1.4151]]
+        x = torch.tensor(a)
+        result = torch.nn.functional.gumbel_softmax(x, hard=True, dim=0, tau=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_10():
+    """Expression argument test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [[1.3192, 1.9915, 1.9674, 1.7151],[1.3492, 0.1915, 2.9434, 1.4151]]
+        x = torch.tensor(a)
+        result = torch.nn.functional.gumbel_softmax(x * 0.5, tau=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_11():
+    """4 positional args with eps (float) as 4th arg"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [[1.3192, 1.9915, 1.9674, 1.7151],[1.3492, 0.1915, 2.9434, 1.4151]]
+        x = torch.tensor(a)
+        result = torch.nn.functional.gumbel_softmax(x, 2, True, 0.0001)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_12():
+    """4 positional args with dim (int) as 4th arg"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = [[1.3192, 1.9915, 1.9674, 1.7151],[1.3492, 0.1915, 2.9434, 1.4151]]
+        x = torch.tensor(a)
+        result = torch.nn.functional.gumbel_softmax(x, 2, True, 0)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

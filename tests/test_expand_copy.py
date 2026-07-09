@@ -14,12 +14,9 @@
 
 import textwrap
 
-import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.expand_copy")
-
-pytestmark = pytest.mark.skip(reason="Paddle does not have expand_copy API")
 
 
 def test_case_1():
@@ -128,7 +125,7 @@ def test_case_10():
         """
         import torch
         a = torch.tensor([0.5, 1.0, 2.0], requires_grad=True)
-        y = torch.expand_copy(a)
+        y = torch.expand_copy(a, (2, 3))
         y.sum().backward()
         a_grad = a.grad
         """
@@ -141,7 +138,7 @@ def test_case_11():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.expand_copy(torch.tensor([1.0, 2.0, 3.0]) + torch.tensor([0.5, 0.5, 0.5]))
+        result = torch.expand_copy(torch.tensor([1.0, 2.0, 3.0]) + torch.tensor([0.5, 0.5, 0.5]), (2, 3))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -153,7 +150,7 @@ def test_case_12():
         """
         import torch
         a = torch.tensor([[1.4309, 1.2706], [-0.8562, 0.9796]])
-        result = torch.expand_copy(a)
+        result = torch.expand_copy(a, (2, 2))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -165,7 +162,7 @@ def test_case_13():
         """
         import torch
         a = torch.tensor([[[0.1, 0.2], [0.3, 0.4]], [[0.5, 0.6], [0.7, 0.8]]])
-        result = torch.expand_copy(a)
+        result = torch.expand_copy(a, (2, 2, 2))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -177,7 +174,7 @@ def test_case_14():
         """
         import torch
         a = torch.tensor([1.4309, 1.2706], dtype=torch.float64)
-        result = torch.expand_copy(a)
+        result = torch.expand_copy(a, (2, 2))
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -188,7 +185,20 @@ def test_case_15():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.expand_copy(torch.tensor([1.0, 2.0, 3.0]) + torch.tensor([0.5, 0.5, 0.5]))
+        result = torch.expand_copy(torch.tensor([1.0, 2.0, 3.0]) + torch.tensor([0.5, 0.5, 0.5]), (2, 3))
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_16():
+    """Variable arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1, 2, 3])
+        args = (x, (3, 3))
+        result = torch.expand_copy(*args)
         """
     )
     obj.run(pytorch_code, ["result"])

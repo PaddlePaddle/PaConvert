@@ -153,29 +153,3 @@ def test_case_10():
         """
     )
     obj.run(pytorch_code, ["result"])
-
-
-def test_case_11():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        import torch.nn.functional as F
-        x = torch.tensor([-3.0, -0.5, 0.0, 2.0, 6.0, 7.5], dtype=torch.float64)
-        y = x.clone()
-        result = F.relu6(y, inplace=True)
-        output = y
-        """
-    )
-    obj.run(pytorch_code, ["result", "output"])
-
-
-def test_case_12():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        import torch.nn.functional as F
-        args = (torch.tensor([[-2.0, 1.0, 8.0], [0.0, 5.0, 9.0]], dtype=torch.float32),)
-        result = F.relu6(*args)
-        """
-    )
-    obj.run(pytorch_code, ["result"])

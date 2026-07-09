@@ -123,7 +123,6 @@
   "torch.nn.modules.rnn.RNNCellBase": "torch.nn.RNNCellBase",
   "torch.nn.modules.sparse.Embedding": "torch.nn.Embedding",
   "torch.nn.parallel.DataParallel": "torch.nn.DataParallel",
-  "torch.nn.parallel.data_parallel.DataParallel": "torch.nn.DataParallel",
   "torch.nn.parallel.distributed.DistributedDataParallel": "torch.nn.parallel.DistributedDataParallel",
   "torch.nn.utils.clip_grad_norm": "torch.nn.utils.clip_grad_norm_",
   "torch.orgqr": "torch.linalg.householder_product",
