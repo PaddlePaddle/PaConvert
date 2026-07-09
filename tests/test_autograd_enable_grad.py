@@ -44,3 +44,16 @@ def test_case_2():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_convert_to_autograd_namespace():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        with torch.autograd.enable_grad():
+            pass
+        """
+    )
+    paddle_code = obj.convert(pytorch_code)
+    assert "paddle.autograd.enable_grad()" in paddle_code
+    assert "paddle.enable_grad()" not in paddle_code
