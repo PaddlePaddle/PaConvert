@@ -34,6 +34,8 @@ def test_case_1():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
+
 
         @paddle.jit.to_static
         def foo(x, scale, shift):
@@ -65,6 +67,8 @@ def test_case_2():
     paddle_code = textwrap.dedent(
         """
         import paddle
+
+        paddle.enable_compat(level=2)
 
 
         def add(x, y):
@@ -98,6 +102,8 @@ def test_case_3():
     paddle_code = textwrap.dedent(
         """
         import paddle
+
+        paddle.enable_compat(level=2)
 
 
         def add(x, y):

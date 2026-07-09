@@ -33,6 +33,7 @@ def test_case_1():
 
         import paddle
 
+        paddle.enable_compat(level=2)
         root_path = "./data"
         train_dataset = paddle.vision.datasets.MNIST(
             transform=None,
@@ -63,6 +64,7 @@ def test_case_2():
 
         import paddle
 
+        paddle.enable_compat(level=2)
         root_path = "./data"
         train_dataset = paddle.vision.datasets.MNIST(
             transform=None,
@@ -93,6 +95,7 @@ def test_case_3():
 
         import paddle
 
+        paddle.enable_compat(level=2)
         root_path = "./data"
         train_dataset = paddle.vision.datasets.MNIST(
             download=False,
@@ -122,6 +125,7 @@ def test_case_4():
 
         import paddle
 
+        paddle.enable_compat(level=2)
         root_path = "./data"
         train_dataset = paddle.vision.datasets.MNIST(
             mode="train",
@@ -150,6 +154,7 @@ def test_case_5():
 
         import paddle
 
+        paddle.enable_compat(level=2)
         root_path = "./data"
         train_dataset = paddle.vision.datasets.MNIST(
             mode="train",
@@ -179,6 +184,7 @@ def test_case_6():
 
         import paddle
 
+        paddle.enable_compat(level=2)
         root_path = "./data"
         train = True
         train_dataset = paddle.vision.datasets.MNIST(
@@ -214,6 +220,7 @@ def test_case_7():
 
         import paddle
 
+        paddle.enable_compat(level=2)
         root_path = "./data"
         train = True
         download = False

@@ -494,18 +494,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.allclose": {
-    "Matcher": "AllcloseMatcher",
-    "paddle_api": "paddle.Tensor.allclose",
-    "min_input_args": 1,
-    "args_list": [
-      "other",
-      "rtol",
-      "atol",
-      "equal_nan"
-    ],
-    "kwargs_change": {
-      "other": "y"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.amax": {
     "Matcher": "ChangePrefixMatcher"
@@ -1991,20 +1980,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.sort": {
-    "Matcher": "SortMatcher",
-    "paddle_api": "paddle.Tensor.sort",
-    "min_input_args": 0,
-    "args_list": [
-      "dim",
-      "descending",
-      "*",
-      "stable",
-      "dim",
-      "descending"
-    ],
-    "kwargs_change": {
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.sparse_dim": {
     "Matcher": "ChangePrefixMatcher"
@@ -8097,8 +8073,8 @@
       "dtype"
     ],
     "kwargs_change": {
-      "input": "x",
-      "dim": "axis",
+      "input": "input",
+      "dim": "dim",
       "_stacklevel": "",
       "dtype": "dtype"
     },

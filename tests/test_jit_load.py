@@ -31,6 +31,7 @@ def test_case_1():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
         result = paddle.jit.load(path="model.pt")
         """
     )
@@ -48,6 +49,7 @@ def test_case_2():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
         result = paddle.jit.load(path="model.pt")
         """
     )

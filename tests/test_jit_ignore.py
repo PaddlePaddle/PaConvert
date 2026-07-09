@@ -43,6 +43,8 @@ def test_case_1():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
+
 
         class MyModule(paddle.nn.Module):
             def forward(self, x):

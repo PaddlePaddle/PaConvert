@@ -30,6 +30,7 @@ def test_case_1():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
         result = paddle.hub.load_state_dict_from_url(url="http://example.com/model.pth")
         """
     )
@@ -47,6 +48,7 @@ def test_case_2():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
         result = paddle.hub.load_state_dict_from_url(
             url="http://example.com/model.pth", model_dir="/tmp"
         )
@@ -66,6 +68,7 @@ def test_case_3():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
         result = paddle.hub.load_state_dict_from_url(
             url="http://example.com/model.pth", model_dir="/tmp", map_location="cpu"
         )

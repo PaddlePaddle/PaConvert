@@ -12,10 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
+
 import numpy as np
 import paddle
 import torch
 from apibase import APIBase
+from conftest import disable_paddle_compat
 
 
 class ModelAPIBase(APIBase):
@@ -44,9 +47,17 @@ class ModelAPIBase(APIBase):
             else:
                 simple_input = np.random.rand(1, 3, 224, 224).astype(np.float32)
 
-            pytorch_output = pytorch_result(torch.tensor(simple_input))
-            paddle_output = paddle_result(paddle.to_tensor(simple_input))
+            # The converted paddle code has globally flipped compat ON (its
+            # `paddle.enable_compat(level=2)` ran during exec). The torch reference
+            # forward below must run under REAL torch, otherwise torchvision's
+            # internal `import torch` / `torch.SymInt` etc. resolve through the
+            # paddle proxy and blow up. Disable compat for the torch forward, then
+            # restore it so the paddle forward matches how a user runs the output.
+            from paddle.compat.proxy import TORCH_PROXY_FINDER
 
+            compat_was_on = TORCH_PROXY_FINDER in sys.meta_path
+            disable_paddle_compat()
+            pytorch_output = pytorch_result(torch.tensor(simple_input))
             if isinstance(pytorch_output, torch.Tensor):
                 pytorch_numpy = pytorch_output.detach().cpu().numpy()
             elif isinstance(pytorch_output, tuple):
@@ -56,6 +67,9 @@ class ModelAPIBase(APIBase):
             else:
                 raise ValueError("Unsupported type for pytorch_output")
 
+            if compat_was_on:
+                paddle.enable_compat(level=2)
+            paddle_output = paddle_result(paddle.to_tensor(simple_input))
             if isinstance(paddle_output, paddle.Tensor):
                 paddle_numpy = paddle_output.detach().numpy()
             elif isinstance(paddle_output, tuple):

@@ -38,6 +38,7 @@ def test_case_1():
 
         import paddle
 
+        paddle.enable_compat(level=2)
         train_dataset = paddle.vision.datasets.Cifar100(
             transform=paddle.vision.transforms.Normalize(mean=(0.5,), std=(0.5,)),
             download=True,
@@ -67,6 +68,7 @@ def test_case_2():
 
         import paddle
 
+        paddle.enable_compat(level=2)
         train_dataset = paddle.vision.datasets.Cifar100(
             transform=paddle.vision.transforms.Normalize(mean=(0.5,), std=(0.5,)),
             data_file=os.path.join("./data", "cifar-100-python.tar.gz"),
@@ -99,6 +101,7 @@ def test_case_3():
 
         import paddle
 
+        paddle.enable_compat(level=2)
         train_dataset = paddle.vision.datasets.Cifar100(
             download=True,
             transform=paddle.vision.transforms.Normalize(mean=(0.5,), std=(0.5,)),
@@ -126,6 +129,7 @@ def test_case_4():
 
         import paddle
 
+        paddle.enable_compat(level=2)
         train_dataset = paddle.vision.datasets.Cifar100(
             data_file=os.path.join("./data", "cifar-100-python.tar.gz")
         )
@@ -151,6 +155,7 @@ def test_case_5():
 
         import paddle
 
+        paddle.enable_compat(level=2)
         root_path = "./data"
         train_dataset = paddle.vision.datasets.Cifar100(
             data_file=os.path.join(root_path, "cifar-100-python.tar.gz"), mode="train"
@@ -177,6 +182,7 @@ def test_case_6():
 
         import paddle
 
+        paddle.enable_compat(level=2)
         train = True
         train_dataset = paddle.vision.datasets.Cifar100(
             data_file=os.path.join("./data", "cifar-100-python.tar.gz"),

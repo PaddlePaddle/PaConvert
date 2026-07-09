@@ -105,12 +105,14 @@ def test_case_2():
         ############################## 相关utils函数，如上 ##############################
 
 
+        paddle.enable_compat(level=2)
+
 
         class SimpleModel(paddle.nn.Module):
             def __init__(self):
                 super(SimpleModel, self).__init__()
-                self.fc1 = paddle.compat.nn.Linear(3, 3)
-                self.fc2 = paddle.compat.nn.Linear(3, 1)
+                self.fc1 = paddle.nn.Linear(3, 3)
+                self.fc2 = paddle.nn.Linear(3, 1)
 
             def forward(self, x):
                 x = paddle.relu(self.fc1(x))
