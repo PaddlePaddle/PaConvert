@@ -21,7 +21,14 @@ dist.init_process_group(backend="nccl")
 rank = dist.get_rank()
 torch.cuda.set_device(rank)
 
-result = dist.get_rank(dist.group.WORLD)
+group = dist.group.WORLD
+if rank == 0:
+    data = torch.tensor([4, 5, 6]).cuda()
+else:
+    data = torch.tensor([1, 2, 3]).cuda()
+dist.all_reduce(data, group=group)
+result = data
+# [5, 7, 9] (2 GPUs)
 if rank == 0:
     print(result)
-    torch.save(result, os.environ["DUMP_FILE"])
+    torch.save(result.cpu(), os.environ["DUMP_FILE"])

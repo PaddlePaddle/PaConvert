@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+
 import torch
 import torch.distributed as dist
 
@@ -19,4 +21,14 @@ dist.init_process_group(backend="nccl")
 rank = dist.get_rank()
 torch.cuda.set_device(rank)
 
-print(dist.ProcessGroup)
+pg = dist.group.WORLD
+if rank == 0:
+    data = torch.tensor([4, 5, 6]).cuda()
+else:
+    data = torch.tensor([1, 2, 3]).cuda()
+dist.all_reduce(data, group=pg)
+result = data
+# [5, 7, 9] (2 GPUs)
+if rank == 0:
+    print(result)
+    torch.save(result.cpu(), os.environ["DUMP_FILE"])
