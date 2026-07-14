@@ -72,6 +72,7 @@ def apply_rotary_position_embeddings(x, cos, sin):
 ############################## 相关utils函数，如上 ##############################
 
 
+paddle.enable_compat(level=2)
 print("#########################case1#########################")
 
 

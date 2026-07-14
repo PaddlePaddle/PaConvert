@@ -1,5 +1,6 @@
 import paddle
 
+paddle.enable_compat(level=2)
 print("#########################case1#########################")
 model_parallel_size_0 = (
     paddle.distributed.fleet.base.topology._HYBRID_PARALLEL_GROUP._mp_degree

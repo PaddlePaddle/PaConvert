@@ -2,6 +2,7 @@ from typing import List, Optional, Tuple, Union
 
 import paddle
 
+paddle.enable_compat(level=2)
 print("#########################case1#########################")
 Union[Tuple, paddle.BoolTensor]
 print("#########################case2#########################")

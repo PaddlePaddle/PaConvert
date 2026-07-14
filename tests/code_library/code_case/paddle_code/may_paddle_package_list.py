@@ -5,6 +5,7 @@ import paddle
 import setuptools
 from numpy.random import randint
 
+paddle.enable_compat(level=2)
 print("#########################case1#########################")
 paddle.distributed.get_world_size()
 print("#########################case2#########################")

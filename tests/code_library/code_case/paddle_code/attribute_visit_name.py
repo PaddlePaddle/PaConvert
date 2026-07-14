@@ -1,6 +1,8 @@
 import paddle
 import paddleformers
 
+paddle.enable_compat(level=2)
+
 
 class A(paddle.nn.Module):
     def __init__(self, data: paddle.Tensor):

@@ -1,5 +1,7 @@
 import paddle
 
+paddle.enable_compat(level=2)
+
 
 def add_module(self, name, module):
     self.add_module(f"{name} - {len(self) + 1}", module)

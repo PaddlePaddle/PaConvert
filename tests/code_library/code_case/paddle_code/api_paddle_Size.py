@@ -1,5 +1,6 @@
 import paddle
 
+paddle.enable_compat(level=2)
 print("#########################case1#########################")
 print(paddle.Size([2, 8, 64, 64]))
 print("#########################case2#########################")

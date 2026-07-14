@@ -515,7 +515,7 @@ class ImportTransformer(BaseTransformer):
             paddle_package_list.append(may_torch_package)
 
         import_nodes = []
-        for paddle_package in paddle_package_list:
+        for paddle_package in dict.fromkeys(paddle_package_list):
             import_nodes.extend(ast.parse(f"import {paddle_package}").body)
 
         has_torch_package = bool(self.imports_map[self.file]["torch_packages"])

@@ -1,5 +1,6 @@
 import paddle
 
+paddle.enable_compat(level=2)
 print("#########################case1#########################")
 a = paddle.randint(2, 5, [3, 4], device=paddle.device("cuda"))
 print("#########################case2#########################")

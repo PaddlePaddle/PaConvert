@@ -1,5 +1,6 @@
 import paddle
 
+paddle.enable_compat(level=2)
 print("#########################case1#########################")
 a = paddle.nn.functional.interpolate(paddle.randn(1, 2, 20, 20), [24, 24])
 print("#########################case2#########################")
