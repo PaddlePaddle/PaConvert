@@ -75,3 +75,29 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    """Mixed parameters: positional and keyword"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones(2, 4)
+        result = torch.masked_fill(x, x>0, value=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """Variable arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.ones(2, 4)
+        mask = x>0
+        args = (x, mask, 2)
+        result = torch.masked_fill(*args)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

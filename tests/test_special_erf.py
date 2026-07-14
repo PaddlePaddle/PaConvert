@@ -101,7 +101,6 @@ def test_case_7():
 
 
 def test_case_8():
-    # higher precision float64 along a wider grid including extreme magnitudes
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -120,6 +119,28 @@ def test_case_9():
         base = torch.arange(7)
         x = base.to(torch.float32) * (-0.25 + 0.05 * 3)
         result = torch.special.erf(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[0.0, -1.5], [2.0, 3.25]], dtype=torch.float64)
+        result = torch.special.erf(a)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_11():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        args = (torch.tensor([[0.0, 1.0], [-2.0, 3.0]], dtype=torch.float32),)
+        result = torch.special.erf(*args)
         """
     )
     obj.run(pytorch_code, ["result"])

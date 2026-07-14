@@ -46,9 +46,6 @@ class ImportTransformer(BaseTransformer):
         self.imports_map[self.file]["api_alias_name_map"] = {}
         self.insert_pass_node = set()
         self.change_prefix_api_map = defaultdict(set)
-        # Set in visit_Module: True when this file actually imports torch (so we
-        # added paddle imports) and therefore needs paddle.enable_compat injected.
-        self.need_enable_compat = False
 
     def visit_Import(self, node):
         """
@@ -508,7 +505,6 @@ class ImportTransformer(BaseTransformer):
         'import torch_package' has been removed already, add 'import paddle_package'
         """
         super(ImportTransformer, self).generic_visit(node)
-        line_NO = 1
         paddle_package_list = []
         for torch_package in self.imports_map[self.file]["torch_packages"]:
             paddle_package_list.append(
@@ -518,104 +514,28 @@ class ImportTransformer(BaseTransformer):
         for may_torch_package in self.imports_map[self.file]["may_torch_packages"]:
             paddle_package_list.append(may_torch_package)
 
+        import_nodes = []
         for paddle_package in paddle_package_list:
-            log_info(
-                self.logger,
-                f"add 'import {paddle_package}' in line {line_NO}",
-                self.file_name,
-            )
-            self.record_scope(
-                (self.root, "body", 0), ast.parse(f"import {paddle_package}").body
-            )
-            line_NO += 1
+            import_nodes.extend(ast.parse(f"import {paddle_package}").body)
 
-        # enable_compat is injected in transform() (needs all imports in the body).
-        # Gate on real torch imports, not paddle_package_list: the latter also holds
-        # MAY_TORCH packages (os/einops/setuptools) that need no compat switch.
-        if self.imports_map[self.file]["torch_packages"]:
-            self.need_enable_compat = True
+        has_torch_package = bool(self.imports_map[self.file]["torch_packages"])
 
-    def transform(self):
-        super(ImportTransformer, self).transform()
-        self._inject_enable_compat()
-
-    @staticmethod
-    def _is_future_import(node):
-        return isinstance(node, ast.ImportFrom) and node.module == "__future__"
-
-    @staticmethod
-    def _is_import(node):
-        return isinstance(node, (ast.Import, ast.ImportFrom))
-
-    @staticmethod
-    def _is_docstring(node):
-        return (
-            isinstance(node, ast.Expr)
-            and isinstance(node.value, ast.Constant)
-            and isinstance(node.value.value, str)
+        has_enable_compat = any(
+            isinstance(body_node, ast.Expr)
+            and isinstance(body_node.value, ast.Call)
+            and isinstance(body_node.value.func, ast.Attribute)
+            and body_node.value.func.attr == "enable_compat"
+            and isinstance(body_node.value.func.value, ast.Name)
+            and body_node.value.func.value.id == "paddle"
+            for body_node in node.body
         )
+        if has_torch_package and not has_enable_compat:
+            import_nodes.extend(ast.parse("paddle.enable_compat(level=2)").body)
 
-    @staticmethod
-    def _is_enable_compat_call(node):
-        return (
-            isinstance(node, ast.Expr)
-            and isinstance(node.value, ast.Call)
-            and isinstance(node.value.func, ast.Attribute)
-            and node.value.func.attr == "enable_compat"
-            and isinstance(node.value.func.value, ast.Name)
-            and node.value.func.value.id == "paddle"
-        )
-
-    @staticmethod
-    def _binds_paddle(node):
-        # `import paddle` or `import paddle.xxx` (no asname) binds the name `paddle`
-        if isinstance(node, ast.Import):
-            for alias_node in node.names:
-                if alias_node.asname is None and (
-                    alias_node.name == "paddle" or alias_node.name.startswith("paddle.")
-                ):
-                    return True
-        return False
-
-    def _inject_enable_compat(self):
-        """Insert ``paddle.enable_compat(level=2)`` after the docstring,
-        ``__future__`` imports and the import block (level=2 aliases the
-        torch-aligned ``paddle.compat.*`` APIs onto ``paddle.*``). Post-pass so it
-        is never placed above a ``__future__`` import (which is a SyntaxError).
-        """
-        if not self.need_enable_compat:
-            return
-
-        body = [n for n in self.root.body if not self._is_enable_compat_call(n)]
-
-        # hoist all __future__ imports (they must precede every other statement)
-        futures = [n for n in body if self._is_future_import(n)]
-        body = [n for n in body if not self._is_future_import(n)]
-
-        # hoist the module docstring if only imports precede it (we prepend imports)
-        doc = []
-        for i, node in enumerate(body):
-            if self._is_docstring(node) and all(self._is_import(n) for n in body[:i]):
-                doc = [node]
-                body = body[:i] + body[i + 1 :]
-                break
-
-        # split off the contiguous import block at the top of the remainder
-        end = 0
-        while end < len(body) and self._is_import(body[end]):
-            end += 1
-        imports, rest = body[:end], body[end:]
-
-        # enable_compat needs the name `paddle` bound (submodule-only aliases may
-        # not bind it, e.g. `import torch.nn as nn` -> `import paddle.nn as nn`)
-        if not any(self._binds_paddle(n) for n in imports):
-            imports = ast.parse("import paddle").body + imports
-
-        compat = ast.parse("paddle.enable_compat(level=2)").body
-        self.root.body = doc + futures + imports + compat + rest
-        ast.fix_missing_locations(self.root)
-        log_info(
-            self.logger,
-            "add 'paddle.enable_compat(level=2)' after imports",
-            self.file_name,
-        )
+        import_end = 1 if node.body and ast.get_docstring(node, clean=False) else 0
+        while import_end < len(node.body) and isinstance(
+            node.body[import_end], (ast.Import, ast.ImportFrom)
+        ):
+            import_end += 1
+        self.record_scope((self.root, "body", import_end), import_nodes)
+        return node

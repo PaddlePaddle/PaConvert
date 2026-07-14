@@ -106,3 +106,15 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.arange(24, dtype=torch.float64)
+        b = torch.zeros([2, 3, 4], dtype=torch.float32)
+        result = a.reshape_as(b)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

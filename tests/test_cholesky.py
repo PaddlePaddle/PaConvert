@@ -98,3 +98,17 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_7():
+    """Mixed parameters: positional and keyword"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 2.4112, -0.7486,  1.4551],
+                        [-0.7486,  1.3544,  0.1294],
+                        [ 1.4551,  0.1294,  1.6724]])
+        result = torch.cholesky(x, upper=True)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

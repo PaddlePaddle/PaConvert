@@ -14,14 +14,9 @@
 
 import textwrap
 
-import pytest
 from apibase import APIBase
 
 obj = APIBase("torch.Tensor.det")
-
-pytestmark = pytest.mark.skip(
-    reason="Paddle C++ builtin det() has method binding bug: x.det() fails with 'argument x must be Tensor, but got None'"
-)
 
 
 def test_case_1():

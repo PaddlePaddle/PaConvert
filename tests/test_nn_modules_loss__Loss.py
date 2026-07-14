@@ -16,10 +16,32 @@ import textwrap
 
 from apibase import APIBase
 
-obj = APIBase("torch.nn.modules.loss._Loss")
+
+class LossAPIBase(APIBase):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_shape=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
+    ):
+        """Compare string reduction values from _Loss objects"""
+        assert (
+            pytorch_result == paddle_result
+        ), "API ({}): paddle result {} != pytorch result {}".format(
+            name, paddle_result, pytorch_result
+        )
 
 
-def _test_case_1():
+obj = LossAPIBase("torch.nn.modules.loss._Loss")
+
+
+def test_case_1():
     """Default reduction='mean'"""
     pytorch_code = textwrap.dedent(
         """
@@ -28,14 +50,10 @@ def _test_case_1():
         result = loss.reduction
         """
     )
-    obj.run(
-        pytorch_code,
-        unsupport=True,
-        reason="paddle.nn.modules.loss._Loss is not implemented in Paddle",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
-def _test_case_2():
+def test_case_2():
     """reduction='none'"""
     pytorch_code = textwrap.dedent(
         """
@@ -44,14 +62,10 @@ def _test_case_2():
         result = loss.reduction
         """
     )
-    obj.run(
-        pytorch_code,
-        unsupport=True,
-        reason="paddle.nn.modules.loss._Loss is not implemented in Paddle",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
-def _test_case_3():
+def test_case_3():
     """reduction='sum'"""
     pytorch_code = textwrap.dedent(
         """
@@ -60,15 +74,11 @@ def _test_case_3():
         result = loss.reduction
         """
     )
-    obj.run(
-        pytorch_code,
-        unsupport=True,
-        reason="paddle.nn.modules.loss._Loss is not implemented in Paddle",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
-def _test_case_4():
-    """reduction='mean'"""
+def test_case_4():
+    """reduction='mean' keyword"""
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -76,14 +86,10 @@ def _test_case_4():
         result = loss.reduction
         """
     )
-    obj.run(
-        pytorch_code,
-        unsupport=True,
-        reason="paddle.nn.modules.loss._Loss is not implemented in Paddle",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
-def _test_case_5():
+def test_case_5():
     """size_average=True (deprecated)"""
     pytorch_code = textwrap.dedent(
         """
@@ -92,14 +98,10 @@ def _test_case_5():
         result = loss.reduction
         """
     )
-    obj.run(
-        pytorch_code,
-        unsupport=True,
-        reason="paddle.nn.modules.loss._Loss is not implemented in Paddle",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
-def _test_case_6():
+def test_case_6():
     """size_average=False (deprecated)"""
     pytorch_code = textwrap.dedent(
         """
@@ -108,14 +110,10 @@ def _test_case_6():
         result = loss.reduction
         """
     )
-    obj.run(
-        pytorch_code,
-        unsupport=True,
-        reason="paddle.nn.modules.loss._Loss is not implemented in Paddle",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
-def _test_case_7():
+def test_case_7():
     """reduce=False (deprecated)"""
     pytorch_code = textwrap.dedent(
         """
@@ -124,14 +122,10 @@ def _test_case_7():
         result = loss.reduction
         """
     )
-    obj.run(
-        pytorch_code,
-        unsupport=True,
-        reason="paddle.nn.modules.loss._Loss is not implemented in Paddle",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
-def _test_case_8():
+def test_case_8():
     """reduce=True, size_average=False (deprecated)"""
     pytorch_code = textwrap.dedent(
         """
@@ -140,14 +134,10 @@ def _test_case_8():
         result = loss.reduction
         """
     )
-    obj.run(
-        pytorch_code,
-        unsupport=True,
-        reason="paddle.nn.modules.loss._Loss is not implemented in Paddle",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
-def _test_case_9():
+def test_case_9():
     """Keyword arguments out of order"""
     pytorch_code = textwrap.dedent(
         """
@@ -156,14 +146,10 @@ def _test_case_9():
         result = loss.reduction
         """
     )
-    obj.run(
-        pytorch_code,
-        unsupport=True,
-        reason="paddle.nn.modules.loss._Loss is not implemented in Paddle",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
-def _test_case_10():
+def test_case_10():
     """All None deprecated args"""
     pytorch_code = textwrap.dedent(
         """
@@ -172,53 +158,29 @@ def _test_case_10():
         result = loss.reduction
         """
     )
-    obj.run(
-        pytorch_code,
-        unsupport=True,
-        reason="paddle.nn.modules.loss._Loss is not implemented in Paddle",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
-def _test_case_11():
+def test_case_11():
+    """Expression reduction argument"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        loss = torch.nn.modules.loss._Loss(reduction='mean')
+        loss = torch.nn.modules.loss._Loss(reduction='sum' if 1 == 1 else 'mean')
         result = loss.reduction
         """
     )
-    obj.run(
-        pytorch_code,
-        unsupport=True,
-        reason="paddle.nn.modules.loss._Loss is not implemented in Paddle",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
-def _test_case_12():
+def test_case_12():
+    """Variable reduction argument"""
     pytorch_code = textwrap.dedent(
         """
         import torch
-        loss = torch.nn.modules.loss._Loss(reduction='sum')
+        red = 'none'
+        loss = torch.nn.modules.loss._Loss(reduction=red)
         result = loss.reduction
         """
     )
-    obj.run(
-        pytorch_code,
-        unsupport=True,
-        reason="paddle.nn.modules.loss._Loss is not implemented in Paddle",
-    )
-
-
-def _test_case_13():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        loss = torch.nn.modules.loss._Loss()
-        result = loss.reduction
-        """
-    )
-    obj.run(
-        pytorch_code,
-        unsupport=True,
-        reason="paddle.nn.modules.loss._Loss is not implemented in Paddle",
-    )
+    obj.run(pytorch_code, ["result"])

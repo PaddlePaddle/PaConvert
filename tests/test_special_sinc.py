@@ -78,7 +78,6 @@ def test_case_5():
 
 
 def test_case_6():
-    # high precision grid covering both integer and fractional inputs
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -97,6 +96,29 @@ def test_case_7():
         n = (torch.arange(9) % 3) * (-0.5 + 0.25*4)
         x = n.to(torch.float64) / 2
         result = torch.special.sinc(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[0.0, 0.5], [-1.0, 1.5]], dtype=torch.float64)
+        out = torch.empty_like(a)
+        result = torch.special.sinc(a, out=out)
+        """
+    )
+    obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_9():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        args = (torch.tensor([[0.0, 0.25], [0.75, -0.5]], dtype=torch.float32),)
+        result = torch.special.sinc(*args)
         """
     )
     obj.run(pytorch_code, ["result"])

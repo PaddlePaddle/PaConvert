@@ -76,7 +76,6 @@ def test_case_4():
 
 
 def test_case_5():
-    # float64 input with values crossing the [0, 6] saturation bounds
     pytorch_code = textwrap.dedent(
         """
         import torch
@@ -116,3 +115,19 @@ def test_case_7():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    # float64 input, inplace path, and output tensor aliasing
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.tensor([-3.0, -0.5, 0.0, 2.0, 6.0, 7.5], dtype=torch.float64)
+        y = x.clone()
+        model = nn.ReLU6(inplace=True)
+        result = model(y)
+        output = y
+        """
+    )
+    obj.run(pytorch_code, ["result", "output"])

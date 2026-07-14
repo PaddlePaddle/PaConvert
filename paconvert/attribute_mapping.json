@@ -1,6 +1,6 @@
 {
   "torch.Tensor.H": {
-    "Matcher": "TensorHMatcher"
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.T": {
     "Matcher": "ChangePrefixMatcher"
@@ -44,7 +44,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.mH": {
-    "Matcher": "TensorMhMatcher"
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.mT": {
     "Matcher": "ChangePrefixMatcher"
@@ -190,6 +190,9 @@
   "torch.float8_e4m3fn.itemsize": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.float8_e5m2": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.half": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -239,6 +242,15 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.short": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.uint16": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.uint32": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.uint64": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.uint8": {

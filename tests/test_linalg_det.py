@@ -108,3 +108,51 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result", "out"])
+
+
+def test_case_7():
+    """Variable args test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 0.7308,  1.0060,  0.5270,  1.4516],
+                        [-0.1383,  1.5706,  0.4724,  0.4141],
+                        [ 0.1193,  0.2829,  0.9037,  0.3957],
+                        [-0.8202, -0.6474, -0.1631, -0.6543]])
+        args = (x,)
+        result = torch.linalg.det(*args)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_8():
+    """Gradient computation test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 0.7308,  1.0060,  0.5270,  1.4516],
+                        [-0.1383,  1.5706,  0.4724,  0.4141],
+                        [ 0.1193,  0.2829,  0.9037,  0.3957],
+                        [-0.8202, -0.6474, -0.1631, -0.6543]], requires_grad=True)
+        result = torch.linalg.det(x)
+        result.sum().backward()
+        x_grad = x.grad
+        """
+    )
+    obj.run(pytorch_code, ["result", "x_grad"], check_stop_gradient=False)
+
+
+def test_case_9():
+    """Expression argument test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([[ 0.7308,  1.0060,  0.5270,  1.4516],
+                        [-0.1383,  1.5706,  0.4724,  0.4141],
+                        [ 0.1193,  0.2829,  0.9037,  0.3957],
+                        [-0.8202, -0.6474, -0.1631, -0.6543]])
+        result = torch.linalg.det(x[:2, :2])
+        """
+    )
+    obj.run(pytorch_code, ["result"])
