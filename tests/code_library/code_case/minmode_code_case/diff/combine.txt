@@ -1,20 +1,15 @@
 --- tests/code_library/code_case/minmode_code_case/torch_code/combine.py
 +++ tests/code_library/code_case/minmode_code_case/paddle_code/combine.py
-@@ -1,3 +1,4 @@
+@@ -4,6 +4,8 @@
+ from collections import OrderedDict
+ import numpy as np
+ import torch.nn.functional as F
 +import paddle
- import torch
- import torch.nn as nn
- from torch.autograd import Function
-@@ -190,7 +191,7 @@
- result = F.grid_sample(input=x, grid=grid, mode='bilinear', padding_mode=
-     'border', align_corners=True)
- print('#########################case27#########################')
--l = nn.Linear(2, 2)
-+l = paddle.compat.nn.Linear(2, 2)
- net = nn.Sequential(OrderedDict([('wfs', l), ('wfs1', l)]))
- memo = set()
- z = net.named_modules(memo=memo, prefix='wfs', remove_duplicate=False)
-@@ -461,19 +462,19 @@
++paddle.enable_compat(level=2)
+ print('#########################case1#########################')
+ input = torch.tensor([[[[1.1524, 0.4714, 0.2857], [-1.2533, -0.9829, -
+     1.0981], [0.1507, -1.1431, -2.0361]], [[0.1024, -0.4482, 0.4137], [
+@@ -461,15 +463,15 @@
  result = F.softplus(x)
  print('#########################case75#########################')
  out = torch.empty([6], dtype=torch.int32)
@@ -34,12 +29,7 @@
  print('#########################case78#########################')
  x = torch.tensor([[1.0, 1.0, 1.0], [2.0, 2.0, 2.0], [3.0, 3.0, 3.0]],
      requires_grad=True)
--linear = torch.nn.Linear(3, 4, bias=False)
-+linear = paddle.compat.nn.Linear(3, 4, bias=False)
- linear.weight.data.fill_(0.1)
- y = linear(x)
- y.detach_()
-@@ -516,7 +517,7 @@
+@@ -516,7 +518,7 @@
  results = x.as_strided(size=(2, 2), stride=(2, 2), storage_offset=0)
  print('#########################case86#########################')
  torch.cuda.manual_seed_all(123)
@@ -48,7 +38,7 @@
  print('#########################case87#########################')
  result = torch.as_tensor([1, 2, 3])
  print('#########################case88#########################')
-@@ -527,8 +528,8 @@
+@@ -527,8 +529,8 @@
  print('#########################case89#########################')
  a = 3
  out = torch.tensor([2.0, 3.0], dtype=torch.float64)
@@ -59,7 +49,7 @@
  print('#########################case90#########################')
  x = torch.tensor([[-1.0813, -0.8619, 0.7105], [0.0935, 0.138, 2.2112], [-
      0.3409, -0.9828, 0.0289]])
-@@ -542,8 +543,8 @@
+@@ -542,8 +544,8 @@
  print('#########################case92#########################')
  a = 3
  out = torch.tensor([2.0, 3.0], dtype=torch.float64)
@@ -70,7 +60,7 @@
  print('#########################case93#########################')
  a = 3
  out = torch.tensor([2.0, 3.0], dtype=torch.float64)
-@@ -555,7 +556,7 @@
+@@ -555,7 +557,7 @@
  result = x.cross(other=y, dim=1)
  print('#########################case95#########################')
  result = torch.full_like(torch.empty(2, 3), 6, dtype=torch.float64, device=
