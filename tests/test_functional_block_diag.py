@@ -93,3 +93,16 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    """Keyword arguments test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        A = torch.tensor([[0, 1], [1, 0]])
+        B = torch.tensor([[3, 4], [6, 7]])
+        result = torch.functional.block_diag(A, B)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

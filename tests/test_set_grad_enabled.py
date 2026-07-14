@@ -46,7 +46,7 @@ def test_case_2():
 
 
 # paddle can only be used in with block
-def _test_case_3():
+def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch

@@ -149,3 +149,16 @@ def test_case_10():
         """
     )
     obj.run(pytorch_code, ["result", "q", "r"])
+
+
+def test_case_11():
+    """Variable arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[12., -51, 4], [6, 167, -68], [-4, 24, -41]])
+        args = (a,)
+        result = torch.qr(*args)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

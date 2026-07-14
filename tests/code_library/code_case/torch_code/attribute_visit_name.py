@@ -1,7 +1,6 @@
 from torch.nn import Module
 from torch import Tensor
 from torch import float32
-from torch import nn
 
 from transformers.generation.utils import GenerateOutput
 from transformers.activations import ACT2FN
@@ -42,8 +41,6 @@ Union[GenerateOutput, torch.LongTensor]
 Optional[Tensor] = None
 
 my_add = TorchAdd
-
-setattr(nn, 'functional', my_functional_module)
 
 ACT2FN['tanh']
 ALL_ATTENTION_FUNCTIONS['flash_attention_2']

@@ -1,0 +1,99 @@
+# Copyright (c) 2023 PaddlePaddle Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import textwrap
+
+from apibase import APIBase
+
+obj = APIBase("torch.distributions.normal.Normal")
+
+
+def test_case_1():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.normal.Normal(torch.tensor([0.0]), torch.tensor([1.0]))
+        result = m.sample([1])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_2():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.normal.Normal(loc=torch.tensor([0.0]), scale=torch.tensor([1.0]), validate_args=False)
+        result = m.sample([1])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_3():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.normal.Normal(loc=torch.tensor([0.0]), scale=torch.tensor([1.0]))
+        result = m.sample([1])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.normal.Normal(torch.tensor([0.0]), torch.tensor([1.0]), False)
+        result = m.sample([1])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_5():
+    """Keyword arguments out of order test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.normal.Normal(scale=torch.tensor([2.0]), loc=torch.tensor([0.0]), validate_args=False)
+        result = m.sample([5])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_6():
+    """Mixed arguments test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.normal.Normal(torch.tensor([1.0]), scale=torch.tensor([0.5]))
+        result = m.sample([10])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_7():
+    """Torch-style alias test"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        m = torch.distributions.normal.Normal(torch.tensor([1.0]), scale=torch.tensor([0.5]))
+        result = m.sample(sample_shape=[2, 3])
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

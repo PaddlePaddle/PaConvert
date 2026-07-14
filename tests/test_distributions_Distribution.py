@@ -95,3 +95,52 @@ def test_case_6():
         """
     )
     obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_7():
+    # non-trivial batch_shape / event_shape combination passed positionally;
+    # returns the Distribution itself so the paddle-side isinstance check holds.
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.distributions.Distribution(torch.Size([4]), torch.Size([2]), validate_args=None)
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_8():
+    # explicit validate_args=False plus reversed keyword order
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        result = torch.distributions.Distribution(validate_args=False,
+                                                   event_shape=torch.Size([1]),
+                                                   batch_shape=torch.Size([5]))
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)
+
+
+def test_case_9():
+    # subclassing pattern mirroring how real distributions extend the base;
+    # returns an actual subclass instance so isinstance(Distribution) remains True.
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import math
+
+        class MyConstDist(torch.distributions.Distribution):
+            support = None
+            has_rsample = True
+
+            def __init__(self):
+                super().__init__(batch_shape=torch.Size([]), event_shape=torch.Size([]), validate_args=False)
+
+            def rsample(self, sample_shape=torch.Size()):
+                return torch.full(sample_shape, float(math.pi))
+
+        result = MyConstDist()
+        """
+    )
+    obj.run(pytorch_code, ["result"], check_value=False)

@@ -62,3 +62,41 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    # negative dimension indices on 2D tensor
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([[7.0, -2.0], [-9.0, 11.0]], dtype=torch.float32)
+        result = a.transpose_(-2, -1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    # transpose two axes of a 3-D float64 tensor
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.arange(24, dtype=torch.float64).reshape(2, 3, 4)
+        result = x.transpose_(dim0=0, dim1=2)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    # int64 input, positional args with negative dims
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        t = torch.arange(-12, 13, dtype=torch.int64).reshape(5, 5)
+        d0 = -(len(t.shape))
+        d1 = -1
+        result = t.transpose_(d0, d1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

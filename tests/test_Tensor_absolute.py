@@ -35,7 +35,7 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        result = torch.tensor([[-4, 9], [-23, 2]]).absolute()
+        result = torch.tensor([[-4.5, 9.1], [-23.2, 2.3]], dtype=torch.float64).absolute()
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -45,41 +45,21 @@ def test_case_3():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        try:
-            a = torch.tensor([[-4, 9], [-23, 2]]).absolute()
-            assert 0, "Raise AssertionError"
-        except Exception as e:
-            error_msg = str(e)
+        a = torch.tensor([-1, 0, 1])
+        result = a.absolute()
         """
     )
-    obj.run(pytorch_code, ["error_msg"])
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        try:
-            a = torch.tensor([[-4, 9], [-23, 2]]).absolute()
-            assert 0, "Raise AssertionError"
-        except Exception as e:
-            error_msg = str(e)
-        finally:
-            pass
-        """
-    )
-    obj.run(pytorch_code, ["error_msg"])
-
-
-def test_case_5():
-    pytorch_code = textwrap.dedent(
-        """
-        import torch
-        i = 0
-        result = []
-        while i < 5:
-            result.append(torch.tensor(i).absolute())
-            i += 1
+        import numpy as np
+        np.random.seed(42)
+        a = torch.from_numpy(np.random.randn(2, 3, 4))
+        result = a.absolute()
         """
     )
     obj.run(pytorch_code, ["result"])

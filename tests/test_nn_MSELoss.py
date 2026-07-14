@@ -184,3 +184,34 @@ def test_case_11():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_12():
+    """*args unpacking"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        input = torch.tensor([[1.0, 2.0], [3.0, 4.0]])
+        target = torch.tensor([[1.5, 1.5], [3.5, 3.5]])
+        args = ()
+        loss = torch.nn.MSELoss(*args, reduction='sum')
+        result = loss(input, target)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    """3D inputs with float64 dtype"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        input = torch.ones([2, 3, 4], dtype=torch.float64) * 0.5
+        target = torch.ones([2, 3, 4], dtype=torch.float64)
+        loss = torch.nn.MSELoss(reduction='none')
+        result = loss(input, target)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

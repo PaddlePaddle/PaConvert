@@ -16,9 +16,30 @@ import textwrap
 
 import paddle
 import pytest
-from test_device import DeviceAPIBase
+from apibase import APIBase
 
-obj = DeviceAPIBase("torch.set_default_device")
+
+class SetDefaultDeviceAPIBase(APIBase):
+    def compare(
+        self,
+        name,
+        pytorch_result,
+        paddle_result,
+        check_value=True,
+        check_shape=True,
+        check_dtype=True,
+        check_stop_gradient=True,
+        rtol=1.0e-6,
+        atol=0.0,
+    ):
+        pytorch_result = str(pytorch_result)
+        paddle_result = str(paddle_result)
+        if "cpu:" in pytorch_result:
+            pytorch_result = "cpu"
+        assert pytorch_result == paddle_result
+
+
+obj = SetDefaultDeviceAPIBase("torch.set_default_device")
 
 
 @pytest.mark.skipif(
@@ -31,6 +52,7 @@ def test_case_1():
         import torch
         torch.set_default_device('cuda:1')
         result = torch.get_default_device()
+        torch.set_default_device(None)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -44,8 +66,9 @@ def test_case_2():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        torch.set_default_device("cuda")
+        torch.set_default_device("cuda:0")
         result = torch.get_default_device()
+        torch.set_default_device(None)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -65,6 +88,7 @@ def test_case_3():
     obj.run(pytorch_code, ["result"])
 
 
+@pytest.mark.skip(reason="paddle does not support 'cpu:1' format")
 def test_case_4():
     pytorch_code = textwrap.dedent(
         """
@@ -89,6 +113,7 @@ def test_case_5():
         import torch
         torch.set_default_device(device=torch.device("cuda"))
         result = torch.get_default_device()
+        torch.set_default_device(None)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -104,6 +129,7 @@ def test_case_6():
         import torch
         torch.set_default_device(device=torch.device("cuda:1"))
         result = torch.get_default_device()
+        torch.set_default_device(None)
         """
     )
     obj.run(pytorch_code, ["result"])
@@ -117,9 +143,10 @@ def test_case_7():
     pytorch_code = textwrap.dedent(
         """
         import torch
-        device = torch.device("cuda")
+        device = torch.device("cuda:0")
         torch.set_default_device(device)
         result = torch.get_default_device()
+        torch.set_default_device(None)
         """
     )
     obj.run(pytorch_code, ["result"])

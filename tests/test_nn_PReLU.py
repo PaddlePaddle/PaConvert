@@ -208,3 +208,87 @@ def test_case_13():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.tensor([-2.5, -0.75, 0.25, 1.5], dtype=torch.float32)
+        model = nn.PReLU()
+        result = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_15():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.tensor(
+            [[-3.0, -1.0, 0.5], [1.5, -2.5, 2.0]],
+            dtype=torch.float32,
+        )
+        model = nn.PReLU(num_parameters=1, init=0.2, device="cpu", dtype=torch.float32)
+        result = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_16():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.tensor(
+            [
+                [[-1.0, 0.5], [2.0, -3.0], [1.5, -0.25]],
+                [[0.2, -0.7], [-1.5, 2.5], [3.0, -4.0]],
+            ],
+            dtype=torch.float32,
+        )
+        model = nn.PReLU(num_parameters=3, init=0.4)
+        result = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_17():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor(
+            [
+                [[-2.0, 1.0, -0.5], [0.5, -1.5, 2.5]],
+                [[1.0, -3.0, 0.75], [-0.25, 2.0, -4.0]],
+            ],
+            dtype=torch.float32,
+        )
+        num_parameters = 2
+        init = 0.35
+        model = torch.nn.PReLU(num_parameters=num_parameters, init=init)
+        result = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_18():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import torch.nn as nn
+        x = torch.tensor(
+            [[[-0.8, 0.4, 1.2], [-1.5, 2.0, -2.5]]],
+            dtype=torch.float32,
+        )
+        model = nn.PReLU(init=0.15, num_parameters=1, dtype=torch.float32, device="cpu")
+        result = model(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

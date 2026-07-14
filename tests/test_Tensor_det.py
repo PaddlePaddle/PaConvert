@@ -77,3 +77,16 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        import numpy as np
+        np.random.seed(42)
+        x = torch.from_numpy(np.random.randn(2, 2, 2).astype('float32'))
+        result = x.det()
+        """
+    )
+    obj.run(pytorch_code, ["result"])

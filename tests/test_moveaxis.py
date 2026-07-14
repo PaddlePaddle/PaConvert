@@ -175,3 +175,30 @@ def test_case_12():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_13():
+    """Mixed parameters: positional and keyword"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.arange(24)
+        x = torch.reshape(x, (1, 4, 6))
+        result = torch.moveaxis(x, 1, destination=0)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_14():
+    """Variable arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.arange(24)
+        x = torch.reshape(x, (1, 4, 6))
+        args = (x, 1, 0)
+        result = torch.moveaxis(*args)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

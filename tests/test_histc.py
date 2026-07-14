@@ -110,3 +110,16 @@ def test_case_8():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_9():
+    """Variable arguments"""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        x = torch.tensor([1., 2, 1])
+        args = (x, 4, 0, 3)
+        result = torch.histc(*args)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

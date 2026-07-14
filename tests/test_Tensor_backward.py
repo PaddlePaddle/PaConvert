@@ -90,3 +90,18 @@ def test_case_5():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    # Create graph=True
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        a = torch.tensor([1., 2., 3.], requires_grad=True)
+        out = a ** 2
+        out.sum().backward(create_graph=True)
+        a.grad = torch.tensor(a.grad, requires_grad=True)
+        result = a.grad
+        """
+    )
+    obj.run(pytorch_code, ["result"])

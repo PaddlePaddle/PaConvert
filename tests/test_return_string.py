@@ -17,8 +17,8 @@ import textwrap
 
 from apibase import APIBase
 
-obj1 = APIBase("torch.utils.data._utils.collate.np_str_obj_array_pattern")
-obj2 = APIBase("torch.utils.data._utils.collate.default_collate_err_msg_format")
+obj1 = APIBase("noapi1")
+obj2 = APIBase("noapi2")
 
 
 def test_case_1():
@@ -52,3 +52,13 @@ def test_case_3():
         """
     )
     obj2.run(pytorch_code, unsupport=True, reason="TODO unsupported")
+
+
+def test_case_4():
+    pytorch_code = textwrap.dedent(
+        """
+        from torch.utils.data._utils.collate import default_collate_err_msg_format
+        result = default_collate_err_msg_format.format('int64')
+        """
+    )
+    obj2.run(pytorch_code, ["result"], unsupport=True, reason="TODO unsupported")
