@@ -1,5 +1,6 @@
 import paddle
 
+paddle.enable_compat(level=2)
 print("#########################case1#########################")
 loss = paddle.nn.BCEWithLogitsLoss(reduction="none")
 input = paddle.tensor([1.0, 0.7, 0.2], requires_grad=True)

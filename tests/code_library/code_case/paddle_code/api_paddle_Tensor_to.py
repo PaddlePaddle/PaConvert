@@ -1,5 +1,6 @@
 import paddle
 
+paddle.enable_compat(level=2)
 print("#########################case1#########################")
 cpu = paddle.device("cpu")
 a = paddle.randn(2, 3)

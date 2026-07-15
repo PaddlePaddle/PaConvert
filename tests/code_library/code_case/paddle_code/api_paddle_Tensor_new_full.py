@@ -1,5 +1,6 @@
 import paddle
 
+paddle.enable_compat(level=2)
 print("#########################case1#########################")
 a = paddle.tensor([1, 2, 3], dtype=paddle.int64)
 b = a.new_full([3, 4], 2.43, dtype=paddle.float64, requires_grad=True, pin_memory=True)

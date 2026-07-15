@@ -514,28 +514,31 @@ class ImportTransformer(BaseTransformer):
         for may_torch_package in self.imports_map[self.file]["may_torch_packages"]:
             paddle_package_list.append(may_torch_package)
 
-        import_nodes = []
+        import_code = ""
         for paddle_package in paddle_package_list:
-            import_nodes.extend(ast.parse(f"import {paddle_package}").body)
+            import_code += f"import {paddle_package}\n"
 
-        has_torch_package = bool(self.imports_map[self.file]["torch_packages"])
+        # Under `paddle.enable_compat(level=2)` the prefix-converted calls
+        # (torch.X -> paddle.X) resolve to the torch-aligned paddle.compat.* impls,
+        # so inject it once when `import paddle` is added. isort/black dedupe repeats.
+        if "paddle" in paddle_package_list:
+            import_code += "paddle.enable_compat(level=2)\n"
 
-        has_enable_compat = any(
-            isinstance(body_node, ast.Expr)
-            and isinstance(body_node.value, ast.Call)
-            and isinstance(body_node.value.func, ast.Attribute)
-            and body_node.value.func.attr == "enable_compat"
-            and isinstance(body_node.value.func.value, ast.Name)
-            and body_node.value.func.value.id == "paddle"
-            for body_node in node.body
-        )
-        if has_torch_package and not has_enable_compat:
-            import_nodes.extend(ast.parse("paddle.enable_compat(level=2)").body)
-
-        import_end = 1 if node.body and ast.get_docstring(node, clean=False) else 0
-        while import_end < len(node.body) and isinstance(
-            node.body[import_end], (ast.Import, ast.ImportFrom)
-        ):
-            import_end += 1
-        self.record_scope((self.root, "body", import_end), import_nodes)
+        if import_code:
+            log_info(
+                self.logger,
+                f"add '{import_code.strip()}' ",
+                self.file_name,
+            )
+            # insert after the module docstring and any surviving (non-torch)
+            # imports so `enable_compat` lands right below the whole import block;
+            # isort/black then regroup and dedupe the imports.
+            import_end = 1 if ast.get_docstring(node, clean=False) else 0
+            while import_end < len(node.body) and isinstance(
+                node.body[import_end], (ast.Import, ast.ImportFrom)
+            ):
+                import_end += 1
+            self.record_scope(
+                (self.root, "body", import_end), ast.parse(import_code).body
+            )
         return node
