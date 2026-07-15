@@ -6,5 +6,4 @@ from .torchvision import x
 from yolov3.torchvision import a
 from baidubce.services.bos.bos_client import BosClient
 import paddle
-import paddle
 paddle.enable_compat(level=2)

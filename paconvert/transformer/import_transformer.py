@@ -515,7 +515,7 @@ class ImportTransformer(BaseTransformer):
             paddle_package_list.append(may_torch_package)
 
         import_code = ""
-        for paddle_package in paddle_package_list:
+        for paddle_package in dict.fromkeys(paddle_package_list):
             import_code += f"import {paddle_package}\n"
 
         # Under `paddle.enable_compat(level=2)` the prefix-converted calls
