@@ -3783,6 +3783,9 @@
       "tag"
     ]
   },
+  "torch.distributed.ProcessGroup": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.distributed.ReduceOp": {
     "Matcher": "ChangePrefixMatcher"
   },
@@ -3813,14 +3816,7 @@
     }
   },
   "torch.distributed.all_gather_object": {
-    "Matcher": "AllGatherObjectMatcher",
-    "paddle_api": "paddle.distributed.all_gather_object",
-    "args_list": [
-      "object_list",
-      "obj",
-      "group"
-    ],
-    "min_input_args": 2
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.distributed.all_reduce": {
     "Matcher": "ReverseAsyncOpMatcher",
@@ -3934,29 +3930,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.distributed.init_process_group": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.distributed.init_parallel_env",
-    "args_list": [
-      "backend",
-      "init_method",
-      "timeout",
-      "world_size",
-      "rank",
-      "store",
-      "group_name",
-      "pg_options"
-    ],
-    "kwargs_change": {
-      "backend": "",
-      "init_method": "",
-      "timeout": "",
-      "world_size": "",
-      "rank": "",
-      "store": "",
-      "group_name": "",
-      "pg_options": ""
-    },
-    "min_input_args": 0
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.distributed.irecv": {
     "Matcher": "GenericMatcher",

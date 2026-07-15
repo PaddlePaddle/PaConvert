@@ -145,6 +145,9 @@
   "torch.distributed.ReduceOp.SUM": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.distributed.group.WORLD": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.distributions.Distribution.batch_shape": {},
   "torch.distributions.Distribution.event_shape": {},
   "torch.distributions.Distribution.mean": {},
