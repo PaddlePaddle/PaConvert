@@ -515,14 +515,13 @@ class ImportTransformer(BaseTransformer):
             paddle_package_list.append(may_torch_package)
 
         import_code = ""
+        enable_compat_code = ""
         for paddle_package in dict.fromkeys(paddle_package_list):
             import_code += f"import {paddle_package}\n"
+            if paddle_package == "paddle":
+                enable_compat_code = "paddle.enable_compat(level=2)\n"
 
-        # Under `paddle.enable_compat(level=2)` the prefix-converted calls
-        # (torch.X -> paddle.X) resolve to the torch-aligned paddle.compat.* impls,
-        # so inject it once when `import paddle` is added. isort/black dedupe repeats.
-        if "paddle" in paddle_package_list:
-            import_code += "paddle.enable_compat(level=2)\n"
+        import_code += enable_compat_code
 
         if import_code:
             log_info(
@@ -530,9 +529,6 @@ class ImportTransformer(BaseTransformer):
                 f"add '{import_code.strip()}' ",
                 self.file_name,
             )
-            # insert after the module docstring and any surviving (non-torch)
-            # imports so `enable_compat` lands right below the whole import block;
-            # isort/black then regroup and dedupe the imports.
             import_end = 1 if ast.get_docstring(node, clean=False) else 0
             while import_end < len(node.body) and isinstance(
                 node.body[import_end], (ast.Import, ast.ImportFrom)
