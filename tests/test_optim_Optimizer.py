@@ -35,6 +35,7 @@ class optimOptimizerAPIBase(APIBase):
 
 
 obj = optimOptimizerAPIBase("torch.optim.Optimizer")
+common_obj = APIBase("torch.optim.Optimizer")
 
 
 def test_case_1():
@@ -87,3 +88,38 @@ def test_case_4():
         """
     )
     obj.run(pytorch_code, ["result"])
+
+
+def test_case_5():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        class SignSGD(torch.optim.Optimizer):
+            def __init__(self, params, lr=0.01):
+                self.params = params
+                self.lr = lr
+                defaults = dict(lr=lr)
+                super(SignSGD, self).__init__(params, defaults)
+
+            def step(self):
+                for p in self.params:
+                    if p.grad is None:
+                        continue
+                    grad = p.grad.data
+                    # p = p - lr * sign(grad)
+                    p.data.add_(grad.sign(), alpha=-self.lr)
+
+        x = torch.tensor([[1.0, 2.0, 3.0]])
+        x.requires_grad = True
+        optimizer = SignSGD([x], lr=0.01)
+        result = []
+        for i in range(5):
+            loss = x.sum()
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            result.append(loss.item())
+        """
+    )
+    common_obj.run(pytorch_code, ["result"])
