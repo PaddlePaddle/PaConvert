@@ -8497,39 +8497,7 @@
     }
   },
   "torch.optim.Adagrad": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.optimizer.Adagrad",
-    "min_input_args": 1,
-    "args_list": [
-      "params",
-      "lr",
-      "lr_decay",
-      "weight_decay",
-      "initial_accumulator_value",
-      "eps",
-      "foreach",
-      "*",
-      "maximize",
-      "differentiable",
-      "fused"
-    ],
-    "unsupport_args": [
-      "lr_decay",
-      "foreach",
-      "maximize",
-      "differentiable",
-      "fused"
-    ],
-    "kwargs_change": {
-      "params": "parameters",
-      "lr": "learning_rate",
-      "eps": "epsilon"
-    },
-    "paddle_default_kwargs": {
-      "weight_decay": 0.0,
-      "epsilon": 1e-10,
-      "learning_rate": 0.01
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.optim.Adam": {
     "Matcher": "OptimAdamMatcher",
