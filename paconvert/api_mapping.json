@@ -8806,38 +8806,7 @@
     ]
   },
   "torch.optim.SGD": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.optimizer.SGD",
-    "min_input_args": 1,
-    "args_list": [
-      "params",
-      "lr",
-      "momentum",
-      "dampening",
-      "weight_decay",
-      "nesterov",
-      "*",
-      "maximize",
-      "foreach",
-      "differentiable",
-      "fused"
-    ],
-    "unsupport_args": [
-      "momentum",
-      "dampening",
-      "nesterov",
-      "maximize",
-      "foreach",
-      "differentiable",
-      "fused"
-    ],
-    "kwargs_change": {
-      "params": "parameters",
-      "lr": "learning_rate"
-    },
-    "paddle_default_kwargs": {
-      "weight_decay": 0.0
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.optim.lr_scheduler.ConstantLR": {
     "Matcher": "ConstantLRMatcher",
