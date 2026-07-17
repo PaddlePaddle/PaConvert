@@ -10234,39 +10234,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.DataLoader": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.io.DataLoader",
-    "min_input_args": 1,
-    "args_list": [
-      "dataset",
-      "batch_size",
-      "shuffle",
-      "sampler",
-      "batch_sampler",
-      "num_workers",
-      "collate_fn",
-      "pin_memory",
-      "drop_last",
-      "timeout",
-      "worker_init_fn",
-      "multiprocessing_context",
-      "generator",
-      "*",
-      "prefetch_factor",
-      "persistent_workers",
-      "pin_memory_device"
-    ],
-    "kwargs_change": {
-      "pin_memory": "",
-      "multiprocessing_context": "",
-      "generator": "",
-      "persistent_workers": "",
-      "pin_memory_device": ""
-    },
-    "unsupport_args": [
-      "sampler",
-      "prefetch_factor"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.Dataset": {
     "Matcher": "ChangePrefixMatcher"
@@ -10313,6 +10281,9 @@
     ]
   },
   "torch.utils.data._utils.collate.default_collate": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.utils.data.dataloader.DataLoader": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.dataloader.default_collate": {
