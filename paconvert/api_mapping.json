@@ -8537,39 +8537,7 @@
     }
   },
   "torch.optim.AdamW": {
-    "Matcher": "OptimAdamMatcher",
-    "paddle_api": "paddle.optimizer.AdamW",
-    "min_input_args": 1,
-    "args_list": [
-      "params",
-      "lr",
-      "betas",
-      "eps",
-      "weight_decay",
-      "amsgrad",
-      "*",
-      "maximize",
-      "foreach",
-      "capturable",
-      "differentiable",
-      "fused"
-    ],
-    "unsupport_args": [
-      "amsgrad",
-      "maximize",
-      "foreach",
-      "capturable",
-      "differentiable",
-      "fused"
-    ],
-    "kwargs_change": {
-      "params": "parameters",
-      "lr": "learning_rate",
-      "eps": "epsilon"
-    },
-    "paddle_default_kwargs": {
-      "weight_decay": 0.0
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.optim.Adamax": {
     "Matcher": "OptimAdamMatcher",
