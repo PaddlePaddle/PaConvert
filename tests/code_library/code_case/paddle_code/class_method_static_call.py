@@ -1,7 +1,7 @@
 import paddle
 
 
-class PT_Optimizer(paddle.optimizer.Optimizer):
+class PT_Optimizer(paddle.optim.Optimizer):
     pass
 
 
