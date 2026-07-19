@@ -8471,39 +8471,7 @@
     }
   },
   "torch.optim.Adagrad": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.optimizer.Adagrad",
-    "min_input_args": 1,
-    "args_list": [
-      "params",
-      "lr",
-      "lr_decay",
-      "weight_decay",
-      "initial_accumulator_value",
-      "eps",
-      "foreach",
-      "*",
-      "maximize",
-      "differentiable",
-      "fused"
-    ],
-    "unsupport_args": [
-      "lr_decay",
-      "foreach",
-      "maximize",
-      "differentiable",
-      "fused"
-    ],
-    "kwargs_change": {
-      "params": "parameters",
-      "lr": "learning_rate",
-      "eps": "epsilon"
-    },
-    "paddle_default_kwargs": {
-      "weight_decay": 0.0,
-      "epsilon": 1e-10,
-      "learning_rate": 0.01
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.optim.Adam": {
     "Matcher": "OptimAdamMatcher",
@@ -8543,39 +8511,7 @@
     }
   },
   "torch.optim.AdamW": {
-    "Matcher": "OptimAdamMatcher",
-    "paddle_api": "paddle.optimizer.AdamW",
-    "min_input_args": 1,
-    "args_list": [
-      "params",
-      "lr",
-      "betas",
-      "eps",
-      "weight_decay",
-      "amsgrad",
-      "*",
-      "maximize",
-      "foreach",
-      "capturable",
-      "differentiable",
-      "fused"
-    ],
-    "unsupport_args": [
-      "amsgrad",
-      "maximize",
-      "foreach",
-      "capturable",
-      "differentiable",
-      "fused"
-    ],
-    "kwargs_change": {
-      "params": "parameters",
-      "lr": "learning_rate",
-      "eps": "epsilon"
-    },
-    "paddle_default_kwargs": {
-      "weight_decay": 0.0
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.optim.Adamax": {
     "Matcher": "OptimAdamMatcher",
@@ -8657,13 +8593,7 @@
     }
   },
   "torch.optim.Optimizer": {
-    "Matcher": "OptimOptimizerMatcher",
-    "paddle_api": "paddle.optimizer.Optimizer",
-    "min_input_args": 2,
-    "args_list": [
-      "params",
-      "defaults"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.optim.Optimizer.add_param_group": {
     "Matcher": "ChangeAPIMatcher",
@@ -8786,38 +8716,7 @@
     ]
   },
   "torch.optim.SGD": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.optimizer.SGD",
-    "min_input_args": 1,
-    "args_list": [
-      "params",
-      "lr",
-      "momentum",
-      "dampening",
-      "weight_decay",
-      "nesterov",
-      "*",
-      "maximize",
-      "foreach",
-      "differentiable",
-      "fused"
-    ],
-    "unsupport_args": [
-      "momentum",
-      "dampening",
-      "nesterov",
-      "maximize",
-      "foreach",
-      "differentiable",
-      "fused"
-    ],
-    "kwargs_change": {
-      "params": "parameters",
-      "lr": "learning_rate"
-    },
-    "paddle_default_kwargs": {
-      "weight_decay": 0.0
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.optim.lr_scheduler.ConstantLR": {
     "Matcher": "ConstantLRMatcher",
@@ -10214,39 +10113,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.DataLoader": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.io.DataLoader",
-    "min_input_args": 1,
-    "args_list": [
-      "dataset",
-      "batch_size",
-      "shuffle",
-      "sampler",
-      "batch_sampler",
-      "num_workers",
-      "collate_fn",
-      "pin_memory",
-      "drop_last",
-      "timeout",
-      "worker_init_fn",
-      "multiprocessing_context",
-      "generator",
-      "*",
-      "prefetch_factor",
-      "persistent_workers",
-      "pin_memory_device"
-    ],
-    "kwargs_change": {
-      "pin_memory": "",
-      "multiprocessing_context": "",
-      "generator": "",
-      "persistent_workers": "",
-      "pin_memory_device": ""
-    },
-    "unsupport_args": [
-      "sampler",
-      "prefetch_factor"
-    ]
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.Dataset": {
     "Matcher": "ChangePrefixMatcher"
@@ -10293,6 +10160,9 @@
     ]
   },
   "torch.utils.data._utils.collate.default_collate": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.utils.data.dataloader.DataLoader": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.utils.data.dataloader.default_collate": {

@@ -172,15 +172,13 @@ def test_case_5():
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="The parameter sampler not support.",
     )
 
 
 def test_case_6():
     pytorch_code = textwrap.dedent(
         """
-        from torch.utils.data import Dataset
+        from torch.utils.data import Dataset, SequentialSampler
         import torch
         class Data(Dataset):
             def __init__(self):
@@ -194,6 +192,7 @@ def test_case_6():
 
 
         data = Data()
+        sampler = SequentialSampler(data)
         result = torch.utils.data.dataloader.DataLoader(dataset=data,
                 batch_size=1, shuffle=False, sampler=sampler,
                 batch_sampler=None, num_workers=0, collate_fn=None,
@@ -209,8 +208,6 @@ def test_case_6():
     obj.run(
         pytorch_code,
         ["result"],
-        unsupport=True,
-        reason="The parameter 'sampler' not support.",
     )
 
 
