@@ -6160,13 +6160,16 @@
     ]
   },
   "torch.nn.AvgPool1d": {
-    "Matcher": "ChangePrefixMatcher"
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.compat.nn.AvgPool1d"
   },
   "torch.nn.AvgPool2d": {
-    "Matcher": "ChangePrefixMatcher"
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.compat.nn.AvgPool2d"
   },
   "torch.nn.AvgPool3d": {
-    "Matcher": "ChangePrefixMatcher"
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.compat.nn.AvgPool3d"
   },
   "torch.nn.BCELoss": {
     "Matcher": "ChangePrefixMatcher"
@@ -6175,13 +6178,16 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.BatchNorm1d": {
-    "Matcher": "ChangePrefixMatcher"
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.compat.nn.BatchNorm1d"
   },
   "torch.nn.BatchNorm2d": {
-    "Matcher": "ChangePrefixMatcher"
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.compat.nn.BatchNorm2d"
   },
   "torch.nn.BatchNorm3d": {
-    "Matcher": "ChangePrefixMatcher"
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.compat.nn.BatchNorm3d"
   },
   "torch.nn.Bilinear": {
     "Matcher": "GenericMatcher",
@@ -6793,7 +6799,8 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.MultiheadAttention": {
-    "Matcher": "ChangePrefixMatcher"
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.compat.nn.MultiheadAttention"
   },
   "torch.nn.NLLLoss": {
     "Matcher": "ChangePrefixMatcher"

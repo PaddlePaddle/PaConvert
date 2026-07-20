@@ -530,10 +530,20 @@ class ImportTransformer(BaseTransformer):
                 self.file_name,
             )
             import_end = 1 if ast.get_docstring(node, clean=False) else 0
-            while import_end < len(node.body) and isinstance(
-                node.body[import_end], (ast.Import, ast.ImportFrom)
-            ):
-                import_end += 1
+            if self.mode == "min":
+                # import enable_compat before torch is imported.
+                # jump over __furture__, since it should be right behind docstring
+                while (
+                    import_end < len(node.body)
+                    and isinstance(node.body[import_end], (ast.Import, ast.ImportFrom))
+                    and node.body[import_end].module == "__furture__"
+                ):
+                    import_end += 1
+            else:
+                while import_end < len(node.body) and isinstance(
+                    node.body[import_end], (ast.Import, ast.ImportFrom)
+                ):
+                    import_end += 1
             self.record_scope(
                 (self.root, "body", import_end), ast.parse(import_code).body
             )

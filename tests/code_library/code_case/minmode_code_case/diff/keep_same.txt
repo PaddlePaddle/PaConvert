@@ -1,16 +1,12 @@
 --- /workspace/paconvert/tests/code_library/code_case/minmode_code_case/torch_code/keep_same.py
 +++ /workspace/paconvert/tests/code_library/code_case/minmode_code_case/convert_paddle_code/keep_same.py
-@@ -1,5 +1,7 @@
- import torch
-
- import copy
-
+@@ -1,3 +1,5 @@
 +import paddle
 
 +paddle.enable_compat(level=2)
 
+ import torch
+
+ import copy
+
  print('#########################case1#########################')
-
- result = torch.BFloat16Tensor([1.5, 2, 3])
-
- print('#########################case2#########################')
