@@ -535,8 +535,8 @@ class ImportTransformer(BaseTransformer):
                 # jump over __furture__, since it should be right behind docstring
                 while (
                     import_end < len(node.body)
-                    and isinstance(node.body[import_end], (ast.Import, ast.ImportFrom))
-                    and node.body[import_end].module == "__furture__"
+                    and isinstance(node.body[import_end], ast.ImportFrom)
+                    and node.body[import_end].module == "__future__"
                 ):
                     import_end += 1
             else:
