@@ -83,11 +83,7 @@ def test_case_8():
             "torch.optim.SGD(params=conv.parameters(), lr=0.8, momentum=0, dampening=0, weight_decay=0, nesterov=False, maximize=False, foreach=None, differentiable=False)"
         )
     )
-    obj.run(
-        pytorch_code,
-        unsupport=True,
-        reason="`momentum`, `dampening`, `nesterov`, `maximize`, `foreach` and `differentiable` is not supported.",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_9():
@@ -96,21 +92,13 @@ def test_case_9():
             "torch.optim.SGD(conv.parameters(), 0.8, 0, 0, 0, False, maximize=False, foreach=None, differentiable=False)"
         )
     )
-    obj.run(
-        pytorch_code,
-        unsupport=True,
-        reason="`momentum`, `dampening`, `nesterov`, `maximize`, `foreach` and `differentiable` is not supported.",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_10():
     pytorch_code = textwrap.dedent(
         generate_optimizer_test_code(
-            "torch.optim.SGD(params=conv.parameters(), lr=0.8, weight_decay=0, momentum=0, dampening=0, maximize=False, nesterov=False, foreach=None, differentiable=False)"
+            "torch.optim.SGD(params=conv.parameters(), lr=0.8, weight_decay=0, momentum=0, dampening=0, maximize=True, nesterov=False, foreach=None, differentiable=False)"
         )
     )
-    obj.run(
-        pytorch_code,
-        unsupport=True,
-        reason="`momentum`, `dampening`, `nesterov`, `maximize`, `foreach` and `differentiable` is not supported.",
-    )
+    obj.run(pytorch_code, ["result"])
