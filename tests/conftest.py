@@ -38,6 +38,9 @@ import pytest
 
 
 def disable_paddle_compat():
+    if "paddle" not in sys.modules:
+        return
+
     try:
         from paddle.compat.proxy import TORCH_PROXY_FINDER
     except (ImportError, ModuleNotFoundError):

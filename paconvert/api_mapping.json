@@ -4154,8 +4154,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.distributions.Categorical": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.compat.distributions.Categorical"
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.distributions.Distribution": {
     "Matcher": "ChangePrefixMatcher"
