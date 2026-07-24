@@ -102,9 +102,7 @@ def test_case_4():
         net(a)
         """
     )
-    obj.run(
-        pytorch_code, unsupport=True, reason="prepend and with_kwargs is not supported"
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -130,6 +128,146 @@ def test_case_5():
         net(a)
         """
     )
-    obj.run(
-        pytorch_code, unsupport=True, reason="prepend and with_kwargs is not supported"
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    """prepend=True runs the new pre-hook before existing pre-hooks."""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        events = []
+
+        class DoubleNum(torch.nn.Module):
+            def forward(self, x):
+                return 2 * x
+
+        def first_hook(module, args):
+            events.append("first")
+            return (args[0] + 1,)
+
+        def second_hook(module, args):
+            events.append("second")
+            return (args[0] * 2,)
+
+        net = DoubleNum()
+        net.register_forward_pre_hook(second_hook)
+        net.register_forward_pre_hook(first_hook, prepend=True)
+        x = torch.tensor(
+            [[-1.5, 2.0], [0.25, -3.0]],
+            dtype=torch.float64,
+        )
+        result = net(x)
+        """
     )
+    obj.run(pytorch_code, ["events", "result"])
+
+
+def test_case_7():
+    """with_kwargs=True can modify positional and keyword inputs."""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        observed_kwargs = []
+
+        class Scale(torch.nn.Module):
+            def forward(self, x, scale=1.0):
+                return x * scale
+
+        def hook(module, args, kwargs):
+            observed_kwargs.append(kwargs["scale"])
+            return (args[0] + 1,), {"scale": kwargs["scale"] + 1}
+
+        net = Scale()
+        net.register_forward_pre_hook(hook, with_kwargs=True)
+        x = torch.tensor(
+            [[[-1.0, 0.5], [2.0, -3.0]]],
+            dtype=torch.float32,
+        )
+        result = net(x, scale=2.5)
+        """
+    )
+    obj.run(pytorch_code, ["observed_kwargs", "result"])
+
+
+def test_case_8():
+    """The returned handle removes the registered pre-hook."""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        events = []
+
+        class AddOne(torch.nn.Module):
+            def forward(self, x):
+                return x + 1
+
+        def hook(module, args):
+            events.append("called")
+            return (args[0] * 3,)
+
+        net = AddOne()
+        handle = net.register_forward_pre_hook(hook)
+        result_before_remove = net(torch.tensor([1, -2, 3]))
+        handle.remove()
+        result_after_remove = net(torch.tensor([1, -2, 3]))
+        """
+    )
+    obj.run(
+        pytorch_code,
+        ["events", "result_before_remove", "result_after_remove"],
+    )
+
+
+def test_case_9():
+    """The hook can be supplied through variable positional arguments."""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        class DoubleNum(torch.nn.Module):
+            def forward(self, x):
+                return 2 * x
+
+        def hook(module, args):
+            return (args[0] - 1,)
+
+        net = DoubleNum()
+        hook_args = (hook,)
+        net.register_forward_pre_hook(*hook_args)
+        x = torch.tensor([[[-2.0, 1.0], [0.5, -0.25]]])
+        result = net(x)
+        """
+    )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_10():
+    """All arguments can be supplied through variable keyword arguments."""
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+
+        events = []
+
+        class Scale(torch.nn.Module):
+            def forward(self, x, scale=1.0):
+                return x * scale
+
+        def hook(module, args, kwargs):
+            events.append(len(kwargs))
+            return (args[0] + 2,), kwargs
+
+        net = Scale()
+        hook_kwargs = {
+            "hook": hook,
+            "prepend": False,
+            "with_kwargs": True,
+        }
+        net.register_forward_pre_hook(**hook_kwargs)
+        result = net(torch.tensor([-1.0, 2.0]), scale=3.0)
+        """
+    )
+    obj.run(pytorch_code, ["events", "result"])

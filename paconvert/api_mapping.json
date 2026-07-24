@@ -6772,36 +6772,10 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.Module.register_forward_hook": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.Module.register_forward_post_hook",
-    "args_list": [
-      "hook",
-      "*",
-      "prepend",
-      "with_kwargs",
-      "always_call"
-    ],
-    "unsupport_args": [
-      "prepend",
-      "with_kwargs",
-      "always_call"
-    ],
-    "min_input_args": 1
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.Module.register_forward_pre_hook": {
-    "Matcher": "GenericMatcher",
-    "paddle_api": "paddle.nn.Module.register_forward_pre_hook",
-    "args_list": [
-      "hook",
-      "*",
-      "prepend",
-      "with_kwargs"
-    ],
-    "unsupport_args": [
-      "prepend",
-      "with_kwargs"
-    ],
-    "min_input_args": 1
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.Module.register_full_backward_hook": {
     "min_input_args": 1
@@ -8192,6 +8166,9 @@
   "torch.nn.modules.module.Module": {
     "Matcher": "ChangePrefixMatcher"
   },
+  "torch.nn.modules.module._IncompatibleKeys": {
+    "Matcher": "ChangePrefixMatcher"
+  },
   "torch.nn.modules.utils._ntuple": {
     "Matcher": "NTupleMatcher",
     "args_list": [
@@ -8771,6 +8748,9 @@
     }
   },
   "torch.optim.lr_scheduler.ExponentialLR": {
+    "Matcher": "ChangePrefixMatcher"
+  },
+  "torch.optim.lr_scheduler.LRScheduler": {
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.optim.lr_scheduler.LambdaLR": {
