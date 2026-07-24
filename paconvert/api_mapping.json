@@ -1974,17 +1974,7 @@
   "torch.Tensor.sparse_resize_": {},
   "torch.Tensor.sparse_resize_and_clear_": {},
   "torch.Tensor.split": {
-    "Matcher": "TensorSplitMatcher",
-    "paddle_api": "paddle.Tensor.split",
-    "min_input_args": 1,
-    "args_list": [
-      "split_size",
-      "dim"
-    ],
-    "kwargs_change": {
-      "split_size": "num_or_sections",
-      "dim": "axis"
-    }
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.Tensor.split_with_sizes": {
     "Matcher": "ChangePrefixMatcher"
@@ -6159,16 +6149,13 @@
     ]
   },
   "torch.nn.AvgPool1d": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.compat.nn.AvgPool1d"
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.AvgPool2d": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.compat.nn.AvgPool2d"
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.AvgPool3d": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.compat.nn.AvgPool3d"
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.BCELoss": {
     "Matcher": "ChangePrefixMatcher"
@@ -6177,16 +6164,13 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.BatchNorm1d": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.compat.nn.BatchNorm1d"
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.BatchNorm2d": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.compat.nn.BatchNorm2d"
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.BatchNorm3d": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.compat.nn.BatchNorm3d"
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.Bilinear": {
     "Matcher": "GenericMatcher",
@@ -6798,8 +6782,7 @@
     "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.MultiheadAttention": {
-    "Matcher": "ChangeAPIMatcher",
-    "paddle_api": "paddle.compat.nn.MultiheadAttention"
+    "Matcher": "ChangePrefixMatcher"
   },
   "torch.nn.NLLLoss": {
     "Matcher": "ChangePrefixMatcher"
