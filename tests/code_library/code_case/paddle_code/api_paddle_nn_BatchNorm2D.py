@@ -1,5 +1,6 @@
 import paddle
 
+paddle.enable_compat(level=2)
 print("#########################case1#########################")
 bn = paddle.compat.nn.BatchNorm2d(5)
 print("#########################case2#########################")

@@ -1,5 +1,6 @@
 import paddle
 
+paddle.enable_compat(level=2)
 print("#########################case1#########################")
 g_cpu = paddle.Generator()
 print("#########################case2#########################")

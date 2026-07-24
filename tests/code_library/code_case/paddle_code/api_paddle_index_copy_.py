@@ -1,5 +1,6 @@
 import paddle
 
+paddle.enable_compat(level=2)
 print("#########################case1#########################")
 x = paddle.zeros(5, 3)
 t = paddle.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=paddle.float)

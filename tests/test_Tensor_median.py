@@ -38,12 +38,7 @@ def test_case_2():
         result = input.median(1)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not return index when dim is specified",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_3():
@@ -54,12 +49,7 @@ def test_case_3():
         result = input.median(1, keepdim=True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not return index when dim is specified",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_4():
@@ -70,12 +60,7 @@ def test_case_4():
         result = input.median(dim=1, keepdim=True)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not return index when dim is specified",
-    )
+    obj.run(pytorch_code, ["result"])
 
 
 def test_case_5():
@@ -86,9 +71,26 @@ def test_case_5():
         result = input.median(0)
         """
     )
-    obj.run(
-        pytorch_code,
-        ["result"],
-        unsupport=True,
-        reason="paddle does not return index when dim is specified",
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_6():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([1.0, 2.0, 3.0, 4.0])
+        result = input.median()
+        """
     )
+    obj.run(pytorch_code, ["result"])
+
+
+def test_case_7():
+    pytorch_code = textwrap.dedent(
+        """
+        import torch
+        input = torch.tensor([[1.0, 2.0, 3.0, 4.0], [8.0, 7.0, 6.0, 5.0]])
+        result = input.median(dim=1)
+        """
+    )
+    obj.run(pytorch_code, ["result"])

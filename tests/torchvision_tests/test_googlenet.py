@@ -90,6 +90,7 @@ def test_case_7():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
         googlenet = paddle.vision.models.googlenet(pretrained=False)
         """
     )

@@ -45,6 +45,8 @@ def test_case_1():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
+
 
         class MyModule(paddle.nn.Module):
             def __init__(self):
@@ -88,6 +90,8 @@ def test_case_2():
     paddle_code = textwrap.dedent(
         """
         import paddle
+
+        paddle.enable_compat(level=2)
 
 
         class MyModule(paddle.nn.Module):
@@ -134,6 +138,8 @@ def test_case_3():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
+
 
         class MyModule(paddle.nn.Module):
             def __init__(self):
@@ -179,6 +185,8 @@ def test_case_4():
     paddle_code = textwrap.dedent(
         """
         import paddle
+
+        paddle.enable_compat(level=2)
 
 
         class MyModule(paddle.nn.Module):

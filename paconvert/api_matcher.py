@@ -5799,7 +5799,9 @@ class ReduceScatterTensorMatcher(BaseMatcher):
                 if input.shape[0] == world_size:
                     input_list = paddle.unstack(input, axis=0)
                 else:
-                    input_list = paddle.split(input, num_or_sections=world_size, axis=0)
+                    input_list = paddle.tensor.split(
+                        input, num_or_sections=world_size, axis=0
+                    )
                 paddle.distributed.reduce_scatter(output, input_list, op, group, async_op)
             """
         )

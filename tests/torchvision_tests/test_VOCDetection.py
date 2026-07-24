@@ -58,6 +58,7 @@ def test_case_1():
         ############################## 相关utils函数，如上 ##############################
 
 
+        paddle.enable_compat(level=2)
         image_folder = VOCDetection(root="./text_data")
         """
     )
@@ -105,6 +106,7 @@ def test_case_2():
         ############################## 相关utils函数，如上 ##############################
 
 
+        paddle.enable_compat(level=2)
         image_folder = VOCDetection(
             root="./text_data", image_set="train", download=False, transform=None
         )
@@ -154,6 +156,7 @@ def test_case_3():
         ############################## 相关utils函数，如上 ##############################
 
 
+        paddle.enable_compat(level=2)
         image_folder = VOCDetection(
             image_set="train", download=False, root="./text_data", transform=None
         )

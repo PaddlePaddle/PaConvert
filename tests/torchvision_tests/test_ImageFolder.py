@@ -34,6 +34,7 @@ def test_case_1():
 
         import paddle
 
+        paddle.enable_compat(level=2)
         fake_data_dir = "./text_data"
         image_folder = paddle.vision.datasets.ImageFolder(root=Path(fake_data_dir))
         """
@@ -62,6 +63,7 @@ def test_case_2():
         import cv2
         import paddle
 
+        paddle.enable_compat(level=2)
         fake_data_dir = "./text_data"
         image_folder = paddle.vision.datasets.ImageFolder(
             root=fake_data_dir, loader=lambda x: cv2.imread(x), transform=transform
@@ -94,6 +96,7 @@ def test_case_3():
         import cv2
         import paddle
 
+        paddle.enable_compat(level=2)
         fake_data_dir = "./text_data"
         image_folder = paddle.vision.datasets.ImageFolder(
             root=fake_data_dir,
@@ -129,6 +132,7 @@ def test_case_4():
         import cv2
         import paddle
 
+        paddle.enable_compat(level=2)
         fake_data_dir = "./text_data"
         image_folder = paddle.vision.datasets.ImageFolder(
             root=fake_data_dir,
@@ -164,6 +168,7 @@ def test_case_5():
         import cv2
         import paddle
 
+        paddle.enable_compat(level=2)
         fake_data_dir = "./text_data"
         image_folder = paddle.vision.datasets.ImageFolder(
             loader=lambda x: cv2.imread(x),
@@ -193,6 +198,7 @@ def test_case_6():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
         fake_data_dir = "./text_data"
         image_folder = paddle.vision.datasets.ImageFolder(root=fake_data_dir)
         """

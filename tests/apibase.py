@@ -20,6 +20,9 @@ import sys
 import numpy as np
 
 sys.path.append(os.path.dirname(__file__) + "/..")
+sys.path.append(os.path.dirname(__file__))
+
+from conftest import disable_paddle_compat
 
 from paconvert.converter import Converter
 
@@ -85,6 +88,7 @@ class APIBase(object):
                 )
                 assert paddle_code == expect_paddle_code, error_msg
         elif compared_tensor_names:
+            disable_paddle_compat()
             pytorch_ns = {}
             try:
                 exec(pytorch_code, pytorch_ns)
@@ -117,6 +121,7 @@ class APIBase(object):
                 except Exception as e:
                     raise AssertionError(f"Unable to align results: {e}")
         else:
+            disable_paddle_compat()
             pytorch_ns = {}
             try:
                 exec(pytorch_code, pytorch_ns)

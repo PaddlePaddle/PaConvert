@@ -505,7 +505,6 @@ class ImportTransformer(BaseTransformer):
         'import torch_package' has been removed already, add 'import paddle_package'
         """
         super(ImportTransformer, self).generic_visit(node)
-        line_NO = 1
         paddle_package_list = []
         for torch_package in self.imports_map[self.file]["torch_packages"]:
             paddle_package_list.append(
@@ -515,13 +514,37 @@ class ImportTransformer(BaseTransformer):
         for may_torch_package in self.imports_map[self.file]["may_torch_packages"]:
             paddle_package_list.append(may_torch_package)
 
-        for paddle_package in paddle_package_list:
+        import_code = ""
+        enable_compat_code = ""
+        for paddle_package in dict.fromkeys(paddle_package_list):
+            import_code += f"import {paddle_package}\n"
+            if paddle_package == "paddle":
+                enable_compat_code = "paddle.enable_compat(level=2)\n"
+
+        import_code += enable_compat_code
+
+        if import_code:
             log_info(
                 self.logger,
-                f"add 'import {paddle_package}' in line {line_NO}",
+                f"add '{import_code.strip()}' ",
                 self.file_name,
             )
+            import_end = 1 if ast.get_docstring(node, clean=False) else 0
+            if self.mode == "min":
+                # import enable_compat before torch is imported.
+                # jump over __furture__, since it should be right behind docstring
+                while (
+                    import_end < len(node.body)
+                    and isinstance(node.body[import_end], ast.ImportFrom)
+                    and node.body[import_end].module == "__future__"
+                ):
+                    import_end += 1
+            else:
+                while import_end < len(node.body) and isinstance(
+                    node.body[import_end], (ast.Import, ast.ImportFrom)
+                ):
+                    import_end += 1
             self.record_scope(
-                (self.root, "body", 0), ast.parse(f"import {paddle_package}").body
+                (self.root, "body", import_end), ast.parse(import_code).body
             )
-            line_NO += 1
+        return node

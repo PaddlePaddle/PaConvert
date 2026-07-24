@@ -1,5 +1,6 @@
 import paddle
 
+paddle.enable_compat(level=2)
 print("#########################case1#########################")
 data = paddle.tensor([23.0, 32.0, 43.0])
 if not data.requires_grad:

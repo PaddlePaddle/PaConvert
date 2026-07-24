@@ -116,6 +116,7 @@ def create_test_case(pytorch_enum, paddle_value):
             f"""
             import paddle
 
+            paddle.enable_compat(level=2)
             mode = "{paddle_value}"
         """
         )

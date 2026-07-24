@@ -1,5 +1,6 @@
 import paddle
 
+paddle.enable_compat(level=2)
 print("#########################case1#########################")
 m = paddle.nn.InstanceNorm3D(num_features=100)
 input = paddle.randn(20, 100, 35, 45, 10)

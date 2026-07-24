@@ -39,6 +39,7 @@ def test_case_1():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
         deform_conv = paddle.vision.ops.DeformConv2D(
             in_channels=3,
             out_channels=4,
@@ -65,6 +66,7 @@ def test_case_2():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
         deform_conv = paddle.vision.ops.DeformConv2D(
             in_channels=3,
             out_channels=4,
@@ -99,6 +101,7 @@ def test_case_3():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
         deform_conv = paddle.vision.ops.DeformConv2D(
             kernel_size=3,
             in_channels=3,
@@ -125,6 +128,7 @@ def test_case_4():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
         deform_conv = paddle.vision.ops.DeformConv2D(
             in_channels=3, out_channels=64, kernel_size=3
         )
@@ -153,6 +157,7 @@ def test_case_5():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
         deform_conv = paddle.vision.ops.DeformConv2D(
             groups=1,
             dilation=1,

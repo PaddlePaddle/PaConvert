@@ -59,11 +59,24 @@ stream_exit=${PIPESTATUS[0]}
 python -m pytest -v -s -p no:warnings tests/test_cuda_CUDAGraph.py 2>&1 | tee -a pytest.log
 cudagraph_exit=${PIPESTATUS[0]}
 
-python -m pytest -v -s -p no:warnings "${PYTEST_IGNORE[@]}" --ignore=tests/test_cuda_stream.py --ignore=tests/test_cuda_CUDAGraph.py -n 1 --reruns=3 ./tests 2>&1 | tee -a pytest.log
+# set_stream installs a process-global Paddle stream owned by the temporary exec
+# namespace. Run it separately so namespace cleanup cannot poison later GPU tests.
+python -m pytest -v -s -p no:warnings tests/test_cuda_set_stream.py 2>&1 | tee -a pytest.log
+setstream_exit=${PIPESTATUS[0]}
+
+python -m pytest -v -s -p no:warnings "${PYTEST_IGNORE[@]}" \
+    --ignore=tests/test_cuda_stream.py \
+    --ignore=tests/test_cuda_CUDAGraph.py \
+    --ignore=tests/test_cuda_set_stream.py \
+    -n 1 --reruns=3 ./tests 2>&1 | tee -a pytest.log
 check_errors=${PIPESTATUS[0]}
 if [ ${check_errors} -ne 0 ]; then
     echo "Rerun GPU unit test"
-    python -m pytest -v -s -p no:warnings "${PYTEST_IGNORE[@]}" --ignore=tests/test_cuda_stream.py --ignore=tests/test_cuda_CUDAGraph.py -n 1 --lf ./tests 2>&1 | tee -a pytest.log
+    python -m pytest -v -s -p no:warnings "${PYTEST_IGNORE[@]}" \
+        --ignore=tests/test_cuda_stream.py \
+        --ignore=tests/test_cuda_CUDAGraph.py \
+        --ignore=tests/test_cuda_set_stream.py \
+        -n 1 --lf ./tests 2>&1 | tee -a pytest.log
     check_errors=${PIPESTATUS[0]}
 fi
 
@@ -73,6 +86,9 @@ if [ ${stream_exit} -ne 0 ]; then
 fi
 if [ ${cudagraph_exit} -ne 0 ]; then
     check_errors=${cudagraph_exit}
+fi
+if [ ${setstream_exit} -ne 0 ]; then
+    check_errors=${setstream_exit}
 fi
 
 echo '******************************************************************************'

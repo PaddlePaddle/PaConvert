@@ -31,6 +31,7 @@ def test_case_1():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
         roi_align = paddle.vision.ops.RoIAlign(output_size=(7, 7), spatial_scale=1.0)
         """
     )
@@ -49,6 +50,7 @@ def test_case_2():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
         roi_align = paddle.vision.ops.RoIAlign(output_size=(7, 7), spatial_scale=1.0)
         """
     )
@@ -67,6 +69,7 @@ def test_case_3():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
         roi_align = paddle.vision.ops.RoIAlign(spatial_scale=1.0, output_size=(7, 7))
         """
     )
@@ -85,6 +88,7 @@ def test_case_4():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
         roi_align = paddle.vision.ops.RoIAlign(output_size=7, spatial_scale=1.0)
         """
     )
@@ -103,6 +107,7 @@ def test_case_5():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
         roi_align = paddle.vision.ops.RoIAlign(output_size=(7, 7), spatial_scale=2.0)
         """
     )

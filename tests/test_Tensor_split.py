@@ -100,6 +100,7 @@ def test_case_7():
         """
         import paddle
 
+        paddle.enable_compat(level=2)
         a = paddle.tensor([1, 2, 3])
         str1 = "1,2,3"
         str1.split(",")

@@ -1,5 +1,7 @@
 import paddle
 
+paddle.enable_compat(level=2)
+
 
 class PT_Optimizer(paddle.optim.Optimizer):
     pass
