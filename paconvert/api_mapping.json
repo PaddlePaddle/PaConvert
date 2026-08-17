@@ -11651,5 +11651,9 @@
     "args_list": [
       "*docstr"
     ]
+  },
+  "torchaudio.functional.resample": {
+    "Matcher": "ChangeAPIMatcher",
+    "paddle_api": "paddle.audio.functional.resample"
   }
 }
